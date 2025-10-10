@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="800" pageHeight="842" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="1386c3f7-7d5c-4c17-acb0-d4d589d21ab3">
+	<property name="ireport.zoom" value="1.3636363636363658"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="porcentaje" class="java.lang.String"/>
+	<parameter name="parameter1" class="java.lang.String"/>
+	<parameter name="encabezado" class="java.lang.String"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="simbolo" class="java.lang.String"/>
+	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from liquidarLavadero $P!{cliente}]]>
+	</queryString>
+	<field name="id" class="java.lang.String"/>
+	<field name="fechaRealizado" class="java.sql.Timestamp"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="servicio" class="java.lang.String"/>
+	<field name="placa" class="java.lang.String"/>
+	<field name="tipoVehiculo" class="java.lang.String"/>
+	<field name="marca" class="java.lang.String"/>
+	<field name="valor" class="java.lang.Integer"/>
+	<field name="codServicio" class="java.lang.String"/>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="liquidado" class="java.lang.String"/>
+	<field name="trabajador" class="java.lang.String"/>
+	<field name="utilidad" class="java.lang.Integer"/>
+	<field name="pago" class="java.lang.Integer"/>
+	<variable name="totalPagado" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{pago}]]></variableExpression>
+	</variable>
+	<variable name="totalValor1" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="totalUtilidad" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{utilidad}]]></variableExpression>
+	</variable>
+	<group name="empleado">
+		<groupExpression><![CDATA[$F{empleado}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="800" height="34" uuid="12e75969-0f55-4631-98d3-f0aec2f9a7cb"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE LAVADERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="323" y="35" width="194" height="20" backcolor="#E1E0E0" uuid="90be63e1-8e9b-499e-8c4f-e0355ffcf830"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Servicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="517" y="35" width="67" height="20" backcolor="#E1E0E0" uuid="b70b006e-4d72-40fb-8133-be73b3a6e9fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="727" y="35" width="73" height="20" backcolor="#E1E0E0" uuid="9583ddad-29c9-4815-82a7-c267f5e7422b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="39" y="35" width="67" height="20" backcolor="#E1E0E0" uuid="2b715e18-2598-411d-95a9-3e3fc1ba4985"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="35" width="39" height="20" backcolor="#E1E0E0" uuid="2c1d1a1f-3332-4498-a97e-55ecb1e41c32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="106" y="35" width="58" height="20" backcolor="#E1E0E0" uuid="a2afd574-f175-4c48-839b-1fa0aa3b4d19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Placa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="584" y="35" width="143" height="20" backcolor="#E1E0E0" uuid="cb6342bc-b19c-44c9-bd02-05ea8c0dc530"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empleado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="164" y="35" width="159" height="20" backcolor="#E1E0E0" uuid="7bc5a279-7612-4e0f-9c31-b58055d5852c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="39" height="20" uuid="a44e94c3-807d-45b2-b5f0-735597dc2c02"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="323" y="0" width="194" height="20" uuid="ae9d5813-ddf2-455c-a4de-75b1b819dfc2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{servicio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="517" y="0" width="67" height="20" uuid="036d3338-a2dc-41ab-8afd-74ab83d965b9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{valor})]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="39" y="0" width="67" height="20" uuid="d1fc4b7b-24d7-44c0-9cb5-ecd9765b0274"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechaRealizado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="106" y="0" width="58" height="20" uuid="c8fbe74b-2e4f-4192-a9f2-553f4fc16868"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="727" y="0" width="73" height="20" uuid="1a894f9d-fe72-471b-9ebf-5aa45c49a931"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{liquidado}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="584" y="0" width="143" height="20" uuid="6581e664-25ea-4caf-9499-182091800e60"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{trabajador}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="164" y="0" width="159" height="20" uuid="9515b2dc-7d43-4d4e-8432-dd1faeb611c3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="39">
+			<staticText>
+				<reportElement mode="Opaque" x="715" y="0" width="85" height="20" backcolor="#E1E0E0" uuid="1d113061-0a0d-48f1-82e6-387222d957d0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Valor]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="715" y="20" width="86" height="19" uuid="fa936f53-562f-4594-82d4-04248a9040de"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($V{totalValor1})]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

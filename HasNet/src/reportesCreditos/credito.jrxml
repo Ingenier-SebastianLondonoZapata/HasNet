@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30426fc0-8e02-4718-85fc-590b01ad5c9a">
+	<property name="ireport.zoom" value="1.6105100000000037"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="240"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="info" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from conPrestamo where contrato=$P{id} ORDER BY numCuota ASC;]]>
+	</queryString>
+	<field name="contrato" class="java.lang.String"/>
+	<field name="factura" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="convenio" class="java.lang.String"/>
+	<field name="tipoServicio" class="java.lang.String"/>
+	<field name="fechaAprovado" class="java.sql.Timestamp"/>
+	<field name="fechaDesenvolso" class="java.sql.Timestamp"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="valorSolicitado" class="java.math.BigDecimal"/>
+	<field name="valorAprovado" class="java.math.BigDecimal"/>
+	<field name="cuotas" class="java.math.BigDecimal"/>
+	<field name="interes" class="java.math.BigDecimal"/>
+	<field name="totalInteres" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<field name="numCuota" class="java.lang.Integer"/>
+	<field name="fechaCuota" class="java.sql.Timestamp"/>
+	<field name="fechaAbono" class="java.sql.Timestamp"/>
+	<field name="abonoCapital" class="java.math.BigDecimal"/>
+	<field name="abonoInteres" class="java.math.BigDecimal"/>
+	<field name="totalCuota" class="java.math.BigDecimal"/>
+	<field name="totalAbono" class="java.math.BigDecimal"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="hoy" class="java.sql.Timestamp"/>
+	<field name="mora" class="java.math.BigDecimal"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="celular" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="cuotaInicial" class="java.lang.Integer"/>
+	<field name="vendedor" class="java.lang.String"/>
+	<variable name="saldo" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{saldo}.subtract( $F{totalCuota} )]]></variableExpression>
+		<initialValueExpression><![CDATA[$F{total}]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="298" splitType="Stretch">
+			<staticText>
+				<reportElement x="4" y="174" width="75" height="16" uuid="2f75644c-b9a5-4595-b979-2596f6047bbb"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documento:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="174" width="100" height="16" uuid="c1dfbb0f-3854-41c3-84f5-8e82f582b65e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="190" width="75" height="16" uuid="5b965547-a43a-46e0-ae68-18f5e083dfce"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="190" width="314" height="16" uuid="f1151d3d-119b-4e5c-909e-5e17fc0fcad2"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="154" width="545" height="16" uuid="987d77d6-bf7c-48a3-99be-6e9e20c43d82"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS PERSONALES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="261" width="545" height="16" uuid="50e84622-7fde-46be-88a2-c10c8d388827"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS GENERALES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="282" width="75" height="16" uuid="cfa9db10-54fc-4cde-bc99-b38581141f17"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Venta:]]></text>
+			</staticText>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="79" y="282" width="74" height="16" uuid="8abb1461-c297-4996-9860-32e1602fa911"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valorSolicitado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="90" width="75" height="16" uuid="0b99c574-bee4-4df6-9b86-605349eee973"/>
+				<textElement>
+					<font fontName="Calibri" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MEDELLIN]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement x="4" y="109" width="545" height="20" uuid="80ab9312-cdd3-493c-9081-de464481f9bf"/>
+				<textElement>
+					<font fontName="Calibri" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="460" y="282" width="46" height="16" uuid="8050f09c-5803-425f-a83c-319d0ae72065"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuotas:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="505" y="282" width="44" height="16" uuid="6c7ee134-158f-45f2-a803-767044be8c67"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuotas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="7" y="47" width="545" height="30" uuid="f7717424-5d99-41d3-b101-0a8ea693d1fe"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Times New Roman" size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APROBACIÓN DE CREDITO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="206" width="75" height="15" uuid="f5858340-91db-4f5f-a223-33ab247fcee6"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Teléfono:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="221" width="75" height="16" uuid="28415a5d-dcdc-4a8c-88ba-415aab8298d1"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="79" y="206" width="100" height="15" uuid="40b94f3a-2be6-46a5-9f9b-09470cde9bc3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="79" y="221" width="470" height="16" uuid="10e376a9-bc40-48c4-9c89-2712f64f8bab"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="153" y="282" width="75" height="16" uuid="e4dbddb2-7561-48cb-9566-488de5835681"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuota Inicial:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="306" y="282" width="76" height="16" uuid="3fc11997-3fe3-409a-8e2f-33a870fcaba2"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor credito:]]></text>
+			</staticText>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="382" y="282" width="73" height="16" uuid="3fde0b4f-3904-4e69-bab3-407dd0f8d769"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valorAprovado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="7" y="0" width="545" height="43" uuid="30c41d74-9c6f-4940-8e06-6283d9e1f6ad"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{info}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0">
+				<reportElement x="227" y="282" width="78" height="16" uuid="50775c42-0024-4886-a2e0-b8a3b266df5c"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuotaInicial}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="29" width="554" height="1" uuid="5952540b-dcfe-495d-8686-325261903865"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="13" width="71" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="f12ff49f-d12a-489d-8bc1-a9bd3832fda7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No.Cuota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="72" y="13" width="80" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="8ad0323c-b20d-4dd5-991c-7c98008a1594"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Opaque" x="554" y="12" width="1" height="18" backcolor="#CCCCCC" uuid="290d0a3a-3c15-4b7c-9912-55f058a3a4b0"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="152" y="13" width="1" height="16" backcolor="#CCCCCC" uuid="29c78480-810a-4eef-9528-78f8e1f9c68f"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="450" y="13" width="1" height="16" backcolor="#CCCCCC" uuid="d8f1fa09-e4a9-4ed7-b15d-26df541ab366"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="347" y="13" width="1" height="16" backcolor="#CCCCCC" uuid="3355ceb4-e053-4b1b-8865-798a14449b8b"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="257" y="13" width="1" height="16" backcolor="#CCCCCC" uuid="22c75fec-9e8b-4244-9136-59080e74a7de"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="71" y="13" width="1" height="16" backcolor="#CCCCCC" uuid="098994fa-6d4d-4f59-92fd-40db5d069d52"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="153" y="13" width="104" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="2a571ec7-cc82-43ef-a68e-2ba4144d7c8e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Abono capital]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Opaque" x="0" y="13" width="1" height="16" backcolor="#CCCCCC" uuid="95e87314-c3b8-4717-9a03-a7d21878ef70"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="258" y="13" width="89" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="ab94520b-5f6c-4052-975d-d780252e8e5d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Abono intereses]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="348" y="13" width="102" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="4bf3ec8b-7995-4cc3-b0a3-395e2f9767f3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total cuota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="451" y="13" width="103" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="4923dda1-9fbe-4cca-b25a-658177f27e1c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="12" width="554" height="1" uuid="38b24023-0bc3-4d01-9fab-8f1acbe504be"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="4" y="0" width="67" height="15" uuid="6c7ab50a-3c9d-4a2b-a1a0-315b22566e69"/>
+				<textElement>
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numCuota}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement mode="Opaque" x="347" y="0" width="1" height="16" backcolor="#CCCCCC" uuid="ca0eb6ae-f09f-4924-ab85-3991cc33e0d8"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="0" y="0" width="1" height="16" backcolor="#CCCCCC" uuid="ee86765f-f9c6-406f-9591-c13c1c624050"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="450" y="0" width="1" height="16" backcolor="#CCCCCC" uuid="44942017-e17d-48c2-859a-8208ee67ba1c"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="257" y="0" width="1" height="16" backcolor="#CCCCCC" uuid="d6645389-6592-4d1c-b7be-cfedd9f5be40"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="71" y="0" width="1" height="16" backcolor="#CCCCCC" uuid="277a20ef-8e6e-4d8e-909c-f6000795c874"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="554" y="0" width="1" height="16" backcolor="#CCCCCC" uuid="52d875c4-9ac2-4c17-bd21-988d067297f5"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="152" y="0" width="1" height="16" backcolor="#CCCCCC" uuid="b6df110a-39f5-465d-8031-0f60978c87c2"/>
+			</line>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="74" y="0" width="78" height="15" uuid="2ce3d1cd-b383-4979-81a2-e7a5337c1ba7"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaCuota}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="153" y="0" width="102" height="15" uuid="5beedba5-f484-4583-b038-1905aa9e3d78"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{abonoCapital}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="258" y="0" width="87" height="15" uuid="c1745c0c-afcf-4e09-b2d3-46c7632708a0"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{abonoInteres}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="348" y="0" width="100" height="15" uuid="bb722c0c-dc4a-4708-b065-55937b789129"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalCuota}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="451" y="0" width="101" height="15" uuid="9d9d1747-86d4-4124-a382-2e7421515b75"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{saldo}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="1">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="37de39d8-389b-4edb-b0a4-b6966d05b756"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="55" splitType="Stretch">
+			<rectangle>
+				<reportElement x="3" y="6" width="549" height="42" uuid="ebf408dc-39da-4fc7-b5ab-c609a14f74f6"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="6" y="6" width="53" height="16" uuid="89b95714-724d-4b83-bbb5-fd80497f7ca3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaboro:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="123" y="6" width="53" height="16" uuid="2a854ed3-e7d4-47ff-89f7-25263c25f7ce"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reviso:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="252" y="6" width="53" height="16" uuid="1b5fcf21-115e-48b2-87a9-e78e3f5e99d3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autorizo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="382" y="6" width="69" height="16" uuid="4f83dded-9914-4d1b-a9fc-0b8c51427315"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsable:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="117" y="6" width="1" height="42" uuid="070c82e4-afaf-499b-848a-2023f0d0b60f"/>
+			</line>
+			<line>
+				<reportElement x="246" y="6" width="1" height="42" uuid="f83e2b33-6a9c-45c3-b4c6-2ccbac7e74ca"/>
+			</line>
+			<line>
+				<reportElement x="376" y="6" width="1" height="42" uuid="98d5da0c-f967-4d3f-836b-17065d927209"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="65">
+			<staticText>
+				<reportElement x="379" y="31" width="83" height="16" uuid="3f1ae357-ba19-4872-9d77-866be8fe99bb"/>
+				<textElement>
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total interes:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="49" width="83" height="16" uuid="84a8ecaf-8ed7-4054-8ae6-c4acefd00d3f"/>
+				<textElement>
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<textField pattern="$ #,##0">
+				<reportElement x="462" y="31" width="90" height="16" uuid="287fa7b0-8c93-476b-b615-eab5522b137d"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalInteres}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0">
+				<reportElement x="462" y="49" width="90" height="16" uuid="941fa625-4744-4d4f-a835-86080240f878"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="462" y="15" width="90" height="16" uuid="14d04f1b-6784-4506-bfb6-1a7b4d91ca61"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valorAprovado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="379" y="15" width="83" height="16" uuid="561172d3-01d2-4d51-a560-9fb3cbbfe449"/>
+				<textElement>
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor credito:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

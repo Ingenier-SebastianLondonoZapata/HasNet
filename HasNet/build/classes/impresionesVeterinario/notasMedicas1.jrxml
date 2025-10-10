@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="530" pageHeight="792" columnWidth="530" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f4bd3d56-8cf3-4227-acfe-e2b82df14835">
+	<property name="ireport.zoom" value="1.331000000000003"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from bdconstanteshospitalizacion where idHospitalizacion =$P{cliente} order by fecha asc, hora ASC]]>
+	</queryString>
+	<field name="Id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IdHospitalizacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="hora" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="usuario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cardiaca" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="resp" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="t" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="mucosas" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="orina" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="defeca" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="apetito" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="informacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="530" height="18" backcolor="#CCCCCC" uuid="df46bda9-01a1-47ab-a73c-b3d0e1c99fff"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NOTAS MEDICAS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="18" width="517" height="14" uuid="14c72c3d-f40a-4cc4-ba46-1fc4a2a4a206"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NOTA: " + $F{informacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="1" width="66" height="17" backcolor="#CCCCCC" uuid="4f5e63b8-e4c3-496f-abe9-0569004ba0da"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha y hora:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="67" y="1" width="51" height="17" uuid="b4d2d907-5be1-40c1-8912-0b55727bbf78"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h.mm a">
+				<reportElement x="126" y="1" width="100" height="17" uuid="707dde07-b7ce-4ec9-bb2f-7b1fc5dd883b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="118" y="1" width="7" height="17" backcolor="#FFFFFF" uuid="ef735a09-cb7f-4791-8ffc-f8515c9e8fba"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="309" y="1" width="208" height="17" uuid="3affda23-97c1-4a9a-8fa2-6e4681fe94b4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{usuario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="243" y="1" width="66" height="17" backcolor="#CCCCCC" uuid="a9b2e521-f852-448a-899d-aad541454c13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Encargado:]]></text>
+			</staticText>
+		</band>
+		<band height="42">
+			<line>
+				<reportElement x="0" y="35" width="530" height="1" uuid="33dea1af-fa2d-4db7-b914-9fb3a4bcb93c"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="0" width="66" height="16" backcolor="#CCCCCC" uuid="38d79aec-0223-4c81-88eb-a98e423ee26e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Frec. cardiaca:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="67" y="0" width="59" height="16" uuid="c58a4f3a-980a-4bfd-85b3-13caf91ab0da"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cardiaca}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="16" width="59" height="16" uuid="da8ec739-e53b-44d4-a010-2ff1e687f421"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{t}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="16" width="66" height="16" backcolor="#CCCCCC" uuid="85740c04-c8ce-4274-9673-a7bc12b69487"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Temperatura:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="140" y="0" width="82" height="16" backcolor="#CCCCCC" uuid="593c4370-d77f-45a4-be88-8d49484c28ed"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Frec. respiratoria:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="222" y="0" width="72" height="16" uuid="d52bf7b4-071a-41bd-95f6-741c224853aa"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{resp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="222" y="16" width="72" height="16" uuid="c4a324a0-6b6e-4dfc-b33a-8bd1bce0e256"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mucosas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="140" y="16" width="82" height="16" backcolor="#CCCCCC" uuid="96e5eebe-b337-480d-9278-44b15ad58850"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mucosas:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="345" y="0" width="64" height="16" uuid="e97f33d2-f95d-488a-810b-a0823b9fcbfa"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{defeca}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="308" y="16" width="37" height="16" backcolor="#CCCCCC" uuid="0d886988-e9d9-4fd4-aeb7-2b64faa8d42b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Orina:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="308" y="0" width="37" height="16" backcolor="#CCCCCC" uuid="9c0724ea-5936-4553-9c4d-10c1eb371032"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Defeca:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="345" y="16" width="64" height="16" uuid="eb975cd8-23d2-484c-a850-0daa5a0a6631"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{orina}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="421" y="0" width="37" height="16" backcolor="#CCCCCC" uuid="09ee4e46-1126-4c5a-becc-fef7a3d8c99d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Apetito:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="458" y="0" width="68" height="16" uuid="9a5e4e23-18ed-4585-8809-4373c667edd9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apetito}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

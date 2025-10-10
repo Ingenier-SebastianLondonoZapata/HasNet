@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2d4b0046-76a8-4316-a529-ad67cbb15139">
+	<property name="ireport.zoom" value="0.8264462809917382"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="163"/>
+	<parameter name="nombre" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="historia" class="java.lang.String"/>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="prescripcion" class="java.lang.String"/>
+	<field name="posologia" class="java.lang.String"/>
+	<field name="cantidad" class="java.lang.String"/>
+	<field name="proximoControl" class="java.sql.Timestamp"/>
+	<pageHeader>
+		<band height="102">
+			<image>
+				<reportElement x="196" y="11" width="162" height="77" uuid="873bec9d-1f02-42b0-8c3b-0db65c4dcc5a"/>
+				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="624">
+			<staticText>
+				<reportElement x="36" y="60" width="487" height="90" uuid="6d71036f-e4d5-4ea0-9fdd-9170fb879043"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[Se crea en _____________ el dia _______ de _____________ de 20___.
+
+
+Yo, _________________________________________ identificado con cédula de ciudadanía número _____________ de _____________ en calidad de propietario o responsable del animal __________________ de especie ________________ y raza _______________ manifiesto que:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="16" width="487" height="20" uuid="3e4d492c-e1b4-4504-9b2c-4c35c39c6d16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSENTIMIENTO INFORMADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="52" y="176" width="471" height="170" uuid="84f541b7-1791-460b-b2be-4f36eafd2698"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[1. He sido informado(a) a mi entera satisfacción, del estado de salud del animal descrito.
+2. Entiendo que el tratamiento médico y/o procedimiento quirúrgico que se le practicará al animal, será llevado a cabo siguiendo las normas médicas veterinarias necesarias. En ocasiones para llevar a cabo estos procedimientos es necesario rasurar una o varias zonas del animal.
+3. Igualmente e ha comunicado que hay riesgos difíciles de prever en su totalidad, y que el tratamiento médico y/o quirúrgico que se le llegue a practicar al animal puede surgir complicaciones (infecciones, alteraciones fisiológicas por variaciones anatómicas individuales o reacciones adversas a medicamentos, entre otras) que se pueden minimizar, conociendo el estado de salud actual del animal y los antecedentes, por lo tanto doy fe que los datos consignados en la historia clínica son reales y cualquier olvido u omisión será de mi responsabilidad.
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="52" y="345" width="471" height="87" uuid="89aafc0e-0b5e-4f7c-86cb-f18fd4da0b98"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["4. Teniendo en cuenta que es un tratamiento médico y/o quirúrgico en el cual están involucrados los tejidos vivos, los sistemas de defensa del organismo, y los microorganismos que habitan el cuerpo del animal, autorizo los riesgos derivados de los mismos, así como también las pruebas diagnósticas y exámenes paraclínicos que los médicos veterinarios de la " + $P{nombre} + ", realicen a mi mascota y me comprometo a asumir todos los gastos y costos relacionados con los mismos."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="561" width="471" height="61" uuid="19ba3ac9-5d1e-44a3-a905-d4ba9f01f2f3"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["8. Acepto que la " +$P{nombre}+ " no responderá por el valor de mi animal que, por consecuencia directa de enfermedad, del cuadro infeccioso avanzado o por presentarse las complicaciones de que trata el número 3, no fue posible recuperar con los conocimientos actuales y disponibles en la " +$P{nombre}+ "."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="432" width="471" height="45" uuid="d2c275ad-d1b3-49cc-878e-44baa7d1bd96"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["5. Exonero de responsabilidades a la " +$P{nombre}+ ", por las posibles reacciones individuales adversas, inmediatas o tardías, producidas por efecto del tratamiento, medicamento o procedimiento quirúrgico, mientras estos hayan sido aplicados correctamente."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="477" width="471" height="40" uuid="72d9a0a3-8340-424d-88e2-a70288d13522"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["6. En caso de cronicidad o incurabilidad de mi mascota, de común acuerdo autorizo a los profesionales de la " +$P{nombre}+ " para aplicarle la eutanasia y disponer del cadáver."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="517" width="471" height="44" uuid="cd58046c-8e3d-4067-be93-ff46081162ae"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["7. Autorizo a la " +$P{nombre}+ ", de manera expresa para que a través de su personal acceda a la información consignada en la historia clínica para la realización de trámites internos y externos que sean necesarios, debiendo guardar la reserva necesaria."]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="557">
+			<staticText>
+				<reportElement x="36" y="425" width="487" height="111" uuid="011b32cb-ffc0-47cb-a85e-5c70104b2a03"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Firma propietario o responsable: _________________________________________
+Cédula de ciudadanía: ___________________________
+Dirección: ________________________
+Teléfono: ___________________ Celular: _____________
+
+
+Firma médico veterinario: _________________________________TP: ______________
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="52" y="24" width="471" height="56" uuid="bc68c8fd-aa5b-4028-959d-247d995d5a20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["9. Asumo la responsabilidad de aquellos eventos en que por mi negligencia o por motivos ajenos a la " +$P{nombre}+ ", el procedimiento quirúrgico realizado al animal   sufra alguna complicación o se pierda dicho procedimiento. Sera de mi cargo los gastos que estos me genere."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="343" width="471" height="66" uuid="0c4850ab-8330-4856-be87-0ac0d8b70ecd"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Mi consentimiento es voluntario, libre de toda presión de terceros, médicos veterinarios y demás personal de la "+$P{nombre}+". Declaro que acepto las condiciones del presente documento y exonero de toda responsabilidad civil, contractual, extracontractual a la "+$P{nombre}+" en virtud del servicio que prestan al animal."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="80" width="471" height="71" uuid="b30b0749-21aa-47fd-a25e-1e9ab7fa1cb3"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["10. LA " + $P{nombre} + " no se responsabiliza de la perdida de animales como consecuencia de fuerza mayor, ni que aquellos que permanezcan en las instalaciones 2 días después de haber sido notificada al propietario la salida. Se cobrara tarifa de hospitalización hasta el segundo día, a partir del día 3, LA " +$P{nombre}+ " podrá disponer del animal, sin perjuicio del cobro de los servicios restados."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="151" width="471" height="71" uuid="448cc882-d327-433e-8e8f-f788ea973000"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["11. Acepto pagar en su totalidad, el valor del servicio prestado a mi animal por parte de la " +$P{nombre}+ ", inmediatamente sea dado de alta. No obstante, en caso de hospitalización realizarse los abonos que determine la "+$P{nombre}+", los cuales serán acreditados al monto final de la cuenta y así, quedar a paz y salvo por todo concepto con la " +$P{nombre} +"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="222" width="471" height="43" uuid="2f9bfd16-d016-4c3c-8cd9-b44d62caa777"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["12. He sido debidamente informado con las siguientes disposiciones que rigen el funcionamiento de la "+$P{nombre}+", las cuales acepto y asumo la responsabilidad de que ellas se deriva:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="265" width="471" height="29" uuid="b6645892-c259-4874-84d2-fae1942c6340"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["12.1  LA " +$P{nombre}+ ", no se hace responsable de los animales que por su naturaleza no pueda manejarse sin la presencia del dueño."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="52" y="294" width="471" height="46" uuid="2c09cd0d-2291-4834-a037-5477991fdd98"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["12.2  LA "+$P{nombre}+", no se hace responsable de los daños a terceros que pueda causar el animal mientras permanezca en las instalaciones de la clínica, en presencia o no de su responsable o propietario."]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="240" pageHeight="7200" columnWidth="240" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="27c1f45b-171b-4798-b22f-5266cb08f0e0">
+	<property name="ireport.zoom" value="1.6528925619834718"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="factura" class="java.lang.String"/>
+	<parameter name="numFactura" class="java.lang.String"/>
+	<parameter name="observaciones" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="legal" class="java.lang.String"/>
+	<parameter name="pie" class="java.lang.String"/>
+	<parameter name="mesa" class="java.lang.String"/>
+	<parameter name="domicilio" class="java.lang.String"/>
+	<parameter name="sql" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="hora" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[Select * from productosEntradas $P!{sql}]]>
+	</queryString>
+	<field name="Id" class="java.lang.Integer"/>
+	<field name="congelada" class="java.lang.String"/>
+	<field name="factura" class="java.lang.String"/>
+	<field name="pedido" class="java.lang.String"/>
+	<field name="cod" class="java.lang.String"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="opciones" class="java.lang.String"/>
+	<field name="ingredientes" class="java.lang.String"/>
+	<field name="aderezos" class="java.lang.String"/>
+	<field name="cant" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="consecutivo" class="java.lang.String"/>
+	<field name="Grupo" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="32">
+			<staticText>
+				<reportElement x="0" y="11" width="240" height="20" uuid="65d27ad0-730e-4cfe-8c20-4775a2711acf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTRADAS]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="13" y="31" width="212" height="1" uuid="4dc6c6f2-d469-4155-b47c-e226062fa0a5"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="#,##0">
+				<reportElement x="170" y="0" width="46" height="14" uuid="16ac1c22-c803-452b-b7eb-1cac1d3c3972"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cant}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="20" y="0" width="145" height="14" uuid="5eceab7e-d6a1-4be5-8c6d-b4117bd579d1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+</jasperReport>

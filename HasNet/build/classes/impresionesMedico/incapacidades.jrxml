@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="554" pageHeight="802" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ffd9bfaa-5f78-4cee-b060-2893d7cdfc83">
+	<property name="ireport.zoom" value="1.2100000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from Incapacidad  where consulta=$P{numero}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="consulta" class="java.lang.String"/>
+	<field name="fechainicio" class="java.lang.String"/>
+	<field name="fechavencimiento" class="java.lang.String"/>
+	<field name="cup" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="dias" class="java.math.BigDecimal"/>
+	<field name="cie" class="java.lang.String"/>
+	<field name="cupDesc" class="java.lang.String"/>
+	<field name="cieDesc" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="543" height="14" backcolor="#CCCCCC" uuid="8027a515-cf53-4c14-b338-98917546611d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[INCAPACIDADES]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="44" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="3" width="62" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="81002a3f-9e85-487f-953c-fc20253436db"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Inicio:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="62" y="3" width="107" height="11" uuid="8ad97f5b-f484-433f-a9d2-0ef9047110f6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechainicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="183" y="3" width="91" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="3b5e1985-7367-4875-a5ed-d77a3042bf6c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de vencimiento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="274" y="3" width="87" height="11" uuid="97dc4f2e-cf0b-49bf-b225-26794d2ea270"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechavencimiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="396" y="3" width="24" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="865a9208-6cf8-402a-8e1d-4b316b97356f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dias:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="420" y="3" width="91" height="11" uuid="2b0f55f2-0bf4-46e4-a329-c6adb4c25fc1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dias}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="14" width="62" height="30" forecolor="#000000" backcolor="#CCCCCC" uuid="aa4a15b8-27fd-4368-b8aa-79690f747729"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripcion:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="62" y="14" width="449" height="30" uuid="2ac9d6b8-ef5f-44ce-92ec-5f3924386283"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

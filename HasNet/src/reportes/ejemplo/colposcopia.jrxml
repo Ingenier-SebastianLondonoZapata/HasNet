@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="1507"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="nombre" class="java.lang.String"/>
+	<parameter name="estado" class="java.lang.String"/>
+	<parameter name="tipo" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="edad" class="java.lang.String"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="urlImagen2" class="java.io.InputStream"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="firma" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from bdColposcopia where Id=$P{numero}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="historia" class="java.lang.String"/>
+	<field name="indicacion" class="java.lang.String"/>
+	<field name="colposcopia" class="java.lang.String"/>
+	<field name="causa" class="java.lang.String"/>
+	<field name="visibilidad" class="java.lang.String"/>
+	<field name="transformacion" class="java.lang.String"/>
+	<field name="original" class="java.lang.String"/>
+	<field name="columnar" class="java.lang.String"/>
+	<field name="metaplastico" class="java.lang.String"/>
+	<field name="embarazo" class="java.lang.String"/>
+	<field name="ubicacion" class="java.lang.String"/>
+	<field name="tamanhio" class="java.lang.String"/>
+	<field name="menor1" class="java.lang.String"/>
+	<field name="menor2" class="java.lang.String"/>
+	<field name="menor3" class="java.lang.String"/>
+	<field name="menor4" class="java.lang.String"/>
+	<field name="mayor1" class="java.lang.String"/>
+	<field name="mayor2" class="java.lang.String"/>
+	<field name="mayor3" class="java.lang.String"/>
+	<field name="mayor4" class="java.lang.String"/>
+	<field name="noespecifico" class="java.lang.String"/>
+	<field name="test" class="java.lang.String"/>
+	<field name="vasos" class="java.lang.String"/>
+	<field name="adicionales1" class="java.lang.String"/>
+	<field name="adicionales2" class="java.lang.String"/>
+	<field name="adicionales3" class="java.lang.String"/>
+	<field name="adicionales4" class="java.lang.String"/>
+	<field name="hallazgos" class="java.lang.String"/>
+	<field name="diagnostico" class="java.lang.String"/>
+	<field name="comentario" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="206" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="24" y="174" width="143" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ HISTORIA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="24" y="155" width="143" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ FECHA EXAMEN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="295" y="174" width="140" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ COLPO NO :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="441" y="174" width="104" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Id}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="170" y="174" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{historia}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="170" y="156" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="24" y="98" width="143" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ NO. IDENTIFICACION:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="24" y="117" width="143" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ NOMBRES Y APELLIDOS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="24" y="136" width="143" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ ESTADO CIVIL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="295" y="98" width="140" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ TIPO DE DOCUMENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="295" y="136" width="140" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ FECHA DE NACIMIENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="295" y="155" width="140" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ EDAD:]]></text>
+			</staticText>
+			<image>
+				<reportElement mode="Transparent" x="23" y="6" width="149" height="73"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement mode="Transparent" x="185" y="6" width="283" height="75"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Calibri" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{info}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="170" y="98" width="115" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="170" y="117" width="265" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="170" y="136" width="115" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{estado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="441" y="136" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="441" y="98" width="101" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{tipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="442" y="156" width="99" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{edad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="536" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="249" width="555" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[I - EVALUACION GENERAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="299" y="307" width="112" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO ZONA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="287" y="276" width="46" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAUSA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="322" width="127" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESCAMOCOLUMNAR :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="368" y="376" width="100" height="0" backcolor="#008199"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1421845]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="276" width="90" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COLPOSCOPIA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="307" width="127" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VISIBILIDAD DE UNION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="17" width="74" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ INDICACION:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="95" y="17" width="207" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{indicacion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="340" y="278" width="204" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{causa}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="143" y="307" width="126" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{visibilidad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="379" width="131" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APITELIO ESCAMOSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="299" y="323" width="112" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TRANSFORMACION:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="393" width="131" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ORIGINAL :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="299" y="422" width="112" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DECIDUOSIS EN EL ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="299" y="394" width="131" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[METAPLASICO :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="412" y="307" width="132" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{transformacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="349" width="555" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[II - HALLAZGOS COLPOSCOPICOS NORMALES]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="147" y="379" width="122" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{original}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="299" y="379" width="131" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APITELIO ESCAMOSO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="430" y="379" width="114" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metaplastico}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="422" width="131" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APITELIO COLUMNAR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="299" y="437" width="112" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMBARAZO :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="147" y="422" width="122" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{columnar}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="412" y="422" width="132" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{embarazo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="6" y="275" width="10" height="16" forecolor="#FFFFFF" backcolor="#008199"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="6" y="306" width="10" height="31" forecolor="#FFFFFF" backcolor="#008199"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="287" y="379" width="10" height="30" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="287" y="307" width="10" height="31" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="6" y="421" width="10" height="15" forecolor="#FFFFFF" backcolor="#008199"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="287" y="422" width="10" height="31" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="6" y="378" width="10" height="30" forecolor="#FFFFFF" backcolor="#008199"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="17" y="489" width="142" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRINCIPIOS GENERALES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="17" y="505" width="142" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UBICACION DE LESION:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="462" width="555" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[III - HALLAZGOS COLPOSCOPICOS ANORMALES]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="160" y="489" width="110" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ubicacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="300" y="489" width="142" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRINCIPIOS GENERALES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="300" y="505" width="142" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TAMAÑO DE LESION:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="442" y="489" width="103" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tamanhio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="7" y="489" width="10" height="32" forecolor="#008199" backcolor="#008199"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="288" y="489" width="10" height="32" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="106" y="276" width="163" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{colposcopia}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement mode="Transparent" x="11" y="38" width="530" height="200"/>
+			</image>
+		</band>
+		<band height="598">
+			<rectangle>
+				<reportElement mode="Transparent" x="7" y="455" width="534" height="133"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="6" y="379" width="10" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="183" width="555" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IV - SOSPECHA DE INVASION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="17" y="208" width="60" height="32" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VASOS ATIPICOS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="379" width="127" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HALLAZGOS VARIOS:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="299" y="208" width="242" height="133" forecolor="#008199"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="307" y="255" width="84" height="42" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SIGNOS ADICIONALES:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="77" y="208" width="192" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{vasos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="391" y="220" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{adicionales1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="391" y="249" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{adicionales2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="391" y="278" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{adicionales3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="391" y="310" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{adicionales4}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="355" width="555" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[V - HALLAZGOS VARIOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="6" y="208" width="10" height="32" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="289" y="208" width="10" height="133" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="143" y="379" width="398" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{hallazgos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="193" y="407" width="348" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{diagnostico}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="7" y="438" width="89" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ COMENTARIO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="11" y="460" width="526" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{comentario}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="300" y="15" width="242" height="129" forecolor="#008199" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="308" y="50" width="63" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRADO - 2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="308" y="66" width="63" height="36" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAMBIOS MAYORES]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="101" y="25" width="161" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{menor1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="101" y="55" width="161" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{menor2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="101" y="84" width="161" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{menor3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="101" y="113" width="161" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{menor4}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="376" y="25" width="157" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mayor1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="376" y="54" width="157" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mayor2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="376" y="83" width="157" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mayor3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="376" y="113" width="157" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mayor4}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="290" y="154" width="10" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="300" y="154" width="109" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEST DE SCHILLER:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="290" y="15" width="10" height="129" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="109" y="154" width="161" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{noespecifico}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="409" y="154" width="133" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{test}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="17" y="15" width="253" height="129" forecolor="#008199" backcolor="#FFFFFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="25" y="61" width="63" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRADO - 1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="25" y="77" width="63" height="36" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAMBIOS MENORES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="7" y="15" width="10" height="129" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="18" y="154" width="90" height="16" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NO ESPECIFICO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="7" y="154" width="10" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="6" y="407" width="183" height="16" forecolor="#008199" backcolor="#FFFFFF"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ DIAGNOSTICO COLPOSCOPICO:]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="80">
+			<line>
+				<reportElement x="12" y="53" width="200" height="1"/>
+			</line>
+			<image>
+				<reportElement x="12" y="4" width="200" height="46"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{firma}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="10" y="58" width="202" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{usuario}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

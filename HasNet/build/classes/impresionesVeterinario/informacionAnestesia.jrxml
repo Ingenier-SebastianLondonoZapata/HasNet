@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Contrato Administración" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="80" bottomMargin="85" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="465f1276-d9df-444c-85b1-d3371a942be7">
+	<property name="ireport.zoom" value="0.2967670033502035"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="dataset1" uuid="65b939cb-7e31-4da3-a064-c21a0ed5e00c"/>
+	<parameter name="nombre" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="25">
+			<staticText>
+				<reportElement x="-1" y="0" width="496" height="20" uuid="0c41db5c-9aae-4834-b8d3-43ca2effb531"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HOJA DE INFORMACIÓN SOBRE LA ANESTESIA]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="652">
+			<staticText>
+				<reportElement x="0" y="0" width="230" height="652" uuid="01851070-e74d-45d1-a9e9-3d8708cee2e2"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Este documento está destinado a informarles de la anestesia, de sus ventajas y de sus riesgos. Rogamos que lo lean atentamente, para dar su consentimiento firmado y proceder a la anestesia que les será realizada. Podrán a su vez exponer cualquier duda sobre este procedimiento al clínico que les atienda.
+
+<b>¿Porque debe ser anestesiado su animal?</b> Además de las intervenciones quirúrgicas, hay una serie de procedimientos en medicina veterinaria que necesitan una tranquilización o una anestesia general: es necesario en procedimientos en los que se necesita una inmovilidad del mismo durante un tiempo determinado, también en procedimientos que no serían tolerados por el animal si estuviese despierto o intranquilo.
+
+<b>¿Cómo nos encargaremos de que no sufra dolor?</b> Se emplean diversos medios para evitar cualquier sufrimiento de su animal: La administración de medicamentos analgésicos es en la mayoría de los casos suficiente, pero en ciertos procedimientos indicados por su veterinario, se combina con anestesia general realizada antes de la intervención quirúrgica para asegurar un confort óptimo.
+
+<b>Antes de la anestesia.</b> Es importante que su perro o gato este en ayunas, en caso de vómitos durante la anestesia corre el riesgo de bronco aspirarse que puede llegar a ser mortal. En la practica el acceso a la comida debe impedirse al menos 8 a 12 horas (dependiendo el caso) antes de la anestesia salvo en casos particulares que deben precisarse.
+
+<b>Consulta Preanestésica.</b> Toda anestesia o tranquilización que no sea de urgencia necesita una exploración previa durante la cual ustedes puedan realizar todo tipo de preguntas que les puedan surgir. La elección del tipo de anestesia se determinará en función del tipo de cirugía, el estado de salud y el resultado de los exámenes complementarios. La elección final del protocolo anestésico es responsabilidad del Veterinario que practicará la anestesia. Esta consulta previa podrá realizarse en el momento del ingreso del paciente o antes del procedimiento.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="0" width="235" height="652" uuid="b0726384-541f-480e-ae36-ce1bb2239f19"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Exámenes complementarios: Prequirúrgico.</b> Para la seguridad de su animal se realizaran un determinado número de exámenes complementarios que son de carácter obligatorio.
+<b>Desarrollo de la Anestesia.</b> La anestesia general conlleva las siguietnes etapas: La primera consiste en la administración de un medicamento para tranquilizar y disminuir la ansiedad, acto seguido se le induce la anestesia general propiamente dicha para poder llevar a cabo el acto quirúrgico. Si al despertar, el estado de su animal es satisfactorio se le conduce hacia la sala de hospitalización donde se le vigila hasta la completa recuperación y recogida por parte de sus dueños.
+<b>Posibles riesgos de la anestesia.</b> Todo acto médico, incluso conducido con competencia y respetando los conocimientos científicos actuales conlleva un riesgo. Este riesgo depende tanto del estado de salud del animal como del proceso médico y/o quirúrgico por el que se produce el acto anestésico. Este riesgo se clasifica en una escala del 1 (leve) al 5 (riesgo muy elevado). Algunos animales especialmente nerviosos o agresivos presentan un riesgo mayor ante la anestesia general y/o tranquilización de ciertas razas puede aumentar el riesgo anestésico. Durante la anestesia general y/o tranquilización así como durante una anestesia general, las complicaciones imprevisibles puedan poner en riesgo la vida del animal, por ejemplo: un paro cardiaco o una alergia grave a cualquier fármaco o excipiente pueden surgir excepcionalmente sin que exista negligencia por parte de los clínicos. La existencia de estos riesgos debe ser entendida y aceptada por ustedes.
+<b>Posquirúrgico.</b> Después de la cirugía su animal puede presentar zonas rasuradas, generalmente en las extremidades. Esto lo realizamos para permitir la visualización y el acceso limpio a las venas por las cuales se inyectara el fármaco anestésico o una región más amplia en otras zonas en las cuales se inyectan anestésicos locales. Un tubo se introduce generalmente en la tráquea para facilitar la respiración y administracion de los vapores anestésicos. Esto puede dar lugar a una tos temporal algunos días después de la anestesia.
+Si su animal vuelve a casa el mismo día de la intervención es recomendable mantenerle en un sitio en reposo, en silencio y en una zona templada. Por regla general el paciente puede comenzar a ingerir líquidos (agua) y comida en pequeñas cantidades, que se suspenderán en caso de cualquier anomalía.]]></text>
+			</staticText>
+		</band>
+		<band height="507">
+			<staticText>
+				<reportElement x="0" y="5" width="495" height="16" uuid="4b6676b6-0b60-4816-ba9d-825874dfa963"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Observaciones]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="189" width="147" height="14" uuid="8320fb62-2429-4d96-81dd-9e3558dd3ab2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[Firma propietario o responsable]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="36" width="495" height="1" uuid="440d1692-361a-4695-ba22-1f19dafd579b"/>
+			</line>
+			<line>
+				<reportElement x="0" y="53" width="495" height="1" uuid="60a8f948-d7a3-4f41-9c87-22351a9b6ec3"/>
+			</line>
+			<line>
+				<reportElement x="0" y="70" width="495" height="1" uuid="2ec39afe-72cd-4993-a67a-044bf072c94b"/>
+			</line>
+			<line>
+				<reportElement x="0" y="88" width="495" height="1" uuid="044b62c9-825a-4988-99f9-dcfc396ae770"/>
+			</line>
+			<line>
+				<reportElement x="0" y="105" width="495" height="1" uuid="e5d2bcc6-ef44-4089-8274-8e7dae207557"/>
+			</line>
+			<line>
+				<reportElement x="0" y="122" width="495" height="1" uuid="3bf61264-3884-4bde-9c44-8fd0431ffb78"/>
+			</line>
+			<line>
+				<reportElement x="0" y="139" width="495" height="1" uuid="8e89eae1-460b-4431-9f1f-a644fa3d9eec"/>
+			</line>
+			<line>
+				<reportElement x="0" y="155" width="495" height="1" uuid="d0ec368e-e99c-4592-8b6a-8961134ecba8"/>
+			</line>
+			<line>
+				<reportElement x="0" y="251" width="146" height="1" uuid="9fc65928-10c3-4101-a912-ce0981835fef"/>
+			</line>
+			<staticText>
+				<reportElement x="-1" y="252" width="127" height="14" uuid="5cf56a2c-d1e7-4e00-a715-3ce47818b3c6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[CC: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="252" width="20" height="14" uuid="2107d57a-b93b-4d62-8c81-7e56430d11a2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[de]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

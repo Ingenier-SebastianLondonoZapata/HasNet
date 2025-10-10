@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="b2e0292f-ee2e-4259-b22a-b4be6675b11f">
+	<property name="ireport.zoom" value="2.0000000000000084"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="legal" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="factura" class="java.lang.String"/>
+	<parameter name="numOrden" class="java.lang.String"/>
+	<parameter name="tipoFact" class="java.lang.String"/>
+	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="numFactura" class="java.lang.String"/>
+	<parameter name="ruta" class="java.lang.String"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="simbolo" class="java.lang.String"/>
+	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from repBancos $P!{cliente} 
+ORDER BY fecha ASC;]]>
+	</queryString>
+	<field name="Id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cuenta" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numero" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="saldoActual" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="valorMovimiento" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="saldoFinal" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nota" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="usuario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tipo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="hora" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombreDoc" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="img" class="java.io.InputStream">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="34" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="555" height="23" uuid="8009f023-a567-4d6e-8b17-b144075c10dd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE ARCHIVOS ADJUNTOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="171" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="237" y="3" width="300" height="165" isRemoveLineWhenBlank="true" uuid="be692d03-8c97-4b73-8855-dbd5b64eb0f7"/>
+				<imageExpression><![CDATA[new File($P{ruta} , $F{nombreDoc})]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="237" y="168" width="300" height="1" uuid="8bade8f6-fbea-4892-a0c5-2303f8cdfa4f"/>
+			</line>
+			<line>
+				<reportElement x="237" y="2" width="300" height="1" uuid="eb6cf088-35d8-48b3-bb6b-5c4a666afddb"/>
+			</line>
+			<line>
+				<reportElement x="537" y="2" width="1" height="167" uuid="5448cdfa-0a5a-4ff2-bb72-6764c5a8258f"/>
+			</line>
+			<line>
+				<reportElement x="236" y="2" width="1" height="167" uuid="8b43ccd8-6c25-4cc6-aa37-a98286323f91"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="4" y="3" width="226" height="20" uuid="27a14d11-61b6-4f06-bbaf-a173b2a4fbe5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="101" y="27" width="97" height="14" uuid="3dbe63f0-ff81-4a24-b7f7-3d9b6c0d3f34"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="27" width="84" height="14" backcolor="#CCCCCC" uuid="66da1b2a-8425-4a7b-a56b-4fce17b24a89"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[# CUENTA:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="101" y="72" width="97" height="14" uuid="8d48392b-195c-4517-90a6-559c327fc05c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{valorMovimiento})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="41" width="84" height="14" backcolor="#CCCCCC" uuid="00e354ed-7f9b-4997-b7d6-cd58494e22cf"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA Y HORA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="4" y="106" width="226" height="14" backcolor="#CCCCCC" uuid="ca8ade75-2e5a-42d5-9f38-58dc561835e1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="101" y="86" width="97" height="14" uuid="cc98ac13-5e33-4e96-a4d3-bca27a9f0abd"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{saldoFinal})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="101" y="58" width="97" height="14" uuid="260737b2-870a-4eaf-9701-563f2ba6d7e4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{saldoActual})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="58" width="84" height="14" backcolor="#CCCCCC" uuid="7ceaf088-18ff-4ca6-ae51-e83b27a1ea10"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO INICIAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="72" width="84" height="14" backcolor="#CCCCCC" uuid="34bbafe5-67fe-400e-832e-b3ab8cef8904"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOVIMIENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="86" width="84" height="14" backcolor="#CCCCCC" uuid="3a691b74-69eb-47b5-bcd1-814c3f198701"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO FINAL:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="101" y="41" width="63" height="14" uuid="000fc087-1a7e-4af5-9ff2-cf942417ce31"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="4" y="120" width="226" height="49" uuid="fa1ecfd1-1eee-46bb-a2f3-8e00f1947a5c"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nota}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h.mm a" isBlankWhenNull="true">
+				<reportElement x="165" y="41" width="42" height="14" uuid="b22d85d5-bac6-455d-8c0e-a599e50c2087"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="237" y="3" width="300" height="165" isRemoveLineWhenBlank="true" uuid="b8680868-acec-40e5-961c-907a39ce658c">
+					<printWhenExpression><![CDATA[$F{nombreDoc}.length() > 0]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[new File($P{ruta} , "noPhoto.jpg")]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="6" width="555" height="14" uuid="54bf6d7a-5736-42a7-a52c-1c909ce1a02f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

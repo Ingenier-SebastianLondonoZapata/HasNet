@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="530" pageHeight="792" columnWidth="530" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f4bd3d56-8cf3-4227-acfe-e2b82df14835">
+	<property name="ireport.zoom" value="1.100000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from repVacunasTotales where codigo=$P{cliente} order by vacuna ASC, fecha ASC]]>
+	</queryString>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="campo" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="vacuna" class="java.lang.String"/>
+	<field name="fechaVacuna" class="java.sql.Timestamp"/>
+	<field name="marca" class="java.lang.String"/>
+	<field name="lote" class="java.lang.String"/>
+	<field name="proxima" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="37" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="19" width="109" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="252c0971-b835-45ef-80e2-665fe883b0af"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Vacuna]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="110" y="19" width="108" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="5040626a-b044-4811-99f2-247b8d13ef87"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fecha vacunación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="528" height="18" backcolor="#CCCCCC" uuid="df46bda9-01a1-47ab-a73c-b3d0e1c99fff"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VACUNACIÓN Y DESPARACITACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="218" y="19" width="109" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="c0ff766b-4ff5-4857-bc1d-3ba161ef3cb7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Lote]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="327" y="19" width="108" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="cd6ebd3d-54bb-4ac3-b392-426ff1f90cdc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Marca]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="435" y="19" width="94" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="6ea7072f-fc74-4d23-b649-bdd216f83df9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Proxima vacuna]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="530" height="1" uuid="7e5d163d-5030-4219-9670-adbb3105119b"/>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="36" uuid="af782982-e70a-4b50-84b1-520cef991511"/>
+			</line>
+			<line>
+				<reportElement x="529" y="1" width="1" height="36" uuid="11c4c31d-9df8-42d3-b70d-1b07382d2e1e"/>
+			</line>
+			<line>
+				<reportElement x="0" y="36" width="530" height="1" uuid="edeecf0b-9625-46e4-a824-f7dcdb4bc523"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="1" y="0" width="110" height="17" uuid="3fddda08-2bbb-4990-ab19-8379d28d0485"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vacuna}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="111" y="0" width="108" height="17" uuid="742adc9e-1ec5-4d84-aab5-624deb5d24bf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaVacuna}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="219" y="0" width="109" height="17" uuid="acf594a0-e9ca-41c7-8d36-13b13529b98b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lote}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="328" y="0" width="108" height="17" uuid="638ebda9-8d0e-4a6f-ace4-e909362368e0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="436" y="0" width="93" height="17" uuid="9c79022c-3b3b-4b99-9ca3-cc63c38562f8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{proxima}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="1" height="17" uuid="bdb48eb5-7e41-4ff5-8300-716831306fc5"/>
+			</line>
+			<line>
+				<reportElement x="529" y="0" width="1" height="17" uuid="847d1d10-2bec-4821-aa59-d876ae535e30"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="1">
+			<line>
+				<reportElement x="0" y="0" width="530" height="1" uuid="33dea1af-fa2d-4db7-b914-9fb3a4bcb93c"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

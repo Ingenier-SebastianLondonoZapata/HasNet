@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="545" leftMargin="25" rightMargin="25" topMargin="20" bottomMargin="20" uuid="52413e94-94ff-487f-8712-e5b0c4a6b6dc">
+	<property name="ireport.zoom" value="1.3310000000000035"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="87"/>
+	<parameter name="edad" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[select * from conCertificadoMedicoEstudiante where Id = $P{id}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tipo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IdTer" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="telefono" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="direccion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ciudad" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nacimiento" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estado" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="hijos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="escolaridad" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="historia" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Responsable" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dirigido" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="parentesco" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="motivo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="enfermedad" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Revision" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="inspeccion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="temp" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="peso" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estatura" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fc" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fr" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="pa" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cefalico" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="abdominal" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="imc" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cabeza" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ojos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="agudezaVisual" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="oidos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nariz" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="boca" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cuello" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cardioPulmonar" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="torax" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="abdomen" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="genitoUrinario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ano" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="extremidades" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="neurologico" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="pies" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="osteoMuscular" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="diagPrincipal" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="diagRelacionado" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="diagRelacionado2" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="diagRelacionado3" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tratamiento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recomendaciones" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cup" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="usuario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="patologicos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quirurgicos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="alergicos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="traumaticos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ginecoobstetricos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="familiares" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="social" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="edad" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="100" splitType="Stretch">
+			<textField>
+				<reportElement x="220" y="0" width="215" height="76" uuid="bb7ae6ed-9cdd-4644-9b12-7e80bd609ac9"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{info}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="72" y="0" width="115" height="76" uuid="b58b3073-ceb5-4275-b7a9-c7fe6d9e9d58"/>
+				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="80" width="545" height="20" backcolor="#CCCCCC" uuid="2f44cde3-5eae-4efb-aa5a-497c578704ca"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICADO MEDICO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="174" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="39" width="545" height="17" backcolor="#CCCCCC" uuid="8008141b-47fd-4bae-98e3-399300b89d04"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORMACIÓN PERSONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="200" y="56" width="49" height="17" backcolor="#FFFFFF" uuid="6bff55e4-d1fa-4469-aa0f-62bd54e4836e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="249" y="56" width="291" height="17" uuid="2ced1295-5774-4c53-930e-03dc5fdc0814"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="73" width="72" height="17" backcolor="#FFFFFF" uuid="253682f8-f018-47ce-bc3d-30c249fe92d1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F.Nacimiento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="200" y="73" width="49" height="17" backcolor="#FFFFFF" uuid="f90a11ff-41bf-448f-bea7-46eab421cde8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="372" y="73" width="63" height="17" backcolor="#FFFFFF" uuid="58333568-dbbb-436d-bd53-28c1bef438c7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Edad:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="90" width="72" height="17" backcolor="#FFFFFF" uuid="1b31e364-83c3-4483-bd7d-4e44146bff75"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="372" y="90" width="63" height="17" backcolor="#FFFFFF" uuid="f887a847-1d0f-46c7-bccd-43632fc47e69"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Telefono:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="107" width="72" height="17" backcolor="#FFFFFF" uuid="837c9119-19a7-4746-9b62-c3e668debd15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado Civil:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="200" y="107" width="49" height="17" backcolor="#FFFFFF" uuid="8239e5e2-79d7-4241-9d7e-2f8f5872187a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hijos:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="372" y="107" width="63" height="17" backcolor="#FFFFFF" uuid="69fd4a4b-17da-4752-a6e6-55635fb59c43"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Escolaridad:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="72" y="90" width="298" height="17" uuid="d6c35a25-025e-47f8-a236-a391e7932e67"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="249" y="73" width="121" height="17" uuid="6beec0d3-22a2-41b3-98d4-d983508c32fd"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ciudad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="436" y="90" width="105" height="17" uuid="6aeba13d-a870-4f86-8129-0450df5ba690"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="249" y="107" width="120" height="17" uuid="fcb3f9b3-04b2-4ac4-a59d-879829907ed0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hijos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="107" width="120" height="17" uuid="acaa2276-16d4-47ba-9fa1-7bdfc78d9bf5"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="436" y="73" width="105" height="17" uuid="5fae39dd-82ac-4914-bf73-01060e79b0ee"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{edad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="59" height="16" backcolor="#CCCCCC" uuid="39325611-55d0-4588-8c7d-d3eb45e0ded3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="72" y="56" width="120" height="17" uuid="3499ada2-3fea-4d39-ac8c-570287e9e70d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IdTer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="72" y="73" width="120" height="17" uuid="208861c2-cabe-4806-a1ba-c4730cc1d428"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nacimiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="133" width="540" height="20" backcolor="#CCCCCC" uuid="7cc3587b-c439-4b20-bf9f-4954fc473195"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ANTECEDENTES FAMILIARES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="153" width="539" height="21" uuid="eda22e10-4af0-4568-8099-8db4346f4820"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{familiares}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="17" width="59" height="17" backcolor="#CCCCCC" uuid="b204a1e1-378a-4e2a-869b-c0539ecbe586"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRIGIDO A:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="61" y="17" width="476" height="17" uuid="8abfd779-9ca0-49a2-b569-41833a6261e4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dirigido}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="61" y="1" width="100" height="16" uuid="d32e1d5d-5055-4dd5-acd1-4fc112239564"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="56" width="72" height="17" backcolor="#FFFFFF" uuid="01303350-7b59-42a1-8e18-72d26443b1cc"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="436" y="107" width="104" height="17" uuid="693e01de-68ba-40c8-8a3d-abc04b4bcfad"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{escolaridad}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="43">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="3" width="540" height="20" backcolor="#CCCCCC" uuid="c68fc83c-24f5-4342-80bf-80d0d36b9799"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ANTECEDENTES PERSONALES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="23" width="541" height="20" uuid="7eeecab7-8489-4d98-9825-9cfc05d5d639"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{social}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="218">
+			<staticText>
+				<reportElement mode="Opaque" x="282" y="99" width="58" height="17" backcolor="#FFFFFF" uuid="b462a7c4-ee92-4bed-b810-5b039ceb7fe7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OÍDOS:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="340" y="99" width="202" height="17" uuid="f88301ff-7ea5-4002-b9b7-bd04f7bc821f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="101" y="139" width="175" height="17" uuid="8a787af3-69a6-4be1-a2bf-40fd838a28ee"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cardioPulmonar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="282" y="117" width="58" height="17" backcolor="#FFFFFF" uuid="971f08d7-6ea2-46fa-80f3-5f0a6baa39f8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ABDOMEN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="340" y="117" width="202" height="17" uuid="3d8bf3c6-aa44-48cf-9ff8-6896bec337dc"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{abdomen}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="99" width="53" height="17" backcolor="#FFFFFF" uuid="6d5f350f-974e-4b81-9d30-04e879034b77"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BOCA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="156" width="101" height="17" backcolor="#FFFFFF" uuid="d84b3948-a7e2-42e0-9aeb-4dfe3461c8fa"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GENITALES:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="101" y="156" width="175" height="17" uuid="c644fc0d-3fd9-4ace-b4a2-386e127c4de2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{genitoUrinario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="282" y="139" width="87" height="17" backcolor="#FFFFFF" uuid="289719e0-c7f6-4773-b82d-28296a0d54fd"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EXTREMIDADES:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="370" y="139" width="172" height="17" uuid="96f11bc9-c82a-4da8-8db2-91a9435d12fa"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{extremidades}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="117" width="53" height="17" backcolor="#FFFFFF" uuid="56e9c80d-33fa-4917-b844-60779921e6ab"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIEL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="53" y="117" width="223" height="17" uuid="9a3234d4-7ccb-4d17-8ffc-04f33bf9693a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pies}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="53" y="99" width="223" height="17" uuid="8001bacd-6f29-4a06-a039-d25aac91a3ac"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{boca}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="4" width="541" height="20" backcolor="#CCCCCC" uuid="67ea9fd5-2280-46c1-89f1-c01423cd51e7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EXAMEN FISICO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="46" width="117" height="17" backcolor="#FFFFFF" uuid="b2dc2f4e-9c59-4fc6-8849-72f02babe6ca"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO NUTRICIONAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="379" y="24" width="33" height="17" backcolor="#FFFFFF" uuid="ba821070-6595-41a9-b4b8-809ead458684"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="24" width="39" height="17" backcolor="#FFFFFF" uuid="100c1170-610a-41d0-9e28-a79d4c827072"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PESO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="140" y="24" width="50" height="17" backcolor="#FFFFFF" uuid="07e96809-bc22-4dc6-88c7-9090d2ae9374"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TALLA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="63" width="117" height="17" backcolor="#FFFFFF" uuid="eef09200-0f2d-43a1-826a-ef0386eff3a9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AGUDEZA VISUAL OD:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="282" y="82" width="58" height="17" backcolor="#FFFFFF" uuid="684ef7f7-17a3-4d69-84ae-3d5c79bf3cbb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NARIZ:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="412" y="24" width="61" height="17" uuid="e5e67893-34aa-47e5-94f6-df4f140f5d98"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="118" y="46" width="421" height="17" uuid="c2a739ff-d7f6-4761-8d09-b669856a109a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="63" width="149" height="17" uuid="d0b2b5c0-89fa-412d-8b2e-84bb630c7bac"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="39" y="24" width="78" height="17" uuid="a0a4bef2-b95e-4ab6-8b01-e344a81e1102"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{peso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="190" y="24" width="50" height="17" uuid="c6e245ac-05e2-4a1e-a3c2-f7e5df47a964"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estatura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="53" y="82" width="223" height="17" uuid="d4fd42c7-044f-43db-b3bd-2bbe17dca125"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ojos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="118" y="63" width="158" height="17" uuid="da113a52-990d-4a7e-b528-9b595f828841"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{agudezaVisual}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="340" y="82" width="202" height="17" uuid="1fe74429-5bea-4d76-b5fb-d1a3fcb37da3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nariz}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="257" y="24" width="32" height="17" backcolor="#FFFFFF" uuid="599f7942-a75c-4ace-bde1-3a6e4c3c5631"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMC:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="289" y="24" width="73" height="17" uuid="bd7aa68f-b570-4318-994a-45834362d8bc"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{imc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="281" y="63" width="109" height="17" backcolor="#FFFFFF" uuid="533ca477-9d2e-4cc1-b9e3-bc221e4ef873"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AGUDEZA VISUAL OI:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="82" width="53" height="17" backcolor="#FFFFFF" uuid="585e1601-60ff-46ee-b2e0-69b4bfa00621"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OJOS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="139" width="101" height="17" backcolor="#FFFFFF" uuid="1d42018f-4395-434b-9319-0999d705cc2b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARDIOPULMONAR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="178" width="540" height="20" backcolor="#CCCCCC" uuid="10c21365-c505-44aa-8cc4-2f5c264e138a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HALLAZGOS]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="198" width="540" height="20" uuid="b3592ef0-ad03-45f1-ac6c-cc5d34c43548"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diagPrincipal}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="44">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="5" width="541" height="20" backcolor="#CCCCCC" uuid="564ac7fe-5f0b-4b12-bbe7-3fe12b82f47f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECOMENDACIONES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="25" width="541" height="19" uuid="ad93c795-c9cf-4f28-bfd7-ed187135027e"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diagRelacionado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="325" y="43" width="178" height="20" uuid="ed2a1179-af9d-4da8-8417-3b7222d2433b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA PACIENTE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="57" y="42" width="178" height="1" uuid="f7da7442-5ef9-414d-b231-387923b6bd31"/>
+			</line>
+			<line>
+				<reportElement x="325" y="41" width="178" height="1" uuid="e34ca8c4-a267-454d-84c3-f7960b4d4eed"/>
+			</line>
+			<staticText>
+				<reportElement x="57" y="43" width="178" height="20" uuid="b04ee0e0-0a9e-4a8f-8c5a-830f74686b73"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA MEDICO]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

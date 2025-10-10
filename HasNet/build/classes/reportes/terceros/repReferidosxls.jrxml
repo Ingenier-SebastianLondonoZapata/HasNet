@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="1380" pageHeight="579" orientation="Landscape" columnWidth="1380" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="01d4d2b3-0575-4707-b670-ae9ad076a8ad">
+	<property name="ireport.zoom" value="0.5644739300537798"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="style1">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{redimido}.equals( "NO" )]]></conditionExpression>
+			<style mode="Transparent" forecolor="#990000" backcolor="#FFC7CE"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{redimido}.equals( "SI" )]]></conditionExpression>
+			<style forecolor="#006633" backcolor="#A1F39E"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="encabezado" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from referidosYTerceros $P!{cliente}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="celular" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="fCreación" class="java.sql.Timestamp"/>
+	<field name="tipo" class="java.lang.String"/>
+	<field name="ciudad" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="referido" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="nombreRef" class="java.lang.String"/>
+	<field name="telefonoRef" class="java.lang.String"/>
+	<field name="celularRef" class="java.lang.String"/>
+	<field name="direccionRef" class="java.lang.String"/>
+	<field name="fCreacionRef" class="java.sql.Timestamp"/>
+	<field name="emailRef" class="java.lang.String"/>
+	<field name="tipoRef" class="java.lang.String"/>
+	<field name="ciudadRef" class="java.lang.String"/>
+	<field name="departamentoRef" class="java.lang.String"/>
+	<field name="redimido" class="java.lang.String"/>
+	<group name="referidos">
+		<groupExpression><![CDATA[$F{referido}]]></groupExpression>
+		<groupHeader>
+			<band height="49">
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement x="1180" y="20" width="100" height="13" uuid="94f0d369-7b12-4b7c-885a-65b15d9889cd"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fCreacionRef}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="20" width="100" height="14" uuid="569e1530-8306-45eb-97b8-ec6a533dff99"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{referido}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="162" y="20" width="284" height="14" uuid="964c2565-ae16-4558-b6ef-873169651721"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombreRef}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="546" y="19" width="100" height="15" uuid="961342ee-75ed-412b-8754-60e6d710f969"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{celularRef}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="646" y="19" width="258" height="15" uuid="cefc5130-8747-415c-8596-a057a0b76659"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{direccionRef}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="100" y="20" width="62" height="14" uuid="84c2bfd7-dbca-4352-94c8-5665407add75"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tipoRef}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="446" y="20" width="100" height="14" uuid="4e80579d-9dcd-4c86-ba3a-4fe47c82b919"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{telefonoRef}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="904" y="20" width="100" height="14" uuid="9d337623-cb7b-4237-b66f-1755ccc2147e"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ciudadRef}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="1004" y="20" width="176" height="14" uuid="e6746fe2-3f94-4eaf-a3c2-3d7701cd2fad"/>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{emailRef}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="5c14eea9-7244-439d-ba86-d2a8f8efd9f7"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Documento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="100" y="0" width="62" height="20" backcolor="#CCCCCC" uuid="6fd180b0-990d-4122-83c2-146232fa4c54"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="162" y="0" width="284" height="20" backcolor="#CCCCCC" uuid="1793a148-2aa1-4c6a-b902-0c3f586b9439"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Razon social]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="446" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="c0fabf18-5804-4678-ad3f-e220e75eb221"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Telefono]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="546" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="45b9255f-6a6f-4302-b83a-e5ee1fc5e9a4"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Celular]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="646" y="0" width="258" height="20" backcolor="#CCCCCC" uuid="87a76376-b769-4115-ad24-ee2713538063"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Dirección]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="904" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="b291fd58-743a-4719-8511-f4c8f5561999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Ciudad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1004" y="0" width="176" height="20" backcolor="#CCCCCC" uuid="e3266df2-190d-4dd5-bf0c-6ff09a0512ce"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[E-mail]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1180" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="de0a432a-ec05-45f2-b42e-6d380f7be88a"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[F. Creación]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="34" width="100" height="15" uuid="16c68a33-f262-4bec-b861-b2e9a1152ee2"/>
+					<textElement verticalAlignment="Bottom">
+						<font fontName="Arial" size="11" isBold="true"/>
+					</textElement>
+					<text><![CDATA[REFERIDOS:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1280" y="0" width="100" height="20" backcolor="#CCCCCC" uuid="6105908a-b522-4b32-9eab-c140c708ca44"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11"/>
+					</textElement>
+					<text><![CDATA[Redimido]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="13"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="0" width="1379" height="27" uuid="8dbebb24-df65-4954-9740-170a36a32e0d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE CLIENTES REFERIDOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="13">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="100" height="13" uuid="d4e2ffc2-91a6-4f21-b1d0-ece027a2a968"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Id}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="446" y="0" width="100" height="13" uuid="f025ebee-e2c8-4262-9175-cb0f835b43b6"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="100" y="0" width="62" height="13" uuid="a7227987-5f3f-44b3-b550-57c405eab32f"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="546" y="0" width="100" height="13" uuid="087eea09-0a8c-4f33-991e-ac272b8d2bd6"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{celular}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="646" y="0" width="258" height="13" uuid="dc3f95b7-71d2-44bc-9b6a-f961b2f5afc9"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="904" y="0" width="100" height="13" uuid="cb6227ec-193d-4837-9ff6-c74c83053841"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ciudad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="1004" y="0" width="176" height="13" uuid="2d721411-6e75-4b8b-95c8-d92b1b1ad1af"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="162" y="0" width="284" height="13" uuid="5acf5812-ece4-41a7-afbe-6fc368329c2d"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="1180" y="0" width="100" height="13" uuid="ab9276e4-f9c1-43ed-9e51-5b983966ad69"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fCreación}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="style1" x="1280" y="0" width="100" height="13" uuid="1e7d186a-6c34-45e9-9edb-65652c2ea72d"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{redimido}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

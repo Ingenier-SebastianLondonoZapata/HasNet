@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="240" pageHeight="7200" columnWidth="240" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="110a8149-8b6b-4947-96a5-c144022fd4db">
+	<property name="ireport.zoom" value="1.0263162364614138"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="factura" class="java.lang.String"/>
+	<parameter name="numFactura" class="java.lang.String"/>
+	<parameter name="observaciones" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="legal" class="java.lang.String"/>
+	<parameter name="pie" class="java.lang.String"/>
+	<parameter name="mesa" class="java.lang.String"/>
+	<parameter name="domicilio" class="java.lang.String"/>
+	<parameter name="sql" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="hora" class="java.lang.String"/>
+	<parameter name="vendedor" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[Select * from bdComanda $P!{sql}]]>
+	</queryString>
+	<field name="Id" class="java.lang.Integer"/>
+	<field name="lugar" class="java.lang.String"/>
+	<field name="congelada" class="java.lang.String"/>
+	<field name="factura" class="java.lang.String"/>
+	<field name="pedido" class="java.lang.String"/>
+	<field name="turno" class="java.lang.String"/>
+	<field name="consecutivo" class="java.lang.String"/>
+	<field name="cod" class="java.lang.String"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="opciones" class="java.lang.String"/>
+	<field name="ingredientes" class="java.lang.String"/>
+	<field name="adiciones" class="java.lang.String"/>
+	<field name="aderezos" class="java.lang.String"/>
+	<field name="cant" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="167" splitType="Stretch">
+			<staticText>
+				<reportElement x="21" y="101" width="59" height="13" uuid="6f35e3d2-5e6e-482e-a0ad-6565548a7c98">
+					<printWhenExpression><![CDATA[!$F{congelada}.equalsIgnoreCase("")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mesa No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="101" width="141" height="13" forecolor="#000000" uuid="d6c8904f-b1e2-49b2-a7a3-51b550550047">
+					<printWhenExpression><![CDATA[!$F{congelada}.equalsIgnoreCase("")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{mesa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="114" width="59" height="13" uuid="74aad601-1ed2-418e-aeb1-f1c9ce1e8bd2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="114" width="141" height="13" uuid="92c3d3e1-547c-437e-b209-7eb640af7866"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{hora}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="101" width="59" height="13" uuid="8a127c38-9132-41a6-946a-588d58f653aa">
+					<printWhenExpression><![CDATA[!$F{factura}.equalsIgnoreCase("")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Factura No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="101" width="141" height="13" uuid="9c351b86-9b28-422d-bd6b-05f75593d4e8">
+					<printWhenExpression><![CDATA[!$F{factura}.equalsIgnoreCase("")]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{factura}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true">
+				<reportElement mode="Opaque" x="58" y="6" width="128" height="64" backcolor="#FFFFFF" uuid="18db5866-6204-4566-82ee-72c8dac93fa3"/>
+				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="127" y="76" width="59" height="23" uuid="82a67fca-79c2-4611-8910-4b4910b09f86"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{turno}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="76" width="47" height="23" uuid="e1e981bb-97ba-4867-8d21-39d89c1b9503"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Turno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="21" y="101" width="59" height="13" uuid="9f8cc658-3578-46c4-9148-50d61045fa26">
+					<printWhenExpression><![CDATA[!$F{pedido}.equalsIgnoreCase("")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pedido No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="101" width="141" height="13" uuid="794e917d-4d0e-44eb-a1f9-a28b170ff512">
+					<printWhenExpression><![CDATA[!$F{pedido}.equalsIgnoreCase("")]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pedido}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="1" y="153" width="195" height="14" uuid="4ab36fec-a1cb-42a2-8d61-89769be16ae3"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="sql">
+					<subreportParameterExpression><![CDATA[$P{sql}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesFacturas/productosEntrada.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="21" y="127" width="59" height="13" uuid="3949087c-b75c-4f38-923d-7754988968d9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vendedor:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="127" width="141" height="13" uuid="e215b3d6-aa2d-463c-986b-94a1355cec57"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{vendedor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50">
+			<subreport>
+				<reportElement x="1" y="45" width="195" height="5" uuid="44231250-7d4c-45f5-a93a-531a9e7b5173"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="sql">
+					<subreportParameterExpression><![CDATA[$P{sql}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesFacturas/productosPreparacion.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="17" y="26" width="207" height="18" uuid="e323aabd-4da6-4656-943b-00abaff74f5d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRODUCTOS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="12" y="44" width="220" height="1" uuid="9e0e27f1-eadf-4123-b43c-15033add04f4"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="9">
+			<subreport>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="1" width="195" height="8" uuid="74ba6a61-4a39-41c4-8ebc-4891ff0ab923"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="sql">
+					<subreportParameterExpression><![CDATA[$P{sql}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesFacturas/productosSinPreparacion.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="169" splitType="Stretch">
+			<staticText>
+				<reportElement x="19" y="21" width="202" height="19" uuid="aa1d0492-c308-4720-9f50-96679a709433"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALIZADOS]]></text>
+			</staticText>
+			<subreport>
+				<reportElement stretchType="RelativeToTallestObject" x="1" y="44" width="195" height="14" uuid="2f903f19-4ed7-4eae-baa8-4f4fc84d55fc"/>
+				<subreportParameter name="SUBREPORT_DIR"/>
+				<subreportParameter name="sql">
+					<subreportParameterExpression><![CDATA[$P{sql}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesFacturas/productosAgrupados.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="11" y="66" width="218" height="1" uuid="36e75646-d59a-48f1-b466-c8b7f8057359"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="FixRelativeToBottom" x="14" y="86" width="212" height="33" uuid="f740b2af-a2c8-4056-9148-2529a1f93014"/>
+				<textElement>
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{observaciones}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="14" y="71" width="212" height="15" uuid="ab5b1cba-aec1-4e3b-b31c-bd2f3dcdc3c6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES]]></text>
+			</staticText>
+			<line>
+				<reportElement x="11" y="41" width="218" height="1" uuid="88a7fa40-4fe3-4962-8ac2-ee069efc01b6"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

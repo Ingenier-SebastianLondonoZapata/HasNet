@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="280" pageHeight="802" columnWidth="280" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8918426b-42ac-477c-9ce2-24389811b776">
+	<property name="ireport.zoom" value="1.464100000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from oServicio1 where num > 12 and num < 25 and idFactura =$P{numero}]]>
+	</queryString>
+	<field name="idFactura" class="java.lang.String"/>
+	<field name="ordenServicio" class="java.lang.String"/>
+	<field name="nombreParte" class="java.lang.String"/>
+	<field name="inventario" class="java.lang.Boolean"/>
+	<field name="problemasDerecha" class="java.lang.String"/>
+	<field name="problemasIzquierda" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="num" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="14">
+			<line>
+				<reportElement x="0" y="13" width="280" height="1" uuid="10ab6468-8546-451f-a384-9d7e04ef5cc2"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="65" y="0" width="107" height="13" backcolor="#CCCCCC" uuid="f127e76a-e2be-44a7-a51b-3c1e3430b9a4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[DERECHA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="-1" width="280" height="1" uuid="fdace358-30f2-4b42-a412-bdaa96c938a4"/>
+			</line>
+			<line>
+				<reportElement x="172" y="-1" width="1" height="15" uuid="468ba610-61da-4e9b-a07c-3979263f84c5"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="0" width="63" height="13" backcolor="#CCCCCC" uuid="cb71955d-9812-4399-80c4-3f110c943f8d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[PARTE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="-1" width="1" height="15" uuid="c5f90a64-5014-443d-9b87-2de0889391fd"/>
+			</line>
+			<line>
+				<reportElement x="279" y="-1" width="1" height="15" uuid="fd2ca0b3-1b44-4d18-bdef-1e0e2bc2a29a"/>
+			</line>
+			<line>
+				<reportElement x="64" y="-1" width="1" height="15" uuid="b59f93e4-34bc-47ff-af78-7218102fd67e"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="173" y="0" width="106" height="13" backcolor="#CCCCCC" uuid="930981cc-648f-4e9b-b2fa-dcc058ebc96b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[IZQUIERDA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="2" y="0" width="62" height="12" uuid="c36d2996-0132-40be-88cd-6f824af3c44f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreParte}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="11" uuid="c0ea174a-b027-4ac7-b0b2-f54babbb452e"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="65" y="0" width="107" height="12" uuid="d1fc3df7-d03d-4701-b809-aa8e529ddc34"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{problemasDerecha}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="64" y="0" width="1" height="12" uuid="09185ae4-f14b-4d6f-80b8-53084cc30a2a"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="172" y="0" width="1" height="12" uuid="a7446b92-0c77-48f3-9690-b602da415e18"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="173" y="0" width="106" height="12" uuid="cd44b44a-7386-4e77-8266-8fcca7248e04"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{problemasIzquierda}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="279" y="0" width="1" height="12" uuid="3e3537fb-a921-47e1-b9b1-bcf668623a2c"/>
+			</line>
+		</band>
+		<band height="1">
+			<line>
+				<reportElement x="0" y="0" width="280" height="1" uuid="a648a1be-9468-478a-9277-b669f09a87eb"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" columnCount="2" pageWidth="595" pageHeight="792" columnWidth="277" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="496530b4-03a9-44a7-affc-e7779782a126">
+	<property name="ireport.zoom" value="1.241842646118315"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="legal" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="ruta" class="java.lang.String"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="simbolo" class="java.lang.String"/>
+	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select Descripcion, Codigo, Codigo1, inventario, L1 from $P!{cliente}]]>
+	</queryString>
+	<field name="Descripcion" class="java.lang.String"/>
+	<field name="Codigo" class="java.lang.String"/>
+	<field name="Codigo1" class="java.lang.String"/>
+	<field name="inventario" class="java.lang.String"/>
+	<field name="L1" class="java.math.BigDecimal"/>
+	<variable name="img" class="java.io.InputStream">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement x="177" y="5" width="222" height="23" uuid="897b01e4-ae30-4485-952e-2b8895e869c2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE PRODUCTOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="2"/>
+	</columnHeader>
+	<detail>
+		<band height="73" splitType="Stretch">
+			<image hAlign="Center" onErrorType="Blank">
+				<reportElement x="2" y="2" width="102" height="68" isRemoveLineWhenBlank="true" uuid="44fdfa0a-115f-4ef5-a22f-90d8a7a53df3"/>
+				<imageExpression><![CDATA[new File($P{ruta} , $F{Codigo} + ".jpg")]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="2" y="1" width="102" height="1" uuid="5dbc033f-e493-45cf-8d39-f984ab489385"/>
+			</line>
+			<line>
+				<reportElement x="2" y="70" width="102" height="1" uuid="9a76c37e-42dc-4a08-b2df-b1556117c52d"/>
+			</line>
+			<line>
+				<reportElement x="1" y="1" width="1" height="70" uuid="ab29bd8f-60b3-4b02-b8af-c63462448062"/>
+			</line>
+			<line>
+				<reportElement x="104" y="1" width="1" height="70" uuid="5d658941-706e-4266-be71-6fdba40ce0fa"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="107" y="2" width="168" height="23" uuid="185bc83a-e275-4775-afa7-dd4bb5403918"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Descripcion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="178" y="25" width="97" height="14" uuid="1825cf56-de69-44d2-b4fd-3db3be1008b0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Codigo1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="108" y="25" width="70" height="14" backcolor="#CCCCCC" uuid="c073aaac-f85b-40c5-9c07-6d8fba8ac1ad"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="178" y="39" width="97" height="14" uuid="17b0a7c3-e06f-453a-9144-4be67b068cbf"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inventario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="108" y="39" width="70" height="14" backcolor="#CCCCCC" uuid="76d14bfa-1931-4f87-88df-e33df910fe60"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INVENTARIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="108" y="53" width="70" height="14" backcolor="#CCCCCC" uuid="166e3f95-a534-4c43-a958-f6489685743b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PVP:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="178" y="53" width="97" height="14" uuid="e76f76dd-bffa-447c-9978-177ea428664d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{L1})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="6" width="525" height="14" uuid="74fa60ca-a83f-4ecb-86fe-e61859320cf2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

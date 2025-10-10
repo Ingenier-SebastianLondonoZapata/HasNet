@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="432" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7c2bfe93-bee4-4f28-887d-e099f854d9d8">
+	<property name="ireport.zoom" value="1.2100000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idCuadre" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from cuadreCajaFiscalConsecutivos where id=$P{idCuadre}]]>
+	</queryString>
+	<field name="ordenId" class="java.lang.Short"/>
+	<field name="Id" class="java.lang.String"/>
+	<field name="primeroNc" class="java.lang.Short"/>
+	<field name="ultimoNc" class="java.lang.Short"/>
+	<field name="primeraFactura" class="java.lang.String"/>
+	<field name="ultimaFactura" class="java.lang.String"/>
+	<field name="primerAbono" class="java.lang.String"/>
+	<field name="ultimoAbono" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="500" height="20" backcolor="#EBEBEB" uuid="ae7f1a3b-abb4-4fb2-91d8-6e1ed23c60e6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSECUTIVOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="46">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="100" height="16" backcolor="#EBEBEB" uuid="498c544f-1358-4a3a-8883-bd6c6c6fae7e"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TERMINAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="126" y="16" width="100" height="15" backcolor="#EBEBEB" uuid="bf86c373-7932-42e8-9795-89873392961a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTA CREDITO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="126" y="0" width="100" height="16" backcolor="#EBEBEB" uuid="6c36f350-02c0-44bc-b7ec-4ad13f834143"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FACTURACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="234" y="0" width="51" height="16" backcolor="#EBEBEB" uuid="22aa14f7-83fc-4615-b93b-893c8be7237e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[INICIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="390" y="0" width="59" height="16" backcolor="#EBEBEB" uuid="9ac169a7-58a7-4791-b9a8-07c202338f67"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FINAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="234" y="16" width="51" height="15" backcolor="#EBEBEB" uuid="4ee57199-7b4e-495f-bf2e-1bd92ad53254"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[INICIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="390" y="16" width="59" height="15" backcolor="#EBEBEB" uuid="627b0dee-50cf-49a0-80d1-71752130948c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FINAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="126" y="31" width="100" height="15" backcolor="#EBEBEB" uuid="c45a2647-7a51-4dfd-988b-d7985794bbc4"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECIBOS DE CAJA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="234" y="31" width="51" height="15" backcolor="#EBEBEB" uuid="4b7d617d-0052-444e-860c-561d1976e05b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[INICIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="390" y="31" width="59" height="15" backcolor="#EBEBEB" uuid="2563c6a8-3a8e-4a4a-9247-5f5dade61c48"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FINAL]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="285" y="16" width="100" height="15" uuid="da725c5b-3d31-4321-ba35-3f935d11017a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{primeroNc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="449" y="16" width="100" height="14" uuid="ce4bf20c-7e86-4fd8-b180-3009510ba618"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ultimoNc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="285" y="0" width="100" height="16" uuid="d5632252-cdf6-4803-a317-477ce3f89088"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{primeraFactura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="449" y="0" width="100" height="16" uuid="0631c974-f6e0-464c-8026-032cd89d3eb2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ultimaFactura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="285" y="31" width="100" height="15" uuid="15892fcc-eb88-41a7-9a0e-f41bc1191364"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{primerAbono}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="449" y="30" width="100" height="16" uuid="ff747843-0f28-443b-8850-9f1bb3b7db2c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ultimoAbono}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

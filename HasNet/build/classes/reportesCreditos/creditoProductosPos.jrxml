@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="239" pageHeight="842" columnWidth="209" leftMargin="0" rightMargin="30" topMargin="0" bottomMargin="0" uuid="29b2c118-1a51-4881-93bb-a305520504fe">
+	<property name="ireport.zoom" value="2.853116706110004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="id" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from conPrestamoProductos where contrato=$P{id}]]>
+	</queryString>
+	<field name="contrato" class="java.lang.String"/>
+	<field name="factura" class="java.lang.String"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="lista" class="java.math.BigDecimal"/>
+	<field name="cantidad" class="java.lang.Double"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="subtotal" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="13" width="71" height="13" forecolor="#000000" uuid="c6a3ff67-3360-422d-8e0d-b832921ee0b9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="209" height="13" uuid="69284166-22d2-4a54-9594-f450f12b0261"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Productos]]></text>
+			</staticText>
+			<line>
+				<reportElement x="155" y="13" width="1" height="13" uuid="4a0a0ceb-b434-414d-b2f5-9fd980a217cf"/>
+			</line>
+			<staticText>
+				<reportElement x="131" y="13" width="24" height="13" uuid="5c49ca5b-fbb7-4752-8356-ca37737d37cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cant]]></text>
+			</staticText>
+			<line>
+				<reportElement x="130" y="13" width="1" height="13" uuid="41a2037f-8102-4cd1-92ec-c38866a71553"/>
+			</line>
+			<staticText>
+				<reportElement x="156" y="13" width="53" height="13" uuid="7a282666-7345-4c73-ba72-69e31cb28bbc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subtotal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="13" width="58" height="13" uuid="dbba7f92-5a82-46a3-b80f-43a8940c75c3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Und]]></text>
+			</staticText>
+			<line>
+				<reportElement x="71" y="13" width="1" height="13" uuid="4d288513-9e95-4966-8160-ef3f26077dbc"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField pattern="$ #,##0">
+				<reportElement positionType="Float" x="72" y="12" width="55" height="11" uuid="1ac1071f-8a17-4a71-a635-3f8211818f75"/>
+				<textElement textAlignment="Right">
+					<font fontName="Century Gothic" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lista}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="130" y="12" width="25" height="11" uuid="84f4b1b9-5fd4-4595-bae2-697bb3d7d3d0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="1" width="209" height="11" uuid="e424baf4-6fbc-48c4-88e0-ecc7908904eb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="12" width="71" height="11" uuid="e527d4de-0188-4d6e-9ffd-4e8369aa09b8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0">
+				<reportElement positionType="Float" x="156" y="12" width="53" height="11" uuid="f75f5cc9-b706-4a0e-bc63-86cd76389249"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

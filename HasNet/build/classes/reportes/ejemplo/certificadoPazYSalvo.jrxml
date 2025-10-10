@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="anombre" class="java.lang.String"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="documento" class="java.lang.String"/>
+	<parameter name="cuotas" class="java.lang.String"/>
+	<parameter name="ciudad" class="java.lang.String"/>
+	<parameter name="valor" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="saldo" class="java.lang.String"/>
+	<parameter name="deuda" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="448" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="11" width="555" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[COCIENTIFICA
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="42" width="555" height="66"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nit. 812003244-1
+Cocientifica2011@hotmail.com
+Cel. 300 277 06 69
+Medellín - Antioquia
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="185" width="555" height="24"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[A QUIEN INTERESE]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="235" width="555" height="183"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Certificamos que " + $P{cliente} + " identificada con Cedula de Ciudadanía No. " + $P{documento} + " de " + $P{ciudad} + " se encuentra a paz y salvo con la empresa.."+
+
+"\n\nSe expide la anterior certificación a solicitud del interesado(a)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="4" y="134" width="295" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="115" width="106" height="19"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medellin]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="125" splitType="Stretch">
+			<line>
+				<reportElement x="28" y="91" width="178" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="29" y="72" width="45" height="19"/>
+				<textElement>
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Firma:]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

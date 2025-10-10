@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="115" pageHeight="100" columnWidth="115" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e33f6976-7e93-45f5-b7dc-adb7f43b16e1">
+	<property name="ireport.zoom" value="2.143588810000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from bdProblemas where Id < 13]]>
+	</queryString>
+	<field name="Id" class="java.lang.Integer"/>
+	<field name="problema" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="113" height="13" backcolor="#CCCCCC" uuid="c8c8fc64-d889-40b7-b148-699eecc68bbd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[LISTA DE PROBLEMAS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="114" y="1" width="1" height="13" uuid="72f311ee-31b6-4ded-996d-46f95d3c173a"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="14" uuid="873d69bc-86d8-4a28-b80d-0515b1b57879"/>
+			</line>
+			<line>
+				<reportElement x="1" y="0" width="114" height="1" uuid="cd28cac8-4148-4b93-b122-f652046ab799"/>
+			</line>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="15">
+			<staticText>
+				<reportElement mode="Opaque" x="19" y="1" width="95" height="13" backcolor="#CCCCCC" uuid="40b25b8f-6374-4286-971c-b304bbc36cce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="14" width="114" height="1" uuid="baa5508c-1282-4f29-92d8-b4007c9215a1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="114" height="1" uuid="1156d083-367d-407b-9551-ce7b2b97efad"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="15" uuid="f1979a76-7b33-4973-a3e4-5da1cf46d7dc"/>
+			</line>
+			<line>
+				<reportElement x="18" y="0" width="1" height="15" uuid="13f96547-e015-4a18-a676-cd714a2b23d0"/>
+			</line>
+			<line>
+				<reportElement x="114" y="0" width="1" height="15" uuid="b024bcd6-42d4-43ca-8f89-00ecd2a2380f"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="17" height="13" backcolor="#CCCCCC" uuid="dbef62f1-2536-4e73-9568-8c43d515b190"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="2" y="0" width="16" height="10" uuid="dee4c5a1-d724-46d6-a8b4-623915299402"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Id}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="20" y="0" width="94" height="10" uuid="de44de08-7bf4-4773-a638-628900e7d674"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{problema}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="10" uuid="65b66a52-475d-4467-af5f-ff8a7a6b15b9"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="18" y="0" width="1" height="10" uuid="da111860-f110-4a2d-8e9d-0a7cf59b6e07"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="114" y="0" width="1" height="10" uuid="3df8e053-df56-419c-b34c-aa8841850068"/>
+			</line>
+		</band>
+		<band height="1">
+			<line>
+				<reportElement x="0" y="0" width="115" height="1" uuid="d397e745-233a-4dc0-a345-a0a62f989d82"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

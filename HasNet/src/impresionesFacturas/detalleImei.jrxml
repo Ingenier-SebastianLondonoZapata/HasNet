@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="570" pageHeight="802" columnWidth="570" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8f6055be-2a91-433b-b6ef-72c427cc5ddf">
+	<property name="ireport.zoom" value="1.2100000000000104"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="detalle" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from facturaImei where idFactura = $P{numero}]]>
+	</queryString>
+	<field name="idFactura" class="java.lang.String"/>
+	<field name="ordenId" class="java.lang.Integer"/>
+	<field name="lista" class="java.math.BigDecimal"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="imei" class="java.lang.String"/>
+	<background>
+		<band height="64">
+			<line>
+				<reportElement x="0" y="63" width="570" height="1" uuid="25179456-9989-45b7-91e2-9b7b8447a5dd"/>
+			</line>
+			<line>
+				<reportElement x="0" y="51" width="1" height="13" uuid="8dd9db22-dac6-45ee-98e7-87fa6271772f"/>
+			</line>
+			<line>
+				<reportElement x="569" y="51" width="1" height="13" uuid="cc2f2076-cba6-4cd8-a33f-f45a9ea03a3d"/>
+			</line>
+			<line>
+				<reportElement x="0" y="12" width="1" height="13" uuid="bb0d5389-d5d6-4834-a299-b950efe6a1ca"/>
+			</line>
+			<line>
+				<reportElement x="569" y="12" width="1" height="13" uuid="f77e1993-2e16-4dab-85c0-1073e879160c"/>
+			</line>
+			<line>
+				<reportElement x="0" y="25" width="570" height="1" uuid="019c4399-971b-4ec5-a7a6-563cf1aa3246"/>
+			</line>
+			<line>
+				<reportElement x="0" y="25" width="1" height="13" uuid="cc7bfc7e-7771-4b49-af63-e1a1916da7de"/>
+			</line>
+			<line>
+				<reportElement x="0" y="38" width="1" height="13" uuid="cb852532-3ce1-4f23-9a23-b384e3e244bf"/>
+			</line>
+			<line>
+				<reportElement x="0" y="38" width="570" height="1" uuid="67135507-a488-4a30-9877-112216fa9c65"/>
+			</line>
+			<line>
+				<reportElement x="569" y="25" width="1" height="13" uuid="066d6dfa-b644-44cf-a30b-05808d5601b4"/>
+			</line>
+			<line>
+				<reportElement x="569" y="38" width="1" height="13" uuid="99170917-955c-4c23-a5eb-217eac0e7d71"/>
+			</line>
+			<line>
+				<reportElement x="0" y="50" width="570" height="1" uuid="26cf5e9b-49bc-4e95-8923-dc5b91a375d8"/>
+			</line>
+			<line>
+				<reportElement x="426" y="12" width="1" height="52" uuid="fd034a51-5232-419d-a637-03189bf256e6"/>
+			</line>
+			<line>
+				<reportElement x="226" y="12" width="1" height="51" uuid="f8845e0a-806e-4ac5-9275-0fe0a3ac2181"/>
+			</line>
+		</band>
+	</background>
+	<columnHeader>
+		<band height="14">
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="1" width="225" height="12" backcolor="#CCCCCC" uuid="d606c86b-8e54-4657-bce6-e78d03c73b9e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[MARCA Y REFERENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="427" y="1" width="142" height="12" backcolor="#CCCCCC" uuid="5d242898-6f62-48e8-9af2-10a0930b1f6f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="227" y="1" width="199" height="12" backcolor="#CCCCCC" uuid="4a694b23-cc1c-4714-bd1e-af2507296a32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[IMEI]]></text>
+			</staticText>
+			<line>
+				<reportElement x="426" y="0" width="1" height="13" uuid="21068ed4-570a-411e-845d-631d491b58f9"/>
+			</line>
+			<line>
+				<reportElement x="569" y="0" width="1" height="13" uuid="043e9fa5-6ff3-4ce7-82d8-d64b5352d1c5"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="570" height="1" uuid="8dc7df0a-7d82-4f1b-a28b-36bd58d04f8e"/>
+			</line>
+			<line>
+				<reportElement x="0" y="13" width="570" height="1" uuid="60626402-52f9-401f-902d-f00f990974b8"/>
+			</line>
+			<line>
+				<reportElement x="226" y="0" width="1" height="13" uuid="beee0abd-de6c-4487-b6f8-8148cee4ef67"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="13" uuid="b0bb87f1-6e34-4ba7-8222-b7eae1b49159"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="225" height="13" uuid="9a789dab-f4fc-4090-acf3-2435fe306330"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="227" y="0" width="199" height="13" uuid="39326ef8-ef8e-4aca-9936-ae78655e1efc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{imei}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0">
+				<reportElement x="427" y="0" width="142" height="13" uuid="4ad56609-cde4-4b59-89f0-6fbdedfde730"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lista}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

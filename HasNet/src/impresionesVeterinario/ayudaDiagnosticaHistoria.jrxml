@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="530" pageHeight="802" columnWidth="530" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="3aaf7133-7479-4852-90aa-768c13c4a726">
+	<property name="ireport.zoom" value="2.1435888100000033"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from conayudadiagnosticaveterinaria where historia=$P{numero}]]>
+	</queryString>
+	<field name="id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="historia" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="observaciones" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="concepto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="528" height="15" backcolor="#CCCCCC" uuid="f689bf9b-5dd6-46a6-85a7-ea1f03292dd4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[AYUDA DIAGNOSTICA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="530" height="1" uuid="96353f47-e768-4049-9d92-4a8bffe89066"/>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="15" uuid="cd454a42-ab45-4de3-951e-4eff7133e5ca"/>
+			</line>
+			<line>
+				<reportElement x="529" y="1" width="1" height="15" uuid="6c8296fa-89d4-4e3c-9c80-0240c0d90a16"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="0" width="69" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="ba7cc159-e371-4e51-9ac2-c087307347ba"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="71" y="0" width="100" height="13" uuid="8df2a87a-9b34-4efd-bdf5-e7be62c25c54"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="27" width="69" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="f2578d85-f0db-4743-b5ca-999903c51cef"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="72" y="27" width="457" height="14" uuid="28d83356-9e4f-4bbd-ad83-76e12b53737c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observaciones}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="1" y="13" width="528" height="14" uuid="6be396ac-0648-4c1b-89b2-e86209b47e23"/>
+				<subreportParameter name="numero">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesVeterinario/ayudaDiagnosticaHistoria2.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="41" uuid="0ba12dab-491b-423d-968e-7bbfec4eb40f"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="529" y="0" width="1" height="41" uuid="0d823b03-6fe7-4fa9-918d-0078cce07c6b"/>
+			</line>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="41" width="530" height="1" uuid="7c3a170c-b918-404a-bad4-df39fd57f2ab"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

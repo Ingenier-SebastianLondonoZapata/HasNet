@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="572" pageHeight="396" orientation="Landscape" columnWidth="572" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4b7f55f0-f110-42c2-b124-1510a679b87c">
+	<property name="ireport.zoom" value="1.6105100000000103"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="encabezado" class="java.lang.String"/>
+	<parameter name="parameter1" class="java.lang.String"/>
+	<parameter name="regimen" class="java.lang.String"/>
+	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<parameter name="simbolo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from bdGenerarIvas]]>
+	</queryString>
+	<field name="Id" class="java.lang.Integer"/>
+	<field name="porc" class="java.lang.String"/>
+	<field name="base" class="java.lang.Integer"/>
+	<field name="subtotal" class="java.lang.Integer"/>
+	<field name="descuento" class="java.lang.Integer"/>
+	<field name="total" class="java.lang.Integer"/>
+	<field name="totalIva" class="java.lang.Integer"/>
+	<variable name="totalIvas" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalIva}]]></variableExpression>
+	</variable>
+	<group name="facturas">
+		<groupExpression><![CDATA[]]></groupExpression>
+	</group>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="572" height="25" backcolor="#CCCCCC" uuid="3bf4e28f-ada2-4c4c-a248-2b641e02ce38"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE IMPUESTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="40" width="42" height="20" backcolor="#CCCCCC" uuid="94995ad4-67cf-4183-ba30-46db8c791e47"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="42" y="40" width="108" height="20" backcolor="#CCCCCC" uuid="476e4b58-d49d-4256-8b1c-c6ae31ba3be9"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subtotal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="458" y="40" width="114" height="20" backcolor="#CCCCCC" uuid="ef1b0eda-401c-46a0-a994-abef84302002"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPUESTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="360" y="40" width="98" height="20" backcolor="#CCCCCC" uuid="3e26ef5b-e976-4a63-b52e-13d140736f3e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Desc]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="246" y="40" width="114" height="20" backcolor="#CCCCCC" uuid="dd96cd3d-a1dd-4c0f-91ba-69b81872715a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="150" y="40" width="96" height="20" backcolor="#CCCCCC" uuid="3c027124-485d-4bcd-ba46-3b25fe06525d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Base]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="25" width="572" height="15" uuid="8dd4e9ac-21e6-4fb2-8ebc-01f61741541e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{encabezado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement x="0" y="0" width="42" height="20" uuid="8842c26f-b962-44eb-9f43-7103484eab0f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{porc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="42" y="0" width="108" height="20" uuid="09185ea3-1007-495a-a529-e2301034373f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{subtotal})]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="150" y="0" width="96" height="20" uuid="6cc7bcc4-3d89-441d-812d-7fc4b22bfef5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{base})]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="246" y="0" width="114" height="20" uuid="a721976f-6dc0-483c-bd3e-0c8a5383f5fc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{total})]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="360" y="0" width="98" height="20" uuid="f6df7bf8-def8-45e7-a9f9-86d806eaf343"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{descuento})]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="458" y="0" width="114" height="20" uuid="7913a76f-0451-42ac-8a2c-9ce90c22204f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{totalIva})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="18">
+			<textField pattern="">
+				<reportElement x="458" y="0" width="114" height="18" uuid="61b1e6db-93b3-463b-877c-c03ac503cde8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($V{totalIvas})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="341" y="0" width="117" height="18" backcolor="#CCCCCC" uuid="11ef11f7-eda4-4e1e-b190-1abfa5cacdbc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL IMPUESTO]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

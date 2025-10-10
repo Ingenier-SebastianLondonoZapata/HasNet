@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="612" pageHeight="792" columnWidth="532" leftMargin="40" rightMargin="40" topMargin="15" bottomMargin="15" uuid="8d0094c3-6409-45c7-8e1a-640e207d17d2">
+	<property name="ireport.zoom" value="1.4641000000000015"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idCuadre" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["E:\\ESTANDAR 1.9.3.1 - CUADRE FISCAL\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="simbolo" class="java.lang.String"/>
+	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from cuadreCajaFiscal where id=$P{idCuadre}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="terminal" class="java.lang.String"/>
+	<field name="hora" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="base" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="165" splitType="Stretch">
+			<staticText>
+				<reportElement x="53" y="49" width="100" height="0" uuid="17391241-ab45-45fc-b622-e1109bbb7292"/>
+				<text><![CDATA[Static text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="91" width="532" height="20" uuid="d22711e0-4e1c-45b4-8efa-0be6860c996b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORME FISCAL DE VENTAS DIARIAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="115" width="90" height="15" uuid="848945b8-c918-4eb1-a1b9-eaead1623a81"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA INFORME:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="130" width="90" height="15" uuid="7f74583b-cb59-4425-bf07-4eb803d1b8b4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAJERO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="115" width="59" height="15" uuid="488c85d1-64ce-49c8-9ce5-5cbd86d6350e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="298" y="115" width="100" height="15" uuid="1fc85702-a616-4164-80a7-7760bc6f8772"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="239" y="130" width="59" height="15" uuid="a78ce42a-88fb-4ef3-a3c0-0dd587e2dace"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[USUARIO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="298" y="130" width="144" height="15" uuid="bfff4072-c843-4e78-9ada-466890f8a558"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{usuario}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="92" y="115" width="100" height="15" uuid="00b08acf-c6a4-431c-8b2b-629eb20453b0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="92" y="130" width="100" height="15" uuid="e8f678dd-07f8-4b8f-a4fb-ca4d2828ffd8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{terminal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="398" y="115" width="97" height="15" uuid="e3201ce8-964b-4caf-b0ce-b019ee79114a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>ID:</b> "+$F{Id}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="20" y="9" width="169" height="80" uuid="96683ca9-237d-4482-ba1b-8b8e85827dbc"/>
+				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="192" y="0" width="273" height="91" uuid="e582d347-e6dd-492d-8c7f-8d4491307a96"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{info}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="92" y="145" width="100" height="16" uuid="88a38a0e-e84f-4037-9f70-e59292f6ef57"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{base})]]></textFieldExpression>
+				<patternExpression><![CDATA[$P{simbolo} + " "]]></patternExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="145" width="90" height="16" uuid="a7a59323-3d3e-450c-ac59-0be6237f51cf"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BASE:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="532" height="18" uuid="11b909be-e4b1-4560-b80d-ee9c66f77d37"/>
+				<subreportParameter name="cadenaDecimales">
+					<subreportParameterExpression><![CDATA[$P{cadenaDecimales}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="simbolo">
+					<subreportParameterExpression><![CDATA[$P{simbolo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idCuadre">
+					<subreportParameterExpression><![CDATA[$P{idCuadre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesCuadreCaja/cuadreFiscalVentas.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="19">
+			<subreport>
+				<reportElement x="0" y="0" width="532" height="17" uuid="6c3ed801-b8fe-4af4-8c2a-d747459e44c8"/>
+				<subreportParameter name="cadenaDecimales">
+					<subreportParameterExpression><![CDATA[$P{cadenaDecimales}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="simbolo">
+					<subreportParameterExpression><![CDATA[$P{simbolo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idCuadre">
+					<subreportParameterExpression><![CDATA[$P{idCuadre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesCuadreCaja/cuadreFiscalAbonos.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="19">
+			<subreport>
+				<reportElement x="0" y="0" width="532" height="17" uuid="6bc47e2f-11aa-42c7-88a0-70cf495f6eb6"/>
+				<subreportParameter name="cadenaDecimales">
+					<subreportParameterExpression><![CDATA[$P{cadenaDecimales}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="simbolo">
+					<subreportParameterExpression><![CDATA[$P{simbolo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idCuadre">
+					<subreportParameterExpression><![CDATA[$P{idCuadre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesCuadreCaja/cuadreFiscalPagos.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="19">
+			<subreport>
+				<reportElement x="0" y="0" width="532" height="17" uuid="f33c5f5c-25bf-4a7f-9971-17ab34722f43"/>
+				<subreportParameter name="cadenaDecimales">
+					<subreportParameterExpression><![CDATA[$P{cadenaDecimales}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="simbolo">
+					<subreportParameterExpression><![CDATA[$P{simbolo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idCuadre">
+					<subreportParameterExpression><![CDATA[$P{idCuadre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesCuadreCaja/cuadreFiscalVentasConsecutivos.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="19">
+			<subreport>
+				<reportElement x="0" y="0" width="532" height="17" uuid="29257349-e1ca-420c-a9d1-5cb93ee6f536"/>
+				<subreportParameter name="cadenaDecimales">
+					<subreportParameterExpression><![CDATA[$P{cadenaDecimales}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="simbolo">
+					<subreportParameterExpression><![CDATA[$P{simbolo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idCuadre">
+					<subreportParameterExpression><![CDATA[$P{idCuadre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesCuadreCaja/cuadreFiscalVentasIva.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="18">
+			<subreport>
+				<reportElement x="0" y="0" width="532" height="18" uuid="aba8a6dc-f358-4ba9-b79d-db4687cbf0b6"/>
+				<subreportParameter name="cadenaDecimales">
+					<subreportParameterExpression><![CDATA[$P{cadenaDecimales}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="simbolo">
+					<subreportParameterExpression><![CDATA[$P{simbolo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idCuadre">
+					<subreportParameterExpression><![CDATA[$P{idCuadre}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesCuadreCaja/cuadreFiscalVentasImpo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="56">
+			<staticText>
+				<reportElement x="4" y="36" width="244" height="20" uuid="b774a3f6-f64d-4239-bb40-05038ff1f944"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA CAJERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="283" y="36" width="244" height="20" uuid="37e3856e-e075-42aa-9244-7f62b24d49b8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA RESPONSABLE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="4" y="35" width="244" height="1" uuid="1f55bc1b-3065-4f34-9ef9-becfaa8fdb44"/>
+			</line>
+			<line>
+				<reportElement x="283" y="35" width="244" height="1" uuid="330a9745-d574-4683-b06e-c5bb136540ff"/>
+			</line>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

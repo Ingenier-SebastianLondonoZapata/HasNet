@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13b69a82-bc75-4557-96fb-66a964d76ba0">
+	<property name="ireport.zoom" value="0.3855432894295327"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nombre" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="historia" class="java.lang.String"/>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="prescripcion" class="java.lang.String"/>
+	<field name="posologia" class="java.lang.String"/>
+	<field name="cantidad" class="java.lang.String"/>
+	<field name="proximoControl" class="java.sql.Timestamp"/>
+	<pageHeader>
+		<band height="102">
+			<image>
+				<reportElement x="196" y="11" width="162" height="77" uuid="ccd02a04-669f-4937-b364-f254e65c37c8"/>
+				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="624">
+			<staticText>
+				<reportElement x="36" y="66" width="487" height="520" uuid="57724dea-520e-49ba-9bd2-8682d7f6b791"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[Cuando se determine el ingreso de una mascota al área de Hospitalización, es necesario verificar la autorización previa del servicio farmacéutico y dejar establecidas las siguientes condiciones frente al propietario.
+
+
+Señor propietario, tengo en cuenta las siguientes recomendaciones frente al manejo de la estancia hospitalaria y sus responsabilidades para garantizar la prestación del servicio:
+
+
+1. Durante la estancia hospitalaria su mascota siempre estará acompañada de personal asistencial médico veterinario y de personal asistencial en formación, y en caso de ser necesario, dispone de interconsultas durante la estancia.
+2. Diariamente es necesario abonar al estado de cuenta de la mascota, para garantizar la prestación del servicio, teniendo en cuenta que algunos servicios que se requieren son pruebas diagnósticas (Laboratorio clínico, Imagenologia), y estas son independientes al Hospital. 
+3. Cuando la mascota requiera la realización de ayudas diagnósticas, el personal de hospitalización se comunicara con la persona identificada en la historia clínica como propietario, para que autorice los servicios que se requieren para el diagnóstico y tratamiento. 
+4. El HORARIO de visita es de lunes a domingo de 10:00 am a 12:00m y 4:00 pm a 6:00 pm. En los horarios de visitas, la mascota puede estar ACOMPAÑADA MAXIMO POR DOS PERSONAS. Sábados 1:00 pm a 3:00 pm.
+5. Para informarle el estado de salud de la mascota, podrá comunicarse al teléfono 427 66 48. El horario de atención telefónica es de 10:00 am a 4:00 pm , DEBE LLAMAR MAXIMO UNA O DOS VECES AL DIA. Lo ideal es que la información la reciba la persona responsable de la mascota y esta la comunique a los demás interesados en el estado del paciente.
+6. Por ningún motivo, se debe sacar la mascota de su alojamiento, sin la autorización previa del personal asistencial del área. 
+7. No suministre alimentos ni medicamentos a la mascota distintos a los recomendados por el personal asistencial del área.
+8. En caso que la mascota requiera de un medicamento o alimento especial, que no esté disponible en el Hospital Veterinario, este debe ser suministrado por el propietario.
+9. Si el paciente tiene ectoparásitos, pulgas y/o garrapatas, es necesario realizar tratamiento para evitar el contagio de los demás hospitalizados; el costo lo asume el propietario.
+10. Evite dejar su mascota con accesorios (traíllas, collares, cobijas, etc.) o artículos de valor, el Hospital Veterinario no se hace responsable por la pérdida de estos elementos.
+11. Por su seguridad y exposición al riesgo, no consuma alimentos dentro del área de hospitalización. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="36" y="18" width="487" height="20" uuid="f13ef693-e04c-49b4-9ebc-f1887a0acaa2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTANCIA HOSPITALARIA]]></text>
+			</staticText>
+		</band>
+		<band height="244">
+			<staticText>
+				<reportElement x="36" y="35" width="487" height="165" uuid="d1b61483-6084-4902-9252-c5df9df59a36"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[12. Desde el momento en que la mascota es dada de alta, el propietario deberá asumir los costos y posibles complicaciones si esta permanece dentro del área de hospitalización. 
+13. Siga cuidadosamente todas las recomendaciones del personal asistencial para la estancia y recuperación de la mascota después del egreso del Hospital Veterinario.
+14. Posterior al egreso de la mascota, el personal asistencial que le realiza la formula médica, le indicara si requiere una revisión posterior al tratamiento indicado.
+15. Solicitamos abstenerse de preguntar por el estado de salud de los demás pacientes, esta información es confidencial y exclusivamente para sus propietarios. 
+16. Es importante que usted tenga conocimiento sobre el estado de cuenta durante la estancia de su mascota en el área de hospitalización.
+]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

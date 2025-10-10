@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.6105100000000043"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="57"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="info" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from conPrestamo where contrato=$P{id} ORDER BY numCuota ASC;]]>
+	</queryString>
+	<field name="contrato" class="java.lang.String"/>
+	<field name="factura" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="convenio" class="java.lang.String"/>
+	<field name="tipoServicio" class="java.lang.String"/>
+	<field name="fechaAprovado" class="java.sql.Timestamp"/>
+	<field name="fechaDesenvolso" class="java.sql.Timestamp"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="valorSolicitado" class="java.math.BigDecimal"/>
+	<field name="valorAprovado" class="java.math.BigDecimal"/>
+	<field name="cuotas" class="java.math.BigDecimal"/>
+	<field name="interes" class="java.math.BigDecimal"/>
+	<field name="totalInteres" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<field name="numCuota" class="java.lang.Integer"/>
+	<field name="fechaCuota" class="java.sql.Timestamp"/>
+	<field name="fechaAbono" class="java.sql.Timestamp"/>
+	<field name="abonoCapital" class="java.math.BigDecimal"/>
+	<field name="abonoInteres" class="java.math.BigDecimal"/>
+	<field name="totalCuota" class="java.math.BigDecimal"/>
+	<field name="totalAbono" class="java.math.BigDecimal"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="hoy" class="java.sql.Timestamp"/>
+	<field name="mora" class="java.math.BigDecimal"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="celular" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="cuotaInicial" class="java.lang.Integer"/>
+	<variable name="saldo" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{saldo}.subtract( $F{totalCuota} )]]></variableExpression>
+		<initialValueExpression><![CDATA[$F{total}]]></initialValueExpression>
+	</variable>
+	<variable name="estado" class="java.lang.String">
+		<variableExpression><![CDATA[($F{totalCuota}.compareTo($F{totalAbono}) != 0 ? ( $F{fechaCuota}.compareTo($F{hoy}) >= 0 ? "PENDIENTE" : "ATRASADA" ) : ($F{fechaCuota}.compareTo($F{fechaAbono}) > 0 ? "SALDADA" : "SALDADA-ATRASADA") )]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="237" splitType="Stretch">
+			<staticText>
+				<reportElement x="4" y="47" width="545" height="30"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO DE CUENTA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="5" y="2" width="545" height="43"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{info}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="113" width="100" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="79" y="160" width="470" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="129" width="314" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="160" width="75" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dirección:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="221" width="46" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuotas:]]></text>
+			</staticText>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="79" y="221" width="74" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{valorSolicitado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="79" y="145" width="100" height="15"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="153" y="221" width="75" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuota Inicial:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="200" width="545" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS GENERALES]]></text>
+			</staticText>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="382" y="221" width="73" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{valorAprovado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="505" y="221" width="44" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{cuotas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="113" width="75" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="145" width="75" height="15"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Teléfono:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="93" width="545" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS PERSONALES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="306" y="221" width="76" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor credito:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="221" width="75" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Venta:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="129" width="75" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<textField pattern="$ #,##0">
+				<reportElement x="228" y="221" width="78" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{cuotaInicial}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="29" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="13" width="50" height="16" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No.Cuota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="51" y="13" width="73" height="16" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Opaque" x="554" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="124" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="303" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="229" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="50" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="125" y="13" width="104" height="16" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total a pagar]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Opaque" x="0" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="230" y="13" width="73" height="16" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha abono]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="494" y="13" width="60" height="16" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="12" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="304" y="13" width="89" height="16" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total abono]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Opaque" x="393" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="394" y="13" width="99" height="16" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<line>
+				<reportElement mode="Opaque" x="493" y="13" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="4" y="0" width="46" height="15"/>
+				<textElement>
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{numCuota}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="303" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="229" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="50" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="554" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="124" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="51" y="0" width="74" height="15"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{fechaCuota}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="125" y="0" width="102" height="16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{totalCuota}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="231" y="0" width="72" height="15">
+					<printWhenExpression><![CDATA[!$F{fecha}.toString().equals( $F{fechaAbono}.toString() )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{fechaAbono}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="496" y="0" width="58" height="15"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{estado}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="393" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="304" y="0" width="87" height="16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{totalAbono}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="394" y="0" width="96" height="16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{totalCuota}.subtract( $F{totalAbono} )]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="493" y="0" width="1" height="16" backcolor="#CCCCCC"/>
+			</line>
+		</band>
+		<band height="1">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="60">
+			<rectangle>
+				<reportElement x="3" y="18" width="549" height="42"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="382" y="18" width="69" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsable:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="18" width="53" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaboro:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="376" y="18" width="1" height="42"/>
+			</line>
+			<staticText>
+				<reportElement x="123" y="18" width="53" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reviso:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="246" y="18" width="1" height="42"/>
+			</line>
+			<staticText>
+				<reportElement x="252" y="18" width="53" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autorizo:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="117" y="18" width="1" height="42"/>
+			</line>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="63">
+			<staticText>
+				<reportElement x="379" y="47" width="83" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="13" width="83" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor credito:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="29" width="83" height="16"/>
+				<textElement>
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total interes:]]></text>
+			</staticText>
+			<textField pattern="$ #,##0">
+				<reportElement x="462" y="29" width="90" height="16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="13"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{totalInteres}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0" isBlankWhenNull="true">
+				<reportElement x="462" y="13" width="90" height="16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="13"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{valorAprovado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0">
+				<reportElement x="462" y="47" width="90" height="16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="13"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

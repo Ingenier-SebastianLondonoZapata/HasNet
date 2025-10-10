@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="15" bottomMargin="15">
+	<property name="ireport.zoom" value="1.7715610000000093"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="firma" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="pie" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="edad" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[Select * from coprologico where IdCoprologico = $P{id}]]>
+	</queryString>
+	<field name="IdCoprologico" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="numeroOrden" class="java.lang.String"/>
+	<field name="remitido" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="resultados" class="java.lang.String"/>
+	<field name="tecnica" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="nombreEps" class="java.lang.String"/>
+	<field name="sexo" class="java.lang.String"/>
+	<field name="consistencia" class="java.lang.String"/>
+	<field name="moco" class="java.lang.String"/>
+	<field name="floraBacteriana" class="java.lang.String"/>
+	<field name="almidones" class="java.lang.String"/>
+	<field name="fibrasMusculares" class="java.lang.String"/>
+	<field name="gotasDeGasa" class="java.lang.String"/>
+	<field name="celulasVegetales" class="java.lang.String"/>
+	<field name="esporasDeHongo" class="java.lang.String"/>
+	<field name="leucocitos" class="java.lang.String"/>
+	<field name="eritrocitos" class="java.lang.String"/>
+	<field name="histoliticaTrofozoitos" class="java.lang.String"/>
+	<field name="histoliticaQuistes" class="java.lang.String"/>
+	<field name="coliTrofozoitos" class="java.lang.String"/>
+	<field name="coliQuistes" class="java.lang.String"/>
+	<field name="nanaTrofozoitos" class="java.lang.String"/>
+	<field name="nanaQuistes" class="java.lang.String"/>
+	<field name="lodamoebaTrofozoitos" class="java.lang.String"/>
+	<field name="lodamoebaQuistes" class="java.lang.String"/>
+	<field name="giardiaTrofozoitos" class="java.lang.String"/>
+	<field name="giardiaQuistes" class="java.lang.String"/>
+	<field name="trichomonaTrofozoitos" class="java.lang.String"/>
+	<field name="trichomonaQuistes" class="java.lang.String"/>
+	<field name="chilomastixTrofozoitos" class="java.lang.String"/>
+	<field name="chilomastixQuistes" class="java.lang.String"/>
+	<field name="balantidiumTrofozoitos" class="java.lang.String"/>
+	<field name="balantidiumQuistes" class="java.lang.String"/>
+	<field name="ascarisHuevos" class="java.lang.String"/>
+	<field name="ascarisInfestacion" class="java.lang.String"/>
+	<field name="tricocefalosHuevos" class="java.lang.String"/>
+	<field name="tricocefalosInfestacion" class="java.lang.String"/>
+	<field name="uncinariaHuevos" class="java.lang.String"/>
+	<field name="uncinariaInfestacion" class="java.lang.String"/>
+	<field name="teniaHuevos" class="java.lang.String"/>
+	<field name="teniaInfestacion" class="java.lang.String"/>
+	<field name="strongiloidesHuevos" class="java.lang.String"/>
+	<field name="strongiloidesInfestacion" class="java.lang.String"/>
+	<field name="larvasHuevos" class="java.lang.String"/>
+	<field name="larvasInfestacion" class="java.lang.String"/>
+	<field name="oxiurosHuevos" class="java.lang.String"/>
+	<field name="oxiurosInfestacion" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="595">
+			<textField isBlankWhenNull="true">
+				<reportElement x="107" y="122" width="156" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{sexo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="51" y="98" width="56" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CEDULA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="122" width="56" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SEXO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="110" width="56" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TELEFONO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="98" width="64" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PACIENTE:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="343" y="98" width="176" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="107" y="98" width="156" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cedula}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="51" y="134" width="56" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N.REGISTRO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="107" y="110" width="156" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="107" y="134" width="156" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{numeroOrden}]]></textFieldExpression>
+			</textField>
+			<image isUsingCache="true">
+				<reportElement mode="Opaque" x="18" y="2" width="164" height="91" backcolor="#FFFFFF"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="343" y="110" width="176" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nombreEps}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="279" y="110" width="64" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EPS:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="343" y="122" width="176" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{remitido}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="279" y="122" width="64" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REMITIDO POR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="134" width="64" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EDAD:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="146" width="77" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA REGISTRO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="146" width="81" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA IMPRESIÓN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="208" y="2" width="279" height="93"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{info}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="128" y="146" width="135" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="343" y="134" width="176" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{edad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="360" y="146" width="159" height="12"/>
+				<textElement>
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="162" width="533" height="16" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COPROLOGICO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="178" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSISTENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="193" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOCO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="208" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FLORA BACTERIANA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="223" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ALMIDONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="238" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIBRAS MUSCULARES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="253" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOTAS DE GRASA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="268" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CELULAR VEGETALES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="283" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESPORAS DE HONGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="298" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LEUCOCITOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="313" width="159" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ERITROCITOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="330" width="172" height="16" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROTOZOOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="172" y="330" width="181" height="16" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TROFOZOITOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="353" y="330" width="181" height="16" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QUISTES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="346" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[E. HISTOLITICA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="361" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[E. COLI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="376" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[E. NANA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="391" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LODAMOEBA B]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="406" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GIARDIA L]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="421" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TRICHOMONA H]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="436" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CHILOMASTIX M]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="3" y="451" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BALANTIDIUM COLI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="470" width="172" height="16" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HELMINTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="353" y="470" width="181" height="16" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRADO DE INFESTACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="172" y="470" width="181" height="16" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HUEVOS /gr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="486" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ASCARIS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="501" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TRICOCÉFALOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="516" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[UNCINARIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="531" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TENIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="2" y="561" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[LARVAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="2" y="576" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[OXIUROS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="170" y="178" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{consistencia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="193" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{moco}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="208" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{floraBacteriana}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="223" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{almidones}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="238" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fibrasMusculares}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="253" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{gotasDeGasa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="269" width="364" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{celulasVegetales}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="283" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{esporasDeHongo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="298" width="364" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{leucocitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="313" width="364" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{eritrocitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="346" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{histoliticaTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="346" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{histoliticaQuistes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="361" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{coliTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="361" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{coliQuistes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="376" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nanaTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="376" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nanaQuistes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="391" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{lodamoebaTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="391" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{lodamoebaQuistes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="406" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{giardiaTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="406" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{giardiaQuistes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="421" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{trichomonaTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="421" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{trichomonaQuistes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="436" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{chilomastixTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="436" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{chilomastixQuistes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="451" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{balantidiumTrofozoitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="451" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{balantidiumQuistes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="546" width="169" height="15" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[STRONGILOIDES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="172" y="486" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ascarisHuevos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="486" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ascarisInfestacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="501" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tricocefalosHuevos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="501" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tricocefalosInfestacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="516" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{uncinariaHuevos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="516" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{uncinariaInfestacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="531" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{teniaHuevos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="531" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{teniaInfestacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="546" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{strongiloidesHuevos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="546" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{strongiloidesInfestacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="561" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{larvasHuevos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="561" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{larvasInfestacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="576" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{oxiurosHuevos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="353" y="576" width="181" height="15"/>
+				<textElement>
+					<font fontName="Century Gothic"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{oxiurosInfestacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="18">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="76" height="18" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TÉCNICA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="77" y="0" width="459" height="18"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tecnica}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="18">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="76" height="18" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="77" y="0" width="460" height="18"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{observaciones}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="100" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="86" width="535" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="1" y="67" width="534" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Century Gothic" size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{pie}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="343" y="51" width="181" height="1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="343" y="52" width="182" height="11" forecolor="#000000"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{usuario}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="343" y="2" width="181" height="49"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{firma}]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

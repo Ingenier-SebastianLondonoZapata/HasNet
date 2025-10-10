@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="553" pageHeight="802" columnWidth="553" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="af28fdfc-8f25-4fde-b41f-f1b5c98332a9">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from conFormulaMedica where Id=$P{numero}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="historia" class="java.lang.String"/>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="prescripcion" class="java.lang.String"/>
+	<field name="posologia" class="java.lang.String"/>
+	<field name="t" class="java.lang.String"/>
+	<field name="peso" class="java.lang.String"/>
+	<field name="talla" class="java.lang.String"/>
+	<field name="pa" class="java.lang.String"/>
+	<field name="cantidad" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="11" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="62" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="60c27fa1-b228-47e6-bd1d-f5cf99c844ed"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prescripcion:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="65" y="0" width="348" height="11" uuid="323e6d26-e84d-46ed-b514-f11b6fce6044"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prescripcion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="413" y="0" width="45" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="bfe07e1c-9b0f-43e0-ba94-c47274c56654"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="458" y="0" width="59" height="11" uuid="c8517408-7d62-4586-819f-12e547b0f3a4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="13">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="62" height="11" forecolor="#000000" backcolor="#CCCCCC" uuid="1b83b18f-4a29-4af2-bb98-ec783beb9026"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Posologia:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="65" y="0" width="452" height="11" uuid="aae4133b-ee12-403c-b9a5-f8ba4788330e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{posologia}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

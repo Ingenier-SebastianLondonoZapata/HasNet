@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Orden" printOrder="Horizontal" pageWidth="792" pageHeight="595" orientation="Landscape" columnWidth="782" leftMargin="10" rightMargin="0" topMargin="10" bottomMargin="6" uuid="39e55840-b78f-4160-b4d4-5017015e1fdc">
+	<property name="ireport.zoom" value="0.7513148009015809"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="factura" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="urlImagen2" class="java.io.InputStream"/>
+	<parameter name="numFactura" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[Select * from bdPaquimetria where Id = $P{numFactura}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="doctor" class="java.lang.String"/>
+	<field name="ojoIzquierdo" class="java.lang.String"/>
+	<field name="zonaOpticaIzq" class="java.lang.String"/>
+	<field name="ojoDerecho" class="java.lang.String"/>
+	<field name="zonaOpticaDer" class="java.lang.String"/>
+	<field name="dibujo" class="java.lang.String"/>
+	<variable name="1" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[0]]]></variableExpression>
+	</variable>
+	<variable name="2" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[1]]]></variableExpression>
+	</variable>
+	<variable name="3" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[2]]]></variableExpression>
+	</variable>
+	<variable name="4" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[3]]]></variableExpression>
+	</variable>
+	<variable name="5" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[4]]]></variableExpression>
+	</variable>
+	<variable name="6" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[5]]]></variableExpression>
+	</variable>
+	<variable name="7" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[6]]]></variableExpression>
+	</variable>
+	<variable name="8" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[7]]]></variableExpression>
+	</variable>
+	<variable name="9" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[8]]]></variableExpression>
+	</variable>
+	<variable name="10" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[9]]]></variableExpression>
+	</variable>
+	<variable name="11" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[10]]]></variableExpression>
+	</variable>
+	<variable name="12" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[11]]]></variableExpression>
+	</variable>
+	<variable name="13" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[12]]]></variableExpression>
+	</variable>
+	<variable name="14" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[13]]]></variableExpression>
+	</variable>
+	<variable name="15" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[14]]]></variableExpression>
+	</variable>
+	<variable name="16" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[15]]]></variableExpression>
+	</variable>
+	<variable name="17" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[16]]]></variableExpression>
+	</variable>
+	<variable name="18" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[17]]]></variableExpression>
+	</variable>
+	<variable name="19" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[18]]]></variableExpression>
+	</variable>
+	<variable name="20" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[19]]]></variableExpression>
+	</variable>
+	<variable name="21" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[20]]]></variableExpression>
+	</variable>
+	<variable name="22" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[21]]]></variableExpression>
+	</variable>
+	<variable name="23" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[22]]]></variableExpression>
+	</variable>
+	<variable name="24" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[23]]]></variableExpression>
+	</variable>
+	<variable name="25" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[24]]]></variableExpression>
+	</variable>
+	<variable name="26" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[25]]]></variableExpression>
+	</variable>
+	<variable name="27" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[26]]]></variableExpression>
+	</variable>
+	<variable name="28" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[27]]]></variableExpression>
+	</variable>
+	<variable name="29" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[28]]]></variableExpression>
+	</variable>
+	<variable name="30" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[29]]]></variableExpression>
+	</variable>
+	<variable name="31" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[30]]]></variableExpression>
+	</variable>
+	<variable name="32" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[31]]]></variableExpression>
+	</variable>
+	<variable name="33" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[32]]]></variableExpression>
+	</variable>
+	<variable name="34" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{dibujo}).split("&")[33]]]></variableExpression>
+	</variable>
+	<title>
+		<band height="216" splitType="Stretch">
+			<rectangle>
+				<reportElement x="649" y="30" width="104" height="20" uuid="ffbec8de-2f85-4b02-a5eb-fe7110544bce"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="649" y="10" width="104" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="7dcaefcd-9b2f-4603-add0-2417cc8dfbd9"/>
+				<graphicElement>
+					<pen lineColor="#000000"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="649" y="10" width="103" height="20" forecolor="#000000" uuid="c0cf8131-c459-4d98-95a5-d32abcabf344"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true" isItalic="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[Paquimetria]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="650" y="30" width="103" height="20" forecolor="#FF0000" uuid="78b0d3d5-dbf7-413a-9d20-d5569525d4c2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{factura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="66" y="46" width="293" height="16" uuid="e163629c-bed5-4c52-a16a-853464e7cb8c"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="14" width="349" height="20" uuid="123e90d2-06ae-4988-96bb-44e9222225a8"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="46" width="51" height="16" uuid="6cbf50cf-14e4-40f0-b33f-110ff8bbf61b"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="64" width="51" height="16" uuid="b1a79099-b786-4dbf-b0a8-db2468422884"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cedula:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="82" width="51" height="16" uuid="51c43934-aed8-4aaf-94b3-8070f1e5f3e5"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Doctor:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="66" y="82" width="292" height="16" uuid="9ca0918f-6050-4102-b0e7-7723bd565e7e"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doctor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="440" y="140" width="70" height="16" uuid="afd3548b-f2f5-452e-86a1-473a896c4b5d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ojo izquierdo]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="391" y="121" width="163" height="20" uuid="ae548a81-d943-4699-8f09-c6961bf7ecfc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ojoIzquierdo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="167" width="163" height="20" uuid="85841e5f-9404-44c2-b739-2ecd2308d8b2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{zonaOpticaIzq}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="440" y="186" width="70" height="16" uuid="78ca5e00-1140-4569-b8ab-e332679901b4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Zona optica]]></text>
+			</staticText>
+			<line>
+				<reportElement x="384" y="119" width="179" height="1" uuid="6c63136b-d73b-4e77-a2fa-9ddc8d7d3c58"/>
+			</line>
+			<line>
+				<reportElement x="562" y="120" width="1" height="83" uuid="37c3aa81-152c-4229-9863-856369c8e076"/>
+			</line>
+			<line>
+				<reportElement x="383" y="203" width="180" height="1" uuid="49a54c8f-ce7a-4578-85f3-ac78dfb4e981"/>
+			</line>
+			<line>
+				<reportElement x="383" y="119" width="1" height="84" uuid="9dbbd89d-9f51-40db-a9e7-1acf05539582"/>
+			</line>
+			<staticText>
+				<reportElement x="231" y="185" width="70" height="16" uuid="12613d96-68ae-45e3-a2b5-5c29fcf58bbd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Zona optica]]></text>
+			</staticText>
+			<line>
+				<reportElement x="351" y="119" width="1" height="83" uuid="915642ee-cbaa-4adb-a75b-15a5d2727fbf"/>
+			</line>
+			<line>
+				<reportElement x="173" y="118" width="179" height="1" uuid="f2a61493-623d-4d41-8be4-077b42c3a235"/>
+			</line>
+			<line>
+				<reportElement x="172" y="202" width="180" height="1" uuid="609b00bd-7910-45b1-90e2-12b2684bf6ec"/>
+			</line>
+			<staticText>
+				<reportElement x="230" y="138" width="70" height="16" uuid="dcd98bf2-a155-4ff5-8be1-d30c47d3b4b3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ojo derecho]]></text>
+			</staticText>
+			<line>
+				<reportElement x="172" y="118" width="1" height="84" uuid="446c200d-e598-495a-88a6-b33b8a3ffc1c"/>
+			</line>
+			<textField>
+				<reportElement x="180" y="166" width="163" height="20" uuid="823c25e9-6534-412f-963d-c2a027a4a614"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{zonaOpticaDer}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="119" width="163" height="20" uuid="d5a3ebf7-1c0c-43eb-8d50-b5766ffcc72d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ojoDerecho}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="66" y="64" width="293" height="16" uuid="cbdec3b5-91ab-4afc-9dcc-24adbbea4b31"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="180" y="138" width="163" height="1" uuid="565e24d0-194c-4f35-bd72-27585b339c26"/>
+			</line>
+			<line>
+				<reportElement x="180" y="185" width="163" height="1" uuid="748bcdb6-6bff-4cd8-b3d2-27a2029df94d"/>
+			</line>
+			<line>
+				<reportElement x="391" y="140" width="163" height="1" uuid="c10e2c62-3378-4e8d-9349-1cd784769b55"/>
+			</line>
+			<line>
+				<reportElement x="391" y="186" width="163" height="1" uuid="ca8eca11-4b0e-4208-a76a-243f07541ea4"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="359">
+			<image>
+				<reportElement x="77" y="20" width="672" height="339" uuid="417dfea0-28d1-4410-a491-7677ef9fd999"/>
+				<imageExpression><![CDATA[$P{urlImagen2}]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement x="77" y="8" width="672" height="13" uuid="b62e5371-5564-4827-8963-29f2e2376409"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="76" y="8" width="673" height="12" uuid="4907d5d9-3f24-4ee5-9f20-931283e12eed"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CORNEAL THICKNESS CHART]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="145" y="97" width="24" height="12" uuid="64d85812-538c-4aa5-8b5f-9694cb3f3020"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{1}.equals("0") ? "" : $V{1})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="449" y="98" width="21" height="12" uuid="1258c5bf-2a12-4c93-85c2-3d27c2453111"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{2}.equals("0") ? "" : $V{2})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="308" y="98" width="21" height="12" uuid="5a756d2d-5d01-4744-a873-88e8aa85eba8"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{3}.equals("0") ? "" : $V{3})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="615" y="100" width="21" height="12" uuid="1ee485ea-7bb4-4aa9-9abf-baba0bfba637"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{4}.equals("0") ? "" : $V{4})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="228" y="68" width="21" height="12" uuid="b422a014-978c-4806-aaa9-b7ba04a91f40"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{5}.equals("0") ? "" : $V{5})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="228" y="124" width="21" height="12" uuid="95d996ed-674f-4216-983d-41f0b60ed7d6"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{6}.equals("0") ? "" : $V{6})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="228" y="182" width="21" height="12" uuid="76ca5c48-dd8f-4095-8af0-f56fb3ff2090"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{7}.equals("0") ? "" : $V{7})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="227" y="241" width="21" height="12" uuid="9f94e240-c099-499f-84c5-a56c336230fa"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{8}.equals("0") ? "" : $V{8})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="227" y="304" width="21" height="12" uuid="6b951437-cbdd-4bd0-8cc0-ed95b3a900c8"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{9}.equals("0") ? "" : $V{9})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="181" width="21" height="12" uuid="b69048c3-f05a-470a-ac66-65574da3a047"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{10}.equals("0") ? "" : $V{10})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="181" width="21" height="12" uuid="352ac279-5eeb-4989-8404-00a36c053f94"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{11}.equals("0") ? "" : $V{11})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="281" y="181" width="21" height="12" uuid="21e99e7a-4437-4ed6-8bb1-37098b0bca95"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{12}.equals("0") ? "" : $V{12})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="343" y="181" width="21" height="12" uuid="fb53b395-25fb-4082-abe1-5f8e309255c3"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{13}.equals("0") ? "" : $V{13})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="415" y="182" width="21" height="12" uuid="d4991a93-caca-4010-89ca-cc13ab686016"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{14}.equals("0") ? "" : $V{14})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="475" y="183" width="21" height="12" uuid="a647f349-4b79-45d4-823b-35b0f2628c11"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{15}.equals("0") ? "" : $V{15})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="533" y="184" width="21" height="12" uuid="ee48e7d8-3ad3-430e-82be-8adadbdcc726"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{16}.equals("0") ? "" : $V{16})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="587" y="182" width="21" height="12" uuid="a916bdb5-21c0-463a-83bb-ecfe77bf7a41"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $V{17}.equals("0") ? "" : $V{17} )]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="647" y="182" width="21" height="12" uuid="fdf301e5-8bd9-4587-9ef8-8fe11e88bbb0"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{18}.equals("0") ? "" : $V{18})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="532" y="69" width="21" height="12" uuid="36cd981b-acda-4acb-9290-2d92bd1d2f42"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{19}.equals("0") ? "" : $V{19})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="533" y="125" width="21" height="12" uuid="9bbcec53-094e-4e90-b1b3-5b26aa0bb311"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{20}.equals("0") ? "" : $V{20})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="532" y="243" width="21" height="12" uuid="a5de961c-adde-41d4-a822-5b57643b22cc"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{21}.equals("0") ? "" : $V{21})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="533" y="306" width="21" height="12" uuid="700b90c8-1ef6-4cb0-93f5-629c83b27dad"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{22}.equals("0") ? "" : $V{22})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="140" y="265" width="21" height="12" uuid="90d52e11-bdbe-44b1-b262-24a03620b4e5"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{23}.equals("0") ? "" : $V{23})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="311" y="268" width="21" height="12" uuid="b6c9242c-9fce-412f-8931-9bd9477c0535"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{24}.equals("0") ? "" : $V{24})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="446" y="266" width="21" height="12" uuid="980fed0b-4519-40a2-8c69-140d82503398"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{25}.equals("0") ? "" : $V{25})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="617" y="269" width="21" height="12" uuid="fd115328-7208-4c32-b515-af231d690d79"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{26}.equals("0") ? "" : $V{26})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="185" y="139" width="21" height="12" uuid="344a7df7-eadf-4381-9143-4ff82e4998ad"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{27}.equals("0") ? "" : $V{27})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="183" y="222" width="21" height="12" uuid="2e9fa11a-e410-46ae-950f-d19774279476"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{28}.equals("0") ? "" : $V{28})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="140" width="21" height="12" uuid="ce43d662-a211-4922-9b58-0a0542b210e9"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{29}.equals("0") ? "" : $V{29})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="267" y="223" width="21" height="12" uuid="08e3f66a-7c4d-4fe9-97c5-5089f919b6e7"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $V{30}.equals("0") ? "" : $V{30} )]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="490" y="142" width="21" height="12" uuid="7d68f55e-9980-4499-9e23-e36e323a7ee1"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{31}.equals("0") ? "" : $V{31})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="489" y="224" width="21" height="12" uuid="96fc401c-a8c9-455b-a62d-d438da89ac9f"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{32}.equals("0") ? "" : $V{32})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="572" y="143" width="21" height="12" uuid="5e182229-0e1f-4432-a255-bc155d85ea5d"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{33}.equals("0") ? "" : $V{33})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="573" y="224" width="21" height="12" uuid="149f50e6-6d76-4a4d-9941-1342261bcbf1"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{34}.equals("0") ? "" : $V{34})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

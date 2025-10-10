@@ -1,0 +1,1521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.1435888100000513"/>
+	<property name="ireport.x" value="1"/>
+	<property name="ireport.y" value="2159"/>
+	<parameter name="edad" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="pie" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="firma" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from historias where id=$P{id} order by fechaConsulta ASC]]>
+	</queryString>
+	<field name="id" class="java.lang.String"/>
+	<field name="paciente" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="historia" class="java.lang.String"/>
+	<field name="tipo" class="java.lang.String"/>
+	<field name="sexo" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="nacimiento" class="java.sql.Timestamp"/>
+	<field name="ocupacion" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="pais" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="ciudad" class="java.lang.String"/>
+	<field name="regimen" class="java.lang.String"/>
+	<field name="afiliado" class="java.lang.String"/>
+	<field name="tipoTrabajador" class="java.lang.String"/>
+	<field name="consulta" class="java.lang.String"/>
+	<field name="cie1" class="java.lang.String"/>
+	<field name="cie2" class="java.lang.String"/>
+	<field name="cie3" class="java.lang.String"/>
+	<field name="cie4" class="java.lang.String"/>
+	<field name="cup" class="java.lang.String"/>
+	<field name="nombreResponsable" class="java.lang.String"/>
+	<field name="parentesco" class="java.lang.String"/>
+	<field name="motivo" class="java.lang.String"/>
+	<field name="fisico1" class="java.lang.String"/>
+	<field name="fisico2" class="java.lang.String"/>
+	<field name="fisico3" class="java.lang.String"/>
+	<field name="problemas" class="java.lang.String"/>
+	<field name="recomendaciones" class="java.lang.String"/>
+	<field name="fechaConsulta" class="java.sql.Timestamp"/>
+	<field name="fechaSeguimiento" class="java.sql.Timestamp"/>
+	<field name="evolucion" class="java.lang.String"/>
+	<field name="tratamiento" class="java.lang.String"/>
+	<field name="t" class="java.lang.String"/>
+	<field name="peso" class="java.lang.String"/>
+	<field name="talla" class="java.lang.String"/>
+	<field name="fc" class="java.lang.String"/>
+	<field name="fr" class="java.lang.String"/>
+	<field name="pa" class="java.lang.String"/>
+	<field name="cefalico" class="java.lang.String"/>
+	<field name="abdominal" class="java.lang.String"/>
+	<field name="cabezaCuello" class="java.lang.String"/>
+	<field name="cardioPulmonar" class="java.lang.String"/>
+	<field name="abdomen" class="java.lang.String"/>
+	<field name="pelvis" class="java.lang.String"/>
+	<field name="extremidades" class="java.lang.String"/>
+	<field name="apellidos" class="java.lang.String"/>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="t2" class="java.lang.String"/>
+	<field name="peso2" class="java.lang.String"/>
+	<field name="pa2" class="java.lang.String"/>
+	<field name="fr2" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="organosSentidos" class="java.lang.String"/>
+	<field name="musculoEsqueletico" class="java.lang.String"/>
+	<field name="neurologico" class="java.lang.String"/>
+	<field name="pielAnexos" class="java.lang.String"/>
+	<field name="cantidadIncapacidad" class="java.lang.Integer"/>
+	<field name="cantidadAyuda" class="java.lang.Integer"/>
+	<field name="cie11" class="java.lang.String"/>
+	<field name="cie22" class="java.lang.String"/>
+	<field name="cie33" class="java.lang.String"/>
+	<field name="cie44" class="java.lang.String"/>
+	<field name="cup1" class="java.lang.String"/>
+	<field name="familiar" class="java.lang.String"/>
+	<field name="fumador" class="java.lang.String"/>
+	<field name="ingesta" class="java.lang.String"/>
+	<field name="alergias" class="java.lang.String"/>
+	<field name="toxicos" class="java.lang.String"/>
+	<field name="medicamentos" class="java.lang.String"/>
+	<field name="patologicos" class="java.lang.String"/>
+	<field name="psiquiatricos" class="java.lang.String"/>
+	<field name="quirurgicos" class="java.lang.String"/>
+	<field name="ultimaMenstruacion" class="java.lang.String"/>
+	<field name="ultimaCitologia" class="java.lang.String"/>
+	<field name="resultadosCitologia" class="java.lang.String"/>
+	<field name="embarazos" class="java.lang.String"/>
+	<field name="abortos" class="java.lang.String"/>
+	<field name="partos" class="java.lang.String"/>
+	<field name="cesarias" class="java.lang.String"/>
+	<field name="hijosVivos" class="java.lang.String"/>
+	<field name="planificacion" class="java.lang.String"/>
+	<field name="fotos" class="java.lang.String"/>
+	<field name="examenes" class="java.lang.String"/>
+	<field name="revision" class="java.lang.String"/>
+	<field name="oido" class="java.lang.String"/>
+	<field name="vista" class="java.lang.String"/>
+	<field name="nariz" class="java.lang.String"/>
+	<field name="gusto" class="java.lang.String"/>
+	<field name="tacto" class="java.lang.String"/>
+	<field name="telefonoResponsable" class="java.lang.String"/>
+	<field name="responsable" class="java.lang.String"/>
+	<field name="cup2" class="java.lang.String"/>
+	<field name="descCup2" class="java.lang.String"/>
+	<field name="observacionProcedimientos" class="java.lang.String"/>
+	<field name="menarca" class="java.lang.String"/>
+	<field name="diagnosticoEspecializado" class="java.lang.String"/>
+	<field name="nutricionales" class="java.lang.String"/>
+	<group name="consulta">
+		<groupExpression><![CDATA[$F{consulta}]]></groupExpression>
+		<groupHeader>
+			<band height="51">
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="82" y="1" width="455" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{fechaConsulta}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="15" width="74" height="11" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ Acompañante:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="140" y="40" width="53" height="11" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Parentesco:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="1" width="74" height="11" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ Consulta:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="196" y="40" width="188" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{parentesco}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="195" y="27" width="295" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nombreResponsable}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="27" width="59" height="11" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Documento:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="66" y="27" width="72" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{responsable}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="140" y="27" width="53" height="11" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nombre:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="40" width="59" height="11" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Teléfono:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="66" y="40" width="72" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{telefonoResponsable}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="29">
+				<printWhenExpression><![CDATA[!$F{motivo}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="4" y="6" width="545" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Anamnesis (Motivo de consulta) :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="4" y="18" width="545" height="11"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{motivo}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="29">
+				<printWhenExpression><![CDATA[!$F{problemas}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="5" y="18" width="544" height="11"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{problemas}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="6" width="544" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Enfermedad Actual]]></text>
+				</staticText>
+			</band>
+			<band height="2"/>
+			<band height="200">
+				<printWhenExpression><![CDATA[!$F{problemas}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="0" width="543" height="15" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ANTECEDENTES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="6" y="48" width="542" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PERSONALES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="6" y="17" width="542" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FAMILIARES]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="9" y="30" width="539" height="13"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{familiar}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="62" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fumador:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="77" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ingesta Alcohol:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="92" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Alergias:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="107" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Toxicos:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="122" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Medicamentos:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="137" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Patologicos:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="167" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Quirurgicos:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="152" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Psiquiatricos:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="62" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{fumador}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="77" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ingesta}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="92" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{alergias}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="107" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{toxicos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="122" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{medicamentos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="137" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{patologicos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="152" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{psiquiatricos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="167" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{quirurgicos}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="1" y="76" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="1" y="91" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="0" y="106" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="1" y="121" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="1" y="136" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="2" y="151" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="3" y="166" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="1" y="61" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="1" y="45" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="86" y="182" width="456" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nutricionales}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="3" y="181" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="182" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Habitos Nutricion.:]]></text>
+				</staticText>
+			</band>
+			<band height="95">
+				<printWhenExpression><![CDATA[!($F{sexo}.toString().equalsIgnoreCase( "Masculino" ) || $F{sexo}.toString().equalsIgnoreCase( "masculino" ) || $F{sexo}.toString().equalsIgnoreCase( "MASCULINO" ))]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="366" y="50" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ult. Mestruacion:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="442" y="50" width="95" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ultimaMenstruacion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="7" y="51" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ultima citologia:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="86" y="51" width="84" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ultimaCitologia}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="7" y="21" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Núm embarazos:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="86" y="21" width="84" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{embarazos}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="177" y="21" width="89" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Número de abortos:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="269" y="21" width="83" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{abortos}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="366" y="21" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Número de partos:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="442" y="21" width="100" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{partos}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="177" y="36" width="89" height="13" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Número de cesareas:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="269" y="36" width="83" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cesarias}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="7" y="36" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Núm hijos vivos:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="86" y="36" width="84" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{hijosVivos}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="7" y="66" width="74" height="14" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Resultados citologia:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="87" y="66" width="455" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{resultadosCitologia}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="7" y="82" width="74" height="13" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Planificacion:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="87" y="82" width="456" height="13"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{planificacion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="177" y="51" width="89" height="13" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha de menarca:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="269" y="51" width="83" height="13"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{menarca}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" mode="Transparent" x="2" y="81" width="549" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="7" y="5" width="542" height="14" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ginecoobstetricos]]></text>
+				</staticText>
+			</band>
+			<band height="29">
+				<printWhenExpression><![CDATA[!$F{revision}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="5" width="540" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Revisión Por Sistemas]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="5" y="16" width="539" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{revision}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="73">
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="2" width="540" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Examen Fisico]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="369" y="56" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Temperatura:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="446" y="56" width="100" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{t}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="15" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Peso:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="82" y="15" width="100" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{peso}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="82" y="28" width="100" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{talla}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="28" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Estatura:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="41" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[IMC:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="82" y="41" width="100" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{fisico1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="369" y="15" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Frec. Cardiaca:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="446" y="15" width="100" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{fc}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="369" y="28" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Frec. Respiratoria:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="369" y="41" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Presión Arterial:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="446" y="28" width="100" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{fr}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="446" y="41" width="29" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{pa}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="54" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tiene:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="82" y="54" width="274" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cefalico}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="475" y="41" width="30" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{abdominal}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="12">
+				<printWhenExpression><![CDATA[!$F{cabezaCuello}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="0" width="74" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cabeza y Cuello:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="0" width="462" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cabezaCuello}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="85">
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="5" y="35" width="73" height="10" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Oídos:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="83" y="61" width="462" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{gusto}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" x="2" y="60" width="547" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="83" y="48" width="462" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nariz}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" x="2" y="72" width="547" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="83" y="74" width="462" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{tacto}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" x="2" y="46" width="547" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="83" y="21" width="462" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{vista}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="83" y="35" width="462" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{oido}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="5" y="74" width="73" height="10" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tacto:]]></text>
+				</staticText>
+				<line>
+					<reportElement positionType="Float" x="1" y="32" width="547" height="1" forecolor="#FFFFFF"/>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="22" width="73" height="10" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ojos:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="5" y="61" width="73" height="10" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Boca:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" mode="Opaque" x="5" y="48" width="73" height="10" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nariz:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="3" width="103" height="13" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Organos de los sentidos]]></text>
+				</staticText>
+			</band>
+			<band height="16">
+				<printWhenExpression><![CDATA[!$F{cardioPulmonar}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="4" width="74" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CardioPulmonar:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="4" width="462" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cardioPulmonar}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="16">
+				<printWhenExpression><![CDATA[!$F{abdomen}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="4" width="74" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Abdomen:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="4" width="462" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{abdomen}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="16">
+				<printWhenExpression><![CDATA[!$F{pelvis}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="4" width="74" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Digestivo:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="4" width="462" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{pelvis}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="16">
+				<printWhenExpression><![CDATA[!$F{extremidades}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="4" width="74" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Urinario:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="4" width="462" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{extremidades}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[!$F{musculoEsqueletico}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="3" width="103" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Musculo Esqueletico:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="110" y="3" width="434" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{musculoEsqueletico}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[!$F{pielAnexos}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="3" width="74" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Piel Y Anexos:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="3" width="462" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{pielAnexos}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[!$F{neurologico}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="3" width="462" height="12"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{neurologico}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="3" width="74" height="12" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Neurologico:]]></text>
+				</staticText>
+			</band>
+			<band height="36">
+				<printWhenExpression><![CDATA[!$F{cie1}.equalsIgnoreCase( "" )]]></printWhenExpression>
+				<rectangle>
+					<reportElement stretchType="RelativeToTallestObject" x="67" y="20" width="476" height="11"/>
+				</rectangle>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="113" y="20" width="430" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="19" width="59" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Principal:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="6" width="539" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Diagnosticos]]></text>
+				</staticText>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="111" y="20" width="1" height="11"/>
+				</line>
+				<textField>
+					<reportElement x="69" y="20" width="41" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie11}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[!$F{cie2}.equalsIgnoreCase( "" )]]></printWhenExpression>
+				<rectangle>
+					<reportElement x="67" y="0" width="476" height="11"/>
+				</rectangle>
+				<textField>
+					<reportElement x="113" y="0" width="430" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie2}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="0" width="59" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Relacionado:]]></text>
+				</staticText>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="111" y="0" width="1" height="11"/>
+				</line>
+				<textField>
+					<reportElement x="67" y="0" width="43" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie22}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[!$F{cie3}.equalsIgnoreCase( "" )]]></printWhenExpression>
+				<rectangle>
+					<reportElement x="67" y="0" width="476" height="11"/>
+				</rectangle>
+				<textField>
+					<reportElement x="113" y="0" width="430" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie3}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="0" width="59" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Relacionado:]]></text>
+				</staticText>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="111" y="0" width="1" height="11"/>
+				</line>
+				<textField>
+					<reportElement x="67" y="0" width="43" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie33}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="13">
+				<printWhenExpression><![CDATA[!$F{cie4}.equalsIgnoreCase( "" )]]></printWhenExpression>
+				<rectangle>
+					<reportElement x="67" y="0" width="476" height="11"/>
+				</rectangle>
+				<textField>
+					<reportElement x="113" y="0" width="430" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie4}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="0" width="59" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Complicación:]]></text>
+				</staticText>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="111" y="0" width="1" height="11"/>
+				</line>
+				<textField>
+					<reportElement x="67" y="0" width="43" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cie44}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="26">
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="5" width="136" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Diagnostico especializado:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="5" y="16" width="538" height="10"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{diagnosticoEspecializado}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="48">
+				<printWhenExpression><![CDATA[!$F{tratamiento}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<subreport>
+					<reportElement x="1" y="3" width="547" height="45"/>
+					<subreportParameter name="SUBREPORT_DIR"/>
+					<subreportParameter name="numero">
+						<subreportParameterExpression><![CDATA[$F{consulta}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA["reportes/ejemplo/formulaMedicaHistoria.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			<band height="26">
+				<printWhenExpression><![CDATA[!$F{recomendaciones}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="4" width="542" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Recomendaciones]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="6" y="15" width="542" height="11"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recomendaciones}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="74">
+				<printWhenExpression><![CDATA[!$F{cup}.equalsIgnoreCase( "" )]]></printWhenExpression>
+				<rectangle>
+					<reportElement x="67" y="20" width="479" height="24"/>
+				</rectangle>
+				<staticText>
+					<reportElement mode="Opaque" x="6" y="6" width="539" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Procedimientos sugeridos]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="115" y="33" width="431" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{descCup2}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="67" y="32" width="480" height="1"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="7" y="64" width="540" height="10"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{observacionProcedimientos}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="7" y="52" width="157" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Observación del procedimiento:]]></text>
+				</staticText>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="113" y="21" width="1" height="11"/>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="8" y="20" width="56" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Principal:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="67" y="33" width="46" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cup2}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="113" y="33" width="1" height="11"/>
+				</line>
+				<textField>
+					<reportElement x="67" y="21" width="46" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cup1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="8" y="33" width="56" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Relacionado:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="115" y="21" width="431" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cup}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="48">
+				<printWhenExpression><![CDATA[!$F{cantidadAyuda}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<subreport>
+					<reportElement x="1" y="0" width="547" height="45"/>
+					<subreportParameter name="numero">
+						<subreportParameterExpression><![CDATA[$F{consulta}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA["reportes/ejemplo/ayudaDiagnosticaHistoria.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			<band height="49">
+				<printWhenExpression><![CDATA[!$F{cantidadIncapacidad}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<subreport>
+					<reportElement x="1" y="0" width="547" height="45"/>
+					<subreportParameter name="numero">
+						<subreportParameterExpression><![CDATA[$F{consulta}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA["reportes/ejemplo/incapacidades.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			<band height="14">
+				<printWhenExpression><![CDATA[!$F{fechaSeguimiento}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="3" width="542" height="11" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ Evoluciones]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="seguimiento">
+		<groupExpression><![CDATA[$F{fechaSeguimiento}]]></groupExpression>
+		<groupHeader>
+			<band height="17">
+				<printWhenExpression><![CDATA[!$F{fechaSeguimiento}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="82" y="3" width="465" height="11"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{fechaSeguimiento}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="3" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ Fecha:]]></text>
+				</staticText>
+			</band>
+			<band height="13">
+				<printWhenExpression><![CDATA[!$F{evolucion}.equalsIgnoreCase( "" )]]></printWhenExpression>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="82" y="1" width="464" height="11">
+						<printWhenExpression><![CDATA[!$F{evolucion}.equalsIgnoreCase( "" )]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{evolucion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="1" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Evolución:]]></text>
+				</staticText>
+			</band>
+			<band height="1">
+				<printWhenExpression><![CDATA[!$F{evolucion}.equalsIgnoreCase( "" )]]></printWhenExpression>
+			</band>
+			<band height="29">
+				<printWhenExpression><![CDATA[!$F{t2}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="15" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Peso:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="2" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Temperatura:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="183" y="15" width="78" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Presión Arterial:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="183" y="2" width="78" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Frec. Respiratoria:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="81" y="2" width="100" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{t2}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="81" y="15" width="100" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{peso2}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="265" y="2" width="100" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{fr2}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="265" y="15" width="100" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{pa2}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[!$F{observaciones}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Opaque" x="5" y="2" width="74" height="11" backcolor="#CCCCCC"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Observaciones:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="81" y="3" width="459" height="11"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{observaciones}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="1">
+				<printWhenExpression><![CDATA[!$F{observaciones}.toString().equalsIgnoreCase( "" )]]></printWhenExpression>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="firma">
+		<groupExpression><![CDATA[$F{consulta}]]></groupExpression>
+		<groupHeader>
+			<band height="65">
+				<line>
+					<reportElement x="345" y="53" width="200" height="1"/>
+				</line>
+				<image>
+					<reportElement x="345" y="4" width="200" height="46"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{firma}]]></imageExpression>
+				</image>
+				<textField>
+					<reportElement x="346" y="54" width="200" height="11" forecolor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{usuario}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="142" splitType="Stretch">
+			<rectangle>
+				<reportElement x="228" y="8" width="324" height="79"/>
+			</rectangle>
+			<textField>
+				<reportElement x="315" y="56" width="237" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="428" y="72" width="124" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{edad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="428" y="40" width="124" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="315" y="40" width="77" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{paciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="315" y="72" width="77" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{sexo}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="7" y="6" width="215" height="115"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="315" y="9" width="237" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{apellidos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="229" y="24" width="84" height="15" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="229" y="40" width="84" height="15" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Número de Id:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="229" y="56" width="84" height="15" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Número Historia:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="393" y="40" width="34" height="15" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="229" y="72" width="84" height="15" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sexo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="393" y="72" width="34" height="14" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Edad:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="229" y="8" width="84" height="15" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Apellidos:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="314" y="8" width="1" height="79"/>
+			</line>
+			<line>
+				<reportElement x="228" y="23" width="324" height="1"/>
+			</line>
+			<line>
+				<reportElement x="228" y="39" width="324" height="1"/>
+			</line>
+			<line>
+				<reportElement x="228" y="55" width="324" height="1"/>
+			</line>
+			<line>
+				<reportElement x="228" y="71" width="324" height="1"/>
+			</line>
+			<line>
+				<reportElement x="392" y="72" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="427" y="72" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="392" y="40" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="427" y="40" width="1" height="15"/>
+			</line>
+			<textField>
+				<reportElement x="315" y="24" width="237" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="124" width="555" height="11" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HISTORIA CLINICA]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

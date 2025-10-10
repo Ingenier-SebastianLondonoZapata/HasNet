@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="792" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4e6da8e3-b8c2-4c0f-bb4b-4576fa6db661">
+	<property name="ireport.zoom" value="0.9330147604194741"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="edad" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="pie" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="firma" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from hospitalizacion where Id = $P{id}]]>
+	</queryString>
+	<field name="mascota" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fIngreso" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="hIngreso" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="observacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fSalida" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="hSalida" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="consulta" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="especie" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="raza" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="genero" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="color" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="edad" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="encabezado">
+		<groupHeader>
+			<band height="32">
+				<subreport>
+					<reportElement x="12" y="10" width="531" height="22" uuid="7d3a6905-de47-4aa8-b83d-4eeec316eee9"/>
+					<subreportParameter name="cliente">
+						<subreportParameterExpression><![CDATA[$F{Id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA["impresionesVeterinario/productosHospitalizacion.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			<band height="32">
+				<subreport>
+					<reportElement x="12" y="10" width="531" height="22" uuid="9d67cb28-2d69-4bb3-822a-e188c75c8990"/>
+					<subreportParameter name="cliente">
+						<subreportParameterExpression><![CDATA[$F{Id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA["impresionesVeterinario/controlMedico.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="consulta"/>
+	<group name="seguimiento">
+		<groupExpression><![CDATA[]]></groupExpression>
+	</group>
+	<group name="firma">
+		<groupHeader>
+			<band height="65">
+				<line>
+					<reportElement x="345" y="51" width="200" height="1" uuid="1f2af73c-c4bb-4ae5-95d9-2827e98dbcc6"/>
+				</line>
+				<image>
+					<reportElement x="345" y="4" width="200" height="46" uuid="a088d6bf-b5a5-4c6a-bcfc-9c46725b13d4"/>
+					<imageExpression><![CDATA[$P{firma}]]></imageExpression>
+				</image>
+				<textField isBlankWhenNull="true">
+					<reportElement x="346" y="52" width="200" height="13" forecolor="#000000" uuid="5e81193c-8a3c-4dcc-b0ed-3aa10781fede"/>
+					<textElement>
+						<font fontName="Arial" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{usuario}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="184" splitType="Stretch">
+			<image>
+				<reportElement x="35" y="29" width="175" height="120" uuid="54acc6d2-cbd6-4a13-b025-ea7030e423cb"/>
+				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="424" y="95" width="116" height="15" uuid="94cece1f-4635-431f-afef-f60563ff3089"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{edad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="381" y="95" width="43" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="cd3f6fdb-66db-4a2d-939c-7197b1429f4a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Edad:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="292" y="50" width="85" height="15" uuid="637882f4-f561-4f03-aea6-492d56d6306e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mascota}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="292" y="110" width="85" height="14" uuid="0ce754dc-3ae2-4769-af04-c14989d0a8d3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{genero}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="233" y="80" width="59" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="b45c9843-438f-408f-a92a-d1c94b386adf"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Especie:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="292" y="65" width="248" height="15" uuid="71372c50-edbf-420d-a98e-22628b874b20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="292" y="95" width="85" height="15" uuid="ab4316a1-6af3-4b9c-922d-e79ec06b6494"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{edad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="233" y="65" width="59" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="81805e61-ed0c-48c9-974d-3aac287e9003"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="381" y="110" width="43" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="03cb6d0a-ec61-40c6-a25f-eb9e84802fd3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Color:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="233" y="50" width="59" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="76a73f8d-bce0-4b7a-9f6a-8b95673fb7fc"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="233" y="95" width="59" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="5d318aa4-9f24-476e-a2e3-56b2ffa8d5a2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nacimiento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="233" y="110" width="59" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="49b63985-2182-40e1-85b6-c50bd0f5bd37"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sexo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="424" y="110" width="116" height="14" uuid="5a7177e6-5625-47d9-93ed-5155fb19461f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{color}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="424" y="80" width="116" height="15" uuid="f1dd931c-fb4e-4799-9147-90c9fc2922fb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{raza}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="233" y="33" width="307" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="fd580978-da6c-4ffe-9334-781f8f1a716b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORMACIÓN DE LA MASCOTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="381" y="80" width="43" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="8dd67365-339b-450d-8e69-817cfd4a353d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Raza:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="292" y="80" width="85" height="15" uuid="5fd1b8de-7002-4164-838b-6df3ed8d9b8a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{especie}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="23" backcolor="#CCCCCC" uuid="51498b57-df08-424c-b11e-b594852cb4bd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HOSPITALIZACIÓN]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="12" y="162" width="531" height="22" uuid="0fac547a-a039-484f-b5ca-1ca1cfbaefb8"/>
+				<subreportParameter name="cliente">
+					<subreportParameterExpression><![CDATA[$F{Id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesVeterinario/notasMedicas.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement mode="Opaque" x="381" y="124" width="53" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="1fdad1c1-bb9c-46dd-9fb0-0498582094fe"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora Ingreso:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="233" y="124" width="59" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="143be216-af23-4a8c-9934-423fbdea27e5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Ingreso:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="292" y="124" width="85" height="14" uuid="57879504-c805-40c3-abb6-2be9e426ba08"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fIngreso}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH.mm">
+				<reportElement x="436" y="124" width="104" height="14" uuid="f7d1169a-e935-41d1-9a8b-f5c7de0d04c0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hIngreso}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

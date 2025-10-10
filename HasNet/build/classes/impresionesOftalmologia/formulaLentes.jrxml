@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="396" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="21fc78f5-7574-42b1-9e68-d2791ee440f1">
+	<property name="ireport.zoom" value="0.6830134553650756"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="urlImagen" class="java.io.InputStream"/>
+	<parameter name="info" class="java.lang.String"/>
+	<parameter name="id_1" class="java.lang.String"/>
+	<parameter name="nombre" class="java.lang.String"/>
+	<parameter name="tipo" class="java.lang.String"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="firma" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from formulaLentes where Id = $P{numero}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="paciente" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="od" class="java.lang.String"/>
+	<field name="oi" class="java.lang.String"/>
+	<field name="add" class="java.lang.String"/>
+	<field name="bifocal" class="java.lang.String"/>
+	<title>
+		<band height="178" splitType="Stretch">
+			<rectangle>
+				<reportElement x="13" y="135" width="128" height="38" backcolor="#CCCCCC" uuid="dfeed2fd-092a-4946-bf78-16159adc5cb1"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="266" y="154" width="103" height="19" backcolor="#CCCCCC" uuid="55bd1d75-c516-4fd1-b1b3-c3e25d423346"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="61" y="107" width="130" height="16" uuid="2171f61c-9c73-4921-a358-0e29a206c7d9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="269" y="154" width="88" height="19" backcolor="#CCCCCC" uuid="2f415cdc-4776-4f7e-ae46-4ebb5e58937d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMULA N°:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="155" width="125" height="16" backcolor="#CCCCCC" uuid="bb57c4e6-548c-428d-86c7-fe35041a39b7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° IDENTIFICACION:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="13" y="107" width="47" height="16" backcolor="#CCCCCC" uuid="d7179da5-e335-4002-8ea1-ba1f9dc61ef5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="16" y="136" width="122" height="17" backcolor="#CCCCCC" uuid="aa223419-b3de-4e57-9598-82d75ce861e6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE COMPLETO:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="13" y="134" width="514" height="39" uuid="83afe71e-ee36-44f8-8ca6-d0f42f528a79"/>
+			</rectangle>
+			<line>
+				<reportElement mode="Transparent" x="13" y="172" width="515" height="1" uuid="4732f731-8304-45f1-b2ff-5e6874c77135"/>
+			</line>
+			<line>
+				<reportElement x="13" y="153" width="515" height="1" uuid="cfe2fe30-39d1-45c0-ade2-3bb39d4e2b88"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="13" y="84" width="517" height="16" forecolor="#FFFFFF" backcolor="#0066CC" uuid="925189db-fc75-4408-9b80-680fbe75dc20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMULA DE LENTES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="212" y="3" width="318" height="75" uuid="a8afcf0d-3c0c-48ca-8b1e-dfe27326442b"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{info}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="10" y="3" width="202" height="75" uuid="f6787ab6-3642-4cf2-a3cc-d37332a38938"/>
+				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="371" y="156" width="156" height="16" uuid="f97af33b-2e69-4107-ac09-edf437ccb506"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="143" y="155" width="123" height="16" uuid="ff9f8b33-db30-419e-8ece-870a371edc40"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{paciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="143" y="136" width="384" height="16" uuid="70fe5480-8c09-4a5f-9507-c3275f6c4175"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="24">
+			<staticText>
+				<reportElement mode="Transparent" x="13" y="2" width="25" height="16" backcolor="#CCCCCC" uuid="3a77e989-3eae-4ffa-a90d-4c6fe3e44b6d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[OD:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="76" y="2" width="454" height="20" uuid="fa5bf317-6522-4d06-a860-c4a4f426c5ba"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{od}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="24">
+			<staticText>
+				<reportElement mode="Transparent" x="13" y="2" width="25" height="16" backcolor="#CCCCCC" uuid="b79a1ff3-90d8-4831-a737-c4c6ec20a89a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[OI:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="76" y="2" width="454" height="20" uuid="2a20be32-fde1-4f1e-9539-0ade3e8cf1bb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oi}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="24">
+			<staticText>
+				<reportElement mode="Transparent" x="13" y="3" width="35" height="16" backcolor="#CCCCCC" uuid="180eb543-c629-44ec-834a-5bb62274db62"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[ADD:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="76" y="2" width="454" height="20" uuid="a564cf1e-7323-4eef-966d-3d407558476a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{add}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="25">
+			<staticText>
+				<reportElement mode="Transparent" x="13" y="2" width="59" height="16" backcolor="#CCCCCC" uuid="be43261d-1bea-4f0d-a76c-37ed1b8a7003"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[BIFOCAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="76" y="2" width="454" height="20" uuid="53ae07d8-7dd5-4ba6-86ab-d96aaebb30be"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bifocal}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="73">
+			<textField>
+				<reportElement x="11" y="53" width="200" height="16" uuid="bb5e2380-2241-4ced-ab87-2c96dec136ff"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{usuario}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="11" y="7" width="200" height="46" uuid="ae1f06f0-eab0-49c3-8bb8-4890b1846f7b"/>
+				<imageExpression><![CDATA[$P{firma}]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="12" y="53" width="198" height="1" uuid="3ca633e7-329a-4a07-9929-11f576675174"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

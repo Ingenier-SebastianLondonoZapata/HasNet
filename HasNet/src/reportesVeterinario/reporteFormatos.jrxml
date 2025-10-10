@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="370" pageHeight="792" columnWidth="330" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d56428dd-fcc6-4e17-8ac6-0974c02f2002">
+	<property name="ireport.zoom" value="1.652892561983475"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="formato" class="java.lang.String"/>
+	<parameter name="tercero" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select nombre, Id, Formato, Tercero, Fecha, IdTercero 
+from TiposFormatos
+where Tercero = $P{tercero}]]>
+	</queryString>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Formato" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Tercero" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Fecha" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IdTercero" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="57" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="4" width="329" height="17" forecolor="#000000" backcolor="#CCCCCC" uuid="c6998f4b-2e4f-46ec-80b5-7d6bcb3ba72b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORMACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="37" width="73" height="16" forecolor="#000000" backcolor="#FFFFFF" uuid="266b71b5-ff40-4b59-9d90-ea1754f613bb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="21" width="73" height="16" forecolor="#000000" backcolor="#FFFFFF" uuid="2a359932-4247-47e6-8bbd-57583c9bbb5b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Identificación:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="77" y="37" width="252" height="16" uuid="f75dd189-d616-49eb-b47d-2c1ab225d684"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="77" y="21" width="252" height="16" uuid="8a5f8522-ba93-4359-a728-2b8853b24f9b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IdTercero}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement mode="Opaque" x="56" y="5" width="133" height="15" forecolor="#000000" backcolor="#CCCCCC" uuid="db21223d-cd63-48dc-8df0-67960d7ebe16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMATO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="190" y="5" width="85" height="15" forecolor="#000000" backcolor="#CCCCCC" uuid="1ed27b15-bfd0-4773-b084-955bff0d2b39"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="56" y="20" width="219" height="1" uuid="9cc20b8f-2327-4637-b026-717483fdc264"/>
+			</line>
+			<line>
+				<reportElement x="56" y="4" width="219" height="1" uuid="0c9f5802-a86d-4128-89d6-ed443d49be68"/>
+			</line>
+			<line>
+				<reportElement x="275" y="4" width="1" height="17" uuid="4952dedc-8a81-43a0-8122-c5351e0e2bf5"/>
+			</line>
+			<line>
+				<reportElement x="55" y="4" width="1" height="17" uuid="842943f1-f29d-4318-92b1-f4fe36a38087"/>
+			</line>
+			<line>
+				<reportElement x="189" y="4" width="1" height="17" uuid="cbfd86e9-e365-4f4d-a40c-0ab4aefbcd24"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="190" y="0" width="84" height="17" uuid="3216d5a1-9697-4cc6-bc68-2e57484eef63"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="56" y="0" width="133" height="17" uuid="7713dfe8-c9c9-4de5-9e86-07702e5108fd"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Formato}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="55" y="0" width="1" height="17" uuid="8742056d-de01-4b76-b007-eb2ed118f0b7"/>
+			</line>
+			<line>
+				<reportElement x="275" y="0" width="1" height="17" uuid="f18571be-bcc9-4360-9934-cd9e344c96c4"/>
+			</line>
+			<line>
+				<reportElement x="55" y="17" width="221" height="1" uuid="fb36f745-c578-4ccc-a9d3-7d11dcc87cad"/>
+			</line>
+			<line>
+				<reportElement x="189" y="0" width="1" height="17" uuid="cd9081e3-1268-4c0d-9d9a-9704c8f3f51d"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

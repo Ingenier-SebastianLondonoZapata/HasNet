@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="530" pageHeight="802" columnWidth="530" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="f9a01f4f-96b8-4459-b6e5-96311f7a8829">
+	<property name="ireport.zoom" value="1.4641000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from bdQuirurgica where historia = $P{numero}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="historia" class="java.lang.String"/>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="tipo" class="java.lang.String"/>
+	<field name="observacion" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="19" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="528" height="18" backcolor="#CCCCCC" uuid="7c3d3496-e0ac-42de-8b7d-08673b042760"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[QUIRURGICA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="530" height="1" uuid="fdb2a183-c44f-4be7-b419-b59edf4f9e81"/>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="18" uuid="255aa491-3c26-4ea1-8a14-4c1120b74a15"/>
+			</line>
+			<line>
+				<reportElement x="529" y="1" width="1" height="18" uuid="a2568736-0550-44f4-9580-214c3fd3f4ff"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="0" width="40" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="e7c554f2-8bc0-431c-b960-6c87641fd72d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="41" y="0" width="100" height="14" uuid="f4d40b27-7596-4b0e-86e0-cbab3ff3401d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="1" y="28" width="528" height="25" uuid="084855bb-1893-47fd-a921-54a3bd061602"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="14" width="40" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="a81ed2df-bfcd-4930-9446-3ff639fd16a5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="41" y="14" width="484" height="14" uuid="13f5aa08-c83c-4c73-8976-7f81b0d78d9d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="1" height="53" uuid="281c884f-e518-4ffb-8fa6-1928f8bb480c"/>
+			</line>
+			<line>
+				<reportElement x="529" y="0" width="1" height="53" uuid="c5e95f6b-28c6-4819-b29a-4774e5b76bc6"/>
+			</line>
+			<line>
+				<reportElement x="0" y="53" width="529" height="1" uuid="3682c500-fbd4-4b3e-ac44-352f34efb324"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

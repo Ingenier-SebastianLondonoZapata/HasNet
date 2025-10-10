@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://pruebas.ptm.com.co/PTMWS/ptm_pru.wsdl" uri="xml-resources/web-service-references/ptm_pru/wsdl/pruebas.ptm.com.co/PTMWS/ptm_pru.wsdl"/>
+    <system systemId="https://www.comercialcard.com.co/PTMWS/ptm.wsdl" uri="xml-resources/web-service-references/ptm/wsdl/www.comercialcard.com.co/PTMWS/ptm.wsdl"/>
+</catalog>

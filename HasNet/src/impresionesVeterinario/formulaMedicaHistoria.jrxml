@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="530" pageHeight="802" columnWidth="530" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5f10bc0b-c098-40d4-91ca-cab419a2234c">
+	<property name="ireport.zoom" value="1.6528925619834718"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from conFormulaMedica2 where historia = $P{numero}]]>
+	</queryString>
+	<field name="Id" class="java.lang.String"/>
+	<field name="historia" class="java.lang.String"/>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="temp" class="java.lang.String"/>
+	<field name="peso" class="java.lang.String"/>
+	<field name="tllc" class="java.lang.String"/>
+	<field name="pulso" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="528" height="16" backcolor="#CCCCCC" uuid="501cbd84-efef-4cd9-ab9e-ffb0cc10802e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[TRATAMIENTO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="530" height="1" uuid="4721c46b-77b3-4786-b13f-21c7724e8e32"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="16" uuid="22949789-ae3e-4412-ae8d-0c7078242e59"/>
+			</line>
+			<line>
+				<reportElement x="529" y="1" width="1" height="16" uuid="d356f85d-3c9e-4ef5-a3bf-763721ed96ae"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="0" width="32" height="15" forecolor="#000000" backcolor="#CCCCCC" uuid="cb3f6fb6-4680-4090-955a-1036c5aa98e7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="35" y="0" width="100" height="15" uuid="6fe035d4-7807-48dc-8442-6bf77d4dc316"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="1" y="15" width="528" height="24" uuid="6f579f9b-06a9-4317-8211-87a57a0940ae"/>
+				<subreportParameter name="numero">
+					<subreportParameterExpression><![CDATA[$F{Id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["impresionesVeterinario/formulaMedicaHistoria2.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="40" uuid="1d42a5fb-6fb9-4edf-837f-ab23f8381d0d"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="529" y="0" width="1" height="40" uuid="022ae7f7-a195-4581-a1b3-a4f36132caae"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>
