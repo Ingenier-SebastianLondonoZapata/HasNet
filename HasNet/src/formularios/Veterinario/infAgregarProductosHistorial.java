@@ -1,5 +1,8 @@
 package formularios.Veterinario;
 
+import Modelo.Inventario.UltimoPonderado;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Vista.Productos.VistaInventarioInicial;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -11,12 +14,17 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import javax.swing.table.DefaultTableModel;
 
 public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
 
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
+    
     DefaultTableModel modeloPro;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
@@ -586,9 +594,14 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
                 compraDetallada.setVisible(true);
                 return;
             } else {
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-                BigDecimal costoPonderado = big.getBigDecimal(ultimoPonderado[4].toString());
-
+                BigDecimal costoPonderado = BigDecimal.ZERO;
+                try {
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    costoPonderado = ultimoPonderado.getNuevoPonderado();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                 String cant = nodo.getFisicoInventario().replace(".", ",");
                 Double res = 0.0;
 

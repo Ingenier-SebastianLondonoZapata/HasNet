@@ -5,11 +5,15 @@ import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import DAO.Configuraciones.DaoResoluciones;
-import Enums.enumTipoDocumento;
+import Enums.TipoDocumento;
+import Enums.enumBodegas;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
 import Modelo.DocumentosElectronicos.ModeloDetalleProductos;
+import Modelo.Inventario.DetalleProducto;
+import Modelo.Inventario.MovimientoInventario;
+import Modelo.Inventario.UltimoPonderado;
 import Modelo.Maestra.ModeloResolucion;
 import Utilidades.Constantes;
 import Validaciones.Compras.squemaCompras;
@@ -24,9 +28,13 @@ import clases.productos.ndCompra;
 import clases.productos.ndIngreso;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Servicio.Inventario.ServicioInventario;
 import Utilidades.DatosMaestra;
+import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
 import Utilidades.DocumentosElectronicos;
 import Utilidades.Numeros;
+import Utilidades.Utilidades;
 import formularios.Tesoreria.dlgTipoEgreso;
 import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgTipoDescuento;
@@ -48,9 +56,12 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -68,7 +79,9 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-public class vistaIngresos extends javax.swing.JPanel {
+public class VistaIngreso extends javax.swing.JPanel {
+
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
     private final DocumentosElectronicos documentosElectronicos = new DocumentosElectronicos();
     private final consumidorDocumentoSoporte consumidorDocumentoSoporte = new consumidorDocumentoSoporte();
@@ -104,12 +117,12 @@ public class vistaIngresos extends javax.swing.JPanel {
         this.cancelarCompra = cancelarCompra;
     }
 
-    public vistaIngresos(String tipo) {
+    public VistaIngreso(String tipo) {
         initComponents();
 
         instancias = Instancias.getInstancias();
         simbolo = instancias.getSimbolo();
-        
+
         tblProductos.setDefaultRenderer(Object.class, new IconCellRenderer());
         ImageIcon fot = new ImageIcon(getClass().getResource("/imagenes/eliminar.png"));
         icono = new ImageIcon(fot.getImage().getScaledInstance(30, 25, Image.SCALE_DEFAULT));
@@ -1473,7 +1486,7 @@ public class vistaIngresos extends javax.swing.JPanel {
                 return;
             }
 
-            if (Constantes.esDocumentoSoporte(obtenerTipoComprobante()) && tipoProceso.equals(enumTipoDocumento.TipoDocumento.COMPRA.getValue())) {
+            if (Constantes.esDocumentoSoporte(obtenerTipoComprobante()) && tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
                 if (!squemaDocumentoSoporte.validacionesDocumentoSoporte(datosVendedor, false)) {
                     return;
                 }
@@ -1507,7 +1520,7 @@ public class vistaIngresos extends javax.swing.JPanel {
 
         String tipoComprobante = obtenerTipoComprobante();
         tipoComprobante = tipoComprobante.equals(Constantes.COMPRA_NORMAL) ? Constantes.COMPRA_NORMAL : Constantes.DOCUMENTO_SOPORTE;
-        
+
         if (instancias.getConfiguraciones().isFacturaElectronica() && tipoComprobante.equals(Constantes.DOCUMENTO_SOPORTE)) {
             boolean documentoSoporteExitoso = false;
             ModeloDocumentoSoporte modeloDocumentoSoporte = crearModeloDocumentoSoporte(ingreso, DATOS_CLIENTE_CARGADO);
@@ -1640,32 +1653,19 @@ public class vistaIngresos extends javax.swing.JPanel {
             instancias.getSql().cambiarEstadoGeneral("REALIZADO", "ORDENCOMPRA-" + txtCargarCompra.getText(), "bdIngreso");
         }
 
-        for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-            String cant = tblDetalle.getValueAt(i, 5).toString();
+        if (tipoProceso.equals("ingreso")) {
+            TipoDocumento tipoMovimiento = TipoDocumento.COMPRA;
+            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
+            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+            List<DetalleProducto> detallesProductos = generarDetallesProductos();
+            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, tablaUtilizada, instancias.getUsuario(), null);
 
-            if (cant.equals("")) {
-                cant = "1.0";
-            }
-
-            String fecha = tblDetalle.getValueAt(i, 3).toString();
-            if (fecha.equals("")) {
-                fecha = metodosGenerales.fecha();
-            }
-
-            String conse = instancias.getSql().getNumConsecutivo("DETALLEPROD")[0].toString();
-            if (!instancias.getSql().agregarDetalladoProducto(conse, tblDetalle.getValueAt(i, 0).toString(), tblDetalle.getValueAt(i, 6).toString(),
-                    cant, tblDetalle.getValueAt(i, 1).toString(), tblDetalle.getValueAt(i, 2).toString(),
-                    metodos.fechaConsulta(fecha), tblDetalle.getValueAt(i, 4).toString(), "DISPONIBLE", ingreso,
-                    metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), instancias.getUsuario(), tblDetalle.getValueAt(i, 7).toString(),
-                    tblDetalle.getValueAt(i, 8).toString(), txtBodega.getText())) {
-                metodos.msgError(null, "Hubo un problema al guardar el detalle del producto");
+            try {
+                servicioInventario.procesarMovimiento();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
-
-            if (!instancias.getSql().aumentarConsecutivo("DETALLEPROD", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DETALLEPROD")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del detalle del producto");
-            }
-
         }
 
         if (tipoProceso.equals("ingreso")) {
@@ -1693,113 +1693,6 @@ public class vistaIngresos extends javax.swing.JPanel {
                 metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del la compra");
             }
             lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("ORDENCOMPRA")[0]);
-        }
-
-        if (tipoProceso.equals("ingreso")) {
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-
-                ndProducto producto;
-
-                producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 24).toString(), baseUtilizada);
-
-                double inventario, inventarioConteo;
-                double cantidad;
-                double fisicoInventario;
-
-                try {
-                    inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                } catch (Exception e) {
-                    inventario = 0;
-                }
-
-                double inv2 = inventario;
-
-                try {
-                    cantidad = Double.parseDouble(producto.getCompras().replace(",", "."));
-                } catch (Exception e) {
-                    cantidad = 0;
-                }
-
-                try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-                } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getCompras().replace(",", "."));
-                }
-
-                double cantidadProd = Double.parseDouble(tblProductos.getValueAt(i, 14).toString().replace(",", "."));
-
-                inventario = inventario + cantidadProd;
-                fisicoInventario = fisicoInventario + cantidadProd;
-                double total = cantidad + cantidadProd;
-
-                String total1 = String.valueOf(df.format(total)).replace(".", ",");
-                String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
-                String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-
-                instancias.getSql().modificarInventario("compras", total1, tblProductos.getValueAt(i, 24).toString(), baseUtilizada);
-                instancias.getSql().modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 24).toString(), baseUtilizada);
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 24).toString(), baseUtilizada);
-
-                if (inv2 < 0) {
-                    inventarioConteo = cantidadProd;
-                } else {
-                    inventarioConteo = inventario;
-                }
-
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(tblProductos.getValueAt(i, 24).toString());
-
-                //CALCULAMOS LO QUE HABIA VIEJO
-                BigDecimal inv = big.getBigDecimal(producto.getInventario().replace(",", "."));
-
-                BigDecimal ponderadoViejo = BigDecimal.ZERO;
-                try {
-                    ponderadoViejo = big.getBigDecimal(ultimoPonderado[4].toString());
-                } catch (Exception e) {
-                }
-
-                BigDecimal totalViejo;
-                if (inv.compareTo(BigDecimal.ZERO) >= 0) {
-                    totalViejo = inv.multiply(ponderadoViejo);
-                } else {
-                    totalViejo = BigDecimal.ZERO;
-                }
-
-                //CALCULAMOS LO QUE ENTRA NUEVO
-                BigDecimal nuevoPrecio;
-                BigDecimal cant = big.getBigDecimal(tblProductos.getValueAt(i, 14).toString().replace(",", "."));
-
-                if (instancias.getRegimen().equals("SinIva")) {
-                    nuevoPrecio = big.getMoneda(tblProductos.getValueAt(i, 21).toString());
-                } else {
-                    nuevoPrecio = big.getMoneda(tblProductos.getValueAt(i, 4).toString());
-                }
-
-                nuevoPrecio = nuevoPrecio.divide(cant, 3, RoundingMode.CEILING);
-                BigDecimal totalNuevo = big.getBigDecimal(cantidadProd).multiply(nuevoPrecio);
-
-                //NUEVO PONDERADO
-                BigDecimal nuevoPonderado;
-
-                if (inv2 <= 0) {
-                    nuevoPonderado = nuevoPrecio;
-                } else {
-                    nuevoPonderado = totalNuevo.add(totalViejo);
-                    // System.out.println("aca es ponderado");
-                    nuevoPonderado = nuevoPonderado.divide(big.getBigDecimal(inventario), 3, RoundingMode.CEILING);
-                }
-
-                if (!instancias.getSql().agregarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), producto.getIdSistema(),
-                        ponderadoViejo, String.valueOf(inv2), tblProductos.getValueAt(i, 14).toString(), nuevoPonderado,
-                        String.valueOf(df.format(inventario)), instancias.getUsuario(), nuevoPrecio, ingreso)) {
-                    metodos.msgError(null, "Error al guardar el ponderado");
-                }
-
-                if (!instancias.getSql().modificarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), producto.getIdSistema(),
-                        ponderadoViejo, String.valueOf(inv2), tblProductos.getValueAt(i, 14).toString(), nuevoPonderado,
-                        String.valueOf(df.format(inventario)), instancias.getUsuario(), nuevoPrecio, ingreso)) {
-                    metodos.msgError(null, "Error al guardar el ponderado");
-                }
-            }
         }
 
         if (saltarPasos) {
@@ -2761,6 +2654,34 @@ public class vistaIngresos extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tblComprobantesMouseExited
 
+    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+
+        List<MovimientoInventario> movimientos = new ArrayList<>();
+
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 24).toString(), tablaUtilizada);
+            BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 14).toString());
+
+            BigDecimal valorProducto;
+            if (instancias.getRegimen().equals("SinIva")) {
+                valorProducto = big.getMoneda(tblProductos.getValueAt(i, 21).toString());
+            } else {
+                valorProducto = big.getMoneda(tblProductos.getValueAt(i, 4).toString());
+            }
+
+            valorProducto = valorProducto.divide(cantidad, 4, RoundingMode.HALF_UP);
+            MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, valorProducto, "");
+            movimientos.add(inventario);
+        }
+
+        return movimientos;
+    }
+
+    private List<DetalleProducto> generarDetallesProductos() {
+        UtilidadesDetalleProducto utilidadesDetalleProducto = new UtilidadesDetalleProducto(tblDetalle);
+        return utilidadesDetalleProducto.generarDetallesProductos();
+    }
+
     private String obtenerTipoComprobante() {
         String tipoComprobante = "";
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
@@ -2813,7 +2734,7 @@ public class vistaIngresos extends javax.swing.JPanel {
             modeloComprobantes.removeRow(0);
         }
 
-        List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(enumTipoDocumento.TipoDocumento.COMPRA.getValue());
+        List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(TipoDocumento.COMPRA.getValor());
         for (ModeloResolucion resolucion : resoluciones) {
             modeloComprobantes.addRow(new Object[]{resolucion.getIdResolucion(), resolucion.getDescripcionResolucion(), false, resolucion.getNumeroResolucion(), resolucion.getFechaInicio(),
                 resolucion.getNumeracionDel(), resolucion.getNumeracionHasta(), resolucion.getTipoResolucion(), resolucion.getPrefijo(), resolucion.getConsecutivo(), resolucion.getDisenho()});
@@ -2928,29 +2849,24 @@ public class vistaIngresos extends javax.swing.JPanel {
                 cantidad = cantidad.replace(".", ",");
             }
 
-            Object[] ultimoMovimiento = instancias.getSql().getUltimoPonderado(codigo);
-
-            BigDecimal costo;
+            BigDecimal ponderado = BigDecimal.ZERO;
+            BigDecimal ultimoCosto = BigDecimal.ZERO;
             try {
-                costo = big.getBigDecimal(ultimoMovimiento[7].toString());
-            } catch (Exception e) {
-                costo = BigDecimal.ZERO;
-            }
-
-            BigDecimal pond;
-            try {
-                pond = big.getBigDecimal(ultimoMovimiento[4].toString());
-            } catch (Exception e) {
-                pond = BigDecimal.ZERO;
+                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
+                ponderado = ultimoPonderado.getNuevoPonderado();
+                ultimoCosto = ultimoPonderado.getUltimoCosto();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
             }
 
             BigDecimal utilidad;
-            utilidad = big.getBigDecimal(nodo.getL1()).subtract(pond);
+            utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
-            modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(pond.multiply(big.getMoneda(cant2))),
+            modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cant2))),
                 cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(costo),
-                big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), pond, 0, big.setMoneda(utilidad),
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), ponderado, 0, big.setMoneda(utilidad),
                 "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
 
             tblProductos.setColumnSelectionInterval(1, 1);
@@ -3022,13 +2938,15 @@ public class vistaIngresos extends javax.swing.JPanel {
                 cantidad = cantidad.replace(".", ",");
             }
 
-            Object[] ultimoMovimiento = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-            BigDecimal costo;
-
+            BigDecimal ponderado = BigDecimal.ZERO;
+            BigDecimal ultimoCosto = BigDecimal.ZERO;
             try {
-                costo = big.getMoneda(ultimoMovimiento[7].toString());
-            } catch (Exception e) {
-                costo = BigDecimal.ZERO;
+                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
+                ponderado = ultimoPonderado.getNuevoPonderado();
+                ultimoCosto = ultimoPonderado.getUltimoCosto();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
             }
 
             BigDecimal valorUnitario = BigDecimal.ZERO;
@@ -3042,15 +2960,8 @@ public class vistaIngresos extends javax.swing.JPanel {
                 }
             }
 
-            BigDecimal pond;
-            try {
-                pond = big.getBigDecimal(ultimoMovimiento[4].toString());
-            } catch (Exception e) {
-                pond = BigDecimal.ZERO;
-            }
-
             BigDecimal utilidad;
-            utilidad = big.getBigDecimal(nodo.getL1()).subtract(pond);
+            utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
             try {
                 cmbBodegas.setSelectedIndex(0);
@@ -3071,8 +2982,8 @@ public class vistaIngresos extends javax.swing.JPanel {
 
             modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(valorUnitario.multiply(big.getMoneda(cant2))), cantidad,
                 big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(ivaCompra), big.setNumero(impoconsumo),
-                "0", nodo.getUnd(), big.setMoneda(costo), big.setMoneda(big.getBigDecimal(lista)), "1", (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))),
-                big.setMoneda(pond), 0, big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
+                "0", nodo.getUnd(), big.setMoneda(ultimoCosto), big.setMoneda(big.getBigDecimal(lista)), "1", (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))),
+                big.setMoneda(ponderado), 0, big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
 
             try {
                 tblProductos.setColumnSelectionInterval(1, 1);
@@ -3131,24 +3042,19 @@ public class vistaIngresos extends javax.swing.JPanel {
                 cantidad = cantidad.replace(".", ",");
             }
 
-            Object[] ultimoMovimiento = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-
-            BigDecimal costo;
+            BigDecimal ponderado = BigDecimal.ZERO;
+            BigDecimal ultimoCosto = BigDecimal.ZERO;
             try {
-                costo = big.getBigDecimal(ultimoMovimiento[7].toString());
-            } catch (Exception e) {
-                costo = BigDecimal.ZERO;
-            }
-
-            BigDecimal pond;
-            try {
-                pond = big.getBigDecimal(ultimoMovimiento[4].toString());
-            } catch (Exception e) {
-                pond = BigDecimal.ZERO;
+                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                ponderado = ultimoPonderado.getNuevoPonderado();
+                ultimoCosto = ultimoPonderado.getUltimoCosto();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
             }
 
             BigDecimal utilidad;
-            utilidad = big.getBigDecimal(nodo.getL1()).subtract(pond);
+            utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
             try {
                 cmbBodegas.setSelectedIndex(0);
@@ -3157,8 +3063,8 @@ public class vistaIngresos extends javax.swing.JPanel {
 
             modeloPro.addRow(new Object[]{nodo.getCodigo(), nodo.getDescripcion(), big.setMoneda(precio),
                 cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(costo),
-                big.setMoneda(big.getBigDecimal(nodo.getL1())), plu, (big.getBigDecimal("1").multiply(big.getMoneda(cantidad))), big.setMoneda(pond), 0,
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                big.setMoneda(big.getBigDecimal(nodo.getL1())), plu, (big.getBigDecimal("1").multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0,
                 big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
 
             tblProductos.setColumnSelectionInterval(1, 1);
@@ -3337,34 +3243,29 @@ public class vistaIngresos extends javax.swing.JPanel {
                     cantidad = cantidad.replace(".", ",");
                 }
 
-                Object[] ultimoMovimiento = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-                BigDecimal costo;
-
+                BigDecimal ponderado = BigDecimal.ZERO;
+                BigDecimal ultimoCosto = BigDecimal.ZERO;
                 try {
-                    costo = big.getBigDecimal(ultimoMovimiento[7].toString());
-                } catch (Exception e) {
-                    costo = BigDecimal.ZERO;
-                }
-
-                BigDecimal pond;
-                try {
-                    pond = big.getBigDecimal(ultimoMovimiento[4].toString());
-                } catch (Exception e) {
-                    pond = BigDecimal.ZERO;
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
+                    ponderado = ultimoPonderado.getNuevoPonderado();
+                    ultimoCosto = ultimoPonderado.getUltimoCosto();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                    alertas.bigAlert("No se pudo consultar el último ponderado del producto");
                 }
 
                 BigDecimal utilidad;
-                utilidad = big.getBigDecimal(nodo.getL1()).subtract(pond);
+                utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
                 try {
                     cmbBodegas.setSelectedIndex(0);
                 } catch (Exception e) {
                 }
 
-                modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(pond.multiply(big.getMoneda(cant2))),
+                modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cant2))),
                     cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                    big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(costo),
-                    big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(pond), 0,
+                    big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                    big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0,
                     big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
 
                 tblProductos.setColumnSelectionInterval(1, 1);
@@ -3474,13 +3375,13 @@ public class vistaIngresos extends javax.swing.JPanel {
                     cantidad = cantidad.replace(".", ",");
                 }
 
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(codigo);
-
-                BigDecimal costo;
+                BigDecimal ultimoCosto = BigDecimal.ZERO;
                 try {
-                    costo = big.getBigDecimal(ultimoPonderado[7].toString());
-                } catch (Exception e) {
-                    costo = BigDecimal.ZERO;
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    ultimoCosto = ultimoPonderado.getUltimoCosto();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                    alertas.bigAlert("No se pudo consultar el último ponderado del producto");
                 }
 
                 BigDecimal ponderado = big.getBigDecimal(valor + "");
@@ -3489,7 +3390,7 @@ public class vistaIngresos extends javax.swing.JPanel {
 
                 modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado),
                     cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                    big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(costo),
+                    big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
                     big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0, big.setMoneda(utilidad),
                     "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
 
@@ -3792,7 +3693,7 @@ public class vistaIngresos extends javax.swing.JPanel {
         tblProductos.setValueAt(big.setMoneda(totalProducto), fila, 21);
 
         /*tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(fila, 15).toString())), fila, 15);
-        tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(fila, 17).toString())), fila, 17);*/
+         tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(fila, 17).toString())), fila, 17);*/
         actualizarCantidadPLU(fila, cantidad);
         cargarTotales();
     }

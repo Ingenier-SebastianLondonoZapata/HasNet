@@ -1,7 +1,7 @@
 package formularios.Ventas;
 
 import Controlador.Alertas.ControladorAlertas;
-import Enums.enumTipoDocumento;
+import Enums.TipoDocumento;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -342,23 +342,23 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
             return;
         }
 
-        if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.FACTURACION.getValue())) {
+        if (lugarPeticion.equals(TipoDocumento.FACTURACION.getValor())) {
             instancias.getFactura().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.COTIZACION.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.COTIZACION.getValor())) {
             instancias.getCotiza().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.ORDER_SERVICIO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.ORDER_SERVICIO.getValor())) {
             instancias.getOrdenServicio().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.PEDIDO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.PEDIDO.getValor())) {
             instancias.getPedido().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.PLAN_SEPARE.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.PLAN_SEPARE.getValor())) {
             instancias.getPlanSepare().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.CREDITO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.CREDITO.getValor())) {
             instancias.getFacturaCreditos().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.CUENTA_COBRO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.CUENTA_COBRO.getValor())) {
             instancias.getCuentaCobro().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.MESA.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.MESA.getValor())) {
             instancias.getMesa1().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.COMPRA.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.COMPRA.getValor())) {
             instancias.getIngresos().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
         }
 
@@ -396,23 +396,23 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
     }//GEN-LAST:event_jLabel5MouseClicked
 
     private void btnQuitarDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarDescActionPerformed
-        if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.FACTURACION.getValue())) {
+        if (lugarPeticion.equals(TipoDocumento.FACTURACION.getValor())) {
             instancias.getFactura().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.COTIZACION.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.COTIZACION.getValor())) {
             instancias.getCotiza().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.ORDER_SERVICIO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.ORDER_SERVICIO.getValor())) {
             instancias.getOrdenServicio().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.PEDIDO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.PEDIDO.getValor())) {
             instancias.getPedido().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.PLAN_SEPARE.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.PLAN_SEPARE.getValor())) {
             instancias.getPlanSepare().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.CREDITO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.CREDITO.getValor())) {
             instancias.getFacturaCreditos().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.CUENTA_COBRO.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.CUENTA_COBRO.getValor())) {
             instancias.getCuentaCobro().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.MESA.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.MESA.getValor())) {
             instancias.getMesa1().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
-        } else if (lugarPeticion.equals(enumTipoDocumento.TipoDocumento.COMPRA.getValue())) {
+        } else if (lugarPeticion.equals(TipoDocumento.COMPRA.getValor())) {
             instancias.getIngresos().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
         }
 

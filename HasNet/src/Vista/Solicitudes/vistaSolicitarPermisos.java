@@ -5,7 +5,7 @@ import Controlador.BarraProceso.jcThread;
 import formularios.*;
 import clases.Instancias;
 import clases.metodosGenerales;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import configuracion.dlgEsperandoRespuesta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -405,7 +405,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                     try {
                         muestraContenido(unidades[i] + "/DESBLOQ/password.txt", "PERMISO-" + consecutivo);
                     } catch (IOException ex) {
-                        Logger.getLogger(vistaFactura.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
                     if (validador > 0) {

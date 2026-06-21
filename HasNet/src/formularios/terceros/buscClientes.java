@@ -2,7 +2,7 @@ package formularios.terceros;
 
 import clases.Instancias;
 import clases.metodosGenerales;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,7 +19,7 @@ public class buscClientes extends javax.swing.JDialog {
     TableRowSorter modeloOrdenado;
     Instancias instancias;
     private String opc = "";
-    private vistaFactura factura;
+    private VistaFactura factura;
     private boolean buscarInactivos;
     private String tipoBuscador = "";
 
@@ -31,11 +31,11 @@ public class buscClientes extends javax.swing.JDialog {
         this.tipoBuscador = tipoBuscador;
     }
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 

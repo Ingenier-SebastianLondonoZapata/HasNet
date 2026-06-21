@@ -5,9 +5,7 @@
  */
 package Validaciones.Tesoreria;
 
-import Validaciones.Compras.*;
 import Controlador.Alertas.ControladorAlertas;
-import Enums.enumTipoDocumento;
 import Utilidades.Constantes;
 import clases.Instancias;
 import clases.big;
@@ -28,7 +26,7 @@ public class squemaEgresos extends javax.swing.JPanel {
      */
     Instancias instancias = Instancias.getInstancias();
     ControladorAlertas alerts = new ControladorAlertas();
-    private String simboloMoneda = instancias.getSimbolo();
+    private final String simboloMoneda = instancias.getSimbolo();
 
     public squemaEgresos() {
         initComponents();

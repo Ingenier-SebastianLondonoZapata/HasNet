@@ -1,6 +1,6 @@
 package formularios.Ventas;
 
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -10,16 +10,16 @@ import javax.swing.table.DefaultTableModel;
 
 public class infPedido extends javax.swing.JInternalFrame {
 
-    private vistaFactura pnlFactura;
+    private VistaFactura pnlFactura;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
     DefaultTableModel modelo;
 
-    public vistaFactura getPnlFactura() {
+    public VistaFactura getPnlFactura() {
         return pnlFactura;
     }
 
-    public void setPnlFactura(vistaFactura pnlFactura) {
+    public void setPnlFactura(VistaFactura pnlFactura) {
         this.pnlFactura = pnlFactura;
     }
 
@@ -32,7 +32,7 @@ public class infPedido extends javax.swing.JInternalFrame {
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
         repaint();
-        pnlFactura = new vistaFactura("pedido");
+        pnlFactura = new VistaFactura("pedido");
         pnlFactura.setSize(pnlContenedor.getSize());
 //        pnlFactura.setDomicilio(true);
         pnlContenedor.add(pnlFactura, CENTER_ALIGNMENT);

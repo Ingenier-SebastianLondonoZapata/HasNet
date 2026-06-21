@@ -1,8 +1,11 @@
 package formularios.productos;
 
+import Modelo.Inventario.UltimoPonderado;
+import Servicio.Inventario.ServicioActualizacionPonderado;
 import clases.Instancias;
 import clases.productos.ndProducto;
 import Utilidades.BaseDatos.SQL;
+import Vista.Productos.VistaInventarioInicial;
 import clases.big;
 import clases.metodosGenerales;
 import formularios.terceros.buscBodegas;
@@ -13,7 +16,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -21,6 +27,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class infArmado extends javax.swing.JInternalFrame {
 
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
+    
     DefaultTableModel modeloPro;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
@@ -1347,14 +1355,20 @@ public class infArmado extends javax.swing.JInternalFrame {
             if (instancias.getSql().getProdActivo(nodo.getIdSistema())) {
                 metodos.msgError(this, "Este producto esta inactivo");
             } else {
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
 
-                BigDecimal ponderado = big.getBigDecimal(ultimoPonderado[4].toString()),
-                        costo = big.getBigDecimal(ultimoPonderado[7].toString());
+                BigDecimal ponderado = BigDecimal.ZERO;
+                BigDecimal ultimoCosto = BigDecimal.ZERO;
+                try {
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    ponderado = ultimoPonderado.getNuevoPonderado();
+                    ultimoCosto = ultimoPonderado.getUltimoCosto();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), cant, 1,
                     (big.getBigDecimal(1).multiply(big.getMoneda(cant))),
-                    false, big.setMoneda(ponderado), big.setMoneda(costo)});
+                    false, big.setMoneda(ponderado), big.setMoneda(ultimoCosto)});
 
                 costo();
 
@@ -1404,15 +1418,19 @@ public class infArmado extends javax.swing.JInternalFrame {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
                 metodos.msgError(this, "Este producto esta inactivo");
             } else {
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-                BigDecimal ponderado = BigDecimal.ZERO, costo = BigDecimal.ZERO;
+                BigDecimal ponderado = BigDecimal.ZERO;
+                BigDecimal ultimoCosto = BigDecimal.ZERO;
+                try {
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    ponderado = ultimoPonderado.getNuevoPonderado();
+                    ultimoCosto = ultimoPonderado.getUltimoCosto();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
-                ponderado = big.getBigDecimal(ultimoPonderado[4].toString());
-                costo = big.getBigDecimal(ultimoPonderado[7].toString());
-
                 modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), "1", 1,
                     (big.getBigDecimal(1).multiply(big.getMoneda("1"))),
-                    false, big.setMoneda(ponderado), big.setMoneda(costo)});
+                    false, big.setMoneda(ponderado), big.setMoneda(ultimoCosto)});
 
                 costo();
 

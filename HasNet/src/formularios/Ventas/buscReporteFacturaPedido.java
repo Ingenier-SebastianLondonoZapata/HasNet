@@ -3,7 +3,7 @@ package formularios.Ventas;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import formularios.productos.*;
 import java.awt.event.KeyEvent;
 import javax.swing.RowFilter;
@@ -16,16 +16,16 @@ public class buscReporteFacturaPedido extends javax.swing.JDialog {
     TableRowSorter modeloOrdenado;
     Instancias instancias;
     private String opc = "";
-    private vistaFactura factura;
+    private VistaFactura factura;
     private SQL sql;
 
 
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 

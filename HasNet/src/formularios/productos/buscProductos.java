@@ -1,13 +1,13 @@
 package formularios.productos;
 
-import Vista.Productos.vistaIngresos;
+import Vista.Productos.VistaIngreso;
 import clases.IconCellRenderer;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import com.mxrck.autocompleter.TextAutoCompleter;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import java.awt.Image;
 import java.util.Vector;
 import javax.swing.JComponent;
@@ -29,8 +29,8 @@ public final class buscProductos extends javax.swing.JDialog {
     TableRowSorter modeloOrdenado;
     Instancias instancias;
     private String opc, tipo, baseDatos;
-    private vistaFactura factura;
-    private vistaIngresos ingreso;
+    private VistaFactura factura;
+    private VistaIngreso ingreso;
     private TextAutoCompleter autoCompletar;
     private String claseBuscador = "";
     int pos = 0;
@@ -330,19 +330,19 @@ public final class buscProductos extends javax.swing.JDialog {
         txtId.requestFocus();
     }
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 
-    public vistaIngresos getIngreso() {
+    public VistaIngreso getIngreso() {
         return ingreso;
     }
 
-    public void setIngreso(vistaIngresos ingreso) {
+    public void setIngreso(VistaIngreso ingreso) {
         this.ingreso = ingreso;
     }
 

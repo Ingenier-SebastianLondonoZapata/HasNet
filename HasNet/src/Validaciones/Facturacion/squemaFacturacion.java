@@ -6,14 +6,13 @@
 package Validaciones.Facturacion;
 
 import Controlador.Alertas.ControladorAlertas;
-import Enums.enumTipoDocumento;
+import Enums.TipoDocumento;
 import Utilidades.Constantes;
 import clases.Instancias;
 import clases.big;
 import Modelo.Terceros.ModeloContacto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JTable;
 
@@ -109,10 +108,10 @@ public class squemaFacturacion extends javax.swing.JPanel {
 
         List<Object> errores_validacion = new ArrayList<>();
         List<Object> alertas_validacion = new ArrayList<>();
-        boolean esNotaCredito = tipoProceso.equals(enumTipoDocumento.TipoDocumento.NOTA_CREDITO.getValue());
-        boolean esNotaDebito = tipoProceso.equals(enumTipoDocumento.TipoDocumento.NOTA_DEBITO.getValue());
+        boolean esNotaCredito = tipoProceso.equals(TipoDocumento.NOTA_CREDITO.getValor());
+        boolean esNotaDebito = tipoProceso.equals(TipoDocumento.NOTA_DEBITO.getValor());
 
-        if (tablaProductos.getRowCount() == 0 && !tipoProceso.equals(enumTipoDocumento.TipoDocumento.NOTA_CREDITO.getValue())) {
+        if (tablaProductos.getRowCount() == 0 && !tipoProceso.equals(TipoDocumento.NOTA_CREDITO.getValor())) {
             errores_validacion.add("No ha cargado ningún producto");
         }
 
@@ -130,9 +129,9 @@ public class squemaFacturacion extends javax.swing.JPanel {
             }
 
             if (Constantes.esFacturacionElectronica(tipoComprobante)
-                    && (tipoProceso.equals(enumTipoDocumento.TipoDocumento.FACTURACION.getValue())
-                    || tipoProceso.equals(enumTipoDocumento.TipoDocumento.NOTA_DEBITO.getValue())
-                    || tipoProceso.equals(enumTipoDocumento.TipoDocumento.NOTA_CREDITO.getValue()))) {
+                    && (tipoProceso.equals(TipoDocumento.FACTURACION.getValor())
+                    || tipoProceso.equals(TipoDocumento.NOTA_DEBITO.getValor())
+                    || tipoProceso.equals(TipoDocumento.NOTA_CREDITO.getValor()))) {
                 if (descripcionProducto.length() < Constantes.LONGITUD_MINIMA_DESCRIPCION_PRODUCTOS) {
                     errores_validacion.add("El producto '" + descripcionProducto + "' debe tener descripción más larga");
                 }

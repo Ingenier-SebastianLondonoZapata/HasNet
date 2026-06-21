@@ -12,7 +12,7 @@ import clases.ocultarAlerta;
 import clases.recordatorios.alertaRecordatorio;
 import clases.solicitudesPermisos;
 import Vista.Configuraciones.vistaSuperMaestra;
-import Vista.Productos.vistaProductos;
+import Vista.Productos.VistaProductos;
 import configuracion.dlgPermisos;
 import configuracion.infPlantillas;
 import configuracion.msgSalir;
@@ -20,7 +20,7 @@ import formularios.Agenda.infAgendaConsulta;
 import formularios.Agenda.infRepAgenda;
 
 import formularios.Cartera.infAbonos;
-import Vista.Cartera.vistaNotaDebito;
+import Vista.Cartera.VistaNotaDebito;
 import formularios.Cartera.infPagos;
 import formularios.Cartera.infRepAbonos;
 import formularios.Cartera.infRepAbonosCxp;
@@ -97,7 +97,7 @@ import formularios.Ventas.infFactura;
 import formularios.Ventas.infFacturaCreditos;
 import formularios.Ventas.infFacturarLotes;
 import Vista.Ventas.infMesas;
-import Vista.Ventas.vistaDocumentos;
+import Vista.Ventas.VistaDocumentos;
 import formularios.Ventas.infMesa;
 import formularios.Ventas.infMesas1;
 import formularios.Ventas.infOrdenServicio;
@@ -136,8 +136,8 @@ import formularios.Veterinario.infRepHospitalizacion;
 import formularios.Veterinario.infRepMascotas;
 import formularios.Veterinario.infRepPeluqueria;
 
-import formularios.productos.infAjustesInv;
-import formularios.productos.infInventarioInicial;
+import Vista.Productos.VistaAjusteInventario;
+import Vista.Productos.VistaInventarioInicial;
 import formularios.productos.infKardexProductos;
 import Vista.Productos.ordenCompra;
 import formularios.infUsuarios;
@@ -441,7 +441,6 @@ public class vistaMenu extends javax.swing.JFrame {
         btnLaboratorio = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         btnVerificar = new javax.swing.JButton();
-        btnTestConexion = new javax.swing.JButton();
         btnTestConexion1 = new javax.swing.JButton();
         pnlMensaje = new javax.swing.JPanel();
         lbIcon = new javax.swing.JLabel();
@@ -469,7 +468,6 @@ public class vistaMenu extends javax.swing.JFrame {
         lbAgenda1 = new javax.swing.JButton();
         lbVeterinaria1 = new javax.swing.JButton();
         lbConfiguraciones = new javax.swing.JButton();
-        btnConexion = new javax.swing.JButton();
         lbMedico1 = new javax.swing.JButton();
         btnParqueadero1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -484,6 +482,7 @@ public class vistaMenu extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         setMinimumSize(new java.awt.Dimension(1177, 317));
+        setUndecorated(true);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 formComponentHidden(evt);
@@ -1058,22 +1057,6 @@ public class vistaMenu extends javax.swing.JFrame {
             }
         });
 
-        btnTestConexion.setBackground(new java.awt.Color(214, 214, 214));
-        btnTestConexion.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
-        btnTestConexion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/conexion.png"))); // NOI18N
-        btnTestConexion.setText("Test de conexión");
-        btnTestConexion.setBorder(null);
-        btnTestConexion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTestConexion.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnTestConexion.setMaximumSize(new java.awt.Dimension(146, 119));
-        btnTestConexion.setMinimumSize(new java.awt.Dimension(146, 119));
-        btnTestConexion.setPreferredSize(new java.awt.Dimension(146, 119));
-        btnTestConexion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestConexionActionPerformed(evt);
-            }
-        });
-
         btnTestConexion1.setBackground(new java.awt.Color(214, 214, 214));
         btnTestConexion1.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
         btnTestConexion1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ajustes.png"))); // NOI18N
@@ -1112,7 +1095,6 @@ public class vistaMenu extends javax.swing.JFrame {
                     .addComponent(btnProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(btnTestConexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnTestConexion1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
@@ -1149,10 +1131,8 @@ public class vistaMenu extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addComponent(btnTestConexion, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
                 .addComponent(btnTestConexion1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(10, 10, 10))
         );
 
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
@@ -1496,15 +1476,6 @@ public class vistaMenu extends javax.swing.JFrame {
             }
         });
 
-        btnConexion.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        btnConexion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/conexion.png"))); // NOI18N
-        btnConexion.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnConexion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConexionActionPerformed(evt);
-            }
-        });
-
         lbMedico1.setBackground(new java.awt.Color(242, 244, 244));
         lbMedico1.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbMedico1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/MEDICO-NEGRO.png"))); // NOI18N
@@ -1542,8 +1513,7 @@ public class vistaMenu extends javax.swing.JFrame {
             .addGroup(pnlMiniaturasLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addGroup(pnlMiniaturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnConexion, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-                    .addComponent(lbVentas8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbVentas8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
                     .addComponent(lbVentas9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(lbVentas10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbConfiguraciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1577,8 +1547,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addComponent(btnParqueadero1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnConexion, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
                 .addComponent(lbConfiguraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10))
         );
@@ -2426,7 +2394,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("FACTURACIÓN");
             }
 
-            if (formularios[0] instanceof vistaProductos) {
+            if (formularios[0] instanceof VistaProductos) {
                 instancias.getMenu().cambiarTitulo("PRODUCTOS");
             }
 
@@ -2670,7 +2638,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("REPORTE ABONOS CXP");
             }
 
-            if (formularios[5] instanceof infAjustesInv) {
+            if (formularios[5] instanceof VistaAjusteInventario) {
                 instancias.getuInt().consultarPermiso();
                 instancias.getMenu().cambiarTitulo("AJUSTES DE INVENTARIO");
             }
@@ -2800,7 +2768,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("FACTURACIÓN AUTOMÁTICA");
             }
 
-            if (formularios[8] instanceof vistaNotaDebito) {
+            if (formularios[8] instanceof VistaNotaDebito) {
                 instancias.getMenu().cambiarTitulo("NOTAS DEBITO");
             }
 
@@ -2842,7 +2810,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("RIPS MEDICOS");
             }
 
-            if (formularios[9] instanceof infInventarioInicial) {
+            if (formularios[9] instanceof VistaInventarioInicial) {
                 instancias.getMenu().cambiarTitulo("INVENTARIO INICIAL");
             }
 
@@ -2871,7 +2839,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
 
-            if (formularios[10] instanceof vistaDocumentos) {
+            if (formularios[10] instanceof VistaDocumentos) {
                 instancias.getMenu().cambiarTitulo("DOCUMENTOS");
                 instancias.getReimpresion().setDetectarClicABoton(true);
                 instancias.getReimpresion().actualizarTablaDocumentos();
@@ -3095,18 +3063,6 @@ public class vistaMenu extends javax.swing.JFrame {
         medicamentosPend.setVisible(true);
     }//GEN-LAST:event_btnMedicamentosActionPerformed
 
-    private void btnConexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConexionActionPerformed
-        try {
-            Object[] datos = instancias.getSql().getDatosMaestra();
-            System.out.println("Datos " + datos[0]);
-            metodos.msgExito(null, "Conexión estable");
-        } catch (Exception e) {
-            metodos.msgError(null, "No se reconoce la base de datos");
-            metodos.msgError(null, "El programá se cerrará");
-            System.exit(0);
-        }
-    }//GEN-LAST:event_btnConexionActionPerformed
-
     private void btnMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMedicoActionPerformed
         animacion("medico");
         activarColor(btnMedico, "Medico");
@@ -3213,26 +3169,6 @@ public class vistaMenu extends javax.swing.JFrame {
     private void cmbAccesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAccesosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbAccesosActionPerformed
-
-    private void btnTestConexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestConexionActionPerformed
-        try {
-            Socket s = new Socket("www.google.com", 80);
-            if (s.isConnected()) {
-                System.out.println("Conexión a internet");
-            }
-        } catch (Exception e) {
-            ControladorAlertas.alert("No se detecta conexión a internet");
-        }
-
-        try {
-            Object[] datos = instancias.getSql().getDatosMaestra();
-            metodos.msgExito(null, "Conexión estable");
-        } catch (Exception e) {
-            metodos.msgError(null, "No se reconoce la base de datos");
-            metodos.msgError(null, "El programá se cerrará");
-            System.exit(0);
-        }
-    }//GEN-LAST:event_btnTestConexionActionPerformed
 
     private void btnTestConexion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestConexion1ActionPerformed
         try {
@@ -3598,7 +3534,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            vistaDocumentos interno = new vistaDocumentos();
+            VistaDocumentos interno = new VistaDocumentos();
             dkpFormularios.add(interno);
             instancias.setReimpresion(interno);
             if (instancias.getUsuarioLog().isReimpresion()) {
@@ -3680,7 +3616,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            vistaProductos interno4 = new vistaProductos();
+            VistaProductos interno4 = new VistaProductos();
             dkpFormularios.add(interno4);
             instancias.setProductos(interno4);
             if (instancias.getUsuarioLog().isCreacionProductos()) {
@@ -3692,7 +3628,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infInventarioInicial interno14 = new infInventarioInicial();
+            VistaInventarioInicial interno14 = new VistaInventarioInicial();
             dkpFormularios.add(interno14);
             instancias.setInventarioInicial(interno14);
             if (instancias.getUsuarioLog().isInventarioInicial()) {
@@ -3728,7 +3664,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infAjustesInv interno13 = new infAjustesInv();
+            VistaAjusteInventario interno13 = new VistaAjusteInventario();
             dkpFormularios.add(interno13);
             instancias.setuInt(interno13);
             interno13.show();
@@ -3926,7 +3862,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            vistaNotaDebito interno15 = new vistaNotaDebito();
+            VistaNotaDebito interno15 = new VistaNotaDebito();
             dkpFormularios.add(interno15);
             instancias.setNd(interno15);
             if (instancias.getUsuarioLog().isNotasCredito()) {
@@ -5186,7 +5122,6 @@ public class vistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnAgenda;
     private javax.swing.JButton btnCambiarUsuario;
     private javax.swing.JButton btnCartera;
-    private javax.swing.JButton btnConexion;
     private javax.swing.JButton btnLaboratorio;
     private javax.swing.JButton btnMedicamentos;
     private javax.swing.JButton btnMedicamentos1;
@@ -5201,7 +5136,6 @@ public class vistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnSolicitudes;
     private javax.swing.JButton btnTerceros;
     private javax.swing.JButton btnTesoreria;
-    private javax.swing.JButton btnTestConexion;
     private javax.swing.JButton btnTestConexion1;
     private javax.swing.JButton btnVentas;
     private javax.swing.JButton btnVerificar;

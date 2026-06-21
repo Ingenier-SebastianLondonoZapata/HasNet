@@ -3,7 +3,7 @@ package formularios.productos;
 import Vista.Productos.ingreso;
 import clases.Instancias;
 import clases.metodosGenerales;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -21,7 +21,7 @@ public class buscGrupos extends javax.swing.JDialog {
     Instancias instancias;
     private String opc = "";
     private String desde1 = "";
-    private vistaFactura factura;
+    private VistaFactura factura;
     private ingreso ingreso;
 
     public buscGrupos(java.awt.Frame parent, boolean modal, String desde) {
@@ -70,11 +70,11 @@ public class buscGrupos extends javax.swing.JDialog {
 
     }
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 

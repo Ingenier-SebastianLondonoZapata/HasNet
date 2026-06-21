@@ -1,11 +1,11 @@
 package formularios.productos;
 
-import Vista.Productos.vistaIngresos;
+import Vista.Productos.VistaIngreso;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,22 +19,22 @@ public class nuevoProducto extends javax.swing.JDialog {
     private metodosGenerales metodos;
     private Instancias instancias;
     private String opc, simbolo = "";
-    private vistaFactura factura;
-    private vistaIngresos ingreso;
+    private VistaFactura factura;
+    private VistaIngreso ingreso;
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 
-    public vistaIngresos getIngreso() {
+    public VistaIngreso getIngreso() {
         return ingreso;
     }
 
-    public void setIngreso(vistaIngresos ingreso) {
+    public void setIngreso(VistaIngreso ingreso) {
         this.ingreso = ingreso;
     }
 

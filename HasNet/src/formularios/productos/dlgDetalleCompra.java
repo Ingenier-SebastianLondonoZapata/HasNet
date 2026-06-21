@@ -1,5 +1,8 @@
 package formularios.productos;
 
+import Modelo.Inventario.UltimoPonderado;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Vista.Productos.VistaInventarioInicial;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -9,6 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
@@ -17,6 +23,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class dlgDetalleCompra extends javax.swing.JDialog {
+
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
     private Instancias instancias;
     DefaultTableModel modelo;
@@ -650,11 +658,16 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
 
         ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos");
 
-        Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(tblProductos.getValueAt(fila, 0).toString());
+        BigDecimal ponderadoViejo = BigDecimal.ZERO;
+        try {
+            UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(producto.getIdSistema());
+            ponderadoViejo = ultimoPonderado.getNuevoPonderado();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //CALCULAMOS LO QUE HABIA VIEJO
         BigDecimal inv = big.getBigDecimal(producto.getInventario().replace(",", "."));
-        BigDecimal ponderadoViejo = big.getBigDecimal(ultimoPonderado[4].toString());
 
         BigDecimal totalViejo;
         if (inv.compareTo(BigDecimal.ZERO) >= 0) {

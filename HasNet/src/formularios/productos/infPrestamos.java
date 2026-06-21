@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Modelo.Inventario.UltimoPonderado;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -8,6 +9,8 @@ import clases.productos.ndProducto;
 import clases.productos.ndTrasladoBodega;
 import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Vista.Productos.VistaInventarioInicial;
 import formularios.infBuscadorCliente;
 import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
@@ -18,7 +21,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -26,6 +32,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class infPrestamos extends javax.swing.JInternalFrame {
 
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
+    
     String simbolo = "";
     DefaultTableModel modeloPro;
     metodosGenerales metodos = new metodosGenerales();
@@ -1885,9 +1893,15 @@ public class infPrestamos extends javax.swing.JInternalFrame {
                 compraDetallada.setVisible(true);
                 return;
             } else {
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-                BigDecimal costoPonderado = big.getBigDecimal(ultimoPonderado[4].toString());
-
+                
+                BigDecimal costoPonderado = BigDecimal.ZERO;
+                try {
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    costoPonderado = ultimoPonderado.getNuevoPonderado();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                 String cant = nodo.getFisicoInventario().replace(".", ",");
 
                 Double res = 0.0;

@@ -19,11 +19,11 @@ public class MySql_connection {
     }
 
     private MySql_connection() {
-        String urlConexionBD = "jdbc:mysql://hasnet-pagos.cpku0888y21s.us-east-2.rds.amazonaws.com/HSPagos?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
+        String urlConexionBD = "jdbc:mysql://hasnet-db.cjauamo246oj.us-east-2.rds.amazonaws.com/HSPagos?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conexion = DriverManager.getConnection(urlConexionBD, "HasNet", "Sebask_2025*");
+            conexion = DriverManager.getConnection(urlConexionBD, "HasNetUser", "cE4l~86jt4e:");
             
             if (conexion != null) {
                 System.out.println("Conexión a la base de datos exitosa");

@@ -1,11 +1,19 @@
 package Vista.Ventas;
 
+import Enums.HistoricoPonderados;
+import Enums.TipoDocumento;
+import Enums.enumBodegas;
+import Modelo.Inventario.DetalleProducto;
+import Modelo.Inventario.MovimientoInventario;
 import clases.Cartera.ndCxc;
 import clases.Instancias;
 import Utilidades.CambiarColorTablaReimpresionYAnulacion;
 import Utilidades.Constantes;
 import clases.Ventas.ndCongelada;
 import Modelo.Terceros.ModeloContacto;
+import Servicio.Inventario.ServicioInventario;
+import Utilidades.Utilidades;
+import Vista.Productos.VistaInventarioInicial;
 import clases.Ventas.ndFactura;
 import clases.Ventas.ndPlanSepare;
 import clases.big;
@@ -15,8 +23,14 @@ import Vista.Solicitudes.vistaSolicitarPermisos;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -1603,6 +1617,7 @@ public class vistaAnulacion extends javax.swing.JInternalFrame {
         }
 
         if (cmbTipo.getSelectedItem().equals("FACTURA")) {
+
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
 
                 ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 14).toString(), baseUtilizada);
@@ -1822,78 +1837,25 @@ public class vistaAnulacion extends javax.swing.JInternalFrame {
                         Double cantidadActual = Double.parseDouble(instancias.getSql().getCantidadProductos(idProd).replace(",", "."));
                         cantidadActual = cantidadActual + cantidadTabla;
                         String cantidadFinal = String.valueOf(df.format(cantidadActual)).replace(".", ",");
-                        instancias.getSql().modificarCantidadesDetalleProductos(idProd, cantidadFinal);
+//OJO IMPORTANTE ORGANIZAR ESTA PARTE                        
+//instancias.getSql().modificarCantidadesDetalleProductos(idProd, cantidadFinal);
                     }
                 }
             }
         } else if (cmbTipo.getSelectedItem().equals("PLAN SEPARE")) {
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            TipoDocumento tipoMovimiento = TipoDocumento.ANULAR_PLAN_SEPARE;
+            List<DetalleProducto> detallesProductos = new ArrayList<>();
+            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
+            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+            String numeroAnulacion = "Anulación-" + (String) instancias.getSql().getNumConsecutivo("ANULA")[0];
+            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, numeroAnulacion, 
+                    tablaUtilizada, instancias.getUsuario(), null);
 
-                ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 10).toString(), baseUtilizada);
-
-                double cantidad;
-                double fisicoInventario;
-
-                try {
-                    cantidad = Double.parseDouble(producto.getPlanSepare().replace(",", "."));
-                } catch (Exception e) {
-                    cantidad = 0;
-                }
-
-                try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-                } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                }
-
-                double cantidadTabla = Double.parseDouble(tblProductos.getValueAt(i, 9).toString().replace(",", "."));
-
-                fisicoInventario = fisicoInventario + cantidadTabla;
-                double total = cantidad - cantidadTabla;
-
-                String total1 = String.valueOf(df.format(total)).replace(".", ",");
-                String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-
-                instancias.getSql().modificarInventario("planSepare", total1, tblProductos.getValueAt(i, 10).toString(), baseUtilizada);
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 10).toString(), baseUtilizada);
-
-                String idProd = "";
-                try {
-                    idProd = tblProductos.getValueAt(i, 11).toString();
-                } catch (Exception e) {
-                }
-
-                String tipo = "";
-                if (producto.getTipoProducto() != null) {
-                    if (producto.getTipoProducto().equals("IMEI")) {
-                        tipo = "Imei";
-                    } else if (producto.getTipoProducto().equals("Fecha/Lote")) {
-                        tipo = "Fecha/Lote";
-                    } else if (producto.getTipoProducto().equals("Color")) {
-                        tipo = "Color";
-                    } else if (producto.getTipoProducto().equals("Serial")) {
-                        tipo = "Serial";
-                    } else if (producto.getTipoProducto().equals("Talla")) {
-                        tipo = "Talla";
-                    } else if (producto.getTipoProducto().equals("ColorTalla")) {
-                        tipo = "ColorTalla";
-                    } else if (producto.getTipoProducto().equals("SerialColor")) {
-                        tipo = "SerialColor";
-                    } else {
-                        tipo = "";
-                    }
-                }
-
-                if (!idProd.equals("")) {
-                    if (tipo.equals("Imei") || tipo.equals("Serial") || tipo.equals("SerialColor")) {
-                        instancias.getSql().modificarEstadoDetalleProductos(idProd, "DISPONIBLE");
-                    } else {
-                        Double cantidadActual = Double.parseDouble(instancias.getSql().getCantidadProductos(idProd).replace(",", "."));
-                        cantidadActual = cantidadActual + cantidadTabla;
-                        String cantidadFinal = String.valueOf(df.format(cantidadActual)).replace(".", ",");
-                        instancias.getSql().modificarCantidadesDetalleProductos(idProd, cantidadFinal);
-                    }
-                }
+            try {
+                servicioInventario.procesarMovimiento();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                return;
             }
         }
 
@@ -1905,6 +1867,27 @@ public class vistaAnulacion extends javax.swing.JInternalFrame {
         }
 
         tapPanel1.setSelectedIndex(0);
+    }
+
+    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+
+        List<MovimientoInventario> movimientos = new ArrayList<>();
+
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            ndProducto producto = instancias.getSql().getDatosProducto(obtenerValorTabla(i, 10), tablaUtilizada);
+            BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 9).toString());
+            String idDetalleProducto = obtenerValorTabla(i, 11);
+
+            MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, idDetalleProducto);
+            movimientos.add(inventario);
+        }
+
+        return movimientos;
+    }
+
+    private String obtenerValorTabla(int row, int col) {
+        Object value = tblProductos.getValueAt(row, col);
+        return value != null ? value.toString() : "";
     }
 
     public void actualizarTabla() {

@@ -4,7 +4,7 @@ import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -17,13 +17,13 @@ public class nuevoTercero extends javax.swing.JDialog {
     private metodosGenerales metodos;
     private Instancias instancias;
     private String opc;
-    private vistaFactura factura;
+    private VistaFactura factura;
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 

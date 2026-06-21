@@ -1,5 +1,6 @@
 package Vista.Productos;
 
+import Modelo.Inventario.UltimoPonderado;
 import Modelo.Terceros.ModeloContacto;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
@@ -7,6 +8,7 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Maestra.modeloConfiguracion;
+import Servicio.Inventario.ServicioActualizacionPonderado;
 import Utilidades.Constantes;
 import formularios.Ventas.dlgPonderadoNegativo;
 import formularios.productos.buscMarcas;
@@ -30,7 +32,10 @@ import java.nio.file.CopyOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -42,7 +47,9 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-public class vistaProductos extends javax.swing.JInternalFrame {
+public class VistaProductos extends javax.swing.JInternalFrame {
+
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -54,7 +61,7 @@ public class vistaProductos extends javax.swing.JInternalFrame {
     modeloConfiguracion nodoConf;
     String simbolo = "";
 
-    public vistaProductos() {
+    public VistaProductos() {
 
         initComponents();
 
@@ -4331,9 +4338,9 @@ public class vistaProductos extends javax.swing.JInternalFrame {
                 return;
             }
 
-            BigDecimal costoProd = BigDecimal.ZERO;
+            BigDecimal costoProducto = BigDecimal.ZERO;
             try {
-                costoProd = big.getMoneda(txtCosto.getText());
+                costoProducto = big.getMoneda(txtCosto.getText());
             } catch (Exception e) {
                 metodos.msgAdvertenciaAjustado(this, "Costo con formato invalidó");
                 return;
@@ -4391,7 +4398,7 @@ public class vistaProductos extends javax.swing.JInternalFrame {
                 grupo, subgrupo, proveedor, txtIva.getText(), big.getMoneda(txtL1.getText()), big.getMoneda(txtL2.getText()),
                 big.getMoneda(txtL3.getText()), big.getMoneda(txtL4.getText()), big.getMoneda(txtL5.getText()), big.getMoneda(txtL6.getText()),
                 big.getMoneda(txtL7.getText()), big.getMoneda(txtL8.getText()), "ADMIN", txtMinimo.getText(), txtMedida.getText(),
-                txtReferencia.getText(), costoProd, txtMinima.getText(), txtMaximo.getText(), txtUbicacion.getText(),
+                txtReferencia.getText(), costoProducto, txtMinima.getText(), txtMaximo.getText(), txtUbicacion.getText(),
                 txtDescripcion2.getText(), txtUbicacion2.getText(), txtCantidad2.getText(),
                 txtDescripcion3.getText(), txtUbicacion3.getText(), txtCantidad3.getText(),
                 txtDescripcion4.getText(), txtUbicacion4.getText(), txtCantidad4.getText(),
@@ -4435,15 +4442,12 @@ public class vistaProductos extends javax.swing.JInternalFrame {
                 metodos.msgError(this, "Error al guardar en el consecutivo del producto");
             }
 
-            if (!instancias.getSql().agregarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), "PROD-" + consecutivo,
-                    BigDecimal.ZERO, "0", "0", costoProd, "0", instancias.getUsuario(), costoProd, "CREACIÓN DE PROD")) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del producto");
-            }
+            ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
-            if (!instancias.getSql().agregarUltimoPonderado(
-                    metodos.fechaConsulta(metodosGenerales.fechaHora()), "PROD-" + consecutivo, BigDecimal.ZERO, "0", "0", costoProd, "0",
-                    instancias.getUsuario(), costoProd, "CREACIÓN DE PROD")) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del producto");
+            try {
+                servicioActualizacionPonderado.crearPonderadoInicial(nodo, costoProducto, instancias.getUsuario());
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaProductos.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             lbNit.requestFocus();
@@ -4634,7 +4638,7 @@ public class vistaProductos extends javax.swing.JInternalFrame {
         buscar.noEncontrado(nit);
         buscar.show();
     }
-    
+
     public void actualizarGrupos() {
         txtGrupo.removeAllItems();
         txtGrupo.addItem("");
@@ -4823,28 +4827,21 @@ public class vistaProductos extends javax.swing.JInternalFrame {
                     txtReferencia.setText("");
                 }
 
-                Object[] ultimoMovimiento = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-
-                BigDecimal costo, ponderado;
-                try {
-                    costo = big.getBigDecimal(ultimoMovimiento[7].toString());
-                } catch (Exception e) {
-                    costo = BigDecimal.ZERO;
-                }
+                BigDecimal ponderado = BigDecimal.ZERO;
+                BigDecimal ultimoCosto = BigDecimal.ZERO;
+                String fechaCompra = "";
 
                 try {
-                    ponderado = big.getBigDecimal(ultimoMovimiento[4].toString());
-                } catch (Exception e) {
-                    ponderado = BigDecimal.ZERO;
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    ponderado = ultimoPonderado.getNuevoPonderado();
+                    ultimoCosto = ultimoPonderado.getUltimoCosto();
+                    fechaCompra = ultimoPonderado.getFechaCompra();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                try {
-                    txtFCompra.setText(metodos.fecha(ultimoMovimiento[8].toString()));
-                } catch (Exception e) {
-                    txtFCompra.setText("");
-                }
-
-                txtCosto.setText(big.setMoneda(costo));
+                txtFCompra.setText(fechaCompra);
+                txtCosto.setText(big.setMoneda(ultimoCosto));
                 txtCosto1.setText(big.setMoneda(ponderado));
 
                 if (!nodo.getMinima().equals("null")) {

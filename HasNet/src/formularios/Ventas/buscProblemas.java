@@ -1,7 +1,7 @@
 package formularios.Ventas;
 
-import Vista.Ventas.vistaFactura;
-import Vista.Productos.vistaIngresos;
+import Vista.Ventas.VistaFactura;
+import Vista.Productos.VistaIngreso;
 import formularios.productos.*;
 import clases.Instancias;
 import clases.cambiarColorTabla;
@@ -24,8 +24,8 @@ public final class buscProblemas extends javax.swing.JDialog {
     TableRowSorter modeloOrdenado;
     Instancias instancias;
     private String opc;
-    private vistaFactura factura;
-    private vistaIngresos ingreso;
+    private VistaFactura factura;
+    private VistaIngreso ingreso;
     private String claseBuscador = "";
     int pos = 0;
     metodosGenerales metodos = new metodosGenerales();
@@ -95,19 +95,19 @@ public final class buscProblemas extends javax.swing.JDialog {
         }
     }
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 
-    public vistaIngresos getIngreso() {
+    public VistaIngreso getIngreso() {
         return ingreso;
     }
 
-    public void setIngreso(vistaIngresos ingreso) {
+    public void setIngreso(VistaIngreso ingreso) {
         this.ingreso = ingreso;
     }
 

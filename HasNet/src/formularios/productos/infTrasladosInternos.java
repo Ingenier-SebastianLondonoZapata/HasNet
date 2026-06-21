@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Modelo.Inventario.UltimoPonderado;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
@@ -9,6 +10,8 @@ import clases.productos.ndProducto;
 import clases.productos.ndTrasladoBodega;
 import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Vista.Productos.VistaInventarioInicial;
 import formularios.infBuscadorCliente;
 import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
@@ -18,15 +21,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infTrasladosInternos extends javax.swing.JInternalFrame {
+
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
     String simbolo = "";
     DefaultTableModel modeloPro;
@@ -1038,13 +1046,14 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame {
                             Object[][] prod = instancias.getSql().getProductosDetalle(cod);
                             String conse = instancias.getSql().getNumConsecutivo("DETALLEPROD")[0].toString();
 
-                            if (!instancias.getSql().agregarDetalladoProducto(conse, prod[0][0].toString(), prod[0][1].toString(),
+                            //OJO IMPORTANTE ORGANIZAR ESTA PARTE
+                            /*if (!instancias.getSql().agregarDetalladoProducto(conse, prod[0][0].toString(), prod[0][1].toString(),
                                     String.valueOf(df.format(cant2)).replace(".", ","), prod[0][3].toString(), prod[0][4].toString(), prod[0][5].toString(),
                                     prod[0][6].toString(), "DISPONIBLE", factura, metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(),
                                     instancias.getUsuario(), prod[0][7].toString(), prod[0][9].toString(), txtNitBD.getText())) {
                                 metodos.msgError(null, "Hubo un problema al guardar el detalle del producto");
                                 return;
-                            }
+                            }*/
 
                             if (!instancias.getSql().aumentarConsecutivo("DETALLEPROD", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DETALLEPROD")[0]) + 1)) {
                                 metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del detalle del producto");
@@ -1639,13 +1648,13 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame {
                 compraDetallada.setVisible(true);
                 return;
             } else {
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
 
-                BigDecimal uCosto;
+                BigDecimal ultimoCosto = BigDecimal.ZERO;
                 try {
-                    uCosto = big.getBigDecimal(ultimoPonderado[7].toString());
-                } catch (Exception e) {
-                    uCosto = BigDecimal.ZERO;
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    ultimoCosto = ultimoPonderado.getUltimoCosto();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 String cant = nodo.getFisicoInventario().replace(".", ",");
@@ -1694,7 +1703,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame {
                     }
                 }
 
-                modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), big.setMoneda(uCosto), cantidad, detalle, "", idProd, "",
+                modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), big.setMoneda(ultimoCosto), cantidad, detalle, "", idProd, "",
                     (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), plu, "", cant, res});
 
                 tblProductos.setColumnSelectionInterval(7, 7);

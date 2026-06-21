@@ -7,15 +7,15 @@ import javax.swing.table.DefaultTableModel;
 
 public class ingreso extends javax.swing.JInternalFrame {
 
-    private vistaIngresos pnlIngreso;
+    private VistaIngreso pnlIngreso;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
     DefaultTableModel modelo;
 
-    public vistaIngresos getPnlIngreso() {
+    public VistaIngreso getPnlIngreso() {
         return pnlIngreso;
     }
-    public void setPnlIngreso(vistaIngresos pnlIngreso) {
+    public void setPnlIngreso(VistaIngreso pnlIngreso) {
         this.pnlIngreso = pnlIngreso;
     }
 
@@ -29,7 +29,7 @@ public class ingreso extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        pnlIngreso = new vistaIngresos("ingreso");
+        pnlIngreso = new VistaIngreso("ingreso");
         pnlIngreso.setSize(pnlContenedor.getSize());
         pnlContenedor.add(pnlIngreso, CENTER_ALIGNMENT);
         pnlContenedor.revalidate();

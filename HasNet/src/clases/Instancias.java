@@ -1,17 +1,19 @@
 package clases;
 
+import Vista.Productos.VistaAjusteInventario;
+import Vista.Productos.VistaInventarioInicial;
 import Vista.Aterrizaje.vistaMenu;
-import Vista.Ventas.vistaFactura;
+import Vista.Ventas.VistaFactura;
 import Vista.Productos.ordenCompra;
 import Vista.Productos.ingreso;
-import Vista.Productos.vistaIngresos;
+import Vista.Productos.VistaIngreso;
 import Vista.Tesoreria.vistaCodigosEgresos;
 import Vista.Tesoreria.vistaEgresos;
 import Vista.Terceros.vistaContactos;
 import Vista.Ventas.infMesas;
 import Vista.Ventas.vistaAnulacion;
-import Vista.Ventas.vistaDocumentos;
-import Vista.Cartera.vistaNotaDebito;
+import Vista.Ventas.VistaDocumentos;
+import Vista.Cartera.VistaNotaDebito;
 import Vista.Cartera.vistaNotaCredito;
 import Vista.Configuraciones.vistaMaestra;
 import Modelo.Maestra.modeloConfiguracion;
@@ -20,7 +22,7 @@ import Vista.Configuraciones.vistaSuperMaestra;
 import Controlador.BarraProceso.jcThread;
 import Utilidades.BaseDatos.SQL1;
 import Utilidades.Constantes;
-import Vista.Productos.vistaProductos;
+import Vista.Productos.VistaProductos;
 import formularios.Parqueadero.*;
 
 import formularios.*;
@@ -271,11 +273,11 @@ public class Instancias {
     private infMesas mesas;
     private infMesas1 mesas1;
     private buscTipoVehiculo buscTipoVehiculo;
-    private vistaDocumentos reimpresion;
+    private VistaDocumentos reimpresion;
 
     /* INICIO PRODUCTOS */
     private infInventario inventario;
-    private vistaProductos productos;
+    private VistaProductos productos;
     private infGrupos grupos;
     private infKardexProductos kardexProductos;
     private buscProductos buscProductos;
@@ -294,8 +296,8 @@ public class Instancias {
     private infRepAjustes repAjustes;
     private infRepTraslados repTraslados;
     private infRepTrasladosInternos repTrasladosInternos;
-    private infAjustesInv uInt;
-    private infInventarioInicial inventarioInicial;
+    private VistaAjusteInventario uInt;
+    private VistaInventarioInicial inventarioInicial;
     private ingreso ingresos;
     private ordenCompra ordenCompra;
 
@@ -357,7 +359,7 @@ public class Instancias {
 
     /* INICIO CARTERA */
     private vistaNotaCredito nc;
-    private vistaNotaDebito nd;
+    private VistaNotaDebito nd;
     private infRepNc repNC;
     private infPagos pagos;
     private infRepPagos repPagos;
@@ -474,11 +476,11 @@ public class Instancias {
         this.idND = idND;
     }
 
-    public vistaNotaDebito getNd() {
+    public VistaNotaDebito getNd() {
         return nd;
     }
 
-    public void setNd(vistaNotaDebito nd) {
+    public void setNd(VistaNotaDebito nd) {
         this.nd = nd;
     }
 
@@ -1350,7 +1352,7 @@ public class Instancias {
         this.repProductos = repProductos;
     }
 
-    public vistaFactura getMesa1() {
+    public VistaFactura getMesa1() {
         return mesa.getPnlFactura();
     }
 
@@ -1495,7 +1497,7 @@ public class Instancias {
         this.buscarUsuarios = buscarUsuarios;
     }
 
-    public infInventarioInicial getInventarioInicial() {
+    public VistaInventarioInicial getInventarioInicial() {
         return inventarioInicial;
     }
 
@@ -1507,7 +1509,7 @@ public class Instancias {
         this.ocultarInformacionCliente = ocultarInformacionCliente;
     }
 
-    public void setInventarioInicial(infInventarioInicial inventarioInicial) {
+    public void setInventarioInicial(VistaInventarioInicial inventarioInicial) {
         this.inventarioInicial = inventarioInicial;
     }
 
@@ -1864,7 +1866,7 @@ public class Instancias {
         this.reportesVentas = reportesVentas;
     }
 
-    public vistaFactura getPlanSepare() {
+    public VistaFactura getPlanSepare() {
         return planSepare.getPnlFactura();
     }
 
@@ -1880,7 +1882,7 @@ public class Instancias {
         return pedido;
     }
 
-    public vistaFactura getPedido() {
+    public VistaFactura getPedido() {
         return pedido.getPnlFactura();
     }
 
@@ -2096,7 +2098,7 @@ public class Instancias {
         this.idAbono = idAbono;
     }
 
-    public vistaFactura getOrdenServicio() {
+    public VistaFactura getOrdenServicio() {
         return ordenServicio.getPnlFactura();
     }
 
@@ -2472,11 +2474,11 @@ public class Instancias {
         return caja;
     }
 
-    public vistaDocumentos getReimpresion() {
+    public VistaDocumentos getReimpresion() {
         return reimpresion;
     }
 
-    public void setReimpresion(vistaDocumentos reimpresion) {
+    public void setReimpresion(VistaDocumentos reimpresion) {
         this.reimpresion = reimpresion;
     }
 
@@ -2524,11 +2526,11 @@ public class Instancias {
         this.repEmpleados = repEmpleados;
     }
 
-    public infAjustesInv getuInt() {
+    public VistaAjusteInventario getuInt() {
         return uInt;
     }
 
-    public void setuInt(infAjustesInv uInt) {
+    public void setuInt(VistaAjusteInventario uInt) {
         this.uInt = uInt;
     }
 
@@ -2564,7 +2566,7 @@ public class Instancias {
         this.egresos = egresos;
     }
 
-    public vistaIngresos getOrdenCompra() {
+    public VistaIngreso getOrdenCompra() {
         return ordenCompra.getPnlIngreso();
     }
 
@@ -2576,7 +2578,7 @@ public class Instancias {
         this.ordenCompra = ordenCompra;
     }
 
-    public vistaIngresos getIngresos() {
+    public VistaIngreso getIngresos() {
         return ingresos.getPnlIngreso();
     }
 
@@ -2596,7 +2598,7 @@ public class Instancias {
         this.abonos = abonos;
     }
 
-    public vistaFactura getCotiza() {
+    public VistaFactura getCotiza() {
         return cotiza.getPnlFactura();
     }
 
@@ -2608,11 +2610,11 @@ public class Instancias {
         this.cotiza = cotiza;
     }
 
-    public vistaProductos getProductos() {
+    public VistaProductos getProductos() {
         return productos;
     }
 
-    public void setProductos(vistaProductos productos) {
+    public void setProductos(VistaProductos productos) {
         this.productos = productos;
     }
 
@@ -2672,7 +2674,7 @@ public class Instancias {
         this.ingreso = ingreso;
     }
 
-    public vistaFactura getFacturaCreditos() {
+    public VistaFactura getFacturaCreditos() {
         return facturaCreditos.getPnlFactura();
     }
 
@@ -2684,7 +2686,7 @@ public class Instancias {
         this.facturaCreditos = facturaCreditos;
     }
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura.getPnlFactura();
     }
 
@@ -2696,7 +2698,7 @@ public class Instancias {
         this.factura = factura;
     }
 
-    public vistaFactura getCuentaCobro() {
+    public VistaFactura getCuentaCobro() {
         return cuentaCobro.getPnlFactura();
     }
 

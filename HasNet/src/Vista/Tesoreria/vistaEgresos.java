@@ -4,7 +4,7 @@ import Consumidor.DocumentoSoporte.consumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
 import DAO.Configuraciones.DaoResoluciones;
 import DAO.Egresos.DaoEgresos;
-import Enums.enumTipoDocumento;
+import Enums.TipoDocumento;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
@@ -1690,7 +1690,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
 
         modeloComprobantes.addRow(new Object[]{"0", "EGRESO NORMAL", true, "", "", "", "", "", "", "", ""});
 
-        List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(enumTipoDocumento.TipoDocumento.EGRESO.getValue());
+        List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(TipoDocumento.EGRESO.getValor());
         for (ModeloResolucion resolucion : resoluciones) {
             modeloComprobantes.addRow(new Object[]{resolucion.getIdResolucion(), resolucion.getDescripcionResolucion(), false, resolucion.getNumeroResolucion(), resolucion.getFechaInicio(),
                 resolucion.getNumeracionDel(), resolucion.getNumeracionHasta(), resolucion.getTipoResolucion(), resolucion.getPrefijo(), resolucion.getConsecutivo(), resolucion.getDisenho()});

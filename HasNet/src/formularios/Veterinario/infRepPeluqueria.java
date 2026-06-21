@@ -2,10 +2,8 @@ package formularios.Veterinario;
 
 import formularios.terceros.buscClientes;
 import clases.Instancias;
-import Utilidades.BaseDatos.SQL;
 import Modelo.Terceros.ModeloContacto;
 import clases.metodosGenerales;
-import clases.terceros.ndEmpleado;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;

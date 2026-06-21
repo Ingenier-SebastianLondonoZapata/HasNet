@@ -6,7 +6,7 @@
 package Validaciones.Compras;
 
 import Controlador.Alertas.ControladorAlertas;
-import Enums.enumTipoDocumento;
+import Enums.TipoDocumento;
 import Utilidades.Constantes;
 import clases.Instancias;
 import clases.big;
@@ -63,7 +63,7 @@ public class squemaCompras extends javax.swing.JPanel {
             errores_validacion.add("No ha cargado ningún proveedor");
         }
 
-        if (tipoProceso.equals(enumTipoDocumento.TipoDocumento.COMPRA.getValue())) {
+        if (tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
             if (numeroFactura.equals("") && !tipoIngreso.equals("OTRO INGRESO")) {
                 errores_validacion.add("Debe ingresar el número de la factura");
             }
@@ -114,7 +114,7 @@ public class squemaCompras extends javax.swing.JPanel {
                 errores_validacion.add("El costo del producto '" + descripcionProducto + "' debe ser mayor a " + simboloMoneda + "0");
             }
 
-            if (Constantes.esDocumentoSoporte(tipoComprobante) && tipoProceso.equals(enumTipoDocumento.TipoDocumento.COMPRA.getValue())) {
+            if (Constantes.esDocumentoSoporte(tipoComprobante) && tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
 
                 if (descripcionProducto.length() < Constantes.LONGITUD_MINIMA_DESCRIPCION_PRODUCTOS) {
                     errores_validacion.add("El producto '" + descripcionProducto + "' debe tener descripción más larga");

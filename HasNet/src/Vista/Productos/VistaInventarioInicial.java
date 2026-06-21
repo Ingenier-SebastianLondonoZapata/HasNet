@@ -1,22 +1,40 @@
-package formularios.productos;
+package Vista.Productos;
 
+import Controlador.Alertas.ControladorAlertas;
+import Enums.HistoricoPonderados;
+import Enums.TipoDocumento;
+import Enums.enumBodegas;
+import Modelo.Inventario.DetalleProducto;
+import Modelo.Inventario.MovimientoInventario;
+import Modelo.Inventario.UltimoPonderado;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Servicio.Inventario.ServicioInventario;
+import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
+import Utilidades.Utilidades;
 import clases.Instancias;
-import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndCompra;
 import clases.productos.ndIngreso;
 import clases.productos.ndInventarioInicial;
 import clases.productos.ndProducto;
+import formularios.productos.buscProductos;
+import formularios.productos.dlgCompraDetallada1;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class infInventarioInicial extends javax.swing.JInternalFrame {
+public class VistaInventarioInicial extends javax.swing.JInternalFrame {
+
+    private final ControladorAlertas alertas = new ControladorAlertas();
 
     String simbolo = "";
     metodosGenerales metodos = new metodosGenerales();
@@ -25,7 +43,7 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
     DecimalFormat df = new DecimalFormat("#.00");
     DefaultTableModel modeloPro1;
 
-    public infInventarioInicial() {
+    public VistaInventarioInicial() {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -109,6 +127,9 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
         txtCosto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtCostoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCostoKeyTyped(evt);
             }
         });
 
@@ -295,16 +316,16 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21)
                 .addGroup(pnlProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtTotalConteo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTotalConteo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel13)
-                    .addComponent(txtTotalIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTotalIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
 
@@ -459,7 +480,13 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Object[] campos = {txtProducto, txtConteo1};
         String faltantes = metodos.camposVacios(campos);
-        String cantidad;
+
+        try {
+            Double.parseDouble(txtTotalConteo.getText());
+        } catch (Exception e) {
+            metodos.msgAdvertencia(this, "Total conteo inválido");
+            return;
+        }
 
         if (!faltantes.equals("")) {
             metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
@@ -490,7 +517,7 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
             }
         }
 
-        cantidad = txtTotalConteo.getText();
+        String cantidad = txtTotalConteo.getText();
 
         Object[] vector = {txtProducto1.getText(), txtCosto.getText(), txtConteo1.getText(), txtConteo2.getText(), txtConteo3.getText(),
             txtTotalConteo.getText(), "", "", "", "", ""
@@ -514,100 +541,18 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
 
         metodos.msgExito(this, "Inventario agregado con éxito");
 
-        ndProducto producto = instancias.getSql().getDatosProducto(txtProducto.getText(), "bdProductos");
-        double inventario;
-        double cantidad1;
-        double fisicoInventario;
+        TipoDocumento tipoMovimiento = TipoDocumento.INVENTARIO_INICIAL;
+        String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
+        List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+        List<DetalleProducto> detallesProductos = generarDetalleProductos();
+        ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, 
+                HistoricoPonderados.INVENTARIO_INICIAL.getNombre(), tablaUtilizada, instancias.getUsuario(), null);
 
         try {
-            inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-        } catch (Exception e) {
-            inventario = 0;
-        }
-
-        double inv2 = inventario;
-
-        try {
-            cantidad1 = Double.parseDouble(producto.getInventarioInicial().replace(",", "."));
-        } catch (Exception e) {
-            cantidad1 = 0;
-        }
-
-        try {
-            fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-        } catch (Exception e) {
-            fisicoInventario = Double.parseDouble(producto.getCompras().replace(",", "."));
-        }
-
-        double cantidadProd;
-        try {
-            cantidadProd = Double.parseDouble(txtTotalConteo.getText());
-        } catch (Exception e) {
-            cantidadProd = Double.parseDouble(txtTotalConteo.getText().substring(0, txtTotalConteo.getText().length() - 2));
-        }
-
-        inventario = inventario + cantidadProd;
-        fisicoInventario = fisicoInventario + cantidadProd;
-        double total = cantidad1 + cantidadProd;
-
-        String total1 = String.valueOf(total).replace(".", ",");
-        String inventario1 = String.valueOf(inventario).replace(".", ",");
-        String fisicoInventario1 = String.valueOf(fisicoInventario).replace(".", ",");
-
-        instancias.getSql().modificarInventario("inventarioInicial", total1, txtProducto1.getText(), "bdProductos");
-        instancias.getSql().modificarInventario("inventario", inventario1, txtProducto1.getText(), "bdProductos");
-        instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, txtProducto1.getText(), "bdProductos");
-
-        Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(txtProducto1.getText());
-
-        BigDecimal inv = big.getBigDecimal(producto.getInventario().replace(",", "."));
-        BigDecimal ponderadoViejo = big.getBigDecimal(ultimoPonderado[4].toString());
-        BigDecimal totalViejo = inv.multiply(ponderadoViejo);
-        BigDecimal nuevoPrecio = big.getMoneda(txtTotalIngreso.getText());
-        BigDecimal cant = big.getBigDecimal(txtTotalConteo.getText());
-
-        nuevoPrecio = nuevoPrecio.divide(cant);
-        BigDecimal totalNuevo = big.getBigDecimal(cantidadProd).multiply(nuevoPrecio);
-        BigDecimal nuevoPonderado = totalNuevo.add(totalViejo);
-        nuevoPonderado = nuevoPonderado.divide(big.getBigDecimal(inventario), 3, RoundingMode.CEILING);
-
-        if (!instancias.getSql().agregarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), producto.getIdSistema(),
-                big.getBigDecimal(ultimoPonderado[4].toString().replace(",", ".")), String.valueOf(inv2), txtTotalConteo.getText(),
-                nuevoPonderado, String.valueOf(inventario), instancias.getUsuario(), nuevoPrecio, "INV. INICIAL")) {
-            metodos.msgError(null, "Hubo un problema al guardar el ponderado");
-        }
-
-        if (!instancias.getSql().modificarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), producto.getIdSistema(),
-                big.getBigDecimal(ultimoPonderado[4].toString()), String.valueOf(inv2), txtTotalConteo.getText(),
-                nuevoPonderado, String.valueOf(inventario), instancias.getUsuario(), nuevoPrecio, "INV. INICIAL")) {
-            metodos.msgError(null, "Hubo un problema al guardar el ponderado");
-        }
-
-        for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-            String cant1 = tblDetalle.getValueAt(i, 5).toString();
-
-            if (cant1.equals("")) {
-                cant1 = "1.0";
-            }
-
-            String fecha = tblDetalle.getValueAt(i, 3).toString();
-            if (fecha.equals("")) {
-                fecha = metodosGenerales.fecha();
-            }
-
-            String conse = instancias.getSql().getNumConsecutivo("DETALLEPROD")[0].toString();
-            if (!instancias.getSql().agregarDetalladoProducto(conse, tblDetalle.getValueAt(i, 0).toString(), tblDetalle.getValueAt(i, 6).toString(),
-                    cant1, tblDetalle.getValueAt(i, 1).toString(), tblDetalle.getValueAt(i, 2).toString(),
-                    metodos.fechaConsulta(fecha), tblDetalle.getValueAt(i, 4).toString(), "DISPONIBLE", "INV. INICIAL",
-                    metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), instancias.getUsuario(), tblDetalle.getValueAt(i, 7).toString(),
-                    tblDetalle.getValueAt(i, 8).toString(), "123-22")) {
-                metodos.msgError(null, "Hubo un problema al guardar el detalle del producto");
-                return;
-            }
-
-            if (!instancias.getSql().aumentarConsecutivo("DETALLEPROD", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DETALLEPROD")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del detalle del producto");
-            }
+            servicioInventario.procesarMovimiento();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+            return;
         }
 
         btnLimpiarActionPerformed(evt);
@@ -774,6 +719,29 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtConteo1MouseClicked
 
+    private void txtCostoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCostoKeyTyped
+        metodos.soloNum(evt);
+    }//GEN-LAST:event_txtCostoKeyTyped
+
+    private List<DetalleProducto> generarDetalleProductos() {
+        UtilidadesDetalleProducto utilidadesDetalleProducto = new UtilidadesDetalleProducto(tblDetalle);
+        return utilidadesDetalleProducto.generarDetallesProductos();
+    }
+
+    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+        ndProducto producto = instancias.getSql().getDatosProducto(txtProducto.getText(), tablaUtilizada);
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(txtTotalConteo.getText());
+        BigDecimal valorProducto = big.getMoneda(txtCosto.getText());
+        MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, valorProducto, "");
+
+        return Collections.singletonList(inventario);
+    }
+
+    private String obtenerValorTabla(int row, int col) {
+        Object value = tblDetalle.getValueAt(row, col);
+        return value != null ? value.toString() : "";
+    }
+
     public void cargarProducto(String codigo, int plu) {
         ndProducto nodo = null;
 
@@ -862,15 +830,18 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
 //                sumarConteo();
 //                sumarAuditoria();
 //            } else {
-            BigDecimal costo;
+            ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
             try {
-                costo = big.getMoneda(instancias.getSql().getUltimoPonderado(nodo.getIdSistema())[7].toString());
-            } catch (Exception e) {
-                costo = big.getBigDecimal(0);
+                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                txtCosto.setText(big.setMoneda(ultimoPonderado.getUltimoCosto()));
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
+                return;
             }
 
-            txtCosto.setText(big.setMoneda(costo));
+            // costo = big.getMoneda(instancias.getSql().getUltimoPonderado(nodo.getIdSistema())[7].toString());
             txtDescripcion.setText(nodo.getDescripcion());
             txtProducto1.setText(nodo.getIdSistema());
             txtProducto.setText(nodo.getCodigo());
@@ -916,24 +887,15 @@ public class infInventarioInicial extends javax.swing.JInternalFrame {
     }
 
     public void sumarConteo() {
-        Double valor1 = 0.0, valor2 = 0.0, valor3 = 0.0, total = 0.0;
+        BigDecimal total = Utilidades.convertirBigDecimal(txtConteo1.getText())
+                .add(Utilidades.convertirBigDecimal(txtConteo2.getText()))
+                .add(Utilidades.convertirBigDecimal(txtConteo3.getText()));
 
-        if (!txtConteo1.getText().equals("")) {
-            valor1 = Double.parseDouble(txtConteo1.getText().replace(",", "."));
+        txtTotalConteo.setText(total.stripTrailingZeros().toPlainString());
+
+        if (!txtCosto.getText().isEmpty()) {
+            txtTotalIngreso.setText(big.setMoneda(big.getMoneda(txtCosto.getText()).multiply(total)));
         }
-
-        if (!txtConteo2.getText().equals("")) {
-            valor2 = Double.parseDouble(txtConteo2.getText().replace(",", "."));
-        }
-
-        if (!txtConteo3.getText().equals("")) {
-            valor3 = Double.parseDouble(txtConteo3.getText().replace(",", "."));
-        }
-
-        total = valor1 + valor2 + valor3;
-        txtTotalConteo.setText(String.valueOf(total));
-        txtTotalIngreso.setText(big.setMoneda(big.getMoneda(txtCosto.getText()).multiply(big.getBigDecimal(total))));
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

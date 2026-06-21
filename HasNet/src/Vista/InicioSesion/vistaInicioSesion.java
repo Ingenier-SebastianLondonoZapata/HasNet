@@ -237,6 +237,7 @@ public class vistaInicioSesion extends javax.swing.JFrame {
             System.exit(0);
         }
 
+        System.out.println("hello: " +identificadorCliente);
         modeloConfiguracion modelo = instancias.getSqlPagos().obtenerConfiguracionCliente(identificadorCliente);
         if (null != modelo.getNit() || null != modelo.getNombre()) {
             if (!instancias.getSql().modificarConfiguracion(modelo)) {
@@ -253,6 +254,8 @@ public class vistaInicioSesion extends javax.swing.JFrame {
                     datosCorrectos = true;
                 }
 
+                System.out.println(registroPago[0][1].toString() + ":0");
+                System.out.println(registroPago[0][8].toString() + ":1");
                 if (modelo.isFacturaElectronica() && !sistemaBloqueadoPorPago) {
                     generarToken(registroPago[0][1].toString(), registroPago[0][8].toString());
                 }
@@ -295,6 +298,8 @@ public class vistaInicioSesion extends javax.swing.JFrame {
     private boolean generarToken(String nitEmisor, String tipoDocumento) {
         boolean tokenGenerado = false;
 
+        System.out.println("nitEmisor: " + nitEmisor);
+        System.out.println("tipoDocumento: " + tipoDocumento);
         try {
             tokenGenerado = controladorFacturacion.generarToken(nitEmisor, tipoDocumento);
             if (!tokenGenerado) {

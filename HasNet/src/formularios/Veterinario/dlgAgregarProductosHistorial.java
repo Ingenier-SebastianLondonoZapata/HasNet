@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Modelo.Inventario.UltimoPonderado;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndMascota;
@@ -8,6 +9,8 @@ import clases.metodosGenerales;
 import clases.productos.ndProdTraslBodega;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Vista.Productos.VistaInventarioInicial;
 import formularios.productos.buscProductos;
 import formularios.productos.dlgCompraDetallada1;
 import formularios.productos.seleccionarPLU;
@@ -16,12 +19,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
+
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
     Object[] datos;
     private Instancias instancias;
@@ -1177,8 +1185,13 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 compraDetallada.setVisible(true);
                 return;
             } else {
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-                BigDecimal costoPonderado = big.getBigDecimal(ultimoPonderado[4].toString());
+                BigDecimal costoPonderado = BigDecimal.ZERO;
+                try {
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    costoPonderado = ultimoPonderado.getNuevoPonderado();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 BigDecimal listaPrecio = big.getBigDecimal(nodo.getL1());
                 BigDecimal iva = big.getBigDecimal(nodo.getIva());
@@ -1351,8 +1364,13 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 compraDetallada.setVisible(true);
                 return;
             } else {
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-                BigDecimal costoPonderado = big.getBigDecimal(ultimoPonderado[4].toString());
+                BigDecimal costoPonderado = BigDecimal.ZERO;
+                try {
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    costoPonderado = ultimoPonderado.getNuevoPonderado();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 BigDecimal listaPrecio = big.getBigDecimal(nodo.getL1());
                 BigDecimal iva = big.getBigDecimal(nodo.getIva());

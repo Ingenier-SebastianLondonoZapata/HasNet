@@ -2,8 +2,11 @@ package Vista.Ventas;
 
 import DAO.Terceros.DaoTerceros;
 import DAO.Ventas.DaoReimpresiones;
+import Enums.TipoDocumento;
 import Enums.enumBodegas;
-import Enums.enumTipoProducto;
+import Enums.DetalleTipoProducto;
+import Modelo.Inventario.DetalleProducto;
+import Modelo.Inventario.MovimientoInventario;
 import Modelo.Terceros.ModeloDatosVehiculo;
 import Utilidades.CambiarColorTablaReimpresionYAnulacion;
 import clases.Cartera.ndCxc;
@@ -15,8 +18,11 @@ import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
 import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
+import Servicio.Inventario.ServicioInventario;
 import Utilidades.Constantes;
 import Utilidades.Fechas;
+import Utilidades.Utilidades;
+import Vista.Productos.VistaInventarioInicial;
 import clases.Ventas.ndCotizacion;
 import clases.Ventas.ndOServicio1;
 import clases.Ventas.ndPedido;
@@ -26,19 +32,23 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class vistaDocumentos extends javax.swing.JInternalFrame {
+public class VistaDocumentos extends javax.swing.JInternalFrame {
 
     private final DaoReimpresiones daoReimpresiones = new DaoReimpresiones();
     private final DaoTerceros daoTerceros = new DaoTerceros();
     private DefaultTableModel modeloTablaDocumentos;
-    
+
     DecimalFormat df = new DecimalFormat("#.00");
 
     private Object[] datosMaestra;
@@ -69,7 +79,7 @@ public class vistaDocumentos extends javax.swing.JInternalFrame {
         this.detectarClicABoton = detectarClicABoton;
     }
 
-    public vistaDocumentos() {
+    public VistaDocumentos() {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -1437,81 +1447,80 @@ public class vistaDocumentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chkSoloAnuladasItemStateChanged
 
     /*private void cargarProductosDiscoteo(Map<String, Double> acumulados) {
-        Object[][] productos = instancias.getSql().getCantidadesDiscosteo(tblProductos.getValueAt(i, 14).toString());
+     Object[][] productos = instancias.getSql().getCantidadesDiscosteo(tblProductos.getValueAt(i, 14).toString());
 
-        for (int k = 0; k < productos.length; k++) {
-            String idProducto1 = productos[k][0].toString();
-            Double cantidadMovimiento1 = Double.parseDouble(productos[k][1].toString());
-            validarProductoYAcumular(acumulados, idProducto1, cantidadMovimiento1);
-        }
-    }
+     for (int k = 0; k < productos.length; k++) {
+     String idProducto1 = productos[k][0].toString();
+     Double cantidadMovimiento1 = Double.parseDouble(productos[k][1].toString());
+     validarProductoYAcumular(acumulados, idProducto1, cantidadMovimiento1);
+     }
+     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
-        Map<String, Double> acumulados = new HashMap<String, Double>();
+     private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+     Map<String, Double> acumulados = new HashMap<String, Double>();
 
-        for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            String idProducto = tblProductos.getValueAt(i, 14).toString();
-            double cantidadMovimiento = Double.parseDouble(tblProductos.getValueAt(i, 13).toString().replace(",", "."));
+     for (int i = 0; i < tblProductos.getRowCount(); i++) {
+     String idProducto = tblProductos.getValueAt(i, 14).toString();
+     double cantidadMovimiento = Double.parseDouble(tblProductos.getValueAt(i, 13).toString().replace(",", "."));
 
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 14).toString(), tablaUtilizada);
+     ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 14).toString(), tablaUtilizada);
 
-            if (!producto.getUsuario().equals("ADMIN")) {
-                String preparacion = tblProductos.getValueAt(i, 10) == null ? "" : tblProductos.getValueAt(i, 10).toString();
+     if (!producto.getUsuario().equals("ADMIN")) {
+     String preparacion = tblProductos.getValueAt(i, 10) == null ? "" : tblProductos.getValueAt(i, 10).toString();
 
-                if (preparacion.equals("")) {
+     if (preparacion.equals("")) {
 
-                    cargarProductosDiscosteo();
+     cargarProductosDiscosteo();
 
-                } else {
-                    String opciones2[];
-                    String opciones = preparacion.split("; ")[3];
-                    if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
+     } else {
+     String opciones2[];
+     String opciones = preparacion.split("; ")[3];
+     if (!opciones.equals("")) {
+     opciones2 = opciones.split(", ");
+     for (int k = 0; k < opciones2.length; k++) {
 
-                            String principal = opciones2[k].split("/")[0];
-                            String codigo = opciones2[k].split("/")[1];
-                            String cant = opciones2[k].split("/")[2];
-                            String estado = opciones2[k].split("/")[3];
+     String principal = opciones2[k].split("/")[0];
+     String codigo = opciones2[k].split("/")[1];
+     String cant = opciones2[k].split("/")[2];
+     String estado = opciones2[k].split("/")[3];
 
-                            if (estado.equals(" true")) {
-                                validarProductoYAcumular(acumulados, idProducto1, cantidadMovimiento1);
-                            }
-                        }
-                    }
+     if (estado.equals(" true")) {
+     validarProductoYAcumular(acumulados, idProducto1, cantidadMovimiento1);
+     }
+     }
+     }
 
-                    if (acumulados.containsKey(idProducto)) {
-                        Double cantidadActual = acumulados.get(idProducto);
-                        acumulados.put(idProducto, cantidadActual + cantidadMovimiento);
-                    } else {
-                        acumulados.put(idProducto, cantidadMovimiento);
-                    }
-                }
+     if (acumulados.containsKey(idProducto)) {
+     Double cantidadActual = acumulados.get(idProducto);
+     acumulados.put(idProducto, cantidadActual + cantidadMovimiento);
+     } else {
+     acumulados.put(idProducto, cantidadMovimiento);
+     }
+     }
 
                 
-                List<MovimientoInventario> productosAgrupados = new ArrayList<>();
-                for (Map.Entry<String, Double> entry : acumulados.entrySet()) {
-                    productosAgrupados.add(new MovimientoInventario(entry.getKey(), entry.getValue()));
-                }
+     List<MovimientoInventario> productosAgrupados = new ArrayList<>();
+     for (Map.Entry<String, Double> entry : acumulados.entrySet()) {
+     productosAgrupados.add(new MovimientoInventario(entry.getKey(), entry.getValue()));
+     }
 
-                return productosAgrupados;
-            }
-        }
-    }
+     return productosAgrupados;
+     }
+     }
+     }
 
-    private void validarProductoYAcumular(Map<String, Double> acumulados, String idProducto, double cantidadMovimiento) {
-        if (acumulados.containsKey(idProducto)) {
-            Double cantidadActual = acumulados.get(idProducto);
-            acumulados.put(idProducto, cantidadActual + cantidadMovimiento);
-        } else {
-            acumulados.put(idProducto, cantidadMovimiento);
-        }
-    }
+     private void validarProductoYAcumular(Map<String, Double> acumulados, String idProducto, double cantidadMovimiento) {
+     if (acumulados.containsKey(idProducto)) {
+     Double cantidadActual = acumulados.get(idProducto);
+     acumulados.put(idProducto, cantidadActual + cantidadMovimiento);
+     } else {
+     acumulados.put(idProducto, cantidadMovimiento);
+     }
+     }
 
-    private String obtenerTipoMovimiento() {
+     private String obtenerTipoMovimiento() {
      return "";
-    }*/
-
+     }*/
     public void anularFactura(String nota) {
 
         if (cmbTipoDocumento.getSelectedItem().equals("PLAN SEPARE")) {
@@ -1529,10 +1538,10 @@ public class vistaDocumentos extends javax.swing.JInternalFrame {
             }
         } else if (cmbTipoDocumento.getSelectedItem().equals("PLANTILLAS")) {
             /*if (!instancias.getSql().modificarPlantillaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), nodo2.getIdFactura(),
-                    nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                metodos.msgError(this, "Error al agregar la fecha de la anulación");
-                return;
-            }*/
+             nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
+             metodos.msgError(this, "Error al agregar la fecha de la anulación");
+             return;
+             }*/
         } else {
             if (!instancias.getSql().modificarFacturaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
                     nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
@@ -1555,25 +1564,24 @@ public class vistaDocumentos extends javax.swing.JInternalFrame {
         }
 
         String baseUtilizada = enumBodegas.obtenerNombreTablaBodega(BODEGA_SELECCIONADA, instancias.getConfiguraciones().isInventarioBodegas());
+
         /*String tipoMovimiento = obtenerTipoMovimiento();
-        List<MovimientoInventario> productos1 = generarListadoProductos(baseUtilizada);
-        DatosMovimientoInventario datosMovimiento = new DatosMovimientoInventario(tipoMovimiento, productos1);
-        Inventario inventario = new Inventario(datosMovimiento, baseUtilizada);
+         List<MovimientoInventario> productos1 = generarListadoProductos(baseUtilizada);
+         DatosMovimientoInventario datosMovimiento = new DatosMovimientoInventario(tipoMovimiento, productos1);
+         Inventario inventario = new Inventario(datosMovimiento, baseUtilizada);
 
-        try {
-            inventario.procesarMovimiento();
-        } catch (SQLException ex) {
-            Logger.getLogger(vistaDocumentos.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-
-        
+         try {
+         inventario.procesarMovimiento();
+         } catch (SQLException ex) {
+         Logger.getLogger(vistaDocumentos.class.getName()).log(Level.SEVERE, null, ex);
+         }*/
         if (cmbTipoDocumento.getSelectedItem().equals("FACTURA")) {
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
 
                 ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 14).toString(), baseUtilizada);
-                
+
                 String tipoProducto = null == producto.getUsuario() ? "ADMIN" : producto.getUsuario();
-                
+
                 if (!tipoProducto.equals("ADMIN")) {
 
                     String preparacion = "";
@@ -1760,7 +1768,7 @@ public class vistaDocumentos extends javax.swing.JInternalFrame {
                 } catch (Exception e) {
                 }
 
-                enumTipoProducto.obtenerTipoProducto(producto.getTipoProducto());
+                DetalleTipoProducto.obtenerTipoProducto(producto.getTipoProducto());
 
                 String tipo = "";
                 if (producto.getTipoProducto() != null) {
@@ -1788,81 +1796,27 @@ public class vistaDocumentos extends javax.swing.JInternalFrame {
                         instancias.getSql().modificarEstadoDetalleProductos(idProd, "DISPONIBLE");
 //                        instancias.getSql().anularVentaDetalladoInventario(idProd);
                     } else {
-                        Double cantidadActual = Double.parseDouble(instancias.getSql().getCantidadProductos(idProd).replace(",", "."));
-                        cantidadActual = cantidadActual + cantidadTabla;
-                        String cantidadFinal = String.valueOf(df.format(cantidadActual)).replace(".", ",");
+                        BigDecimal cantidadActual = new BigDecimal(instancias.getSql().getCantidadProductos(idProd).replace(",", "."));
+                        BigDecimal cantidadTabla1 = new BigDecimal(tblProductos.getValueAt(i, 13).toString().replace(",", "."));
+                        BigDecimal cantidadFinal = cantidadActual.add(cantidadTabla1);
                         instancias.getSql().modificarCantidadesDetalleProductos(idProd, cantidadFinal);
                     }
                 }
             }
         } else if (cmbTipoDocumento.getSelectedItem().equals("PLAN SEPARE")) {
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            TipoDocumento tipoMovimiento = TipoDocumento.ANULAR_PLAN_SEPARE;
+            List<DetalleProducto> detallesProductos = new ArrayList<>();
+            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
+            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+            String numeroAnulacion = "Anulación-" + (String) instancias.getSql().getNumConsecutivo("ANULA")[0];
+            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento,
+                    numeroAnulacion, tablaUtilizada, instancias.getUsuario(), null);
 
-                ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 10).toString(), baseUtilizada);
-
-                double cantidad;
-                double fisicoInventario;
-
-                try {
-                    cantidad = Double.parseDouble(producto.getPlanSepare().replace(",", "."));
-                } catch (Exception e) {
-                    cantidad = 0;
-                }
-
-                try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-                } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                }
-
-                double cantidadTabla = Double.parseDouble(tblProductos.getValueAt(i, 9).toString().replace(",", "."));
-
-                fisicoInventario = fisicoInventario + cantidadTabla;
-                double total = cantidad - cantidadTabla;
-
-                String total1 = String.valueOf(df.format(total)).replace(".", ",");
-                String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-
-                instancias.getSql().modificarInventario("planSepare", total1, tblProductos.getValueAt(i, 10).toString(), baseUtilizada);
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 10).toString(), baseUtilizada);
-
-                String idProd = "";
-                try {
-                    idProd = tblProductos.getValueAt(i, 11).toString();
-                } catch (Exception e) {
-                }
-
-                String tipo = "";
-                if (producto.getTipoProducto() != null) {
-                    if (producto.getTipoProducto().equals("IMEI")) {
-                        tipo = "Imei";
-                    } else if (producto.getTipoProducto().equals("Fecha/Lote")) {
-                        tipo = "Fecha/Lote";
-                    } else if (producto.getTipoProducto().equals("Color")) {
-                        tipo = "Color";
-                    } else if (producto.getTipoProducto().equals("Serial")) {
-                        tipo = "Serial";
-                    } else if (producto.getTipoProducto().equals("Talla")) {
-                        tipo = "Talla";
-                    } else if (producto.getTipoProducto().equals("ColorTalla")) {
-                        tipo = "ColorTalla";
-                    } else if (producto.getTipoProducto().equals("SerialColor")) {
-                        tipo = "SerialColor";
-                    } else {
-                        tipo = "";
-                    }
-                }
-
-                if (!idProd.equals("")) {
-                    if (tipo.equals("Imei") || tipo.equals("Serial") || tipo.equals("SerialColor")) {
-                        instancias.getSql().modificarEstadoDetalleProductos(idProd, "DISPONIBLE");
-                    } else {
-                        Double cantidadActual = Double.parseDouble(instancias.getSql().getCantidadProductos(idProd).replace(",", "."));
-                        cantidadActual = cantidadActual + cantidadTabla;
-                        String cantidadFinal = String.valueOf(df.format(cantidadActual)).replace(".", ",");
-                        instancias.getSql().modificarCantidadesDetalleProductos(idProd, cantidadFinal);
-                    }
-                }
+            try {
+                servicioInventario.procesarMovimiento();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                return;
             }
         }
 
@@ -1874,7 +1828,27 @@ public class vistaDocumentos extends javax.swing.JInternalFrame {
             metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la anulación");
         }
 
-        
+    }
+
+    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+
+        List<MovimientoInventario> movimientos = new ArrayList<>();
+
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            ndProducto producto = instancias.getSql().getDatosProducto(obtenerValorTabla(i, 10), tablaUtilizada);
+            BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 9).toString());
+            String idDetalleProducto = obtenerValorTabla(i, 11);
+
+            MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, idDetalleProducto);
+            movimientos.add(inventario);
+        }
+
+        return movimientos;
+    }
+
+    private String obtenerValorTabla(int row, int col) {
+        Object value = tblProductos.getValueAt(row, col);
+        return value != null ? value.toString() : "";
     }
 
     public String obtenerNombreImpresion() {

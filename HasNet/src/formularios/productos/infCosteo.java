@@ -1,5 +1,8 @@
 package formularios.productos;
 
+import Modelo.Inventario.UltimoPonderado;
+import Servicio.Inventario.ServicioActualizacionPonderado;
+import Vista.Productos.VistaInventarioInicial;
 import clases.Instancias;
 import clases.productos.ndProducto;
 import clases.big;
@@ -11,6 +14,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -18,6 +24,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class infCosteo extends javax.swing.JInternalFrame {
 
+    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
+    
     String simbolo;
     DefaultTableModel modeloPro;
     metodosGenerales metodos = new metodosGenerales();
@@ -2226,17 +2234,22 @@ public class infCosteo extends javax.swing.JInternalFrame {
                     cantidad = cantidad.replace(".", ",");
                 }
 
-                Object[] ultimoPonderado = instancias.getSql().getUltimoPonderado(nodo.getIdSistema());
-                BigDecimal ponderado = BigDecimal.ZERO, costo = BigDecimal.ZERO;
-                ponderado = big.getBigDecimal(ultimoPonderado[4].toString());
-                costo = big.getBigDecimal(ultimoPonderado[7].toString());
-
+                BigDecimal ponderado = BigDecimal.ZERO;
+                BigDecimal ultimoCosto = BigDecimal.ZERO;
+                try {
+                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                    ponderado = ultimoPonderado.getNuevoPonderado();
+                    ultimoCosto = ultimoPonderado.getUltimoCosto();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                 if (Variables.isSelected()) {
                     modeloPro.addRow(new Object[]{nodo.getIdSistema(), desc, "", plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))),
-                        false, big.setMoneda(ponderado), big.setMoneda(costo)});
+                        false, big.setMoneda(ponderado), big.setMoneda(ultimoCosto)});
                 } else {
                     modeloPro.addRow(new Object[]{nodo.getIdSistema(), desc, cantidad, plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))),
-                        false, big.setMoneda(ponderado), big.setMoneda(costo)});
+                        false, big.setMoneda(ponderado), big.setMoneda(ultimoCosto)});
                 }
 
                 costo();

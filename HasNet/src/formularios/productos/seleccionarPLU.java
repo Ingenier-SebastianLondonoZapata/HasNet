@@ -5,8 +5,8 @@ import clases.big;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import Vista.Cartera.vistaNotaDebito;
-import Vista.Ventas.vistaFactura;
+import Vista.Cartera.VistaNotaDebito;
+import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,22 +22,22 @@ public class seleccionarPLU extends javax.swing.JDialog {
     private Instancias instancias;
     private String codigo;
     private String opc, baseUtilizada;
-    private vistaFactura factura;
-    private vistaNotaDebito notaDebito;
+    private VistaFactura factura;
+    private VistaNotaDebito notaDebito;
 
-    public vistaFactura getFactura() {
+    public VistaFactura getFactura() {
         return factura;
     }
 
-    public void setFactura(vistaFactura factura) {
+    public void setFactura(VistaFactura factura) {
         this.factura = factura;
     }
 
-    public vistaNotaDebito getNotaDebito() {
+    public VistaNotaDebito getNotaDebito() {
         return notaDebito;
     }
 
-    public void setNotaDebito(vistaNotaDebito notaDebito) {
+    public void setNotaDebito(VistaNotaDebito notaDebito) {
         this.notaDebito = notaDebito;
     }
 

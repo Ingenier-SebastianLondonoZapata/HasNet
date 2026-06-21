@@ -1065,17 +1065,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public boolean agregarDetalladoProducto(String conse, String codProducto, String descripcion, String cantidad, String imei, String lote, String fechaVence, String temp, String estado,
-            String numIngreso, String fecha, String hora, String usuario, String color, String talla, String bodega) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdDetalleProductos(Id, codProducto, descripcion, cantidad, imei, lote, fechaVencimiento, temperatura, "
-                + "estado, numIngreso, fecha, hora, usuario, color, talla, bodega, cantTotal)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{conse, codProducto, descripcion, cantidad, imei, lote, fechaVence, temp, estado,
-            numIngreso, fecha, hora, usuario, color, talla, bodega, cantidad}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarRegistrosIvas(String porc, BigDecimal base, BigDecimal subtotal, BigDecimal total, BigDecimal totalIva,
             BigDecimal descuento) {
         boolean ok = false;
@@ -2306,7 +2295,7 @@ public class SQL {
         return ok;
     }
 
-    public Object[] getUltimoPonderado(String producto) {
+    /*public Object[] getUltimoPonderado(String producto) {
         boolean ok = false;
         String instruccion_sql = "select producto, ponderadoAntiguo, cantidadAntigua, cantidadEntrante, nuevoPonderado, nuevaCantidad, usuario, ultimoCosto, fecha"
                 + " from ultimoPonderado where producto = '" + producto + "' ";
@@ -2314,7 +2303,7 @@ public class SQL {
         boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true};
         Object[] data = GetRegistro(colName, cadena, instruccion_sql);
         return data;
-    }
+    }*/
 
     public String obtenerUltimoCostoProducto(String codigoProducto) {
         String instruccion_sql = "select ultimoCosto from ultimoPonderado where producto = '" + codigoProducto + "'; ";
@@ -6467,7 +6456,7 @@ public class SQL {
         //LISTO
         boolean ok = false;
         String instruccion_sql = "update bdIngreso set proveedor=?, fechaFactura=?, fechaVencimiento=?,"
-                + "tipo=?, concepto=?, credito=?, cxp=?, usuario=?,terminal=?, observaciones=?, hora=?, estado=?, bodega=?, total=?, descuentos=?, iva=?, "
+                + "tipo=?, concepto=?, credito=?, cxp=?, usuario=?,terminal=?, observaciones=?, hora=?, estado=?, bodega=?, modeloContable=?, total=?, descuentos=?, iva=?, "
                 + "subtotal=?, rtIva=?, rtFuente=?, porRtFuente=?, impoconsumo=?, rtIca=?, efectivo=?, cheque=?, tarjeta=?, descFinanciero=?, descProntoPago=? "
                 + "where Id='" + nodo.getId() + "' ;";
 
@@ -7521,15 +7510,15 @@ public class SQL {
         return ok;
     }
 
-    public boolean modificarCantidadesDetalleProductos(String id, String cant) {
+    public boolean modificarCantidadesDetalleProductos(String id, BigDecimal cantidad) {
         boolean ok = false;
         String estado = "DISPONIBLE";
-        if (cant.equals(",00") || cant.equals("0") || cant.equals("0.0")) {
+        if (cantidad.compareTo(BigDecimal.ONE) <= 0) {
             estado = "NO-DISPONIBLE";
         }
 
-        String instruccion_sql = "update bdDetalleProductos set cantidad=?, estado=? where Id = " + id + " ;";
-        ok = Actualizar_Registro(new Object[]{"", cant, estado}, null, instruccion_sql);
+        String instruccion_sql = "update bdDetalleProductos set estado=?, cantidadDisponible=? where Id = " + id + " ;";
+        ok = Actualizar_Registro(new Object[]{"", estado}, new Object[]{cantidad}, instruccion_sql);
         return ok;
     }
 
@@ -10498,17 +10487,17 @@ public class SQL {
     }
 
     public Object[][] getProductosDetalle(String cod, String bodega) {
-        String colName[] = {"codProducto", "descripcion", "cantidad", "imei", "lote", "fechaVencimiento", "temperatura", "color", "Id", "talla"};
-        String instruccion_sql = "select codProducto, descripcion, cantidad, imei, lote, fechaVencimiento, temperatura, color, Id, talla "
-                + "from bdDetalleProductos where codProducto ='" + cod + "' and estado = 'DISPONIBLE' and bodega = '" + bodega + "' ";
-        Object dtDatos[][] = getDatos(colName, " bdDetalleProductos ", instruccion_sql, " where codProducto = '" + cod + "' and estado = 'DISPONIBLE' and bodega = '" + bodega + "' ");
+        String colName[] = {"producto", "descripcion", "cantidadDisponible", "imei", "lote", "fechaVencimiento", "temperatura", "color", "Id", "talla"};
+        String instruccion_sql = "select producto, descripcion, cantidadDisponible, imei, lote, fechaVencimiento, temperatura, color, Id, talla "
+                + "from bdDetalleProductos where producto = '" + cod + "' and estado = 'DISPONIBLE' and bodega = '" + bodega + "' ";
+        Object dtDatos[][] = getDatos(colName, " bdDetalleProductos ", instruccion_sql, " where producto = '" + cod + "' and estado = 'DISPONIBLE' and bodega = '" + bodega + "' ");
 
         return dtDatos;
     }
 
     public Object[][] getProductosDetalle(String cod) {
-        String colName[] = {"codProducto", "descripcion", "cantidad", "imei", "lote", "fechaVencimiento", "temperatura", "color", "Id", "talla"};
-        String instruccion_sql = "select codProducto, descripcion, cantidad, imei, lote, fechaVencimiento, temperatura, color, Id, talla "
+        String colName[] = {"producto", "descripcion", "cantidad", "imei", "lote", "fechaVencimiento", "temperatura", "color", "Id", "talla"};
+        String instruccion_sql = "select producto, descripcion, cantidadDisponible, imei, lote, fechaVencimiento, temperatura, color, Id, talla "
                 + "from bdDetalleProductos where Id = " + cod + " ";
         Object dtDatos[][] = getDatos(colName, " bdDetalleProductos ", instruccion_sql, " where Id = " + cod + " ");
 
