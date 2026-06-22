@@ -6,7 +6,9 @@ import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.PonderadoPendiente;
-import Servicio.Inventario.ServicioTransaccionInventario;
+import inventario.servicio.ServicioTransaccionInventario;
+import Utilidades.BaseDatos.SentenciaSql;
+import Utilidades.BaseDatos.ValidadorTabla;
 import Utilidades.Inventario.UtilidadInventario;
 import Utilidades.Utilidades;
 import clases.productos.ndProducto;
@@ -23,7 +25,7 @@ public class ProcesadorFacturacion extends AbstractProcesadorMovimiento {
     public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos, String numeroDocumento,
             String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
 
-        List<String> sqlInventario = new ArrayList<>();
+        List<SentenciaSql> sqlInventario = new ArrayList<>();
 
         boolean aplicarSqlDetallado = !(informacionAdicional.isVieneDesdePedido()
                 || informacionAdicional.isVieneDesdePlanSepare()
@@ -49,7 +51,7 @@ public class ProcesadorFacturacion extends AbstractProcesadorMovimiento {
                 numeroDocumento);
     }
 
-    private String generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional) {
+    private SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional) {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
@@ -61,46 +63,59 @@ public class ProcesadorFacturacion extends AbstractProcesadorMovimiento {
         BigDecimal planSepare = Utilidades.convertirBigDecimal(producto.getPlanSepare()).subtract(cantidad);
         BigDecimal ordenServicio = Utilidades.convertirBigDecimal(producto.getOrdenServicio()).subtract(cantidad);
 
+        List<Object> parametros = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE ").append(tablaUtilizada).append(" SET ")
-                .append("inventario = '").append(UtilidadInventario.formatear(inventario)).append("', ")
-                .append("fisicoInventario = '").append(UtilidadInventario.formatear(fisicoInventario)).append("', ")
-                .append("ventas = '").append(UtilidadInventario.formatear(ventas)).append("'");
+        sql.append("UPDATE ").append(ValidadorTabla.validar(tablaUtilizada)).append(" SET ")
+                .append("inventario = ?, fisicoInventario = ?, ventas = ?");
+        parametros.add(UtilidadInventario.formatear(inventario));
+        parametros.add(UtilidadInventario.formatear(fisicoInventario));
+        parametros.add(UtilidadInventario.formatear(ventas));
 
         if (informacionAdicional.isVieneDesdePedido()) {
-            sql.append(", pedidos = '").append(UtilidadInventario.formatear(pedidos)).append("'");
+            sql.append(", pedidos = ?");
+            parametros.add(UtilidadInventario.formatear(pedidos));
         }
 
         if (informacionAdicional.isVieneDesdePlanSepare()) {
-            sql.append(", planSepare = '").append(UtilidadInventario.formatear(planSepare)).append("'");
+            sql.append(", planSepare = ?");
+            parametros.add(UtilidadInventario.formatear(planSepare));
         }
 
         if (informacionAdicional.isVieneDesdeOrdenServicio()) {
-            sql.append(", ordenServicio = '").append(UtilidadInventario.formatear(ordenServicio)).append("'");
+            sql.append(", ordenServicio = ?");
+            parametros.add(UtilidadInventario.formatear(ordenServicio));
         }
 
-        sql.append(" WHERE idSistema = '").append(producto.getIdSistema()).append("'");
+        sql.append(" WHERE idSistema = ?");
+        parametros.add(producto.getIdSistema());
 
-        return sql.toString();
+        return new SentenciaSql(sql.toString(), parametros.toArray());
     }
 
-    private String generarSqlDetalleInventario(MovimientoInventario movimiento) {
+    private SentenciaSql generarSqlDetalleInventario(MovimientoInventario movimiento) {
         BigDecimal cantidad = movimiento.getCantidad();
         String idDetalleProducto = movimiento.getIdDetalleProducto();
 
-        return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
-                + "cantidadDisponible = cantidadDisponible - " + cantidad + ", "
-                + "estado = CASE "
-                + "WHEN (cantidadDisponible - " + cantidad + ") <= 0 THEN '" + EstadosDetalleProducto.NO_DISPONIBLE.getNombre() + "' ELSE estado "
-                + "END "
-                + "WHERE Id = '" + idDetalleProducto + "'";
+        String sql = "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
+                + "cantidadDisponible = cantidadDisponible - ?, "
+                + "estado = CASE WHEN (cantidadDisponible - ?) <= 0 THEN ? ELSE estado END "
+                + "WHERE Id = ?";
+
+        return new SentenciaSql(sql,
+                cantidad,
+                cantidad,
+                EstadosDetalleProducto.NO_DISPONIBLE.getNombre(),
+                idDetalleProducto);
     }
 
-    private String generarSqlActualizarEstadoDetalleInventario(MovimientoInventario movimiento) {
+    private SentenciaSql generarSqlActualizarEstadoDetalleInventario(MovimientoInventario movimiento) {
         String idDetalleProducto = movimiento.getIdDetalleProducto();
 
-        return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
-                + "estado = '" + EstadosDetalleProducto.NO_DISPONIBLE.getNombre() + "' "
-                + "WHERE Id = '" + idDetalleProducto + "' AND cantidadDisponible <= 0";
+        String sql = "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
+                + "estado = ? WHERE Id = ? AND cantidadDisponible <= 0";
+
+        return new SentenciaSql(sql,
+                EstadosDetalleProducto.NO_DISPONIBLE.getNombre(),
+                idDetalleProducto);
     }
 }

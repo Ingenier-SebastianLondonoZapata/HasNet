@@ -1,6 +1,5 @@
 package Vista.Ventas;
 
-import Enums.HistoricoPonderados;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
 import Modelo.Inventario.DetalleProducto;
@@ -11,7 +10,7 @@ import Utilidades.CambiarColorTablaReimpresionYAnulacion;
 import Utilidades.Constantes;
 import clases.Ventas.ndCongelada;
 import Modelo.Terceros.ModeloContacto;
-import Servicio.Inventario.ServicioInventario;
+import inventario.servicio.ServicioInventario;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
 import clases.Ventas.ndFactura;
@@ -24,7 +23,6 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

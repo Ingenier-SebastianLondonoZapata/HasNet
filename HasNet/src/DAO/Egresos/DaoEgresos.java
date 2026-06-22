@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO.Egresos;
+package dao.Egresos;
 
-import DAO.Generales.DaoGenerales;
+import dao.Generales.DaoGenerales;
 import Modelo.Egresos.ModeloDetalleEgreso;
 import Utilidades.BaseDatos.MySql_connection;
 import Utilidades.Constantes;

@@ -1,11 +1,12 @@
-package Servicio.Inventario;
+package inventario.servicio;
 
-import DAO.Inventario.DaoDetalleProducto;
-import DAO.Inventario.DaoInventario;
-import DAO.Inventario.DaoPonderado;
+import inventario.dao.DaoDetalleProducto;
+import inventario.dao.DaoInventario;
+import inventario.dao.DaoPonderado;
 import Estrategia.AbstractDao;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.PonderadoPendiente;
+import Utilidades.BaseDatos.SentenciaSql;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ServicioTransaccionInventario extends AbstractDao {
         this.daoDetalleProducto = new DaoDetalleProducto();
     }
 
-    public void ejecutarIngreso(List<String> sqlInventario, List<PonderadoPendiente> ponderados, List<DetalleProducto> detalles,
+    public void ejecutarIngreso(List<SentenciaSql> sqlInventario, List<PonderadoPendiente> ponderados, List<DetalleProducto> detalles,
             String usuario, String numeroDocumento) throws SQLException {
 
         Connection conn = getConnection();
@@ -30,7 +31,7 @@ public class ServicioTransaccionInventario extends AbstractDao {
         try {
             conn.setAutoCommit(false);
 
-            daoInventario.ejecutarBatch(conn, sqlInventario);
+            daoInventario.ejecutarSentencias(conn, sqlInventario);
 
             if (!detalles.isEmpty()) {
                 for (DetalleProducto detalle : detalles) {

@@ -4,7 +4,9 @@ import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.PonderadoPendiente;
-import Servicio.Inventario.ServicioTransaccionInventario;
+import inventario.servicio.ServicioTransaccionInventario;
+import Utilidades.BaseDatos.SentenciaSql;
+import Utilidades.BaseDatos.ValidadorTabla;
 import Utilidades.Inventario.UtilidadInventario;
 import Utilidades.Utilidades;
 import clases.productos.ndProducto;
@@ -21,7 +23,7 @@ public class ProcesadorAjusteEntrada extends AbstractProcesadorMovimiento {
     public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos,
             String numeroDocumento, String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
 
-        List<String> sqlInventario = new ArrayList<>();
+        List<SentenciaSql> sqlInventario = new ArrayList<>();
         List<PonderadoPendiente> ponderados = new ArrayList<>();
 
         for (MovimientoInventario movimiento : movimientos) {
@@ -36,7 +38,7 @@ public class ProcesadorAjusteEntrada extends AbstractProcesadorMovimiento {
                 numeroDocumento);
     }
 
-    private String generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada) {
+    private SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada) {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
@@ -44,10 +46,14 @@ public class ProcesadorAjusteEntrada extends AbstractProcesadorMovimiento {
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
         BigDecimal ajusteEntrada = Utilidades.convertirBigDecimal(producto.getAjusteEntrada()).add(cantidad);
 
-        return "UPDATE " + tablaUtilizada + " SET "
-                + "inventario = '" + UtilidadInventario.formatear(inventario) + "', "
-                + "fisicoInventario = '" + UtilidadInventario.formatear(fisicoInventario) + "', "
-                + "ajusteEntrada = '" + UtilidadInventario.formatear(ajusteEntrada) + "' "
-                + "WHERE idSistema = '" + producto.getIdSistema() + "'";
+        String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
+                + "inventario = ?, fisicoInventario = ?, ajusteEntrada = ? "
+                + "WHERE idSistema = ?";
+
+        return new SentenciaSql(sql,
+                UtilidadInventario.formatear(inventario),
+                UtilidadInventario.formatear(fisicoInventario),
+                UtilidadInventario.formatear(ajusteEntrada),
+                producto.getIdSistema());
     }
 }

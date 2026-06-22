@@ -3,7 +3,7 @@ package Controlador.InicioSesion;
 import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.FacturacionElectronica.controladorFacturacionElectronica;
-import DAO.InicioSesion.DaoInicioSesion;
+import dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import Utilidades.Constantes;
 import Vista.BarraProceso.vistaBarraProceso;

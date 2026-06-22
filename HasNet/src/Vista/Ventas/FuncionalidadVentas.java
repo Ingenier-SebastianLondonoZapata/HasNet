@@ -6,7 +6,7 @@
 package Vista.Ventas;
 
 import Controlador.Alertas.ControladorAlertas;
-import DAO.Configuraciones.DaoResoluciones;
+import dao.Configuraciones.DaoResoluciones;
 
 /**
  *

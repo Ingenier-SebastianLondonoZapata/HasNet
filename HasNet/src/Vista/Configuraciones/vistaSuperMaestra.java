@@ -2,7 +2,7 @@ package Vista.Configuraciones;
 
 import Modelo.Maestra.modeloConfiguracion;
 import Controlador.Alertas.ControladorAlertas;
-import DAO.Configuraciones.DaoResoluciones;
+import dao.Configuraciones.DaoResoluciones;
 import Modelo.Maestra.ModeloPrefijos;
 import clases.Instancias;
 import clases.metodosGenerales;

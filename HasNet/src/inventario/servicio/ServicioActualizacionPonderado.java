@@ -1,6 +1,6 @@
-package Servicio.Inventario;
+package inventario.servicio;
 
-import DAO.Inventario.DaoPonderado;
+import inventario.dao.DaoPonderado;
 import Modelo.Inventario.UltimoPonderado;
 import Enums.HistoricoPonderados;
 import Modelo.Inventario.PonderadoPendiente;

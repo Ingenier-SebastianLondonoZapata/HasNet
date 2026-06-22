@@ -1,4 +1,4 @@
-package DAO.Inventario;
+package inventario.dao;
 
 import Enums.Tablas;
 import Estrategia.AbstractDao;

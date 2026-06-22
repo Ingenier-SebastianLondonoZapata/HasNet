@@ -2,8 +2,8 @@ package Vista.Tesoreria;
 
 import Consumidor.DocumentoSoporte.consumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
-import DAO.Configuraciones.DaoResoluciones;
-import DAO.Egresos.DaoEgresos;
+import dao.Configuraciones.DaoResoluciones;
+import dao.Egresos.DaoEgresos;
 import Enums.TipoDocumento;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;

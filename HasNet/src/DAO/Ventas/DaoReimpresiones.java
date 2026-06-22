@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO.Ventas;
+package dao.Ventas;
 
-import DAO.Generales.DaoGenerales;
-import Modelo.Terceros.ModeloDatosVehiculo;
+import dao.Generales.DaoGenerales;
 import Modelo.Ventas.ModeloTablaDocumentos;
 import Utilidades.BaseDatos.MySql_connection;
 import Utilidades.Constantes;

@@ -1,6 +1,6 @@
 package estrategiainventario;
 
-import DAO.Inventario.DaoInventario;
+import inventario.dao.DaoInventario;
 import java.math.BigDecimal;
 
 public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimiento {

@@ -1,10 +1,9 @@
 package formularios.productos;
 
 import Modelo.Inventario.UltimoPonderado;
-import Servicio.Inventario.ServicioActualizacionPonderado;
+import inventario.servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
 import clases.productos.ndProducto;
-import Utilidades.BaseDatos.SQL;
 import Vista.Productos.VistaInventarioInicial;
 import clases.big;
 import clases.metodosGenerales;
@@ -14,7 +13,6 @@ import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import static java.awt.image.ImageObserver.WIDTH;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;

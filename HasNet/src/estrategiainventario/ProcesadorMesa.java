@@ -7,7 +7,9 @@ import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.PonderadoPendiente;
-import Servicio.Inventario.ServicioTransaccionInventario;
+import inventario.servicio.ServicioTransaccionInventario;
+import Utilidades.BaseDatos.SentenciaSql;
+import Utilidades.BaseDatos.ValidadorTabla;
 import Utilidades.Inventario.UtilidadInventario;
 import Utilidades.Utilidades;
 import clases.productos.ndProducto;
@@ -24,7 +26,7 @@ public class ProcesadorMesa extends AbstractProcesadorMovimiento {
     public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos, String numeroDocumento,
             String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
 
-        List<String> sqlInventario = new ArrayList<>();
+        List<SentenciaSql> sqlInventario = new ArrayList<>();
 
         for (MovimientoInventario movimiento : movimientos) {
             if (!movimiento.getIdDetalleProducto().isEmpty()) {
@@ -42,7 +44,7 @@ public class ProcesadorMesa extends AbstractProcesadorMovimiento {
                 numeroDocumento);
     }
 
-    private String generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada) {
+    private SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada) {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
@@ -50,33 +52,35 @@ public class ProcesadorMesa extends AbstractProcesadorMovimiento {
         BigDecimal congelada = Utilidades.convertirBigDecimal(producto.getCongelada()).add(cantidad);
         boolean esProductoNormal = TipoProducto.GENERICO.getValue().equals(producto.getUsuario());
 
+        List<Object> parametros = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE ").append(tablaUtilizada).append(" SET ");
+        sql.append("UPDATE ").append(ValidadorTabla.validar(tablaUtilizada)).append(" SET ");
 
         if (esProductoNormal) {
-            sql.append("congelada = '")
-                    .append(UtilidadInventario.formatear(congelada))
-                    .append("', ");
+            sql.append("congelada = ?, ");
+            parametros.add(UtilidadInventario.formatear(congelada));
         }
 
-        sql.append("fisicoInventario = '")
-                .append(UtilidadInventario.formatear(fisicoInventario))
-                .append("' WHERE idSistema = '")
-                .append(producto.getIdSistema())
-                .append("'");
+        sql.append("fisicoInventario = ? WHERE idSistema = ?");
+        parametros.add(UtilidadInventario.formatear(fisicoInventario));
+        parametros.add(producto.getIdSistema());
 
-        return sql.toString();
+        return new SentenciaSql(sql.toString(), parametros.toArray());
     }
 
-    private String generarSqlDetalleInventario(MovimientoInventario movimiento) {
+    private SentenciaSql generarSqlDetalleInventario(MovimientoInventario movimiento) {
         BigDecimal cantidad = movimiento.getCantidad();
         String idDetalleProducto = movimiento.getIdDetalleProducto();
 
-        return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
-                + "cantidadDisponible = cantidadDisponible - " + cantidad + ", "
-                + "estado = CASE "
-                + "WHEN (cantidadDisponible - " + cantidad + ") <= 0 THEN '" + EstadosDetalleProducto.EN_MESA.getNombre() + "' ELSE estado "
-                + "END "
-                + "WHERE Id = '" + idDetalleProducto + "'";
+        String sql = "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
+                + "cantidadDisponible = cantidadDisponible - ?, "
+                + "estado = CASE WHEN (cantidadDisponible - ?) <= 0 THEN ? ELSE estado END "
+                + "WHERE Id = ?";
+
+        return new SentenciaSql(sql,
+                cantidad,
+                cantidad,
+                EstadosDetalleProducto.EN_MESA.getNombre(),
+                idDetalleProducto);
     }
 }

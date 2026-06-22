@@ -1,4 +1,4 @@
-package Servicio.Inventario;
+package inventario.servicio;
 
 import Enums.TipoDocumento;
 import Modelo.Inventario.MovimientoInventario;

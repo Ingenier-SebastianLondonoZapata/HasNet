@@ -1,7 +1,7 @@
 package formularios.Veterinario;
 
 import Modelo.Inventario.UltimoPonderado;
-import Servicio.Inventario.ServicioActualizacionPonderado;
+import inventario.servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import clases.Instancias;
 import clases.big;
