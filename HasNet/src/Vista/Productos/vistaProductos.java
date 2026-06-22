@@ -8,7 +8,7 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Maestra.modeloConfiguracion;
-import Servicio.Inventario.ServicioActualizacionPonderado;
+import inventario.servicio.ServicioActualizacionPonderado;
 import Utilidades.Constantes;
 import formularios.Ventas.dlgPonderadoNegativo;
 import formularios.productos.buscMarcas;

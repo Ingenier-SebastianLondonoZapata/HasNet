@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO.Configuraciones;
+package dao.Configuraciones;
 
-import DAO.Generales.DaoGenerales;
+import dao.Generales.DaoGenerales;
 import Modelo.Maestra.ModeloPrefijos;
 import Modelo.Maestra.ModeloResolucion;
 import Utilidades.BaseDatos.MySql_connection;

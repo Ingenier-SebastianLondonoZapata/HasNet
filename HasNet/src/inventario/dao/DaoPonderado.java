@@ -1,11 +1,10 @@
-package DAO.Inventario;
+package inventario.dao;
 
 import Modelo.Inventario.UltimoPonderado;
 import Enums.HistoricoPonderados;
 import Enums.Tablas;
 import Estrategia.AbstractDao;
 import Modelo.Inventario.PonderadoPendiente;
-import Utilidades.Inventario.UtilidadInventario;
 import Utilidades.Utilidades;
 import java.math.BigDecimal;
 import java.sql.Connection;

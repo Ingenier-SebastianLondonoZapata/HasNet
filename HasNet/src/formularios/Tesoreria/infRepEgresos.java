@@ -1,6 +1,6 @@
 package formularios.Tesoreria;
 
-import DAO.InicioSesion.DaoInicioSesion;
+import dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import formularios.terceros.buscClientes;
 import clases.Instancias;

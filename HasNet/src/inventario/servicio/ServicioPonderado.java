@@ -1,4 +1,4 @@
-package Servicio.Inventario;
+package inventario.servicio;
 
 import Modelo.Inventario.CalculoPonderado;
 import java.math.BigDecimal;

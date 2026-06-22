@@ -1,7 +1,7 @@
 package Vista.Ventas;
 
-import DAO.Terceros.DaoTerceros;
-import DAO.Ventas.DaoReimpresiones;
+import dao.Terceros.DaoTerceros;
+import dao.Ventas.DaoReimpresiones;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
 import Enums.DetalleTipoProducto;
@@ -18,7 +18,7 @@ import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
 import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
-import Servicio.Inventario.ServicioInventario;
+import inventario.servicio.ServicioInventario;
 import Utilidades.Constantes;
 import Utilidades.Fechas;
 import Utilidades.Utilidades;

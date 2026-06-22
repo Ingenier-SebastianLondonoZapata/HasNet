@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO.Generales;
+package dao.Generales;
 
 import Utilidades.BaseDatos.MySql_connection;
 import Utilidades.Constantes;

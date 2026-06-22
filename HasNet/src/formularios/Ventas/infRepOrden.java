@@ -1,6 +1,6 @@
 package formularios.Ventas;
 
-import DAO.InicioSesion.DaoInicioSesion;
+import dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;

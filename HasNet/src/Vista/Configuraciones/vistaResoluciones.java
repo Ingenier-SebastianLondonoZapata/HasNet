@@ -1,7 +1,7 @@
 package Vista.Configuraciones;
 
 import Controlador.Alertas.ControladorAlertas;
-import DAO.Configuraciones.DaoResoluciones;
+import dao.Configuraciones.DaoResoluciones;
 import Modelo.Maestra.ModeloPrefijos;
 import Modelo.Maestra.ModeloResolucion;
 import Utilidades.CalendarioEnTabla;

@@ -9,7 +9,7 @@ import clases.productos.ndProducto;
 import clases.productos.ndTrasladoBodega;
 import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
-import Servicio.Inventario.ServicioActualizacionPonderado;
+import inventario.servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import formularios.infBuscadorCliente;
 import formularios.terceros.buscBodegas;

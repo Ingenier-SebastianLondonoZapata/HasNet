@@ -1,4 +1,4 @@
-package estrategiainventario;
+package inventario.estrategia;
 
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
