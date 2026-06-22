@@ -88,7 +88,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
         grupoAjusteEntrada = new javax.swing.ButtonGroup();
         grupoAjusteSalida = new javax.swing.ButtonGroup();
         grupoGrupos = new javax.swing.ButtonGroup();
-        grupoDiseños = new javax.swing.ButtonGroup();
+        grupoDisenos = new javax.swing.ButtonGroup();
         grupoArmados = new javax.swing.ButtonGroup();
         grupoInventarioInicial = new javax.swing.ButtonGroup();
         grupoTrasladoDetalle = new javax.swing.ButtonGroup();
@@ -242,8 +242,8 @@ public class infUsuarios extends javax.swing.JInternalFrame {
         noAjusteSalida = new javax.swing.JRadioButton();
         siGrupos = new javax.swing.JRadioButton();
         noGrupos = new javax.swing.JRadioButton();
-        siDiseños = new javax.swing.JRadioButton();
-        noDiseños = new javax.swing.JRadioButton();
+        siDisenos = new javax.swing.JRadioButton();
+        noDisenos = new javax.swing.JRadioButton();
         siArmados = new javax.swing.JRadioButton();
         noArmados = new javax.swing.JRadioButton();
         siInventarioInicial = new javax.swing.JRadioButton();
@@ -1426,24 +1426,24 @@ public class infUsuarios extends javax.swing.JInternalFrame {
             }
         });
 
-        siDiseños.setBackground(new java.awt.Color(255, 255, 255));
-        grupoDiseños.add(siDiseños);
-        siDiseños.setFont(new java.awt.Font("Century Gothic", 0, 20)); // NOI18N
-        siDiseños.setSelected(true);
-        siDiseños.setText("Si");
-        siDiseños.addActionListener(new java.awt.event.ActionListener() {
+        siDisenos.setBackground(new java.awt.Color(255, 255, 255));
+        grupoDisenos.add(siDisenos);
+        siDisenos.setFont(new java.awt.Font("Century Gothic", 0, 20)); // NOI18N
+        siDisenos.setSelected(true);
+        siDisenos.setText("Si");
+        siDisenos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                siDiseñosActionPerformed(evt);
+                siDisenosActionPerformed(evt);
             }
         });
 
-        noDiseños.setBackground(new java.awt.Color(255, 255, 255));
-        grupoDiseños.add(noDiseños);
-        noDiseños.setFont(new java.awt.Font("Century Gothic", 0, 20)); // NOI18N
-        noDiseños.setText("No");
-        noDiseños.addActionListener(new java.awt.event.ActionListener() {
+        noDisenos.setBackground(new java.awt.Color(255, 255, 255));
+        grupoDisenos.add(noDisenos);
+        noDisenos.setFont(new java.awt.Font("Century Gothic", 0, 20)); // NOI18N
+        noDisenos.setText("No");
+        noDisenos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                noDiseñosActionPerformed(evt);
+                noDisenosActionPerformed(evt);
             }
         });
 
@@ -1564,7 +1564,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                         .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(siArmados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(siDiseños, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(siDisenos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(siTrasladoExterno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(siCrearProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(siCompras, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1588,7 +1588,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                             .addComponent(noTrasladoExterno, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(noTrasladoInterno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(noGrupos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(noDiseños, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(noDisenos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(noArmados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
@@ -1629,8 +1629,8 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                     .addComponent(siGrupos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(2, 2, 2)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(noDiseños, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(siDiseños, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(noDisenos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(siDisenos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(noArmados, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -4678,7 +4678,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
         noAjusteEntrada.setSelected(true);
         noAjusteSalida.setSelected(true);
         noGrupos.setSelected(true);
-        noDiseños.setSelected(true);
+        noDisenos.setSelected(true);
         noArmados.setSelected(true);
         noInventarioInicial.setSelected(true);
         noTrasladoDetalle.setSelected(true);
@@ -4774,7 +4774,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                 siReporteVentasAnuladas.isSelected(), siReporteCotizaciones.isSelected(), siReportePlanSepares.isSelected(), siReporteCreditos.isSelected(),
                 siReporteOrdenServicio.isSelected(), siReporteIvasVentas.isSelected(), siReporteDia.isSelected(), siCrearProductos.isSelected(), siOrdenCompra.isSelected(),
                 siCompras.isSelected(), siTrasladoExterno.isSelected(), siTrasladoInterno.isSelected(), siAjusteEntrada.isSelected(), siAjusteSalida.isSelected(),
-                siGrupos.isSelected(), siDiseños.isSelected(), siArmados.isSelected(), siInventarioInicial.isSelected(), siTrasladoDetalle.isSelected(), siKardex.isSelected(),
+                siGrupos.isSelected(), siDisenos.isSelected(), siArmados.isSelected(), siInventarioInicial.isSelected(), siTrasladoDetalle.isSelected(), siKardex.isSelected(),
                 siReporteProductos.isSelected(), siReportePrestamos.isSelected(), siReporteCompras.isSelected(), siReporteAjustes.isSelected(), siReporteOrdenCompra.isSelected(),
                 siReporteInventario.isSelected(), siReporteTrasladoInterno.isSelected(), siReporteIvasCompras.isSelected(), siReporteMovimientosSerial.isSelected(),
                 siCrearCliente.isSelected(), siCrearProveedor.isSelected(), siCrearEmpleado.isSelected(), siBodegaInterna.isSelected(), siClientesPrestamos.isSelected(),
@@ -4842,7 +4842,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                 siReporteVentasAnuladas.isSelected(), siReporteCotizaciones.isSelected(), siReportePlanSepares.isSelected(), siReporteCreditos.isSelected(),
                 siReporteOrdenServicio.isSelected(), siReporteIvasVentas.isSelected(), siReporteDia.isSelected(), siCrearProductos.isSelected(), siOrdenCompra.isSelected(),
                 siCompras.isSelected(), siTrasladoExterno.isSelected(), siTrasladoInterno.isSelected(), siAjusteEntrada.isSelected(), siAjusteSalida.isSelected(),
-                siGrupos.isSelected(), siDiseños.isSelected(), siArmados.isSelected(), siInventarioInicial.isSelected(), siTrasladoDetalle.isSelected(), siKardex.isSelected(),
+                siGrupos.isSelected(), siDisenos.isSelected(), siArmados.isSelected(), siInventarioInicial.isSelected(), siTrasladoDetalle.isSelected(), siKardex.isSelected(),
                 siReporteProductos.isSelected(), siReportePrestamos.isSelected(), siReporteCompras.isSelected(), siReporteAjustes.isSelected(), siReporteOrdenCompra.isSelected(),
                 siReporteInventario.isSelected(), siReporteTrasladoInterno.isSelected(), siReporteIvasCompras.isSelected(), siReporteMovimientosSerial.isSelected(),
                 siCrearCliente.isSelected(), siCrearProveedor.isSelected(), siCrearEmpleado.isSelected(), siBodegaInterna.isSelected(), siClientesPrestamos.isSelected(),
@@ -5278,11 +5278,11 @@ public class infUsuarios extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_noGruposActionPerformed
 
-    private void siDiseñosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siDiseñosActionPerformed
+    private void siDisenosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siDiseñosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_siDiseñosActionPerformed
 
-    private void noDiseñosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noDiseñosActionPerformed
+    private void noDisenosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noDiseñosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_noDiseñosActionPerformed
 
@@ -5681,7 +5681,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                 siAjusteEntrada.setSelected(nodo.isAjustesEntrada());
                 siAjusteSalida.setSelected(nodo.isAjustesSalida());
                 siGrupos.setSelected(nodo.isGrupos());
-                siDiseños.setSelected(nodo.isDisenos());
+                siDisenos.setSelected(nodo.isDisenos());
                 siArmados.setSelected(nodo.isArmados());
                 siInventarioInicial.setSelected(nodo.isInventarioInicial());
                 siTrasladoDetalle.setSelected(nodo.isTrasladoDetalle());
@@ -5800,7 +5800,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup grupoCrearProveedor;
     private javax.swing.ButtonGroup grupoCreditos;
     private javax.swing.ButtonGroup grupoCuadreCaja;
-    private javax.swing.ButtonGroup grupoDiseños;
+    private javax.swing.ButtonGroup grupoDisenos;
     private javax.swing.ButtonGroup grupoEgresos;
     private javax.swing.ButtonGroup grupoFacturas;
     private javax.swing.ButtonGroup grupoFormatos;
@@ -6038,7 +6038,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton noCrearProveedor;
     private javax.swing.JRadioButton noCreditos;
     private javax.swing.JRadioButton noCuadreCaja;
-    private javax.swing.JRadioButton noDiseños;
+    private javax.swing.JRadioButton noDisenos;
     private javax.swing.JRadioButton noEgresos;
     private javax.swing.JRadioButton noFacturas;
     private javax.swing.JRadioButton noFormatos;
@@ -6127,7 +6127,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton siCrearProveedor;
     private javax.swing.JRadioButton siCreditos;
     private javax.swing.JRadioButton siCuadreCaja;
-    private javax.swing.JRadioButton siDiseños;
+    private javax.swing.JRadioButton siDisenos;
     private javax.swing.JRadioButton siEgresos;
     private javax.swing.JRadioButton siFacturas;
     private javax.swing.JRadioButton siFormatos;

@@ -1,4 +1,4 @@
-package EstrategiaInventario;
+package estrategiainventario;
 
 import Enums.EstadosDetalleProducto;
 import Enums.Tablas;
@@ -15,15 +15,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcesadorPlanSepare extends AbstractProcesadorMovimiento {
+public class ProcesadorAnularAjusteSalida extends AbstractProcesadorMovimiento {
 
     private final ServicioTransaccionInventario servicioTransaccionInventario = new ServicioTransaccionInventario();
 
     @Override
-    public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos, String numeroDocumento,
-            String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
+    public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos,
+            String numeroDocumento, String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
 
         List<String> sqlInventario = new ArrayList<>();
+        List<PonderadoPendiente> ponderados = new ArrayList<>();
 
         for (MovimientoInventario movimiento : movimientos) {
             if (!movimiento.getIdDetalleProducto().isEmpty()) {
@@ -35,8 +36,8 @@ public class ProcesadorPlanSepare extends AbstractProcesadorMovimiento {
 
         servicioTransaccionInventario.ejecutarIngreso(
                 sqlInventario,
-                new ArrayList<PonderadoPendiente>(),
-                new ArrayList<DetalleProducto>(),
+                ponderados,
+                detallesProductos,
                 usuario,
                 numeroDocumento);
     }
@@ -45,12 +46,14 @@ public class ProcesadorPlanSepare extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
-        BigDecimal planSepare = Utilidades.convertirBigDecimal(producto.getPlanSepare()).add(cantidad);
+        BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).add(cantidad);
+        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
+        BigDecimal ajusteSalida = Utilidades.convertirBigDecimal(producto.getAjusteSalida()).subtract(cantidad);
 
         return "UPDATE " + tablaUtilizada + " SET "
+                + "inventario = '" + UtilidadInventario.formatear(inventario) + "', "
                 + "fisicoInventario = '" + UtilidadInventario.formatear(fisicoInventario) + "', "
-                + "planSepare = '" + UtilidadInventario.formatear(planSepare) + "' "
+                + "ajusteSalida = '" + UtilidadInventario.formatear(ajusteSalida) + "' "
                 + "WHERE idSistema = '" + producto.getIdSistema() + "'";
     }
 
@@ -58,11 +61,9 @@ public class ProcesadorPlanSepare extends AbstractProcesadorMovimiento {
         BigDecimal cantidad = movimiento.getCantidad();
         String idDetalleProducto = movimiento.getIdDetalleProducto();
 
-        return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre()
-                + " SET cantidadDisponible = cantidadDisponible - " + cantidad
-                + ", estado = CASE "
-                + "WHEN (cantidadDisponible - " + cantidad + ") <= 0 THEN '" + EstadosDetalleProducto.EN_PLAN_SEPARE.getNombre() + "' ELSE estado "
-                + "END "
+        return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
+                + "cantidadDisponible = cantidadDisponible + " + cantidad + ", "
+                + "estado = '" + EstadosDetalleProducto.DISPONIBLE.getNombre() + "' "
                 + "WHERE Id = '" + idDetalleProducto + "'";
     }
 }

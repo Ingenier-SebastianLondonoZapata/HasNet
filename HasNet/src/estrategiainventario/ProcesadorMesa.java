@@ -1,4 +1,4 @@
-package EstrategiaInventario;
+package estrategiainventario;
 
 import Enums.EstadosDetalleProducto;
 import Enums.Tablas;

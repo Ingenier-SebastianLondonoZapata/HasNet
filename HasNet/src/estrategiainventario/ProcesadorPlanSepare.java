@@ -1,5 +1,7 @@
-package EstrategiaInventario;
+package estrategiainventario;
 
+import Enums.EstadosDetalleProducto;
+import Enums.Tablas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
@@ -13,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcesadorNotaDebito extends AbstractProcesadorMovimiento {
+public class ProcesadorPlanSepare extends AbstractProcesadorMovimiento {
 
     private final ServicioTransaccionInventario servicioTransaccionInventario = new ServicioTransaccionInventario();
 
@@ -24,6 +26,10 @@ public class ProcesadorNotaDebito extends AbstractProcesadorMovimiento {
         List<String> sqlInventario = new ArrayList<>();
 
         for (MovimientoInventario movimiento : movimientos) {
+            if (!movimiento.getIdDetalleProducto().isEmpty()) {
+                sqlInventario.add(generarSqlDetalleInventario(movimiento));
+            }
+
             sqlInventario.add(generarSqlInventario(movimiento, tablaUtilizada));
         }
 
@@ -39,14 +45,24 @@ public class ProcesadorNotaDebito extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).subtract(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
-        BigDecimal notaDebito = Utilidades.convertirBigDecimal(producto.getNotaDebito()).add(cantidad);
+        BigDecimal planSepare = Utilidades.convertirBigDecimal(producto.getPlanSepare()).add(cantidad);
 
         return "UPDATE " + tablaUtilizada + " SET "
-                + "inventario = '" + UtilidadInventario.formatear(inventario) + "', "
                 + "fisicoInventario = '" + UtilidadInventario.formatear(fisicoInventario) + "', "
-                + "notaDebito = '" + UtilidadInventario.formatear(notaDebito) + "' "
+                + "planSepare = '" + UtilidadInventario.formatear(planSepare) + "' "
                 + "WHERE idSistema = '" + producto.getIdSistema() + "'";
+    }
+
+    private String generarSqlDetalleInventario(MovimientoInventario movimiento) {
+        BigDecimal cantidad = movimiento.getCantidad();
+        String idDetalleProducto = movimiento.getIdDetalleProducto();
+
+        return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre()
+                + " SET cantidadDisponible = cantidadDisponible - " + cantidad
+                + ", estado = CASE "
+                + "WHEN (cantidadDisponible - " + cantidad + ") <= 0 THEN '" + EstadosDetalleProducto.EN_PLAN_SEPARE.getNombre() + "' ELSE estado "
+                + "END "
+                + "WHERE Id = '" + idDetalleProducto + "'";
     }
 }

@@ -4107,10 +4107,10 @@ public class SQL {
     }
 
     //CONSULTA QUE LLENA LA TABLA DE ALERTA CUMPLEAÑOS
-    public DefaultTableModel getRegistrosAlertasCumpleaños(String fecha) {
+    public DefaultTableModel getRegistrosAlertasCumpleanos(String fecha) {
 
         Object[] fecha2 = fecha.split("-");
-        String fechaCumpleaños = fecha2[2] + "/" + fecha2[1] + "/";
+        String fechaCumpleanos = fecha2[2] + "/" + fecha2[1] + "/";
 
         String columNames[] = {
             "id", "Nombre", "Fecha Nac", "Teléfono", "Celular", "Dirección", "Se Gestionó"
@@ -4118,8 +4118,8 @@ public class SQL {
         String colName[] = {
             "id", "nombre", "fecha", "telefono", "celular", "direccion", "gestiono"
         };
-        String origen = " bdTerceros where fecha LIKE '" + fechaCumpleaños + "%' ";
-        Object dtDatos[][] = GetTabla(colName, origen, "select id, nombre, fecha, telefono, celular, direccion, false as gestiono from bdTerceros where fecha LIKE '" + fechaCumpleaños + "%' ", new Integer[]{6});
+        String origen = " bdTerceros where fecha LIKE '" + fechaCumpleanos + "%' ";
+        Object dtDatos[][] = GetTabla(colName, origen, "select id, nombre, fecha, telefono, celular, direccion, false as gestiono from bdTerceros where fecha LIKE '" + fechaCumpleanos + "%' ", new Integer[]{6});
 
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
             Class[] types = new Class[]{

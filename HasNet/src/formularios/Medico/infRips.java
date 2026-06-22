@@ -654,17 +654,17 @@ public class infRips extends javax.swing.JInternalFrame {
         }
 
         String mes = metodosGenerales.mes();
-        String año = metodosGenerales.anho();
+        String anho = metodosGenerales.anho();
 
         if (mes.length() == 1) {
             mes = "0" + mes;
         }
 
-        String us = "US" + mes + "" + año,
-                af = "AF" + mes + "" + año,
-                ad = "AD" + mes + "" + año,
-                ap = "AP" + mes + "" + año,
-                ac = "AC" + mes + "" + año;
+        String us = "US" + mes + "" + anho,
+                af = "AF" + mes + "" + anho,
+                ad = "AD" + mes + "" + anho,
+                ap = "AP" + mes + "" + anho,
+                ac = "AC" + mes + "" + anho;
 
         int cantUs = 0, cantAf = 0, cantAd = 0, cantAp = 0, cantAc = 0;
 
@@ -857,7 +857,7 @@ public class infRips extends javax.swing.JInternalFrame {
                 datos = datos + codPrestadorServicios + "," + metodosGenerales.fecha() + "," + ap + "," + cantAp + "\n";
             }
 
-            metodosGenerales.generarArchivoPlano("rips/CT" + mes + "" + año + ".txt", datos.replace("null", ""));
+            metodosGenerales.generarArchivoPlano("rips/CT" + mes + "" + anho + ".txt", datos.replace("null", ""));
         }
 
         metodos.msgExito(this,

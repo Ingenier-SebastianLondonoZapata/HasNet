@@ -1,22 +1,20 @@
 package formularios.terceros;
 
 import clases.Instancias;
-import Utilidades.BaseDatos.SQL;
-import clases.big;
 import clases.metodosGenerales;
 import java.awt.Dimension;
 import java.util.Calendar;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class infAlertasCumpleaños extends javax.swing.JInternalFrame {
+public class infAlertasCumpleanos extends javax.swing.JInternalFrame {
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     DefaultTableModel modelo;
 
-    public infAlertasCumpleaños() {
+    public infAlertasCumpleanos() {
         initComponents();
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
         Barra.setSize(0, 0);
@@ -31,7 +29,7 @@ public class infAlertasCumpleaños extends javax.swing.JInternalFrame {
     public void cargarTabla() {
         String fecha = metodos.desdeDate(dtFecha.getSelectedDate());
 //        if (cmbTipo.getSelectedIndex() == 1) {
-        tblRegistros.setModel(instancias.getSql().getRegistrosAlertasCumpleaños(fecha));
+        tblRegistros.setModel(instancias.getSql().getRegistrosAlertasCumpleanos(fecha));
         if (tblRegistros.getColumnModel().getColumnCount() > 0) {
             tblRegistros.getColumnModel().getColumn(6).setMinWidth(0);
             tblRegistros.getColumnModel().getColumn(6).setPreferredWidth(0);
@@ -221,7 +219,7 @@ public class infAlertasCumpleaños extends javax.swing.JInternalFrame {
         int mes = jMonthChooser1.getMonth();
         mes = mes + 1;
         String consulta = "where Month(fecha)= '" + mes + "' ";
-        instancias.getReporte().verRepAlertasCumpleaños(consulta, tipo);
+        instancias.getReporte().verRepAlertasCumpleanos(consulta, tipo);
 
     }//GEN-LAST:event_jButton4ActionPerformed
 

@@ -2,13 +2,7 @@ package Enums;
 
 public enum TipoProducto {
 
-    IMEI("IMEI"),
-    FECHA_LOTE("Fecha/Lote"),
-    COLOR("Color"),
-    SERIAL("Serial"),
-    TALLA("Talla"),
-    COLOR_TALLA("ColorTalla"),
-    SERIAL_COLOR("SerialColor");
+    GENERICO("ADMIN");
 
     String tipoProducto;
 

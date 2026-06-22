@@ -5024,15 +5024,15 @@ public class metodosGenerales {
         //Se asigna la fecha recibida a la fecha de nacimiento.
         fechaNacimiento.setTime(fechaNac);
         //Se restan la fecha actual y la fecha de nacimiento
-        int año = fechaActual.get(Calendar.YEAR) - fechaNacimiento.get(Calendar.YEAR);
+        int anho = fechaActual.get(Calendar.YEAR) - fechaNacimiento.get(Calendar.YEAR);
         int mes = fechaActual.get(Calendar.MONTH) - fechaNacimiento.get(Calendar.MONTH);
         int dia = fechaActual.get(Calendar.DATE) - fechaNacimiento.get(Calendar.DATE);
         //Se ajusta el año dependiendo el mes y el día
         if (mes < 0 || (mes == 0 && dia < 0)) {
-            año--;
+            anho--;
         }
         //Regresa la edad en base a la fecha de nacimiento       
-        return año;
+        return anho;
     }
 
     public static String calcularEdad2(String fecha) {
@@ -5054,23 +5054,23 @@ public class metodosGenerales {
         //Se asigna la fecha recibida a la fecha de nacimiento.
         fechaNacimiento.setTime(fechaNac);
         //Se restan la fecha actual y la fecha de nacimiento
-        int año = fechaActual.get(Calendar.YEAR) - fechaNacimiento.get(Calendar.YEAR);
+        int anho = fechaActual.get(Calendar.YEAR) - fechaNacimiento.get(Calendar.YEAR);
         int mes = fechaActual.get(Calendar.MONTH) - fechaNacimiento.get(Calendar.MONTH);
         int dia = fechaActual.get(Calendar.DATE) - fechaNacimiento.get(Calendar.DATE);
         //Se ajusta el año dependiendo el mes y el día
         if (mes < 0 || (mes == 0 && dia < 0)) {
-            año--;
+            anho--;
         }
         //Regresa la edad en base a la fecha de nacimiento       
 
-        if (año == 0) {
+        if (anho == 0) {
             if (mes >= 1) {
                 return mes + "-Meses";
             } else {
                 return dia + "-Días";
             }
         }
-        return año + "-Años";
+        return anho + "-Años";
     }
 
     public static Integer calcularEdadMeses(String fecha) {
@@ -5087,12 +5087,12 @@ public class metodosGenerales {
         //Se asigna la fecha recibida a la fecha de nacimiento.
         fechaNacimiento.setTime(fechaNac);
         //Se restan la fecha actual y la fecha de nacimiento
-        int año = fechaActual.get(Calendar.YEAR) - fechaNacimiento.get(Calendar.YEAR);
+        int anho = fechaActual.get(Calendar.YEAR) - fechaNacimiento.get(Calendar.YEAR);
         int mes = fechaActual.get(Calendar.MONTH) - fechaNacimiento.get(Calendar.MONTH);
         int dia = fechaActual.get(Calendar.DATE) - fechaNacimiento.get(Calendar.DATE);
         //Se ajusta el año dependiendo el mes y el día
         if (mes < 0 || (mes == 0 && dia < 0)) {
-            año--;
+            anho--;
         }
         if (mes < 0) {
             mes = 12 + mes;

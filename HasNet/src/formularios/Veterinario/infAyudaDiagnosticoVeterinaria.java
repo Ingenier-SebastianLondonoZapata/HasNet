@@ -1078,10 +1078,10 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
                 fecha = "0" + fecha;
             }
 
-            int año = metodosGenerales.calcularEdad(fecha);
+            int anho = metodosGenerales.calcularEdad(fecha);
             int meses = metodosGenerales.calcularEdadMeses(fecha);
-            if (año > 0) {
-                txtEdad.setText(año + " años y " + meses + " meses");
+            if (anho > 0) {
+                txtEdad.setText(anho + " años y " + meses + " meses");
             } else {
                 txtEdad.setText(meses + " meses");
             }

@@ -1,4 +1,4 @@
-package EstrategiaInventario;
+package estrategiainventario;
 
 import DAO.Inventario.DaoInventario;
 import java.math.BigDecimal;

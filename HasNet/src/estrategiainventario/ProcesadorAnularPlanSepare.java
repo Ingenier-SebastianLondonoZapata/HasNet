@@ -15,15 +15,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcesadorNotaCredito extends AbstractProcesadorMovimiento {
+public class ProcesadorAnularPlanSepare extends AbstractProcesadorMovimiento {
 
     private final ServicioTransaccionInventario servicioTransaccionInventario = new ServicioTransaccionInventario();
 
     @Override
-    public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos, String numeroDocumento,
-            String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
+    public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos,
+            String numeroDocumento, String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
 
         List<String> sqlInventario = new ArrayList<>();
+        List<PonderadoPendiente> ponderados = new ArrayList<>();
 
         for (MovimientoInventario movimiento : movimientos) {
             if (!movimiento.getIdDetalleProducto().isEmpty()) {
@@ -35,8 +36,8 @@ public class ProcesadorNotaCredito extends AbstractProcesadorMovimiento {
 
         servicioTransaccionInventario.ejecutarIngreso(
                 sqlInventario,
-                new ArrayList<PonderadoPendiente>(),
-                new ArrayList<DetalleProducto>(),
+                ponderados,
+                detallesProductos,
                 usuario,
                 numeroDocumento);
     }
@@ -45,14 +46,12 @@ public class ProcesadorNotaCredito extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).add(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
-        BigDecimal notaCredito = Utilidades.convertirBigDecimal(producto.getNc()).add(cantidad);
+        BigDecimal planSepare = Utilidades.convertirBigDecimal(producto.getPlanSepare()).subtract(cantidad);
 
         return "UPDATE " + tablaUtilizada + " SET "
-                + "inventario = '" + UtilidadInventario.formatear(inventario) + "', "
                 + "fisicoInventario = '" + UtilidadInventario.formatear(fisicoInventario) + "', "
-                + "nc = '" + UtilidadInventario.formatear(notaCredito) + "' "
+                + "planSepare = '" + UtilidadInventario.formatear(planSepare) + "' "
                 + "WHERE idSistema = '" + producto.getIdSistema() + "'";
     }
 
@@ -62,7 +61,6 @@ public class ProcesadorNotaCredito extends AbstractProcesadorMovimiento {
 
         return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
                 + "cantidadDisponible = cantidadDisponible + " + cantidad + ", "
-                + "estado = '" + EstadosDetalleProducto.DISPONIBLE.getNombre() + "' "
-                + "WHERE Id = '" + idDetalleProducto + "'";
+                + "estado = '" + EstadosDetalleProducto.DISPONIBLE.getNombre() + "' WHERE Id = '" + idDetalleProducto + "'";
     }
 }

@@ -1,21 +1,21 @@
 package FabricaInventario;
 
 import Enums.TipoDocumento;
-import EstrategiaInventario.ProcesadorAjusteEntrada;
-import EstrategiaInventario.ProcesadorAjusteSalida;
-import EstrategiaInventario.ProcesadorAnularAjusteEntrada;
-import EstrategiaInventario.ProcesadorAnularAjusteSalida;
-import EstrategiaInventario.ProcesadorAnularPlanSepare;
-import EstrategiaInventario.ProcesadorFacturacion;
-import EstrategiaInventario.ProcesadorIngreso;
-import EstrategiaInventario.ProcesadorInventarioInicial;
-import EstrategiaInventario.ProcesadorMesa;
-import EstrategiaInventario.ProcesadorMovimiento;
-import EstrategiaInventario.ProcesadorNotaCredito;
-import EstrategiaInventario.ProcesadorNotaDebito;
-import EstrategiaInventario.ProcesadorOrdenServicio;
-import EstrategiaInventario.ProcesadorPedido;
-import EstrategiaInventario.ProcesadorPlanSepare;
+import estrategiainventario.ProcesadorAjusteEntrada;
+import estrategiainventario.ProcesadorAjusteSalida;
+import estrategiainventario.ProcesadorAnularAjusteEntrada;
+import estrategiainventario.ProcesadorAnularAjusteSalida;
+import estrategiainventario.ProcesadorAnularPlanSepare;
+import estrategiainventario.ProcesadorFacturacion;
+import estrategiainventario.ProcesadorIngreso;
+import estrategiainventario.ProcesadorInventarioInicial;
+import estrategiainventario.ProcesadorMesa;
+import estrategiainventario.ProcesadorMovimiento;
+import estrategiainventario.ProcesadorNotaCredito;
+import estrategiainventario.ProcesadorNotaDebito;
+import estrategiainventario.ProcesadorOrdenServicio;
+import estrategiainventario.ProcesadorPedido;
+import estrategiainventario.ProcesadorPlanSepare;
 
 public class FabricaProcesadores {
 

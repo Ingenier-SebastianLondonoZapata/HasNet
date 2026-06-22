@@ -144,7 +144,7 @@ public class Instancias {
     private String informacionEmpresaCompleto;
     private String informacionEmpresaReimpresion;
 
-    private infAlertasCumpleaños alertas;
+    private infAlertasCumpleanos alertas;
     private String diasCobrarMora;
     private String porcentajeMora;
     private buscReporteFacturaPedido reporteFacturaPedido;
@@ -1914,11 +1914,11 @@ public class Instancias {
         this.porcentajeMora = porcentajeMora;
     }
 
-    public infAlertasCumpleaños getAlertas() {
+    public infAlertasCumpleanos getAlertas() {
         return alertas;
     }
 
-    public void setAlertas(infAlertasCumpleaños alertas) {
+    public void setAlertas(infAlertasCumpleanos alertas) {
         this.alertas = alertas;
     }
 

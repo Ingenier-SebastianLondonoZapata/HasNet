@@ -1295,10 +1295,10 @@ public class infMascotas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtIdTerceroKeyReleased
 
     public void calcularEdad() {
-        int año = metodosGenerales.calcularEdad(txtFecha.getText());
+        int anho = metodosGenerales.calcularEdad(txtFecha.getText());
         int meses = metodosGenerales.calcularEdadMeses(txtFecha.getText());
-        if (año > 0) {
-            txtEdad.setText(año + " años y " + meses + " meses");
+        if (anho > 0) {
+            txtEdad.setText(anho + " años y " + meses + " meses");
         } else {
             txtEdad.setText(meses + " meses");
         }

@@ -1,7 +1,5 @@
-package EstrategiaInventario;
+package estrategiainventario;
 
-import Enums.EstadosDetalleProducto;
-import Enums.Tablas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
@@ -15,27 +13,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcesadorAnularAjusteEntrada extends AbstractProcesadorMovimiento {
+public class ProcesadorOrdenServicio extends AbstractProcesadorMovimiento {
 
     private final ServicioTransaccionInventario servicioTransaccionInventario = new ServicioTransaccionInventario();
 
     @Override
-    public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos,
-            String numeroDocumento, String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
+    public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos, String numeroDocumento,
+            String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
 
         List<String> sqlInventario = new ArrayList<>();
-        List<PonderadoPendiente> ponderados = new ArrayList<>();
 
         for (MovimientoInventario movimiento : movimientos) {
             sqlInventario.add(generarSqlInventario(movimiento, tablaUtilizada));
         }
 
-        sqlInventario.add(generarSqlInventarioDetalle(numeroDocumento));
-
         servicioTransaccionInventario.ejecutarIngreso(
                 sqlInventario,
-                ponderados,
-                detallesProductos,
+                new ArrayList<PonderadoPendiente>(),
+                new ArrayList<DetalleProducto>(),
                 usuario,
                 numeroDocumento);
     }
@@ -44,18 +39,12 @@ public class ProcesadorAnularAjusteEntrada extends AbstractProcesadorMovimiento 
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).subtract(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
-        BigDecimal ajusteEntrada = Utilidades.convertirBigDecimal(producto.getAjusteEntrada()).subtract(cantidad);
+        BigDecimal ordenServicio = Utilidades.convertirBigDecimal(producto.getOrdenServicio()).add(cantidad);
 
         return "UPDATE " + tablaUtilizada + " SET "
-                + "inventario = '" + UtilidadInventario.formatear(inventario) + "', "
                 + "fisicoInventario = '" + UtilidadInventario.formatear(fisicoInventario) + "', "
-                + "ajusteEntrada = '" + UtilidadInventario.formatear(ajusteEntrada) + "' "
+                + "ordenServicio = '" + UtilidadInventario.formatear(ordenServicio) + "' "
                 + "WHERE idSistema = '" + producto.getIdSistema() + "'";
-    }
-
-    public String generarSqlInventarioDetalle(String idAjuste) {
-        return "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET estado = '" + EstadosDetalleProducto.ANULADO + "' where numIngreso = '" + idAjuste + "'";
     }
 }

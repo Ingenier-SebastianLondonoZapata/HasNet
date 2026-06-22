@@ -197,7 +197,7 @@ public class iFactura {
     }
 
     public void verNegativa(String nombre, String sexo, String raza, String edad, String codigo,
-            String reproductivo, String cedula, String nombreDueño, String telefono, String direccion, String historia) {
+            String reproductivo, String cedula, String nombreDueno, String telefono, String direccion, String historia) {
 
         JasperReport reporte;
         try {
@@ -215,7 +215,7 @@ public class iFactura {
             parametros.put("codigo", codigo);
             parametros.put("reproductivo", reproductivo);
             parametros.put("cedula", cedula);
-            parametros.put("nombreDueño", nombreDueño);
+            parametros.put("nombreDueño", nombreDueno);
             parametros.put("telefono", telefono);
             parametros.put("direccion", direccion);
             parametros.put("historia", historia);
@@ -255,7 +255,7 @@ public class iFactura {
     }
 
     public void verAyudaDiagnosticaVeterinaria(String id, String nombre, String sexo, String raza,
-            String edad, String codigo, String reproductivo, String cedula, String nombreDueño,
+            String edad, String codigo, String reproductivo, String cedula, String nombreDueno,
             String telefono, String direccion, String historia) {
         JasperReport reporte;
         try {
@@ -274,7 +274,7 @@ public class iFactura {
             parametros.put("codigo", codigo);
             parametros.put("reproductivo", reproductivo);
             parametros.put("cedula", cedula);
-            parametros.put("nombreDueño", nombreDueño);
+            parametros.put("nombreDueño", nombreDueno);
             parametros.put("telefono", telefono);
             parametros.put("direccion", direccion);
             parametros.put("historia", historia);
@@ -351,7 +351,7 @@ public class iFactura {
 
     public void verFormulaMedicaVeterinaria(String id, String nombre,
             String sexo, String raza, String edad, String codigo,
-            String reproductivo, String cedula, String nombreDueño, String telefono, String direccion,
+            String reproductivo, String cedula, String nombreDueno, String telefono, String direccion,
             String proximoControl, String tipo, String historia) {
 
         JasperReport reporte;
@@ -372,7 +372,7 @@ public class iFactura {
             parametros.put("historia", historia);
             parametros.put("reproductivo", reproductivo);
             parametros.put("cedula", cedula);
-            parametros.put("nombreDueño", nombreDueño);
+            parametros.put("nombreDueño", nombreDueno);
             parametros.put("telefono", telefono);
             parametros.put("direccion", direccion);
             parametros.put("fecha", metodosGenerales.fecha());
@@ -1125,7 +1125,7 @@ public class iFactura {
         }
     }
 
-    public void verRepAlertasCumpleaños(String sql, String tipo) {
+    public void verRepAlertasCumpleanos(String sql, String tipo) {
         JasperReport reporte;
 
         try {

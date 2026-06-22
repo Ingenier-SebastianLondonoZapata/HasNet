@@ -1,4 +1,4 @@
-package EstrategiaInventario;
+package estrategiainventario;
 
 import Enums.EstadosDetalleProducto;
 import Enums.Tablas;
@@ -76,7 +76,7 @@ public class ProcesadorFacturacion extends AbstractProcesadorMovimiento {
         }
 
         if (informacionAdicional.isVieneDesdeOrdenServicio()) {
-            sql.append(", orderServicio = '").append(UtilidadInventario.formatear(ordenServicio)).append("'");
+            sql.append(", ordenServicio = '").append(UtilidadInventario.formatear(ordenServicio)).append("'");
         }
 
         sql.append(" WHERE idSistema = '").append(producto.getIdSistema()).append("'");

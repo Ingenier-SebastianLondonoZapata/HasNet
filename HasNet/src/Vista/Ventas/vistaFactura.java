@@ -74,7 +74,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import static java.awt.image.ImageObserver.WIDTH;
 import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -2245,9 +2244,9 @@ public class VistaFactura extends javax.swing.JPanel {
         txtCupo = new javax.swing.JTextField();
         txtCartera = new javax.swing.JTextField();
         pnlGarantia = new javax.swing.JPanel();
-        txtGarantiaSeñal = new javax.swing.JTextField();
+        txtGarantiaSenal = new javax.swing.JTextField();
         txtGarantiaFuncionamiento = new javax.swing.JTextField();
-        cmbSeñal = new javax.swing.JComboBox();
+        cmbSenal = new javax.swing.JComboBox();
         cmbFuncionamiento = new javax.swing.JComboBox();
         cmbListaPrecio = new javax.swing.JComboBox();
         rdTipoNormal = new javax.swing.JRadioButton();
@@ -3567,8 +3566,8 @@ public class VistaFactura extends javax.swing.JPanel {
 
         pnlGarantia.setBackground(new java.awt.Color(255, 255, 255));
 
-        txtGarantiaSeñal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtGarantiaSeñal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtGarantiaSenal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtGarantiaSenal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         txtGarantiaFuncionamiento.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtGarantiaFuncionamiento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -3578,8 +3577,8 @@ public class VistaFactura extends javax.swing.JPanel {
             }
         });
 
-        cmbSeñal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        cmbSeñal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "año", "meses" }));
+        cmbSenal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        cmbSenal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "año", "meses" }));
 
         cmbFuncionamiento.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         cmbFuncionamiento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "año", "meses" }));
@@ -3592,9 +3591,9 @@ public class VistaFactura extends javax.swing.JPanel {
             pnlGarantiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGarantiaLayout.createSequentialGroup()
                 .addGap(52, 52, 52)
-                .addComponent(txtGarantiaSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtGarantiaSenal, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
-                .addComponent(cmbSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbSenal, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(142, 142, 142)
                 .addComponent(txtGarantiaFuncionamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
@@ -3606,8 +3605,8 @@ public class VistaFactura extends javax.swing.JPanel {
             .addGroup(pnlGarantiaLayout.createSequentialGroup()
                 .addGap(3, 3, 3)
                 .addGroup(pnlGarantiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtGarantiaSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtGarantiaSenal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbSenal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtGarantiaFuncionamiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbFuncionamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3))
@@ -5129,7 +5128,7 @@ public class VistaFactura extends javax.swing.JPanel {
         facturandoPedidos = false;
         lbCupo.setVisible(false);
         txtGarantiaFuncionamiento.setText("");
-        txtGarantiaSeñal.setText("");
+        txtGarantiaSenal.setText("");
 
         txtCant.setText(datos[87].toString());
         tblProductos.setEnabled(true);
@@ -9377,8 +9376,8 @@ public class VistaFactura extends javax.swing.JPanel {
                     }
 
                     String garantia = "";
-                    if (!txtGarantiaSeñal.getText().equals("")) {
-                        garantia = "Por señal: " + txtGarantiaSeñal.getText() + " " + cmbSeñal.getSelectedItem() + ". ";
+                    if (!txtGarantiaSenal.getText().equals("")) {
+                        garantia = "Por señal: " + txtGarantiaSenal.getText() + " " + cmbSenal.getSelectedItem() + ". ";
                     }
 
                     if (!txtGarantiaFuncionamiento.getText().equals("")) {
@@ -14062,7 +14061,7 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JComboBox cmbMes;
     private javax.swing.JComboBox cmbPeriodicidad;
     private javax.swing.JComboBox cmbRtf;
-    private javax.swing.JComboBox cmbSeñal;
+    private javax.swing.JComboBox cmbSenal;
     private javax.swing.JComboBox cmbTipoPlazo;
     private javax.swing.JComboBox cmbVendedor;
     private datechooser.beans.DateChooserCombo dtDesde;
@@ -14173,7 +14172,7 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JTextField txtDiasPlazo;
     private javax.swing.JTextField txtFechaFactura;
     private javax.swing.JTextField txtGarantiaFuncionamiento;
-    private javax.swing.JTextField txtGarantiaSeñal;
+    private javax.swing.JTextField txtGarantiaSenal;
     private javax.swing.JTextField txtInteres;
     private javax.swing.JLabel txtIva;
     private javax.swing.JTextField txtKm;

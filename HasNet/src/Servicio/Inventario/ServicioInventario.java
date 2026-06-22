@@ -2,7 +2,7 @@ package Servicio.Inventario;
 
 import Enums.TipoDocumento;
 import Modelo.Inventario.MovimientoInventario;
-import EstrategiaInventario.ProcesadorMovimiento;
+import estrategiainventario.ProcesadorMovimiento;
 import FabricaInventario.FabricaProcesadores;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;

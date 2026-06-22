@@ -1099,7 +1099,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame {
                                 Double cantidadActual = Double.parseDouble(instancias.getSql().getCantidadProductos(cod).replace(",", "."));
                                 cantidadActual = cantidadActual - cant2;
                                 String cantidadFinal = String.valueOf(df.format(cantidadActual)).replace(".", ",");
-                                instancias.getSql().modificarCantidadesDetalleProductos(cod, cantidadFinal);
+                                //instancias.getSql().modificarCantidadesDetalleProductos(cod, cantidadFinal);
                             }
                         }
                     }
@@ -1391,7 +1391,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame {
                             Double cantidadActual = Double.parseDouble(instancias.getSql().getCantidadProductos(cod).replace(",", "."));
                             cantidadActual = cantidadActual + cant2;
                             String cantidadFinal = String.valueOf(df.format(cantidadActual)).replace(".", ",");
-                            instancias.getSql().modificarCantidadesDetalleProductos(cod, cantidadFinal);
+                            //instancias.getSql().modificarCantidadesDetalleProductos(cod, cantidadFinal);
                         }
                     }
                 }
