@@ -2,8 +2,8 @@ package inventario.servicio;
 
 import Enums.TipoDocumento;
 import Modelo.Inventario.MovimientoInventario;
-import estrategiainventario.ProcesadorMovimiento;
-import FabricaInventario.FabricaProcesadores;
+import inventario.estrategia.ProcesadorMovimiento;
+import inventario.fabrica.FabricaProcesadores;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import java.sql.SQLException;

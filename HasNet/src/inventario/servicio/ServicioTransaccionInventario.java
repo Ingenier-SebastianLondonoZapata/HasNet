@@ -10,8 +10,15 @@ import Utilidades.BaseDatos.SentenciaSql;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ServicioTransaccionInventario extends AbstractDao {
+
+    private static final Logger LOGGER = Logger.getLogger(ServicioTransaccionInventario.class.getName());
+    private static final String NO_SE_PUDO_OBTENER_UNA_CONEXION_A_LA_BASE_DE_DATOS = "No se pudo obtener una conexión a la base de datos";
+    private static final String ERROR_AL_REVERTIR_LA_TRANSACCIÓN_DE_INVENTARIO = "Error al revertir la transacción de inventario";
+    private static final String ERROR_AL_RESTAURAR_EL_AUTOCOMMIT_DE_LA_CONEXION = "Error al restaurar el autocommit de la conexión";
 
     private final DaoInventario daoInventario;
     private final DaoPonderado daoPonderado;
@@ -27,6 +34,9 @@ public class ServicioTransaccionInventario extends AbstractDao {
             String usuario, String numeroDocumento) throws SQLException {
 
         Connection conn = getConnection();
+        if (conn == null) {
+            throw new SQLException(NO_SE_PUDO_OBTENER_UNA_CONEXION_A_LA_BASE_DE_DATOS);
+        }
 
         try {
             conn.setAutoCommit(false);
@@ -47,10 +57,26 @@ public class ServicioTransaccionInventario extends AbstractDao {
 
             conn.commit();
         } catch (SQLException e) {
-            conn.rollback();
+            revertir(conn);
             throw e;
         } finally {
+            restaurarAutoCommit(conn);
+        }
+    }
+
+    private void revertir(Connection conn) {
+        try {
+            conn.rollback();
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, ERROR_AL_REVERTIR_LA_TRANSACCIÓN_DE_INVENTARIO, ex);
+        }
+    }
+
+    private void restaurarAutoCommit(Connection conn) {
+        try {
             conn.setAutoCommit(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, ERROR_AL_RESTAURAR_EL_AUTOCOMMIT_DE_LA_CONEXION, ex);
         }
     }
 }
