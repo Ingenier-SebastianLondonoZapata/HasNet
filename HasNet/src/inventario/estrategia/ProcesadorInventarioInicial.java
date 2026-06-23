@@ -22,9 +22,15 @@ public class ProcesadorInventarioInicial extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
+        BigDecimal inventarioInicial = Utilidades.convertirBigDecimal(producto.getInventarioInicial()).add(cantidad);
+
+        if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
+            String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET inventarioInicial = ? WHERE idSistema = ?";
+            return new SentenciaSql(sql, UtilidadInventario.formatear(inventarioInicial), producto.getIdSistema());
+        }
+
         BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).add(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
-        BigDecimal inventarioInicial = Utilidades.convertirBigDecimal(producto.getInventarioInicial()).add(cantidad);
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "inventario = ?, fisicoInventario = ?, inventarioInicial = ? "

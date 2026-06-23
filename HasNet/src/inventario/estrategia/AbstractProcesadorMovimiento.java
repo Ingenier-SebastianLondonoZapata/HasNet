@@ -6,11 +6,14 @@ import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.PonderadoPendiente;
 import Utilidades.BaseDatos.SentenciaSql;
+import clases.productos.ndProducto;
 import inventario.servicio.ServicioTransaccionInventario;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimiento {
 
@@ -22,11 +25,16 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
 
         List<SentenciaSql> sentencias = new ArrayList<>();
         List<PonderadoPendiente> ponderados = new ArrayList<>();
+        Map<String, ndProducto> productosCanonicos = new HashMap<>();
 
         for (MovimientoInventario movimiento : movimientos) {
-            agregarSentenciasDetalle(sentencias, movimiento, informacionAdicional);
-            sentencias.add(generarSqlInventario(movimiento, tablaUtilizada, informacionAdicional));
-            agregarPonderado(ponderados, movimiento);
+            MovimientoInventario efectivo = canonizar(movimiento, productosCanonicos);
+            agregarSentenciasDetalle(sentencias, efectivo, informacionAdicional);
+            SentenciaSql sentenciaInventario = generarSqlInventario(efectivo, tablaUtilizada, informacionAdicional);
+            if (sentenciaInventario != null) {
+                sentencias.add(sentenciaInventario);
+            }
+            agregarPonderado(ponderados, efectivo);
         }
 
         agregarSentenciasFinales(sentencias, numeroDocumento);
@@ -37,6 +45,20 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
                 detallesAPersistir(detallesProductos),
                 usuario,
                 numeroDocumento);
+    }
+
+    private MovimientoInventario canonizar(MovimientoInventario movimiento, Map<String, ndProducto> canonicos) {
+        ndProducto producto = movimiento.getProducto();
+        String idSistema = producto.getIdSistema();
+
+        ndProducto canonico = canonicos.get(idSistema);
+        if (canonico == null) {
+            canonicos.put(idSistema, producto);
+            return movimiento;
+        }
+
+        return new MovimientoInventario(canonico, movimiento.getCantidad(), movimiento.getValorProducto(),
+                movimiento.getIdDetalleProducto(), movimiento.esArmado());
     }
 
     protected abstract SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional);

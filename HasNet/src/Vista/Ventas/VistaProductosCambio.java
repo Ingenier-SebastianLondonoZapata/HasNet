@@ -1,10 +1,10 @@
-package formularios.productos;
+package Vista.Ventas;
 
 import clases.Instancias;
-import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
+import formularios.productos.buscProductos;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,7 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
-public class dlgRelacionados extends javax.swing.JDialog {
+public class VistaProductosCambio extends javax.swing.JDialog {
 
     private Instancias instancias;
     metodosGenerales metodos = new metodosGenerales();
@@ -23,7 +23,7 @@ public class dlgRelacionados extends javax.swing.JDialog {
     int fila1 = 0;
     DefaultTableModel modelo;
 
-    public dlgRelacionados(java.awt.Frame parent, boolean modal, String prodPrimero, String codPrincipal, String fila, String actual) {
+    public VistaProductosCambio(java.awt.Frame parent, boolean modal, String prodPrimero, String codPrincipal, String fila, String actual) {
         super(parent, modal);
         initComponents();
 
@@ -37,7 +37,7 @@ public class dlgRelacionados extends javax.swing.JDialog {
         metodosGenerales metodos = new metodosGenerales();
 
         this.setLocationRelativeTo(null);
-        this.setTitle("Productos relacionados");
+        this.setTitle("Productos para cambio");
 
         prodPrimero1 = prodPrimero;
         instancias = Instancias.getInstancias();
@@ -230,7 +230,9 @@ public class dlgRelacionados extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtCod))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtCod, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -455,23 +457,23 @@ public class dlgRelacionados extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(dlgRelacionados.class
+            java.util.logging.Logger.getLogger(VistaProductosCambio.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(dlgRelacionados.class
+            java.util.logging.Logger.getLogger(VistaProductosCambio.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(dlgRelacionados.class
+            java.util.logging.Logger.getLogger(VistaProductosCambio.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(dlgRelacionados.class
+            java.util.logging.Logger.getLogger(VistaProductosCambio.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                dlgRelacionados dialog = new dlgRelacionados(new javax.swing.JFrame(), true, null, "", "", "");
+                VistaProductosCambio dialog = new VistaProductosCambio(new javax.swing.JFrame(), true, null, "", "", "");
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

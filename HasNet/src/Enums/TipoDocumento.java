@@ -3,6 +3,8 @@ package Enums;
 public enum TipoDocumento {
 
     FACTURACION("facturacion"),
+    ANULAR_FACTURACION("anular_facturacion"),
+    
     PEDIDO("pedido"),
     MESA("mesa"),
     ORDER_SERVICIO("orden"),
@@ -24,9 +26,7 @@ public enum TipoDocumento {
     ORDER_COMPRA("ordenCompra"),
     EGRESO("egreso"),
 
-    INVENTARIO_INICIAL("inventarioInicial"),
-
-    ANULACION_FACTURACION("anulacion_facturacion");
+    INVENTARIO_INICIAL("inventarioInicial");
 
     private final String valor;
 

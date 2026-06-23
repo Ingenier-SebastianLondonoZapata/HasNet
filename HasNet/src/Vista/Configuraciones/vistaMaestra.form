@@ -2630,7 +2630,7 @@
                                   <Component id="jPanel18" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="jPanel41" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="28" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -7838,7 +7838,7 @@
                               <Component id="jPanel49" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jPanel50" alignment="0" pref="418" max="32767" attributes="0"/>
+                                  <Component id="jPanel50" alignment="0" pref="420" max="32767" attributes="0"/>
                                   <Component id="jPanel47" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>

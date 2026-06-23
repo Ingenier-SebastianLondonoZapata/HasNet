@@ -4,6 +4,7 @@ import Enums.TipoDocumento;
 import inventario.estrategia.ProcesadorAjusteEntrada;
 import inventario.estrategia.ProcesadorAjusteSalida;
 import inventario.estrategia.ProcesadorAnularAjusteEntrada;
+import inventario.estrategia.ProcesadorAnularFacturacion;
 import inventario.estrategia.ProcesadorAnularAjusteSalida;
 import inventario.estrategia.ProcesadorAnularPlanSepare;
 import inventario.estrategia.ProcesadorFacturacion;
@@ -30,6 +31,7 @@ public class FabricaProcesadores {
     private static Map<TipoDocumento, ProcesadorMovimiento> construirRegistro() {
         Map<TipoDocumento, ProcesadorMovimiento> registro = new EnumMap<>(TipoDocumento.class);
         registro.put(TipoDocumento.FACTURACION, new ProcesadorFacturacion());
+        registro.put(TipoDocumento.ANULAR_FACTURACION, new ProcesadorAnularFacturacion());
         registro.put(TipoDocumento.MESA, new ProcesadorMesa());
         registro.put(TipoDocumento.PEDIDO, new ProcesadorPedido());
         registro.put(TipoDocumento.PLAN_SEPARE, new ProcesadorPlanSepare());

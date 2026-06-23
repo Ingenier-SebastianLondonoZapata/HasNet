@@ -469,7 +469,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                     instancias.getNc().realizarNc();
                     return;
                 case "anulacion":
-                    instancias.getAnula().anularFactura(txtNota.getText());
+                    instancias.getReimpresion().anularFactura(txtNota.getText());
                     return;
                 case "borrarMesa":
                     instancias.getMesa1().limpiar(true, "SI");
@@ -581,7 +581,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                     break;
                 case "anulacion":
                     this.dispose();
-                    instancias.getAnula().anularFactura(txtNota.getText());
+                    instancias.getReimpresion().anularFactura(txtNota.getText());
                     break;
                 case "copiaSeguridad":
                     this.dispose();

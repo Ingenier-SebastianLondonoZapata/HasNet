@@ -1,5 +1,7 @@
 package clases;
 
+import Vista.Ventas.VistaPreparacion;
+import Vista.Productos.VistaDiseno;
 import Vista.Productos.VistaAjusteInventario;
 import Vista.Productos.VistaInventarioInicial;
 import Vista.Aterrizaje.vistaMenu;
@@ -11,7 +13,6 @@ import Vista.Tesoreria.vistaCodigosEgresos;
 import Vista.Tesoreria.vistaEgresos;
 import Vista.Terceros.vistaContactos;
 import Vista.Ventas.infMesas;
-import Vista.Ventas.vistaAnulacion;
 import Vista.Ventas.VistaDocumentos;
 import Vista.Cartera.VistaNotaDebito;
 import Vista.Cartera.vistaNotaCredito;
@@ -105,7 +106,7 @@ public class Instancias {
 
     private infUsuarios usuarios;
     private ndUsuario usuarioLog;
-    private infCosteo costeo;
+    private VistaDiseno costeo;
     private String tFactura;
     private infArmado armado;
     private infProcesos procesos;
@@ -250,7 +251,7 @@ public class Instancias {
     private infEmpleados empleados;
 
     /* INICIO VENTAS */
-    private infPreparacion preparacion;
+    private VistaPreparacion preparacion;
     private infResumenDia resumenDia;
     private infIndicadoresVentas indicadoresVentas;
     private infFacturarLotes facturarLotes;
@@ -1360,11 +1361,11 @@ public class Instancias {
         this.mesa = mesa;
     }
 
-    public infPreparacion getPreparacion() {
+    public VistaPreparacion getPreparacion() {
         return preparacion;
     }
 
-    public void setPreparacion(infPreparacion preparacion) {
+    public void setPreparacion(VistaPreparacion preparacion) {
         this.preparacion = preparacion;
     }
 
@@ -2378,11 +2379,11 @@ public class Instancias {
         this.tFactura = tFactura;
     }
 
-    public infCosteo getCosteo() {
+    public VistaDiseno getCosteo() {
         return costeo;
     }
 
-    public void setCosteo(infCosteo costeo) {
+    public void setCosteo(VistaDiseno costeo) {
         this.costeo = costeo;
     }
 

@@ -9,12 +9,18 @@ public class MovimientoInventario {
     private final BigDecimal cantidad;
     private final BigDecimal valorProducto;
     private final String idDetalleProducto;
+    private final boolean armado;
 
     public MovimientoInventario(ndProducto producto, BigDecimal cantidad, BigDecimal valorProducto, String idDetalleProducto) {
+        this(producto, cantidad, valorProducto, idDetalleProducto, false);
+    }
+
+    public MovimientoInventario(ndProducto producto, BigDecimal cantidad, BigDecimal valorProducto, String idDetalleProducto, boolean armado) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.valorProducto = valorProducto;
         this.idDetalleProducto = idDetalleProducto;
+        this.armado = armado;
     }
 
     public ndProducto getProducto() {
@@ -31,5 +37,9 @@ public class MovimientoInventario {
 
     public String getIdDetalleProducto() {
         return idDetalleProducto;
+    }
+
+    public boolean esArmado() {
+        return armado;
     }
 }

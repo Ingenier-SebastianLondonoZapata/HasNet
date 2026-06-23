@@ -1,18 +1,19 @@
-package formularios.Ventas;
+package Vista.Ventas;
 
 import clases.Instancias;
-import Utilidades.BaseDatos.SQL;
 import clases.cambiarColorTabla;
 import clases.convertirNumeroALetras;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import formularios.productos.buscProductos;
-import formularios.productos.dlgRelacionados;
+import Modelo.Ventas.OpcionPreparacion;
+import Utilidades.Utilidades;
+import Utilidades.Ventas.ParserPreparacion;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -21,10 +22,10 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class infPreparacion extends javax.swing.JInternalFrame {
+public class VistaPreparacion extends javax.swing.JInternalFrame {
 
     metodosGenerales metodos = new metodosGenerales();
-    private Instancias instancias;
+    private final Instancias instancias;
     String filas;
     String lista, codigoPrincipal, lugarDesde;
     boolean mesaCongelada1;
@@ -45,7 +46,7 @@ public class infPreparacion extends javax.swing.JInternalFrame {
 
     convertirNumeroALetras convertirNumeroALetras = new convertirNumeroALetras();
 
-    public infPreparacion() {
+    public VistaPreparacion() {
         initComponents();
         instancias = Instancias.getInstancias();
         tblProductosPrincipales.setDefaultRenderer(Object.class, new cambiarColorTabla(12, 0));
@@ -65,37 +66,6 @@ public class infPreparacion extends javax.swing.JInternalFrame {
 
         modeloOrdenado2 = new TableRowSorter<>(modelo2);
         tblAderezo.setRowSorter(modeloOrdenado2);
-    }
-
-    private ActionListener accion(final String opc) {
-        ActionListener a = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (opc) {
-//                    case "limpiar":
-//                        if ((btnLimpiar.isEnabled()) && (btnLimpiar.isVisible())) {
-//                            btnLimpiarActionPerformed(null);
-//                        }
-//                        break;
-//                    case "guardar":
-//                        if ((btnGuardar.isEnabled()) && (btnGuardar.isVisible())) {
-//                            btnGuardarActionPerformed(null);
-//                        }
-//                        break;
-////                    case "proveedor":
-////                        if ((btnBuscTerceros1.isEnabled()) && (btnBuscTerceros1.isVisible())) {
-////                            btnBuscTerceros1ActionPerformed(null);
-////                        }
-////                        break;
-//                    case "terceros":
-//                        if ((btnBuscTerceros.isEnabled()) && (btnBuscTerceros.isVisible())) {
-//                            btnBuscTercerosActionPerformed(null);
-//                        }
-//                        break;
-                }
-            }
-        };
-        return a;
     }
 
     @SuppressWarnings("unchecked")
@@ -132,8 +102,8 @@ public class infPreparacion extends javax.swing.JInternalFrame {
         jLabel13 = new javax.swing.JLabel();
         btnBusProd = new javax.swing.JButton();
         lbTitulo = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        btnDevolverAFactura = new javax.swing.JLabel();
+        lblDevolverAFactura = new javax.swing.JLabel();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
@@ -240,7 +210,7 @@ public class infPreparacion extends javax.swing.JInternalFrame {
                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -425,7 +395,7 @@ public class infPreparacion extends javax.swing.JInternalFrame {
         });
 
         jLabel13.setFont(new java.awt.Font("Century Gothic", 1, 15)); // NOI18N
-        jLabel13.setText("BUSCADOR DE PRODUCTOS:");
+        jLabel13.setText("Filtrar:");
 
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
@@ -450,9 +420,9 @@ public class infPreparacion extends javax.swing.JInternalFrame {
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane7)
                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
                         .addComponent(lbAdiciones)
@@ -470,7 +440,7 @@ public class infPreparacion extends javax.swing.JInternalFrame {
                     .addComponent(txtBuscar1)
                     .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                 .addGap(3, 3, 3)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
@@ -485,23 +455,23 @@ public class infPreparacion extends javax.swing.JInternalFrame {
         lbTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTitulo.setText("PRODUCTO");
 
-        jLabel14.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
-        jLabel14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel14.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnDevolverAFactura.setBackground(new java.awt.Color(255, 255, 255));
+        btnDevolverAFactura.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnDevolverAFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnDevolverAFactura.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDevolverAFactura.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel14MouseClicked(evt);
+                btnDevolverAFacturaMouseClicked(evt);
             }
         });
 
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("Volver");
-        jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel15.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblDevolverAFactura.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblDevolverAFactura.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDevolverAFactura.setText("Volver");
+        lblDevolverAFactura.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblDevolverAFactura.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel15MouseClicked(evt);
+                lblDevolverAFacturaMouseClicked(evt);
             }
         });
 
@@ -519,8 +489,8 @@ public class infPreparacion extends javax.swing.JInternalFrame {
                         .addComponent(pnlDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE))
+                            .addComponent(btnDevolverAFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+                            .addComponent(lblDevolverAFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(35, Short.MAX_VALUE))
@@ -532,9 +502,9 @@ public class infPreparacion extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDevolverAFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(jLabel15)))
+                        .addComponent(lblDevolverAFactura)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(5, 5, 5)
@@ -567,65 +537,92 @@ public class infPreparacion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_popBorrarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        for (int i = 0; i < tblProductosPrincipales.getRowCount(); i++) {
-            Double cant = 0.0;
-            try {
-                cant = Double.parseDouble(tblProductosPrincipales.getValueAt(i, 3).toString().replace(",", "."));
-                tblProductosPrincipales.setValueAt(cant, i, 3);
-            } catch (Exception e) {
-                metodos.msgError(null, "Todos los productos deben de tener cantidades.");
-                return;
-            }
+        if (!validarCantidades()) {
+            return;
         }
 
-        String cadena, adiciones = "", aderezos = "", producto = "", ingredientes = "", notas = "";
+        // Segmentos separados por "; " que leen ParserPreparacion y cargarDatos:
+        // [0] aderezos, [1] opciones, [2] observaciones.
+        String[] segmentos = {construirAderezos(), construirOpciones(), txtObservaciones.getText()};
+        enviarPreparacion(unirSegmentos(segmentos));
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
-        /* VER LOS ADEREZOS SELECCIONADOS */
+    private static String unirSegmentos(String[] segmentos) {
+        StringBuilder cadena = new StringBuilder();
+        for (int i = 0; i < segmentos.length; i++) {
+            if (i > 0) {
+                cadena.append("; ");
+            }
+            cadena.append(segmentos[i]);
+        }
+        return cadena.toString();
+    }
+
+    private boolean validarCantidades() {
+        for (int i = 0; i < tblProductosPrincipales.getRowCount(); i++) {
+            try {
+                BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductosPrincipales.getValueAt(i, 3).toString());
+                tblProductosPrincipales.setValueAt(Utilidades.formatearCantidad(cantidad), i, 3);
+            } catch (Exception e) {
+                metodos.msgAdvertenciaAjustado(null, "Todos los productos deben de tener cantidades.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String construirAderezos() {
+        StringBuilder aderezos = new StringBuilder();
         for (int i = 0; i < tblAderezo.getRowCount(); i++) {
             if ((Boolean) tblAderezo.getValueAt(i, 2)) {
-                aderezos = aderezos + tblAderezo.getValueAt(i, 0) + ", ";
+                if (aderezos.length() > 0) {
+                    aderezos.append(", ");
+                }
+                aderezos.append(tblAderezo.getValueAt(i, 0));
             }
         }
-        if (aderezos.length() > 1) {
-            aderezos = aderezos.substring(0, aderezos.length() - 2);
-        }
-        /* FIN ADEREZOS SELECCIONADOS */
+        return aderezos.toString();
+    }
 
+    private String construirOpciones() {
+        StringBuilder opciones = new StringBuilder();
         for (int i = 0; i < tblProductosPrincipales.getRowCount(); i++) {
             String principal = tblProductosPrincipales.getValueAt(i, 0).toString();
             if (principal.equals("ADICION")) {
-                principal = principal + "-" + String.valueOf(i);
+                principal = principal + "-" + i;
             }
 
-            producto = producto + principal + "/" + tblProductosPrincipales.getValueAt(i, 1) + "/" + tblProductosPrincipales.getValueAt(i, 3)
-                    + "/ " + tblProductosPrincipales.getValueAt(i, 4) + ", ";
+            if (opciones.length() > 0) {
+                opciones.append(", ");
+            }
+            opciones.append(principal).append("/")
+                    .append(tblProductosPrincipales.getValueAt(i, 1)).append("/")
+                    .append(tblProductosPrincipales.getValueAt(i, 3)).append("/ ")
+                    .append(tblProductosPrincipales.getValueAt(i, 4));
         }
+        return opciones.toString();
+    }
 
-        if (producto.length() > 1) {
-            producto = producto.substring(0, producto.length() - 2);
-        }
-        cadena = adiciones + "; " + aderezos + "; " + ingredientes + "; " + producto + "; " + txtObservaciones.getText();
-
+    private void enviarPreparacion(String cadena) {
+        System.out.println("cadena: " + cadena);
         if (lugarDesde.equals("pedido")) {
             instancias.getMenu().expandirMenu();
             instancias.getPedido().cargarPreparacion(filas, cadena, codigoPrincipal);
             try {
                 instancias.getPedidoContenedor().setSelected(true);
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(infPreparacion.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VistaPreparacion.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else if (mesaCongelada1) {
+            mesaCongelada1 = false;
+            instancias.getMesa().getPnlFactura().cargarPreparacion(filas, cadena, codigoPrincipal);
+            instancias.getMesa().setSelected(true);
         } else {
-            if (mesaCongelada1) {
-                mesaCongelada1 = false;
-                instancias.getMesa().getPnlFactura().cargarPreparacion(filas, cadena, codigoPrincipal);
-                instancias.getMesa().setSelected(true);
-            } else {
-                instancias.getMenu().expandirMenu();
-                instancias.getFactura().cargarPreparacion(filas, cadena, codigoPrincipal);
-                instancias.getFacturaContenedor().setSelected(true);
-            }
+            instancias.getMenu().expandirMenu();
+            instancias.getFactura().cargarPreparacion(filas, cadena, codigoPrincipal);
+            instancias.getFacturaContenedor().setSelected(true);
         }
-    }//GEN-LAST:event_btnGuardarActionPerformed
+    }
 
     private void btnGuardarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnGuardarKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -660,7 +657,7 @@ public class infPreparacion extends javax.swing.JInternalFrame {
     private void tblProductosPrincipalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosPrincipalesMouseClicked
         if (tblProductosPrincipales.getSelectedColumn() == 5) {
             if (tblProductosPrincipales.getValueAt(tblProductosPrincipales.getSelectedRow(), 5).equals(" CAMBIAR")) {
-                dlgRelacionados relacionados = new dlgRelacionados(null, true,
+                VistaProductosCambio relacionados = new VistaProductosCambio(null, true,
                         tblProductosPrincipales.getValueAt(tblProductosPrincipales.getSelectedRow(), 0).toString(), codigoPrincipal,
                         String.valueOf(tblProductosPrincipales.getSelectedRow()),
                         tblProductosPrincipales.getValueAt(tblProductosPrincipales.getSelectedRow(), 2).toString());
@@ -707,13 +704,13 @@ public class infPreparacion extends javax.swing.JInternalFrame {
         modeloOrdenado1.setRowFilter(RowFilter.regexFilter("(?i)" + txtBuscar1.getText(), 2));
     }//GEN-LAST:event_txtBuscar1KeyReleased
 
-    private void jLabel14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseClicked
+    private void btnDevolverAFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDevolverAFacturaMouseClicked
         if (lugarDesde.equals("pedido")) {
             try {
                 instancias.getMenu().expandirMenu();
                 instancias.getPedidoContenedor().setSelected(true);
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(infPreparacion.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VistaPreparacion.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             if (mesaCongelada1) {
@@ -724,15 +721,15 @@ public class infPreparacion extends javax.swing.JInternalFrame {
                 instancias.getMenu().expandirMenu();
             }
         }
-    }//GEN-LAST:event_jLabel14MouseClicked
+    }//GEN-LAST:event_btnDevolverAFacturaMouseClicked
 
-    private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
+    private void lblDevolverAFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDevolverAFacturaMouseClicked
         if (lugarDesde.equals("pedido")) {
             try {
                 instancias.getMenu().expandirMenu();
                 instancias.getPedidoContenedor().setSelected(true);
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(infPreparacion.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VistaPreparacion.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             if (mesaCongelada1) {
@@ -743,7 +740,7 @@ public class infPreparacion extends javax.swing.JInternalFrame {
                 instancias.getMenu().expandirMenu();
             }
         }
-    }//GEN-LAST:event_jLabel15MouseClicked
+    }//GEN-LAST:event_lblDevolverAFacturaMouseClicked
 
     private void txtCodProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodProductoActionPerformed
 
@@ -825,106 +822,99 @@ public class infPreparacion extends javax.swing.JInternalFrame {
         txtAderezo.setText("");
 
         filas = fila;
-
         codigoPrincipal = prod;
         mesaCongelada1 = mesaCongelada;
 
         ndProducto nodo = instancias.getSql().getDatosProducto(prod, "bdProductos");
-
         if (nodo.getCodigo() != null) {
             lbTitulo.setText(nodo.getDescripcion());
         }
 
         cargarTablas();
 
-        if (!lista.equals("")) {
+        if (lista.equals("")) {
+            return;
+        }
 
-            String datos[] = lista.split(";");
+        marcarAderezosSeleccionados(ParserPreparacion.aderezos(lista));
 
-            String aderezos = datos[1];
-            String ader[] = aderezos.substring(1, aderezos.length()).split(", ");
-            for (int i = 0; i < ader.length; i++) {
-                for (int j = 0; j < tblAderezo.getRowCount(); j++) {
-                    if (tblAderezo.getValueAt(j, 0).equals(ader[i])) {
-                        tblAderezo.setValueAt(true, j, 2);
-                        txtAderezo.setText(txtAderezo.getText() + tblAderezo.getValueAt(j, 1) + ", ");
-                    }
+        List<OpcionPreparacion> opciones = ParserPreparacion.opciones(lista);
+        aplicarCambiosYAdiciones(opciones);
+        aplicarOpcionesAComponentesBase(opciones);
+
+        txtObservaciones.setText(ParserPreparacion.observaciones(lista));
+    }
+
+    /** Marca en la tabla de aderezos los que vienen en la preparación. */
+    private void marcarAderezosSeleccionados(String aderezos) {
+        for (String aderezo : aderezos.split(", ")) {
+            for (int j = 0; j < tblAderezo.getRowCount(); j++) {
+                if (tblAderezo.getValueAt(j, 0).equals(aderezo)) {
+                    tblAderezo.setValueAt(true, j, 2);
+                    txtAderezo.setText(txtAderezo.getText() + tblAderezo.getValueAt(j, 1) + ", ");
                 }
             }
+        }
+    }
 
-            String producto = datos[3];
-            if (producto.length() > 1) {
-                String prods[] = producto.substring(1, producto.length()).split(", ");
+    /**
+     * Primera pasada: si el "principal" de la opción coincide con un producto de
+     * la tabla, aplica el cambio (código/descripción/cantidad/estado); si no
+     * coincide y es una adición, la agrega como fila nueva.
+     */
+    private void aplicarCambiosYAdiciones(List<OpcionPreparacion> opciones) {
+        for (OpcionPreparacion opcion : opciones) {
+            int fila = filaDeProductoPrincipal(opcion.getPrincipal());
 
-                for (int i = 0; i < prods.length; i++) {
-                    String codPrincipal = prods[i].split("/")[0];
-                    String codSel = prods[i].split("/")[1];
-                    String cant = prods[i].split("/")[2];
+            if (fila >= 0) {
+                ndProducto nodo = instancias.getSql().getDatosProducto(opcion.getCodigo(), "bdProductos");
+                tblProductosPrincipales.setValueAt(opcion.getCodigo(), fila, 1);
+                tblProductosPrincipales.setValueAt(nodo.getDescripcion(), fila, 2);
+                tblProductosPrincipales.setValueAt(opcion.getCantidad(), fila, 3);
+                marcarEstado(fila, opcion.activa());
+            } else if (opcion.getPrincipal().contains("ADICION")) {
+                ndProducto nodo = instancias.getSql().getDatosProducto(opcion.getCodigo(), "bdProductos");
+                tablaPrincipal.addRow(new Object[]{"ADICION", opcion.getCodigo(), nodo.getDescripcion(), opcion.getCantidad(), true, "   QUITAR"});
+            }
+        }
+    }
 
-                    String estado = "";
-                    try {
-                        estado = prods[i].split("/")[3];
-                    } catch (Exception e) {
-                    }
-
-                    Boolean entro = false;
-                    int fila1 = 0;
-
-                    for (int j = 0; j < tblProductosPrincipales.getRowCount(); j++) {
-                        if (!codPrincipal.equals("")) {
-                            if (tblProductosPrincipales.getValueAt(j, 0).equals(codPrincipal)) {
-                                entro = true;
-                                fila1 = j;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (entro) {
-                        tblProductosPrincipales.setValueAt(codSel, fila1, 1);
-                        ndProducto nodo1 = instancias.getSql().getDatosProducto(codSel, "bdProductos");
-                        tblProductosPrincipales.setValueAt(nodo1.getDescripcion(), fila1, 2);
-                        tblProductosPrincipales.setValueAt(cant, fila1, 3);
-                        if (estado.equals(" true")) {
-                            tblProductosPrincipales.setValueAt(true, fila1, 4);
-                        } else {
-                            tblProductosPrincipales.setValueAt(false, fila1, 4);
-                            txtProducto.setText(txtProducto.getText() + "Sin " + tblProductosPrincipales.getValueAt(fila1, 2) + ", ");
-                        }
-                    } else {
-                        if (codPrincipal.contains("ADICION")) {
-                            ndProducto nodo2 = instancias.getSql().getDatosProducto(codSel, "bdProductos");
-                            tablaPrincipal.addRow(new Object[]{"ADICION", codSel, nodo2.getDescripcion(), cant, true, "   QUITAR"});
-                        }
-                    }
-                }
-
-                for (int i = 0; i < prods.length; i++) {
-                    String codPrincipal = prods[i].split("/")[0];
-                    String codSel = prods[i].split("/")[1];
-                    String cant = prods[i].split("/")[2];
-                    String estado = prods[i].split("/")[3];
-
-                    for (int j = 0; j < tblProductosPrincipales.getRowCount(); j++) {
-                        if (tblProductosPrincipales.getValueAt(j, 1).equals(codSel) && tblProductosPrincipales.getValueAt(j, 5).equals("")) {
-                            tblProductosPrincipales.setValueAt(cant, j, 3);
-                            if (estado.equals(" true")) {
-                                tblProductosPrincipales.setValueAt(true, j, 4);
-                            } else {
-                                tblProductosPrincipales.setValueAt(false, j, 4);
-                                txtProducto.setText(txtProducto.getText() + "Sin " + tblProductosPrincipales.getValueAt(j, 2) + ", ");
-                            }
-                            break;
-                        }
-                    }
+    /**
+     * Segunda pasada: aplica cantidad y estado a los componentes base del
+     * discosteo (filas sin opción de cambio/quitar, col. 5 vacía) cuyo código
+     * coincide con el de la opción.
+     */
+    private void aplicarOpcionesAComponentesBase(List<OpcionPreparacion> opciones) {
+        for (OpcionPreparacion opcion : opciones) {
+            for (int j = 0; j < tblProductosPrincipales.getRowCount(); j++) {
+                if (tblProductosPrincipales.getValueAt(j, 1).equals(opcion.getCodigo())
+                        && tblProductosPrincipales.getValueAt(j, 5).equals("")) {
+                    tblProductosPrincipales.setValueAt(opcion.getCantidad(), j, 3);
+                    marcarEstado(j, opcion.activa());
+                    break;
                 }
             }
+        }
+    }
 
-            try {
-                txtObservaciones.setText(datos[4].substring(1, datos[4].length()));
-            } catch (Exception e) {
-                txtObservaciones.setText("");
+    /** Fila cuyo producto principal (col. 0) coincide con el código dado, o -1. */
+    private int filaDeProductoPrincipal(String principal) {
+        if (principal.equals("")) {
+            return -1;
+        }
+        for (int j = 0; j < tblProductosPrincipales.getRowCount(); j++) {
+            if (tblProductosPrincipales.getValueAt(j, 0).equals(principal)) {
+                return j;
             }
+        }
+        return -1;
+    }
+
+    /** Marca la fila como activa/inactiva (col. 4); si se quitó, lo anota en txtProducto. */
+    private void marcarEstado(int fila, boolean activa) {
+        tblProductosPrincipales.setValueAt(activa, fila, 4);
+        if (!activa) {
+            txtProducto.setText(txtProducto.getText() + "Sin " + tblProductosPrincipales.getValueAt(fila, 2) + ", ");
         }
     }
 
@@ -969,10 +959,9 @@ public class infPreparacion extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBusProd;
+    private javax.swing.JLabel btnDevolverAFactura;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
@@ -987,6 +976,7 @@ public class infPreparacion extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JLabel lbAdiciones;
     private javax.swing.JLabel lbTitulo;
+    private javax.swing.JLabel lblDevolverAFactura;
     private javax.swing.JPanel pnlAderezos;
     private javax.swing.JPanel pnlDetalles;
     private javax.swing.JPanel pnlPrincipal;

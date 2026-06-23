@@ -20,8 +20,16 @@ public class ProcesadorPedido extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
         BigDecimal pedidos = Utilidades.convertirBigDecimal(producto.getPedidos()).add(cantidad);
+        producto.setPedidos(UtilidadInventario.formatear(pedidos));
+
+        if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
+            String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET pedidos = ? WHERE idSistema = ?";
+            return new SentenciaSql(sql, UtilidadInventario.formatear(pedidos), producto.getIdSistema());
+        }
+
+        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
+        producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "fisicoInventario = ?, pedidos = ? "

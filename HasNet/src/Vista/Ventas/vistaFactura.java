@@ -8,6 +8,7 @@ import Enums.TipoDocumento;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
 import Enums.DetalleTipoProducto;
+import Enums.TipoProducto;
 import Enums.enumBodegas;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleProductos;
@@ -40,6 +41,8 @@ import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
 import inventario.servicio.ServicioActualizacionPonderado;
 import inventario.servicio.ServicioInventario;
+import Modelo.Ventas.OpcionPreparacion;
+import Utilidades.Ventas.ParserPreparacion;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
 import Vista.Solicitudes.vistaSolicitarPermisos;
@@ -66,6 +69,8 @@ import formularios.productos.dlgCompraDetallada1;
 import formularios.productos.seleccionarPLU;
 import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
+import inventario.servicio.CargadorProducto;
+import inventario.servicio.ServicioDiscosteo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -134,7 +139,7 @@ public class VistaFactura extends javax.swing.JPanel {
             solicitudPermiso = false, facturandoPedidos = false, preguntarLimpiar = true;
 
     private infFactura factura;
-    private String tipoProceso, credito1, consecutivoMesa, idCosteo, valorFila = null, descontarFisicoInventario = "SI",
+    private String tipoProceso, credito1, consecutivoMesa, idCosteo, descontarFisicoInventario = "SI",
             loteGeneral = "", permisoNumero = "", tipoActual = "", ter = "", loteCuentasCobro = "", fechaFacturaAutomatica = "";
 
     private BigDecimal costoCosteo;
@@ -1685,7 +1690,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
             ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), base);
 
-            if (!producto.getUsuario().equals("ADMIN")) {
+            if (!producto.getUsuario().equals(TipoProducto.GENERICO.getValue())) {
 
                 String preparacion = "";
                 try {
@@ -1732,16 +1737,12 @@ public class VistaFactura extends javax.swing.JPanel {
                         instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, codigo, base);
                     }
                 } else {
-                    String opciones2[];
-                    String opciones = preparacion.split("; ")[3];
-                    if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
-                            Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
-                            if (esAdicion) {
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estado = opciones2[k].split("/")[3];
+                    if (ParserPreparacion.tienePreparacion(preparacion)) {
+                        for (OpcionPreparacion opcion : ParserPreparacion.opciones(preparacion)) {
+                            if (opcion.esAdicion()) {
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estado = opcion.getEstado();
 
                                 if (estado.equals(" true")) {
 
@@ -1964,15 +1965,11 @@ public class VistaFactura extends javax.swing.JPanel {
                     }
 
                     if (!preparacion.equals("")) {
-                        String opciones2[];
-                        String opciones = preparacion.split("; ")[3];
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
-                            Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
-                            if (esAdicion) {
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estado = opciones2[k].split("/")[3];
+                        for (OpcionPreparacion opcion : ParserPreparacion.opciones(preparacion)) {
+                            if (opcion.esAdicion()) {
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estado = opcion.getEstado();
 
                                 if (estado.equals(" true")) {
                                     ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
@@ -2244,9 +2241,9 @@ public class VistaFactura extends javax.swing.JPanel {
         txtCupo = new javax.swing.JTextField();
         txtCartera = new javax.swing.JTextField();
         pnlGarantia = new javax.swing.JPanel();
-        txtGarantiaSenal = new javax.swing.JTextField();
+        txtGarantiaSeñal = new javax.swing.JTextField();
         txtGarantiaFuncionamiento = new javax.swing.JTextField();
-        cmbSenal = new javax.swing.JComboBox();
+        cmbSeñal = new javax.swing.JComboBox();
         cmbFuncionamiento = new javax.swing.JComboBox();
         cmbListaPrecio = new javax.swing.JComboBox();
         rdTipoNormal = new javax.swing.JRadioButton();
@@ -3566,8 +3563,8 @@ public class VistaFactura extends javax.swing.JPanel {
 
         pnlGarantia.setBackground(new java.awt.Color(255, 255, 255));
 
-        txtGarantiaSenal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtGarantiaSenal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtGarantiaSeñal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtGarantiaSeñal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         txtGarantiaFuncionamiento.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtGarantiaFuncionamiento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -3577,8 +3574,8 @@ public class VistaFactura extends javax.swing.JPanel {
             }
         });
 
-        cmbSenal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        cmbSenal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "año", "meses" }));
+        cmbSeñal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        cmbSeñal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "año", "meses" }));
 
         cmbFuncionamiento.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         cmbFuncionamiento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "año", "meses" }));
@@ -3591,9 +3588,9 @@ public class VistaFactura extends javax.swing.JPanel {
             pnlGarantiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGarantiaLayout.createSequentialGroup()
                 .addGap(52, 52, 52)
-                .addComponent(txtGarantiaSenal, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtGarantiaSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
-                .addComponent(cmbSenal, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(142, 142, 142)
                 .addComponent(txtGarantiaFuncionamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
@@ -3605,8 +3602,8 @@ public class VistaFactura extends javax.swing.JPanel {
             .addGroup(pnlGarantiaLayout.createSequentialGroup()
                 .addGap(3, 3, 3)
                 .addGroup(pnlGarantiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtGarantiaSenal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbSenal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtGarantiaSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbSeñal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtGarantiaFuncionamiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbFuncionamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3))
@@ -4763,7 +4760,7 @@ public class VistaFactura extends javax.swing.JPanel {
                 if (nodo.getUsuario().equals("FACTURA")) {
                     String opciones = "";
                     try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                     } catch (Exception e) {
                     }
 
@@ -4807,19 +4804,16 @@ public class VistaFactura extends javax.swing.JPanel {
                         String opciones = "";
 
                         try {
-                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                         } catch (Exception e) {
                         }
 
-                        String opciones2[];
                         if (!opciones.equals("")) {
-                            opciones2 = opciones.split(", ");
-                            for (int k = 0; k < opciones2.length; k++) {
-                                Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
-                                if (esAdicion) {
-                                    String codigo = opciones2[k].split("/")[1];
-                                    String cant = opciones2[k].split("/")[2];
-                                    String estado = opciones2[k].split("/")[3];
+                            for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
+                                if (opcion.esAdicion()) {
+                                    String codigo = opcion.getCodigo();
+                                    String cant = opcion.getCantidad();
+                                    String estado = opcion.getEstado();
 
                                     if (estado.equals(" true")) {
                                         ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
@@ -5128,7 +5122,7 @@ public class VistaFactura extends javax.swing.JPanel {
         facturandoPedidos = false;
         lbCupo.setVisible(false);
         txtGarantiaFuncionamiento.setText("");
-        txtGarantiaSenal.setText("");
+        txtGarantiaSeñal.setText("");
 
         txtCant.setText(datos[87].toString());
         tblProductos.setEnabled(true);
@@ -5702,16 +5696,6 @@ public class VistaFactura extends javax.swing.JPanel {
         int fila = tblProductos.getSelectedRow(), i = 2, j = 0;
 
         try {
-            if (tblProductos.getValueAt(fila, 16).equals("REALIZADO") && valorFila != null) {
-                tblProductos.setValueAt(valorFila, fila, tblProductos.getSelectedColumn());
-                valorFila = null;
-                return;
-            }
-        } catch (Exception e) {
-            return;
-        }
-
-        try {
             if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                 if (instancias.isLector()) {
 
@@ -6212,7 +6196,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
                         String opciones = "";
                         try {
-                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                         } catch (Exception e) {
                         }
 
@@ -6245,19 +6229,16 @@ public class VistaFactura extends javax.swing.JPanel {
 
                     String opciones = "";
                     try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                     } catch (Exception e) {
                     }
 
-                    String opciones2[];
                     if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
-                            Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
-                            if (esAdicion) {
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estado = opciones2[k].split("/")[3];
+                        for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
+                            if (opcion.esAdicion()) {
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estado = opcion.getEstado();
 
                                 if (estado.equals(" true")) {
                                     ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
@@ -6378,18 +6359,16 @@ public class VistaFactura extends javax.swing.JPanel {
                     String opciones2[];
                     String opciones = "";
                     try {
-                        opciones = mat[i][15].toString().split("; ")[3];
+                        opciones = mat[i][15].toString().split("; ")[1];
                     } catch (Exception e) {
                     }
 
                     if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
+                        for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
 
-                            String principal = opciones2[k].split("/")[0];
-                            String codigo = opciones2[k].split("/")[1];
-                            String cant = opciones2[k].split("/")[2];
-                            String estado = opciones2[k].split("/")[3];
+                            String codigo = opcion.getCodigo();
+                            String cant = opcion.getCantidad();
+                            String estado = opcion.getEstado();
 
                             if (estado.equals(" true")) {
                                 ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
@@ -7130,70 +7109,41 @@ public class VistaFactura extends javax.swing.JPanel {
         String baseUtilizada = obtenerBase();
         String dato = "";
 
-        if (evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 3) {
-            noPermitirCambioAProductosDetallados();
-
-        } else if (tblProductos.getSelectedColumn() == 5 || tblProductos.getSelectedColumn() == 6) {
+        if (evt.getClickCount() > 1 && (tblProductos.getSelectedColumn() == 5 || tblProductos.getSelectedColumn() == 6)) {
             if (instancias.getConfiguraciones().isFacturaElectronica()) {
                 abrirModalDescuentosProducto(tblProductos.getSelectedRow());
             }
         }
 
         if (this.tipoProceso.equals("mesa") || this.tipoProceso.equals("facturacion") || this.tipoProceso.equals("pedido")) {
-            if (instancias.getConfiguraciones().isRestaurante()) {
+            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
 
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
-
-                if (nodo.getUsuario().equalsIgnoreCase("FACTURA") || nodo.getUsuario().equalsIgnoreCase("COSTEO")) {
-                } else {
-                    if (tblProductos.getSelectedColumn() == 1) {
-                        metodos.msgError(factura, "EL PRODUCTO NO TIENE PREPARACIÓN.");
-                        return;
-                    }
+            if (nodo.getUsuario().equalsIgnoreCase(TipoProducto.PRODUCTO_DISENADO.getValue()) && evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 1) {
+                if (!this.tipoProceso.equals("mesa")) {
+                    instancias.getMenu().ocultarMenu("preparacion");
                 }
 
-                if (evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 1) {
-                    try {
-                        if (!this.tipoProceso.equals("mesa")) {
-                            instancias.getMenu().ocultarMenu("preparacion");
-                        }
+                instancias.getPreparacion().cargarDatos(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(),
+                        tblProductos.getValueAt(tblProductos.getSelectedRow(), 21).toString(), mesaCongelada,
+                        String.valueOf(tblProductos.getSelectedRow()), this.tipoProceso);
 
-                        instancias.getPreparacion().cargarDatos(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(),
-                                tblProductos.getValueAt(tblProductos.getSelectedRow(), 21).toString(), mesaCongelada,
-                                String.valueOf(tblProductos.getSelectedRow()), this.tipoProceso);
-                        instancias.getPreparacion().setSelected(true);
-                    } catch (PropertyVetoException ex) {
-                        Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 3) {
-                    String productoEn = "";
-                    if (nodo.getTipoProd() != null) {
-                        if (nodo.getTipoProd().equals("Variable") || nodo.getTipoProd().equals("Fijas")) {
-                            productoEn = "Desarrollo";
-                        }
-                    }
-
-                    if (!this.tipoProceso.equals("cotizacion")) {
-                        if (!productoEn.equals("")) {
-                            metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
-                            return;
-                        }
-                    }
+                try {
+                    instancias.getPreparacion().setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
 
-        try {
-            dato = tblProductos.getValueAt(tblProductos.getSelectedRow(), tblProductos.getSelectedColumn()).toString();
-        } catch (Exception e) {
-        }
-
-        if (!dato.equals("")) {
-            valorFila = dato;
-        }
-
-        if (tblProductos.getSelectedColumn() != 22) {
-            calcularTabla(tblProductos.getSelectedRow(), false);
+            String tipoProductoSeleccionado = null == nodo.getTipoProducto() ? "" : DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
+            if (instancias.getConfiguraciones().isProductosDetallados()
+                    && !tipoProductoSeleccionado.isEmpty()
+                    && evt.getClickCount() >= 1
+                    && tblProductos.getSelectedColumn() == 3) {
+                if (evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 3) {
+                    metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
+                    return;
+                }
+            }
         }
 
         if (tblProductos.getSelectedColumn() == 22) {
@@ -7228,16 +7178,6 @@ public class VistaFactura extends javax.swing.JPanel {
         String baseUtilizada = obtenerBase();
 
         int fila = tblProductos.getSelectedRow(), i = 2, j = 0;
-
-        try {
-            if (tblProductos.getValueAt(fila, 16).equals("REALIZADO") && valorFila != null) {
-                tblProductos.setValueAt(valorFila, fila, tblProductos.getSelectedColumn());
-                valorFila = null;
-                return;
-            }
-        } catch (Exception e) {
-            return;
-        }
 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 
@@ -7949,19 +7889,6 @@ public class VistaFactura extends javax.swing.JPanel {
     private void lbOtroConsecutivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbOtroConsecutivoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_lbOtroConsecutivoActionPerformed
-
-    private void noPermitirCambioAProductosDetallados() {
-        if (instancias.getConfiguraciones().isProductosDetallados()) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), obtenerBase());
-            String tipoProductoSeleccionado = null == nodo.getTipoProducto() ? "" : DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
-
-            if (!tipoProductoSeleccionado.isEmpty()) {
-                System.out.println("tipoo:" + tipoProductoSeleccionado);
-                metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
-                return;
-            }
-        }
-    }
 
     public void ventanaBodegas(String nit) {
         buscBodegas buscar = new buscBodegas(instancias.getMenu(), true, "INTERNA");
@@ -9327,33 +9254,32 @@ public class VistaFactura extends javax.swing.JPanel {
                         bodega = "123-22";
                     }
 
-                    if (instancias.getConfiguraciones().isRestaurante()) {
-                        String pedidoActivo = "No";
-                        try {
-                            if (ndPedido.getIdFactura() != null) {
-                                pedidoActivo = "Si";
-                            }
-                        } catch (Exception e) {
-                        }
+                    /*if (instancias.getConfiguraciones().isRestaurante()) {
+                     String pedidoActivo = "No";
+                     try {
+                     if (ndPedido.getIdFactura() != null) {
+                     pedidoActivo = "Si";
+                     }
+                     } catch (Exception e) {
+                     }
 
-                        if (pedidoActivo.equals("Si")) {
-                            if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-                                instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                                        preparacion, "inventarioPedido", bodega);
-                            }
-                        } else {
-                            if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-                                instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                                        preparacion, "descontarTodo", bodega);
-                            }
-                        }
-                    } else {
-                        if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-                            instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                                    preparacion, bodega);
-                        }
-                    }
-
+                     if (pedidoActivo.equals("Si")) {
+                     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
+                     instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
+                     preparacion, "inventarioPedido", bodega);
+                     }
+                     } else {
+                     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
+                     instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
+                     preparacion, "descontarTodo", bodega);
+                     }
+                     }
+                     } else {
+                     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
+                     instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
+                     preparacion, bodega);
+                     }
+                     }*/
                     String consecutivoCosteo = idCosteo;
                     BigDecimal costoCosteo1 = BigDecimal.ZERO, totalUtilidad = BigDecimal.ZERO;
 
@@ -9376,8 +9302,8 @@ public class VistaFactura extends javax.swing.JPanel {
                     }
 
                     String garantia = "";
-                    if (!txtGarantiaSenal.getText().equals("")) {
-                        garantia = "Por señal: " + txtGarantiaSenal.getText() + " " + cmbSenal.getSelectedItem() + ". ";
+                    if (!txtGarantiaSeñal.getText().equals("")) {
+                        garantia = "Por señal: " + txtGarantiaSeñal.getText() + " " + cmbSeñal.getSelectedItem() + ". ";
                     }
 
                     if (!txtGarantiaFuncionamiento.getText().equals("")) {
@@ -9470,19 +9396,15 @@ public class VistaFactura extends javax.swing.JPanel {
                 }
             }
 
-            boolean vieneDesdeUnPedido = (ndPedido != null && ndPedido.getIdFactura() != null);
-            boolean vieneDesdeUnSepare = (ndSepare != null && ndSepare.getIdFactura() != null);
-            boolean vieneDesdeUnOrdenServicio = nodoOrdenServicio != null;
-            InformacionAdicional informacionAdicional = new InformacionAdicional(vieneDesdeUnPedido, vieneDesdeUnSepare, vieneDesdeUnOrdenServicio);
-
+            InformacionAdicional informacionAdicional = construirInformacionAdicional();
             TipoDocumento tipoMovimiento = TipoDocumento.FACTURACION;
             List<DetalleProducto> detallesProductos = new ArrayList<>();
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, factura2,
-                    tablaUtilizada, instancias.getUsuario(), informacionAdicional);
 
             try {
+                List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+                ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, factura2,
+                        tablaUtilizada, instancias.getUsuario(), informacionAdicional);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
@@ -9516,18 +9438,16 @@ public class VistaFactura extends javax.swing.JPanel {
                         String opciones2[];
                         String opciones = "";
                         try {
-                            opciones = mat[i][15].toString().split("; ")[3];
+                            opciones = mat[i][15].toString().split("; ")[1];
                         } catch (Exception e) {
                         }
 
                         if (!opciones.equals("")) {
-                            opciones2 = opciones.split(", ");
-                            for (int k = 0; k < opciones2.length; k++) {
+                            for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
 
-                                String principal = opciones2[k].split("/")[0];
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estado1 = opciones2[k].split("/")[3];
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estado1 = opcion.getEstado();
 
                                 if (estado1.equals(" true")) {
                                     ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
@@ -9663,10 +9583,10 @@ public class VistaFactura extends javax.swing.JPanel {
 
             TipoDocumento tipoMovimiento = TipoDocumento.ORDER_SERVICIO;
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
 
             try {
+                List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+                ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
@@ -9716,21 +9636,20 @@ public class VistaFactura extends javax.swing.JPanel {
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
                 if (!tblProductos.getValueAt(i, 16).equals("REALIZADO")) {
 
-                    if (instancias.getConfiguraciones().isRestaurante()) {
+                    /*if (instancias.getConfiguraciones().isRestaurante()) {
 
-                        String preparacionProducto = "";
-                        try {
-                            preparacionProducto = tblProductos.getValueAt(i, 21).toString();
-                        } catch (Exception e) {
-                        }
+                     String preparacionProducto = "";
+                     try {
+                     preparacionProducto = tblProductos.getValueAt(i, 21).toString();
+                     } catch (Exception e) {
+                     }
 
-                        if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-                            instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                                    preparacionProducto, "fisicoInventarioPedido", bodega);
-                        }
-
-                        agregarRegistrosComandas(i, turno, baseUtilizada, "", factura, "");
-                    }
+                     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
+                     instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
+                     preparacionProducto, "fisicoInventarioPedido", bodega);
+                     }
+                     }*/
+                    agregarRegistrosComandas(i, turno, baseUtilizada, "", factura, "");
 
                     Object[] vector = {factura, ID_CLIENTE_CARGADO, vendedor, "", metodos.fechaConsulta(metodosGenerales.fechaHora()), metodos.fechaConsulta(txtVencimiento.getText()),
                         big.getMoneda(txtTotal.getText().replace("Total: ", "")), instancias.getNcDevuelta(), instancias.getChequeDevuelta(), instancias.getTarjetaDevuelta(),
@@ -9769,10 +9688,11 @@ public class VistaFactura extends javax.swing.JPanel {
 
             TipoDocumento tipoMovimiento = TipoDocumento.PEDIDO;
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
 
             try {
+                List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+                ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(),
+                        tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
@@ -9846,10 +9766,10 @@ public class VistaFactura extends javax.swing.JPanel {
 
             TipoDocumento tipoMovimiento = TipoDocumento.PLAN_SEPARE;
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
 
             try {
+                List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+                ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
@@ -9954,35 +9874,34 @@ public class VistaFactura extends javax.swing.JPanel {
 
                     String observaciones = "";
                     try {
-                        observaciones = preparacionProducto.split("; ")[4];
+                        observaciones = preparacionProducto.split("; ")[2];
                     } catch (Exception e) {
                     }
 
-                    String opciones = preparacionProducto.split("; ")[3];
-                    String aderezos = preparacionProducto.split("; ")[1];
+                    String opciones = preparacionProducto.split("; ")[1];
+                    String aderezos = preparacionProducto.split("; ")[0];
 
                     //INGRESAMOS LOS PRODUCTOS ESCOJIDOS EN LOS PRODUCTOS CON CAMBIO
                     if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
+                        for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
 
-                            String principal = opciones2[k].split("/")[0];
-                            Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
+                            String principal = opcion.getPrincipal();
+                            Boolean esAdicion = opcion.esAdicion();
 
                             if (esAdicion) {
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estadoProducto = opciones2[k].split("/")[3];
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estadoProducto = opcion.getEstado();
 
                                 if (principal.equals("") || principal.equals(" ")) {
                                     if (estadoProducto.equals(" false")) {
-                                        ndProducto nodoProd = instancias.getSql().getDatosProducto(opciones2[k].split("/")[1], baseUtilizada);
+                                        ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
                                         ingredientes1 = ingredientes1 + nodoProd.getDescripcion() + ", ";
                                     }
                                 } else {
                                     if (!principal.equals(codigo)) {
                                         if (estadoProducto.equals(" true")) {
-                                            ndProducto nodoProd = instancias.getSql().getDatosProducto(opciones2[k].split("/")[1], baseUtilizada);
+                                            ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
                                             if (nodoProd.getGrupo() != null) {
                                                 if (nodoProd.getGrupo().equals("GRP-02")) {
                                                     if (cant.substring(cant.length() - 1, cant.length()).equals("0")) {
@@ -10033,18 +9952,17 @@ public class VistaFactura extends javax.swing.JPanel {
                     }
                 }
             }
-            
+
             TipoDocumento tipoMovimiento = TipoDocumento.MESA;
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
 
             try {
+                List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+                ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
 
             try {
                 if ((Boolean) datos[54] && instancias.getConfiguraciones().isRestaurante()) {
@@ -10681,20 +10599,17 @@ public class VistaFactura extends javax.swing.JPanel {
                     String opciones = "";
 
                     try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                     } catch (Exception e) {
                     }
 
-                    String opciones2[];
                     if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
-                            Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
+                        for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
 
-                            if (esAdicion) {
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estado = opciones2[k].split("/")[3];
+                            if (opcion.esAdicion()) {
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estado = opcion.getEstado();
 
                                 if (estado.equals(" true")) {
                                     ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
@@ -10950,34 +10865,33 @@ public class VistaFactura extends javax.swing.JPanel {
 
                     String observaciones = "";
                     try {
-                        observaciones = cadena.split("; ")[4];
+                        observaciones = cadena.split("; ")[2];
                     } catch (Exception e) {
                     }
 
-                    String opciones = cadena.split("; ")[3];
-                    String aderezos = cadena.split("; ")[1];
+                    String opciones = cadena.split("; ")[1];
+                    String aderezos = cadena.split("; ")[0];
 
                     //INGRESAMOS LOS PRODUCTOS ESCOJIDOS EN LOS PRODUCTOS CON CAMBIO
                     if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
-                            Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
-                            String principal = opciones2[k].split("/")[0];
+                        for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
+                            Boolean esAdicion = opcion.esAdicion();
+                            String principal = opcion.getPrincipal();
 
                             if (esAdicion) {
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estadoProducto = opciones2[k].split("/")[3];
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estadoProducto = opcion.getEstado();
 
                                 if (principal.equals("") || principal.equals(" ")) {
                                     if (estadoProducto.equals(" false")) {
-                                        ndProducto nodoProd = instancias.getSql().getDatosProducto(opciones2[k].split("/")[1], baseUtilizada);
+                                        ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
                                         ingredientes1 = ingredientes1 + nodoProd.getDescripcion() + ", ";
                                     }
                                 } else {
                                     if (!principal.equals(codigo)) {
                                         if (estadoProducto.equals(" true")) {
-                                            ndProducto nodoProd = instancias.getSql().getDatosProducto(opciones2[k].split("/")[1], baseUtilizada);
+                                            ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
                                             if (nodoProd.getGrupo() != null) {
                                                 if (nodoProd.getGrupo().equals("GRP-02")) {
                                                     if (cant.substring(cant.length() - 1, cant.length()).equals("0")) {
@@ -13057,35 +12971,34 @@ public class VistaFactura extends javax.swing.JPanel {
 
             String observaciones = "";
             try {
-                observaciones = cadena.split("; ")[4];
+                observaciones = cadena.split("; ")[2];
             } catch (Exception e) {
             }
 
-            String opciones = cadena.split("; ")[3];
-            String aderezos = cadena.split("; ")[1];
+            String opciones = cadena.split("; ")[1];
+            String aderezos = cadena.split("; ")[0];
 
             //INGRESAMOS LOS PRODUCTOS ESCOJIDOS EN LOS PRODUCTOS CON CAMBIO
             if (!opciones.equals("")) {
-                opciones2 = opciones.split(", ");
-                for (int k = 0; k < opciones2.length; k++) {
+                for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
 
-                    String principal = opciones2[k].split("/")[0];
-                    Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
+                    String principal = opcion.getPrincipal();
+                    Boolean esAdicion = opcion.esAdicion();
 
                     if (esAdicion) {
-                        String codigo = opciones2[k].split("/")[1];
-                        String cant = opciones2[k].split("/")[2];
-                        String estadoProducto = opciones2[k].split("/")[3];
+                        String codigo = opcion.getCodigo();
+                        String cant = opcion.getCantidad();
+                        String estadoProducto = opcion.getEstado();
 
                         if (principal.equals("") || principal.equals(" ")) {
                             if (estadoProducto.equals(" false")) {
-                                ndProducto nodoProd = instancias.getSql().getDatosProducto(opciones2[k].split("/")[1], baseUtil);
+                                ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtil);
                                 ingredientes1 = ingredientes1 + nodoProd.getDescripcion() + ", ";
                             }
                         } else {
                             if (!principal.equals(codigo)) {
                                 if (estadoProducto.equals(" true")) {
-                                    ndProducto nodoProd = instancias.getSql().getDatosProducto(opciones2[k].split("/")[1], baseUtil);
+                                    ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtil);
                                     if (nodoProd.getGrupo() != null) {
                                         if (nodoProd.getGrupo().equals("GRP-02")) {
                                             if (cant.substring(cant.length() - 1, cant.length()).equals("0")) {
@@ -13139,31 +13052,30 @@ public class VistaFactura extends javax.swing.JPanel {
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-
+            BigDecimal cantidadProducto = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString());
+            
             if (nodo.getUsuario().equals("FACTURA")) {
                 String opciones = "";
 
                 try {
-                    opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                    opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                 } catch (Exception e) {
                 }
 
-                String opciones2[];
                 if (!opciones.equals("")) {
-                    opciones2 = opciones.split(", ");
-                    for (int k = 0; k < opciones2.length; k++) {
-                        Boolean esAdicion = opciones2[k].split("/")[0].contains("ADICION-");
-                        if (esAdicion) {
-                            String codigo = opciones2[k].split("/")[1];
-                            String cant = opciones2[k].split("/")[2];
-                            String estado = opciones2[k].split("/")[3];
+                    for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
+                        if (opcion.esAdicion()) {
+                            String codigo = opcion.getCodigo();
+                            String cant = opcion.getCantidad();
+                            String estado = opcion.getEstado();
+                            BigDecimal cantidadTotal = cantidadProducto.multiply(Utilidades.convertirBigDecimal(cant));
 
                             if (estado.equals(" true")) {
                                 ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
 
                                 if (nodo1.getGrupo() != null) {
                                     if (nodo1.getGrupo().equals("GRP-02")) {
-                                        cargarProducto(codigo, cant, 1, "", "", "", false, "", "", "", "", "");
+                                        cargarProducto(codigo, Utilidades.formatearCantidad(cantidadTotal), 1, "", "", "", false, "", "", "", "", "");
                                         tblProductos.setValueAt("PRODUCTO-AGREGADO", tblProductos.getRowCount() - 1, 31);
                                     }
                                 }
@@ -14014,16 +13926,27 @@ public class VistaFactura extends javax.swing.JPanel {
         tipoDescuento.setVisible(true);
     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) throws SQLException {
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
+
+        ServicioDiscosteo servicioDiscosteo = new ServicioDiscosteo(new CargadorProducto() {
+            @Override
+            public ndProducto cargar(String codigo, String tabla) {
+                return instancias.getSql().getDatosProducto(codigo, tabla);
+            }
+        });
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), tablaUtilizada);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString());
             String idDetalleProducto = obtenerValorTabla(i, 29);
+
             MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, idDetalleProducto);
             movimientos.add(inventario);
+
+            String preparacion = obtenerValorTabla(i, 21);
+            movimientos.addAll(servicioDiscosteo.explotarSiEsDiscosteo(producto, preparacion, tablaUtilizada, cantidad));
         }
 
         return movimientos;
@@ -14032,6 +13955,13 @@ public class VistaFactura extends javax.swing.JPanel {
     private String obtenerValorTabla(int row, int col) {
         Object value = tblProductos.getValueAt(row, col);
         return value != null ? value.toString() : "";
+    }
+
+    private InformacionAdicional construirInformacionAdicional() {
+        boolean vieneDesdeUnPedido = (ndPedido != null && ndPedido.getIdFactura() != null);
+        boolean vieneDesdeUnSepare = (ndSepare != null && ndSepare.getIdFactura() != null);
+        boolean vieneDesdeUnOrdenServicio = nodoOrdenServicio != null;
+        return new InformacionAdicional(vieneDesdeUnPedido, vieneDesdeUnSepare, vieneDesdeUnOrdenServicio);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -14061,7 +13991,7 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JComboBox cmbMes;
     private javax.swing.JComboBox cmbPeriodicidad;
     private javax.swing.JComboBox cmbRtf;
-    private javax.swing.JComboBox cmbSenal;
+    private javax.swing.JComboBox cmbSeñal;
     private javax.swing.JComboBox cmbTipoPlazo;
     private javax.swing.JComboBox cmbVendedor;
     private datechooser.beans.DateChooserCombo dtDesde;
@@ -14172,7 +14102,7 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JTextField txtDiasPlazo;
     private javax.swing.JTextField txtFechaFactura;
     private javax.swing.JTextField txtGarantiaFuncionamiento;
-    private javax.swing.JTextField txtGarantiaSenal;
+    private javax.swing.JTextField txtGarantiaSeñal;
     private javax.swing.JTextField txtInteres;
     private javax.swing.JLabel txtIva;
     private javax.swing.JTextField txtKm;

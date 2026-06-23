@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public class Constantes {
 
+    public static final int MAX_DECIMALES_CANTIDAD = 4;
+
     public static final String CLIENTE_POR_DEFECTO = "1010";
 
     public static final String FACTURACION_NORMAL = "Facturación Normal";

@@ -1,6 +1,8 @@
 package formularios.productos;
 
 import Modelo.Inventario.UltimoPonderado;
+import Modelo.Ventas.OpcionPreparacion;
+import Utilidades.Ventas.ParserPreparacion;
 import inventario.servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
 import clases.productos.ndProducto;
@@ -26,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
 public class infArmado extends javax.swing.JInternalFrame {
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
-    
+
     DefaultTableModel modeloPro;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
@@ -1327,7 +1329,7 @@ public class infArmado extends javax.swing.JInternalFrame {
         buscar.show();
     }
 
-    public void cargarProducto(String codigo, String cant, String bodega) {
+    public void cargarProducto(String codigo, String cantidad, String bodega) {
 
         ndProducto nodo = instancias.getSql().getDatosProducto(codigo, bodega);
 
@@ -1364,8 +1366,7 @@ public class infArmado extends javax.swing.JInternalFrame {
                     Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), cant, 1,
-                    (big.getBigDecimal(1).multiply(big.getMoneda(cant))),
+                modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), cantidad, 1, cantidad,
                     false, big.setMoneda(ponderado), big.setMoneda(ultimoCosto)});
 
                 costo();
@@ -1425,7 +1426,7 @@ public class infArmado extends javax.swing.JInternalFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
                 modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), "1", 1,
                     (big.getBigDecimal(1).multiply(big.getMoneda("1"))),
                     false, big.setMoneda(ponderado), big.setMoneda(ultimoCosto)});
@@ -1676,19 +1677,11 @@ public class infArmado extends javax.swing.JInternalFrame {
             }
 
             //INGRESAMOS LOS PRODUCTOS ESCOJIDOS EN LOS PRODUCTOS CON CAMBIO
-            String opciones = preparacion.split("; ")[3];
-            if (!opciones.equals("")) {
-                opciones2 = opciones.split(", ");
-
+            if (ParserPreparacion.tienePreparacion(preparacion)) {
                 String baseUtilizada = obtenerBase();
-                for (int k = 0; k < opciones2.length; k++) {
-                    String principal = opciones2[k].split("/")[0];
-                    String codigo = opciones2[k].split("/")[1];
-                    String cant = opciones2[k].split("/")[2];
-                    String estado = opciones2[k].split("/")[3];
-
-                    if (estado.equals(" true")) {
-                        cargarProducto(codigo, cant, baseUtilizada);
+                for (OpcionPreparacion opcion : ParserPreparacion.opciones(preparacion)) {
+                    if (opcion.activa()) {
+                        cargarProducto(opcion.getCodigo(), opcion.getCantidad(), baseUtilizada);
                     }
                 }
             }

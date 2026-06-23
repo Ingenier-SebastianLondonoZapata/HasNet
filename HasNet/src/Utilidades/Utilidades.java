@@ -37,4 +37,19 @@ public class Utilidades {
             return BigDecimal.ZERO;
         }
     }
+
+    public static String formatearCantidad(String valor) {
+        return formatearCantidad(Utilidades.convertirBigDecimal(valor));
+    }
+
+    public static String formatearCantidad(BigDecimal cantidad) {
+        if (cantidad == null || cantidad.compareTo(BigDecimal.ZERO) == 0) {
+            return "0";
+        }
+
+        return cantidad.setScale(Constantes.MAX_DECIMALES_CANTIDAD, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString()
+                .replace(".", ",");
+    }
 }

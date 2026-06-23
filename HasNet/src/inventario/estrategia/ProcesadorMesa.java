@@ -22,21 +22,35 @@ public class ProcesadorMesa extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
-        BigDecimal congelada = Utilidades.convertirBigDecimal(producto.getCongelada()).add(cantidad);
         boolean esProductoNormal = TipoProducto.GENERICO.getValue().equals(producto.getUsuario());
+        boolean manejaInventario = Boolean.TRUE.equals(producto.getManejaInventario());
 
         List<Object> parametros = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ").append(ValidadorTabla.validar(tablaUtilizada)).append(" SET ");
 
         if (esProductoNormal) {
-            sql.append("congelada = ?, ");
+            BigDecimal congelada = Utilidades.convertirBigDecimal(producto.getCongelada()).add(cantidad);
+            sql.append("congelada = ?");
             parametros.add(UtilidadInventario.formatear(congelada));
+            producto.setCongelada(UtilidadInventario.formatear(congelada));
         }
 
-        sql.append("fisicoInventario = ? WHERE idSistema = ?");
-        parametros.add(UtilidadInventario.formatear(fisicoInventario));
+        if (manejaInventario) {
+            BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
+            if (!parametros.isEmpty()) {
+                sql.append(", ");
+            }
+            sql.append("fisicoInventario = ?");
+            parametros.add(UtilidadInventario.formatear(fisicoInventario));
+            producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
+        }
+
+        if (parametros.isEmpty()) {
+            return null;
+        }
+
+        sql.append(" WHERE idSistema = ?");
         parametros.add(producto.getIdSistema());
 
         return new SentenciaSql(sql.toString(), parametros.toArray());

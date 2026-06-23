@@ -18,8 +18,16 @@ public class ProcesadorAnularPlanSepare extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
         BigDecimal planSepare = Utilidades.convertirBigDecimal(producto.getPlanSepare()).subtract(cantidad);
+        producto.setPlanSepare(UtilidadInventario.formatear(planSepare));
+
+        if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
+            String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET planSepare = ? WHERE idSistema = ?";
+            return new SentenciaSql(sql, UtilidadInventario.formatear(planSepare), producto.getIdSistema());
+        }
+
+        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
+        producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "fisicoInventario = ?, planSepare = ? "

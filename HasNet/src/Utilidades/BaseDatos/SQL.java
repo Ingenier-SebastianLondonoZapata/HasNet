@@ -6133,14 +6133,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarProdCosteo(String prod, String cant, String cod, String us, String desc, String plu, String cant2, Boolean cambio) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdDisCosteo(producto, cantidad, codigo, usuario, plu, cantidad2, descripcion, opcionCambio)"
-                + " values(?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{prod, cant, cod, us, plu, cant2, desc, cambio}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarVerificarFactura(String factura, String cliente, String fact, String terminal, BigDecimal total, String fechaFactura,
             String fechaVence, String fechaAlerta, String vendedor, String consecutivo, String placa, String turno) {
         boolean ok = false;

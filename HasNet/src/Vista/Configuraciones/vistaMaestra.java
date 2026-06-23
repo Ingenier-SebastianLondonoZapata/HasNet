@@ -6123,7 +6123,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
             /* FIN ACTUALIZACION MAESTROS EN EL MODULO DE FACTURACION */
             instancias.getReimpresion().consultarMaestros();
-            instancias.getAnula().consultarMaestros();
             instancias.getAbonos().consultarMaestros();
 
             if (instancias.getConfiguraciones().isVeterinaria()) {
@@ -8984,7 +8983,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         instancias.getFactura().actualizarConsecutivo(0);
 //        instancias.getMesas().actualizarConsecutivo();
 //        instancias.getCaja().cargarTabla();
-        instancias.getAnula().cargarTabla();
         instancias.getAbonos().cargarTabla();
     }
 

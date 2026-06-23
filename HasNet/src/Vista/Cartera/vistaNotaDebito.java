@@ -26,6 +26,8 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
+import Modelo.Ventas.OpcionPreparacion;
+import Utilidades.Ventas.ParserPreparacion;
 import inventario.servicio.ServicioActualizacionPonderado;
 import inventario.servicio.ServicioInventario;
 import Utilidades.Utilidades;
@@ -3796,7 +3798,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 if (nodo.getUsuario().equals("FACTURA")) {
                     String opciones = "";
                     try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                     } catch (Exception e) {
                     }
 
@@ -3839,17 +3841,15 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     String opciones = "";
 
                     try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                     } catch (Exception e) {
                     }
 
-                    String opciones2[];
                     if (!opciones.equals("")) {
-                        opciones2 = opciones.split(", ");
-                        for (int k = 0; k < opciones2.length; k++) {
-                            String codigo = opciones2[k].split("/")[1];
-                            String cant = opciones2[k].split("/")[2];
-                            String estado = opciones2[k].split("/")[3];
+                        for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
+                            String codigo = opcion.getCodigo();
+                            String cant = opcion.getCantidad();
+                            String estado = opcion.getEstado();
 
                             if (estado.equals(" true")) {
                                 ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
@@ -3930,17 +3930,15 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         String opciones = "";
 
                         try {
-                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[3];
+                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
                         } catch (Exception e) {
                         }
 
-                        String opciones2[];
                         if (!opciones.equals("")) {
-                            opciones2 = opciones.split(", ");
-                            for (int k = 0; k < opciones2.length; k++) {
-                                String codigo = opciones2[k].split("/")[1];
-                                String cant = opciones2[k].split("/")[2];
-                                String estado = opciones2[k].split("/")[3];
+                            for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
+                                String codigo = opcion.getCodigo();
+                                String cant = opcion.getCantidad();
+                                String estado = opcion.getEstado();
 
                                 if (estado.equals(" true")) {
                                     ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);

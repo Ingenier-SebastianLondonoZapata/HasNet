@@ -18,9 +18,15 @@ public class ProcesadorAjusteSalida extends AbstractProcesadorMovimiento {
         ndProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
+        BigDecimal ajusteSalida = Utilidades.convertirBigDecimal(producto.getAjusteSalida()).add(cantidad);
+
+        if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
+            String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET ajusteSalida = ? WHERE idSistema = ?";
+            return new SentenciaSql(sql, UtilidadInventario.formatear(ajusteSalida), producto.getIdSistema());
+        }
+
         BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).subtract(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
-        BigDecimal ajusteSalida = Utilidades.convertirBigDecimal(producto.getAjusteSalida()).add(cantidad);
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "inventario = ?, fisicoInventario = ?, ajusteSalida = ? "

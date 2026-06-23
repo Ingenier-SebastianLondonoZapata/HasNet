@@ -2,7 +2,9 @@ package Enums;
 
 public enum TipoProducto {
 
-    GENERICO("ADMIN");
+    GENERICO("ADMIN"),
+    PRODUCTO_DISENADO("FACTURA"),
+    PRODUCTO_COSTEADO("COSTEO");
 
     String tipoProducto;
 
