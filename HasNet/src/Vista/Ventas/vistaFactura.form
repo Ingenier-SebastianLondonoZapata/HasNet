@@ -522,7 +522,7 @@
                                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                                       <Component id="lbProducto" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-                                      <Component id="txtCodProducto" min="-2" pref="125" max="-2" attributes="0"/>
+                                      <Component id="txtCodigoProducto" min="-2" pref="125" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                       <Component id="btnBusProd" min="-2" pref="38" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
@@ -558,7 +558,7 @@
                                       <Component id="btnPendientes" alignment="3" pref="0" max="32767" attributes="0"/>
                                       <Component id="btnPendientes1" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="txtCodProducto" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="txtCodigoProducto" alignment="1" max="32767" attributes="0"/>
                                   <Component id="lbProducto" alignment="1" max="32767" attributes="0"/>
                                   <Component id="btnBusProd" alignment="1" max="32767" attributes="0"/>
                                   <Component id="txtBodega" alignment="1" max="32767" attributes="0"/>
@@ -853,7 +853,7 @@
                         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="lbProductoKeyReleased"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="txtCodProducto">
+                    <Component class="javax.swing.JTextField" name="txtCodigoProducto">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Century Gothic" size="16" style="0"/>
@@ -861,10 +861,9 @@
                         <Property name="name" type="java.lang.String" value="combo" noResource="true"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtCodProductoFocusGained"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtCodProductoActionPerformed"/>
-                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCodProductoKeyPressed"/>
-                        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCodProductoKeyReleased"/>
+                        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtCodigoProductoFocusGained"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtCodigoProductoActionPerformed"/>
+                        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCodigoProductoKeyReleased"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="btnBusProd">

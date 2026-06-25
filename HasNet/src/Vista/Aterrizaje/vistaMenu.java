@@ -1338,7 +1338,7 @@ public class vistaMenu extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
+                .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnMedicamentos, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
@@ -1356,7 +1356,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addComponent(sep5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
-                .addComponent(btnMedicamentos1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnMedicamentos1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1949,7 +1949,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 forms[3] = instancias.getIngresoContenedor();
                 forms[4] = instancias.getPrestamos();
                 forms[5] = instancias.getTrasladosInternos();
-                forms[6] = instancias.getuInt();
+                forms[6] = instancias.getVistaAjusteInventario();
                 forms[7] = instancias.getGrupos();
                 forms[8] = instancias.getArmado();
                 forms[9] = instancias.getInventarioInicial();
@@ -2666,7 +2666,7 @@ public class vistaMenu extends javax.swing.JFrame {
             }
 
             if (formularios[6] instanceof VistaAjusteInventario) {
-                instancias.getuInt().consultarPermiso();
+                instancias.getVistaAjusteInventario().consultarPermiso();
                 instancias.getMenu().cambiarTitulo("AJUSTES DE INVENTARIO");
             }
 
@@ -3098,7 +3098,7 @@ public class vistaMenu extends javax.swing.JFrame {
             cmbAccesos.setSelectedIndex(0);
         } else if (cmbAccesos.getSelectedIndex() == 4) {
             try {
-                instancias.getuInt().setSelected(true);
+                instancias.getVistaAjusteInventario().setSelected(true);
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -3156,7 +3156,11 @@ public class vistaMenu extends javax.swing.JFrame {
             instancias.getReimpresion().setSelected(true);
             instancias.getReimpresion().setDetectarClicABoton(true);
             instancias.getReimpresion().actualizarTablaDocumentos();
-            accionarMenu();
+
+            if (instancias.getMenu().getSeVeElMenu()) {
+                instancias.getMenu().ocultarMenu("");
+                btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/derecha.png")));
+            }
         } catch (PropertyVetoException ex) {
             Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }

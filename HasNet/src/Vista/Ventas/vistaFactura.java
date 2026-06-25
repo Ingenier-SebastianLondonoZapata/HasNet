@@ -65,7 +65,7 @@ import formularios.Ventas.infFactura;
 import formularios.Ventas.infNuevaParte;
 import formularios.infBuscadorCliente;
 import formularios.productos.buscProductos;
-import formularios.productos.dlgCompraDetallada1;
+import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.seleccionarPLU;
 import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
@@ -2173,7 +2173,7 @@ public class VistaFactura extends javax.swing.JPanel {
         scrProductos1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
         lbProducto = new javax.swing.JLabel();
-        txtCodProducto = new javax.swing.JTextField();
+        txtCodigoProducto = new javax.swing.JTextField();
         btnBusProd = new javax.swing.JButton();
         scrInventario = new javax.swing.JScrollPane();
         tblInventario = new javax.swing.JTable();
@@ -2717,24 +2717,21 @@ public class VistaFactura extends javax.swing.JPanel {
             }
         });
 
-        txtCodProducto.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        txtCodProducto.setName("combo"); // NOI18N
-        txtCodProducto.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtCodigoProducto.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        txtCodigoProducto.setName("combo"); // NOI18N
+        txtCodigoProducto.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtCodProductoFocusGained(evt);
+                txtCodigoProductoFocusGained(evt);
             }
         });
-        txtCodProducto.addActionListener(new java.awt.event.ActionListener() {
+        txtCodigoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCodProductoActionPerformed(evt);
+                txtCodigoProductoActionPerformed(evt);
             }
         });
-        txtCodProducto.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtCodProductoKeyPressed(evt);
-            }
+        txtCodigoProducto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCodProductoKeyReleased(evt);
+                txtCodigoProductoKeyReleased(evt);
             }
         });
 
@@ -2947,7 +2944,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         .addGap(10, 10, 10)
                         .addComponent(lbProducto)
                         .addGap(1, 1, 1)
-                        .addComponent(txtCodProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
                         .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)
@@ -2976,7 +2973,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnPendientes, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addComponent(btnPendientes1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtCodProducto, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtCodigoProducto, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbProducto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtBodega, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -5464,7 +5461,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
         if (evt != null) {
             if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
             }
         }
     }
@@ -5679,152 +5676,17 @@ public class VistaFactura extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbNitKeyReleased
 
-    private void txtCodProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodProductoActionPerformed
+    private void txtCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoProductoActionPerformed
 
-    }//GEN-LAST:event_txtCodProductoActionPerformed
+    }//GEN-LAST:event_txtCodigoProductoActionPerformed
 
-    private void txtCodProductoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodProductoFocusGained
+    private void txtCodigoProductoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoProductoFocusGained
         cargarTotales();
-    }//GEN-LAST:event_txtCodProductoFocusGained
+    }//GEN-LAST:event_txtCodigoProductoFocusGained
 
-    private void txtCodProductoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodProductoKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
-            popBorrarActionPerformed(null);
-            return;
-        }
-
-        int fila = tblProductos.getSelectedRow(), i = 2, j = 0;
-
-        try {
-            if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                if (instancias.isLector()) {
-
-                    if (tblProductos.getSelectedColumn() == 2) {
-                        if (tblProductos.getValueAt(fila, 2).toString().equalsIgnoreCase("")) {
-                            tblProductos.setValueAt("0", fila, 3);
-                        }
-                    } else if (tblProductos.getSelectedColumn() == 3) {
-                        if (tblProductos.getValueAt(fila, 3).toString().equalsIgnoreCase("") || tblProductos.getValueAt(fila, 3).toString().equalsIgnoreCase("0")) {
-                            tblProductos.setValueAt("1", fila, 3);
-                        }
-                        i = 3;
-                    }
-
-                    txtCodProducto.requestFocus();
-
-                } else {
-                    if (tblProductos.getSelectedColumn() == 0) {
-
-                        try {
-                            int r = tblProductos.getSelectedRow();
-                            tblProductos.changeSelection(r, 0, false, false);
-                            tblProductos.removeEditor();
-                            tblInventario.removeEditor();
-
-                            tblProductos.editCellAt(r, 3);
-                            tblProductos.setColumnSelectionInterval(3, 3);
-                            tblProductos.transferFocus();
-                        } catch (Exception e) {
-                        }
-
-                    } else if (tblProductos.getSelectedColumn() == 2) {
-                        if (tblProductos.getValueAt(fila, 2).toString().equalsIgnoreCase("")) {
-                            tblProductos.setValueAt("0", fila, 3);
-                        }
-                        tblProductos.editCellAt(tblProductos.getSelectedRow(), 3);
-                        tblProductos.setColumnSelectionInterval(3, 3);
-                        tblProductos.transferFocus();
-
-                    } else if (tblProductos.getSelectedColumn() == 3) {
-                        if (tblProductos.getValueAt(fila, 3).toString().equalsIgnoreCase("") || tblProductos.getValueAt(fila, 3).toString().equalsIgnoreCase("0")) {
-//                            tblProductos.setValueAt("1", fila, 3);
-                        }
-                        tblProductos.editCellAt(tblProductos.getSelectedRow(), 5);
-                        tblProductos.setColumnSelectionInterval(5, 5);
-                        tblProductos.transferFocus();
-
-                        i = 3;
-
-                    } else if (tblProductos.getSelectedColumn() == 5) {
-                        // Si se esta cambiando el campo de descuento
-                        txtCodProducto.requestFocus();
-                        i = 5;
-                        j = 0;
-                    }
-
-                }
-
-                if (tblProductos.getSelectedColumn() == 17) {
-
-                    tblProductos.editCellAt(tblProductos.getSelectedRow(), 17);
-                    tblProductos.setColumnSelectionInterval(17, 17);
-                    try {
-                        tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(fila, 17).toString())), fila, 17);
-                    } catch (Exception e) {
-                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal("0")), fila, 17);
-                    }
-                    tblProductos.transferFocus();
-
-                }
-
-                if (tblProductos.getSelectedColumn() == 19) {
-                    try {
-                        tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(fila, 19).toString())), fila, 19);
-                        BigDecimal resta = big.getMoneda(tblProductos.getValueAt(fila, 9).toString()).subtract(big.getMoneda(tblProductos.getValueAt(fila, 19).toString()));
-                        tblProductos.setValueAt(resta, fila, 20);
-
-                        if (resta.compareTo(BigDecimal.ZERO) < 0) {
-                            metodos.msgAdvertencia(factura, "No tiene ninguna utilidad!");
-                        }
-                    } catch (Exception e) {
-                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal("0")), fila, 19);
-                    }
-                    tblProductos.transferFocus();
-                }
-
-                int res = big.getBigDecimal(big.getMoneda(tblProductos.getValueAt(fila, i).toString().replace(".", ","))).compareTo(big.getBigDecimal("0"));
-                if (res == -1 || String.valueOf(tblProductos.getValueAt(fila, i)).equals("")) {
-                    tblProductos.setValueAt(j, tblProductos.getSelectedRow(), i);
-                }
-
-                calcularTabla(fila, true);
-            }
-        } catch (Exception e) {
-            try {
-                BigDecimal auxx = big.getBigDecimal(big.getMoneda(tblProductos.getValueAt(fila, 2).toString()));
-                tblProductos.setValueAt(big.setMoneda(auxx), fila, 2);
-            } catch (Exception ex) {
-                System.out.println(ex);
-                tblProductos.setValueAt(this.simbolo + " 0", fila, 2);
-            }
-
-            try {
-                BigDecimal auxx = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", "."));
-                tblProductos.setValueAt(auxx.toString().replace(".", ","), fila, 3);
-            } catch (Exception ex) {
-                tblProductos.setValueAt(1, fila, 3);
-            }
-
-            tblProductos.setValueAt(this.simbolo + " 0", fila, 6);
-            tblProductos.setValueAt("0", fila, 5);
-
-            calcularTabla(fila, true);
-        }
-
-        if ((Boolean) tblProductos.getValueAt(fila, 36) == true) {
-            BigDecimal num1 = big.getMoneda(tblInventario.getValueAt(fila, 1).toString());
-            BigDecimal num2 = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", "."));
-            BigDecimal total = num1.subtract(num2);
-            tblInventario.setValueAt(big.setNumero(total), fila, 2);
-        } else {
-            tblInventario.setValueAt("N/A", fila, 1);
-            tblInventario.setValueAt("N/A", fila, 2);
-        }
-    }//GEN-LAST:event_txtCodProductoKeyPressed
-
-    private void txtCodProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodProductoKeyReleased
+    private void txtCodigoProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoProductoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String codigo = txtCodProducto.getText().replace("'", "//");
+            String codigo = txtCodigoProducto.getText().replace("'", "//");
             plu = true;
 
             String cant = txtCant.getText();
@@ -5838,20 +5700,20 @@ public class VistaFactura extends javax.swing.JPanel {
         } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
             double cantidad = 1;
             try {
-                cantidad = Double.parseDouble(txtCodProducto.getText().replace("*", ""));
+                cantidad = Double.parseDouble(txtCodigoProducto.getText().replace("*", ""));
             } catch (Exception e) {
             }
             txtCant.setText(String.valueOf(cantidad));
             if (txtCant.getText().substring(txtCant.getText().length() - 1, txtCant.getText().length()).equals("0")) {
                 txtCant.setText(txtCant.getText().substring(0, txtCant.getText().length() - 2));
             }
-            txtCodProducto.setText("");
+            txtCodigoProducto.setText("");
         }
-    }//GEN-LAST:event_txtCodProductoKeyReleased
+    }//GEN-LAST:event_txtCodigoProductoKeyReleased
 
     private void lbProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbProductoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtCodProducto.requestFocus();
+            txtCodigoProducto.requestFocus();
         }
     }//GEN-LAST:event_lbProductoKeyReleased
 
@@ -7214,7 +7076,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         || evt.getKeyCode() == KeyEvent.VK_LEFT || evt.getKeyCode() == KeyEvent.VK_RIGHT) {
 
                 } else {
-                    txtCodProducto.requestFocus();
+                    txtCodigoProducto.requestFocus();
                 }
 
             } else {
@@ -7327,7 +7189,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     }
 
                     if (instancias.getConfiguraciones().isFacturaElectronica()) {
-                        txtCodProducto.requestFocus();
+                        txtCodigoProducto.requestFocus();
                     } else {
                         tblProductos.editCellAt(fila, 5);
                         tblProductos.setColumnSelectionInterval(5, 5);
@@ -7342,7 +7204,7 @@ public class VistaFactura extends javax.swing.JPanel {
                             || evt.getKeyCode() == KeyEvent.VK_LEFT || evt.getKeyCode() == KeyEvent.VK_RIGHT) {
 
                     } else {
-                        txtCodProducto.requestFocus();
+                        txtCodigoProducto.requestFocus();
                     }
 
                     i = 5;
@@ -7395,7 +7257,7 @@ public class VistaFactura extends javax.swing.JPanel {
                 tblProductos.setColumnSelectionInterval(26, 26);
                 tblProductos.transferFocus();
             } else if (tblProductos.getSelectedColumn() == 26) {
-                txtCodProducto.transferFocus();
+                txtCodigoProducto.transferFocus();
             }
 
             calcularTabla(fila, true);
@@ -7705,7 +7567,7 @@ public class VistaFactura extends javax.swing.JPanel {
             if (txtBodega.getText().equals("")) {
                 ventanaBodegas("");
             } else {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
             }
         } else {
             txtBodega.setText("");
@@ -7725,7 +7587,7 @@ public class VistaFactura extends javax.swing.JPanel {
             if (!txtBodega.getText().equals("")) {
                 if (tblProductos.getRowCount() > 0) {
                     if (metodos.msgPregunta(null, "¿Limpiar factura?") != 0) {
-                        txtCodProducto.requestFocus();
+                        txtCodigoProducto.requestFocus();
                         return;
                     } else {
                         while (tblProductos.getRowCount() > 0) {
@@ -7749,7 +7611,7 @@ public class VistaFactura extends javax.swing.JPanel {
             if (!txtBodega.getText().equals("")) {
                 if (tblProductos.getRowCount() > 0) {
                     if (metodos.msgPregunta(null, "¿Limpiar factura?") != 0) {
-                        txtCodProducto.requestFocus();
+                        txtCodigoProducto.requestFocus();
                         return;
                     } else {
                         while (tblProductos.getRowCount() > 0) {
@@ -7769,7 +7631,7 @@ public class VistaFactura extends javax.swing.JPanel {
             if (!txtBodega.getText().equals("")) {
                 if (tblProductos.getRowCount() > 0) {
                     if (metodos.msgPregunta(null, "¿Limpiar factura?") != 0) {
-                        txtCodProducto.requestFocus();
+                        txtCodigoProducto.requestFocus();
                         return;
                     } else {
                         while (tblProductos.getRowCount() > 0) {
@@ -7851,11 +7713,11 @@ public class VistaFactura extends javax.swing.JPanel {
             if (instancias.getDescuento().equals("peso")) {
                 alertas.bigAlert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
                         + "Debes asignar el descuento directamente al producto específico.");
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
                 return;
             }
 
-            txtCodProducto.requestFocus();
+            txtCodigoProducto.requestFocus();
             String tipoOpcion = "Opcion-General";
             if (DESCUENTO_GENERAL_CARGADO) {
                 tipoOpcion = tblProductos.getValueAt(0, 31).toString();
@@ -8638,7 +8500,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
     private void activarCampos(boolean x) {
         txtNit.setEditable(x);
-        txtCodProducto.setEditable(x);
+        txtCodigoProducto.setEditable(x);
         btnBuscTerceros.setEnabled(x);
         btnBusProd.setEnabled(x);
     }
@@ -9147,7 +9009,7 @@ public class VistaFactura extends javax.swing.JPanel {
         //OBTENEMOS EL VENDEDOR DE LA FACTURA
         String vendedor = "";
         try {
-            vendedor = cmbVendedor.getSelectedItem().toString();
+            vendedor = cmbVendedor.getSelectedItem().toString().equals("Seleccione un vendedor") ? "" : cmbVendedor.getSelectedItem().toString();
         } catch (Exception e) {
             vendedor = "";
         }
@@ -11204,8 +11066,8 @@ public class VistaFactura extends javax.swing.JPanel {
         buscar.setFactura(this);
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
-        instancias.setCampoActual(txtCodProducto);
-        txtCodProducto.requestFocus();
+        instancias.setCampoActual(txtCodigoProducto);
+        txtCodigoProducto.requestFocus();
         buscar.noEncontrado(codigo.replace("'", "//"));
         buscar.show();
     }
@@ -11300,7 +11162,7 @@ public class VistaFactura extends javax.swing.JPanel {
                 txtDiasPlazo.requestFocus();
                 focusDiasPlazo = false;
             } else {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
             }
 
             if (tipoProceso.equals("separe")) {
@@ -11737,7 +11599,7 @@ public class VistaFactura extends javax.swing.JPanel {
         ModeloContacto nodo = instancias.getSql().getDatosTercero(id);
         ID_CLIENTE_CARGADO = nodo.getIdSistema();
         txtNombre.setText(nodo.getNombre());
-        txtCodProducto.requestFocus();
+        txtCodigoProducto.requestFocus();
     }
 
     public void nuevoProducto(String id) {
@@ -11926,13 +11788,13 @@ public class VistaFactura extends javax.swing.JPanel {
                             for (int j = 0; j < tblProductos.getRowCount(); j++) {
                                 if (nodo.getIdSistema().equalsIgnoreCase((String) tblProductos.getValueAt(j, 32)) && (plu + "").equals(((int) tblProductos.getValueAt(j, 12)) + "")) {
                                     tblProductos.setValueAt((big.getMoneda(tblProductos.getValueAt(j, 3).toString().replace(".", ",")).add(big.getMoneda(cantidad))).toString().replace(".", ","), j, 3);
-                                    txtCodProducto.setText("");
+                                    txtCodigoProducto.setText("");
                                     tblProductos.setColumnSelectionInterval(0, 0);
                                     tblProductos.setRowSelectionInterval(j, j);
                                     KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
                                     tblProductosKeyReleased(x);
                                     if (instancias.isLector()) {
-                                        txtCodProducto.requestFocus();
+                                        txtCodigoProducto.requestFocus();
                                     } else {
                                         tblProductos.editCellAt(0, 3);
                                         tblProductos.setColumnSelectionInterval(3, 3);
@@ -11953,7 +11815,7 @@ public class VistaFactura extends javax.swing.JPanel {
                             for (int j = 0; j < tblProductos.getRowCount(); j++) {
                                 if (nodo.getIdSistema().equalsIgnoreCase((String) tblProductos.getValueAt(j, 32)) && (plu + "").equals(((int) tblProductos.getValueAt(j, 12)) + "")) {
                                     tblProductos.setValueAt((big.getMoneda(tblProductos.getValueAt(j, 3).toString().replace(".", ",")).add(big.getMoneda(cantidad))).toString().replace(".", ","), j, 3);
-                                    txtCodProducto.setText("");
+                                    txtCodigoProducto.setText("");
 
                                     tblProductos.setColumnSelectionInterval(0, 0);
                                     tblProductos.setRowSelectionInterval(j, j);
@@ -11962,7 +11824,7 @@ public class VistaFactura extends javax.swing.JPanel {
                                     tblProductosKeyReleased(x);
 
                                     if (instancias.isLector()) {
-                                        txtCodProducto.requestFocus();
+                                        txtCodigoProducto.requestFocus();
                                     } else {
                                         tblProductos.editCellAt(0, 3);
                                         tblProductos.setColumnSelectionInterval(3, 3);
@@ -11996,39 +11858,10 @@ public class VistaFactura extends javax.swing.JPanel {
                 }
             }
 
-            if (nodo.getTipoProducto() != null) {
-                if (nodo.getTipoProducto().equals("IMEI")) {
-                    tipo = "Imei";
-                } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                    tipo = "Fecha/Lote";
-                } else if (nodo.getTipoProducto().equals("Color")) {
-                    tipo = "Color";
-                } else if (nodo.getTipoProducto().equals("Serial")) {
-                    tipo = "Serial";
-                } else if (nodo.getTipoProducto().equals("Talla")) {
-                    tipo = "Talla";
-                } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                    tipo = "ColorTalla";
-                } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                    tipo = "SerialColor";
-                } else {
-                    tipo = "";
-                }
-            }
+            tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
             if (!tipo.equals("") && idProd.equals("") && !this.tipoProceso.equals("cotizacion")) {
-                String lugar = "";
-                if (this.tipoProceso.equals("facturacion")) {
-                    lugar = "pnlFactura";
-                } else if (this.tipoProceso.equals("separe")) {
-                    lugar = "separe";
-                } else if (this.tipoProceso.equals("pedido")) {
-                    lugar = "pedido";
-                } else {
-                    lugar = "congelada";
-                }
-
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, "Salida", lugar, baseUtilizada, txtBodega.getText());
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", this.tipoProceso, BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;
@@ -12239,7 +12072,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     this.simbolo + " 0", cadena, new JLabel(icono), big.setMonedaExacta(big.getBigDecimal(nodo.getImpoconsumoVenta())).replace(this.simbolo + " ", ""), "", "", "",
                     detalle, lote, idProd, "Nuevo", "Sin-Permiso", nodo.getIdSistema(), big.setMoneda(big.getBigDecimal(aux)), grupo, nodo.getUnd(),
                     nodo.getManejaInventario()});
-                txtCodProducto.setText("");
+                txtCodigoProducto.setText("");
 
                 tblProductos.scrollRectToVisible(tblProductos.getCellRect(tblProductos.getRowCount() - 1, 0, true));
                 cargarTotales();
@@ -12262,7 +12095,7 @@ public class VistaFactura extends javax.swing.JPanel {
             txtCant.setText(datos[87].toString());
 
             if (instancias.isLector()) {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
             } else {
                 if (datos[97].toString().equals("Valor")) {
                     tblProductos.editCellAt(tblInventario.getRowCount() - 1, 2);
@@ -12296,7 +12129,7 @@ public class VistaFactura extends javax.swing.JPanel {
             ventanaProductos(codigo);
         } else {
             metodos.msgError(factura, "El codigo no existe");
-            txtCodProducto.setText("");
+            txtCodigoProducto.setText("");
             lbProducto.requestFocus();
         }
     }
@@ -12318,7 +12151,7 @@ public class VistaFactura extends javax.swing.JPanel {
             tblProductos.setValueAt(precio, tblProductos.getRowCount() - 1, 2);
 
         } else {
-            txtCodProducto.setText("");
+            txtCodigoProducto.setText("");
         }
     }
 
@@ -13053,7 +12886,7 @@ public class VistaFactura extends javax.swing.JPanel {
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
             BigDecimal cantidadProducto = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString());
-            
+
             if (nodo.getUsuario().equals("FACTURA")) {
                 String opciones = "";
 
@@ -13906,7 +13739,7 @@ public class VistaFactura extends javax.swing.JPanel {
     }
 
     private void abrirModalDescuentosProducto(int filaSelecciona) {
-        txtCodProducto.requestFocus();
+        txtCodigoProducto.requestFocus();
 
         String descuento = "";
         String porcentajeDescuento = "";
@@ -14092,7 +13925,7 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JLabel txtCantUnidades;
     private javax.swing.JTextField txtCargar;
     private javax.swing.JTextField txtCartera;
-    private javax.swing.JTextField txtCodProducto;
+    private javax.swing.JTextField txtCodigoProducto;
     private javax.swing.JTextField txtColor;
     private javax.swing.JTextField txtCopago;
     private javax.swing.JTextField txtCuotaInicial;

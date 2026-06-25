@@ -91,8 +91,6 @@ public class Instancias {
 
     private JFrame ingreso;
     private vistaMenu menu;
-
-    private vistaAnulacion anula;
     private JTextField campoActual;
 
     private String valor;
@@ -2527,7 +2525,7 @@ public class Instancias {
         this.repEmpleados = repEmpleados;
     }
 
-    public VistaAjusteInventario getuInt() {
+    public VistaAjusteInventario getVistaAjusteInventario() {
         return uInt;
     }
 
@@ -2625,14 +2623,6 @@ public class Instancias {
 
     public void setBodegas(infBodegas bodegas) {
         this.bodegas = bodegas;
-    }
-
-    public vistaAnulacion getAnula() {
-        return anula;
-    }
-
-    public void setAnula(vistaAnulacion anula) {
-        this.anula = anula;
     }
 
     public vistaContactos getClientes() {

@@ -8,7 +8,7 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import formularios.productos.buscProductos;
-import formularios.productos.dlgCompraDetallada1;
+import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.seleccionarPLU;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -588,8 +588,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
 
             if (!tipo.equals("") && imei.equals("") && lote.equals("")) {
 
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, "Salida", "traslados",
-                        "bdProductos", "123-22");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", "traslados");
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;

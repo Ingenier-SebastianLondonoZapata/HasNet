@@ -200,10 +200,10 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 this.dispose();
                 break;
             case "ajuste":
-                instancias.getuInt().setPlu(false);
+                instancias.getVistaAjusteInventario().setPlu(false);
                 for (int i = 0; i < tblRegistros.getRowCount(); i++) {
                     if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getuInt().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7), "", "", "", "", "", "", "");
+                        instancias.getVistaAjusteInventario().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7), "", "", "", "", "", "", "");
                         break;
                     }
                 }

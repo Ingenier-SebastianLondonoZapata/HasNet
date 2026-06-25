@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import inventario.vista.VistaMovimientoDetalleProducto;
 import Modelo.Inventario.UltimoPonderado;
 import clases.Instancias;
 import clases.big;
@@ -1857,27 +1858,7 @@ public class infPrestamos extends javax.swing.JInternalFrame {
                     break;
             }
 
-            String tipo = "";
-            try {
-                if (nodo.getTipoProducto().equals("IMEI")) {
-                    tipo = "Imei";
-                } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                    tipo = "Fecha/Lote";
-                } else if (nodo.getTipoProducto().equals("Color")) {
-                    tipo = "Color";
-                } else if (nodo.getTipoProducto().equals("Serial")) {
-                    tipo = "Serial";
-                } else if (nodo.getTipoProducto().equals("Talla")) {
-                    tipo = "Talla";
-                } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                    tipo = "ColorTalla";
-                } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                    tipo = "SerialColor";
-                } else {
-                    tipo = "";
-                }
-            } catch (Exception e) {
-            }
+            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
             if (!tipo.equals("") && idProd.equals("")) {
                 String tipoMov = "";
@@ -1887,8 +1868,7 @@ public class infPrestamos extends javax.swing.JInternalFrame {
                     tipoMov = "Entrada";
                 }
 
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, tipoMov, "prestamos",
-                        "bdProductos", "123-22");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, tipoMov, "prestamos");
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;

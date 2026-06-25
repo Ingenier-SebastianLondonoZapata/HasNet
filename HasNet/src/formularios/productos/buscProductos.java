@@ -726,7 +726,7 @@ public final class buscProductos extends javax.swing.JDialog {
                         break;
                     case "ajuste":
                         this.dispose();
-                        instancias.getuInt().cargarProductos(cantidad);
+                        instancias.getVistaAjusteInventario().cargarProductos(cantidad);
                         break;
                     case "diseño":
                         this.dispose();

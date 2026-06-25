@@ -6,7 +6,8 @@ public enum Tablas {
     ULTIMO_PONDERADO("bdUltimoPonderado"),
     CONSECUTIVOS("bdConsecutivos"),
     DETALLE_PRODUCTO("bdDetalleProductos"),
-    DISCOSTEO("bdDisCosteo");
+    DISCOSTEO("bdDisCosteo"),
+    PRECARGAR_DETALLE("bdPreCompraDetalle");
 
     private final String nombre;
 

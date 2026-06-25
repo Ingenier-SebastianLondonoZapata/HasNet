@@ -15,12 +15,12 @@ public class UtilidadesDetalleProducto {
 
     private final Instancias instancias = Instancias.getInstancias();
     private final JTable detallesProductos;
-    
+
     public UtilidadesDetalleProducto(JTable detallesProductos) {
         this.detallesProductos = detallesProductos;
     }
 
-    public List<DetalleProducto> generarDetallesProductos() {
+    public List<DetalleProducto> generarDetallesProductos(String estadoDetalleProducto) {
 
         int consecutivoDetalleProducto = Integer.parseInt(instancias.getSql().getNumConsecutivo("DETALLEPROD")[0].toString());
         List<DetalleProducto> detalles = new ArrayList<>();
@@ -32,6 +32,10 @@ public class UtilidadesDetalleProducto {
             LocalDate fechaVencimiento = Utilidades.convertirFecha(obtenerValorTabla(i, 3));
             String temperatura = obtenerValorTabla(i, 4);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
+            if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
+                cantidad = BigDecimal.ONE;
+            }
+
             String descripcion = obtenerValorTabla(i, 6);
             String color = obtenerValorTabla(i, 7);
             String talla = obtenerValorTabla(i, 8);
@@ -46,7 +50,7 @@ public class UtilidadesDetalleProducto {
                     talla,
                     fechaVencimiento,
                     temperatura,
-                    EstadosDetalleProducto.DISPONIBLE.getNombre(),
+                    estadoDetalleProducto,
                     enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue(),
                     cantidad,
                     cantidad

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ProcesadorIngreso extends AbstractProcesadorMovimiento {
+public class ProcesadorCompra extends AbstractProcesadorMovimiento {
 
     private final ServicioActualizacionPonderado servicioPonderado = new ServicioActualizacionPonderado();
 

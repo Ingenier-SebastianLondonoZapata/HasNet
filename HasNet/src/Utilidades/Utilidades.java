@@ -6,6 +6,8 @@
 package Utilidades;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 
 /**
@@ -32,7 +34,11 @@ public class Utilidades {
         }
 
         try {
-            return new BigDecimal(valor.trim().replace(",", "."));
+            String limpio = valor.trim();
+            if (limpio.contains(",")) {
+                limpio = limpio.replace(".", "").replace(",", ".");
+            }
+            return new BigDecimal(limpio);
         } catch (NumberFormatException e) {
             return BigDecimal.ZERO;
         }
@@ -51,5 +57,21 @@ public class Utilidades {
                 .stripTrailingZeros()
                 .toPlainString()
                 .replace(".", ",");
+    }
+
+    public static String formatearCantidadVista(BigDecimal cantidad) {
+        if (cantidad == null || cantidad.compareTo(BigDecimal.ZERO) == 0) {
+            return "0";
+        }
+
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator(',');
+        simbolos.setGroupingSeparator('.');
+        DecimalFormat formato = new DecimalFormat("#,##0.####", simbolos);
+        return formato.format(cantidad.setScale(Constantes.MAX_DECIMALES_CANTIDAD, BigDecimal.ROUND_HALF_UP).stripTrailingZeros());
+    }
+
+    public static String formatearCantidadVista(String valor) {
+        return formatearCantidadVista(convertirBigDecimal(valor));
     }
 }

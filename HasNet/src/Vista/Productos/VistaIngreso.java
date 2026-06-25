@@ -4,6 +4,7 @@ import Consumidor.DocumentoSoporte.consumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
+import Enums.EstadosDetalleProducto;
 import dao.Configuraciones.DaoResoluciones;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
@@ -28,7 +29,9 @@ import clases.productos.ndCompra;
 import clases.productos.ndIngreso;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
+import inventario.dao.DaoDetalleProducto;
 import inventario.servicio.ServicioActualizacionPonderado;
+import java.time.LocalDate;
 import inventario.servicio.ServicioInventario;
 import Utilidades.DatosMaestra;
 import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
@@ -39,10 +42,9 @@ import formularios.Tesoreria.dlgTipoEgreso;
 import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgTipoDescuento;
 import formularios.productos.buscProductos;
-import formularios.productos.dlgCompraDetallada1;
+import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.dlgDetalleCompra;
 import formularios.productos.seleccionarPLU;
-import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
 import java.awt.Color;
 import java.awt.Event;
@@ -61,26 +63,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 public class VistaIngreso extends javax.swing.JPanel {
 
-    private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
+    private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
     private final DocumentosElectronicos documentosElectronicos = new DocumentosElectronicos();
     private final consumidorDocumentoSoporte consumidorDocumentoSoporte = new consumidorDocumentoSoporte();
@@ -89,15 +89,16 @@ public class VistaIngreso extends javax.swing.JPanel {
     private final squemaDocumentoSoporte squemaDocumentoSoporte = new squemaDocumentoSoporte();
     private ModeloContacto DATOS_CLIENTE_CARGADO = null;
     private final DaoResoluciones daoResoluciones = new DaoResoluciones();
+    private final DaoDetalleProducto daoDetalleProducto = new DaoDetalleProducto();
 
     DefaultTableModel modeloComprobantes;
 
     private boolean DESCUENTO_GENERAL_CARGADO = false;
-    private String tipoProceso;
+    private final String tipoProceso;
 
     String simbolo = "";
-    DefaultTableModel modeloPro;
-    DefaultTableModel modeloPro1;
+    DefaultTableModel modeloProductos;
+    DefaultTableModel modeloDetalleProductos;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
     int ultFila;
@@ -127,36 +128,25 @@ public class VistaIngreso extends javax.swing.JPanel {
         icono = new ImageIcon(fot.getImage().getScaledInstance(30, 25, Image.SCALE_DEFAULT));
 
         jtblComprobantes.setVisible(false);
-        pnlInvisible.setVisible(false);
+        //pnlInvisible.setVisible(false);
         setBorder(null);
         repaint();
 
-        modeloPro = (DefaultTableModel) tblProductos.getModel();
-        modeloPro1 = (DefaultTableModel) tblDetalle.getModel();
+        modeloProductos = (DefaultTableModel) tblProductos.getModel();
+        modeloDetalleProductos = (DefaultTableModel) tblDetalle.getModel();
         modeloComprobantes = (DefaultTableModel) tblComprobantes.getModel();
 
         txtFechaFactura.setFormat(2);
         txtFechaFactura.setText(metodosGenerales.fecha());
         txtVencimiento.setText(metodosGenerales.fecha());
 
-        setTipo(tipo);
         this.tipoProceso = tipo;
+        setTipo(tipo);
 
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            TableColumn tcr1 = tblProductos.getColumnModel().getColumn(19);
-            TableCellEditor tcer1 = new DefaultCellEditor(cmbBodegas);
-            tcr1.setCellEditor(tcer1);
-
-            Object[][] bodegas = instancias.getSql().getTodasBodegas();
-
-            for (int i = 0; i < bodegas.length; i++) {
-                cmbBodegas.addItem(bodegas[i][1]);
-            }
-        } else {
-            tblProductos.getColumnModel().getColumn(19).setMinWidth(0);
-            tblProductos.getColumnModel().getColumn(19).setPreferredWidth(0);
-            tblProductos.getColumnModel().getColumn(19).setMaxWidth(0);
-        }
+        //Inventario bodegas
+        tblProductos.getColumnModel().getColumn(19).setMinWidth(0);
+        tblProductos.getColumnModel().getColumn(19).setPreferredWidth(0);
+        tblProductos.getColumnModel().getColumn(19).setMaxWidth(0);
 
         pnlFormulario.registerKeyboardAction(accion("guardar"), "guardar", KeyStroke.getKeyStroke(KeyEvent.VK_G, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -191,11 +181,6 @@ public class VistaIngreso extends javax.swing.JPanel {
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
         }
 
-        if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-            lbBodega.setVisible(false);
-            txtBodega.setVisible(false);
-        }
-
         if (instancias.getDescuento().equals("peso")) {
             tblProductos.getColumnModel().getColumn(5).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(5).setPreferredWidth(0);
@@ -208,7 +193,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         txtCodProducto.requestFocus();
     }
 
-    public void setTipo(String tipo) {
+    public final void setTipo(String tipo) {
 
         switch (tipo) {
             case "ingreso":
@@ -228,13 +213,16 @@ public class VistaIngreso extends javax.swing.JPanel {
                 lbTipo.setVisible(false);
                 lbNumero.setVisible(false);
 
-                cmbCargar.setSelectedIndex(1);
-                cmbCargar.setEnabled(false);
-                btnAnular.setVisible(false);
+                cmbCargar.setVisible(false);
+                txtCargarCompra.setVisible(false);
+
+                txtDiasPlazo.setVisible(false);
+                lbDiasPlazo.setVisible(false);
                 break;
             default:
                 break;
         }
+
     }
 
     private ActionListener accion(final String opc) {
@@ -307,18 +295,15 @@ public class VistaIngreso extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtObservaciones = new javax.swing.JTextArea();
         lbProducto1 = new javax.swing.JLabel();
-        cmbBodegas = new javax.swing.JComboBox();
         btnBusProd = new javax.swing.JButton();
         lbProducto2 = new javax.swing.JLabel();
         txtCant = new javax.swing.JTextField();
-        lbBodega = new javax.swing.JLabel();
-        txtBodega = new javax.swing.JTextField();
         scrollTblProductos = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
         jPanel10 = new javax.swing.JPanel();
         btnAnular = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
-        btnBuscTerceros2 = new javax.swing.JButton();
+        btnReimprimir = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         jPanel13 = new javax.swing.JPanel();
         etiqTotal = new javax.swing.JLabel();
@@ -370,7 +355,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         lbTipo = new javax.swing.JLabel();
         cmbTipo = new javax.swing.JComboBox();
         lbNumero = new javax.swing.JLabel();
-        txtDiasPlazo1 = new javax.swing.JLabel();
+        lbDiasPlazo = new javax.swing.JLabel();
         txtDiasPlazo = new javax.swing.JTextField();
         txtNumero = new javax.swing.JTextField();
 
@@ -454,7 +439,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         });
 
         lbProducto2.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbProducto2.setText("Cant:");
+        lbProducto2.setText("Cantidad:");
         lbProducto2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 lbProducto2KeyReleased(evt);
@@ -482,53 +467,6 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
         });
 
-        lbBodega.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbBodega.setText("Bodega:");
-        lbBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                lbBodegaKeyReleased(evt);
-            }
-        });
-
-        txtBodega.setBackground(new java.awt.Color(255, 204, 204));
-        txtBodega.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        txtBodega.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtBodega.setText("123-22");
-        txtBodega.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtBodega.setName("combo"); // NOI18N
-        txtBodega.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseEntered(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                txtBodegaMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseReleased(evt);
-            }
-        });
-        txtBodega.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBodegaActionPerformed(evt);
-            }
-        });
-        txtBodega.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtBodegaFocusGained(evt);
-            }
-        });
-        txtBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyReleased(evt);
-            }
-        });
-
         javax.swing.GroupLayout pblBotonesLayout = new javax.swing.GroupLayout(pblBotones);
         pblBotones.setLayout(pblBotonesLayout);
         pblBotonesLayout.setHorizontalGroup(
@@ -540,21 +478,14 @@ public class VistaIngreso extends javax.swing.JPanel {
                     .addComponent(jScrollPane2)
                     .addGroup(pblBotonesLayout.createSequentialGroup()
                         .addComponent(lbProducto2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(lbProducto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
                         .addGap(2, 2, 2)
-                        .addGroup(pblBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cmbBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pblBotonesLayout.createSequentialGroup()
-                                .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(15, 15, 15)
-                                .addComponent(lbBodega)
-                                .addGap(1, 1, 1)
-                                .addComponent(txtBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lbProducto)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                                .addGap(2, 2, 2)
-                                .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(5, 5, 5))
         );
         pblBotonesLayout.setVerticalGroup(
@@ -563,16 +494,12 @@ public class VistaIngreso extends javax.swing.JPanel {
                 .addGap(5, 5, 5)
                 .addGroup(pblBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnBusProd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBodega, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pblBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbProducto2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbProducto2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtCodProducto))
-                .addGap(3, 3, 3)
-                .addComponent(cmbBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(10, 10, 10)
                 .addComponent(lbProducto1)
                 .addGap(0, 0, 0)
                 .addComponent(jScrollPane2)
@@ -720,16 +647,16 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
         });
 
-        btnBuscTerceros2.setBackground(new java.awt.Color(247, 220, 111));
-        btnBuscTerceros2.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
-        btnBuscTerceros2.setText("REIMPRIMIR");
-        btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnBuscTerceros2.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnBuscTerceros2.addActionListener(new java.awt.event.ActionListener() {
+        btnReimprimir.setBackground(new java.awt.Color(247, 220, 111));
+        btnReimprimir.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir.setText("REIMPRIMIR");
+        btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReimprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnReimprimir.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnReimprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscTerceros2ActionPerformed(evt);
+                btnReimprimirActionPerformed(evt);
             }
         });
 
@@ -751,12 +678,11 @@ public class VistaIngreso extends javax.swing.JPanel {
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnBuscTerceros2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                    .addComponent(btnAnular, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnLimpiar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGuardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReimprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAnular, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5))
         );
         jPanel10Layout.setVerticalGroup(
@@ -766,7 +692,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                 .addGap(2, 2, 2)
                 .addComponent(btnLimpiar)
                 .addGap(2, 2, 2)
-                .addComponent(btnBuscTerceros2)
+                .addComponent(btnReimprimir)
                 .addGap(2, 2, 2)
                 .addComponent(btnAnular)
                 .addGap(2, 2, 2))
@@ -1149,6 +1075,7 @@ public class VistaIngreso extends javax.swing.JPanel {
 
         txtCargarCompra.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         txtCargarCompra.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCargarCompra.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         txtCargarCompra.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtCargarCompraKeyReleased(evt);
@@ -1260,9 +1187,9 @@ public class VistaIngreso extends javax.swing.JPanel {
         lbNumero.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbNumero.setText("Número");
 
-        txtDiasPlazo1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        txtDiasPlazo1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        txtDiasPlazo1.setText("Días Plazo");
+        lbDiasPlazo.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        lbDiasPlazo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbDiasPlazo.setText("Días Plazo");
 
         txtDiasPlazo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         txtDiasPlazo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -1303,12 +1230,12 @@ public class VistaIngreso extends javax.swing.JPanel {
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(jtblComprobantes, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(lbNumero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbTipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbFechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtDiasPlazo1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbDiasPlazo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1373,7 +1300,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                                     .addComponent(lbNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(3, 3, 3)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtDiasPlazo1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lbDiasPlazo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtDiasPlazo, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jtblComprobantes, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
@@ -1412,7 +1339,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                 .addGap(2, 2, 2)
                 .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(scrollTblProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnBuscTerceros3, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
+                    .addComponent(btnBuscTerceros3, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1447,32 +1374,22 @@ public class VistaIngreso extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCodProductoFocusGained
 
     private void txtCodProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodProductoKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String codigo = txtCodProducto.getText();
-            plu = true;
-            cargarProducto(codigo.replace("'", "//"), txtCant.getText(), 1, "Directo");
-        } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
-            double cantidad = 1;
-            try {
-                cantidad = Double.parseDouble(txtCodProducto.getText().replace("*", ""));
-            } catch (Exception e) {
-            }
-            txtCant.setText(String.valueOf(cantidad));
-            if (txtCant.getText().substring(txtCant.getText().length() - 1, txtCant.getText().length()).equals("0")) {
-                txtCant.setText(txtCant.getText().substring(0, txtCant.getText().length() - 2));
-            }
-            txtCodProducto.setText("");
-        } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY && evt.getKeyCode() == KeyEvent.VK_SHIFT) {
-            double cantidad = 1;
-            try {
-                cantidad = Double.parseDouble(txtCodProducto.getText().replace("*", ""));
-            } catch (Exception e) {
-            }
-            txtCant.setText(String.valueOf(cantidad));
-            if (txtCant.getText().substring(txtCant.getText().length() - 1, txtCant.getText().length()).equals("0")) {
-                txtCant.setText(txtCant.getText().substring(0, txtCant.getText().length() - 2));
-            }
-            txtCodProducto.setText("");
+        String codigoProducto = txtCodProducto.getText();
+
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_ENTER:
+                plu = true;
+                cargarProducto(codigoProducto.replace("'", "//"), txtCant.getText(), 1, "Directo");
+                break;
+
+            case KeyEvent.VK_MULTIPLY:
+                BigDecimal cantidad = obtenerCantidad(codigoProducto);
+                txtCant.setText(Utilidades.formatearCantidadVista(cantidad));
+                txtCodProducto.setText("");
+                break;
+
+            default:
+                break;
         }
     }//GEN-LAST:event_txtCodProductoKeyReleased
 
@@ -1509,29 +1426,30 @@ public class VistaIngreso extends javax.swing.JPanel {
             contado = true;
         }
 
-        String baseUtilizada = obtenerBase();
         String ingreso = "";
-        if (tipoProceso.equals("ingreso")) {
+        if (tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
             ingreso = "ING-" + instancias.getSql().getNumConsecutivo("ING")[0];
         } else {
             ingreso = "ORDENCOMPRA-" + instancias.getSql().getNumConsecutivo("ORDENCOMPRA")[0];
         }
 
-        String tipoComprobante = obtenerTipoComprobante();
-        tipoComprobante = tipoComprobante.equals(Constantes.COMPRA_NORMAL) ? Constantes.COMPRA_NORMAL : Constantes.DOCUMENTO_SOPORTE;
+        if (tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
+            String tipoComprobante = obtenerTipoComprobante();
+            tipoComprobante = tipoComprobante.equals(Constantes.COMPRA_NORMAL) ? Constantes.COMPRA_NORMAL : Constantes.DOCUMENTO_SOPORTE;
 
-        if (instancias.getConfiguraciones().isFacturaElectronica() && tipoComprobante.equals(Constantes.DOCUMENTO_SOPORTE)) {
-            boolean documentoSoporteExitoso = false;
-            ModeloDocumentoSoporte modeloDocumentoSoporte = crearModeloDocumentoSoporte(ingreso, DATOS_CLIENTE_CARGADO);
+            if (instancias.getConfiguraciones().isFacturaElectronica() && tipoComprobante.equals(Constantes.DOCUMENTO_SOPORTE)) {
+                boolean documentoSoporteExitoso = false;
+                ModeloDocumentoSoporte modeloDocumentoSoporte = crearModeloDocumentoSoporte(ingreso, DATOS_CLIENTE_CARGADO);
 
-            try {
-                documentoSoporteExitoso = consumidorDocumentoSoporte.generarDocumentoSoporte(modeloDocumentoSoporte, false);
-            } catch (Exception ex) {
-                System.err.println("Hubo un error al enviar el JSON de la factura electronica: " + ex);
-            }
+                try {
+                    documentoSoporteExitoso = consumidorDocumentoSoporte.generarDocumentoSoporte(modeloDocumentoSoporte, false);
+                } catch (Exception ex) {
+                    System.err.println("Hubo un error al enviar el JSON de la factura electronica: " + ex);
+                }
 
-            if (!documentoSoporteExitoso) {
-                return;
+                if (!documentoSoporteExitoso) {
+                    return;
+                }
             }
         }
 
@@ -1571,7 +1489,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             !txtFechaFactura.getText().equals(txtVencimiento.getText()), "", instancias.getUsuario(), instancias.getTerminal(),
             big.getMoneda(txtRiva.getText()), big.getMoneda(txtRtf.getText()), por, txtObservaciones.getText(), metodosGenerales.hora(),
             big.getMoneda(txtTotalImpoconsumo.getText()), "PENDIENTE", big.getMoneda("0"), big.getMoneda("0"), big.getMoneda("0"),
-            big.getMoneda("0"), big.getMoneda("0"), big.getMoneda("0"), txtBodega.getText(), ""};
+            big.getMoneda("0"), big.getMoneda("0"), big.getMoneda("0"), "", ""};
 
         ndIngreso nodo = metodos.llenarIngreso(vector);
 
@@ -1588,7 +1506,7 @@ public class VistaIngreso extends javax.swing.JPanel {
 
         //PROCESO GUARDAR COMPRA
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 24).toString(), baseUtilizada);
+            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 24).toString(), "bdProductos");
             String cant2 = "1";
             switch (tblProductos.getValueAt(i, 13).toString()) {
                 case "2":
@@ -1656,7 +1574,20 @@ public class VistaIngreso extends javax.swing.JPanel {
             TipoDocumento tipoMovimiento = TipoDocumento.COMPRA;
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
             List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-            List<DetalleProducto> detallesProductos = generarDetallesProductos();
+            List<DetalleProducto> detallesProductos = generarDetallesProductos(EstadosDetalleProducto.DISPONIBLE.getNombre());
+            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, tablaUtilizada, instancias.getUsuario(), null);
+
+            try {
+                servicioInventario.procesarMovimiento();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+        } else {
+            TipoDocumento tipoMovimiento = TipoDocumento.ORDEN_COMPRA;
+            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
+            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+            List<DetalleProducto> detallesProductos = generarDetallesProductos(EstadosDetalleProducto.EN_TRANSITO.getNombre());
             ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, tablaUtilizada, instancias.getUsuario(), null);
 
             try {
@@ -1730,21 +1661,13 @@ public class VistaIngreso extends javax.swing.JPanel {
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         if (preguntaLimpiar) {
-            if (metodos.msgPregunta(null, "¿Esta seguro de limpiar la compra?") != 0) {
+            String mensaje = tipoProceso.equals("ingreso") ? "¿Esta seguro de limpiar la compra?" : "¿Esta seguro de limpiar la orden de compra?";
+            if (metodos.msgPregunta(null, mensaje) != 0) {
                 return;
             }
         }
 
         txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
-
-        cmbBodegas.removeAllItems();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            Object[][] bodegas = instancias.getSql().getTodasBodegas();
-            for (int i = 0; i < bodegas.length; i++) {
-                cmbBodegas.addItem(bodegas[i][1]);
-            }
-        }
-
         txtObservaciones.setText("");
         txtNit.setText("");
         txtPorcentaje.setText("0");
@@ -1756,15 +1679,20 @@ public class VistaIngreso extends javax.swing.JPanel {
         cmbTipo.setSelectedIndex(0);
         txtNumero.setText("");
         txtCargarCompra.setText("");
+        txtCargarCompra.setEnabled(true);
+        cmbCargar.setEnabled(true);
+        btnReimprimir.setVisible(true);
+        btnAnular.setVisible(true);
+
         txtCantProductos.setText("0");
         txtCantUnidades.setText("0");
 
         while (tblProductos.getRowCount() > 0) {
-            modeloPro.removeRow(0);
+            modeloProductos.removeRow(0);
         }
 
         while (tblDetalle.getRowCount() > 0) {
-            modeloPro1.removeRow(0);
+            modeloDetalleProductos.removeRow(0);
         }
 
         txtSubTotal.setText(this.simbolo + " 0");
@@ -1774,22 +1702,20 @@ public class VistaIngreso extends javax.swing.JPanel {
         txtRiva.setText(this.simbolo + " 0");
         txtTotalImpoconsumo.setText(this.simbolo + " 0");
         txtRtf.setText(this.simbolo + " 0");
-        txtBodega.setText("123-22");
         cmbRtf.setSelectedIndex(0);
         jCheckBox1.setSelected(false);
         DESCUENTO_GENERAL_CARGADO = false;
 
         txtNit.requestFocus();
 
-        if (tipoProceso.equals("ingreso")) {
-            guardarPrecompra();
-            guardarPrecompraDetallada();
+        if (tipoProceso.equals("ingreso") && txtCargarCompra.getText().isEmpty()) {
+            guardarMovimientos();
         }
 
         preguntaLimpiar = true;
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
-    private void btnBuscTerceros2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros2ActionPerformed
+    private void btnReimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirActionPerformed
         String consecutivo;
         if (tipoProceso.equals("ingreso")) {
             consecutivo = "ING-" + metodos.msgIngresarEnter(null, "Documento a reimprimir");
@@ -1821,7 +1747,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                 instancias.getReporte().verIngresoDetalle(consecutivo);
             }
         }
-    }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
+    }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
         String consecutivo = "";
@@ -1853,31 +1779,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             return;
         }
 
-        String baseUtilizada = "";
-        try {
-            baseUtilizada = instancias.getSql().getBodegaMovimiento(consecutivo, "bdIngreso");
-        } catch (Exception e) {
-        }
-
-        if ("".equals(baseUtilizada)) {
-            baseUtilizada = "123-22";
-        }
-
-        txtBodega.setText(baseUtilizada);
-
         if (metodos.msgPregunta(null, "¿Anular esta compra?") == 0) {
-
-            if (baseUtilizada.equals("123-22")) {
-                baseUtilizada = "bdProductos";
-            } else if (baseUtilizada.equals("BODEGA-1")) {
-                baseUtilizada = "bdProductosBodega1";
-            } else if (baseUtilizada.equals("BODEGA-2")) {
-                baseUtilizada = "bdProductosBodega2";
-            } else if (baseUtilizada.equals("BODEGA-3")) {
-                baseUtilizada = "bdProductosBodega3";
-            } else if (baseUtilizada.equals("BODEGA-4")) {
-                baseUtilizada = "bdProductosBodega4";
-            }
 
             instancias.getSql().eliminarPonderadoIngreso(" bdPonderado ", consecutivo);
 
@@ -1899,7 +1801,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                         big.getBigDecimal(ponderados[7]), ingreso)) {
                 }
 
-                ndProducto producto = instancias.getSql().getDatosProducto(Producto[0].toString(), baseUtilizada);
+                ndProducto producto = instancias.getSql().getDatosProducto(Producto[0].toString(), "bdProductos");
                 double cantidad;
                 double inventario;
                 double fisicoInventario;
@@ -1932,9 +1834,9 @@ public class VistaIngreso extends javax.swing.JPanel {
                 String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
                 String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-                instancias.getSql().modificarInventario("compras", total1, Producto[0].toString(), baseUtilizada);
-                instancias.getSql().modificarInventario("inventario", inventario1, Producto[0].toString(), baseUtilizada);
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, Producto[0].toString(), baseUtilizada);
+                instancias.getSql().modificarInventario("compras", total1, Producto[0].toString(), "bdProductos");
+                instancias.getSql().modificarInventario("inventario", inventario1, Producto[0].toString(), "bdProductos");
+                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, Producto[0].toString(), "bdProductos");
 
                 if (instancias.getConfiguraciones().isProductosDetallados()) {
                     instancias.getSql().anularCompraDetalladoInventario(consecutivo);
@@ -2076,9 +1978,14 @@ public class VistaIngreso extends javax.swing.JPanel {
                         tblProductos.transferFocus();
                         break;
                     case 2:
-                        tblProductos.editCellAt(filaSeleccionada, 3);
-                        tblProductos.setColumnSelectionInterval(3, 3);
-                        tblProductos.transferFocus();
+                        String codigoProducto = obtenerValorTabla(filaSeleccionada, 24, tblProductos);
+                        if (!existeProductoDetalle(codigoProducto)) {
+                            tblProductos.editCellAt(filaSeleccionada, 3);
+                            tblProductos.setColumnSelectionInterval(3, 3);
+                            tblProductos.transferFocus();
+                        } else {
+                            txtCodProducto.requestFocus();
+                        }
                         break;
                     case 3:
                     case 5:
@@ -2092,9 +1999,8 @@ public class VistaIngreso extends javax.swing.JPanel {
                 calcularTabla(filaSeleccionada);
 
                 if (tipoProceso != null) {
-                    if (tipoProceso.equals("ingreso")) {
-                        guardarPrecompra();
-                        guardarPrecompraDetallada();
+                    if (tipoProceso.equals("ingreso") && txtCargarCompra.getText().isEmpty()) {
+                        guardarMovimientos();
                     }
                 }
             } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -2125,9 +2031,8 @@ public class VistaIngreso extends javax.swing.JPanel {
                 }
             }
 
-            if (tipoProceso.equals("ingreso")) {
-                guardarPrecompra();
-                guardarPrecompraDetallada();
+            if (tipoProceso.equals("ingreso") && txtCargarCompra.getText().isEmpty()) {
+                guardarMovimientos();
             }
 
             txtPorcentaje.requestFocus();
@@ -2148,75 +2053,63 @@ public class VistaIngreso extends javax.swing.JPanel {
     }//GEN-LAST:event_txtFechaFacturaOnCommit
 
     private void txtCargarCompraKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCargarCompraKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String consecutivo = "";
-
-            String id = txtCargarCompra.getText();
-            if (cmbCargar.getSelectedIndex() == 0) {
-                consecutivo = "ING-" + txtCargarCompra.getText();
-            } else if (cmbCargar.getSelectedIndex() == 1) {
-                consecutivo = "ORDENCOMPRA-" + txtCargarCompra.getText();
-            } else {
-                metodos.msgError(null, "Debe seleccionar una opción");
-                return;
-            }
-
-            preguntaLimpiar = false;
-            btnLimpiarActionPerformed(null);
-
-            System.out.println("consecutivo " + consecutivo);
-            txtCargarCompra.setText(id);
-
-            Object[][] mat = new Object[0][0];
-            mat = instancias.getSql().getProductosCargarCompra(consecutivo);
-
-            if (mat.length > 0) {
-
-                ndIngreso nodo = instancias.getSql().getDatosIngreso(consecutivo);
-
-                if (this.tipoProceso.equals("ordenCompra")) {
-                } else {
-                    if (nodo.getEstado().equals("REALIZADO")) {
-                        metodos.msgError(null, "La orden de compra ya fue cargada");
-                        return;
-                    }
-                }
-
-                txtNit.setText(nodo.getProveedor());
-                cargarCliente(nodo.getProveedor());
-                txtBodega.setText(nodo.getBodega());
-
-                for (Object[] reg : mat) {
-                    cargarProductoPreCompra((String) reg[0], new Double((String) reg[4]) + "", Integer.parseInt((String) reg[3]),
-                            big.getBigDecimal(reg[5]) + "", false);
-
-                    try {
-                        BigDecimal descuento = big.getBigDecimal(reg[6]);
-                        BigDecimal total = big.getBigDecimal(reg[7]).add(descuento);
-                        BigDecimal porcentaje2 = big.getBigDecimal(descuento.multiply(big.getBigDecimal("100")).divide(total, 2, RoundingMode.HALF_DOWN));
-                        tblProductos.setValueAt(porcentaje2, tblProductos.getRowCount() - 1, 5);
-                        tblProductos.setValueAt(big.getBigDecimal(reg[6]).toString().replace(".", ","), tblProductos.getRowCount() - 1, 6);
-                    } catch (Exception e) {
-                        tblProductos.setValueAt(0, tblProductos.getRowCount() - 1, 5);
-                        tblProductos.setValueAt(this.simbolo + " 0", tblProductos.getRowCount() - 1, 6);
-                    }
-
-                    KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-                    tblProductosKeyReleased(x);
-                }
-
-                tblProductos.removeEditor();
-
-            } else {
-                if (cmbCargar.getSelectedIndex() == 0) {
-                    metodos.msgError(null, "El ingreso no existe");
-                } else {
-                    metodos.msgError(null, "La orden de compra no existe");
-                }
-                txtCargarCompra.setText("");
-            }
+        if (evt.getKeyCode() != KeyEvent.VK_ENTER) {
+            return;
         }
+
+        int opcion = cmbCargar.getSelectedIndex();
+        if (opcion > 1) {
+            metodos.msgError(null, "Debe seleccionar una opción");
+            return;
+        }
+
+        String idDocumento = txtCargarCompra.getText();
+        String consecutivo = opcion == 0 ? "ING-" + idDocumento : "ORDENCOMPRA-" + idDocumento;
+
+        preguntaLimpiar = false;
+        btnLimpiarActionPerformed(null);
+        txtCargarCompra.setText(opcion == 0 ? "" : idDocumento);
+
+        Object[][] productosDocumento = instancias.getSql().getProductosCargarCompra(consecutivo);
+        if (productosDocumento.length == 0) {
+            metodos.msgError(null, opcion == 0 ? "El ingreso no existe" : "La orden de compra no existe");
+            txtCargarCompra.setText("");
+            return;
+        }
+
+        ndIngreso nodo = instancias.getSql().getDatosIngreso(consecutivo);
+        if (!tipoProceso.equals("ordenCompra") && nodo.getEstado().equals("REALIZADO")) {
+            metodos.msgError(null, "La orden de compra ya fue cargada");
+            return;
+        }
+
+        btnReimprimir.setVisible(opcion == 0);
+        btnAnular.setVisible(opcion == 0);
+        txtCargarCompra.setEnabled(opcion == 0);
+        cmbCargar.setEnabled(opcion == 0);
+        txtNit.setText(nodo.getProveedor());
+        cargarCliente(nodo.getProveedor());
+        cargarDetallesEnTabla(daoDetalleProducto.obtenerDetalleProductosDocumento(consecutivo));
+        cargarProductosDocumento(productosDocumento);
+        tblProductos.removeEditor();
     }//GEN-LAST:event_txtCargarCompraKeyReleased
+
+    private void cargarProductosDocumento(Object[][] productosDocumento) {
+        for (Object[] reg : productosDocumento) {
+            String tipoDescuento = reg[8] != null ? reg[8].toString() : "";
+            cargarProductoPreCompra((String) reg[0], new Double((String) reg[4]) + "", Integer.parseInt((String) reg[3]), big.getBigDecimal(reg[5]) + "", tipoDescuento);
+            BigDecimal descuento = Utilidades.convertirBigDecimal(reg[6].toString());
+            BigDecimal total = Utilidades.convertirBigDecimal(reg[7].toString()).add(descuento);
+            BigDecimal porcentajeDescuento = big.getBigDecimal(descuento.multiply(big.getBigDecimal("100")).divide(total, 2, RoundingMode.HALF_DOWN));
+            tblProductos.setValueAt(Utilidades.formatearCantidadVista(porcentajeDescuento), tblProductos.getRowCount() - 1, 5);
+            tblProductos.setValueAt(descuento, tblProductos.getRowCount() - 1, 6);
+
+            calcularTabla(tblProductos.getRowCount() - 1);
+
+            KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
+            tblProductosKeyReleased(x);
+        }
+    }
 
     private void popBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popBorrarActionPerformed
         int fila = tblProductos.getSelectedRow();
@@ -2224,19 +2117,21 @@ public class VistaIngreso extends javax.swing.JPanel {
         int num = tblDetalle.getRowCount();
         for (int i = num - 1; i >= 0; i--) {
             if (tblDetalle.getValueAt(i, 0).equals(tblProductos.getValueAt(fila, 24))) {
-                modeloPro1.removeRow(i);
+                modeloDetalleProductos.removeRow(i);
             }
         }
 
-        modeloPro.removeRow(fila);
+        modeloProductos.removeRow(fila);
 
         if (tblProductos.getRowCount() == 0) {
             DESCUENTO_GENERAL_CARGADO = false;
         }
 
         cargarTotales();
-        guardarPrecompra();
-        guardarPrecompraDetallada();
+
+        if (tipoProceso.equals("ingreso") && txtCargarCompra.getText().isEmpty()) {
+            guardarMovimientos();
+        }
     }//GEN-LAST:event_popBorrarActionPerformed
 
     private void txtNumeroKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroKeyReleased
@@ -2260,54 +2155,17 @@ public class VistaIngreso extends javax.swing.JPanel {
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         switch (tblProductos.getSelectedColumn()) {
             case 3:
-                String baseUtilizada = obtenerBase();
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).toString(), baseUtilizada);
-                String tipo = "";
-                try {
-                    if (nodo.getTipoProducto().equals("IMEI")) {
-                        tipo = "Imei";
-                    } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                        tipo = "Fecha/Lote";
-                    } else if (nodo.getTipoProducto().equals("Color")) {
-                        tipo = "Color";
-                    } else if (nodo.getTipoProducto().equals("Serial")) {
-                        tipo = "Serial";
-                    } else if (nodo.getTipoProducto().equals("Talla")) {
-                        tipo = "Talla";
-                    } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                        tipo = "ColorTalla";
-                    } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                        tipo = "SerialColor";
-                    } else {
-                        tipo = "";
-                    }
-                } catch (Exception e) {
-                }
+                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).toString(), "bdProductos");
+                String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
-                int contador = 0;
-                for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                    if (tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).equals(tblDetalle.getValueAt(i, 0))) {
-                        contador++;
-                    }
-                }
+                String estadoDetalleProducto = tipoProceso.equals(TipoDocumento.COMPRA.getValor())
+                        ? EstadosDetalleProducto.DISPONIBLE.getNombre()
+                        : EstadosDetalleProducto.EN_TRANSITO.getNombre();
+                List<DetalleProducto> detallesProductos = generarDetallesProductos(nodo.getIdSistema(), estadoDetalleProducto);
+                BigDecimal valorUnitario = Utilidades.convertirBigDecimal(obtenerValorTabla(tblProductos.getSelectedRow(), 2, tblProductos));
 
-                Object[][] productos = new Object[contador][7];
-                int xyz = 0;
-                for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                    if (tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).equals(tblDetalle.getValueAt(i, 0))) {
-                        productos[xyz][0] = tblDetalle.getValueAt(i, 1);
-                        productos[xyz][1] = tblDetalle.getValueAt(i, 2);
-                        productos[xyz][2] = tblDetalle.getValueAt(i, 3);
-                        productos[xyz][3] = tblDetalle.getValueAt(i, 4);
-                        productos[xyz][4] = tblDetalle.getValueAt(i, 5);
-                        productos[xyz][5] = tblDetalle.getValueAt(i, 7);
-                        productos[xyz][6] = tblDetalle.getValueAt(i, 8);
-                        xyz++;
-                    }
-                }
-
-                if (!tipo.equals("") && !this.tipoProceso.equals("ordenCompra")) {
-                    dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), productos, "Entrada", "pnlIngreso", baseUtilizada, "");
+                if (!tipo.equals("")) {
+                    VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, detallesProductos, "Entrada", this.tipoProceso, valorUnitario);
                     compraDetallada.setLocationRelativeTo(null);
                     compraDetallada.setVisible(true);
                 }
@@ -2320,14 +2178,17 @@ public class VistaIngreso extends javax.swing.JPanel {
             case 23:
                 for (int i = 0; i < tblDetalle.getRowCount(); i++) {
                     if (tblDetalle.getValueAt(i, 0).equals(tblProductos.getValueAt(tblProductos.getSelectedRow(), 24))) {
-                        modeloPro1.removeRow(i);
+                        modeloDetalleProductos.removeRow(i);
                     }
                 }
 
-                modeloPro.removeRow(tblProductos.getSelectedRow());
+                modeloProductos.removeRow(tblProductos.getSelectedRow());
                 cargarTotales();
-                guardarPrecompra();
-                guardarPrecompraDetallada();
+
+                if (tipoProceso.equals("ingreso") && txtCargarCompra.getText().isEmpty()) {
+                    guardarMovimientos();
+                }
+
                 break;
             default:
                 break;
@@ -2450,134 +2311,16 @@ public class VistaIngreso extends javax.swing.JPanel {
         detalle.setVisible(true);
     }//GEN-LAST:event_btnBuscTerceros3ActionPerformed
 
-    private void lbBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbBodegaKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbBodegaKeyReleased
-
-    private void txtBodegaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseClicked
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar la compra?") != 0) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblDetalle.getRowCount() > 0) {
-                            modeloPro1.removeRow(0);
-                        }
-
-                        if (tipoProceso.equals("ingreso")) {
-                            guardarPrecompra();
-                            guardarPrecompraDetallada();
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseClicked
-
-    private void txtBodegaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseEntered
-
-    }//GEN-LAST:event_txtBodegaMouseEntered
-
-    private void txtBodegaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMousePressed
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar la compra?") != 0) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblDetalle.getRowCount() > 0) {
-                            modeloPro1.removeRow(0);
-                        }
-
-                        if (tipoProceso.equals("ingreso")) {
-                            guardarPrecompra();
-                            guardarPrecompraDetallada();
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMousePressed
-
-    private void txtBodegaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseReleased
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar la compra?") != 0) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblDetalle.getRowCount() > 0) {
-                            modeloPro1.removeRow(0);
-                        }
-
-                        if (tipoProceso.equals("ingreso")) {
-                            guardarPrecompra();
-                            guardarPrecompraDetallada();
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseReleased
-
-    private void txtBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBodegaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaActionPerformed
-
-    private void txtBodegaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBodegaFocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaFocusGained
-
-    private void txtBodegaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaKeyPressed
-
-    private void txtBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (txtBodega.getText().equals("")) {
-                ventanaBodegas("");
-            } else {
-                txtCodProducto.requestFocus();
-            }
-        } else {
-            txtBodega.setText("");
-            if (tblProductos.getRowCount() > 0) {
-                while (tblProductos.getRowCount() > 0) {
-                    modeloPro.removeRow(0);
-                }
-                while (tblDetalle.getRowCount() > 0) {
-                    modeloPro1.removeRow(0);
-                }
-
-                if (tipoProceso.equals("ingreso")) {
-                    guardarPrecompra();
-                    guardarPrecompraDetallada();
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaKeyReleased
-
     private void tblProductosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProductosKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_tblProductosKeyPressed
 
     private void btnInformacionClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformacionClienteActionPerformed
-        dlgInformacionCliente notaCliente = new dlgInformacionCliente(null, true, DATOS_CLIENTE_CARGADO.getIdSistema());
-        notaCliente.setLocationRelativeTo(null);
-        notaCliente.setVisible(true);
+        if (null != DATOS_CLIENTE_CARGADO) {
+            dlgInformacionCliente notaCliente = new dlgInformacionCliente(null, true, DATOS_CLIENTE_CARGADO.getIdSistema());
+            notaCliente.setLocationRelativeTo(null);
+            notaCliente.setVisible(true);
+        }
     }//GEN-LAST:event_btnInformacionClienteActionPerformed
 
     private void txtPorcentajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseClicked
@@ -2653,6 +2396,22 @@ public class VistaIngreso extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tblComprobantesMouseExited
 
+    private boolean existeProductoDetalle(String codigoProducto) {
+        for (int i = 0; i < tblDetalle.getRowCount(); i++) {
+            String producto = obtenerValorTabla(i, 0, tblDetalle);
+            if (producto.equals(codigoProducto)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String obtenerValorTabla(int row, int col, JTable tabla) {
+        Object value = tabla.getValueAt(row, col);
+        return value != null ? value.toString() : "";
+    }
+
     private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
@@ -2676,9 +2435,19 @@ public class VistaIngreso extends javax.swing.JPanel {
         return movimientos;
     }
 
-    private List<DetalleProducto> generarDetallesProductos() {
+    private List<DetalleProducto> generarDetallesProductos(String estadoDetalleProducto) {
         UtilidadesDetalleProducto utilidadesDetalleProducto = new UtilidadesDetalleProducto(tblDetalle);
-        return utilidadesDetalleProducto.generarDetallesProductos();
+        return utilidadesDetalleProducto.generarDetallesProductos(estadoDetalleProducto);
+    }
+
+    private List<DetalleProducto> generarDetallesProductos(String idProducto, String estadoDetalleProducto) {
+        List<DetalleProducto> resultado = new java.util.ArrayList<>();
+        for (DetalleProducto detalle : generarDetallesProductos(estadoDetalleProducto)) {
+            if (idProducto.equals(detalle.getProducto())) {
+                resultado.add(detalle);
+            }
+        }
+        return resultado;
     }
 
     private String obtenerTipoComprobante() {
@@ -2694,16 +2463,30 @@ public class VistaIngreso extends javax.swing.JPanel {
         return tipoComprobante;
     }
 
-    private void cargarPreCompra() {
-        Object[][] mat1 = instancias.getSql().getProductosPrecompraDetalle("ING");
-        for (Object[] reg : mat1) {
-            modeloPro1.addRow(new Object[]{reg[0], reg[3], reg[4], metodos.fecha(reg[5].toString()), reg[6], reg[2], reg[1], reg[7], reg[8]});
+    private void cargarDetallesEnTabla(List<DetalleProducto> detalles) {
+        for (DetalleProducto detalle : detalles) {
+            String fechaFormateada = detalle.getFechaVencimiento() != null ? metodos.fecha(detalle.getFechaVencimiento().toString()) : "";
+            modeloDetalleProductos.addRow(new Object[]{
+                detalle.getProducto(),
+                detalle.getImei(),
+                detalle.getLote(),
+                fechaFormateada,
+                detalle.getTemperatura(),
+                detalle.getCantidad(),
+                detalle.getDescripcion(),
+                detalle.getColor(),
+                detalle.getTalla()
+            });
         }
+    }
 
-        Object[][] mat = instancias.getSql().getProductosPrecompra("ING", instancias.getUsuario());
+    private void cargarPreCompra() {
+        cargarDetallesEnTabla(daoDetalleProducto.obtenerDetalleProductosPrecargados(TipoDocumento.COMPRA.getValor()));
+
+        Object[][] mat = instancias.getSql().getProductosPrecompra(TipoDocumento.COMPRA.getValor(), instancias.getUsuario());
 
         for (Object[] reg : mat) {
-            cargarProductoPreCompra((String) reg[0], new Double((String) reg[4]) + "", Integer.parseInt((String) reg[3]), big.getBigDecimal(reg[5]) + "", false);
+            cargarProductoPreCompra((String) reg[0], new Double((String) reg[4]) + "", Integer.parseInt((String) reg[3]), big.getBigDecimal(reg[5]) + "", (String) reg[9]);
 
             BigDecimal porcentajeDescuento = BigDecimal.ZERO;
             BigDecimal descuentoAplicado = big.getBigDecimal(reg[6]);
@@ -2755,31 +2538,21 @@ public class VistaIngreso extends javax.swing.JPanel {
         lbNoFactura.setText(prefijo + consecutivo);
     }
 
-    public void ventanaBodegas(String nit) {
-        buscBodegas buscar = new buscBodegas(instancias.getMenu(), true, "INTERNA");
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscBodegas(buscar);
-        instancias.setCampoActual(txtBodega);
-        txtBodega.requestFocus();
-        buscar.noEncontrado(nit);
-        buscar.show();
-    }
-
     public void eliminarRegistros(String codigo) {
         for (int i = tblDetalle.getRowCount() - 1; i >= 0; i--) {
             if (tblDetalle.getValueAt(i, 0).equals(codigo)) {
-                modeloPro1.removeRow(i);
+                modeloDetalleProductos.removeRow(i);
             }
         }
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             if (tblProductos.getValueAt(i, 24).equals(codigo)) {
-                modeloPro.removeRow(i);
+                modeloProductos.removeRow(i);
             }
         }
     }
 
-    public void cargarProducto1(String codigo, String cantidad, int plu) {
+    public void cargarProductoDesdeDetalleProducto(String codigo, BigDecimal cantidad, int plu) {
 
         for (int j = 0; j < tblProductos.getRowCount(); j++) {
             if (codigo.equalsIgnoreCase((String) tblProductos.getValueAt(j, 24)) && (plu + "").equals(((int) tblProductos.getValueAt(j, 13)) + "")) {
@@ -2793,8 +2566,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
         }
 
-        String baseUtilizada = obtenerBase();
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
 
         if (nodo.getCodigo() != null) {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
@@ -2816,7 +2588,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                     cant++;
                 }
                 if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, baseUtilizada);
+                    seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
                     pluu.setInstancias(instancias, nodo.getCodigo());
                     pluu.setOpc("ingreso");
                     pluu.setVisible(true);
@@ -2824,28 +2596,25 @@ public class VistaIngreso extends javax.swing.JPanel {
                 }
             }
 
-            String cant2 = "1";
+            String cantidadPLU = "1";
             String desc = nodo.getDescripcion();
             String lista = nodo.getL1();
             switch (plu) {
                 case 2:
-                    cant2 = nodo.getCantidad2();
+                    cantidadPLU = nodo.getCantidad2();
                     desc = nodo.getDescripcion2();
                     lista = nodo.getL2();
                     break;
                 case 3:
-                    cant2 = nodo.getCantidad3();
+                    cantidadPLU = nodo.getCantidad3();
                     desc = nodo.getDescripcion3();
                     lista = nodo.getL3();
                     break;
                 case 4:
-                    cant2 = nodo.getCantidad4();
+                    cantidadPLU = nodo.getCantidad4();
                     desc = nodo.getDescripcion4();
                     lista = nodo.getL4();
                     break;
-            }
-            if (cantidad.contains(".")) {
-                cantidad = cantidad.replace(".", ",");
             }
 
             BigDecimal ponderado = BigDecimal.ZERO;
@@ -2859,13 +2628,14 @@ public class VistaIngreso extends javax.swing.JPanel {
                 alertas.bigAlert("No se pudo consultar el último ponderado del producto");
             }
 
-            BigDecimal utilidad;
-            utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
+            BigDecimal utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
-            modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cant2))),
-                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
+            modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cantidadPLU))),
+                Utilidades.formatearCantidadVista(cantidad), big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")),
+                big.setNumero(big.getBigDecimal(nodo.getIvaC())),
                 big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
-                big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), ponderado, 0, big.setMoneda(utilidad),
+                big.setMoneda(big.getBigDecimal(lista)), plu, Utilidades.formatearCantidadVista(big.getBigDecimal(cantidadPLU).multiply(cantidad)),
+                ponderado, 0, big.setMoneda(utilidad),
                 "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
 
             tblProductos.setColumnSelectionInterval(1, 1);
@@ -2882,26 +2652,6 @@ public class VistaIngreso extends javax.swing.JPanel {
         ventanaProductos(codigo);
     }
 
-    public String obtenerBase() {
-        String baseUtilizada = txtBodega.getText();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (baseUtilizada.equals("123-22")) {
-                baseUtilizada = "bdProductos";
-            } else if (baseUtilizada.equals("BODEGA-1")) {
-                baseUtilizada = "bdProductosBodega1";
-            } else if (baseUtilizada.equals("BODEGA-2")) {
-                baseUtilizada = "bdProductosBodega2";
-            } else if (baseUtilizada.equals("BODEGA-3")) {
-                baseUtilizada = "bdProductosBodega3";
-            } else if (baseUtilizada.equals("BODEGA-4")) {
-                baseUtilizada = "bdProductosBodega4";
-            }
-        } else {
-            baseUtilizada = "bdProductos";
-        }
-        return baseUtilizada;
-    }
-
     public void cargarProductoDesdeExcel(String codigo, String valorUnit, String cantidad, String descuento, String iva, String impo) {
         ndProducto nodo = null;
 
@@ -2914,8 +2664,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                 codigo = listado[0][0].toString();
             }
 
-            String baseUtilizada = obtenerBase();
-            nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -2962,11 +2711,6 @@ public class VistaIngreso extends javax.swing.JPanel {
             BigDecimal utilidad;
             utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
-            try {
-                cmbBodegas.setSelectedIndex(0);
-            } catch (Exception e) {
-            }
-
             BigDecimal impoconsumo = BigDecimal.ZERO;
             try {
                 impoconsumo = big.getBigDecimal(impo);
@@ -2979,7 +2723,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             } catch (Exception e) {
             }
 
-            modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(valorUnitario.multiply(big.getMoneda(cant2))), cantidad,
+            modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(valorUnitario.multiply(big.getMoneda(cant2))), cantidad,
                 big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(ivaCompra), big.setNumero(impoconsumo),
                 "0", nodo.getUnd(), big.setMoneda(ultimoCosto), big.setMoneda(big.getBigDecimal(lista)), "1", (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))),
                 big.setMoneda(ponderado), 0, big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
@@ -3032,8 +2776,7 @@ public class VistaIngreso extends javax.swing.JPanel {
 
     public void cargarProductoDetal(String codigo, String cantidad, BigDecimal precio) {
 
-        String baseUtilizada = obtenerBase();
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
 
         if (nodo.getCodigo() != null) {
 
@@ -3055,12 +2798,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             BigDecimal utilidad;
             utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
-            try {
-                cmbBodegas.setSelectedIndex(0);
-            } catch (Exception e) {
-            }
-
-            modeloPro.addRow(new Object[]{nodo.getCodigo(), nodo.getDescripcion(), big.setMoneda(precio),
+            modeloProductos.addRow(new Object[]{nodo.getCodigo(), nodo.getDescripcion(), big.setMoneda(precio),
                 cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
                 big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
                 big.setMoneda(big.getBigDecimal(nodo.getL1())), plu, (big.getBigDecimal("1").multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0,
@@ -3094,7 +2832,6 @@ public class VistaIngreso extends javax.swing.JPanel {
 //            }
 //        }
         ndProducto nodo = null;
-        String baseUtilizada = obtenerBase();
         String codigoProd = "";
 
         if (codigo.equals("")) {
@@ -3105,7 +2842,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                 codigo = listado[0][0].toString();
             }
 
-            nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -3134,29 +2871,10 @@ public class VistaIngreso extends javax.swing.JPanel {
                 return;
             }
 
-            String tipo = "";
-            if (nodo.getTipoProducto() != null) {
-                if (nodo.getTipoProducto().equals("IMEI")) {
-                    tipo = "Imei";
-                } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                    tipo = "Fecha/Lote";
-                } else if (nodo.getTipoProducto().equals("Color")) {
-                    tipo = "Color";
-                } else if (nodo.getTipoProducto().equals("Serial")) {
-                    tipo = "Serial";
-                } else if (nodo.getTipoProducto().equals("Talla")) {
-                    tipo = "Talla";
-                } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                    tipo = "ColorTalla";
-                } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                    tipo = "SerialColor";
-                } else {
-                    tipo = "";
-                }
-            }
+            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
-            if (!tipo.equals("") && !this.tipoProceso.equals("ordenCompra")) {
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, "Entrada", "pnlIngreso", baseUtilizada, "");
+            if (!tipo.equals("")) {
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Entrada", this.tipoProceso, BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;
@@ -3188,7 +2906,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                         }
 
                         if (cant > 0) {
-                            seleccionarPLU pluu = new seleccionarPLU(null, true, baseUtilizada);
+                            seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
                             pluu.setInstancias(instancias, nodo.getIdSistema());
                             pluu.setOpc(this.tipoProceso);
                             pluu.setVisible(true);
@@ -3256,12 +2974,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                 BigDecimal utilidad;
                 utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
-                try {
-                    cmbBodegas.setSelectedIndex(0);
-                } catch (Exception e) {
-                }
-
-                modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cant2))),
+                modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cant2))),
                     cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
                     big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
                     big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0,
@@ -3287,122 +3000,91 @@ public class VistaIngreso extends javax.swing.JPanel {
                 scrollTblProductos.getViewport().scrollRectToVisible(r);
 
 //                tblProductos.setColumnSelectionInterval(0, 0);
-//                tblProductos.setRowSelectionInterval(modeloPro.getRowCount() - 1, modeloPro.getRowCount() - 1);
+//                tblProductos.setRowSelectionInterval(modeloProductos.getRowCount() - 1, modeloProductos.getRowCount() - 1);
                 return;
             }
         }
         ventanaProductos(codigo);
     }
 
-    public void cargarProductoPreCompra(String codigo, String cantidad, int plu, String valor, Boolean cargando) {
+    public void cargarProductoPreCompra(String codigo, String cantidad, int plu, String valor, String tipoDescuento) {
 
-        String baseUtilizada = obtenerBase();
+        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-
-        String tipo = "";
-        try {
-            if (nodo.getTipoProducto().equals("IMEI")) {
-                tipo = "Imei";
-            } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                tipo = "Fecha/Lote";
-            } else if (nodo.getTipoProducto().equals("Color")) {
-                tipo = "Color";
-            } else if (nodo.getTipoProducto().equals("Serial")) {
-                tipo = "Serial";
-            } else if (nodo.getTipoProducto().equals("Talla")) {
-                tipo = "Talla";
-            } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                tipo = "ColorTalla";
-            } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                tipo = "SerialColor";
-            } else {
-                tipo = "";
+        if (nodo.getIdSistema() != null) {
+            String cant2 = "1";
+            String desc = nodo.getDescripcion();
+            String lista = nodo.getL1();
+            switch (plu) {
+                case 2:
+                    cant2 = nodo.getCantidad2();
+                    desc = nodo.getDescripcion2();
+                    lista = nodo.getL2();
+                    break;
+                case 3:
+                    cant2 = nodo.getCantidad3();
+                    desc = nodo.getDescripcion3();
+                    lista = nodo.getL3();
+                    break;
+                case 4:
+                    cant2 = nodo.getCantidad4();
+                    desc = nodo.getDescripcion4();
+                    lista = nodo.getL4();
+                    break;
+                case 5:
+                    cant2 = nodo.getCantidad5();
+                    desc = nodo.getDescripcion5();
+                    lista = nodo.getL5();
+                    break;
+                case 6:
+                    cant2 = nodo.getCantidad6();
+                    desc = nodo.getDescripcion6();
+                    lista = nodo.getL6();
+                    break;
+                case 7:
+                    cant2 = nodo.getCantidad7();
+                    desc = nodo.getDescripcion7();
+                    lista = nodo.getL7();
+                    break;
+                case 8:
+                    cant2 = nodo.getCantidad8();
+                    desc = nodo.getDescripcion8();
+                    lista = nodo.getL8();
+                    break;
             }
-        } catch (Exception e) {
+            if (cantidad.contains(".")) {
+                cantidad = cantidad.replace(".", ",");
+            }
+
+            BigDecimal ultimoCosto = BigDecimal.ZERO;
+            try {
+                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
+                ultimoCosto = ultimoPonderado.getUltimoCosto();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
+            }
+
+            BigDecimal ponderado = big.getBigDecimal(valor + "");
+            BigDecimal utilidad;
+            utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
+
+            modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado),
+                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0, big.setMoneda(utilidad),
+                "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), tipoDescuento});
+
+            tblProductos.setColumnSelectionInterval(1, 1);
+            tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
+            tblProductos.editCellAt(tblProductos.getRowCount() - 1, 1);
+            tblProductos.transferFocus();
+            txtCodProducto.setText("");
+
+            KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
+            tblProductosKeyReleased(x);
         }
 
-        if (!tipo.equals("") && cargando) {
-            dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, "Entrada", "pnlIngreso", baseUtilizada, "");
-            compraDetallada.setLocationRelativeTo(null);
-            compraDetallada.setVisible(true);
-            return;
-        } else {
-
-            if (nodo.getIdSistema() != null) {
-                String cant2 = "1";
-                String desc = nodo.getDescripcion();
-                String lista = nodo.getL1();
-                switch (plu) {
-                    case 2:
-                        cant2 = nodo.getCantidad2();
-                        desc = nodo.getDescripcion2();
-                        lista = nodo.getL2();
-                        break;
-                    case 3:
-                        cant2 = nodo.getCantidad3();
-                        desc = nodo.getDescripcion3();
-                        lista = nodo.getL3();
-                        break;
-                    case 4:
-                        cant2 = nodo.getCantidad4();
-                        desc = nodo.getDescripcion4();
-                        lista = nodo.getL4();
-                        break;
-                    case 5:
-                        cant2 = nodo.getCantidad5();
-                        desc = nodo.getDescripcion5();
-                        lista = nodo.getL5();
-                        break;
-                    case 6:
-                        cant2 = nodo.getCantidad6();
-                        desc = nodo.getDescripcion6();
-                        lista = nodo.getL6();
-                        break;
-                    case 7:
-                        cant2 = nodo.getCantidad7();
-                        desc = nodo.getDescripcion7();
-                        lista = nodo.getL7();
-                        break;
-                    case 8:
-                        cant2 = nodo.getCantidad8();
-                        desc = nodo.getDescripcion8();
-                        lista = nodo.getL8();
-                        break;
-                }
-                if (cantidad.contains(".")) {
-                    cantidad = cantidad.replace(".", ",");
-                }
-
-                BigDecimal ultimoCosto = BigDecimal.ZERO;
-                try {
-                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
-                    ultimoCosto = ultimoPonderado.getUltimoCosto();
-                } catch (SQLException ex) {
-                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                    alertas.bigAlert("No se pudo consultar el último ponderado del producto");
-                }
-
-                BigDecimal ponderado = big.getBigDecimal(valor + "");
-                BigDecimal utilidad;
-                utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
-
-                modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado),
-                    cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                    big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
-                    big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0, big.setMoneda(utilidad),
-                    "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
-
-                tblProductos.setColumnSelectionInterval(1, 1);
-                tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
-                tblProductos.editCellAt(tblProductos.getRowCount() - 1, 1);
-                tblProductos.transferFocus();
-                txtCodProducto.setText("");
-
-                KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-                tblProductosKeyReleased(x);
-            }
-        }
     }
 
     public void ventanaProductos(String codigo) {
@@ -3411,29 +3093,7 @@ public class VistaIngreso extends javax.swing.JPanel {
 //            lugar = "sinSerial";
 //        }
 
-        String base = txtBodega.getText();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (base.equals("123-22")) {
-                base = "productos1";
-            } else if (base.equals("BODEGA-1")) {
-                base = "productos1bodega1";
-            } else if (base.equals("BODEGA-2")) {
-                base = "productos1bodega2";
-            } else if (base.equals("BODEGA-3")) {
-                base = "productos1bodega3";
-            } else if (base.equals("BODEGA-4")) {
-                base = "productos1bodega4";
-            }
-        } else {
-            base = "productos1";
-        }
-
-        if (base.equals("")) {
-            metodos.msgAdvertenciaAjustado(null, "Seleccione una bodega...");
-            return;
-        }
-
-        buscProductos buscar = new buscProductos(null, true, false, lugar, base);
+        buscProductos buscar = new buscProductos(null, true, false, lugar, "productos1");
         buscar.setOpc(tipoProceso);
         buscar.setIngreso(this);
         buscar.setLocationRelativeTo(null);
@@ -3474,15 +3134,20 @@ public class VistaIngreso extends javax.swing.JPanel {
         txtCodProducto.requestFocus();
     }
 
-    public void guardarPrecompra() {
+    private void guardarMovimientos() {
+        guardarPrecompra();
+        guardarDetalleProductos();
+    }
+
+    private void guardarPrecompra() {
         boolean noPuedaGuardar = false;
 
         while (!noPuedaGuardar) {
-            noPuedaGuardar = instancias.getSql().eliminarPrecompra("ING", instancias.getUsuario());
+            noPuedaGuardar = instancias.getSql().eliminarPrecompra(TipoDocumento.COMPRA.getValor(), instancias.getUsuario());
         }
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            Object vectCompra[] = {"ING", tblProductos.getValueAt(i, 24), big.getMoneda((String) tblProductos.getValueAt(i, 2)),
+            Object vectCompra[] = {TipoDocumento.COMPRA.getValor(), tblProductos.getValueAt(i, 24), big.getMoneda((String) tblProductos.getValueAt(i, 2)),
                 tblProductos.getValueAt(i, 14), big.getMoneda((String) tblProductos.getValueAt(i, 6)), big.getMoneda((String) tblProductos.getValueAt(i, 21)),
                 big.getMoneda((String) tblProductos.getValueAt(i, 22)), big.getMoneda((String) tblProductos.getValueAt(i, 4)),
                 tblProductos.getValueAt(i, 7).toString(), tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 13) + "",
@@ -3498,44 +3163,58 @@ public class VistaIngreso extends javax.swing.JPanel {
         }
     }
 
-    public void guardarPrecompraDetallada() {
-        boolean noPuedaGuardar = false;
-
-        while (!noPuedaGuardar) {
-            noPuedaGuardar = instancias.getSql().eliminarPrecompraDetalle("ING");
+    public void guardarDetalleProductos() {
+        while (!instancias.getSql().eliminarPrecompraDetalle(TipoDocumento.COMPRA.getValor())) {
         }
 
+        List<DetalleProducto> detalles = new ArrayList<>();
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-            String cant = tblDetalle.getValueAt(i, 5).toString();
-            if (cant.equals("")) {
-                cant = "1.0";
-            }
+            detalles.add(construirDetalleDesdeFilaTabla(i));
+        }
 
-            String fecha = tblDetalle.getValueAt(i, 3).toString();
-            if (fecha.equals("")) {
-                fecha = metodosGenerales.fecha();
-            }
-
-            if (!instancias.getSql().agregarPreCompraDetallada("ING", tblDetalle.getValueAt(i, 0).toString(), tblDetalle.getValueAt(i, 6).toString(),
-                    cant, tblDetalle.getValueAt(i, 1).toString(), tblDetalle.getValueAt(i, 2).toString(),
-                    metodos.fechaConsulta(fecha), tblDetalle.getValueAt(i, 4).toString(), tblDetalle.getValueAt(i, 7).toString(),
-                    tblDetalle.getValueAt(i, 8).toString())) {
-                metodos.msgError(null, "Hubo un problema al guardar la precompra detallada");
-            }
+        if (!daoDetalleProducto.guardarListaDetallesPrecargados(TipoDocumento.COMPRA.getValor(), detalles)) {
+            metodos.msgError(null, "Hubo un problema al guardar la precompra detallada");
         }
     }
 
-    public void cargarDetallado(String prod, String imei, String lote, String fechaVence, String temp,
-            String cant, String nombre, String color, String talla) {
-        modeloPro1.addRow(new Object[]{prod, imei, lote, fechaVence, temp, cant, nombre, color, talla});
-        guardarPrecompraDetallada();
+    private DetalleProducto construirDetalleDesdeFilaTabla(int fila) {
+        String producto = tblDetalle.getValueAt(fila, 0).toString();
+        String imei = tblDetalle.getValueAt(fila, 1).toString();
+        String lote = tblDetalle.getValueAt(fila, 2).toString();
+        String temperatura = tblDetalle.getValueAt(fila, 4).toString();
+        String descripcion = tblDetalle.getValueAt(fila, 6).toString();
+        String color = tblDetalle.getValueAt(fila, 7).toString();
+        String talla = tblDetalle.getValueAt(fila, 8).toString();
+
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(tblDetalle.getValueAt(fila, 5).toString());
+        if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
+            cantidad = BigDecimal.ONE;
+        }
+
+        String fecha = tblDetalle.getValueAt(fila, 3).toString();
+        if (fecha.isEmpty()) {
+            fecha = metodosGenerales.fecha();
+        }
+
+        return new DetalleProducto(
+                null, producto, descripcion, imei, lote, color, talla,
+                LocalDate.parse(metodos.fechaConsulta(fecha)), temperatura, null, null, cantidad, null
+        );
+    }
+
+    public void cargarDetallado(String prod, String imei, String lote, String fechaVence, String temp, BigDecimal cantidad, String nombre, String color, String talla) {
+        modeloDetalleProductos.addRow(new Object[]{prod, imei, lote, fechaVence, temp, cantidad, nombre, color, talla});
+
+        if (tipoProceso.equals(TipoDocumento.COMPRA.getValor()) && txtCargarCompra.getText().isEmpty()) {
+            guardarDetalleProductos();
+        }
     }
 
     public void cargarTotales() {
 
         int i;
 
-        BigDecimal subtotal, iva, impoconsumo, total, descuentos, rtf, rti, cantUnidades;
+        BigDecimal subtotal, iva, impoconsumo, total, descuentos, rtf, rti;
         subtotal = big.getBigDecimal("0");
         iva = big.getBigDecimal("0");
         impoconsumo = big.getBigDecimal("0");
@@ -3543,7 +3222,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         total = big.getBigDecimal("0");
         rtf = big.getBigDecimal("0");
         rti = big.getBigDecimal("0");
-        cantUnidades = big.getBigDecimal("0");
+        BigDecimal cantidadUnidades = BigDecimal.ZERO;
 
         for (i = 0; i < tblProductos.getRowCount(); i++) {
             subtotal = subtotal.add(big.getMoneda(String.valueOf(tblProductos.getValueAt(i, 4))));
@@ -3551,7 +3230,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             impoconsumo = impoconsumo.add(big.getMoneda(String.valueOf(tblProductos.getValueAt(i, 9))));
             iva = iva.add(big.getMoneda(String.valueOf(tblProductos.getValueAt(i, 22))));
             total = total.add(big.getMoneda(String.valueOf(tblProductos.getValueAt(i, 21))));
-            cantUnidades = cantUnidades.add(big.getBigDecimal(tblProductos.getValueAt(i, 3).toString().replace(".", "").replace(",", ".")));
+            cantidadUnidades = cantidadUnidades.add(Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 3).toString()));
         }
 
         if (cmbRtf.getSelectedIndex() > 0) {
@@ -3571,7 +3250,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         txtRtf.setText(big.setMonedaExacta(rtf));
         txtRiva.setText(big.setMonedaExacta(rti));
         txtCantProductos.setText(Integer.toString(tblProductos.getRowCount()));
-        txtCantUnidades.setText(cantUnidades.toString());
+        txtCantUnidades.setText(Utilidades.formatearCantidadVista(cantidadUnidades));
 
     }
 
@@ -3639,8 +3318,8 @@ public class VistaIngreso extends javax.swing.JPanel {
 
     private void calcularTabla(int fila) {
 
-        BigDecimal valorProducto = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
-        BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(".", "").replace(",", "."));
+        BigDecimal valorProducto = big.getMoneda(tblProductos.getValueAt(fila, 2).toString());
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(fila, 3).toString());
         if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
             cantidad = BigDecimal.ONE;
         }
@@ -3649,9 +3328,9 @@ public class VistaIngreso extends javax.swing.JPanel {
         BigDecimal descuento = big.getMoneda(tblProductos.getValueAt(fila, 6).toString());
         tblProductos.setValueAt(big.setMoneda(descuento), fila, 6);
 
-        BigDecimal porcentajeIva = big.getBigDecimal(tblProductos.getValueAt(fila, 7).toString()).divide(big.getBigDecimal("100"));
-        BigDecimal porcentajeImpoconsumo = big.getBigDecimal(tblProductos.getValueAt(fila, 8).toString()).divide(big.getBigDecimal("100"));
-        BigDecimal porcentajeDescuento = BigDecimal.ZERO;;
+        BigDecimal porcentajeIva = Utilidades.convertirBigDecimal(tblProductos.getValueAt(fila, 7).toString()).divide(big.getBigDecimal("100"));
+        BigDecimal porcentajeImpoconsumo = Utilidades.convertirBigDecimal(tblProductos.getValueAt(fila, 8).toString()).divide(big.getBigDecimal("100"));
+        BigDecimal porcentajeDescuento = BigDecimal.ZERO;
 
         if (subtotal.compareTo(BigDecimal.ZERO) > 0) {
             if (instancias.getDescuento().equals("peso")) {
@@ -3662,9 +3341,9 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
         }
 
-        BigDecimal valorIva = BigDecimal.ZERO;
-        BigDecimal valorImpoconsumo = BigDecimal.ZERO;
-        BigDecimal totalProducto = BigDecimal.ZERO;
+        BigDecimal valorIva;
+        BigDecimal valorImpoconsumo;
+        BigDecimal totalProducto;
 
         if (instancias.isCostoConIva()) {
             BigDecimal totalImpuestos = porcentajeIva.add(BigDecimal.ONE).multiply(porcentajeImpoconsumo.add(BigDecimal.ONE)).setScale(2, RoundingMode.DOWN);
@@ -3683,9 +3362,9 @@ public class VistaIngreso extends javax.swing.JPanel {
         totalProducto = totalProducto.subtract(descuento);
 
         tblProductos.setValueAt(big.setMoneda(valorProducto), fila, 2);
-        tblProductos.setValueAt(big.setNumero(cantidad), fila, 3);
+        tblProductos.setValueAt(Utilidades.formatearCantidadVista(cantidad), fila, 3);
         tblProductos.setValueAt(big.setMoneda(subtotal), fila, 4);
-        tblProductos.setValueAt(big.setNumero(porcentajeDescuento), fila, 5);
+        tblProductos.setValueAt(Utilidades.formatearCantidadVista(porcentajeDescuento), fila, 5);
         tblProductos.setValueAt(big.setMoneda(descuento), fila, 6);
         tblProductos.setValueAt(big.setMoneda(valorImpoconsumo), fila, 9);
         tblProductos.setValueAt(big.setMoneda(valorIva), fila, 22);
@@ -3917,11 +3596,13 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
         }
 
-        guardarPrecompra();
+        if (tipoProceso.equals("ingreso") && txtCargarCompra.getText().isEmpty()) {
+            guardarPrecompra();
+        }
     }
 
     private void abrirModalDescuentos() {
-        if (this.tipoProceso.equals("ingreso") && !tblProductos.isEditing()) {
+        if (!tblProductos.isEditing()) {
             String tipoOpcion = "Opcion-General";
             if (DESCUENTO_GENERAL_CARGADO) {
                 tipoOpcion = tblProductos.getValueAt(0, 25).toString();
@@ -3934,33 +3615,29 @@ public class VistaIngreso extends javax.swing.JPanel {
     }
 
     private void abrirModalDescuentosProducto(int filaSelecciona) {
-        if (this.tipoProceso.equals("ingreso")) {
-            txtCodProducto.requestFocus();
+        txtCodProducto.requestFocus();
+        String descuento = "";
+        String porcentajeDescuento = "";
+        String tipoOpcion = tblProductos.getValueAt(filaSelecciona, 25).toString();
 
-            String descuento = "";
-            String porcentajeDescuento = "";
-            String tipoOpcion = tblProductos.getValueAt(filaSelecciona, 25).toString();
+        BigDecimal valorProducto = big.getMoneda(String.valueOf(tblProductos.getValueAt(filaSelecciona, 2)));
+        BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(filaSelecciona, 3).toString().replace(".", "").replace(",", "."));
+        BigDecimal subtotal = valorProducto.multiply(cantidad);
 
-            BigDecimal valorProducto = big.getMoneda(String.valueOf(tblProductos.getValueAt(filaSelecciona, 2)));
-            BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(filaSelecciona, 3).toString().replace(".", "").replace(",", "."));
-            BigDecimal subtotal = valorProducto.multiply(cantidad);
-
-            if (instancias.getDescuento().equals("peso")) {
-                descuento = tblProductos.getValueAt(filaSelecciona, 6).toString();
-            } else {
-                porcentajeDescuento = tblProductos.getValueAt(filaSelecciona, 5).toString();
-            }
-
-            dlgTipoDescuento tipoDescuento = new dlgTipoDescuento(null, porcentajeDescuento, descuento, filaSelecciona, tipoOpcion, subtotal, this.tipoProceso);
-            tipoDescuento.setVisible(true);
+        if (instancias.getDescuento().equals("peso")) {
+            descuento = tblProductos.getValueAt(filaSelecciona, 6).toString();
+        } else {
+            porcentajeDescuento = tblProductos.getValueAt(filaSelecciona, 5).toString();
         }
+
+        dlgTipoDescuento tipoDescuento = new dlgTipoDescuento(null, porcentajeDescuento, descuento, filaSelecciona, tipoOpcion, subtotal, this.tipoProceso);
+        tipoDescuento.setVisible(true);
     }
 
     private void actualizarCantidadPLU(int fila, BigDecimal cantidad) {
-        String baseUtilizada = obtenerBase();
         String codigoProducto = tblProductos.getValueAt(fila, 24).toString();
 
-        ndProducto producto = instancias.getSql().getDatosProducto(codigoProducto, baseUtilizada);
+        ndProducto producto = instancias.getSql().getDatosProducto(codigoProducto, "bdProductos");
         int numeroPLU = Integer.parseInt(tblProductos.getValueAt(fila, 13).toString());
 
         BigDecimal cantidadPLU = getCantidadProductoPLU(producto, numeroPLU, cantidad);
@@ -4115,18 +3792,29 @@ public class VistaIngreso extends javax.swing.JPanel {
         }
     }
 
+    private BigDecimal obtenerCantidad(String codigoProducto) {
+        try {
+            BigDecimal cantidad = Utilidades.convertirBigDecimal(codigoProducto.replace("*", ""));
+
+            return cantidad.compareTo(BigDecimal.ZERO) > 0
+                    ? cantidad
+                    : BigDecimal.ONE;
+        } catch (NumberFormatException e) {
+            return BigDecimal.ONE;
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnular;
     private javax.swing.JButton btnBusProd;
     private javax.swing.JButton btnBuscTerceros;
-    private javax.swing.JButton btnBuscTerceros2;
     private javax.swing.JButton btnBuscTerceros3;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnImportarExcel;
     private javax.swing.JButton btnInformacionCliente;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnReimprimir;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox cmbBodegas;
     private javax.swing.JComboBox cmbCargar;
     private javax.swing.JComboBox cmbRtf;
     private javax.swing.JComboBox cmbTipo;
@@ -4143,7 +3831,7 @@ public class VistaIngreso extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jtblComprobantes;
-    private javax.swing.JLabel lbBodega;
+    private javax.swing.JLabel lbDiasPlazo;
     private javax.swing.JLabel lbFacturaNo;
     private javax.swing.JLabel lbFechaFactura;
     private javax.swing.JLabel lbNit;
@@ -4169,14 +3857,12 @@ public class VistaIngreso extends javax.swing.JPanel {
     private javax.swing.JTable tblComprobantes;
     private javax.swing.JTable tblDetalle;
     private javax.swing.JTable tblProductos;
-    private javax.swing.JTextField txtBodega;
     private javax.swing.JTextField txtCant;
     private javax.swing.JLabel txtCantProductos;
     private javax.swing.JLabel txtCantUnidades;
     private javax.swing.JTextField txtCargarCompra;
     private javax.swing.JTextField txtCodProducto;
     private javax.swing.JTextField txtDiasPlazo;
-    private javax.swing.JLabel txtDiasPlazo1;
     private datechooser.beans.DateChooserCombo txtFechaFactura;
     private javax.swing.JLabel txtIva;
     private javax.swing.JTextField txtNit;

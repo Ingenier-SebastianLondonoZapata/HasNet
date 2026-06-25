@@ -1,6 +1,7 @@
 package Vista.Productos;
 
 import Controlador.Alertas.ControladorAlertas;
+import Enums.EstadosDetalleProducto;
 import Enums.HistoricoPonderados;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
@@ -19,7 +20,7 @@ import clases.productos.ndIngreso;
 import clases.productos.ndInventarioInicial;
 import clases.productos.ndProducto;
 import formularios.productos.buscProductos;
-import formularios.productos.dlgCompraDetallada1;
+import inventario.vista.VistaMovimientoDetalleProducto;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -545,7 +546,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame {
         String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
         List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
         List<DetalleProducto> detallesProductos = generarDetalleProductos();
-        ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, 
+        ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento,
                 HistoricoPonderados.INVENTARIO_INICIAL.getNombre(), tablaUtilizada, instancias.getUsuario(), null);
 
         try {
@@ -676,43 +677,12 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame {
     private void txtConteo1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtConteo1MouseClicked
         if (txtConteo1.isEnabled()) {
             ndProducto nodo = instancias.getSql().getDatosProducto(txtProducto1.getText(), "bdProductos");
-
-            String tipo = "";
-            try {
-                if (nodo.getTipoProducto().equals("IMEI")) {
-                    tipo = "Imei";
-                } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                    tipo = "Fecha/Lote";
-                } else if (nodo.getTipoProducto().equals("Color")) {
-                    tipo = "Color";
-                } else if (nodo.getTipoProducto().equals("Serial")) {
-                    tipo = "Serial";
-                } else if (nodo.getTipoProducto().equals("Talla")) {
-                    tipo = "Talla";
-                } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                    tipo = "ColorTalla";
-                } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                    tipo = "SerialColor";
-                } else {
-                    tipo = "";
-                }
-            } catch (Exception e) {
-            }
-
-            Object[][] productos = new Object[tblDetalle.getRowCount()][7];
-
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                productos[i][0] = tblDetalle.getValueAt(i, 1);
-                productos[i][1] = tblDetalle.getValueAt(i, 2);
-                productos[i][2] = tblDetalle.getValueAt(i, 3);
-                productos[i][3] = tblDetalle.getValueAt(i, 4);
-                productos[i][4] = tblDetalle.getValueAt(i, 5);
-                productos[i][5] = tblDetalle.getValueAt(i, 7);
-                productos[i][6] = tblDetalle.getValueAt(i, 8);
-            }
+            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
+            List<DetalleProducto> detallesProductos = generarDetalleProductos();
 
             if (!tipo.equals("")) {
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), productos, "Entrada", "invInicial", "bdProductos", "123-22");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, detallesProductos,
+                        "Entrada", TipoDocumento.INVENTARIO_INICIAL.getValor(), BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
             }
@@ -725,7 +695,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame {
 
     private List<DetalleProducto> generarDetalleProductos() {
         UtilidadesDetalleProducto utilidadesDetalleProducto = new UtilidadesDetalleProducto(tblDetalle);
-        return utilidadesDetalleProducto.generarDetallesProductos();
+        return utilidadesDetalleProducto.generarDetallesProductos(EstadosDetalleProducto.DISPONIBLE.getNombre());
     }
 
     private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
@@ -793,25 +763,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame {
                 txtConteo3.setEnabled(true);
                 txtCosto.setEnabled(true);
 
-                if (nodo.getTipoProducto() != null) {
-                    if (nodo.getTipoProducto().equals("IMEI")) {
-                        tipo = "Imei";
-                    } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                        tipo = "Fecha/Lote";
-                    } else if (nodo.getTipoProducto().equals("Color")) {
-                        tipo = "Color";
-                    } else if (nodo.getTipoProducto().equals("Serial")) {
-                        tipo = "Serial";
-                    } else if (nodo.getTipoProducto().equals("Talla")) {
-                        tipo = "Talla";
-                    } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                        tipo = "ColorTalla";
-                    } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                        tipo = "SerialColor";
-                    } else {
-                        tipo = "";
-                    }
-                }
+                tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
                 if (!tipo.equals("")) {
                     txtConteo2.setEnabled(false);
@@ -849,7 +801,8 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame {
             sumarConteo();
 
             if (!tipo.equals("")) {
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, "Entrada", "invInicial", "bdProductos", "123-22");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null,
+                        "Entrada", TipoDocumento.INVENTARIO_INICIAL.getValor(), BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
             }
@@ -867,8 +820,8 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame {
     }
 
     public void cargarDetallado(String prod, String imei, String lote, String fechaVence, String temp,
-            String cant, String nombre, String color, String talla) {
-        modeloPro1.addRow(new Object[]{prod, imei, lote, fechaVence, temp, cant, nombre, color, talla});
+            BigDecimal cantidad, String nombre, String color, String talla) {
+        modeloPro1.addRow(new Object[]{prod, imei, lote, fechaVence, temp, cantidad, nombre, color, talla});
     }
 
     public void ventanaProductos(String codigo) {

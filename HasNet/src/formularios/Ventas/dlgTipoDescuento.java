@@ -360,6 +360,8 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
             instancias.getMesa1().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
         } else if (lugarPeticion.equals(TipoDocumento.COMPRA.getValor())) {
             instancias.getIngresos().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
+        } else if (lugarPeticion.equals(TipoDocumento.ORDEN_COMPRA.getValor())) {
+            instancias.getOrdenCompra().cargarDescuento(numeroFilaSeleccionada, porcentajeDescuento, descuento, obtenerDescripcionDescuento());
         }
 
         this.dispose();
@@ -414,6 +416,8 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
             instancias.getMesa1().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
         } else if (lugarPeticion.equals(TipoDocumento.COMPRA.getValor())) {
             instancias.getIngresos().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
+        } else if (lugarPeticion.equals(TipoDocumento.ORDEN_COMPRA.getValor())) {
+            instancias.getOrdenCompra().cargarDescuento(numeroFilaSeleccionada, null, null, SIN_DESCUENTO);
         }
 
         this.dispose();

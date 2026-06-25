@@ -29,4 +29,7 @@ public enum DetalleTipoProducto {
         return "";
     }
     
+    public static boolean esTipoDetallado(String tipoProducto) {
+        return !obtenerTipoProducto(tipoProducto).isEmpty();
+    }
 }

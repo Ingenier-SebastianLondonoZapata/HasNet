@@ -7838,7 +7838,7 @@
                               <Component id="jPanel49" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jPanel50" alignment="0" pref="420" max="32767" attributes="0"/>
+                                  <Component id="jPanel50" alignment="0" pref="422" max="32767" attributes="0"/>
                                   <Component id="jPanel47" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>

@@ -6759,8 +6759,8 @@ public class SQL {
 
     public Object[][] getProductosCargarCompra(String ingreso) {
         String colName[] = {
-            "producto", "cantidad", "descripcion", "plu", "cant2", "valor", "descuento", "subtotal"};
-        String instruccion_sql = "select producto, cantidad, descripcion, plu, cant2, valor, descuento, subtotal from bdCompra where ingreso='" + ingreso + "'";
+            "producto", "cantidad", "descripcion", "plu", "cant2", "valor", "descuento", "subtotal", "tipoDescuento"};
+        String instruccion_sql = "select producto, cantidad, descripcion, plu, cant2, valor, descuento, subtotal, tipoDescuento from bdCompra where ingreso='" + ingreso + "'";
         Object dtDatos[][] = getDatos(colName, " bdCompra ", instruccion_sql, " where ingreso='" + ingreso + "'");
 
         return dtDatos;
@@ -10285,14 +10285,6 @@ public class SQL {
 //
 //        return dtDatos;
 //    }
-    public Object[][] getProductosPrecompraDetalle(String ingreso) {
-        String colName[] = {"codProducto", "descripcion", "cantidad", "imei", "lote", "fechaVencimiento", "temperatura", "color", "talla"};
-        String instruccion_sql = "select codProducto, descripcion, cantidad, imei, lote, fechaVencimiento, temperatura, color, talla "
-                + "from bdPreCompraDetalle  where ingreso='" + ingreso + "'";
-        Object dtDatos[][] = getDatos(colName, " bdPreCompraDetalle ", instruccion_sql, " where ingreso='" + ingreso + "'");
-
-        return dtDatos;
-    }
 
     public Object[][] getTodasBodegas() {
         String colName[] = {
@@ -10411,17 +10403,7 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarPreCompraDetallada(String conse, String codProducto, String descripcion, String cantidad,
-            String imei, String lote, String fechaVence, String temp, String color, String talla) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdPreCompraDetalle(ingreso, codProducto, descripcion, cantidad, imei, lote, "
-                + "fechaVencimiento, temperatura, color, talla)"
-                + " values(?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{conse, codProducto, descripcion, cantidad, imei, lote, fechaVence, temp, color, talla}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarCodEgreso(Object[] datos) {
+public boolean modificarCodEgreso(Object[] datos) {
         boolean ok = false;
         String instruccion_sql = "update codsEgresos set concepto=?, codigoUsuario=? where codigo=" + datos[0] + ";";
         ok = Actualizar_Registro(datos, null, instruccion_sql);
@@ -10478,11 +10460,11 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getProductosDetalle(String cod, String bodega) {
+    public Object[][] obtenerProductosDetallePorProducto(String cod) {
         String colName[] = {"producto", "descripcion", "cantidadDisponible", "imei", "lote", "fechaVencimiento", "temperatura", "color", "Id", "talla"};
         String instruccion_sql = "select producto, descripcion, cantidadDisponible, imei, lote, fechaVencimiento, temperatura, color, Id, talla "
-                + "from bdDetalleProductos where producto = '" + cod + "' and estado = 'DISPONIBLE' and bodega = '" + bodega + "' ";
-        Object dtDatos[][] = getDatos(colName, " bdDetalleProductos ", instruccion_sql, " where producto = '" + cod + "' and estado = 'DISPONIBLE' and bodega = '" + bodega + "' ");
+                + "from bdDetalleProductos where producto = '" + cod + "' and estado = 'DISPONIBLE' ";
+        Object dtDatos[][] = getDatos(colName, " bdDetalleProductos ", instruccion_sql, " where producto = '" + cod + "' and estado = 'DISPONIBLE' ");
 
         return dtDatos;
     }

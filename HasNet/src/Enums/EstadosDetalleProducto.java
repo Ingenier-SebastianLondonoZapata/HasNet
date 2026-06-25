@@ -7,7 +7,8 @@ public enum EstadosDetalleProducto {
     EN_PEDIDO("PRESTADO"),
     EN_PLAN_SEPARE("SEPARADO"),
     EN_MESA("CONGELADO"),
-    ANULADO("ANULADO");
+    ANULADO("ANULADO"),
+    EN_TRANSITO("EN-TRANSITO"),;
 
     private final String nombre;
 

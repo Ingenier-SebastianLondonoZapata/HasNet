@@ -1,5 +1,6 @@
 package Vista.Productos;
 
+import Enums.TipoDocumento;
 import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Dimension;
 import javax.swing.JComponent;
@@ -29,7 +30,7 @@ public class ingreso extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        pnlIngreso = new VistaIngreso("ingreso");
+        pnlIngreso = new VistaIngreso(TipoDocumento.COMPRA.getValor());
         pnlIngreso.setSize(pnlContenedor.getSize());
         pnlContenedor.add(pnlIngreso, CENTER_ALIGNMENT);
         pnlContenedor.revalidate();

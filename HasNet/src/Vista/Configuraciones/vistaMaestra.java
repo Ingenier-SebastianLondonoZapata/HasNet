@@ -6105,7 +6105,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             llenarDatos();
 
             /* ACTUALIZAMOS MAESTROS EN EL MODULO DE FACTURACION */
-            instancias.getuInt().consultarMaestros();
+            instancias.getVistaAjusteInventario().consultarMaestros();
             instancias.getPrestamos().consultarMaestros();
             instancias.getTrasladosInternos().consultarMaestros();
             instancias.getFactura().consultarMaestros();

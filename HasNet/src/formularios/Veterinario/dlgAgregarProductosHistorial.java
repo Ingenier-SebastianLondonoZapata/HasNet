@@ -11,7 +11,7 @@ import Modelo.Terceros.ModeloContacto;
 import inventario.servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import formularios.productos.buscProductos;
-import formularios.productos.dlgCompraDetallada1;
+import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.seleccionarPLU;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1178,8 +1178,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             }
 
             if (!tipo.equals("") && imei.equals("") && lote.equals("")) {
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, "Salida", "traslados",
-                        "bdProductos", "123-22");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", "traslados");
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;
@@ -1357,8 +1356,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
 
             if (!tipo.equals("") && imei.equals("") && lote.equals("")) {
 
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, "Salida", "traslados",
-                        "bdProductos", "123-22");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", "traslados");
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;

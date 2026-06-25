@@ -1,10 +1,12 @@
 package Vista.Productos;
 
+import Enums.EstadosDetalleProducto;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
+import inventario.dao.DaoDetalleProducto;
 import inventario.servicio.ServicioActualizacionPonderado;
 import inventario.servicio.ServicioInventario;
 import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
@@ -17,9 +19,8 @@ import clases.metodosGenerales;
 import clases.productos.ndCompra;
 import clases.productos.ndProductoAjustes;
 import formularios.productos.buscProductos;
-import formularios.productos.dlgCompraDetallada1;
+import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.seleccionarPLU;
-import formularios.terceros.buscBodegas;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ import javax.swing.table.DefaultTableModel;
 public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
     private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
+    private final DaoDetalleProducto daoDetalleProducto = new DaoDetalleProducto();
 
     String simbolo = "";
     DefaultTableModel modeloPro;
@@ -111,11 +114,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         cargarProductoPreAjuste();
-
-        if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-            lbBodega.setVisible(false);
-            txtBodega.setVisible(false);
-        }
 
         pnlInvisible.setVisible(false);
     }
@@ -193,8 +191,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         tblProductos = new javax.swing.JTable();
         lbProducto1 = new javax.swing.JLabel();
         txtCant = new javax.swing.JTextField();
-        lbBodega = new javax.swing.JLabel();
-        txtBodega = new javax.swing.JTextField();
         btnBusProd = new javax.swing.JButton();
         pnlBotones = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
@@ -384,53 +380,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             }
         });
 
-        lbBodega.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbBodega.setText("Bodega:");
-        lbBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                lbBodegaKeyReleased(evt);
-            }
-        });
-
-        txtBodega.setBackground(new java.awt.Color(255, 204, 204));
-        txtBodega.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        txtBodega.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtBodega.setText("123-22");
-        txtBodega.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtBodega.setName("combo"); // NOI18N
-        txtBodega.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtBodegaFocusGained(evt);
-            }
-        });
-        txtBodega.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseEntered(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                txtBodegaMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseReleased(evt);
-            }
-        });
-        txtBodega.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBodegaActionPerformed(evt);
-            }
-        });
-        txtBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyReleased(evt);
-            }
-        });
-
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
@@ -457,14 +406,10 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                         .addComponent(lbProducto1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
-                        .addComponent(lbBodega)
-                        .addGap(1, 1, 1)
-                        .addComponent(txtBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
+                        .addGap(15, 15, 15)
                         .addComponent(lbProducto)
                         .addGap(2, 2, 2)
-                        .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                        .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                         .addGap(2, 2, 2)
                         .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(5, 5, 5))
@@ -478,11 +423,9 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                     .addComponent(txtCant, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtCodProducto, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbBodega, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtBodega)
                     .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
                 .addGap(5, 5, 5))
         );
 
@@ -743,7 +686,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
             Object[] vector = {factura, origen, destino, metodos.fechaConsulta(metodosGenerales.fecha()), cantidadTotal,
                 big.getMoneda(txtValor.getText()), cmbTipo.getSelectedItem(),
-                instancias.getUsuario(), instancias.getTerminal(), metodosGenerales.hora(), txtBodega.getText(), ""};
+                instancias.getUsuario(), instancias.getTerminal(), metodosGenerales.hora(), "", ""};
 
             ndTraslado nodo = metodos.llenarTraslado(vector);
 
@@ -832,7 +775,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         txtValor.setText(this.simbolo + " 0");
         cantidadTotal = "0";
         tblProductos.removeEditor();
-        txtBodega.setText("123-22");
         lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("TRAS")[0]);
 
         guardarPreAjustes();
@@ -950,62 +892,21 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (tblProductos.getSelectedColumn() == 3) {
 
-            String baseUtilizada = obtenerBase();
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), baseUtilizada);
+            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), "bdProductos");
+            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
+            List<DetalleProducto> detallesProductos = generarDetallesProductos();
+            String tipoMovimiento, tipoDocumento;
 
-            String tipo = "";
-            if (nodo.getTipoProducto() != null) {
-                if (nodo.getTipoProducto().equals("IMEI")) {
-                    tipo = "Imei";
-                } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                    tipo = "Fecha/Lote";
-                } else if (nodo.getTipoProducto().equals("Color")) {
-                    tipo = "Color";
-                } else if (nodo.getTipoProducto().equals("Serial")) {
-                    tipo = "Serial";
-                } else if (nodo.getTipoProducto().equals("Talla")) {
-                    tipo = "Talla";
-                } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                    tipo = "ColorTalla";
-                } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                    tipo = "SerialColor";
-                } else {
-                    tipo = "";
-                }
-            }
-
-            int contador = 0;
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                if (tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).equals(tblDetalle.getValueAt(i, 0))) {
-                    contador++;
-                }
-            }
-
-            Object[][] productos = new Object[contador][7];
-
-            int xyz = 0;
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                if (tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).equals(tblDetalle.getValueAt(i, 0))) {
-                    productos[xyz][0] = tblDetalle.getValueAt(i, 1);
-                    productos[xyz][1] = tblDetalle.getValueAt(i, 2);
-                    productos[xyz][2] = tblDetalle.getValueAt(i, 3);
-                    productos[xyz][3] = tblDetalle.getValueAt(i, 4);
-                    productos[xyz][4] = tblDetalle.getValueAt(i, 5);
-                    productos[xyz][5] = tblDetalle.getValueAt(i, 7);
-                    productos[xyz][6] = tblDetalle.getValueAt(i, 8);
-                    xyz++;
-                }
-            }
-
-            String tipoMov = "";
             if (cmbTipo.getSelectedIndex() == 0) {
-                tipoMov = "Entrada";
+                tipoMovimiento = "Entrada";
+                tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
             } else {
-                tipoMov = "Salida";
+                tipoMovimiento = "Salida";
+                tipoDocumento = TipoDocumento.AJUSTE_SALIDA.getValor();
             }
 
             if (!tipo.equals("")) {
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), productos, tipoMov, "ajusteInv", baseUtilizada, "");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, detallesProductos, tipoMovimiento, tipoDocumento, BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
             }
@@ -1035,97 +936,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     private void txtCantKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantKeyReleased
-
-    private void lbBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbBodegaKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbBodegaKeyReleased
-
-    private void txtBodegaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseClicked
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar el ajuste?") != 0) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        guardarPreAjustes();
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseClicked
-
-    private void txtBodegaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseEntered
-
-    }//GEN-LAST:event_txtBodegaMouseEntered
-
-    private void txtBodegaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMousePressed
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar el ajuste?") != 0) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        guardarPreAjustes();
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMousePressed
-
-    private void txtBodegaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseReleased
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar el ajuste?") != 0) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        guardarPreAjustes();
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseReleased
-
-    private void txtBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBodegaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaActionPerformed
-
-    private void txtBodegaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBodegaFocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaFocusGained
-
-    private void txtBodegaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaKeyPressed
-
-    private void txtBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (txtBodega.getText().equals("")) {
-                ventanaBodegas("");
-            } else {
-                txtCodProducto.requestFocus();
-            }
-        } else {
-            txtBodega.setText("");
-            if (tblProductos.getRowCount() > 0) {
-                while (tblProductos.getRowCount() > 0) {
-                    modeloPro.removeRow(0);
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaKeyReleased
 
     private void btnBusProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusProdActionPerformed
         ventanaProductos("");
@@ -1170,7 +980,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
     private List<DetalleProducto> generarDetallesProductos() {
         UtilidadesDetalleProducto utilidadesDetalleProducto = new UtilidadesDetalleProducto(tblDetalle);
-        return utilidadesDetalleProducto.generarDetallesProductos();
+        return utilidadesDetalleProducto.generarDetallesProductos(EstadosDetalleProducto.DISPONIBLE.getNombre());
     }
 
     public void eliminarRegistros(String codigo) {
@@ -1187,44 +997,13 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         }
     }
 
-    public String obtenerBase() {
-        String baseUtilizada = txtBodega.getText();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (baseUtilizada.equals("123-22")) {
-                baseUtilizada = "bdProductos";
-            } else if (baseUtilizada.equals("BODEGA-1")) {
-                baseUtilizada = "bdProductosBodega1";
-            } else if (baseUtilizada.equals("BODEGA-2")) {
-                baseUtilizada = "bdProductosBodega2";
-            } else if (baseUtilizada.equals("BODEGA-3")) {
-                baseUtilizada = "bdProductosBodega3";
-            } else if (baseUtilizada.equals("BODEGA-4")) {
-                baseUtilizada = "bdProductosBodega4";
-            }
-        } else {
-            baseUtilizada = "bdProductos";
-        }
-        return baseUtilizada;
-    }
-
-    public void ventanaBodegas(String nit) {
-        buscBodegas buscar = new buscBodegas(instancias.getMenu(), true, "INTERNA");
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscBodegas(buscar);
-        instancias.setCampoActual(txtBodega);
-        txtBodega.requestFocus();
-        buscar.noEncontrado(nit);
-        buscar.show();
-    }
-
     public void calcularFila(int fila) {
 
         BigDecimal valor, cantidad, subtotal, total, iva, impoconsumo, totalIva, totalImpoconsumo;
         valor = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
         tblProductos.setValueAt(big.setMoneda(valor), fila, 2);
 
-        String baseUtilizada = obtenerBase();
-        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 15).toString(), baseUtilizada);
+        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 15).toString(), "bdProductos");
 
         if (nodo.getTipoProducto() != null && cmbTipo.getSelectedItem().equals("Ajuste salida")) {
             if (nodo.getTipoProducto().equals("Serial") || nodo.getTipoProducto().equals("IMEI")) {
@@ -1308,9 +1087,21 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     }
 
     public void cargarProductoPreAjuste() {
-        Object[][] mat1 = instancias.getSql().getProductosPrecompraDetalle("AJUS");
-        for (Object[] reg : mat1) {
-            modeloPro1.addRow(new Object[]{reg[0], reg[3], reg[4], metodos.fecha(reg[5].toString()), reg[6], reg[2], reg[1], reg[7], reg[8]});
+        List<DetalleProducto> detalles = daoDetalleProducto.obtenerDetalleProductosPrecargados("AJUS");
+        for (DetalleProducto detalle : detalles) {
+            String fechaFormateada = detalle.getFechaVencimiento() != null
+                    ? metodos.fecha(detalle.getFechaVencimiento().toString()) : "";
+            modeloPro1.addRow(new Object[]{
+                detalle.getProducto(),
+                detalle.getImei(),
+                detalle.getLote(),
+                fechaFormateada,
+                detalle.getTemperatura(),
+                detalle.getCantidad(),
+                detalle.getDescripcion(),
+                detalle.getColor(),
+                detalle.getTalla()
+            });
         }
 
         Object[][] mat = instancias.getSql().getProductosPrecompra("AJUS", "");
@@ -1349,29 +1140,42 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     }
 
     public void guardarPreAjustesDetalle() {
-        boolean noPuedaGuardar = false;
-        while (!noPuedaGuardar) {
-            noPuedaGuardar = instancias.getSql().eliminarPrecompraDetalle("AJUS");
+        while (!instancias.getSql().eliminarPrecompraDetalle("AJUS")) {
         }
 
+        List<DetalleProducto> detalles = new ArrayList<>();
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-            String cant = tblDetalle.getValueAt(i, 5).toString();
-            if (cant.equals("")) {
-                cant = "1.0";
-            }
-
-            String fecha = tblDetalle.getValueAt(i, 3).toString();
-            if (fecha.equals("")) {
-                fecha = metodosGenerales.fecha();
-            }
-
-            if (!instancias.getSql().agregarPreCompraDetallada("AJUS", tblDetalle.getValueAt(i, 0).toString(), tblDetalle.getValueAt(i, 6).toString(),
-                    cant, tblDetalle.getValueAt(i, 1).toString(), tblDetalle.getValueAt(i, 2).toString(),
-                    metodos.fechaConsulta(fecha), tblDetalle.getValueAt(i, 4).toString(), tblDetalle.getValueAt(i, 7).toString(),
-                    tblDetalle.getValueAt(i, 8).toString())) {
-                metodos.msgError(null, "Error al guardar detalle del ajuste");
-            }
+            detalles.add(construirDetalleDesdeFilaTabla(i));
         }
+
+        if (!daoDetalleProducto.guardarListaDetallesPrecargados("AJUS", detalles)) {
+            metodos.msgError(null, "Error al guardar detalle del ajuste");
+        }
+    }
+
+    private DetalleProducto construirDetalleDesdeFilaTabla(int fila) {
+        String producto = tblDetalle.getValueAt(fila, 0).toString();
+        String imei = tblDetalle.getValueAt(fila, 1).toString();
+        String lote = tblDetalle.getValueAt(fila, 2).toString();
+        String temperatura = tblDetalle.getValueAt(fila, 4).toString();
+        String descripcion = tblDetalle.getValueAt(fila, 6).toString();
+        String color = tblDetalle.getValueAt(fila, 7).toString();
+        String talla = tblDetalle.getValueAt(fila, 8).toString();
+
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(tblDetalle.getValueAt(fila, 5).toString());
+        if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
+            cantidad = BigDecimal.ONE;
+        }
+
+        String fecha = tblDetalle.getValueAt(fila, 3).toString();
+        if (fecha.isEmpty()) {
+            fecha = metodosGenerales.fecha();
+        }
+
+        return new DetalleProducto(
+                null, producto, descripcion, imei, lote, color, talla,
+                LocalDate.parse(metodos.fechaConsulta(fecha)), temperatura, null, null, cantidad, null
+        );
     }
 
     public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
@@ -1381,7 +1185,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
         ndProducto nodo = null;
 
-        String baseUtilizada = obtenerBase();
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
@@ -1391,7 +1194,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 codigo = listado[0][0].toString();
             }
 
-            nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -1405,40 +1208,19 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 return;
             }
 
-            String tipo = "";
-            try {
-                if (nodo.getTipoProducto().equals("IMEI")) {
-                    tipo = "Imei";
-                } else if (nodo.getTipoProducto().equals("Fecha/Lote")) {
-                    tipo = "Fecha/Lote";
-                } else if (nodo.getTipoProducto().equals("Color")) {
-                    tipo = "Color";
-                } else if (nodo.getTipoProducto().equals("Serial")) {
-                    tipo = "Serial";
-                } else if (nodo.getTipoProducto().equals("Talla")) {
-                    tipo = "Talla";
-                } else if (nodo.getTipoProducto().equals("ColorTalla")) {
-                    tipo = "ColorTalla";
-                } else if (nodo.getTipoProducto().equals("SerialColor")) {
-                    tipo = "SerialColor";
-                } else {
-                    tipo = "";
-                }
-            } catch (Exception e) {
-            }
+            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
-            String tipoMov = "", tipoLugar = "";
+            String tipoMov = "", tipoDocumento = "";
             if (cmbTipo.getSelectedIndex() == 0) {
                 tipoMov = "Entrada";
-                tipoLugar = "ajusteInv";
+                tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
             } else {
                 tipoMov = "Salida";
-                tipoLugar = "ajusteInv1";
+                tipoDocumento = TipoDocumento.AJUSTE_SALIDA.getValor();
             }
 
             if (!tipo.equals("") && idProd.equals("")) {
-                dlgCompraDetallada1 compraDetallada = new dlgCompraDetallada1(null, true, tipo, nodo.getIdSistema(), null, tipoMov, tipoLugar,
-                        baseUtilizada, txtBodega.getText());
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, tipoMov, tipoDocumento, BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;
@@ -1469,7 +1251,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                     }
 
                     if (cant > 0) {
-                        seleccionarPLU pluu = new seleccionarPLU(null, true, baseUtilizada);
+                        seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
                         pluu.setInstancias(instancias, nodo.getCodigo());
                         pluu.setOpc("ajuste");
                         pluu.setVisible(true);
@@ -1610,7 +1392,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
         ndProducto nodo = null;
 
-        String baseUtilizada = obtenerBase();
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
@@ -1620,7 +1401,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 codigo = listado[0][0].toString();
             }
 
-            nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -1659,7 +1440,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 }
 
                 if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, baseUtilizada);
+                    seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
                     pluu.setInstancias(instancias, nodo.getIdSistema());
                     pluu.setOpc("ajuste");
                     pluu.setVisible(true);
@@ -1760,34 +1541,12 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     }
 
     public void cargarDetallado(String prod, String imei, String lote, String fechaVence, String temp,
-            String cant, String nombre, String color, String talla) {
-        modeloPro1.addRow(new Object[]{prod, imei, lote, fechaVence, temp, cant, nombre, color, talla});
+            BigDecimal cantidad, String nombre, String color, String talla) {
+        modeloPro1.addRow(new Object[]{prod, imei, lote, fechaVence, temp, cantidad, nombre, color, talla});
     }
 
     public void ventanaProductos(String codigo) {
-        String base = txtBodega.getText();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (base.equals("123-22")) {
-                base = "productos1";
-            } else if (base.equals("BODEGA-1")) {
-                base = "productos1bodega1";
-            } else if (base.equals("BODEGA-2")) {
-                base = "productos1bodega2";
-            } else if (base.equals("BODEGA-3")) {
-                base = "productos1bodega3";
-            } else if (base.equals("BODEGA-4")) {
-                base = "productos1bodega4";
-            }
-        } else {
-            base = "productos1";
-        }
-
-        if (base.equals("")) {
-            metodos.msgAdvertenciaAjustado(null, "Seleccione una bodega...");
-            return;
-        }
-
-        buscProductos buscar = new buscProductos(null, true, false, "", base);
+        buscProductos buscar = new buscProductos(null, true, false, "", "productos1");
         buscar.setOpc("ajuste");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
@@ -1871,7 +1630,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JLabel lbBodega;
     private javax.swing.JLabel lbNit3;
     private javax.swing.JLabel lbNit4;
     private javax.swing.JLabel lbNit5;
@@ -1886,7 +1644,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane scrFormulario;
     private javax.swing.JTable tblDetalle;
     private javax.swing.JTable tblProductos;
-    private javax.swing.JTextField txtBodega;
     private javax.swing.JTextField txtCant;
     private javax.swing.JTextField txtCodProducto;
     private javax.swing.JLabel txtFecha;
