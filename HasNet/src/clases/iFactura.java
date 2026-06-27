@@ -1,5 +1,6 @@
 package clases;
 
+import Impresiones.IniciarReporte;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import Utilidades.BaseDatos.MySql_connection;
@@ -100,7 +101,7 @@ public class iFactura {
             parametros.put("consulta", sql);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -123,7 +124,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -145,7 +146,7 @@ public class iFactura {
             parametros.put("tercero", tercero);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -166,7 +167,7 @@ public class iFactura {
             parametros.put("nombre", nombre);
             parametros.put("urlImagen", this.getClass().getResourceAsStream(logo));
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -187,7 +188,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("cliente", sql);
             parametros.put("urlImagen", logo());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -223,7 +224,7 @@ public class iFactura {
             parametros.put("urlImagen", logo());
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
-            Iniciar ini = new Iniciar(parametros, reporte, false, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -245,7 +246,7 @@ public class iFactura {
             parametros.put("enca", enca);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -283,7 +284,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -318,7 +319,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -340,7 +341,7 @@ public class iFactura {
             parametros.put("usuario", instancia.getUsuario());
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -381,7 +382,7 @@ public class iFactura {
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
             parametros.put("proximoControl", proximoControl);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -415,7 +416,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -439,7 +440,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -463,7 +464,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -486,7 +487,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -508,7 +509,7 @@ public class iFactura {
             parametros.put("cliente", sql);
             parametros.put("encabezado", encabezado);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -531,7 +532,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -554,7 +555,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -577,7 +578,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, true, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, true, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -602,7 +603,7 @@ public class iFactura {
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -627,7 +628,7 @@ public class iFactura {
             parametros.put("direccion", direccion);
             parametros.put("factura", factura);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -651,7 +652,7 @@ public class iFactura {
             parametros.put("uno", uno);
             parametros.put("dos", dos);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -683,7 +684,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -705,7 +706,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -728,7 +729,7 @@ public class iFactura {
             parametros.put("enca", enca);
             parametros.put("medico", medico);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -750,7 +751,7 @@ public class iFactura {
 //            parametros.put("cliente", sql);
 //            parametros.put("enca", enca);
 //
-//            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+//            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
 //            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
 //            barra.show();
 //
@@ -772,7 +773,7 @@ public class iFactura {
             parametros.put("cliente", sql);
             parametros.put("encabezado", encabezado);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -803,7 +804,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -833,7 +834,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -864,7 +865,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -893,7 +894,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -917,7 +918,7 @@ public class iFactura {
             parametros.put("urlImagen", logo());
             parametros.put("consulta", consulta);
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -948,7 +949,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -975,7 +976,7 @@ public class iFactura {
             parametros.put("titulo", "Pedido No.");
             parametros.put("informacionLegalClick", informacionLegalClick);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1007,7 +1008,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1031,7 +1032,7 @@ public class iFactura {
             parametros.put("id", contrato);
 //            parametros.put("urlImagen", this.getClass().getResourceAsStream(firma));
             parametros.put("info", info);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1053,7 +1054,7 @@ public class iFactura {
             parametros.put("id", contrato);
             parametros.put("urlImagen", this.getClass().getResourceAsStream(firma));
             parametros.put("info", info);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1086,7 +1087,7 @@ public class iFactura {
             parametros.put("fecha", metodosGenerales.fecha());
             parametros.put("urlImagen", this.getClass().getResourceAsStream(firma));
             parametros.put("info", info);
-            Iniciar ini = new Iniciar(parametros, reporte, false, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1116,7 +1117,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1136,7 +1137,7 @@ public class iFactura {
             Map parametros = new HashMap();
             parametros.clear();
             parametros.put("consulta", sql);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1166,7 +1167,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1198,7 +1199,7 @@ public class iFactura {
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
             parametros.put("informacionLegalClick", informacionLegalClick);
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1217,7 +1218,7 @@ public class iFactura {
             Map<String, String> parametros = new HashMap();
             parametros.clear();
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1259,7 +1260,7 @@ public class iFactura {
             parametros.put("fuente", fuente);
             parametros.put("otros", otros);
 
-            Iniciar ini = new Iniciar(parametros, reporte, true, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, true, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1282,7 +1283,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1316,7 +1317,7 @@ public class iFactura {
             parametros.put("edad", edad);
             parametros.put("urlImagen", logo());
 //            parametros.put("urlImagen", this.getClass().getResourceAsStream(locoCertificado));
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1345,7 +1346,7 @@ public class iFactura {
             parametros.put("informacionLegalClick", informacionLegalClick);
             parametros.put("firma", logo3);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1406,7 +1407,7 @@ public class iFactura {
             parametros.put("retenciones", verReten);
 
             if (impresora.equalsIgnoreCase("Predeterminada")) {
-                Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+                IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
                 vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
                 barra.show();
             } else {
@@ -1431,7 +1432,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("usuario", instancia.getUsuario());
             parametros.put("id", IdHosp);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1454,7 +1455,7 @@ public class iFactura {
             parametros.put("info", instancia.getInformacionEmpresaCompleto());
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -1481,7 +1482,7 @@ public class iFactura {
             parametros.put("mesa", mesa);
             parametros.put("sql", condicion);
 
-//            Iniciar ini = new Iniciar(parametros, reporte, !previsualizar, true, instancia);
+//            IniciarReporte ini = new IniciarReporte(parametros, reporte, !previsualizar, true, instancia);
             IniciarImpresion ini = new IniciarImpresion(parametros, reporte, !previsualizar, true, instancia, impresora);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
@@ -1516,7 +1517,7 @@ public class iFactura {
             parametros.put("porcPropina", propina);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-//            Iniciar ini = new Iniciar(parametros, reporte, !previsualizar, true, instancia);
+//            IniciarReporte ini = new IniciarReporte(parametros, reporte, !previsualizar, true, instancia);
             IniciarImpresion ini = new IniciarImpresion(parametros, reporte, !previsualizar, true, instancia, impresora);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
@@ -1552,7 +1553,7 @@ public class iFactura {
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
             parametros.put("firma", logo3);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -1588,7 +1589,7 @@ public class iFactura {
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
             parametros.put("firma", logo3);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1608,7 +1609,7 @@ public class iFactura {
             Map parametros = new HashMap();
             parametros.clear();
 
-            Iniciar ini = new Iniciar(parametros, reporte, true, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, true, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1634,7 +1635,7 @@ public class iFactura {
             parametros.put("valor", valor);
             parametros.put("valorAntes", valorAntes);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1657,7 +1658,7 @@ public class iFactura {
             parametros.put("numFactura", factura);
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1678,7 +1679,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("cliente", sql);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1703,7 +1704,7 @@ public class iFactura {
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1728,7 +1729,7 @@ public class iFactura {
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1756,7 +1757,7 @@ public class iFactura {
             parametros.put("usuario", firma);
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1780,7 +1781,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1804,7 +1805,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1828,7 +1829,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1853,7 +1854,7 @@ public class iFactura {
             parametros.put("mesLetras", metodosGenerales.mesEnPalabra());
             parametros.put("anho", metodosGenerales.anho());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1874,7 +1875,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("id", id);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1898,7 +1899,7 @@ public class iFactura {
             parametros.put("mes", datos[2]);
             parametros.put("anho", datos[3]);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1921,7 +1922,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -1943,7 +1944,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -1966,7 +1967,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -1990,7 +1991,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2025,7 +2026,7 @@ public class iFactura {
 //            parametros.put("100", mostradorBilletes(pesos100));
 //            parametros.put("50", mostradorBilletes(pesos50));
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2047,7 +2048,7 @@ public class iFactura {
             parametros.put("mensaje", mensaje);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2068,7 +2069,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2087,7 +2088,7 @@ public class iFactura {
             parametros.put("encabezado", encabezado);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -2103,7 +2104,7 @@ public class iFactura {
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
             parametros.put("encabezado", encabezado);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -2189,7 +2190,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2228,7 +2229,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -2247,7 +2248,7 @@ public class iFactura {
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
             parametros.put("id", contrato);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2267,7 +2268,7 @@ public class iFactura {
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
             parametros.put("id", contrato);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2297,7 +2298,7 @@ public class iFactura {
             parametros.put("saldo", saldo);
             parametros.put("deuda", deuda);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2327,7 +2328,7 @@ public class iFactura {
             parametros.put("saldo", saldo);
             parametros.put("deuda", deuda);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2353,7 +2354,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2378,7 +2379,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2402,7 +2403,7 @@ public class iFactura {
             parametros.put("tipo", tipo);
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2426,7 +2427,7 @@ public class iFactura {
             parametros.put("tipo", tipo);
             parametros.put("urlImagen", logo());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2450,7 +2451,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2482,7 +2483,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2506,7 +2507,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2548,7 +2549,7 @@ public class iFactura {
             parametros.put("recogida", recogida);
             parametros.put("base", base);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2572,7 +2573,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2596,7 +2597,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -2619,7 +2620,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2647,7 +2648,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2671,7 +2672,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2709,7 +2710,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2738,7 +2739,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2761,7 +2762,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2782,7 +2783,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("cliente", sql);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2803,7 +2804,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("cliente", sql);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2826,7 +2827,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2848,7 +2849,7 @@ public class iFactura {
             parametros.put("cliente", sql);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2871,7 +2872,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2894,7 +2895,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2917,7 +2918,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2940,7 +2941,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2961,7 +2962,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("cliente", consulta);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -2983,7 +2984,7 @@ public class iFactura {
             parametros.put("cliente", sql);
             parametros.put("encabezado", encabezado);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3003,7 +3004,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("total", total);
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3041,7 +3042,7 @@ public class iFactura {
                 parametros.put("regimen", "SinIva");
             }
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3070,7 +3071,7 @@ public class iFactura {
             } else {
                 parametros.put("regimen", "SinIva");
             }
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3094,7 +3095,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3117,7 +3118,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3146,7 +3147,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3177,7 +3178,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3200,7 +3201,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3213,13 +3214,13 @@ public class iFactura {
         JasperReport reporte;
         try {
             //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/impresionesIngresos/ingresoDetalle.jasper");
+            URL in = this.getClass().getResource("/ImpresionesProductos/ingresoDetalle.jasper");
             reporte = (JasperReport) JRLoader.loadObject(in);
             //Se crea un objeto HashMap
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
             parametros.put("numFactura", factura);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3261,7 +3262,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3297,7 +3298,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3321,7 +3322,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3343,7 +3344,7 @@ public class iFactura {
             parametros.put("numFactura", factura);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3371,7 +3372,7 @@ public class iFactura {
             parametros.put("serial", serial);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3406,7 +3407,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3433,7 +3434,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3460,7 +3461,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3487,7 +3488,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3514,7 +3515,7 @@ public class iFactura {
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
-            Iniciar ini = new Iniciar(parametros, reporte, true, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, true, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3547,7 +3548,7 @@ public class iFactura {
             parametros.put("total", total);
             parametros.put("informacionLegalClick", informacionLegalClick);
 
-            Iniciar ini = new Iniciar(parametros, reporte, true, false, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, true, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3567,7 +3568,7 @@ public class iFactura {
             parametros.clear();
             parametros.put("numero", numero);
             parametros.put("informacionLegalClick", informacionLegalClick);
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3589,7 +3590,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + usuario + ".jpg");
             parametros.put("usuario", instancia.getSql().getNombreEmpleadoUsuario(usuario));
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3612,7 +3613,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + usuario + ".jpg");
             parametros.put("usuario", instancia.getSql().getNombreEmpleadoUsuario(usuario));
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3636,7 +3637,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + usuario + ".jpg");
             parametros.put("usuario", instancia.getSql().getNombreEmpleadoUsuario(usuario));
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3659,7 +3660,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + usuario + ".jpg");
             parametros.put("usuario", instancia.getSql().getNombreEmpleadoUsuario(usuario));
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3682,7 +3683,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + usuario + ".jpg");
             parametros.put("usuario", instancia.getSql().getNombreEmpleadoUsuario(usuario));
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -3711,7 +3712,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3741,7 +3742,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3772,7 +3773,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3803,7 +3804,7 @@ public class iFactura {
             parametros.put("info", info);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3826,7 +3827,7 @@ public class iFactura {
             parametros.put("Id", Id);
             parametros.put("info", instancia.getInformacionEmpresa());
             parametros.put("urlImagen", this.getClass().getResourceAsStream(logo));
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3877,7 +3878,7 @@ public class iFactura {
             parametros.put("trece1", trece1);
             parametros.put("catorce1", catorce1);
             parametros.put("quince1", quince1);
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3909,7 +3910,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3941,7 +3942,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3966,7 +3967,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -3988,7 +3989,7 @@ public class iFactura {
             parametros.put("numFactura", factura);
             parametros.put("urlImagen", this.getClass().getResourceAsStream(logo));
             parametros.put("urlImagen2", this.getClass().getResourceAsStream(automovil));
-            Iniciar ini = new Iniciar(parametros, reporte, imprimir, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
         } catch (JRException E) {
@@ -4019,7 +4020,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -4052,7 +4053,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -4083,7 +4084,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -4114,7 +4115,7 @@ public class iFactura {
             parametros.put("firma", logo3);
             parametros.put("usuario", instancia.getUsuarioLog().getNombre());
 
-            Iniciar ini = new Iniciar(parametros, reporte, false, true, instancia);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 
@@ -4124,113 +4125,6 @@ public class iFactura {
     }
 }
 
-class Iniciar extends controladorBarraProceso {
-
-    Boolean crearPDF = false, crearPDF1 = false;
-    String factura;
-    JasperPrint reporte_view;
-    JasperReport reporte;
-    Map parametros;
-    boolean imprimir;
-
-    MySql_connection conexion;
-    boolean conBd;
-    Instancias instancias;
-    jcThread barra;
-
-    public void setFactura(String factura) {
-        this.factura = factura;
-    }
-
-    public void setCrearPDF1(Boolean crearPDF1) {
-        this.crearPDF1 = crearPDF1;
-    }
-
-    public void setCrearPDF(Boolean crearPDF) {
-        this.crearPDF = crearPDF;
-    }
-
-    public void setBarra(jcThread barra) {
-        this.barra = barra;
-    }
-
-    Iniciar(Map parametros, JasperReport reporte, boolean imprimir, boolean conBd, Instancias instancias) {
-        this.parametros = parametros;
-        this.reporte = reporte;
-        this.imprimir = imprimir;
-        this.conBd = conBd;
-        conexion = instancias.getSql().getMysql();
-        this.instancias = instancias;
-    }
-
-    public void run() {
-        try {
-
-            if (conBd) {
-                reporte_view = JasperFillManager.fillReport(reporte, parametros, conexion.getConnection());
-            } else {
-                reporte_view = JasperFillManager.fillReport(reporte, parametros, new JREmptyDataSource());
-            }
-
-            if (crearPDF) {
-                JasperExportManager.exportReportToPdfFile(reporte_view, System.getProperty("user.home") + "\\Fact.pdf");
-            } else if (crearPDF1) {
-                JasperExportManager.exportReportToPdfFile(reporte_view, System.getProperty("user.home") + "/desktop/Facturas ClickingPOS/" + factura + ".pdf");
-            } else {
-                if (imprimir) {
-                    JasperPrintManager.printReport(reporte_view, false);
-                } else {
-                    if (instancias.getRutaAguardar() == null) {
-                        JasperViewer.viewReport(reporte_view, false);
-                    } else {
-
-                        //JRDocxExporter exporter2 = new JRDocxExporter();
-                        JExcelApiExporter exporter = new JExcelApiExporter();
-                        JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, conexion.getConnection());
-                        OutputStream outputfile = null;
-
-                        try {
-                            outputfile = new FileOutputStream(new File(instancias.getRutaAguardar()));
-                            exporter.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, outputfile);
-                            //exporter2.setParameter(JRExporterParameter.OUTPUT_STREAM, outputfile);
-                        } catch (Exception e) {
-
-                        }
-                        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-                        /*exporter2.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-                         exporter2.exportReport();*/
-                        exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, false);
-                        exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, true);
-                        exporter.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BORDER, false);
-                        exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, false);
-                        exporter.exportReport();
-
-                        try {
-                            outputfile.close();
-                        } catch (IOException ex) {
-                            Logger.getLogger(Iniciar.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        /*
-                         try {
-                         Process p = Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + new FileOutputStream(new File(instancias.getRutaAguardar())));
-                         } catch (Exception e) {
-                         System.out.println("Error al abrir el archivo " + outputfile + "\n" + e.getMessage());
-                         }
-                         */
-                        instancias.setRutaAguardar(null);
-                    }
-                }
-            }
-
-            barra.detener(true);
-            instancias.setProgres(null);
-
-        } catch (JRException ex) {
-            Logger.getLogger(Iniciar.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-}
 
 class IniciarImpresion extends controladorBarraProceso {
 
@@ -4304,7 +4198,7 @@ class IniciarImpresion extends controladorBarraProceso {
                             try {
                                 job.setPrintService(servicios[i]);
                             } catch (PrinterException ex) {
-                                Logger.getLogger(Iniciar.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(IniciarReporte.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
                             //configuramos la impresion
@@ -4362,7 +4256,7 @@ class IniciarImpresion extends controladorBarraProceso {
                         try {
                             outputfile.close();
                         } catch (IOException ex) {
-                            Logger.getLogger(Iniciar.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(IniciarReporte.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                         /*
@@ -4381,7 +4275,7 @@ class IniciarImpresion extends controladorBarraProceso {
             instancias.setProgres(null);
 
         } catch (JRException ex) {
-            Logger.getLogger(Iniciar.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(IniciarReporte.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

@@ -56,7 +56,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jComboBox1" min="-2" pref="362" max="-2" attributes="0"/>
+                              <Component id="cmbTipoReporte" min="-2" pref="362" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -69,11 +69,11 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jComboBox1" max="32767" attributes="0"/>
+                          <Component id="cmbTipoReporte" max="32767" attributes="0"/>
                           <Component id="jLabel1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel1" pref="632" max="32767" attributes="0"/>
+                      <Component id="jPanel1" pref="636" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -109,13 +109,13 @@
                 </DimensionLayout>
               </Layout>
             </Container>
-            <Component class="javax.swing.JComboBox" name="jComboBox1">
+            <Component class="javax.swing.JComboBox" name="cmbTipoReporte">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Century Gothic" size="18" style="1"/>
                 </Property>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="10">
+                  <StringArray count="11">
                     <StringItem index="0" value=" "/>
                     <StringItem index="1" value="Reporte de productos"/>
                     <StringItem index="2" value="Reporte de prestamos"/>
@@ -126,11 +126,12 @@
                     <StringItem index="7" value="Reporte de traslados internos"/>
                     <StringItem index="8" value="Reporte de ivas de compra"/>
                     <StringItem index="9" value="Reporte de movimientos por serial"/>
+                    <StringItem index="10" value="Kardex del producto"/>
                   </StringArray>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBox1ItemStateChanged"/>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmbTipoReporteItemStateChanged"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">

@@ -604,15 +604,10 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     }
 
     private void enviarPreparacion(String cadena) {
-        System.out.println("cadena: " + cadena);
         if (lugarDesde.equals("pedido")) {
             instancias.getMenu().expandirMenu();
             instancias.getPedido().cargarPreparacion(filas, cadena, codigoPrincipal);
-            try {
-                instancias.getPedidoContenedor().setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(VistaPreparacion.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            instancias.getPedidoContenedor().setSelected(true);
         } else if (mesaCongelada1) {
             mesaCongelada1 = false;
             instancias.getMesa().getPnlFactura().cargarPreparacion(filas, cadena, codigoPrincipal);
@@ -706,12 +701,8 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
 
     private void btnDevolverAFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDevolverAFacturaMouseClicked
         if (lugarDesde.equals("pedido")) {
-            try {
-                instancias.getMenu().expandirMenu();
-                instancias.getPedidoContenedor().setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(VistaPreparacion.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            instancias.getMenu().expandirMenu();
+            instancias.getPedidoContenedor().setSelected(true);
         } else {
             if (mesaCongelada1) {
                 mesaCongelada1 = false;
@@ -725,12 +716,8 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
 
     private void lblDevolverAFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDevolverAFacturaMouseClicked
         if (lugarDesde.equals("pedido")) {
-            try {
-                instancias.getMenu().expandirMenu();
-                instancias.getPedidoContenedor().setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(VistaPreparacion.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            instancias.getMenu().expandirMenu();
+            instancias.getPedidoContenedor().setSelected(true);
         } else {
             if (mesaCongelada1) {
                 mesaCongelada1 = false;
@@ -845,7 +832,9 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         txtObservaciones.setText(ParserPreparacion.observaciones(lista));
     }
 
-    /** Marca en la tabla de aderezos los que vienen en la preparación. */
+    /**
+     * Marca en la tabla de aderezos los que vienen en la preparación.
+     */
     private void marcarAderezosSeleccionados(String aderezos) {
         for (String aderezo : aderezos.split(", ")) {
             for (int j = 0; j < tblAderezo.getRowCount(); j++) {
@@ -858,8 +847,8 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     }
 
     /**
-     * Primera pasada: si el "principal" de la opción coincide con un producto de
-     * la tabla, aplica el cambio (código/descripción/cantidad/estado); si no
+     * Primera pasada: si el "principal" de la opción coincide con un producto
+     * de la tabla, aplica el cambio (código/descripción/cantidad/estado); si no
      * coincide y es una adición, la agrega como fila nueva.
      */
     private void aplicarCambiosYAdiciones(List<OpcionPreparacion> opciones) {
@@ -897,7 +886,9 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         }
     }
 
-    /** Fila cuyo producto principal (col. 0) coincide con el código dado, o -1. */
+    /**
+     * Fila cuyo producto principal (col. 0) coincide con el código dado, o -1.
+     */
     private int filaDeProductoPrincipal(String principal) {
         if (principal.equals("")) {
             return -1;
@@ -910,7 +901,10 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         return -1;
     }
 
-    /** Marca la fila como activa/inactiva (col. 4); si se quitó, lo anota en txtProducto. */
+    /**
+     * Marca la fila como activa/inactiva (col. 4); si se quitó, lo anota en
+     * txtProducto.
+     */
     private void marcarEstado(int fila, boolean activa) {
         tblProductosPrincipales.setValueAt(activa, fila, 4);
         if (!activa) {

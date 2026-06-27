@@ -1,6 +1,5 @@
 package Utilidades.DetalleProducto;
 
-import Enums.EstadosDetalleProducto;
 import Enums.enumBodegas;
 import Modelo.Inventario.DetalleProducto;
 import Utilidades.Utilidades;

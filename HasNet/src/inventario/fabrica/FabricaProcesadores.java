@@ -14,6 +14,8 @@ import inventario.estrategia.ProcesadorMesa;
 import inventario.estrategia.ProcesadorMovimiento;
 import inventario.estrategia.ProcesadorNotaCredito;
 import inventario.estrategia.ProcesadorNotaDebito;
+import inventario.estrategia.ProcesadorAnularCompra;
+import inventario.estrategia.ProcesadorAnularOrdenCompra;
 import inventario.estrategia.ProcesadorOrdenCompra;
 import inventario.estrategia.ProcesadorOrdenServicio;
 import inventario.estrategia.ProcesadorPedido;
@@ -41,7 +43,9 @@ public class FabricaProcesadores {
         registro.put(TipoDocumento.NOTA_CREDITO, new ProcesadorNotaCredito());
         registro.put(TipoDocumento.INVENTARIO_INICIAL, new ProcesadorInventarioInicial());
         registro.put(TipoDocumento.COMPRA, new ProcesadorCompra());
+        registro.put(TipoDocumento.ANULAR_COMPRA, new ProcesadorAnularCompra());
         registro.put(TipoDocumento.ORDEN_COMPRA, new ProcesadorOrdenCompra());
+        registro.put(TipoDocumento.ANULAR_ORDEN_COMPRA, new ProcesadorAnularOrdenCompra());
         registro.put(TipoDocumento.AJUSTE_ENTRADA, new ProcesadorAjusteEntrada());
         registro.put(TipoDocumento.ANULAR_AJUSTE_ENTRADA, new ProcesadorAnularAjusteEntrada());
         registro.put(TipoDocumento.AJUSTE_SALIDA, new ProcesadorAjusteSalida());

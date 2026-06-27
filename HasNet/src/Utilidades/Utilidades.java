@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 
 /**
  *
@@ -20,9 +23,14 @@ public class Utilidades {
         return new Object[0][0];
     }
 
+    private static final DateTimeFormatter FORMATOS_FECHA = new DateTimeFormatterBuilder()
+            .appendOptional(DateTimeFormatter.ISO_LOCAL_DATE)
+            .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            .toFormatter();
+
     public static LocalDate convertirFecha(String value) {
         try {
-            return LocalDate.parse(value);
+            return LocalDate.parse(value, FORMATOS_FECHA);
         } catch (Exception e) {
             return null;
         }

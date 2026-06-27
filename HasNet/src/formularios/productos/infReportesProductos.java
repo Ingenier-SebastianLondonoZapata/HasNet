@@ -1,19 +1,16 @@
 package formularios.productos;
 
-import formularios.Ventas.*;
 import clases.Instancias;
 import clases.metodosGenerales;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 public class infReportesProductos extends javax.swing.JInternalFrame {
 
     metodosGenerales metodos = new metodosGenerales();
-    private Instancias instancias;
+    private final Instancias instancias;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
     DefaultTableModel modelo;
@@ -37,7 +34,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
         scrFormulario = new javax.swing.JScrollPane();
         pnlFormulario = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox();
+        cmbTipoReporte = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
 
         setTitle("Factura");
@@ -65,11 +62,11 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
             .addGap(0, 630, Short.MAX_VALUE)
         );
 
-        jComboBox1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "Reporte de productos", "Reporte de prestamos", "Reporte de compras", "Reporte de ajustes", "Reporte de orden de compras", "Reporte de inventario", "Reporte de traslados internos", "Reporte de ivas de compra", "Reporte de movimientos por serial" }));
-        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+        cmbTipoReporte.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        cmbTipoReporte.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "Reporte de productos", "Reporte de prestamos", "Reporte de compras", "Reporte de ajustes", "Reporte de orden de compras", "Reporte de inventario", "Reporte de traslados internos", "Reporte de ivas de compra", "Reporte de movimientos por serial", "Kardex del producto" }));
+        cmbTipoReporte.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox1ItemStateChanged(evt);
+                cmbTipoReporteItemStateChanged(evt);
             }
         });
 
@@ -87,7 +84,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlFormularioLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbTipoReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -96,10 +93,10 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
             .addGroup(pnlFormularioLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jComboBox1)
+                    .addComponent(cmbTipoReporte)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
         );
 
@@ -119,15 +116,23 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+    private void cmbTipoReporteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTipoReporteItemStateChanged
         mostrarReportes();
-    }//GEN-LAST:event_jComboBox1ItemStateChanged
+    }//GEN-LAST:event_cmbTipoReporteItemStateChanged
 
     private void pnlFormularioComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_pnlFormularioComponentResized
         try {
-            if (jPanel1.getComponent(0) instanceof JPanel) {
-                JPanel panel = (JPanel) jPanel1.getComponent(0);
-                panel.setSize(jPanel1.getSize());
+            java.awt.Component comp = jPanel1.getComponent(0);
+            if (comp instanceof JPanel) {
+                comp.setSize(jPanel1.getSize());
+            } else if (comp instanceof javax.swing.JDesktopPane) {
+                comp.setSize(jPanel1.getSize());
+                javax.swing.JDesktopPane dkp = (javax.swing.JDesktopPane) comp;
+                for (java.awt.Component c : dkp.getComponents()) {
+                    try {
+                        ((javax.swing.JInternalFrame) c).setMaximum(true);
+                    } catch (java.beans.PropertyVetoException ex) { }
+                }
             }
         } catch (Exception e) {
         }
@@ -135,7 +140,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
 
     private void mostrarReportes() {
 
-        if (jComboBox1.getSelectedIndex() == 1) {
+        if (cmbTipoReporte.getSelectedIndex() == 1) {
             if (instancias.getUsuarioLog().isReporteProductos()) {
                 infRepProductos pnlReporte = new infRepProductos();
                 instancias.setRepProductos(pnlReporte);
@@ -146,12 +151,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 2) {
+        if (cmbTipoReporte.getSelectedIndex() == 2) {
             if (instancias.getUsuarioLog().isReportePrestamos()) {
                 infRepTraslados pnlReporte = new infRepTraslados();
                 instancias.setRepTraslados(pnlReporte);
@@ -162,12 +167,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 3) {
+        if (cmbTipoReporte.getSelectedIndex() == 3) {
             if (instancias.getUsuarioLog().isReporteCompras()) {
                 infRepIngresos pnlReporte = new infRepIngresos();
                 instancias.setRepIngresos(pnlReporte);
@@ -178,12 +183,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 4) {
+        if (cmbTipoReporte.getSelectedIndex() == 4) {
             if (instancias.getUsuarioLog().isReporteAjustes()) {
                 infRepAjustes pnlReporte = new infRepAjustes();
                 instancias.setRepAjustes(pnlReporte);
@@ -194,12 +199,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 5) {
+        if (cmbTipoReporte.getSelectedIndex() == 5) {
             if (instancias.getUsuarioLog().isReporteOrdenCompras()) {
                 infRepOrdenCompra pnlReporte = new infRepOrdenCompra();
                 instancias.setRepOrdenCompra(pnlReporte);
@@ -210,12 +215,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 6) {
+        if (cmbTipoReporte.getSelectedIndex() == 6) {
             if (instancias.getUsuarioLog().isInventarioInicial()) {
                 infInventario pnlReporte = new infInventario();
                 instancias.setInventario(pnlReporte);
@@ -226,12 +231,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 7) {
+        if (cmbTipoReporte.getSelectedIndex() == 7) {
             if (instancias.getUsuarioLog().isReporteTrasladoInterno()) {
                 infRepTrasladosInternos pnlReporte = new infRepTrasladosInternos();
                 instancias.setRepTrasladosInternos(pnlReporte);
@@ -242,12 +247,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 8) {
+        if (cmbTipoReporte.getSelectedIndex() == 8) {
             if (instancias.getUsuarioLog().isReporteIvasCompras()) {
                 infRepIvasCompras pnlReporte = new infRepIvasCompras();
                 instancias.setRepIvasCompras(pnlReporte);
@@ -258,12 +263,12 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
 
-        if (jComboBox1.getSelectedIndex() == 9) {
+        if (cmbTipoReporte.getSelectedIndex() == 9) {
             if (instancias.getUsuarioLog().isReporteMovimientoSerial()) {
                 infMovimientosSeriales pnlReporte = new infMovimientosSeriales();
                 instancias.setMovimientosSeriales(pnlReporte);
@@ -274,14 +279,36 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.repaint();
                 jPanel1.setVisible(true);
             } else {
-                jComboBox1.setSelectedIndex(0);
+                cmbTipoReporte.setSelectedIndex(0);
+                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+            }
+        }
+
+        if (cmbTipoReporte.getSelectedIndex() == 10) {
+            if (instancias.getUsuarioLog().isKardex()) {
+                infKardexProductos pnlReporte = new infKardexProductos();
+                instancias.setKardexProductos(pnlReporte);
+                javax.swing.JDesktopPane dkp = new javax.swing.JDesktopPane();
+                dkp.setSize(jPanel1.getSize());
+                dkp.add(pnlReporte);
+                try {
+                    pnlReporte.show();
+                    pnlReporte.setMaximum(true);
+                } catch (java.beans.PropertyVetoException ex) { }
+                jPanel1.removeAll();
+                jPanel1.add(dkp, CENTER_ALIGNMENT);
+                jPanel1.revalidate();
+                jPanel1.repaint();
+                jPanel1.setVisible(true);
+            } else {
+                cmbTipoReporte.setSelectedIndex(0);
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox cmbTipoReporte;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel pnlFormulario;

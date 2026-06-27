@@ -882,15 +882,21 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "FACTURA", "FACTURA", "FECHA", "NIT CLIENTE", "CLIENTE", "VENDEDOR", "TOTAL", "TERMINAL", "CONSE.MANUAL", "TIPO_FACTURA"
+                "FACTURA", "FACTURA", "FECHA", "NIT CLIENTE", "CLIENTE", "VENDEDOR", "TOTAL", "TERMINAL", "CONSE.MANUAL", "TIPO_FACTURA", "FACTURAR"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+
+            @Override
+            public Class getColumnClass(int columnIndex) {
+                if (columnIndex == 10) return Boolean.class;
+                return Object.class;
             }
         });
         tblDocumentos.setRowHeight(24);
@@ -905,34 +911,28 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             tblDocumentos.getColumnModel().getColumn(0).setMinWidth(0);
             tblDocumentos.getColumnModel().getColumn(0).setPreferredWidth(0);
             tblDocumentos.getColumnModel().getColumn(0).setMaxWidth(0);
-            tblDocumentos.getColumnModel().getColumn(0).setHeaderValue("FACTURA");
             tblDocumentos.getColumnModel().getColumn(1).setPreferredWidth(120);
             tblDocumentos.getColumnModel().getColumn(1).setMaxWidth(150);
-            tblDocumentos.getColumnModel().getColumn(1).setHeaderValue("FACTURA");
             tblDocumentos.getColumnModel().getColumn(2).setMinWidth(85);
             tblDocumentos.getColumnModel().getColumn(2).setPreferredWidth(85);
             tblDocumentos.getColumnModel().getColumn(2).setMaxWidth(85);
-            tblDocumentos.getColumnModel().getColumn(2).setHeaderValue("FECHA");
             tblDocumentos.getColumnModel().getColumn(3).setPreferredWidth(120);
             tblDocumentos.getColumnModel().getColumn(3).setMaxWidth(160);
-            tblDocumentos.getColumnModel().getColumn(3).setHeaderValue("NIT CLIENTE");
-            tblDocumentos.getColumnModel().getColumn(4).setHeaderValue("CLIENTE");
-            tblDocumentos.getColumnModel().getColumn(5).setHeaderValue("VENDEDOR");
             tblDocumentos.getColumnModel().getColumn(6).setPreferredWidth(105);
             tblDocumentos.getColumnModel().getColumn(6).setMaxWidth(150);
-            tblDocumentos.getColumnModel().getColumn(6).setHeaderValue("TOTAL");
             tblDocumentos.getColumnModel().getColumn(7).setMinWidth(80);
             tblDocumentos.getColumnModel().getColumn(7).setPreferredWidth(80);
             tblDocumentos.getColumnModel().getColumn(7).setMaxWidth(80);
-            tblDocumentos.getColumnModel().getColumn(7).setHeaderValue("TERMINAL");
             tblDocumentos.getColumnModel().getColumn(8).setMinWidth(100);
             tblDocumentos.getColumnModel().getColumn(8).setPreferredWidth(100);
             tblDocumentos.getColumnModel().getColumn(8).setMaxWidth(100);
-            tblDocumentos.getColumnModel().getColumn(8).setHeaderValue("CONSE.MANUAL");
             tblDocumentos.getColumnModel().getColumn(9).setMinWidth(0);
             tblDocumentos.getColumnModel().getColumn(9).setPreferredWidth(0);
             tblDocumentos.getColumnModel().getColumn(9).setMaxWidth(0);
-            tblDocumentos.getColumnModel().getColumn(9).setHeaderValue("TIPO_FACTURA");
+            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setHeaderValue("FACTURAR");
         }
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -1355,7 +1355,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
         }
 
-        if (evt.getClickCount() == 2) {
+        if (evt.getClickCount() == 2 && tblDocumentos.getSelectedColumn() != 9) {
             verInformacionDetalladaDocumento();
         }
     }//GEN-LAST:event_tblDocumentosMouseClicked
@@ -1427,25 +1427,40 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     private void cmbEstadoDocumentoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbEstadoDocumentoItemStateChanged
         if (cmbEstadoDocumento.getSelectedItem().toString().equals("PENDIENTE")) {
             cmbTipoDocumento.removeItem("FACTURA");
+            cmbTipoDocumento.removeItem("NOTA DÉBITO");
+            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(70);
+            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(80);
+            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(100);
         } else {
-            boolean existe = false;
-            for (int i = 0; i < cmbTipoDocumento.getItemCount(); i++) {
-                if (cmbTipoDocumento.getItemAt(i).equals("FACTURA")) {
-                    existe = true;
-                    break;
-                }
+
+            if (!existeTipoDocumentoEnCombo("FACTURA")) {
+                cmbTipoDocumento.addItem("FACTURA");
             }
 
-            if (!existe) {
-                cmbTipoDocumento.addItem("FACTURA");
-                cmbTipoDocumento.setSelectedItem("FACTURA");
+            if (!existeTipoDocumentoEnCombo("NOTA DÉBITO")) {
+                cmbTipoDocumento.addItem("NOTA DÉBITO");
             }
+
+            cmbTipoDocumento.setSelectedItem("FACTURA");
+            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(0);
         }
     }//GEN-LAST:event_cmbEstadoDocumentoItemStateChanged
 
     private void chkSoloAnuladasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkSoloAnuladasItemStateChanged
         actualizarTablaDocumentos();
     }//GEN-LAST:event_chkSoloAnuladasItemStateChanged
+
+    private boolean existeTipoDocumentoEnCombo(String tipoDocumento) {
+        for (int i = 0; i < cmbTipoDocumento.getItemCount(); i++) {
+            if (cmbTipoDocumento.getItemAt(i).equals(tipoDocumento)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public void anularFactura(String nota) {
 
@@ -1924,7 +1939,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 big.setMoneda(doc.getTotalGeneral()),
                 doc.getTerminal(),
                 doc.getTurno(),
-                doc.getTipoFactura()
+                doc.getTipoFactura(),
+                Boolean.FALSE
             });
         }
     }

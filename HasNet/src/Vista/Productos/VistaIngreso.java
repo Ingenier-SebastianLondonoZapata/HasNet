@@ -78,7 +78,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-public class VistaIngreso extends javax.swing.JPanel {
+public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallado {
 
     private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -128,7 +128,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         icono = new ImageIcon(fot.getImage().getScaledInstance(30, 25, Image.SCALE_DEFAULT));
 
         jtblComprobantes.setVisible(false);
-        //pnlInvisible.setVisible(false);
+        pnlInvisible.setVisible(false);
         setBorder(null);
         repaint();
 
@@ -190,7 +190,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             tblProductos.getColumnModel().getColumn(6).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(6).setMaxWidth(0);
         }
-        txtCodProducto.requestFocus();
+        txtCodigoProducto.requestFocus();
     }
 
     public final void setTipo(String tipo) {
@@ -290,7 +290,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         buttonGroup1 = new javax.swing.ButtonGroup();
         pnlFormulario = new javax.swing.JPanel();
         pblBotones = new javax.swing.JPanel();
-        txtCodProducto = new javax.swing.JTextField();
+        txtCodigoProducto = new javax.swing.JTextField();
         lbProducto = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtObservaciones = new javax.swing.JTextArea();
@@ -379,21 +379,21 @@ public class VistaIngreso extends javax.swing.JPanel {
         pblBotones.setBackground(new java.awt.Color(255, 255, 255));
         pblBotones.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        txtCodProducto.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
-        txtCodProducto.setName("combo"); // NOI18N
-        txtCodProducto.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtCodigoProducto.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
+        txtCodigoProducto.setName("combo"); // NOI18N
+        txtCodigoProducto.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtCodProductoFocusGained(evt);
+                txtCodigoProductoFocusGained(evt);
             }
         });
-        txtCodProducto.addActionListener(new java.awt.event.ActionListener() {
+        txtCodigoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCodProductoActionPerformed(evt);
+                txtCodigoProductoActionPerformed(evt);
             }
         });
-        txtCodProducto.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCodigoProducto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCodProductoKeyReleased(evt);
+                txtCodigoProductoKeyReleased(evt);
             }
         });
 
@@ -483,7 +483,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                         .addGap(10, 10, 10)
                         .addComponent(lbProducto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
                         .addGap(2, 2, 2)
                         .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(5, 5, 5))
@@ -498,7 +498,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                         .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lbProducto2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtCodProducto))
+                    .addComponent(txtCodigoProducto))
                 .addGap(10, 10, 10)
                 .addComponent(lbProducto1)
                 .addGap(0, 0, 0)
@@ -506,7 +506,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        tblProductos.setFont(new java.awt.Font("Arial", 0, 17)); // NOI18N
+        tblProductos.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -548,7 +548,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             tblProductos.getColumnModel().getColumn(2).setMinWidth(100);
             tblProductos.getColumnModel().getColumn(2).setPreferredWidth(120);
             tblProductos.getColumnModel().getColumn(2).setMaxWidth(150);
-            tblProductos.getColumnModel().getColumn(3).setMinWidth(65);
+            tblProductos.getColumnModel().getColumn(3).setMinWidth(60);
             tblProductos.getColumnModel().getColumn(3).setPreferredWidth(65);
             tblProductos.getColumnModel().getColumn(3).setMaxWidth(80);
             tblProductos.getColumnModel().getColumn(4).setMinWidth(100);
@@ -1368,13 +1368,13 @@ public class VistaIngreso extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCodProductoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodProductoFocusGained
+    private void txtCodigoProductoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoProductoFocusGained
         tblProductos.removeEditor();
         cargarTotales();
-    }//GEN-LAST:event_txtCodProductoFocusGained
+    }//GEN-LAST:event_txtCodigoProductoFocusGained
 
-    private void txtCodProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodProductoKeyReleased
-        String codigoProducto = txtCodProducto.getText();
+    private void txtCodigoProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoProductoKeyReleased
+        String codigoProducto = txtCodigoProducto.getText();
 
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_ENTER:
@@ -1385,13 +1385,13 @@ public class VistaIngreso extends javax.swing.JPanel {
             case KeyEvent.VK_MULTIPLY:
                 BigDecimal cantidad = obtenerCantidad(codigoProducto);
                 txtCant.setText(Utilidades.formatearCantidadVista(cantidad));
-                txtCodProducto.setText("");
+                txtCodigoProducto.setText("");
                 break;
 
             default:
                 break;
         }
-    }//GEN-LAST:event_txtCodProductoKeyReleased
+    }//GEN-LAST:event_txtCodigoProductoKeyReleased
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         revalidarTabla();
@@ -1453,18 +1453,15 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
         }
 
-        if (saltarPasos) {
-        } else {
-            if (tipoProceso.equals("ingreso")) {
-                if (contado) {
-                    String tipo = new dlgTipoEgreso(null, true).seleccionar();
-                    instancias.getEgresos().setSaltarPasos(true);
-                    if (!tipo.equals("")) {
-                        BigDecimal subtotal = big.getMoneda(txtTotal.getText()).subtract(big.getMoneda(txtTotalIva.getText()));
-                        instancias.getEgresos().cargarEgreso(txtNit.getText(), big.getMoneda(txtTotal.getText()), txtNumero.getText(),
-                                "PAGOS PROVEEDORES", "CANCELACION FACTURA", tipo, ingreso, big.getMoneda(txtTotalIva.getText()), subtotal,
-                                BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "registrandoCompra");
-                    }
+        if (!saltarPasos && tipoProceso.equals("ingreso")) {
+            if (contado) {
+                String tipo = new dlgTipoEgreso(null, true).seleccionar();
+                instancias.getEgresos().setSaltarPasos(true);
+                if (!tipo.equals("")) {
+                    BigDecimal subtotal = big.getMoneda(txtTotal.getText()).subtract(big.getMoneda(txtTotalIva.getText()));
+                    instancias.getEgresos().cargarEgreso(txtNit.getText(), big.getMoneda(txtTotal.getText()), txtNumero.getText(),
+                            "PAGOS PROVEEDORES", "CANCELACION FACTURA", tipo, ingreso, big.getMoneda(txtTotalIva.getText()), subtotal,
+                            BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "registrandoCompra");
                 }
             }
         }
@@ -1566,11 +1563,13 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
         }
 
-        if (!txtCargarCompra.getText().equals("")) {
-            instancias.getSql().cambiarEstadoGeneral("REALIZADO", "ORDENCOMPRA-" + txtCargarCompra.getText(), "bdIngreso");
+        if (tipoProceso.equals(TipoDocumento.COMPRA.getValor()) && cmbCargar.getSelectedIndex() == 1 && !txtCargarCompra.getText().isEmpty()) {
+            String idOrdenCompra = "ORDENCOMPRA-" + txtCargarCompra.getText();
+            instancias.getSql().cambiarEstadoGeneral("REALIZADO", idOrdenCompra, "bdIngreso");
+            devolverCantidadesDocumento(idOrdenCompra, TipoDocumento.ANULAR_ORDEN_COMPRA);
         }
 
-        if (tipoProceso.equals("ingreso")) {
+        if (tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
             TipoDocumento tipoMovimiento = TipoDocumento.COMPRA;
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
             List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
@@ -1625,11 +1624,8 @@ public class VistaIngreso extends javax.swing.JPanel {
             lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("ORDENCOMPRA")[0]);
         }
 
-        if (saltarPasos) {
-
-        } else {
+        if (!saltarPasos) {
             if (tipoProceso.equals("ingreso")) {
-
                 if (cmbTipo.getSelectedItem().equals("DOC. EQUIVALENTE")) {
                     if (!instancias.getSql().aumentarConsecutivo("DOCEQUIVALENTE", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DOCEQUIVALENTE")[0]) + 1)) {
                         metodos.msgError(null, "Error al guardar el consecutivo de documento equivalente");
@@ -1647,8 +1643,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             tipoImp = "Pos";
         }
 
-        if (saltarPasos) {
-        } else {
+        if (!saltarPasos) {
 //                if (metodos.msgPregunta(null, "¿Desea imprimir?") == 0) {
             instancias.getReporte().verIngreso(ingreso, tipoProceso, tipoImp);
 //                }
@@ -1661,7 +1656,7 @@ public class VistaIngreso extends javax.swing.JPanel {
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         if (preguntaLimpiar) {
-            String mensaje = tipoProceso.equals("ingreso") ? "¿Esta seguro de limpiar la compra?" : "¿Esta seguro de limpiar la orden de compra?";
+            String mensaje = tipoProceso.equals("ingreso") ? "¿Limpiar la compra?" : "¿Limpiar la orden de compra?";
             if (metodos.msgPregunta(null, mensaje) != 0) {
                 return;
             }
@@ -1750,13 +1745,9 @@ public class VistaIngreso extends javax.swing.JPanel {
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
-        String consecutivo = "";
-
-        if (tipoProceso.equals("ingreso")) {
-            consecutivo = "ING-" + metodos.msgIngresarEnter(null, "Documento a anular");
-        }
-
-        if (consecutivo.equals("ING-")) {
+        String identificador = tipoProceso.equals(TipoDocumento.ORDEN_COMPRA.getValor()) ? "ORDENCOMPRA-" : "ING-";
+        String consecutivo = identificador + metodos.msgIngresarEnter(null, "Documento a anular");
+        if (consecutivo.equals("ORDENCOMPRA-") || consecutivo.equals("ING-")) {
             return;
         }
 
@@ -1766,126 +1757,16 @@ public class VistaIngreso extends javax.swing.JPanel {
             return;
         }
 
-        txtCargarCompra.setText(consecutivo.replace("ING-", ""));
-        cmbCargar.setSelectedIndex(0);
-
-        KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-        txtCargarCompraKeyReleased(x);
-        tblProductos.removeEditor();
-
-        if (instancias.getSql().getRegistrosPagos(consecutivo).length > 0) {
-            metodos.msgError(null, "Tiene abonos, no se puede anular");
-            btnLimpiarActionPerformed(evt);
-            return;
+        if (tipoProceso.equals(TipoDocumento.ORDEN_COMPRA.getValor())) {
+            anularOrdenCompra(consecutivo);
+        } else {
+            anularCompra(consecutivo);
         }
-
-        if (metodos.msgPregunta(null, "¿Anular esta compra?") == 0) {
-
-            instancias.getSql().eliminarPonderadoIngreso(" bdPonderado ", consecutivo);
-
-            Object[][] Productos = instancias.getSql().getProductosCompra(consecutivo);
-
-            for (Object[] Producto : Productos) {
-
-                String idPonderado = instancias.getSql().getConsecutivoPonderado(Producto[0].toString());
-                Object[] ponderados = instancias.getSql().getUltimoPonderado1(idPonderado);
-
-                String ingreso = "";
-                if (ponderados[9] != null) {
-                    ingreso = ponderados[9].toString();
-                }
-
-                if (!instancias.getSql().modificarPonderado(ponderados[8].toString(), Producto[0].toString(),
-                        big.getBigDecimal(ponderados[1].toString()), String.valueOf(ponderados[2]), ponderados[3].toString(),
-                        big.getBigDecimal(ponderados[4]), String.valueOf(ponderados[5]), instancias.getUsuario(),
-                        big.getBigDecimal(ponderados[7]), ingreso)) {
-                }
-
-                ndProducto producto = instancias.getSql().getDatosProducto(Producto[0].toString(), "bdProductos");
-                double cantidad;
-                double inventario;
-                double fisicoInventario;
-
-                try {
-                    cantidad = Double.parseDouble(producto.getCompras().replace(",", "."));
-                } catch (Exception e) {
-                    cantidad = 0;
-                }
-
-                try {
-                    inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                } catch (Exception e) {
-                    inventario = 0;
-                }
-
-                try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-                } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                }
-
-                double inv = Double.parseDouble(Producto[1].toString().replace(",", "."));
-
-                inventario = inventario - inv;
-                fisicoInventario = fisicoInventario - inv;
-                double total = cantidad - inv;
-
-                String total1 = String.valueOf(df.format(total)).replace(".", ",");
-                String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
-                String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-
-                instancias.getSql().modificarInventario("compras", total1, Producto[0].toString(), "bdProductos");
-                instancias.getSql().modificarInventario("inventario", inventario1, Producto[0].toString(), "bdProductos");
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, Producto[0].toString(), "bdProductos");
-
-                if (instancias.getConfiguraciones().isProductosDetallados()) {
-                    instancias.getSql().anularCompraDetalladoInventario(consecutivo);
-                }
-            }
-
-            if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
-                metodos.msgError(null, "Hubo un problema al anular la compra");
-                return;
-            }
-
-            if (!instancias.getSql().modificarRegistroCxp(consecutivo, "ANULADA")) {
-                metodos.msgError(null, "Hubo un problema al anular la Cxp");
-                return;
-            }
-
-            String egreso = "";
-            try {
-                egreso = instancias.getSql().idEgresoIngresoAsociado(consecutivo);
-            } catch (Exception e) {
-            }
-
-            if (!egreso.equals("")) {
-                boolean egresoAnulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where id='" + egreso + "' ");
-                if (egresoAnulado) {
-                    metodos.msgAdvertencia(null, "Este egreso ya se encuentra anulado");
-                    return;
-                }
-
-                if (!instancias.getSql().anularDocumento(egreso, "bdEgreso")) {
-                    metodos.msgError(null, "Hubo un problema al anular el egreso");
-                    return;
-                }
-            }
-
-            if (egreso.equals("")) {
-                metodos.msgExito(null, "Compra anulada con éxito");
-            } else {
-                metodos.msgExito(null, "Compra y egreso anulados con éxito");
-            }
-        }
-
-        preguntaLimpiar = false;
-        btnLimpiarActionPerformed(evt);
     }//GEN-LAST:event_btnAnularActionPerformed
 
     private void lbProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbProductoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtCodProducto.requestFocus();
+            txtCodigoProducto.requestFocus();
         }
     }//GEN-LAST:event_lbProductoKeyReleased
 
@@ -1957,7 +1838,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         }
 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtCodProducto.requestFocus();
+            txtCodigoProducto.requestFocus();
         }
     }//GEN-LAST:event_txtDiasPlazoKeyReleased
 
@@ -1984,13 +1865,13 @@ public class VistaIngreso extends javax.swing.JPanel {
                             tblProductos.setColumnSelectionInterval(3, 3);
                             tblProductos.transferFocus();
                         } else {
-                            txtCodProducto.requestFocus();
+                            txtCodigoProducto.requestFocus();
                         }
                         break;
                     case 3:
                     case 5:
                     case 6:
-                        txtCodProducto.requestFocus();
+                        txtCodigoProducto.requestFocus();
                         break;
                     default:
                         break;
@@ -2070,8 +1951,8 @@ public class VistaIngreso extends javax.swing.JPanel {
         btnLimpiarActionPerformed(null);
         txtCargarCompra.setText(opcion == 0 ? "" : idDocumento);
 
-        Object[][] productosDocumento = instancias.getSql().getProductosCargarCompra(consecutivo);
-        if (productosDocumento.length == 0) {
+        Object[][] productosOrdenCompra = instancias.getSql().getProductosCargarCompra(consecutivo);
+        if (productosOrdenCompra.length == 0) {
             metodos.msgError(null, opcion == 0 ? "El ingreso no existe" : "La orden de compra no existe");
             txtCargarCompra.setText("");
             return;
@@ -2079,7 +1960,7 @@ public class VistaIngreso extends javax.swing.JPanel {
 
         ndIngreso nodo = instancias.getSql().getDatosIngreso(consecutivo);
         if (!tipoProceso.equals("ordenCompra") && nodo.getEstado().equals("REALIZADO")) {
-            metodos.msgError(null, "La orden de compra ya fue cargada");
+            alertas.alert("La orden de compra ya fue cargada");
             return;
         }
 
@@ -2089,8 +1970,9 @@ public class VistaIngreso extends javax.swing.JPanel {
         cmbCargar.setEnabled(opcion == 0);
         txtNit.setText(nodo.getProveedor());
         cargarCliente(nodo.getProveedor());
+
         cargarDetallesEnTabla(daoDetalleProducto.obtenerDetalleProductosDocumento(consecutivo));
-        cargarProductosDocumento(productosDocumento);
+        cargarProductosDocumento(productosOrdenCompra);
         tblProductos.removeEditor();
     }//GEN-LAST:event_txtCargarCompraKeyReleased
 
@@ -2162,7 +2044,7 @@ public class VistaIngreso extends javax.swing.JPanel {
                         ? EstadosDetalleProducto.DISPONIBLE.getNombre()
                         : EstadosDetalleProducto.EN_TRANSITO.getNombre();
                 List<DetalleProducto> detallesProductos = generarDetallesProductos(nodo.getIdSistema(), estadoDetalleProducto);
-                BigDecimal valorUnitario = Utilidades.convertirBigDecimal(obtenerValorTabla(tblProductos.getSelectedRow(), 2, tblProductos));
+                BigDecimal valorUnitario = big.getMoneda(obtenerValorTabla(tblProductos.getSelectedRow(), 2, tblProductos));
 
                 if (!tipo.equals("")) {
                     VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, detallesProductos, "Entrada", this.tipoProceso, valorUnitario);
@@ -2264,9 +2146,9 @@ public class VistaIngreso extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantKeyReleased
 
-    private void txtCodProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodProductoActionPerformed
+    private void txtCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoProductoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodProductoActionPerformed
+    }//GEN-LAST:event_txtCodigoProductoActionPerformed
 
     private void txtCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantActionPerformed
         // TODO add your handling code here:
@@ -2328,11 +2210,11 @@ public class VistaIngreso extends javax.swing.JPanel {
             if (instancias.getDescuento().equals("peso")) {
                 alertas.bigAlert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
                         + "Debes asignar el descuento directamente al producto específico.");
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
                 return;
             }
 
-            txtCodProducto.requestFocus();
+            txtCodigoProducto.requestFocus();
             abrirModalDescuentos();
         }
     }//GEN-LAST:event_txtPorcentajeMouseClicked
@@ -2340,7 +2222,7 @@ public class VistaIngreso extends javax.swing.JPanel {
     private void txtPorcentajeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseEntered
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
             if (instancias.getDescuento().equals("peso")) {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
             }
         }
     }//GEN-LAST:event_txtPorcentajeMouseEntered
@@ -2348,7 +2230,7 @@ public class VistaIngreso extends javax.swing.JPanel {
     private void txtPorcentajeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseExited
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
             if (instancias.getDescuento().equals("peso")) {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
             }
         }
     }//GEN-LAST:event_txtPorcentajeMouseExited
@@ -2356,9 +2238,9 @@ public class VistaIngreso extends javax.swing.JPanel {
     private void txtPorcentajeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPorcentajeFocusGained
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
             if (instancias.getDescuento().equals("peso")) {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
             } else {
-                txtCodProducto.requestFocus();
+                txtCodigoProducto.requestFocus();
                 abrirModalDescuentos();
             }
         }
@@ -2395,6 +2277,105 @@ public class VistaIngreso extends javax.swing.JPanel {
             actualizarConsecutivo(tblComprobantes.getSelectedRow());
         }
     }//GEN-LAST:event_tblComprobantesMouseExited
+
+    private void anularCompra(String consecutivo) {
+        if (instancias.getSql().getRegistrosPagos(consecutivo).length > 0) {
+            metodos.msgError(null, "Tiene abonos, no se puede anular");
+            btnLimpiarActionPerformed(null);
+            return;
+        }
+
+        if (metodos.msgPregunta(null, "¿Anular esta compra?") == 0) {
+            instancias.getSql().eliminarPonderadoIngreso(" bdPonderado ", consecutivo);
+
+            Object[][] productos = instancias.getSql().getProductosCompra(consecutivo);
+            for (Object[] producto : productos) {
+                String idPonderado = instancias.getSql().getConsecutivoPonderado(producto[0].toString());
+                Object[] ponderados = instancias.getSql().getUltimoPonderado1(idPonderado);
+                String ingreso = ponderados[9] != null ? ponderados[9].toString() : "";
+                instancias.getSql().modificarPonderado(ponderados[8].toString(), producto[0].toString(),
+                        big.getBigDecimal(ponderados[1].toString()), String.valueOf(ponderados[2]), ponderados[3].toString(),
+                        big.getBigDecimal(ponderados[4]), String.valueOf(ponderados[5]), instancias.getUsuario(),
+                        big.getBigDecimal(ponderados[7]), ingreso);
+            }
+
+            devolverCantidadesDocumento(consecutivo, TipoDocumento.ANULAR_COMPRA);
+
+            if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
+                metodos.msgError(null, "Hubo un problema al anular la compra");
+                return;
+            }
+
+            if (!instancias.getSql().modificarRegistroCxp(consecutivo, "ANULADA")) {
+                metodos.msgError(null, "Hubo un problema al anular la Cxp");
+                return;
+            }
+
+            String egreso = "";
+            try {
+                egreso = instancias.getSql().idEgresoIngresoAsociado(consecutivo);
+            } catch (Exception e) {
+            }
+
+            if (!egreso.isEmpty()) {
+                boolean egresoAnulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where id='" + egreso + "' ");
+                if (egresoAnulado) {
+                    metodos.msgAdvertencia(null, "Este egreso ya se encuentra anulado");
+                    return;
+                }
+
+                if (!instancias.getSql().anularDocumento(egreso, "bdEgreso")) {
+                    metodos.msgError(null, "Hubo un problema al anular el egreso");
+                    return;
+                }
+            }
+
+            metodos.msgExito(null, egreso.isEmpty() ? "Compra anulada con éxito" : "Compra y egreso anulados con éxito");
+        }
+
+        preguntaLimpiar = false;
+        btnLimpiarActionPerformed(null);
+    }
+
+    private void anularOrdenCompra(String consecutivo) {
+        ndIngreso nodo = instancias.getSql().getDatosIngreso(consecutivo);
+        if (nodo.getEstado().equals("REALIZADO")) {
+            alertas.alert("La orden de compra ya fue procesada");
+            return;
+        }
+
+        if (metodos.msgPregunta(null, "¿Anular esta orden de compra?") == 0) {
+            if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
+                metodos.msgError(null, "Hubo un problema al anular la orden de compra");
+                return;
+            }
+            devolverCantidadesDocumento(consecutivo, TipoDocumento.ANULAR_ORDEN_COMPRA);
+            metodos.msgExito(null, "Orden de compra anulada con éxito");
+        }
+
+        preguntaLimpiar = false;
+        btnLimpiarActionPerformed(null);
+    }
+
+    private void devolverCantidadesDocumento(String idDocumento, TipoDocumento tipoAnulacion) {
+        String tablaRevertir = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
+        Object[][] productos = instancias.getSql().getProductosCargarCompra(idDocumento);
+        List<MovimientoInventario> productosARevertir = new ArrayList<>();
+        for (Object[] reg : productos) {
+            ndProducto prodRevertir = instancias.getSql().getDatosProducto(reg[0].toString(), tablaRevertir);
+            BigDecimal cantRevertir = Utilidades.convertirBigDecimal(reg[1].toString());
+            productosARevertir.add(new MovimientoInventario(prodRevertir, cantRevertir, BigDecimal.ZERO, ""));
+        }
+
+        ServicioInventario servicioRevertir = new ServicioInventario(
+                productosARevertir, new ArrayList<DetalleProducto>(), tipoAnulacion,
+                idDocumento, tablaRevertir, instancias.getUsuario(), null);
+        try {
+            servicioRevertir.procesarMovimiento();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     private boolean existeProductoDetalle(String codigoProducto) {
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
@@ -2552,19 +2533,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         }
     }
 
-    public void cargarProductoDesdeDetalleProducto(String codigo, BigDecimal cantidad, int plu) {
-
-        for (int j = 0; j < tblProductos.getRowCount(); j++) {
-            if (codigo.equalsIgnoreCase((String) tblProductos.getValueAt(j, 24)) && (plu + "").equals(((int) tblProductos.getValueAt(j, 13)) + "")) {
-                metodos.msgAdvertencia(null, "El producto ya esta cargado");
-                tblProductos.setColumnSelectionInterval(2, 2);
-                tblProductos.setRowSelectionInterval(j, j);
-                tblProductos.editCellAt(j, 2);
-                tblProductos.transferFocus();
-                txtCodProducto.setText("");
-                return;
-            }
-        }
+    public void cargarProductoDesdeDetalleProducto(String codigo, BigDecimal cantidad, BigDecimal valorPonderadoDigitado) {
 
         ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
 
@@ -2575,74 +2544,41 @@ public class VistaIngreso extends javax.swing.JPanel {
                 return;
             }
 
-            if (this.plu) {
-                this.plu = false;
-                int cant = 0;
-                if (nodo.isPlu2()) {
-                    cant++;
-                }
-                if (nodo.isPlu3()) {
-                    cant++;
-                }
-                if (nodo.isPlu4()) {
-                    cant++;
-                }
-                if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
-                    pluu.setInstancias(instancias, nodo.getCodigo());
-                    pluu.setOpc("ingreso");
-                    pluu.setVisible(true);
-                    return;
-                }
-            }
-
-            String cantidadPLU = "1";
-            String desc = nodo.getDescripcion();
-            String lista = nodo.getL1();
-            switch (plu) {
-                case 2:
-                    cantidadPLU = nodo.getCantidad2();
-                    desc = nodo.getDescripcion2();
-                    lista = nodo.getL2();
-                    break;
-                case 3:
-                    cantidadPLU = nodo.getCantidad3();
-                    desc = nodo.getDescripcion3();
-                    lista = nodo.getL3();
-                    break;
-                case 4:
-                    cantidadPLU = nodo.getCantidad4();
-                    desc = nodo.getDescripcion4();
-                    lista = nodo.getL4();
-                    break;
-            }
-
-            BigDecimal ponderado = BigDecimal.ZERO;
             BigDecimal ultimoCosto = BigDecimal.ZERO;
             try {
                 UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
-                ponderado = ultimoPonderado.getNuevoPonderado();
                 ultimoCosto = ultimoPonderado.getUltimoCosto();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 alertas.bigAlert("No se pudo consultar el último ponderado del producto");
             }
 
-            BigDecimal utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
+            BigDecimal utilidad = big.getBigDecimal(nodo.getL1()).subtract(valorPonderadoDigitado);
 
-            modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cantidadPLU))),
-                Utilidades.formatearCantidadVista(cantidad), big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")),
+            modeloProductos.addRow(new Object[]{
+                nodo.getCodigo(),
+                nodo.getDescripcion(),
+                big.setMoneda(valorPonderadoDigitado),
+                Utilidades.formatearCantidadVista(cantidad),
+                big.setMoneda(big.getBigDecimal("0")),
+                "0",
+                big.setMoneda(big.getBigDecimal("0")),
                 big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
-                big.setMoneda(big.getBigDecimal(lista)), plu, Utilidades.formatearCantidadVista(big.getBigDecimal(cantidadPLU).multiply(cantidad)),
-                ponderado, 0, big.setMoneda(utilidad),
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())),
+                "0",
+                nodo.getUnd(),
+                big.setMoneda(ultimoCosto),
+                big.setMoneda(big.getBigDecimal(nodo.getL1())),
+                "1",
+                Utilidades.formatearCantidadVista(cantidad),
+                valorPonderadoDigitado, 0, big.setMoneda(utilidad),
                 "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
 
             tblProductos.setColumnSelectionInterval(1, 1);
             tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
             tblProductos.editCellAt(tblProductos.getRowCount() - 1, 1);
             tblProductos.transferFocus();
-            txtCodProducto.setText("");
+            txtCodigoProducto.setText("");
 
             KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
             tblProductosKeyReleased(x);
@@ -2736,7 +2672,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             }
 
             tblProductos.transferFocus();
-            txtCodProducto.setText("");
+            txtCodigoProducto.setText("");
             calcularTabla(tblProductos.getRowCount() - 1);
 
 //            KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
@@ -2808,7 +2744,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
             tblProductos.editCellAt(tblProductos.getRowCount() - 1, 1);
             tblProductos.transferFocus();
-            txtCodProducto.setText("");
+            txtCodigoProducto.setText("");
 
             KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
             tblProductosKeyReleased(x);
@@ -2980,31 +2916,33 @@ public class VistaIngreso extends javax.swing.JPanel {
                     big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0,
                     big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
 
-                tblProductos.setColumnSelectionInterval(1, 1);
-                tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
-                tblProductos.editCellAt(tblProductos.getRowCount() - 1, 1);
-                tblProductos.transferFocus();
-                txtCodProducto.setText("");
+                txtCodigoProducto.setText("");
 
                 KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
                 tblProductosKeyReleased(x);
+
                 txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
-
-                Rectangle r;
-                if (DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor")) {
-                    r = tblProductos.getCellRect(tblProductos.getRowCount() - 1, 2, true);
-                } else {
-                    r = tblProductos.getCellRect(tblProductos.getRowCount() - 1, 3, true);
-                }
-
-                scrollTblProductos.getViewport().scrollRectToVisible(r);
-
-//                tblProductos.setColumnSelectionInterval(0, 0);
-//                tblProductos.setRowSelectionInterval(modeloProductos.getRowCount() - 1, modeloProductos.getRowCount() - 1);
+                marcarFocoTabla();
                 return;
             }
         }
+
         ventanaProductos(codigo);
+    }
+
+    private void marcarFocoTabla() {
+        int ultimaFila = tblProductos.getRowCount() - 1;
+        tblProductos.scrollRectToVisible(tblProductos.getCellRect(ultimaFila, 0, true));
+
+        if (instancias.isLector()) {
+            txtCodigoProducto.requestFocus();
+        } else {
+            int col = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
+            tblProductos.setColumnSelectionInterval(col, col);
+            tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
+            tblProductos.editCellAt(ultimaFila, col);
+            tblProductos.transferFocus();
+        }
     }
 
     public void cargarProductoPreCompra(String codigo, String cantidad, int plu, String valor, String tipoDescuento) {
@@ -3079,7 +3017,7 @@ public class VistaIngreso extends javax.swing.JPanel {
             tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
             tblProductos.editCellAt(tblProductos.getRowCount() - 1, 1);
             tblProductos.transferFocus();
-            txtCodProducto.setText("");
+            txtCodigoProducto.setText("");
 
             KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
             tblProductosKeyReleased(x);
@@ -3098,8 +3036,7 @@ public class VistaIngreso extends javax.swing.JPanel {
         buscar.setIngreso(this);
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
-        instancias.setCampoActual(txtCodProducto);
-        txtCodProducto.requestFocus();
+        instancias.setCampoActual(txtCodigoProducto);
         buscar.noEncontrado(codigo.replace("'", "//"));
         buscar.show();
     }
@@ -3131,7 +3068,7 @@ public class VistaIngreso extends javax.swing.JPanel {
     public void nuevoProveedor(String id) {
         txtNit.setText(id);
         cargarCliente(id);
-        txtCodProducto.requestFocus();
+        txtCodigoProducto.requestFocus();
     }
 
     private void guardarMovimientos() {
@@ -3615,7 +3552,7 @@ public class VistaIngreso extends javax.swing.JPanel {
     }
 
     private void abrirModalDescuentosProducto(int filaSelecciona) {
-        txtCodProducto.requestFocus();
+        txtCodigoProducto.requestFocus();
         String descuento = "";
         String porcentajeDescuento = "";
         String tipoOpcion = tblProductos.getValueAt(filaSelecciona, 25).toString();
@@ -3861,7 +3798,7 @@ public class VistaIngreso extends javax.swing.JPanel {
     private javax.swing.JLabel txtCantProductos;
     private javax.swing.JLabel txtCantUnidades;
     private javax.swing.JTextField txtCargarCompra;
-    private javax.swing.JTextField txtCodProducto;
+    private javax.swing.JTextField txtCodigoProducto;
     private javax.swing.JTextField txtDiasPlazo;
     private datechooser.beans.DateChooserCombo txtFechaFactura;
     private javax.swing.JLabel txtIva;

@@ -3,8 +3,12 @@ package inventario.vista;
 import Enums.DetalleTipoProducto;
 import Enums.TipoDocumento;
 import Modelo.Inventario.DetalleProducto;
+import Vista.Productos.ReceptorDetallado;
+import Vista.Productos.ReceptorProductoSalida;
 import Vista.Productos.VistaAjusteInventario;
 import Vista.Productos.VistaIngreso;
+import Vista.Productos.VistaInventarioInicial;
+import Vista.Ventas.VistaFactura;
 import clases.Instancias;
 import Utilidades.Utilidades;
 import clases.metodosGenerales;
@@ -23,7 +27,6 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.swing.JDialog;
-import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
 public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
@@ -34,6 +37,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     String tipoDocumento = "";
     String tipoMovimiento = "";
     String tipoProducto = "";
+    BigDecimal valorUnitarioDigitado;
     TableRowSorter modeloOrdenado;
 
     public VistaMovimientoDetalleProducto(java.awt.Frame parent, boolean modal, ndProducto producto, List<DetalleProducto> detallesProductos,
@@ -54,6 +58,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         this.tipoProducto = producto.getTipoProducto();
         this.tipoMovimiento = tipoMovimiento;
         this.tipoDocumento = tipoDocumento;
+        this.valorUnitarioDigitado = valorUnitario;
 
         lbTitulo.setText(producto.getDescripcion());
 
@@ -76,7 +81,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         ocultarColumna(4);
         ocultarColumna(5);
 
-        if (esSerialOImei(tipoProd)) {
+        if (DetalleTipoProducto.esSerialOImei(tipoProd)) {
             pnlColor.setVisible(false);
             pnlFechaLote.setVisible(false);
 
@@ -111,7 +116,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             lbFiltro3.setVisible(false);
             txtFiltro3.setVisible(false);
             txtImei.requestFocus();
-        } else if (esColorOTalla(tipoProd)) {
+        } else if (DetalleTipoProducto.esColorOTalla(tipoProd)) {
             lbFiltro1.setText("Color:");
             lbFiltro2.setText("Talla:");
 
@@ -189,7 +194,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         pnlFechaLote.setVisible(false);
         pnlImei.setVisible(false);
 
-        if (esSerialOImei(tipoProd)) {
+        if (DetalleTipoProducto.esSerialOImei(tipoProd)) {
             if (esTipo(tipoProd, DetalleTipoProducto.SERIAL) || esTipo(tipoProd, DetalleTipoProducto.SERIAL_COLOR)) {
                 tituloColumna(0, "Serial");
             } else {
@@ -224,7 +229,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             lbFiltro2.setText("Color:");
             lbFiltro3.setVisible(false);
             txtFiltro3.setVisible(false);
-        } else if (esColorOTalla(tipoProd)) {
+        } else if (DetalleTipoProducto.esColorOTalla(tipoProd)) {
             tituloColumna(0, "Color");
             tituloColumna(1, "Talla");
 
@@ -304,26 +309,6 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
      */
     private static boolean esTipo(String valor, DetalleTipoProducto tipo) {
         return tipo.getValue().equals(valor);
-    }
-
-    /**
-     * true para productos detallados por serial/imei (IMEI, Serial o
-     * SerialColor).
-     */
-    private static boolean esSerialOImei(String valor) {
-        return esTipo(valor, DetalleTipoProducto.IMEI)
-                || esTipo(valor, DetalleTipoProducto.SERIAL)
-                || esTipo(valor, DetalleTipoProducto.SERIAL_COLOR);
-    }
-
-    /**
-     * true para productos detallados por color/talla (Color, ColorTalla o
-     * Talla).
-     */
-    private static boolean esColorOTalla(String valor) {
-        return esTipo(valor, DetalleTipoProducto.COLOR)
-                || esTipo(valor, DetalleTipoProducto.COLOR_TALLA)
-                || esTipo(valor, DetalleTipoProducto.TALLA);
     }
 
     private ActionListener accion(final String opc, final JDialog ventana) {
@@ -874,7 +859,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         }
 
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-            if (esSerialOImei(tipoProducto)) {
+            if (DetalleTipoProducto.esSerialOImei(tipoProducto)) {
                 String id = "";
                 try {
                     id = instancias.getSql().imeiExistente(obtenerValorTabla(i, 0));
@@ -911,7 +896,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             if (!(Boolean) tblDetalle.getValueAt(i, 4)) {
                 continue;
             }
-            if (!esSerialOImei(tipoProducto)) {
+            if (!DetalleTipoProducto.esSerialOImei(tipoProducto)) {
                 BigDecimal cantidad;
                 try {
                     cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
@@ -958,111 +943,53 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         }
     }
 
-    private void cargarDetalleEnVista(VistaAjusteInventario vista, ndProducto productoOficial) {
-
-        vista.eliminarRegistros(productoOficial.getIdSistema());
+    private BigDecimal cargarFilasDetalle(String idProducto, String descripcion, ReceptorDetallado receptor) {
         BigDecimal cantidadTotal = BigDecimal.ZERO;
 
-        if (esSerialOImei(tipoProducto)) {
-            vista.cargarProducto1(prodOficial, String.valueOf(tblDetalle.getRowCount()), 1);
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                vista.cargarDetallado(prodOficial, obtenerValorTabla(i, 0), "", "", "", BigDecimal.ONE, productoOficial.getDescripcion(), obtenerValorTabla(i, 1), "");
-            }
-        } else if (esColorOTalla(tipoProducto)) {
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
-                cantidadTotal = cantidadTotal.add(cantidad);
-
-                if (esTipo(tipoProducto, DetalleTipoProducto.TALLA)) {
-                    vista.cargarDetallado(productoOficial.getIdSistema(), "", "", "", "", cantidad, productoOficial.getDescripcion(), "", obtenerValorTabla(i, 0));
-                } else {
-                    vista.cargarDetallado(productoOficial.getIdSistema(), "", "", "", "", cantidad, productoOficial.getDescripcion(), obtenerValorTabla(i, 0), obtenerValorTabla(i, 1));
-                }
-            }
-            vista.cargarProducto1(prodOficial, Utilidades.formatearCantidadVista(cantidadTotal), 1);
-        } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
-                cantidadTotal = cantidadTotal.add(cantidad);
-
-                vista.cargarDetallado(prodOficial, "", obtenerValorTabla(i, 0), obtenerValorTabla(i, 1), obtenerValorTabla(i, 2), cantidad, productoOficial.getDescripcion(), "", "");
-            }
-            vista.cargarProducto1(prodOficial, Utilidades.formatearCantidadVista(cantidadTotal), 1);
-        }
-    }
-
-    private void cargarDetalleEnVista(VistaIngreso vista, ndProducto producto) {
-
-        vista.eliminarRegistros(prodOficial);
-        BigDecimal cantidadTotal = BigDecimal.ZERO;
-
-        if (esSerialOImei(tipoProducto)) {
+        if (DetalleTipoProducto.esSerialOImei(tipoProducto)) {
             for (int i = 0; i < tblDetalle.getRowCount(); i++) {
                 cantidadTotal = cantidadTotal.add(BigDecimal.ONE);
-                vista.cargarDetallado(prodOficial, obtenerValorTabla(i, 0),
-                        "", "", "", BigDecimal.ONE, producto.getDescripcion(), obtenerValorTabla(i, 1), "");
+                receptor.cargarDetallado(idProducto, obtenerValorTabla(i, 0), "", "", "",
+                        BigDecimal.ONE, descripcion, obtenerValorTabla(i, 1), "");
             }
-        } else if (esColorOTalla(tipoProducto)) {
+        } else if (DetalleTipoProducto.esColorOTalla(tipoProducto)) {
             for (int i = 0; i < tblDetalle.getRowCount(); i++) {
                 BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
                 cantidadTotal = cantidadTotal.add(cantidad);
-
                 if (esTipo(tipoProducto, DetalleTipoProducto.TALLA)) {
-                    vista.cargarDetallado(prodOficial, "", "", "", "", cantidad,
-                            producto.getDescripcion(), "", obtenerValorTabla(i, 0));
+                    receptor.cargarDetallado(idProducto, "", "", "", "", cantidad, descripcion, "", obtenerValorTabla(i, 0));
                 } else {
-                    vista.cargarDetallado(prodOficial, "", "", "", "", cantidad,
-                            producto.getDescripcion(), obtenerValorTabla(i, 0), obtenerValorTabla(i, 1));
+                    receptor.cargarDetallado(idProducto, "", "", "", "", cantidad, descripcion, obtenerValorTabla(i, 0), obtenerValorTabla(i, 1));
                 }
             }
         } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
             for (int i = 0; i < tblDetalle.getRowCount(); i++) {
                 BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
                 cantidadTotal = cantidadTotal.add(cantidad);
-
-                vista.cargarDetallado(prodOficial, "", obtenerValorTabla(i, 0), obtenerValorTabla(i, 1),
-                        obtenerValorTabla(i, 2), cantidad, producto.getDescripcion(), "", "");
+                receptor.cargarDetallado(idProducto, "", obtenerValorTabla(i, 0), obtenerValorTabla(i, 1),
+                        obtenerValorTabla(i, 2), cantidad, descripcion, "", "");
             }
         }
-
-        vista.cargarProductoDesdeDetalleProducto(prodOficial, cantidadTotal, 1);
+        return cantidadTotal;
     }
 
-    private void cargarDetalleInventarioInicial(ndProducto producto) {
+    private void cargarDetalleEnVista(VistaAjusteInventario vista, ndProducto productoOficial) {
+        vista.eliminarRegistros(productoOficial.getIdSistema());
+        BigDecimal cantidadTotal = cargarFilasDetalle(productoOficial.getIdSistema(), productoOficial.getDescripcion(), vista);
+        vista.cargarProducto1(productoOficial.getIdSistema(), cantidadTotal, 1);
+    }
 
-        instancias.getInventarioInicial().eliminarRegistros();
-        BigDecimal cantidadTotal = BigDecimal.ZERO;
+    private void cargarDetalleEnVista(VistaIngreso vista, ndProducto productoOficial) {
+        vista.eliminarRegistros(productoOficial.getIdSistema());
+        BigDecimal cantidadTotal = cargarFilasDetalle(productoOficial.getIdSistema(), productoOficial.getDescripcion(), vista);
+        vista.cargarProductoDesdeDetalleProducto(productoOficial.getIdSistema(), cantidadTotal, this.valorUnitarioDigitado);
+    }
 
-        if (esSerialOImei(tipoProducto)) {
-            instancias.getInventarioInicial().cargarProducto1(String.valueOf(tblDetalle.getRowCount()));
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                instancias.getInventarioInicial().cargarDetallado(prodOficial, obtenerValorTabla(i, 0),
-                        "", "", "", BigDecimal.ONE, producto.getDescripcion(), obtenerValorTabla(i, 1), "");
-            }
-        } else if (esColorOTalla(tipoProducto)) {
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
-                cantidadTotal = cantidadTotal.add(cantidad);
-
-                if (esTipo(tipoProducto, DetalleTipoProducto.TALLA)) {
-                    instancias.getInventarioInicial().cargarDetallado(prodOficial, "", "", "", "", cantidad,
-                            producto.getDescripcion(), "", obtenerValorTabla(i, 0));
-                } else {
-                    instancias.getInventarioInicial().cargarDetallado(prodOficial, "", "", "", "", cantidad,
-                            producto.getDescripcion(), obtenerValorTabla(i, 0), obtenerValorTabla(i, 1));
-                }
-            }
-            instancias.getInventarioInicial().cargarProducto1(Utilidades.formatearCantidadVista(cantidadTotal));
-        } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
-                cantidadTotal = cantidadTotal.add(cantidad);
-
-                instancias.getInventarioInicial().cargarDetallado(prodOficial, "", obtenerValorTabla(i, 0), obtenerValorTabla(i, 1),
-                        obtenerValorTabla(i, 2), cantidad, producto.getDescripcion(), "", "");
-            }
-            instancias.getInventarioInicial().cargarProducto1(Utilidades.formatearCantidadVista(cantidadTotal));
-        }
+    private void cargarDetalleInventarioInicial(ndProducto productoOficial) {
+        VistaInventarioInicial invInicial = instancias.getInventarioInicial();
+        invInicial.eliminarRegistros();
+        BigDecimal cantidadTotal = cargarFilasDetalle(productoOficial.getIdSistema(), productoOficial.getDescripcion(), invInicial);
+        invInicial.cargarProducto1(Utilidades.formatearCantidadVista(cantidadTotal));
     }
 
     private void procesarSalida(ndProducto productoOficial) {
@@ -1082,64 +1009,45 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         String lote = obtenerValorTabla(i, 0);
         String temp = obtenerValorTabla(i, 2);
         String fechaV = obtenerValorTabla(i, 1);
+        String id = productoOficial.getIdSistema();
 
-        if (tipoDocumento.equals(TipoDocumento.FACTURACION.getValor())) {
-            if (esSerialOImei(tipoProducto)) {
-                instancias.getFactura().cargarProducto(productoOficial.getIdSistema(), "1", 1, imei, "", cod, false, "", color, "", "", "");
-            } else if (esColorOTalla(tipoProducto)) {
-                instancias.getFactura().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", "", cod, false, color, imei, "", "", "");
+        VistaFactura vistaDocumento = obtenerVistaDocumento();
+        if (vistaDocumento != null) {
+            if (DetalleTipoProducto.esSerialOImei(tipoProducto)) {
+                vistaDocumento.cargarProducto(id, "1", 1, imei, "", cod, false, "", color, "", "", "");
+            } else if (DetalleTipoProducto.esColorOTalla(tipoProducto)) {
+                vistaDocumento.cargarProducto(id, cantidad, 1, "", "", cod, false, color, imei, "", "", "");
             } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-                instancias.getFactura().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", lote, cod, false, "", lote, temp, fechaV, "");
+                vistaDocumento.cargarProducto(id, cantidad, 1, "", lote, cod, false, "", lote, temp, fechaV, "");
             }
-        } else if (tipoDocumento.equals(TipoDocumento.AJUSTE_SALIDA.getValor())) {
-            if (esSerialOImei(tipoProducto)) {
-                instancias.getVistaAjusteInventario().cargarProducto(productoOficial.getIdSistema(), "1", 1, imei, "", cod, "", color, "", "");
-            } else if (esColorOTalla(tipoProducto)) {
-                instancias.getVistaAjusteInventario().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", "", cod, color, imei, "", "");
+            return;
+        }
+
+        ReceptorProductoSalida receptor = obtenerReceptorSalida();
+        if (receptor != null) {
+            if (DetalleTipoProducto.esSerialOImei(tipoProducto)) {
+                receptor.cargarProducto(id, "1", 1, imei, "", cod, "", color, "", "");
+            } else if (DetalleTipoProducto.esColorOTalla(tipoProducto)) {
+                receptor.cargarProducto(id, cantidad, 1, "", "", cod, color, imei, "", "");
             } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-                instancias.getVistaAjusteInventario().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", lote, cod, "", lote, temp, fechaV);
-            }
-        } else if (tipoDocumento.equals("trasladoInterno")) {
-            if (esSerialOImei(tipoProducto)) {
-                instancias.getTrasladosInternos().cargarProducto(productoOficial.getIdSistema(), "1", 1, imei, "", cod, "", color, "", "");
-            } else if (esColorOTalla(tipoProducto)) {
-                instancias.getTrasladosInternos().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", "", cod, color, imei, "", "");
-            } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-                instancias.getTrasladosInternos().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", lote, cod, "", lote, temp, fechaV);
-            }
-        } else if (tipoDocumento.equals("prestamos")) {
-            if (esSerialOImei(tipoProducto)) {
-                instancias.getPrestamos().cargarProducto(productoOficial.getIdSistema(), "1", 1, imei, "", cod, "", color, "", "");
-            } else if (esColorOTalla(tipoProducto)) {
-                instancias.getPrestamos().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", "", cod, color, imei, "", "");
-            } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-                instancias.getPrestamos().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", lote, cod, "", lote, temp, fechaV);
-            }
-        } else if (tipoDocumento.equals(TipoDocumento.PLAN_SEPARE.getValor())) {
-            if (esSerialOImei(tipoProducto)) {
-                instancias.getPlanSepare().cargarProducto(productoOficial.getIdSistema(), "1", 1, imei, "", cod, false, "", color, "", "", "");
-            } else if (esColorOTalla(tipoProducto)) {
-                instancias.getPlanSepare().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", "", cod, false, color, imei, "", "", "");
-            } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-                instancias.getPlanSepare().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", lote, cod, false, "", lote, temp, fechaV, "");
-            }
-        } else if (tipoDocumento.equals(TipoDocumento.MESA.getValor())) {
-            if (esSerialOImei(tipoProducto)) {
-                instancias.getMesa1().cargarProducto(productoOficial.getIdSistema(), "1", 1, imei, "", cod, false, "", color, "", "", "");
-            } else if (esColorOTalla(tipoProducto)) {
-                instancias.getMesa1().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", "", cod, false, color, imei, "", "", "");
-            } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-                instancias.getMesa1().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", lote, cod, false, "", lote, temp, fechaV, "");
-            }
-        } else if (tipoDocumento.equals(TipoDocumento.PEDIDO.getValor())) {
-            if (esSerialOImei(tipoProducto)) {
-                instancias.getPedido().cargarProducto(productoOficial.getIdSistema(), "1", 1, imei, "", cod, false, "", color, "", "", "");
-            } else if (esColorOTalla(tipoProducto)) {
-                instancias.getPedido().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", "", cod, false, color, imei, "", "", "");
-            } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
-                instancias.getPedido().cargarProducto(productoOficial.getIdSistema(), cantidad, 1, "", lote, cod, false, "", lote, temp, fechaV, "");
+                receptor.cargarProducto(id, cantidad, 1, "", lote, cod, "", lote, temp, fechaV);
             }
         }
+    }
+
+    private VistaFactura obtenerVistaDocumento() {
+        if (tipoDocumento.equals(TipoDocumento.FACTURACION.getValor())) return instancias.getFactura();
+        if (tipoDocumento.equals(TipoDocumento.PLAN_SEPARE.getValor())) return instancias.getPlanSepare();
+        if (tipoDocumento.equals(TipoDocumento.MESA.getValor())) return instancias.getMesa1();
+        if (tipoDocumento.equals(TipoDocumento.PEDIDO.getValor())) return instancias.getPedido();
+        return null;
+    }
+
+    private ReceptorProductoSalida obtenerReceptorSalida() {
+        if (tipoDocumento.equals(TipoDocumento.AJUSTE_SALIDA.getValor())) return instancias.getVistaAjusteInventario();
+        if (tipoDocumento.equals("trasladoInterno")) return instancias.getTrasladosInternos();
+        if (tipoDocumento.equals("prestamos")) return instancias.getPrestamos();
+        return null;
     }
 
     private void btnCargarImeiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarImeiActionPerformed
@@ -1236,7 +1144,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             if (!txtColor.getText().equals("")) {
                 btnCargarImeiActionPerformed(null);
             } else {
-                ventanaColores1(txtColor.getText());
+                ventanaColores(txtColor.getText());
             }
         } else {
             txtColor.setText("");
@@ -1260,7 +1168,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
                     txtTalla.requestFocus();
                 }
             } else {
-                ventanaColores2(txtColor1.getText());
+                ventanaColores1(txtColor1.getText());
             }
         } else {
             txtColor1.setText("");
@@ -1439,7 +1347,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         buscar.show();
     }
 
-    public void ventanaColores1(String nit) {
+    public void ventanaColores(String nit) {
         buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
         instancias.setBuscColores(buscar);
@@ -1450,39 +1358,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         buscar.show();
     }
 
-//    public void ventanaTallas(String nit) {
-//        buscTallas buscar = new buscTallas(instancias.getMenu(), rootPaneCheckingEnabled);
-//        buscar.setLocationRelativeTo(null);
-//        instancias.setBuscTallas(buscar);
-//        instancias.setCampoActual(txtTalla);
-//        txtTalla.requestFocus();
-//        buscar.setInstancia(instancias);
-//        buscar.noEncontrado(nit);
-//        buscar.show();
-//    }
-//
-//    public void ventanaTallas1(String nit) {
-//        buscTallas buscar = new buscTallas(instancias.getMenu(), rootPaneCheckingEnabled);
-//        buscar.setLocationRelativeTo(null);
-//        instancias.setBuscTallas(buscar);
-//        instancias.setCampoActual(txtTalla2);
-//        txtTalla2.requestFocus();
-//        buscar.setInstancia(instancias);
-//        buscar.noEncontrado(nit);
-//        buscar.show();
-//    }
-//
-//    public void ventanaColores(String nit) {
-//        buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
-//        buscar.setLocationRelativeTo(null);
-//        instancias.setBuscColores(buscar);
-//        instancias.setCampoActual(txtColor2);
-//        txtColor2.requestFocus();
-//        buscar.setInstancia(instancias);
-//        buscar.noEncontrado(nit);
-//        buscar.show();
-//    }
-    public void ventanaColores2(String nit) {
+    public void ventanaColores1(String nit) {
         buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
         instancias.setBuscColores(buscar);
@@ -1580,8 +1456,5 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     private javax.swing.JTextField txtTalla;
     private javax.swing.JTextField txtTemp;
     // End of variables declaration//GEN-END:variables
-//
-//    private void registerKeyboardAction(ActionListener accionTeclas, String cerrar, KeyStroke CTRL_G, int WHEN_IN_FOCUSED_WINDOW) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
+
 }

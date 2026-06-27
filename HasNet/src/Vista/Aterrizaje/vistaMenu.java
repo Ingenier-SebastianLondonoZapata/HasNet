@@ -90,18 +90,18 @@ import formularios.Tesoreria.infRepBancos;
 import formularios.Tesoreria.infCaja;
 import formularios.Tesoreria.infRepCuadre;
 
-import formularios.Ventas.infCotiza;
+import Vista.Ventas.cotizacion;
 import formularios.Ventas.infCuentaCobro;
-import formularios.Ventas.infFactura;
+import Vista.Ventas.factura;
 import formularios.Ventas.infFacturaCreditos;
 import formularios.Ventas.infFacturarLotes;
-import Vista.Ventas.infMesas;
+import Vista.Ventas.VistaMesas;
 import Vista.Ventas.VistaDocumentos;
 import formularios.Ventas.infMesa;
 import formularios.Ventas.infMesas1;
-import formularios.Ventas.infOrdenServicio;
-import formularios.Ventas.infPedido;
-import formularios.Ventas.infPlanSepare;
+import Vista.Ventas.ordenServicio;
+import Vista.Ventas.pedido;
+import Vista.Ventas.planSepare;
 import Vista.Ventas.VistaPreparacion;
 import formularios.Ventas.infReportesVentas;
 import formularios.Veterinario.dlgMedicamentosPendientes;
@@ -1925,37 +1925,25 @@ public class vistaMenu extends javax.swing.JFrame {
                 color = new Color(214, 214, 214);
                 break;
             case "productos":
-                textos[0] = "CREACIÓN";
-                textos[1] = "DISEÑO";
-                textos[2] = "O.COMPRA";
-                textos[3] = "COMPRAS";
-                textos[4] = "PRESTAMOS";
-                if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                    textos[5] = "TRASL.INT";
-                } else {
-                    textos[5] = (String) null;
-                }
-                textos[6] = "AJUSTES";
-                textos[7] = "GRUPOS";
-                textos[8] = "ARMADO";
-                textos[9] = "INV.INICIAL";
-                textos[10] = (String) null;
-                textos[11] = "KARDEX";
-                textos[12] = "REPORTES";
+                textos[0] = "PRODUCTOS";
+                textos[1] = "GRUPOS";
+                textos[2] = "INV.INICIAL";
+                textos[3] = "DISEÑO";
+                textos[4] = "O.COMPRA";
+                textos[5] = "COMPRAS";
+                textos[6] = "ARMADO";
+                textos[7] = "AJUSTES";
+                textos[8] = "REPORTES";
 
                 forms[0] = instancias.getProductos();
-                forms[1] = instancias.getCosteo();
-                forms[2] = instancias.getOrdenCompraContenedor();
-                forms[3] = instancias.getIngresoContenedor();
-                forms[4] = instancias.getPrestamos();
-                forms[5] = instancias.getTrasladosInternos();
-                forms[6] = instancias.getVistaAjusteInventario();
-                forms[7] = instancias.getGrupos();
-                forms[8] = instancias.getArmado();
-                forms[9] = instancias.getInventarioInicial();
-                forms[10] = null;
-                forms[11] = instancias.getKardexProductos();
-                forms[12] = instancias.getReportesProductos();
+                forms[1] = instancias.getGrupos();
+                forms[2] = instancias.getInventarioInicial();
+                forms[3] = instancias.getCosteo();
+                forms[4] = instancias.getOrdenCompraContenedor();
+                forms[5] = instancias.getIngresoContenedor();
+                forms[6] = instancias.getArmado();
+                forms[7] = instancias.getVistaAjusteInventario();
+                forms[8] = instancias.getReportesProductos();
 
                 color = new Color(214, 214, 214);
                 break;
@@ -2388,12 +2376,12 @@ public class vistaMenu extends javax.swing.JFrame {
                 }
             }
 
-            if (formularios[0] instanceof infFactura) {
+            if (formularios[0] instanceof factura) {
                 instancias.getMenu().cambiarTitulo("FACTURACIÓN");
             }
 
             if (formularios[0] instanceof VistaProductos) {
-                instancias.getMenu().cambiarTitulo("PRODUCTOS");
+                instancias.getMenu().cambiarTitulo("CREACIÓN DE PRODUCTO");
             }
 
             if (formularios[0] instanceof infAgendaConsulta) {
@@ -2422,11 +2410,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("PARQUEADERO");
             }
 
-            if (formularios[1] instanceof VistaDiseno) {
-                instancias.getMenu().cambiarTitulo("DISEÑO");
-            }
-
-            if (formularios[1] instanceof infMesas) {
+            if (formularios[1] instanceof VistaMesas) {
                 instancias.getMenu().cambiarTitulo("MESAS");
             }
 
@@ -2446,8 +2430,8 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("ORDEN DE SERVICIO");
             }
 
-            if (formularios[1] instanceof ordenCompra) {
-                instancias.getMenu().cambiarTitulo("ORDEN DE COMPRA");
+            if (formularios[1] instanceof infGrupos) {
+                instancias.getMenu().cambiarTitulo("CREACIÓN DE GRUPOS Y SUBGRUPOS");
             }
 
             formularios[1].setSelected(true);
@@ -2481,8 +2465,8 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("EMPLEADOS");
             }
 
-            if (formularios[2] instanceof ordenCompra) {
-                instancias.getMenu().cambiarTitulo("ORDEN DE COMPRA");
+            if (formularios[2] instanceof VistaInventarioInicial) {
+                instancias.getMenu().cambiarTitulo("INVENTARIO INICIAL");
             }
 
             if (formularios[2] instanceof infCuentaCobro) {
@@ -2530,15 +2514,15 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("BANCOS");
             }
 
-            if (formularios[3] instanceof ingreso) {
-                instancias.getMenu().cambiarTitulo("COMPRAS");
+            if (formularios[3] instanceof VistaDiseno) {
+                instancias.getMenu().cambiarTitulo("DISEÑO DE PRODUCTO");
             }
 
             if (formularios[3] instanceof infBodegas) {
                 instancias.getMenu().cambiarTitulo("BODEGAS INTERNAS");
             }
 
-            if (formularios[3] instanceof infCotiza) {
+            if (formularios[3] instanceof cotizacion) {
                 instancias.getMenu().cambiarTitulo("COTIZACIÓNES");
             }
 
@@ -2576,7 +2560,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("REPORTE DE MENSUALIDADES");
             }
 
-            if (formularios[4] instanceof infPlanSepare) {
+            if (formularios[4] instanceof planSepare) {
                 instancias.getMenu().cambiarTitulo("PLAN SEPARES");
             }
 
@@ -2584,8 +2568,8 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("FORMATOS");
             }
 
-            if (formularios[4] instanceof infPrestamos) {
-                instancias.getMenu().cambiarTitulo("PRESTAMOS");
+            if (formularios[4] instanceof ordenCompra) {
+                instancias.getMenu().cambiarTitulo("ORDEN DE COMPRA");
             }
 
             if (formularios[4] instanceof infRepGuarderia) {
@@ -2644,8 +2628,8 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("PELUQUERIA");
             }
 
-            if (formularios[5] instanceof infPagos) {
-//                instancias.getPagos().cargarTablaCxp();
+            if (formularios[5] instanceof ingreso) {
+                instancias.getMenu().cambiarTitulo("COMPRA");
             }
 
             formularios[5].setSelected(true);
@@ -2665,9 +2649,8 @@ public class vistaMenu extends javax.swing.JFrame {
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
 
-            if (formularios[6] instanceof VistaAjusteInventario) {
-                instancias.getVistaAjusteInventario().consultarPermiso();
-                instancias.getMenu().cambiarTitulo("AJUSTES DE INVENTARIO");
+            if (formularios[6] instanceof infArmado) {
+                instancias.getMenu().cambiarTitulo("ARMADO DE PRODUCTO DISEÑADO");
             }
 
             if (formularios[6] instanceof infRepParqueadero) {
@@ -2690,7 +2673,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("NOTAS CREDITO");
             }
 
-            if (formularios[6] instanceof infPedido) {
+            if (formularios[6] instanceof pedido) {
                 instancias.getMenu().cambiarTitulo("PEDIDOS");
             }
 
@@ -2715,15 +2698,16 @@ public class vistaMenu extends javax.swing.JFrame {
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
 
-            if (formularios[7] instanceof infGrupos) {
-                instancias.getMenu().cambiarTitulo("GRUPOS");
+            if (formularios[7] instanceof VistaAjusteInventario) {
+                instancias.getVistaAjusteInventario().consultarPermiso();
+                instancias.getMenu().cambiarTitulo("AJUSTES DE INVENTARIO");
             }
 
             if (formularios[7] instanceof infRepLavadero1) {
                 instancias.getMenu().cambiarTitulo("REPORTE DE LAVADERO");
             }
 
-            if (formularios[7] instanceof infOrdenServicio) {
+            if (formularios[7] instanceof ordenServicio) {
                 instancias.getMenu().cambiarTitulo("ORDEN DE SERVICIO");
             }
 
@@ -2778,10 +2762,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("REPORTES");
             }
 
-            if (formularios[8] instanceof infArmado) {
-                instancias.getMenu().cambiarTitulo("ARMADO");
-            }
-
             if (formularios[8] instanceof infRepHospitalizacion) {
                 instancias.getMenu().cambiarTitulo("REPORTE DE HOSPITALIZACIÓN");
             }
@@ -2808,12 +2788,12 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("RIPS MEDICOS");
             }
 
-            if (formularios[9] instanceof VistaInventarioInicial) {
-                instancias.getMenu().cambiarTitulo("INVENTARIO INICIAL");
-            }
-
             if (formularios[9] instanceof infFormatos) {
                 instancias.getMenu().cambiarTitulo("FORMATOS DE IMPRESIÓN");
+            }
+
+            if (formularios[9] instanceof infReportesProductos) {
+                instancias.getMenu().cambiarTitulo("REPORTES DE PRODUCTOS");
             }
 
             accionarMenu();
@@ -2832,11 +2812,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
             }
 
-            /*if (formularios[10] instanceof VistaDocumentos) {
-             instancias.getMenu().cambiarTitulo("DOCUMENTOS");
-             instancias.getReimpresion().setDetectarClicABoton(true);
-             instancias.getReimpresion().actualizarTablaDocumentos();
-             }*/
             if (formularios[10] instanceof infAlertasProximas) {
                 instancias.getMenu().cambiarTitulo("ALERTAS VACUNACIÓN");
             }
@@ -2862,10 +2837,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("REPORTES");
             }
 
-            if (formularios[11] instanceof infKardexProductos) {
-                instancias.getMenu().cambiarTitulo("KARDEX POR PRODUCTO");
-            }
-
             formularios[11].setSelected(true);
             accionarMenu();
 
@@ -2880,10 +2851,6 @@ public class vistaMenu extends javax.swing.JFrame {
         try {
             if (!formularios[12].isVisible()) {
                 metodos.msgAdvertencia(null, "No tiene permisos para esta función");
-            }
-
-            if (formularios[12] instanceof infReportesProductos) {
-                instancias.getMenu().cambiarTitulo("REPORTES");
             }
 
             formularios[12].setSelected(true);
@@ -3346,7 +3313,7 @@ public class vistaMenu extends javax.swing.JFrame {
                             soloMesas();
 
                             try {
-                                infMesas interno14 = new infMesas();
+                                VistaMesas interno14 = new VistaMesas();
                                 dkpFormularios.add(interno14);
                                 if (!vendedorActivo) {
                                     interno14.show();
@@ -3495,7 +3462,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infPedido interno14 = new infPedido();
+            pedido interno14 = new pedido();
             dkpFormularios.add(interno14);
             if (instancias.getUsuarioLog().isPedidos()) {
                 interno14.show();
@@ -3507,7 +3474,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infPlanSepare interno14 = new infPlanSepare();
+            planSepare interno14 = new planSepare();
             dkpFormularios.add(interno14);
             if (instancias.getUsuarioLog().isPlanSepares()) {
                 interno14.show();
@@ -3552,7 +3519,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infOrdenServicio interno14 = new infOrdenServicio();
+            ordenServicio interno14 = new ordenServicio();
             dkpFormularios.add(interno14);
             instancias.setOrdenServicio(interno14);
             if (instancias.getUsuarioLog().isOrdenesServicio()) {
@@ -3564,7 +3531,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infCotiza interno6 = new infCotiza();
+            cotizacion interno6 = new cotizacion();
             dkpFormularios.add(interno6);
             instancias.setCotiza(interno6);
             if (instancias.getUsuarioLog().isCotizaciones()) {
@@ -3579,7 +3546,7 @@ public class vistaMenu extends javax.swing.JFrame {
 
     private void cargarModuloSeleccionadoParaPantallaPrincipal() {
         try {
-            infFactura interno14 = new infFactura();
+            factura interno14 = new factura();
             dkpFormularios.add(interno14);
             instancias.setFactura(interno14);
             if (instancias.getUsuarioLog().isFacturas()) {
@@ -3966,7 +3933,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infMesas interno14 = new infMesas();
+            VistaMesas interno14 = new VistaMesas();
             dkpFormularios.add(interno14);
             if (instancias.getUsuarioLog().isCongeladas()) {
                 interno14.show();

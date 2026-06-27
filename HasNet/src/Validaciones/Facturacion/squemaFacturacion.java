@@ -104,6 +104,10 @@ public class squemaFacturacion extends javax.swing.JPanel {
         }
     }
 
+    private static final int COLUMNA_MARCA_UTILIDAD = 15;
+    private static final String MARCA_UTILIDAD_MIN = "ERROR1";
+    private static final String MARCA_UTILIDAD_MAX = "ERROR2";
+
     public boolean validaciones_detalle_facturacion(JTable tablaProductos, String tipoComprobante, String tipoProceso) {
 
         List<Object> errores_validacion = new ArrayList<>();
@@ -163,6 +167,25 @@ public class squemaFacturacion extends javax.swing.JPanel {
             String costoProducto = instancias.getSql().obtenerUltimoCostoProducto(idSistema);
             if (valorProducto.compareTo(big.getBigDecimal(costoProducto)) < 0) {
                 alertas_validacion.add("El producto '" + descripcionProducto + "' se esta facturando por debajo del costo");
+            }
+
+            if (instancias.isMensajeUtilidad()) {
+                Object marcaUtilidad = tablaProductos.getValueAt(i, COLUMNA_MARCA_UTILIDAD);
+                if (marcaUtilidad != null) {
+                    String mensaje = null;
+                    if (MARCA_UTILIDAD_MIN.equals(marcaUtilidad.toString())) {
+                        mensaje = "El producto '" + descripcionProducto + "' tiene utilidad mínima sobrepasada";
+                    } else if (MARCA_UTILIDAD_MAX.equals(marcaUtilidad.toString())) {
+                        mensaje = "El producto '" + descripcionProducto + "' tiene utilidad máxima sobrepasada";
+                    }
+                    if (mensaje != null) {
+                        if (instancias.isUtilidad()) {
+                            errores_validacion.add(mensaje);
+                        } else {
+                            alertas_validacion.add(mensaje);
+                        }
+                    }
+                }
             }
         }
 

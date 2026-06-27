@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="889" pageHeight="595" orientation="Landscape" columnWidth="873" leftMargin="8" rightMargin="8" topMargin="8" bottomMargin="8" uuid="1662f358-4adb-46e2-828d-d076b9baa1bc">
-	<property name="ireport.zoom" value="0.8264462809917594"/>
+	<property name="ireport.zoom" value="1.100000000000032"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="miestilo2" mode="Opaque" pattern="">
@@ -30,19 +30,22 @@
 	<field name="Id" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="codProducto" class="java.lang.String">
+	<field name="producto" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="descripcion" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="cantidad" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="imei" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="lote" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="color" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="talla" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="fechaVencimiento" class="java.sql.Date">
@@ -57,25 +60,19 @@
 	<field name="numIngreso" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="fecha" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="hora" class="java.sql.Time">
+	<field name="bodega" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="usuario" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="color" class="java.lang.String">
+	<field name="fecha" class="java.sql.Timestamp">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="talla" class="java.lang.String">
+	<field name="cantidadComprada" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="bodega" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="cantTotal" class="java.lang.String">
+	<field name="cantidadDisponible" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -220,12 +217,12 @@
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="708" y="0" width="1" height="20" uuid="4652bb61-c712-45b1-9c5c-b42baa2a95e6"/>
 			</line>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.#" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="221" y="0" width="75" height="20" uuid="f6c6428c-5636-4d93-8a25-93ff5502cafa"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cantTotal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cantidadComprada}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement x="440" y="0" width="104" height="20" uuid="b26aa264-5197-4939-a409-57d97831f3e0"/>

@@ -588,7 +588,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
 
             if (!tipo.equals("") && imei.equals("") && lote.equals("")) {
 
-                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", "traslados");
+                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", "traslados", BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;

@@ -1,8 +1,10 @@
 package Vista.Productos;
 
+import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosDetalleProducto;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
+import ImpresionesProductos.GenerarReportes;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
@@ -30,7 +32,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,10 +40,11 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
-public class VistaAjusteInventario extends javax.swing.JInternalFrame {
+public class VistaAjusteInventario extends javax.swing.JInternalFrame implements ReceptorDetallado, ReceptorProductoSalida {
 
     private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
     private final DaoDetalleProducto daoDetalleProducto = new DaoDetalleProducto();
+    private final ControladorAlertas alertas = new ControladorAlertas();
 
     String simbolo = "";
     DefaultTableModel modeloPro;
@@ -51,7 +53,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
     Object[] datos;
-    DecimalFormat df = new DecimalFormat("#.00");
 
     //Barra de titulo
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -89,21 +90,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
         consultarMaestros();
 
-        if (!instancias.getConfiguraciones().isProductosDetallados()) {
-            tblProductos.getColumnModel().getColumn(8).setMinWidth(0);
-            tblProductos.getColumnModel().getColumn(8).setPreferredWidth(0);
-            tblProductos.getColumnModel().getColumn(8).setMaxWidth(0);
-            tblProductos.getColumnModel().getColumn(9).setMinWidth(0);
-            tblProductos.getColumnModel().getColumn(9).setPreferredWidth(0);
-            tblProductos.getColumnModel().getColumn(9).setMaxWidth(0);
-            tblProductos.getColumnModel().getColumn(10).setMinWidth(0);
-            tblProductos.getColumnModel().getColumn(10).setPreferredWidth(0);
-            tblProductos.getColumnModel().getColumn(10).setMaxWidth(0);
-            tblProductos.getColumnModel().getColumn(11).setMinWidth(0);
-            tblProductos.getColumnModel().getColumn(11).setPreferredWidth(0);
-            tblProductos.getColumnModel().getColumn(11).setMaxWidth(0);
-        }
-
         if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
             tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -113,13 +99,14 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         pnlFormulario.registerKeyboardAction(accion("guardar"), "guardar", KeyStroke.getKeyStroke(KeyEvent.VK_G, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        cargarProductoPreAjuste();
+        actualizarColumnasTabla();
+        cargarProductosPrecargados();
 
         pnlInvisible.setVisible(false);
     }
 
     public void consultarPermiso() {
-        if (cmbTipo.getSelectedIndex() == 0) {
+        if (cmbTipoAjuste.getSelectedIndex() == 0) {
             if (!instancias.getUsuarioLog().isAjustesEntrada()) {
                 metodos.msgError(this, "No tiene permisos");
                 btnGuardar.setEnabled(false);
@@ -198,7 +185,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         btnReimprimir = new javax.swing.JButton();
         btnAnular = new javax.swing.JButton();
         lbNit4 = new javax.swing.JLabel();
-        cmbTipo = new javax.swing.JComboBox();
+        cmbTipoAjuste = new javax.swing.JComboBox();
         lbNit3 = new javax.swing.JLabel();
         txtValor = new javax.swing.JTextField();
         lbNit5 = new javax.swing.JLabel();
@@ -266,7 +253,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             }
         });
 
-        tblProductos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        tblProductos.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -325,9 +312,9 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             tblProductos.getColumnModel().getColumn(7).setMinWidth(80);
             tblProductos.getColumnModel().getColumn(7).setPreferredWidth(100);
             tblProductos.getColumnModel().getColumn(7).setMaxWidth(150);
-            tblProductos.getColumnModel().getColumn(8).setMinWidth(100);
-            tblProductos.getColumnModel().getColumn(8).setPreferredWidth(120);
-            tblProductos.getColumnModel().getColumn(8).setMaxWidth(200);
+            tblProductos.getColumnModel().getColumn(8).setMinWidth(150);
+            tblProductos.getColumnModel().getColumn(8).setPreferredWidth(200);
+            tblProductos.getColumnModel().getColumn(8).setMaxWidth(230);
             tblProductos.getColumnModel().getColumn(9).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(9).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(9).setMaxWidth(0);
@@ -409,7 +396,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                         .addGap(15, 15, 15)
                         .addComponent(lbProducto)
                         .addGap(2, 2, 2)
-                        .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                        .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
                         .addGap(2, 2, 2)
                         .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(5, 5, 5))
@@ -433,7 +420,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         pnlBotones.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -446,7 +433,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         });
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 204));
-        btnLimpiar.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnLimpiar.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -459,7 +446,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         });
 
         btnReimprimir.setBackground(new java.awt.Color(247, 220, 111));
-        btnReimprimir.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnReimprimir.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
         btnReimprimir.setText("REIMPRIMIR");
         btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -472,7 +459,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         });
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
-        btnAnular.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnAnular.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
         btnAnular.setText("ANULAR");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -487,11 +474,11 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         lbNit4.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbNit4.setText("Tipo ajuste:");
 
-        cmbTipo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        cmbTipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ajustes Entrada", "Ajuste Salida" }));
-        cmbTipo.addItemListener(new java.awt.event.ItemListener() {
+        cmbTipoAjuste.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        cmbTipoAjuste.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ajustes Entrada", "Ajuste Salida" }));
+        cmbTipoAjuste.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbTipoItemStateChanged(evt);
+                cmbTipoAjusteItemStateChanged(evt);
             }
         });
 
@@ -544,7 +531,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                         .addGap(7, 7, 7)
                         .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txtFecha, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cmbTipo, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbTipoAjuste, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtValor)
                             .addComponent(lbNoFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -563,7 +550,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 .addGap(3, 3, 3)
                 .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbNit4, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                    .addComponent(cmbTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                    .addComponent(cmbTipoAjuste, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbNit3, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
@@ -676,7 +663,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             //PROCESO GUARDAR REGISTRO EN CAJA
             String origen = "", destino = "";
 
-            if (cmbTipo.getSelectedIndex() == 0) {
+            if (cmbTipoAjuste.getSelectedIndex() == 0) {
                 origen = "123-11";
                 destino = "123-22";
             } else {
@@ -685,7 +672,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             }
 
             Object[] vector = {factura, origen, destino, metodos.fechaConsulta(metodosGenerales.fecha()), cantidadTotal,
-                big.getMoneda(txtValor.getText()), cmbTipo.getSelectedItem(),
+                big.getMoneda(txtValor.getText()), cmbTipoAjuste.getSelectedItem(),
                 instancias.getUsuario(), instancias.getTerminal(), metodosGenerales.hora(), "", ""};
 
             ndTraslado nodo = metodos.llenarTraslado(vector);
@@ -697,10 +684,12 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
             //PROCESO GUARDAR VENTA
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
+                String observaciones = cmbTipoAjuste.getSelectedIndex() == 0 ? obtenerValorTabla(i, 8) : obtenerValorTabla(i, 11);
+
                 Object vectVenta[] = {factura, tblProductos.getValueAt(i, 15), tblProductos.getValueAt(i, 3),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 2)), big.getMoneda((String) tblProductos.getValueAt(i, 7)), tblProductos.getValueAt(i, 8),
+                    big.getMoneda((String) tblProductos.getValueAt(i, 2)), big.getMoneda((String) tblProductos.getValueAt(i, 7)), observaciones,
                     tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 9) + "", tblProductos.getValueAt(i, 10),
-                    tblProductos.getValueAt(i, 14), tblProductos.getValueAt(i, 11), "", "", big.getMoneda((String) tblProductos.getValueAt(i, 4)),
+                    tblProductos.getValueAt(i, 14), observaciones, "", "", big.getMoneda((String) tblProductos.getValueAt(i, 4)),
                     big.getMoneda((String) tblProductos.getValueAt(i, 6)), big.getBigDecimal((String) tblProductos.getValueAt(i, 5)),
                     big.getMoneda((String) tblProductos.getValueAt(i, 16)), big.getBigDecimal((String) tblProductos.getValueAt(i, 17)),
                     big.getMoneda((String) tblProductos.getValueAt(i, 18))
@@ -713,8 +702,8 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 }
             }
 
-            TipoDocumento tipoMovimiento = cmbTipo.getSelectedIndex() == 0 ? TipoDocumento.AJUSTE_ENTRADA : TipoDocumento.AJUSTE_SALIDA;
-            List<DetalleProducto> detallesProductos = cmbTipo.getSelectedIndex() == 0 ? generarDetallesProductos() : new ArrayList<DetalleProducto>();
+            TipoDocumento tipoMovimiento = cmbTipoAjuste.getSelectedIndex() == 0 ? TipoDocumento.AJUSTE_ENTRADA : TipoDocumento.AJUSTE_SALIDA;
+            List<DetalleProducto> detallesProductos = cmbTipoAjuste.getSelectedIndex() == 0 ? generarDetallesProductos() : new ArrayList<DetalleProducto>();
             String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
             List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
             ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, factura, tablaUtilizada, instancias.getUsuario(), null);
@@ -740,13 +729,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             saltarPasos = false;
 
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                String tipo = instancias.getImpresion();
-                if (tipo.equals("pos")) {
-                    tipo = "posAjustes";
-                } else {
-                    tipo = "ajustes";
-                }
-                instancias.getReporte().verAjustes(factura, tipo);
+                generarReporte(factura);
             }
 
             preguntaLimpiar = false;
@@ -756,7 +739,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         if (preguntaLimpiar) {
-            if (metodos.msgPregunta(null, "¿Esta seguro de limpiar el ajuste?") != 0) {
+            if (metodos.msgPregunta(null, "¿Limpiar el ajuste?") != 0) {
                 return;
             }
         }
@@ -764,21 +747,14 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         preguntaLimpiar = true;
 
         txtCant.setText(datos[87].toString());
-        while (tblProductos.getRowCount() > 0) {
-            modeloPro.removeRow(0);
-        }
-
-        while (tblDetalle.getRowCount() > 0) {
-            modeloPro1.removeRow(0);
-        }
+        eliminarRegistrosTablas();
 
         txtValor.setText(this.simbolo + " 0");
         cantidadTotal = "0";
         tblProductos.removeEditor();
         lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("TRAS")[0]);
 
-        guardarPreAjustes();
-        guardarPreAjustesDetalle();
+        guardarMovimientosPrecargados();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void popBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popBorrarActionPerformed
@@ -797,8 +773,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
             tblProductos.removeEditor();
             cargarTotales();
-            guardarPreAjustes();
-            guardarPreAjustesDetalle();
+            guardarMovimientosPrecargados();
         } else {
             metodos.msgAdvertencia(this, "Seleccione un producto");
         }
@@ -817,18 +792,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             return;
         }
 
-        String tipo = instancias.getImpresion();
-        if (tipo.equals("pos")) {
-            tipo = "posAjustes";
-        } else {
-            tipo = "ajustes";
-        }
-
-        instancias.getReporte().verAjustes(consecutivo, tipo);
-        if (instancias.getConfiguraciones().isProductosDetallados()) {
-            instancias.getReporte().verIngresoDetalle(consecutivo);
-        }
-
+        generarReporte(consecutivo);
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void lbProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbProductoKeyReleased
@@ -881,13 +845,17 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnAnularActionPerformed
 
-    private void cmbTipoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTipoItemStateChanged
+    private void cmbTipoAjusteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTipoAjusteItemStateChanged
         consultarPermiso();
+        actualizarColumnasTabla();
+
+        eliminarRegistrosTablas();
+        cargarProductosPrecargados();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             calcularFila(i);
         }
-    }//GEN-LAST:event_cmbTipoItemStateChanged
+    }//GEN-LAST:event_cmbTipoAjusteItemStateChanged
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (tblProductos.getSelectedColumn() == 3) {
@@ -897,7 +865,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             List<DetalleProducto> detallesProductos = generarDetallesProductos();
             String tipoMovimiento, tipoDocumento;
 
-            if (cmbTipo.getSelectedIndex() == 0) {
+            if (cmbTipoAjuste.getSelectedIndex() == 0) {
                 tipoMovimiento = "Entrada";
                 tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
             } else {
@@ -940,6 +908,26 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     private void btnBusProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusProdActionPerformed
         ventanaProductos("");
     }//GEN-LAST:event_btnBusProdActionPerformed
+
+    private void generarReporte(String consecutivo) {
+        GenerarReportes reportes = new GenerarReportes(instancias);
+        reportes.verAjusteInventario(consecutivo);
+
+        boolean esAjusteEntrada = instancias.getSql().tipoAjuste(consecutivo).equals("123-11");
+        if (instancias.getConfiguraciones().isProductosDetallados() && esAjusteEntrada) {
+            reportes.verIngresoDetalle(consecutivo);
+        }
+    }
+
+    private void eliminarRegistrosTablas() {
+        while (tblProductos.getRowCount() > 0) {
+            modeloPro.removeRow(0);
+        }
+
+        while (tblDetalle.getRowCount() > 0) {
+            modeloPro1.removeRow(0);
+        }
+    }
 
     private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
 
@@ -999,38 +987,26 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
 
     public void calcularFila(int fila) {
 
-        BigDecimal valor, cantidad, subtotal, total, iva, impoconsumo, totalIva, totalImpoconsumo;
-        valor = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
-        tblProductos.setValueAt(big.setMoneda(valor), fila, 2);
-
         ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 15).toString(), "bdProductos");
 
-        if (nodo.getTipoProducto() != null && cmbTipo.getSelectedItem().equals("Ajuste salida")) {
-            if (nodo.getTipoProducto().equals("Serial") || nodo.getTipoProducto().equals("IMEI")) {
-                cantidad = BigDecimal.ONE;
-            } else {
-                cantidad = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 3)).replace(".", ","));
-            }
-        } else {
-            cantidad = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 3)).replace(".", ","));
-        }
-
-        iva = big.getBigDecimal(tblProductos.getValueAt(fila, 5));
-        impoconsumo = big.getBigDecimal(tblProductos.getValueAt(fila, 17));
-
-        subtotal = valor.multiply(cantidad);
+        BigDecimal valor = big.getMoneda(tblProductos.getValueAt(fila, 2).toString());
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 3));
+        BigDecimal iva = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 5));
+        BigDecimal impoconsumo = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 17));
+        BigDecimal subtotal = valor.multiply(cantidad);
 
         tblProductos.setValueAt(big.setMoneda(subtotal), fila, 4);
 
-        totalIva = subtotal.multiply(iva).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
+        BigDecimal totalIva = subtotal.multiply(iva).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
         tblProductos.setValueAt(big.setMoneda(totalIva), fila, 6);
 
-        totalImpoconsumo = subtotal.multiply(impoconsumo).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
+        BigDecimal totalImpoconsumo = subtotal.multiply(impoconsumo).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
         tblProductos.setValueAt(big.setMoneda(totalImpoconsumo), fila, 18);
 
-        total = totalIva.add(totalImpoconsumo).add(subtotal);
+        BigDecimal total = totalIva.add(totalImpoconsumo).add(subtotal);
         tblProductos.setValueAt(big.setMoneda(total), fila, 7);
 
+        tblProductos.setValueAt(big.setMoneda(valor), fila, 2);
         tblProductos.setValueAt(cantidad, fila, 3);
 
         switch (tblProductos.getValueAt(fila, 9).toString()) {
@@ -1068,26 +1044,43 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             txtCodProducto.requestFocus();
         }
 
-        if (cmbTipo.getSelectedIndex() == 0) {
-            BigDecimal num1 = big.getMoneda(tblProductos.getValueAt(fila, 12).toString());
-            BigDecimal num2 = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", "."));
-            BigDecimal totales = num1.add(num2);
-            tblProductos.setValueAt(big.setNumero(totales), fila, 13);
-        } else if (cmbTipo.getSelectedIndex() == 1) {
-            BigDecimal num1 = big.getMoneda(tblProductos.getValueAt(fila, 12).toString());
-            BigDecimal num2 = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", "."));
-            BigDecimal totales = num1.subtract(num2);
-            tblProductos.setValueAt(big.setNumero(totales), fila, 13);
-        }
+        BigDecimal inventarioActual = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 12));
+        BigDecimal cantidadMovimiento = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 10));
+        BigDecimal inventarioTotal = cmbTipoAjuste.getSelectedIndex() == 0
+                ? inventarioActual.add(cantidadMovimiento)
+                : inventarioActual.subtract(cantidadMovimiento);
 
-//            tblProductos.getSelectionModel().setSelectionInterval(tblProductos.getSelectionModel().getMinSelectionIndex() - 1, tblProductos.getSelectionModel().getMinSelectionIndex() - 1);          
+        tblProductos.setValueAt(Utilidades.formatearCantidadVista(inventarioTotal), fila, 13);
+
         cargarTotales();
-        guardarPreAjustes();
-        guardarPreAjustesDetalle();
+        guardarMovimientosPrecargados();
     }
 
-    public void cargarProductoPreAjuste() {
-        List<DetalleProducto> detalles = daoDetalleProducto.obtenerDetalleProductosPrecargados("AJUS");
+    private void actualizarColumnasTabla() {
+        if (instancias.getConfiguraciones().isProductosDetallados() && cmbTipoAjuste.getSelectedIndex() == 1) {
+            tblProductos.getColumnModel().getColumn(8).setMinWidth(0);
+            tblProductos.getColumnModel().getColumn(8).setPreferredWidth(0);
+            tblProductos.getColumnModel().getColumn(8).setMaxWidth(0);
+            tblProductos.getColumnModel().getColumn(11).setMinWidth(150);
+            tblProductos.getColumnModel().getColumn(11).setPreferredWidth(200);
+            tblProductos.getColumnModel().getColumn(11).setMaxWidth(230);
+        } else {
+            tblProductos.getColumnModel().getColumn(8).setMinWidth(150);
+            tblProductos.getColumnModel().getColumn(8).setPreferredWidth(200);
+            tblProductos.getColumnModel().getColumn(8).setMaxWidth(230);
+            tblProductos.getColumnModel().getColumn(11).setMinWidth(0);
+            tblProductos.getColumnModel().getColumn(11).setPreferredWidth(0);
+            tblProductos.getColumnModel().getColumn(11).setMaxWidth(0);
+        }
+    }
+
+    public void cargarProductosPrecargados() {
+        String tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
+        if (cmbTipoAjuste.getSelectedIndex() == 1) {
+            tipoDocumento = TipoDocumento.AJUSTE_SALIDA.getValor();
+        }
+
+        List<DetalleProducto> detalles = daoDetalleProducto.obtenerDetalleProductosPrecargados(tipoDocumento);
         for (DetalleProducto detalle : detalles) {
             String fechaFormateada = detalle.getFechaVencimiento() != null
                     ? metodos.fecha(detalle.getFechaVencimiento().toString()) : "";
@@ -1104,32 +1097,45 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             });
         }
 
-        Object[][] mat = instancias.getSql().getProductosPrecompra("AJUS", "");
+        Object[][] mat = instancias.getSql().getProductosPrecompra(tipoDocumento, instancias.getUsuario());
 
         for (Object[] reg : mat) {
-            cargarProducto1((String) reg[0], new Double((String) reg[4]) + "", Integer.parseInt((String) reg[3]));
+            cargarProducto1((String) reg[0], Utilidades.convertirBigDecimal(reg[4].toString()), Integer.parseInt((String) reg[3]));
             tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(reg[5])), tblProductos.getRowCount() - 1, 2);
             tblProductos.setValueAt(reg[8], tblProductos.getRowCount() - 1, 14);
+
+            String observaciones = reg[9].toString();
+            tblProductos.setValueAt(observaciones, tblProductos.getRowCount() - 1, 11);
+            tblProductos.setValueAt(observaciones, tblProductos.getRowCount() - 1, 8);
 
             KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
             tblProductosKeyReleased(x);
         }
     }
 
-    public void guardarPreAjustes() {
+    private void guardarMovimientosPrecargados() {
+        String tipoDocumento = cmbTipoAjuste.getSelectedIndex() == 0
+                ? TipoDocumento.AJUSTE_ENTRADA.getValor()
+                : TipoDocumento.AJUSTE_SALIDA.getValor();
+        guardarPreAjustes(tipoDocumento);
+        guardarPreAjustesDetalle(tipoDocumento);
+    }
+
+    public void guardarPreAjustes(String tipoDocumento) {
         boolean noPuedaGuardar = false;
         while (!noPuedaGuardar) {
-            noPuedaGuardar = instancias.getSql().eliminarPrecompra("AJUS", "");
+            noPuedaGuardar = instancias.getSql().eliminarPrecompra(tipoDocumento, instancias.getUsuario());
         }
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            String observaciones = cmbTipoAjuste.getSelectedIndex() == 0 ? obtenerValorTabla(i, 8) : obtenerValorTabla(i, 11);
 
             Object vectCompra[] = {
-                "AJUS", tblProductos.getValueAt(i, 15), big.getMoneda((String) tblProductos.getValueAt(i, 2)), tblProductos.getValueAt(i, 3), "0",
+                tipoDocumento, tblProductos.getValueAt(i, 15), big.getMoneda((String) tblProductos.getValueAt(i, 2)), tblProductos.getValueAt(i, 3), "0",
                 big.getMoneda((String) tblProductos.getValueAt(i, 7)), big.getMoneda((String) tblProductos.getValueAt(i, 6)),
                 big.getMoneda((String) tblProductos.getValueAt(i, 4)), tblProductos.getValueAt(i, 5), tblProductos.getValueAt(i, 1),
                 tblProductos.getValueAt(i, 9) + "", tblProductos.getValueAt(i, 10), big.getMoneda((String) tblProductos.getValueAt(i, 2)),
-                tblProductos.getValueAt(i, 14).toString(), "0", "0", instancias.getUsuario(), ""
+                tblProductos.getValueAt(i, 14).toString(), "0", "0", instancias.getUsuario(), observaciones
             };
 
             ndCompra nodoComp = metodos.llenarCompra(vectCompra);
@@ -1139,8 +1145,8 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         }
     }
 
-    public void guardarPreAjustesDetalle() {
-        while (!instancias.getSql().eliminarPrecompraDetalle("AJUS")) {
+    public void guardarPreAjustesDetalle(String tipoDocumento) {
+        while (!instancias.getSql().eliminarPrecompraDetalle(tipoDocumento)) {
         }
 
         List<DetalleProducto> detalles = new ArrayList<>();
@@ -1148,7 +1154,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             detalles.add(construirDetalleDesdeFilaTabla(i));
         }
 
-        if (!daoDetalleProducto.guardarListaDetallesPrecargados("AJUS", detalles)) {
+        if (!daoDetalleProducto.guardarListaDetallesPrecargados(tipoDocumento, detalles)) {
             metodos.msgError(null, "Error al guardar detalle del ajuste");
         }
     }
@@ -1178,11 +1184,22 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         );
     }
 
+    private void eliminarProductoDetalladoExistente(String idProd) {
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            String idProducto = obtenerValorTabla(i, 14);
+            if (idProducto.equals(idProd)) {
+                modeloPro.removeRow(i);
+                break;
+            }
+        }
+    }
+
     public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
             String temp, String fechaVence) {
 
-        tblProductos.removeEditor();
+        eliminarProductoDetalladoExistente(idProd);
 
+        tblProductos.removeEditor();
         ndProducto nodo = null;
 
         String codigoProd = "";
@@ -1211,7 +1228,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
             String tipoMov = "", tipoDocumento = "";
-            if (cmbTipo.getSelectedIndex() == 0) {
+            if (cmbTipoAjuste.getSelectedIndex() == 0) {
                 tipoMov = "Entrada";
                 tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
             } else {
@@ -1303,7 +1320,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 }
 
                 BigDecimal res = BigDecimal.ONE;
-                if (cmbTipo.getSelectedIndex() == 0) {
+                if (cmbTipoAjuste.getSelectedIndex() == 0) {
                     res = big.getBigDecimal(cant.replace(",", ".")).add(big.getBigDecimal(cantidad.replace(",", ".")));
                 } else {
                     res = big.getBigDecimal(cant.replace(",", ".")).subtract(big.getBigDecimal(cantidad.replace(",", ".")));
@@ -1387,7 +1404,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
         ventanaProductos(codigo);
     }
 
-    public void cargarProducto1(String codigo, String cantidad, int plu) {
+    public void cargarProducto1(String codigo, BigDecimal cantidad, int plu) {
         tblProductos.removeEditor();
 
         ndProducto nodo = null;
@@ -1448,54 +1465,47 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
                 }
             }
 
-            String cant = nodo.getFisicoInventario();
-            cant = cant.replace(".", ",");
-            String cant2 = "1";
+            BigDecimal cantidadPLU = BigDecimal.ONE;
             String desc = nodo.getDescripcion();
 
             switch (plu) {
                 case 2:
-                    cant2 = nodo.getCantidad2();
+                    cantidadPLU = Utilidades.convertirBigDecimal(nodo.getCantidad2());
                     desc = nodo.getDescripcion2();
-                    cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad2()), 2, RoundingMode.HALF_DOWN);
                     break;
                 case 3:
-                    cant2 = nodo.getCantidad3();
+                    cantidadPLU = Utilidades.convertirBigDecimal(nodo.getCantidad3());
                     desc = nodo.getDescripcion3();
-                    cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad3()), 2, RoundingMode.HALF_DOWN);
                     break;
                 case 4:
-                    cant2 = nodo.getCantidad4();
+                    cantidadPLU = Utilidades.convertirBigDecimal(nodo.getCantidad4());
                     desc = nodo.getDescripcion4();
-                    cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad4()), 2, RoundingMode.HALF_DOWN);
                     break;
                 case 5:
-                    cant2 = nodo.getCantidad5();
+                    cantidadPLU = Utilidades.convertirBigDecimal(nodo.getCantidad5());
                     desc = nodo.getDescripcion5();
-                    cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad5()), 2, RoundingMode.HALF_DOWN);
                     break;
                 case 6:
-                    cant2 = nodo.getCantidad6();
+                    cantidadPLU = Utilidades.convertirBigDecimal(nodo.getCantidad6());
                     desc = nodo.getDescripcion6();
-                    cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad6()), 2, RoundingMode.HALF_DOWN);
                     break;
                 case 7:
-                    cant2 = nodo.getCantidad7();
+                    cantidadPLU = Utilidades.convertirBigDecimal(nodo.getCantidad7());
                     desc = nodo.getDescripcion7();
-                    cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad7()), 2, RoundingMode.HALF_DOWN);
                     break;
                 case 8:
-                    cant2 = nodo.getCantidad8();
+                    cantidadPLU = Utilidades.convertirBigDecimal(nodo.getCantidad8());
                     desc = nodo.getDescripcion8();
-                    cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad8()), 2, RoundingMode.HALF_DOWN);
                     break;
             }
 
-            BigDecimal res = BigDecimal.ONE;
-            if (cmbTipo.getSelectedIndex() == 0) {
-                res = big.getBigDecimal(cant.replace(",", ".")).add(big.getBigDecimal(cantidad.replace(",", ".")));
+            BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(nodo.getFisicoInventario());
+            BigDecimal restantes;
+
+            if (cmbTipoAjuste.getSelectedIndex() == 0) {
+                restantes = cantidad.multiply(cantidadPLU).add(fisicoInventario);
             } else {
-                res = big.getBigDecimal(cant.replace(",", ".")).subtract(big.getBigDecimal(cantidad.replace(",", ".")));
+                restantes = cantidad.multiply(cantidadPLU).subtract(fisicoInventario);
             }
 
             BigDecimal ponderado = BigDecimal.ZERO;
@@ -1518,15 +1528,33 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
             } catch (Exception e) {
             }
 
-            BigDecimal subtotal = ponderado.multiply(big.getMoneda(cantidad));
+            BigDecimal subtotal = ponderado.multiply(cantidad);
 
             BigDecimal totalImpo = subtotal.multiply(impoconsumo).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
             BigDecimal totalIva = subtotal.multiply(iva).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
             BigDecimal total = subtotal.add(totalIva).add(totalImpo);
 
-            modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado), cantidad.replace(".", ","), big.setMoneda(ponderado.multiply(big.getMoneda(cantidad))),
-                nodo.getIva(), big.setMoneda(totalIva), big.setMoneda(total), "", plu, cant2, "", big.setNumero(big.getMoneda(cant.replace(".", ","))),
-                big.setNumero(res), "", nodo.getIdSistema(), big.setMoneda(ponderado), nodo.getImpoconsumoVenta(), big.setMoneda(totalImpo)});
+            modeloPro.addRow(new Object[]{
+                nodo.getCodigo(),
+                desc,
+                big.setMoneda(ponderado),
+                Utilidades.formatearCantidadVista(cantidad),
+                big.setMoneda(ponderado.multiply(cantidad)),
+                nodo.getIva(),
+                big.setMoneda(totalIva),
+                big.setMoneda(total),
+                "",
+                plu,
+                cantidadPLU,
+                "",
+                Utilidades.formatearCantidadVista(fisicoInventario),
+                big.setNumero(restantes),
+                "",
+                nodo.getIdSistema(),
+                big.setMoneda(ponderado),
+                nodo.getImpoconsumoVenta(),
+                big.setMoneda(totalImpo)
+            });
 
             tblProductos.setColumnSelectionInterval(5, 5);
             tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
@@ -1596,7 +1624,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     }
 
     public void ajustesExterno(Object[][] productos) {
-        cmbTipo.setSelectedIndex(1);
+        cmbTipoAjuste.setSelectedIndex(1);
 
         for (Object[] prod : productos) {
             cargarProducto(prod[0].toString(), prod[1].toString(), 1, "", "", "", "", "", "", "");
@@ -1625,7 +1653,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnReimprimir;
-    private javax.swing.JComboBox cmbTipo;
+    private javax.swing.JComboBox cmbTipoAjuste;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;

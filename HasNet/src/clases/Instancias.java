@@ -1,5 +1,9 @@
 package clases;
 
+import Vista.Ventas.cotizacion;
+import Vista.Ventas.planSepare;
+import Vista.Ventas.pedido;
+import Vista.Ventas.factura;
 import Vista.Ventas.VistaPreparacion;
 import Vista.Productos.VistaDiseno;
 import Vista.Productos.VistaAjusteInventario;
@@ -12,7 +16,7 @@ import Vista.Productos.VistaIngreso;
 import Vista.Tesoreria.vistaCodigosEgresos;
 import Vista.Tesoreria.vistaEgresos;
 import Vista.Terceros.vistaContactos;
-import Vista.Ventas.infMesas;
+import Vista.Ventas.VistaMesas;
 import Vista.Ventas.VistaDocumentos;
 import Vista.Cartera.VistaNotaDebito;
 import Vista.Cartera.vistaNotaCredito;
@@ -131,7 +135,7 @@ public class Instancias {
     private String tipoImpresion;
     private String impresion;
 
-    private formularios.Ventas.infOrdenServicio ordenServicio;
+    private Vista.Ventas.ordenServicio ordenServicio;
     private String tituloFactura;
 
     private String diasAlertaResolucion;
@@ -254,10 +258,10 @@ public class Instancias {
     private infIndicadoresVentas indicadoresVentas;
     private infFacturarLotes facturarLotes;
     private infCaja caja;
-    private infPedido pedido;
-    private infPlanSepare planSepare;
+    private pedido pedido;
+    private planSepare planSepare;
     private infFacturaCreditos facturaCreditos;
-    private infFactura factura;
+    private factura factura;
     private infCuentaCobro cuentaCobro;
     private infReportesVentas reportesVentas;
     private infRepCreditos repCreditos;
@@ -268,8 +272,8 @@ public class Instancias {
     private infRepCuentaCobro repCuentaCobro;
     private infMesa mesa;
     private infRepAnulas repAnulas;
-    private infCotiza cotiza;
-    private infMesas mesas;
+    private cotizacion cotiza;
+    private VistaMesas mesas;
     private infMesas1 mesas1;
     private buscTipoVehiculo buscTipoVehiculo;
     private VistaDocumentos reimpresion;
@@ -1869,15 +1873,15 @@ public class Instancias {
         return planSepare.getPnlFactura();
     }
 
-    public infPlanSepare getPlanSepareContenedor() {
+    public planSepare getPlanSepareContenedor() {
         return planSepare;
     }
 
-    public void setPlanSepare(infPlanSepare planSepare) {
+    public void setPlanSepare(planSepare planSepare) {
         this.planSepare = planSepare;
     }
 
-    public infPedido getPedidoContenedor() {
+    public pedido getPedidoContenedor() {
         return pedido;
     }
 
@@ -1885,7 +1889,7 @@ public class Instancias {
         return pedido.getPnlFactura();
     }
 
-    public void setPedido(infPedido pedido) {
+    public void setPedido(pedido pedido) {
         this.pedido = pedido;
     }
 
@@ -2085,7 +2089,7 @@ public class Instancias {
         this.tituloFactura = tituloFactura;
     }
 
-    public formularios.Ventas.infOrdenServicio getOrdenServicioContenedor() {
+    public Vista.Ventas.ordenServicio getOrdenServicioContenedor() {
         return ordenServicio;
     }
 
@@ -2101,7 +2105,7 @@ public class Instancias {
         return ordenServicio.getPnlFactura();
     }
 
-    public void setOrdenServicio(formularios.Ventas.infOrdenServicio ordenServicio) {
+    public void setOrdenServicio(Vista.Ventas.ordenServicio ordenServicio) {
         this.ordenServicio = ordenServicio;
     }
 
@@ -2273,11 +2277,11 @@ public class Instancias {
         this.repCuadre = repCuadre;
     }
 
-    public infMesas getMesas() {
+    public VistaMesas getMesas() {
         return mesas;
     }
 
-    public void setMesas(infMesas mesas) {
+    public void setMesas(VistaMesas mesas) {
         this.mesas = mesas;
     }
 
@@ -2601,11 +2605,11 @@ public class Instancias {
         return cotiza.getPnlFactura();
     }
 
-    public infCotiza getCotizaContenedor() {
+    public cotizacion getCotizaContenedor() {
         return cotiza;
     }
 
-    public void setCotiza(infCotiza cotiza) {
+    public void setCotiza(cotizacion cotiza) {
         this.cotiza = cotiza;
     }
 
@@ -2681,11 +2685,11 @@ public class Instancias {
         return factura.getPnlFactura();
     }
 
-    public infFactura getFacturaContenedor() {
+    public factura getFacturaContenedor() {
         return factura;
     }
 
-    public void setFactura(infFactura factura) {
+    public void setFactura(factura factura) {
         this.factura = factura;
     }
 

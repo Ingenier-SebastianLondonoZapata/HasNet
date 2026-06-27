@@ -1,6 +1,6 @@
-package formularios.Ventas;
+package Vista.Ventas;
 
-import Vista.Ventas.VistaFactura;
+import Enums.TipoDocumento;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class infPlanSepare extends javax.swing.JInternalFrame {
+public class planSepare extends javax.swing.JInternalFrame {
 
     private VistaFactura pnlFactura;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -23,7 +23,7 @@ public class infPlanSepare extends javax.swing.JInternalFrame {
         this.pnlFactura = pnlFactura;
     }
 
-    public infPlanSepare() {
+    public planSepare() {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -33,7 +33,7 @@ public class infPlanSepare extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        pnlFactura = new VistaFactura("separe");
+        pnlFactura = new VistaFactura(TipoDocumento.PLAN_SEPARE.getValor());
         pnlFactura.setSize(pnlContenedor.getSize());
         pnlContenedor.add(pnlFactura, CENTER_ALIGNMENT);
         pnlContenedor.revalidate();
@@ -45,9 +45,9 @@ public class infPlanSepare extends javax.swing.JInternalFrame {
     @Override
     public void setSelected(boolean selected) {
         try {
-            super.setSelected(selected); //To change body of generated methods, choose Tools | Templates.
+            super.setSelected(selected);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(infPlanSepare.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(planSepare.class.getName()).log(Level.SEVERE, null, ex);
         }
         pnlFactura.actualizarConsecutivo(0);
     }

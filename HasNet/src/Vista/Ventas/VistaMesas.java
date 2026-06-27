@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
-public class infMesas extends javax.swing.JInternalFrame {
+public class VistaMesas extends javax.swing.JInternalFrame {
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -26,7 +26,7 @@ public class infMesas extends javax.swing.JInternalFrame {
     DefaultTableModel modelo;
     Object[] datos;
 
-    public infMesas() {
+    public VistaMesas() {
         initComponents();
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
         dimBarra = Barra.getPreferredSize();
@@ -57,7 +57,7 @@ public class infMesas extends javax.swing.JInternalFrame {
         try {
             super.setSelected(selected); //To change body of generated methods, choose Tools | Templates.
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(infMesas.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VistaMesas.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

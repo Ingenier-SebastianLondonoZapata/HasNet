@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class VistaInventarioInicial extends javax.swing.JInternalFrame {
+public class VistaInventarioInicial extends javax.swing.JInternalFrame implements ReceptorDetallado {
 
     private final ControladorAlertas alertas = new ControladorAlertas();
 

@@ -13,7 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 
-public class vistaMetodoPagos extends javax.swing.JDialog {
+public class VistaMetodoPagos extends javax.swing.JDialog {
 
     BigDecimal NC, valorTotal, valorNeto;
     String tipo, cliente, simbolo;
@@ -36,7 +36,7 @@ public class vistaMetodoPagos extends javax.swing.JDialog {
         this.NC = NC;
     }
 
-    public vistaMetodoPagos(java.awt.Frame parent, boolean modal, BigDecimal valor, Instancias instancias, String tipo, String cliente, BigDecimal valorNeto) {
+    public VistaMetodoPagos(java.awt.Frame parent, boolean modal, BigDecimal valor, Instancias instancias, String tipo, String cliente, BigDecimal valorNeto) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
@@ -1204,13 +1204,13 @@ public class vistaMetodoPagos extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(vistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(vistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(vistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(vistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaMetodoPagos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -1232,7 +1232,7 @@ public class vistaMetodoPagos extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                vistaMetodoPagos dialog = new vistaMetodoPagos(new javax.swing.JFrame(), true, new BigDecimal(BigInteger.ZERO), null, "", null, new BigDecimal(BigInteger.ZERO));
+                VistaMetodoPagos dialog = new VistaMetodoPagos(new javax.swing.JFrame(), true, new BigDecimal(BigInteger.ZERO), null, "", null, new BigDecimal(BigInteger.ZERO));
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

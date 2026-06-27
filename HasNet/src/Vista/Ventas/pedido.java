@@ -1,6 +1,6 @@
-package formularios.Ventas;
+package Vista.Ventas;
 
-import Vista.Ventas.VistaFactura;
+import Enums.TipoDocumento;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class infPedido extends javax.swing.JInternalFrame {
+public class pedido extends javax.swing.JInternalFrame {
 
     private VistaFactura pnlFactura;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -23,7 +23,7 @@ public class infPedido extends javax.swing.JInternalFrame {
         this.pnlFactura = pnlFactura;
     }
 
-    public infPedido() {
+    public pedido() {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -32,9 +32,8 @@ public class infPedido extends javax.swing.JInternalFrame {
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
         repaint();
-        pnlFactura = new VistaFactura("pedido");
+        pnlFactura = new VistaFactura(TipoDocumento.PEDIDO.getValor());
         pnlFactura.setSize(pnlContenedor.getSize());
-//        pnlFactura.setDomicilio(true);
         pnlContenedor.add(pnlFactura, CENTER_ALIGNMENT);
         pnlContenedor.revalidate();
         pnlContenedor.repaint();
@@ -42,16 +41,15 @@ public class infPedido extends javax.swing.JInternalFrame {
 
     }
 
-
-//    @Override
-//    public void setSelected(boolean selected) {
-//        try {
-//            super.setSelected(selected); //To change body of generated methods, choose Tools | Templates.
-//        } catch (PropertyVetoException ex) {
-//            Logger.getLogger(infPedido.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        pnlFactura.actualizarConsecutivo();
-//    }
+    @Override
+    public void setSelected(boolean selected) {
+        try {
+            super.setSelected(selected);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(pedido.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        pnlFactura.actualizarConsecutivo(0);
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

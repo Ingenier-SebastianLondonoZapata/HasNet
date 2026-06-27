@@ -12,12 +12,12 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 
-public class vistaDevuelta extends javax.swing.JDialog {
+public class VistaDevuelta extends javax.swing.JDialog {
 
     Instancias instancias = Instancias.getInstancias();
     metodosGenerales metodos = new metodosGenerales();
 
-    public vistaDevuelta(java.awt.Frame parent, boolean modal, Instancias instancias, BigDecimal devuelta) {
+    public VistaDevuelta(java.awt.Frame parent, boolean modal, Instancias instancias, BigDecimal devuelta) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
@@ -149,13 +149,13 @@ public class vistaDevuelta extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(vistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(vistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(vistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(vistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaDevuelta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -164,7 +164,7 @@ public class vistaDevuelta extends javax.swing.JDialog {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                vistaDevuelta dialog = new vistaDevuelta(new javax.swing.JFrame(), true, null, new BigDecimal(BigInteger.ZERO));
+                VistaDevuelta dialog = new VistaDevuelta(new javax.swing.JFrame(), true, null, new BigDecimal(BigInteger.ZERO));
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

@@ -19,8 +19,8 @@ import clases.Instancias;
 import Utilidades.Constantes;
 import Validaciones.Facturacion.squemaFacturacion;
 import Validaciones.FacturacionElectronica.squemaFacturacionElectronica;
-import Vista.Ventas.vistaDevuelta;
-import Vista.Ventas.vistaMetodoPagos;
+import Vista.Ventas.VistaDevuelta;
+import Vista.Ventas.VistaMetodoPagos;
 import clases.Ventas.ndFactura;
 import clases.big;
 import clases.metodosGenerales;
@@ -34,7 +34,7 @@ import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
 import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgProductosSinInventario;
-import formularios.Ventas.dlgProductosSinUtilidad;
+import Vista.Ventas.VistaProductosSinUtilidad;
 import formularios.Ventas.dlgTipoDescuento;
 import formularios.productos.buscProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
@@ -3939,7 +3939,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             //VALIDAMOS SI TIENE ALGUNA ALERTA DE UTILIDAD PARA MOSTRARLO
             if (entroUtilidad) {
                 if (instancias.isMensajeUtilidad()) {
-                    dlgProductosSinUtilidad prodSinUtilidad = new dlgProductosSinUtilidad(null, true, productosUtilidades, instancias.isUtilidad());
+                    VistaProductosSinUtilidad prodSinUtilidad = new VistaProductosSinUtilidad(null, true, productosUtilidades, instancias.isUtilidad());
                     prodSinUtilidad.setVisible(true);
 
                     if (instancias.getCancelarFactura()) {
@@ -4014,11 +4014,11 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         return facturar(null, imprimir, "");
     }
 
-    private String facturar(vistaMetodoPagos devuelta, boolean imprimir, String desde) {
+    private String facturar(VistaMetodoPagos devuelta, boolean imprimir, String desde) {
 
         //SI ES MESA O ESTA ACTIVO SALTAR PASOS DE FACTURA, NO MOSTRAR EL MODULO DE DEVUELTA
         if (saltarPasosFactura) {
-            devuelta = new vistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
+            devuelta = new VistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
                     instancias, "", txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
         }
 
@@ -4029,7 +4029,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (devuelta == null) {
             //VALIDAMOS SI LA FACTURA ES A CONTADO
             if (txtFechaFactura.getText().equals(txtVencimiento.getText())) {
-                devuelta = new vistaMetodoPagos(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
+                devuelta = new VistaMetodoPagos(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
                         instancias, "NotaDebito", txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
                 devuelta.show();
             } else {
@@ -4310,7 +4310,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 .equals("0")) {
             if ((Boolean) datos[91]) {
                 if (!saltarPasosFactura) {
-                    vistaDevuelta devueltaTotal = new vistaDevuelta(instancias.getMenu(), true, instancias, instancias.getDevuelta());
+                    VistaDevuelta devueltaTotal = new VistaDevuelta(instancias.getMenu(), true, instancias, instancias.getDevuelta());
                     devueltaTotal.setVisible(true);
                 }
             }

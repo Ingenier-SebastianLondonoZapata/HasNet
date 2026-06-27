@@ -4,6 +4,13 @@ import Consumidor.FacturacionElectronica.consumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import dao.Configuraciones.DaoResoluciones;
 import dao.InicioSesion.DaoInicioSesion;
+import dao.Ventas.DaoFactura;
+import Modelo.Ventas.CabeceraDocumento;
+import Modelo.Ventas.DocumentoMovimiento;
+import Modelo.Ventas.LineaProducto;
+import Modelo.Ventas.FilaProductoTabla;
+import Modelo.Ventas.ResultadoValidacionInventario;
+import inventario.servicio.ServicioValidacionFactura;
 import Enums.TipoDocumento;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
@@ -58,16 +65,13 @@ import formularios.Ventas.dlgPedidosPendientes;
 import formularios.Ventas.dlgPedirPermiso;
 import formularios.Ventas.dlgProductosGrupo;
 import formularios.Ventas.dlgProductosSinInventario;
-import formularios.Ventas.dlgProductosSinUtilidad;
 import formularios.Ventas.dlgTipoDescuento;
 import formularios.Ventas.impresionComanda;
-import formularios.Ventas.infFactura;
 import formularios.Ventas.infNuevaParte;
 import formularios.infBuscadorCliente;
 import formularios.productos.buscProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.seleccionarPLU;
-import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
 import inventario.servicio.CargadorProducto;
 import inventario.servicio.ServicioDiscosteo;
@@ -127,6 +131,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
     private final DaoResoluciones daoResoluciones = new DaoResoluciones();
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
+    private final DaoFactura daoFactura = new DaoFactura();
 
     //Barra de titulo
     private Dimension dimBarra = null;
@@ -138,7 +143,7 @@ public class VistaFactura extends javax.swing.JPanel {
             saltarPasosFactura = false, saltarPasosFactura1 = false, facturaCredito, modificarPedidoActivo = false, cargandoCongelada = false,
             solicitudPermiso = false, facturandoPedidos = false, preguntarLimpiar = true;
 
-    private infFactura factura;
+    private factura factura;
     private String tipoProceso, credito1, consecutivoMesa, idCosteo, descontarFisicoInventario = "SI",
             loteGeneral = "", permisoNumero = "", tipoActual = "", ter = "", loteCuentasCobro = "", fechaFacturaAutomatica = "";
 
@@ -253,11 +258,6 @@ public class VistaFactura extends javax.swing.JPanel {
 
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
             txtDescGeneral.setVisible(false);
-        }
-
-        if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-            lbBodega.setVisible(false);
-            txtBodega.setVisible(false);
         }
 
         if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
@@ -490,15 +490,6 @@ public class VistaFactura extends javax.swing.JPanel {
 
         } else {
             pnlVisor.setVisible(false);
-//            tblInventario.getColumnModel().getColumn(1).setMinWidth(40);
-//            tblInventario.getColumnModel().getColumn(1).setPreferredWidth(40);
-//            tblInventario.getColumnModel().getColumn(1).setMaxWidth(40);
-//            tblInventario.getColumnModel().getColumn(2).setMinWidth(40);
-//            tblInventario.getColumnModel().getColumn(2).setPreferredWidth(40);
-//            tblInventario.getColumnModel().getColumn(2).setMaxWidth(40);
-//            tblProductos.getColumnModel().getColumn(22).setMinWidth(0);
-//            tblProductos.getColumnModel().getColumn(22).setPreferredWidth(0);
-//            tblProductos.getColumnModel().getColumn(22).setMaxWidth(0);
         }
         // FIN DEL RESTARANTE
 
@@ -642,7 +633,7 @@ public class VistaFactura extends javax.swing.JPanel {
 //                        break;
                     case "aumentarCantidad":
                         if (tblProductos.getSelectedRow() > -1) {
-                            String baseUtilizada = obtenerBase();
+                            String baseUtilizada = "bdProductos";
                             ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
 
                             if (!nodo.getUsuario().equals("ADMIN") && !tipoProceso.equals("cotizacion")) {
@@ -664,8 +655,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         break;
                     case "disminuirCantidad":
                         if (tblProductos.getSelectedRow() > -1) {
-                            String baseUtilizada = obtenerBase();
-                            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
+                            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), "bdProductos");
 
                             if (!nodo.getUsuario().equals("ADMIN") && !tipoProceso.equals("cotizacion")) {
                                 return;
@@ -743,13 +733,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 lbTitulo.setText("FACTURACIÓN");
                 lbFacturaNo.setText(instancias.getTituloFactura());
 
-                try {
-                    if (cmbCargar.getItemAt(4).equals("Cargar Plan Separe")) {
-                        cmbCargar.removeItemAt(4);
-                    }
-                } catch (Exception e) {
-                }
-
                 if (instancias.getConfiguraciones().isProductosDetallados()) {
                     pnlGarantia.setVisible(true);
                 }
@@ -770,8 +753,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 lbTitulo.setText("COTIZACIÓN");
                 lbFacturaNo.setText("Cotización No.");
 
-                cmbCargar.setSelectedIndex(0);
-                cmbCargar.setEnabled(false);
                 btnPendientes.setVisible(true);
                 btnReImprimir.setVisible(true);
 
@@ -798,9 +779,6 @@ public class VistaFactura extends javax.swing.JPanel {
 
                 break;
             case "orden":
-                cmbCargar.setSelectedIndex(1);
-                cmbCargar.setEnabled(false);
-
                 lbTitulo.setText("ORDEN DE SERVICIO");
                 lbFacturaNo.setText("Orden No.");
                 btnPendientes.setVisible(true);
@@ -839,8 +817,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 btnPendientes.setText("PEDIDOS PEND");
 
                 btnGuardar.setText("GUARDAR");
-                cmbCargar.setSelectedIndex(3);
-                cmbCargar.setEnabled(false);
 
                 lbFechaVencimiento.setVisible(false);
                 txtVencimiento.setVisible(false);
@@ -864,9 +840,6 @@ public class VistaFactura extends javax.swing.JPanel {
             case "separe":
                 lbTitulo.setText("PLAN SEPARE");
                 lbFacturaNo.setText("Separe No.");
-
-                cmbCargar.setSelectedIndex(4);
-                cmbCargar.setEnabled(false);
 
                 btnGuardar.setText("GENERAR");
                 btnGuardar1.setText("GENERAR/IMPRIMIR");
@@ -893,9 +866,8 @@ public class VistaFactura extends javax.swing.JPanel {
                 lbOtroConsecutivo.setVisible(false);
                 txtTurno.setVisible(false);
 
-                cmbCargar.setSelectedIndex(5);
-                cmbCargar.setEnabled(false);
-
+                /*cmbCargar.setSelectedIndex(5);
+                 cmbCargar.setEnabled(false);*/
                 btnGuardar.setText("GUARDAR");
                 btnGuardar1.setVisible(false);
 
@@ -1619,11 +1591,11 @@ public class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    public infFactura getFactura() {
+    public factura getFactura() {
         return factura;
     }
 
-    public void setFactura(infFactura factura) {
+    public void setFactura(factura factura) {
         this.factura = factura;
     }
 
@@ -1862,7 +1834,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
         tapControl.setSelectedIndex(0);
 
-        cmbCargar.setVisible(false);
+        lbCargarDocumento.setVisible(false);
         txtCargar.setVisible(false);
 
         btnReImprimir.setVisible(false);
@@ -1883,7 +1855,6 @@ public class VistaFactura extends javax.swing.JPanel {
         lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("CONGELADA")[0]);
         limpiar(true, "");
         mesaCongelada = true;
-        txtBodega.setEnabled(true);
 
         if (tipo.equals("MESA")) {
             lbTitulo.setText(titulo);
@@ -1919,9 +1890,6 @@ public class VistaFactura extends javax.swing.JPanel {
 
             ndCongelada congelada = instancias.getSql().getDatosCongelada1(mesa);
 
-            txtBodega.setText(congelada.getBodega());
-            txtBodega.setEnabled(false);
-
             txtNit.setText(congelada.getCliente());
             cargarCliente(congelada.getCliente());
             cmbVendedor.setSelectedItem(congelada.getVendedor());
@@ -1951,7 +1919,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
             }
 
-            String baseUtilizada = obtenerBase();
+            String baseUtilizada = "bdProductos";
             for (int j = 0; j < tblProductos.getRowCount(); j++) {
                 tblProductos.setValueAt("PLATO-" + j, j, 30);
 
@@ -2181,12 +2149,9 @@ public class VistaFactura extends javax.swing.JPanel {
         txtCant = new javax.swing.JTextField();
         txtPorcentaje = new javax.swing.JTextField();
         lbVendedor1 = new javax.swing.JLabel();
-        lbBodega = new javax.swing.JLabel();
-        txtBodega = new javax.swing.JTextField();
         txtCargar = new javax.swing.JTextField();
-        cmbCargar = new javax.swing.JComboBox();
         btnPendientes = new javax.swing.JButton();
-        btnPendientes1 = new javax.swing.JButton();
+        lbCargarDocumento = new javax.swing.JLabel();
         pnlVisor = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblImagenes = new javax.swing.JTable();
@@ -2561,13 +2526,13 @@ public class VistaFactura extends javax.swing.JPanel {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 18))); // NOI18N
 
-        tblProductos.setFont(new java.awt.Font("Arial", 0, 17)); // NOI18N
+        tblProductos.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Codigo", "Descripción", "Valor/Unit", "Cant.", "Subtotal", "Desc %", "Desc", "Iva %", "Impo", "Total", "Ubicación", "Referencia", "plu", "cant2", "ponderado", "Utilidad", "Estado", "Copago", "datoGrupo", "Pago Tercero", "Utilidad1", "Orden/Aviso", "Borrar", "Impo %", "Orden", "Aviso", "F. Entrega", "Detalle", "Lote", "IdProd", "paraComanda", "permisoDesc", "idSistema", "Iva", "Grupo", "Medida", "ControlInv"
+                "Codigo", "Descripción", "Valor/Unit", "Cant", "Subtotal", "Desc %", "Desc", "Iva %", "Impo", "Total", "Ubicación", "Referencia", "plu", "cant2", "ponderado", "Utilidad", "Estado", "Copago", "datoGrupo", "Pago Tercero", "Utilidad1", "Orden/Aviso", "Borrar", "Impo %", "Orden", "Aviso", "F. Entrega", "Detalle", "Lote", "IdProd", "paraComanda", "permisoDesc", "idSistema", "Iva", "Grupo", "Medida", "ControlInv"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -2602,8 +2567,8 @@ public class VistaFactura extends javax.swing.JPanel {
             tblProductos.getColumnModel().getColumn(2).setPreferredWidth(100);
             tblProductos.getColumnModel().getColumn(2).setMaxWidth(150);
             tblProductos.getColumnModel().getColumn(3).setMinWidth(35);
-            tblProductos.getColumnModel().getColumn(3).setPreferredWidth(35);
-            tblProductos.getColumnModel().getColumn(3).setMaxWidth(35);
+            tblProductos.getColumnModel().getColumn(3).setPreferredWidth(50);
+            tblProductos.getColumnModel().getColumn(3).setMaxWidth(70);
             tblProductos.getColumnModel().getColumn(4).setMinWidth(80);
             tblProductos.getColumnModel().getColumn(4).setPreferredWidth(100);
             tblProductos.getColumnModel().getColumn(4).setMaxWidth(150);
@@ -2783,7 +2748,7 @@ public class VistaFactura extends javax.swing.JPanel {
         }
 
         lbProducto1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbProducto1.setText("Cant:");
+        lbProducto1.setText("Cantidad:");
         lbProducto1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 lbProducto1KeyReleased(evt);
@@ -2839,53 +2804,6 @@ public class VistaFactura extends javax.swing.JPanel {
         lbVendedor1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         lbVendedor1.setText("Descuento:");
 
-        lbBodega.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbBodega.setText("Bodega:");
-        lbBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                lbBodegaKeyReleased(evt);
-            }
-        });
-
-        txtBodega.setBackground(new java.awt.Color(255, 204, 204));
-        txtBodega.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        txtBodega.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtBodega.setText("123-22");
-        txtBodega.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtBodega.setName("combo"); // NOI18N
-        txtBodega.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseEntered(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                txtBodegaMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseReleased(evt);
-            }
-        });
-        txtBodega.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBodegaActionPerformed(evt);
-            }
-        });
-        txtBodega.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtBodegaFocusGained(evt);
-            }
-        });
-        txtBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyReleased(evt);
-            }
-        });
-
         txtCargar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtCargar.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCargar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -2896,9 +2814,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 txtCargarKeyTyped(evt);
             }
         });
-
-        cmbCargar.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        cmbCargar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cargar Cotización", "Cargar Orden", "Cargar Prefactura", "Cargar Pedido", "Cargar Plan Separe", "Cargar Plantilla" }));
 
         btnPendientes.setBackground(new java.awt.Color(242, 244, 244));
         btnPendientes.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -2913,49 +2828,34 @@ public class VistaFactura extends javax.swing.JPanel {
             }
         });
 
-        btnPendientes1.setBackground(new java.awt.Color(242, 244, 244));
-        btnPendientes1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnPendientes1.setText("VER GRUPOS");
-        btnPendientes1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnPendientes1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnPendientes1.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnPendientes1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPendientes1ActionPerformed(evt);
-            }
-        });
+        lbCargarDocumento.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        lbCargarDocumento.setText("Cargar documento:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(scrProductos1)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(lbProducto1)
-                        .addGap(2, 2, 2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(lbBodega)
-                        .addGap(1, 1, 1)
-                        .addComponent(txtBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(lbProducto)
-                        .addGap(1, 1, 1)
-                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)
-                        .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(cmbCargar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnPendientes, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbProducto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPendientes1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 36, Short.MAX_VALUE)))
+                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lbCargarDocumento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnPendientes, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 267, Short.MAX_VALUE)))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -2969,25 +2869,21 @@ public class VistaFactura extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnPendientes, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addComponent(btnPendientes1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtCodigoProducto, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbProducto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtBodega, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cmbCargar, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtCargar, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbBodega, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtCant)
-                    .addComponent(lbProducto1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbVendedor1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPorcentaje, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(2, 2, 2)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbVendedor1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPendientes, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(lbCargarDocumento, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtCant, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbProducto1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtCodigoProducto, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtCargar, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPorcentaje))
+                .addGap(5, 5, 5)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrProductos1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(scrInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(scrInventario, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                    .addComponent(scrProductos1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(1, 1, 1))
         );
 
@@ -3029,14 +2925,14 @@ public class VistaFactura extends javax.swing.JPanel {
             pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlVisorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1236, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1221, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlVisorLayout.setVerticalGroup(
             pnlVisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlVisorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -3250,7 +3146,7 @@ public class VistaFactura extends javax.swing.JPanel {
                                 .addComponent(btnNuevaParte)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnNuevaParte1)))
-                        .addGap(0, 426, Short.MAX_VALUE)))
+                        .addGap(0, 422, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -3289,7 +3185,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     .addComponent(btnNuevaParte, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnNuevaParte1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -3399,7 +3295,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtCantFacturados, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCantIncremento, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(414, Short.MAX_VALUE))
+                .addContainerGap(425, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -3452,7 +3348,7 @@ public class VistaFactura extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(164, Short.MAX_VALUE))
+                .addContainerGap(258, Short.MAX_VALUE))
         );
 
         tapControl.addTab("Facturación Automatica", jPanel4);
@@ -4579,7 +4475,7 @@ public class VistaFactura extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 964, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -4745,156 +4641,25 @@ public class VistaFactura extends javax.swing.JPanel {
         tblProductos.removeEditor();
         tblInventario.removeEditor();
 
-        Boolean bolsa = false;
+        String baseUtilizada = "bdProductos";
         Boolean facturarSinInventario = (Boolean) datos[79];
 
-        int cantProdFact = 0;
-        String baseUtilizada = obtenerBase();
         if (!saltarPasosFactura) {
-            //HACEMOS CONTEO DE LOS ITEMS DE LOS PRODUCTOS PREPARADOS
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-                if (nodo.getUsuario().equals("FACTURA")) {
-                    String opciones = "";
-                    try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
-                    } catch (Exception e) {
-                    }
+            ResultadoValidacionInventario resultadoValidacion = validarInventarioProductos(baseUtilizada);
 
-                    if (opciones.equals("")) {
-                        Object[][] productos = instancias.getSql().getCantidadesDiscosteo(tblProductos.getValueAt(i, 32).toString());
-                        cantProdFact = cantProdFact + productos.length;
-                    } else {
-                        cantProdFact = cantProdFact + opciones.split(", ").length;
-                    }
-                }
-            }
-
-            //CREAMOS LOS OBJETOS
-            Object[][] productosSinInventario = new Object[tblProductos.getRowCount()][4];
-            Object[][] productosUtilidades = new Object[tblProductos.getRowCount()][3];
-            Object[][] productosSinInventarioDis = new Object[cantProdFact][5];
-
-            Boolean entro = false, entroUtilidad = false;
-            int ser = 0, ser1 = 0, contadorUtilidades = 0;
-
-            //INICIAMOS CON LA VALIDACIÓN DEL INVENTARIO
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-
-                //VALIDAMOS QUE LA FACTURA INCLUYA LA BOLSA
-                if (tblProductos.getValueAt(i, 32).equals("PROD-000000032")) {
-                    bolsa = true;
-                }
-
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-
-                if (nodo.getManejaInventario()) {
-
-                    BigDecimal num = BigDecimal.ZERO;
-                    try {
-                        num = big.getBigDecimal(tblInventario.getValueAt(i, 2).toString().replace(",", "."));
-                    } catch (Exception e) {
-                    }
-
-                    //SI ES UN PRODUCTO CON DISEÑO
-                    if (nodo.getUsuario().equals("FACTURA")) {
-                        String opciones = "";
-
-                        try {
-                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
-                        } catch (Exception e) {
-                        }
-
-                        if (!opciones.equals("")) {
-                            for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
-                                if (opcion.esAdicion()) {
-                                    String codigo = opcion.getCodigo();
-                                    String cant = opcion.getCantidad();
-                                    String estado = opcion.getEstado();
-
-                                    if (estado.equals(" true")) {
-                                        ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-                                        Double cant1 = Double.parseDouble(nodo1.getFisicoInventario().replace(",", "."));
-                                        Double total = cant1 - Double.parseDouble(cant.replace(",", "."));
-
-                                        if (total < 0) {
-                                            productosSinInventarioDis[ser1][0] = nodo1.getIdSistema();
-                                            productosSinInventarioDis[ser1][1] = nodo1.getDescripcion();
-                                            productosSinInventarioDis[ser1][2] = cant1;
-                                            productosSinInventarioDis[ser1][3] = total;
-                                            productosSinInventarioDis[ser1][4] = cant;
-                                            entro = true;
-                                            ser1++;
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Object[][] productos = instancias.getSql().getCantidadesDiscosteo(tblProductos.getValueAt(i, 32).toString());
-                            for (int k = 0; k < productos.length; k++) {
-                                String codigo = productos[k][0].toString();
-                                String cant = productos[k][1].toString();
-
-                                ndProducto insumo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-                                Double cant1 = Double.parseDouble(insumo.getFisicoInventario().replace(",", "."));
-                                Double total = cant1 - Double.parseDouble(cant.replace(",", "."));
-
-                                if (total < 0) {
-                                    productosSinInventarioDis[ser1][0] = insumo.getIdSistema();
-                                    productosSinInventarioDis[ser1][1] = insumo.getDescripcion();
-                                    productosSinInventarioDis[ser1][2] = cant1;
-                                    productosSinInventarioDis[ser1][3] = total;
-                                    productosSinInventarioDis[ser1][4] = cant;
-                                    entro = true;
-                                    ser1++;
-                                }
-                            }
-                        }
-                    } else {
-                        //SI ES UN PRODUCTO NORMAL
-                        if (num.compareTo(BigDecimal.ZERO) < 0) {
-                            if (nodo.getManejaInventario()) {
-                                productosSinInventario[ser][0] = nodo.getIdSistema();
-                                productosSinInventario[ser][1] = nodo.getDescripcion();
-                                productosSinInventario[ser][2] = tblInventario.getValueAt(i, 1);
-                                productosSinInventario[ser][3] = tblInventario.getValueAt(i, 2);
-                                entro = true;
-                                ser++;
-                            } else {
-                                System.out.println("Este producto no maneja inventario.");
-                            }
-                        }
-                    }
-
-                    //VALIDAMOS LAS UTILIDADES DE LOS PRODUCTOS
-                    if (tblProductos.getValueAt(i, 15).equals("ERROR1")) {
-                        productosUtilidades[contadorUtilidades][0] = tblProductos.getValueAt(i, 32);
-                        productosUtilidades[contadorUtilidades][1] = tblProductos.getValueAt(i, 1);
-                        productosUtilidades[contadorUtilidades][2] = "Utilidad minima sobrepasada";
-                        contadorUtilidades++;
-                        entroUtilidad = true;
-                    } else if (tblProductos.getValueAt(i, 15).equals("ERROR2")) {
-                        productosUtilidades[contadorUtilidades][0] = tblProductos.getValueAt(i, 32);
-                        productosUtilidades[contadorUtilidades][1] = tblProductos.getValueAt(i, 1);
-                        productosUtilidades[contadorUtilidades][2] = "Utilidad maxima sobrepasada";
-                        contadorUtilidades++;
-                        entroUtilidad = true;
-                    }
-                }
-            }
-            //FIN DE VALIDACIÓN DEL INVENTARIO
-
-            //VALIDAMOS SI LOS PRODUCTOS PREPARADOS TIENE ALGUNA ADICCIÓN PARA AGREGARLOS A LA FACTURA
             if (instancias.getConfiguraciones().isRestaurante()) {
                 agregarAdicionesATabla(baseUtilizada);
             }
 
-            //VALIDAMOS SI TIENE ALGUNA ALERTA DE UTILIDAD PARA MOSTRARLO
-            if (entroUtilidad) {
-                if (instancias.isMensajeUtilidad()) {
-                    dlgProductosSinUtilidad prodSinUtilidad = new dlgProductosSinUtilidad(null, true, productosUtilidades, instancias.isUtilidad());
-                    prodSinUtilidad.setVisible(true);
-
+            if (!this.tipoProceso.equals("cotizacion") && resultadoValidacion.hayProductosSinInventario()) {
+                if (!facturarSinInventario) {
+                    metodos.msgError(factura, "No tiene inventario suficiente");
+                    return "";
+                } else {
+                    dlgProductosSinInventario prodSinInventario = new dlgProductosSinInventario(null, true,
+                            resultadoValidacion.getProductosSinInventarioTabla(),
+                            resultadoValidacion.getProductosSinInventarioDisTabla());
+                    prodSinInventario.setVisible(true);
                     if (instancias.getCancelarFactura()) {
                         borrarAdiciones();
                         facturandoPedidos = false;
@@ -4904,33 +4669,9 @@ public class VistaFactura extends javax.swing.JPanel {
                 }
             }
 
-            //VALIDAMOS SI TIENE ALGUNA ALERTA DE PRODUCTOS SIN INVENTARIO PARA MOSTRARLO
-            if (!this.tipoProceso.equals("cotizacion")) {
-                if (entro) {
-                    if (!facturarSinInventario) {
-                        metodos.msgError(factura, "No tiene inventario suficiente");
-                        return "";
-                    } else {
-                        dlgProductosSinInventario prodSinInventario = new dlgProductosSinInventario(null, true, productosSinInventario,
-                                productosSinInventarioDis);
-                        prodSinInventario.setVisible(true);
-
-                        if (instancias.getCancelarFactura()) {
-                            borrarAdiciones();
-                            facturandoPedidos = false;
-                            instancias.setCancelarFactura(false);
-                            return "";
-                        }
-                    }
-                }
-            }
-
-            //SI ES UNA FACTURA Y ES REGIMEN COMÚN, SE VALIDA EL NUMERO DE BOLSAS A FACTURAR
             if (instancias.getRegimen().equals("")) {
                 if (tipoProceso.equals("facturacion") || (tipoProceso.equals("mesa") && lbTitulo.getText().equals("DOMICILIO"))) {
-
-                    if (!bolsa) {
-
+                    if (!resultadoValidacion.tieneBolsa()) {
                         if (!instancias.getConfiguraciones().isParqueadero()) {
                             if ((Boolean) datos[52]) {
                                 int num = 0;
@@ -4941,14 +4682,12 @@ public class VistaFactura extends javax.swing.JPanel {
                                     metodos.msgError(factura, "Número no válido");
                                     return "";
                                 }
-
                                 if (num > 0) {
                                     cargarProducto("IMP01", String.valueOf(num), 1, "", "", "", true, "", "", "", "", "");
                                 }
                             }
                         }
                     }
-                    entro = false;
                 }
             }
         }
@@ -5047,30 +4786,9 @@ public class VistaFactura extends javax.swing.JPanel {
         return facturar(null, imprimir, "");
     }
 
-    public String obtenerBase() {
-        String baseUtilizada = txtBodega.getText();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (baseUtilizada.equals("123-22")) {
-                baseUtilizada = "bdProductos";
-            } else if (baseUtilizada.equals("BODEGA-1")) {
-                baseUtilizada = "bdProductosBodega1";
-            } else if (baseUtilizada.equals("BODEGA-2")) {
-                baseUtilizada = "bdProductosBodega2";
-            } else if (baseUtilizada.equals("BODEGA-3")) {
-                baseUtilizada = "bdProductosBodega3";
-            } else if (baseUtilizada.equals("BODEGA-4")) {
-                baseUtilizada = "bdProductosBodega4";
-            }
-        } else {
-            baseUtilizada = "bdProductos";
-        }
-        return baseUtilizada;
-    }
-
     public void modificarPedido(String pedido, Object[][] productos) {
 
         this.setTipo("pedido");
-        cmbCargar.setSelectedIndex(3);
         txtCargar.setText(pedido);
         cargarMovimiento();
 
@@ -5136,7 +4854,7 @@ public class VistaFactura extends javax.swing.JPanel {
             if (tipoProceso.equals("mesa")) {
                 instancias.getSql().eliminar_registro("bdCongelada", " idFactura = '" + "CONGELADA-" + lbNoFactura.getText() + "' ");
 
-                String baseUtilizada = obtenerBase();
+                String baseUtilizada = "bdProductos";
                 if (productosMovimientos != null) {
                     if (productosMovimientos.length > 0) {
                         for (int k = 0; k < productosMovimientos.length; k++) {
@@ -5384,8 +5102,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
     public void cambiarListaCliente() {
         if (tblInventario.getSelectedRow() != -1) {
-            String baseUtilizada = obtenerBase();
-            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), baseUtilizada);
+            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), "bdProductos");
             String valor = "";
 
             switch ((String) tblInventario.getValueAt(tblInventario.getSelectedRow(), 0)) {
@@ -5496,7 +5213,7 @@ public class VistaFactura extends javax.swing.JPanel {
     private void cmbListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbListasActionPerformed
         if (tblInventario.getSelectedRow() != -1) {
 
-            String baseUtilizada = obtenerBase();
+            String baseUtilizada = "bdProductos";
 
             ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), baseUtilizada);
             String valor = "";
@@ -6041,7 +5758,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
         Boolean facturarSinInventario = (Boolean) datos[79];
 
-        String baseUtilizada = obtenerBase();
+        String baseUtilizada = "bdProductos";
 
         if (this.tipoProceso.equals("mesa")) {
             if (instancias.getConfiguraciones().isRestaurante()) {
@@ -6299,7 +6016,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     big.getBigDecimal(tblProductos.getValueAt(i, 5).toString().replace(",", ".")).setScale(2, RoundingMode.HALF_DOWN) + "",
                     tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 12) + "", tblProductos.getValueAt(i, 3).toString().replace(",", "."),
                     "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
-                    preparacion, txtBodega.getText(), tblProductos.getValueAt(i, 29), tblProductos.getValueAt(i, 27)
+                    preparacion, "", tblProductos.getValueAt(i, 29), tblProductos.getValueAt(i, 27)
                 };
 
                 ndPedido nodo = metodos.llenarPedido(vector);
@@ -6323,13 +6040,9 @@ public class VistaFactura extends javax.swing.JPanel {
                 }
 
                 if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-                    String bodega = txtBodega.getText();
-                    if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-                        bodega = "123-22";
-                    }
 
                     instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                            preparacionProducto, "fisicoInventarioPedido", bodega);
+                            preparacionProducto, "fisicoInventarioPedido", "");
                 }
 
                 agregarRegistrosComandas(i, "", baseUtilizada, "", factura, "");
@@ -6494,7 +6207,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     big.getBigDecimal(tblProductos.getValueAt(i, 5).toString().replace(",", ".")).setScale(2, RoundingMode.HALF_DOWN) + "",
                     tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 12) + "", tblProductos.getValueAt(i, 3).toString().replace(",", "."),
                     "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
-                    tblProductos.getValueAt(i, 21), txtBodega.getText()
+                    tblProductos.getValueAt(i, 21), ""
                 };
 
                 ndOServicio1 nodo = metodos.llenarOServicio1(vector);
@@ -6605,7 +6318,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
                     cmbPeriodicidad.getSelectedItem(), metodos.desdeDate(dtDesde.getCurrent()), hasta, txtCantIncremento.getText(),
                     big.getMoneda(txtTotalImpoconsumo.getText()), tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 8)), txtBodega.getText()
+                    big.getMoneda((String) tblProductos.getValueAt(i, 8)), ""
                 };
 
                 ndCongelada nodo = metodos.llenarCongelada(vector);
@@ -6658,7 +6371,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
                     tblProductos.getValueAt(i, 21), nodo1.getTurno(), tblProductos.getValueAt(i, 27), tblProductos.getValueAt(i, 29),
                     big.getMoneda(txtTotalImpoconsumo.getText()), tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 8)), txtBodega.getText()
+                    big.getMoneda((String) tblProductos.getValueAt(i, 8)), ""
                 };
 
                 nodo1 = metodos.llenarCongelada(vector);
@@ -6683,13 +6396,9 @@ public class VistaFactura extends javax.swing.JPanel {
                 ndProducto nodoProducto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
 
                 if (nodoProducto.getUsuario().equalsIgnoreCase("FACTURA")) {
-                    String bodega = txtBodega.getText();
-                    if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-                        bodega = "123-22";
-                    }
 
                     instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                            preparacionProducto, "fisicoInventario", bodega);
+                            preparacionProducto, "fisicoInventario", "");
                 }
 
                 agregarRegistrosComandas(i, nodo1.getTurno(), baseUtilizada, "", "", factura);
@@ -6968,7 +6677,7 @@ public class VistaFactura extends javax.swing.JPanel {
     }//GEN-LAST:event_btnVolver1MouseClicked
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
-        String baseUtilizada = obtenerBase();
+        String baseUtilizada = "bdProductos";
         String dato = "";
 
         if (evt.getClickCount() > 1 && (tblProductos.getSelectedColumn() == 5 || tblProductos.getSelectedColumn() == 6)) {
@@ -7037,7 +6746,7 @@ public class VistaFactura extends javax.swing.JPanel {
             return;
         }
 
-        String baseUtilizada = obtenerBase();
+        String baseUtilizada = "bdProductos";
 
         int fila = tblProductos.getSelectedRow(), i = 2, j = 0;
 
@@ -7546,106 +7255,6 @@ public class VistaFactura extends javax.swing.JPanel {
         metodos.soloNum(evt);
     }//GEN-LAST:event_txtDescGeneralKeyTyped
 
-    private void lbBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbBodegaKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbBodegaKeyReleased
-
-    private void txtBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBodegaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaActionPerformed
-
-    private void txtBodegaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBodegaFocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaFocusGained
-
-    private void txtBodegaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaKeyPressed
-
-    private void txtBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (txtBodega.getText().equals("")) {
-                ventanaBodegas("");
-            } else {
-                txtCodigoProducto.requestFocus();
-            }
-        } else {
-            txtBodega.setText("");
-            if (tblProductos.getRowCount() > 0) {
-                while (tblProductos.getRowCount() > 0) {
-                    modeloPro.removeRow(0);
-                }
-                while (tblInventario.getRowCount() > 0) {
-                    modeloInventario.removeRow(0);
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaKeyReleased
-
-    private void txtBodegaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseClicked
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar factura?") != 0) {
-                        txtCodigoProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblInventario.getRowCount() > 0) {
-                            modeloInventario.removeRow(0);
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseClicked
-
-    private void txtBodegaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseEntered
-
-    }//GEN-LAST:event_txtBodegaMouseEntered
-
-    private void txtBodegaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMousePressed
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar factura?") != 0) {
-                        txtCodigoProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblInventario.getRowCount() > 0) {
-                            modeloInventario.removeRow(0);
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMousePressed
-
-    private void txtBodegaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseReleased
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar factura?") != 0) {
-                        txtCodigoProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblInventario.getRowCount() > 0) {
-                            modeloInventario.removeRow(0);
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseReleased
-
     private void tblComprobantesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblComprobantesMouseClicked
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
             tblComprobantes.setValueAt(false, i, 2);
@@ -7736,10 +7345,6 @@ public class VistaFactura extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbVendedorActionPerformed
 
-    private void btnPendientes1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPendientes1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnPendientes1ActionPerformed
-
     private void lbOtroConsecutivoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbOtroConsecutivoKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_lbOtroConsecutivoKeyTyped
@@ -7751,16 +7356,6 @@ public class VistaFactura extends javax.swing.JPanel {
     private void lbOtroConsecutivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbOtroConsecutivoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_lbOtroConsecutivoActionPerformed
-
-    public void ventanaBodegas(String nit) {
-        buscBodegas buscar = new buscBodegas(instancias.getMenu(), true, "INTERNA");
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscBodegas(buscar);
-        instancias.setCampoActual(txtBodega);
-        txtBodega.requestFocus();
-        buscar.noEncontrado(nit);
-        buscar.show();
-    }
 
     public void actualizarResolucion(int fila) {
 
@@ -7909,27 +7504,6 @@ public class VistaFactura extends javax.swing.JPanel {
         instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, prod, base);
     }
 
-    public void cargarCotizaciones(String conse) {
-        cmbCargar.setSelectedItem("Cargar Cotización");
-        txtCargar.setText(conse.replace("COTI-", ""));
-        cargarMovimiento();
-        txtObservaciones.setText(txtObservaciones.getText() + ", " + conse);
-    }
-
-    public void cargarPedidos(String conse) {
-        cmbCargar.setSelectedItem("Cargar Pedido");
-        txtCargar.setText(conse.replace("PEDIDO-", ""));
-        cargarMovimiento();
-        txtObservaciones.setText(txtObservaciones.getText() + ", " + conse);
-    }
-
-    public void cargarOrdenesServicios(String conse) {
-        cmbCargar.setSelectedItem("Cargar Orden");
-        txtCargar.setText(conse.replace("OSERV-", ""));
-        cargarMovimiento();
-        txtCargar.setText(conse.replace("OSERV-", ""));
-    }
-
     public void facturarOrdenesServiciosDetalladas(Object[][] productos, String numPedido, String cliente, String diasPlazo) {
         txtNit.setText(cliente);
         cargarCliente(cliente);
@@ -7997,42 +7571,41 @@ public class VistaFactura extends javax.swing.JPanel {
         limpiar(true, "SI");
     }
 
-    public String facturarCuentaCobro(String diasPlazo, String numCCobro, String bodega, BigDecimal mora, String lote, String fechaFactura) {
-        saltarPasosFactura = true;
-        saltarPasosFactura1 = true;
+    /*public String facturarCuentaCobro(String diasPlazo, String numCCobro, String bodega, BigDecimal mora, String lote, String fechaFactura) {
+     saltarPasosFactura = true;
+     saltarPasosFactura1 = true;
 
-        if (diasPlazo.equals("")) {
-            diasPlazo = "0";
-        }
+     if (diasPlazo.equals("")) {
+     diasPlazo = "0";
+     }
 
-        if (fechaFactura.length() == 9) {
-            fechaFactura = "0" + fechaFactura;
-        }
+     if (fechaFactura.length() == 9) {
+     fechaFactura = "0" + fechaFactura;
+     }
 
-        cmbCargar.setSelectedItem("Cargar Plantilla");
-        txtCargar.setText(numCCobro.replace("CCOBRO-", ""));
+     cmbCargar.setSelectedItem("Cargar Plantilla");
+     txtCargar.setText(numCCobro.replace("CCOBRO-", ""));
 
-        txtBodega.setText(bodega);
-        cargarMovimiento();
+     txtBodega.setText(bodega);
+     cargarMovimiento();
 
-        if (mora.compareTo(BigDecimal.ZERO) > 0) {
-            cargarProducto("01", "1", 1, "", "", "", false, "", "", "", "", "");
-            tblProductos.setValueAt(big.setMoneda(mora), tblProductos.getRowCount() - 1, 2);
-            calcularTabla(tblProductos.getRowCount() - 1, false);
-        }
+     if (mora.compareTo(BigDecimal.ZERO) > 0) {
+     cargarProducto("01", "1", 1, "", "", "", false, "", "", "", "", "");
+     tblProductos.setValueAt(big.setMoneda(mora), tblProductos.getRowCount() - 1, 2);
+     calcularTabla(tblProductos.getRowCount() - 1, false);
+     }
 
-        loteCuentasCobro = lote;
-        txtDiasPlazo.setText(diasPlazo);
-        calcularDiasPlazo(null);
+     loteCuentasCobro = lote;
+     txtDiasPlazo.setText(diasPlazo);
+     calcularDiasPlazo(null);
 
-        fechaFacturaAutomatica = metodos.fechaConsulta(fechaFactura);
+     fechaFacturaAutomatica = metodos.fechaConsulta(fechaFactura);
 
-        String factura = validacionInicialFactura(true);
-        saltarPasosFactura = false;
-        saltarPasosFactura1 = false;
-        return factura;
-    }
-
+     String factura = validacionInicialFactura(true);
+     saltarPasosFactura = false;
+     saltarPasosFactura1 = false;
+     return factura;
+     }*/
     public void facturarPedido(String nit, String diasPlazo, String tipoFactura, String numPedido, String bodega) {
         saltarPasosFactura = true;
 
@@ -8052,16 +7625,12 @@ public class VistaFactura extends javax.swing.JPanel {
                 calcularDiasPlazo(null);
             }
 
-            txtBodega.setText(bodega);
             facturandoPedidos = true;
             descontarFisicoInventario = "NO";
             btnGuardar1ActionPerformed(null);
         } else {
             this.tipoProceso = "facturacion";
-            cmbCargar.setSelectedItem("Cargar Pedido");
             txtCargar.setText(numPedido.replace("PEDIDO-", ""));
-
-            txtBodega.setText(bodega);
             cargarMovimiento();
 
             txtDiasPlazo.setText(diasPlazo);
@@ -8074,7 +7643,6 @@ public class VistaFactura extends javax.swing.JPanel {
 
     public void facturarCotizacion(String conse, String diasPlazo) {
         this.tipoProceso = "facturacion";
-        cmbCargar.setSelectedItem("Cargar Cotización");
         txtCargar.setText(conse.replace("COTI-", ""));
         cargarMovimiento();
 
@@ -8088,10 +7656,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
     public void facturarOrdenesServicios(String conse, String diasPlazo, String bodega) {
         this.tipoProceso = "facturacion";
-        cmbCargar.setSelectedItem("Cargar Orden");
         txtCargar.setText(conse.replace("OSERV-", ""));
-
-        txtBodega.setText(bodega);
         cargarMovimiento();
 
         txtDiasPlazo.setText(diasPlazo);
@@ -8103,399 +7668,296 @@ public class VistaFactura extends javax.swing.JPanel {
     }
 
     private void cargarMovimiento() {
+        if (this.tipoProceso.equals(TipoDocumento.COTIZACION.getValor())) {
+            cargarMovimientoCotizacion();
+        } else if (this.tipoProceso.equals(TipoDocumento.ORDER_SERVICIO.getValor())) {
+            cargarMovimientoOrdenServicio();
+        } else if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor())) {
+            cargarMovimientoFactura();
+        } else if (this.tipoProceso.equals(TipoDocumento.PLAN_SEPARE.getValor())) {
+            cargarMovimientoPlanSepare();
+        } else if (this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor())) {
+            cargarMovimientoPedido();
+        }
+        tblProductos.removeEditor();
+        tblInventario.removeEditor();
+    }
 
-        int opc = cmbCargar.getSelectedIndex();
+    private void cargarMovimientoCotizacion() {
+        String idCotizacion = "COTI-" + txtCargar.getText();
+        DocumentoMovimiento doc = daoFactura.cargarCotizacion(idCotizacion);
+        if (doc.isEmpty()) {
+            return;
+        }
 
-        if (opc == 0) {
+        if ("REALIZADO".equals(doc.getCabecera().getEstadoGeneral())) {
+            metodos.msgAdvertenciaAjustado(null, "La cotización ya ha sido facturada.");
+            txtCargar.setText("");
+            return;
+        }
 
-            Object[][] mat = instancias.getSql().getRegistrosCotizas("COTI-" + txtCargar.getText());
-            String coti = txtCargar.getText();
+        limpiar(true, "");
+        nodoCotizacion = idCotizacion;
 
-            if (mat.length > 0) {
-                if (mat[0][18].toString().equals("REALIZADO")) {
-                    metodos.msgAdvertenciaAjustado(null, "La cotización ya ha sido facturada.");
-                    txtCargar.setText("");
-                    return;
-                }
+        cargarLineasCotizacion(doc.getLineas());
+        mostrarResumenDocumento(doc.getCabecera(), true);
 
-                limpiar(true, "");
-                nodoCotizacion = "COTI-" + coti;
+        if ("cotizacion".equals(tipoProceso)) {
+            btnGuardar.setEnabled(false);
+            btnGuardar1.setEnabled(false);
+            btnReImprimir.setVisible(true);
+            btnReImprimir.setEnabled(true);
+            txtCargar.setText(idCotizacion.replace("COTI-", ""));
+        }
+    }
 
-                if (mat[0][21] == null) {
-                    txtBodega.setText("123-22");
+    private void cargarMovimientoOrdenServicio() {
+        String orden = "OSERV-" + txtCargar.getText();
+        DocumentoMovimiento doc = daoFactura.cargarOrdenServicio(orden);
+
+        if (doc.isEmpty()) {
+            metodos.msgError(null, "La orden no existe!");
+            return;
+        }
+
+        limpiar(false, "");
+        productosMovimientos = new Object[doc.getLineas().size()];
+        cargarLineasDocumento(doc.getLineas(), true);
+        nodoOrdenServicio = orden;
+        mostrarResumenDocumento(doc.getCabecera(), false);
+
+        ndOServicio nodoOrden = daoFactura.getDatosOServicio(orden);
+        cargarDatosVehiculo(nodoOrden);
+        aplicarEstadoVehiculo(daoFactura.getEstadoVehiculo(orden));
+
+        txtNombre.requestFocus();
+
+        if ("REALIZADO".equals(doc.getCabecera().getEstadoGeneral())) {
+            metodos.msgAdvertencia(null, "Esta orden ya ha sido facturada y no se puede modificar.");
+            activarCampos(false);
+            btnActualizar.setEnabled(false);
+            btnReImprimir.setEnabled(true);
+        } else {
+            activarCampos(true);
+            btnActualizar.setEnabled(true);
+            btnReImprimir.setEnabled(true);
+        }
+
+        if ("facturacion".equals(tipoProceso)) {
+            nodoOrdenServicio = orden;
+        } else {
+            lbNoFactura.setText(orden.substring(6));
+        }
+
+        String placaReal = doc.getCabecera().getPlacaReal();
+        if (placaReal != null) {
+            txtPlaca1.setText(placaReal);
+        }
+
+        txtCargar.setText(orden.replace("OSERV-", ""));
+    }
+
+    private void cargarMovimientoFactura() {
+        String idFactura = "FACT-" + txtCargar.getText();
+        limpiar(false, "");
+
+        DocumentoMovimiento doc = daoFactura.cargarMovimientoPrefactura(idFactura);
+        if (doc.isEmpty()) {
+            metodos.msgError(null, "La factura no existe!");
+            return;
+        }
+
+        cargarLineasDocumento(doc.getLineas(), false);
+        mostrarResumenDocumento(doc.getCabecera(), false);
+
+        try {
+            ndCxc nodoCxc = daoFactura.getDatosCxc(idFactura);
+            txtDiasPlazo.setText(Integer.toString(nodoCxc.getPlazo()));
+        } catch (Exception e) {
+            txtDiasPlazo.setText("0");
+        }
+        calcularDiasPlazo(null);
+    }
+
+    private void cargarMovimientoPlanSepare() {
+        ndPlanSepare nodo = daoFactura.getDatosPlanSepare("SEPARE-" + txtCargar.getText());
+
+        if (nodo.getIdFactura() == null) {
+            metodos.msgError(null, "Número invalido");
+            return;
+        }
+
+        String numSepare = txtCargar.getText();
+        this.cargarPrefactura(nodo.getIdFactura().replace("SEPARE-", ""), "SEPARE-");
+        ndSepare = nodo;
+        txtCargar.setText(numSepare);
+        lbNoFactura.setText(numSepare);
+        btnReImprimir.setEnabled(true);
+        btnGuardar.setEnabled(false);
+        btnGuardar1.setEnabled(false);
+    }
+
+    private void cargarMovimientoPedido() {
+        String numPedido = txtCargar.getText();
+        ndPedido nodo = daoFactura.getDatosPedido("PEDIDO-" + numPedido);
+
+        if (nodo.getIdFactura() == null) {
+            limpiar(false, "");
+            if (txtCargar.getText().isEmpty()) {
+                if (txtNombre.getText().isEmpty()) {
+                    metodos.msgError(null, "Seleccioné un tercero para buscar el pedido");
                 } else {
-                    txtBodega.setText(mat[0][21].toString());
+                    infBuscadorCliente buscador = new infBuscadorCliente();
+                    buscador.cargarRegistros(txtNit.getText(), "pedido", instancias);
+                    buscador.setVisible(true);
                 }
-
-                int i = 0;
-                for (Object[] reg : mat) {
-
-                    int plu = Integer.parseInt(reg[10].toString());
-                    if (plu == 1) {
-                        cargarProducto((String) reg[0], new Double((String) reg[3]) + "", plu, "", "", "", false, "", "", "", "", "");
-                    } else {
-                        cargarProducto((String) reg[0], new Double((String) reg[11]) + "", plu, "", "", "", false, "", "", "", "", "");
-                    }
-
-//                    if (plu == 1) {
-//                        tblProductos.setValueAt(new Double((String) reg[3]), i, 3);
-//                    } else {
-//                        tblProductos.setValueAt(new Double((String) reg[11]), i, 3);
-//                    }
-                    tblProductos.setValueAt(reg[17].toString(), i, 31);
-                    tblProductos.setValueAt(reg[1].toString(), i, 1);
-                    tblProductos.setValueAt(big.setMonedaExacta(big.getBigDecimal(reg[2].toString())), i, 2);
-                    tblProductos.setValueAt(big.getBigDecimal(reg[5].toString()), i, 5);
-
-                    tblProductos.setColumnSelectionInterval(0, 0);
-                    tblProductos.setRowSelectionInterval(i, i);
-                    KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-                    tblProductosKeyReleased(x);
-                    i++;
-                }
-
-                int j = tblProductos.getRowCount();
-                txtNit.setText(mat[0][12].toString());
-
-                if (mat[0][19] != null) {
-                    cmbVendedor.setSelectedItem(mat[0][19].toString());
-                }
-
-                txtSubTotal.setText(big.setMonedaExacta(big.getBigDecimal(mat[0][13].toString())));
-                txtTotalDescuentos.setText(big.setMonedaExacta(big.getBigDecimal(mat[0][14].toString())));
-                txtTotalIva.setText(big.setMonedaExacta(big.getBigDecimal(mat[0][15].toString())));
-                txtTotal.setText("Total: " + big.setMoneda(big.getBigDecimal(mat[0][16].toString())));
-                cargarCliente(mat[0][12].toString());
-
-                if (tipoProceso.equals("cotizacion")) {
-                    btnGuardar.setEnabled(false);
-                    btnGuardar1.setEnabled(false);
-
-                    btnReImprimir.setVisible(true);
-                    btnReImprimir.setEnabled(true);
-                    txtCargar.setText(coti);
-                }
-
-                if (mat[0][20] != null) {
-                    txtObservaciones.setText(mat[0][20].toString());
-                }
-            }
-
-        } else if (opc == 1) {
-
-            String orden = "OSERV-" + txtCargar.getText();
-
-            Object[][] mat = instancias.getSql().getRegistrosOrdenes(orden);
-
-            if (mat.length > 0) {
-
-                limpiar(false, "");
-
-                int ser = 0;
-                productosMovimientos = new Object[mat.length];
-
-                for (Object[] reg : mat) {
-                    int plu = Integer.parseInt(reg[13].toString());
-                    if (plu == 1) {
-                        cargarProducto((String) reg[0], new Double((String) reg[3]) + "", plu, "", "", "", false, "", "", "", "", "");
-                    } else {
-                        cargarProducto((String) reg[0], new Double((String) reg[14]) + "", plu, "", "", "", false, "", "", "", "", "");
-                    }
-
-//                    if (plu == 1) {
-//                        tblProductos.setValueAt(new Double((String) reg[3]), ser, 3);
-//                    } else {
-//                        tblProductos.setValueAt(new Double((String) reg[14]), ser, 3);
-//                    }
-                    tblProductos.setValueAt(mat[ser][1], ser, 1);
-                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(mat[ser][2].toString())), ser, 2);
-                    tblProductos.setValueAt(mat[ser][5].toString().replace(",", "."), ser, 5);
-                    tblProductos.setValueAt(mat[ser][6].toString().replace(".", ","), ser, 6);
-                    tblProductos.setValueAt(mat[ser][12], ser, 16);
-
-                    cantProductosOrden++;
-                    productosMovimientos[ser] = mat[ser][0].toString();
-                    calcularTabla(ser, false);
-                    ser++;
-                }
-
-                nodoOrdenServicio = orden;
-
-                if (mat[0][11] != null) {
-                    cmbVendedor.setSelectedItem(mat[0][11].toString());
-                }
-
-                if (mat[0][10] != null) {
-                    txtNit.setText(mat[0][10].toString());
-                }
-
-                txtSubTotal.setText(big.setMoneda(big.getBigDecimal(mat[0][15].toString())));
-                txtTotalDescuentos.setText(big.setMoneda(big.getBigDecimal(mat[0][16].toString())));
-                txtTotalIva.setText(big.setMoneda(big.getBigDecimal(mat[0][17].toString())));
-                txtTotal.setText("Total: " + big.setMoneda(big.getBigDecimal(mat[0][18].toString())));
-
-                cargarCliente(mat[0][10].toString());
-
-                ndOServicio nodoOrden = instancias.getSql().getDatosOServicio(orden);
-
-                cargarArticulos(nodoOrden.getTipo());
-                txtPlaca.setText(nodoOrden.getPlaca());
-                txtTipoVehiculo.setText(nodoOrden.getTipo());
-                txtModelo.setText(nodoOrden.getModelo());
-                txtNumChasis.setText(nodoOrden.getNumeroChasis());
-
-                String fecha = "";
-                if (nodoOrden.getFechaCompra() != null) {
-                    if (nodoOrden.getFechaCompra().split("/")[0].length() == 1) {
-                        fecha = "0" + nodoOrden.getFechaCompra();
-                    } else {
-                        fecha = nodoOrden.getFechaCompra();
-                    }
-                }
-
-                txtMarca.setText(nodoOrden.getMarca());
-                txtKm.setText(nodoOrden.getKm());
-                txtMotor.setText(nodoOrden.getNumeroMotor());
-                txtColor.setText(nodoOrden.getColor());
-                txtProblema.setText(nodoOrden.getProblema());
-
-                tblArticulos.setEnabled(false);
-                btnActualizar.setEnabled(true);
-                btnReImprimir.setEnabled(true);
-                txtPlaca.setEnabled(false);
-                txtModelo.setEnabled(false);
-                txtTipoVehiculo.setEnabled(false);
-                txtNumChasis.setEnabled(false);
-                txtMarca.setEnabled(false);
-                txtKm.setEnabled(false);
-                txtMotor.setEnabled(false);
-                txtColor.setEnabled(false);
-
-                if (!tipoProceso.equals("facturacion")) {
-                    btnGuardar.setVisible(false);
-                    btnGuardar1.setVisible(false);
-                }
-
-                Object[][] estadoVehiculo = instancias.getSql().getEstadoVehiculo(orden);
-                for (int i = 0; i < estadoVehiculo.length; i++) {
-                    for (int j = 0; j < tblArticulos.getRowCount(); j++) {
-                        if (estadoVehiculo[i][0].equals(tblArticulos.getValueAt(j, 0))) {
-                            tblArticulos.setValueAt(true, j, 2);
-                            tblArticulos.setValueAt(estadoVehiculo[i][2], j, 3);
-                            tblArticulos.setValueAt(estadoVehiculo[i][3], j, 4);
-                            tblArticulos.setValueAt(estadoVehiculo[i][4], j, 5);
-                        }
-                    }
-                }
-
-                txtNombre.requestFocus();
-
-                if (mat[0][20].toString().equals("REALIZADO")) {
-                    metodos.msgAdvertencia(null, "Esta orden ya ha sido facturada y no se puede modificar.");
-                    activarCampos(false);
-                    btnActualizar.setEnabled(false);
-                    btnReImprimir.setEnabled(true);
-                } else {
-                    activarCampos(true);
-                    btnActualizar.setEnabled(true);
-                    btnReImprimir.setEnabled(true);
-                }
-
-                if (tipoProceso.equals("facturacion")) {
-                    nodoOrdenServicio = orden;
-                } else {
-                    lbNoFactura.setText(orden.substring(6, orden.length()));
-                }
-
-                if (mat[0][19] != null) {
-                    txtObservaciones.setText(mat[0][19].toString());
-                }
-
-                if (mat[0][21] != null) {
-                    txtPlaca1.setText(mat[0][21].toString());
-                }
-
-                txtCargar.setText(orden.replace("OSERV-", ""));
-
             } else {
-                metodos.msgError(null, "La orden no existe!");
+                metodos.msgError(null, "No hay una orden registrada con este número");
+            }
+            return;
+        }
+
+        this.cargarPrefactura(nodo.getIdFactura().replace("PEDIDO-", ""), "PEDIDO-");
+
+        if ("REALIZADO".equals(nodo.getEstadoGeneral())) {
+            if ("pedido".equals(tipoProceso)) {
+                metodos.msgAdvertencia(null, "Este pedido ya ha sido facturada y no se puede modificar.");
+            } else {
+                metodos.msgAdvertencia(null, "Este pedido ya ha sido facturada.");
+                limpiar(true, "");
+                txtCargar.requestFocus();
                 return;
             }
+            activarCampos(false);
+            btnActualizar.setEnabled(false);
+            btnReImprimir.setEnabled(true);
+        } else if ("ANULADA".equals(nodo.getEstadoGeneral())) {
+            metodos.msgAdvertencia(null, "El pedido esta anulado.");
+            limpiar(true, "");
+            txtCargar.requestFocus();
+            return;
+        } else {
+            activarCampos(true);
+            btnActualizar.setEnabled(true);
+            btnReImprimir.setEnabled(true);
+        }
 
-        } else if (opc == 2) {
+        ndPedido = nodo;
+        txtObservaciones.setText(nodo.getObservacion());
+        btnGuardar.setEnabled(false);
+        btnGuardar1.setEnabled(false);
+        lbNoFactura.setText(numPedido);
+    }
 
-            String factura = "FACT-" + txtCargar.getText();
-            Object[][] mat = null;
-            limpiar(false, "");
+    // -------------------------------------------------------------------------
+    // Helpers de carga de productos en tabla
+    // -------------------------------------------------------------------------
+    private void cargarLineasCotizacion(List<LineaProducto> lineas) {
+        for (int i = 0; i < lineas.size(); i++) {
+            LineaProducto linea = lineas.get(i);
+            cargarProducto(linea.getCodigo(), linea.getCantidad(), linea.getPlu(), "", "", "", false, "", "", "", "", "");
+            tblProductos.setValueAt(linea.getRango(), i, 31);
+            tblProductos.setValueAt(linea.getDescripcion(), i, 1);
+            tblProductos.setValueAt(big.setMonedaExacta(big.getBigDecimal(linea.getPrecio())), i, 2);
+            tblProductos.setValueAt(big.getBigDecimal(linea.getPorcDescuento()), i, 5);
+            tblProductos.setColumnSelectionInterval(0, 0);
+            tblProductos.setRowSelectionInterval(i, i);
+            tblProductosKeyReleased(new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER));
+        }
+    }
 
-            mat = instancias.getSql().getRegistrosPrefacturas(factura);
-
-            if (mat.length > 0) {
-                int a = 0;
-                for (Object[] reg : mat) {
-                    int plu = Integer.parseInt(reg[13].toString());
-
-                    String imei = "", idProd = "";
-                    if (reg[22] != null) {
-                        imei = reg[22].toString();
-                    }
-                    if (reg[23] != null) {
-                        idProd = reg[23].toString();
-                    }
-
-                    if (plu == 1) {
-                        cargarProducto((String) reg[0], new Double((String) reg[3]) + "", plu, imei, "", idProd, false, "", "", "", "", "");
-                    } else {
-                        cargarProducto((String) reg[0], new Double((String) reg[14]) + "", plu, imei, "", idProd, false, "", "", "", "", "");
-                    }
-
-//                    if (plu == 1) {
-//                        tblProductos.setValueAt(new Double((String) reg[3]), a, 3);
-//                    } else {
-//                        tblProductos.setValueAt(new Double((String) reg[14]), a, 3);
-//                    }
-                    tblProductos.setValueAt(mat[a][21], a, 31);
-                    tblProductos.setValueAt(mat[a][1], a, 1);
-                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(mat[a][2].toString())), a, 2);
-                    tblProductos.setValueAt(mat[a][5].toString().replace(",", "."), a, 5);
-                    tblProductos.setValueAt(mat[a][6].toString().replace(".", ","), a, 6);
-                    tblProductos.setValueAt(mat[a][12], a, 16);
-                    calcularTabla(a, false);
-                    a++;
-                }
-
-                cmbVendedor.setSelectedItem(mat[0][15].toString());
-                txtNit.setText(mat[0][16].toString());
-                txtSubTotal.setText(big.setMoneda(big.getBigDecimal(mat[0][17].toString())));
-                txtTotalDescuentos.setText(big.setMoneda(big.getBigDecimal(mat[0][18].toString())));
-                txtTotalIva.setText(big.setMoneda(big.getBigDecimal(mat[0][19].toString())));
-                txtTotal.setText("Total: " + big.setMoneda(big.getBigDecimal(mat[0][20].toString())));
-                cargarCliente(mat[0][16].toString());
-
-                try {
-                    ndCxc nodoCxc = instancias.getSql().getDatosCxc(factura);
-                    txtDiasPlazo.setText(Integer.toString(nodoCxc.getPlazo()));
-                } catch (Exception e) {
-                    txtDiasPlazo.setText("0");
-                }
-                calcularDiasPlazo(null);
-            } else {
-                metodos.msgError(null, "La factura no existe!");
+    /**
+     * Carga líneas de producto en la tabla para ORDEN DE SERVICIO y PREFACTURA.
+     *
+     * @param trackearOrden true para ORDEN DE SERVICIO: registra productos en
+     * productosMovimientos e incrementa cantProductosOrden.
+     */
+    private void cargarLineasDocumento(List<LineaProducto> lineas, boolean trackearOrden) {
+        for (int i = 0; i < lineas.size(); i++) {
+            LineaProducto linea = lineas.get(i);
+            cargarProducto(linea.getCodigo(), linea.getCantidad(), linea.getPlu(),
+                    linea.getImei(), "", linea.getIdProd(), false, "", "", "", "", "");
+            String rango = linea.getRango();
+            if (rango != null && !rango.isEmpty()) {
+                tblProductos.setValueAt(rango, i, 31);
             }
-        } else if (opc == 4) {
-
-            if (cmbCargar.getItemAt(4).equals("Cargar Plantilla")) {
-                ndCongelada nodo = instancias.getSql().getDatosCuentaCobro("CCOBRO-" + txtCargar.getText());
-
-                if (nodo.getIdFactura() != null) {
-                    String x = txtCargar.getText();
-                    this.cargarPrefactura(nodo.getIdFactura().replace("CCOBRO-", ""), "CCOBRO-");
-                    cuentaCobro = nodo;
-                    txtCargar.setText(x);
-                    lbNoFactura.setText(x);
-                    if (tipoProceso.equals("cuentaCobro")) {
-                        btnGuardar.setVisible(false);
-                        btnGuardar1.setVisible(false);
-                        btnActualizar.setVisible(true);
-                        btnActualizar.setEnabled(true);
-                    }
-                } else {
-                    metodos.msgAdvertencia(null, "Plantilla invalida");
-                }
-
-            } else {
-                ndPlanSepare nodo = instancias.getSql().getDatosPlanSepare("SEPARE-" + txtCargar.getText());
-
-                if (nodo.getIdFactura() != null) {
-                    String x = txtCargar.getText();
-                    this.cargarPrefactura(nodo.getIdFactura().replace("SEPARE-", ""), "SEPARE-");
-                    ndSepare = nodo;
-                    txtCargar.setText(x);
-                    lbNoFactura.setText(x);
-
-                    btnReImprimir.setEnabled(true);
-                    btnGuardar.setEnabled(false);
-                    btnGuardar1.setEnabled(false);
-                } else {
-                    metodos.msgError(null, "Número invalido");
-                }
+            tblProductos.setValueAt(linea.getDescripcion(), i, 1);
+            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(linea.getPrecio())), i, 2);
+            tblProductos.setValueAt(linea.getPorcDescuento().replace(",", "."), i, 5);
+            tblProductos.setValueAt(linea.getDescuento().replace(".", ","), i, 6);
+            tblProductos.setValueAt(linea.getPreparacion(), i, 16);
+            if (trackearOrden) {
+                cantProductosOrden++;
+                productosMovimientos[i] = linea.getCodigo();
             }
-        } else if (opc == 5) {
-            ndCongelada nodo = instancias.getSql().getDatosCuentaCobro("CCOBRO-" + txtCargar.getText());
+            calcularTabla(i, false);
+        }
+    }
 
-            if (nodo.getIdFactura() != null) {
-                String x = txtCargar.getText();
-                this.cargarPrefactura(nodo.getIdFactura().replace("CCOBRO-", ""), "CCOBRO-");
-                cuentaCobro = nodo;
-                txtCargar.setText(x);
-                lbNoFactura.setText(x);
-                btnGuardar.setVisible(false);
-                btnGuardar1.setVisible(false);
-                btnActualizar.setVisible(true);
-                btnActualizar.setEnabled(true);
-            } else {
-                metodos.msgError(null, "Plantilla invalida");
-            }
+    // -------------------------------------------------------------------------
+    // Helpers de resumen financiero y datos del documento
+    // -------------------------------------------------------------------------
+    private void mostrarResumenDocumento(CabeceraDocumento cabecera, boolean monedaExacta) {
+        if (cabecera.getClienteId() != null) {
+            txtNit.setText(cabecera.getClienteId());
+            cargarCliente(cabecera.getClienteId());
+        }
+        if (cabecera.getVendedor() != null) {
+            cmbVendedor.setSelectedItem(cabecera.getVendedor());
+        }
+        txtSubTotal.setText(formatearMonto(cabecera.getSubtotal(), monedaExacta));
+        txtTotalDescuentos.setText(formatearMonto(cabecera.getTotalDescuentos(), monedaExacta));
+        txtTotalIva.setText(formatearMonto(cabecera.getTotalIva(), monedaExacta));
+        txtTotal.setText("Total: " + big.setMoneda(big.getBigDecimal(cabecera.getTotal())));
+        if (cabecera.getObservacion() != null) {
+            txtObservaciones.setText(cabecera.getObservacion());
+        }
+    }
 
-        } else if (opc == 3) {
-            String numPedido = txtCargar.getText();
+    private String formatearMonto(String valor, boolean monedaExacta) {
+        BigDecimal monto = big.getBigDecimal(valor);
+        return monedaExacta ? big.setMonedaExacta(monto) : big.setMoneda(monto);
+    }
 
-            ndPedido nodo = instancias.getSql().getDatosPedido("PEDIDO-" + numPedido);
+    private void cargarDatosVehiculo(ndOServicio nodoOrden) {
+        cargarArticulos(nodoOrden.getTipo());
+        txtPlaca.setText(nodoOrden.getPlaca());
+        txtTipoVehiculo.setText(nodoOrden.getTipo());
+        txtModelo.setText(nodoOrden.getModelo());
+        txtNumChasis.setText(nodoOrden.getNumeroChasis());
+        txtMarca.setText(nodoOrden.getMarca());
+        txtKm.setText(nodoOrden.getKm());
+        txtMotor.setText(nodoOrden.getNumeroMotor());
+        txtColor.setText(nodoOrden.getColor());
+        txtProblema.setText(nodoOrden.getProblema());
+        tblArticulos.setEnabled(false);
+        btnActualizar.setEnabled(true);
+        btnReImprimir.setEnabled(true);
+        txtPlaca.setEnabled(false);
+        txtModelo.setEnabled(false);
+        txtTipoVehiculo.setEnabled(false);
+        txtNumChasis.setEnabled(false);
+        txtMarca.setEnabled(false);
+        txtKm.setEnabled(false);
+        txtMotor.setEnabled(false);
+        txtColor.setEnabled(false);
+        if (!"facturacion".equals(tipoProceso)) {
+            btnGuardar.setVisible(false);
+            btnGuardar1.setVisible(false);
+        }
+    }
 
-            if (nodo.getIdFactura() != null) {
-
-                this.cargarPrefactura(nodo.getIdFactura().replace("PEDIDO-", ""), "PEDIDO-");
-
-                if (nodo.getEstadoGeneral().equals("REALIZADO")) {
-
-                    if (tipoProceso.equals("pedido")) {
-                        metodos.msgAdvertencia(null, "Este pedido ya ha sido facturada y no se puede modificar.");
-                    } else {
-                        metodos.msgAdvertencia(null, "Este pedido ya ha sido facturada.");
-                        limpiar(true, "");
-                        txtCargar.requestFocus();
-                        return;
-                    }
-                    activarCampos(false);
-                    btnActualizar.setEnabled(false);
-                    btnReImprimir.setEnabled(true);
-                } else if (nodo.getEstadoGeneral().equals("ANULADA")) {
-                    metodos.msgAdvertencia(null, "El pedido esta anulado.");
-                    limpiar(true, "");
-                    txtCargar.requestFocus();
-                    return;
-                } else {
-                    activarCampos(true);
-                    btnActualizar.setEnabled(true);
-                    btnReImprimir.setEnabled(true);
-                }
-
-                ndPedido = nodo;
-                txtObservaciones.setText(nodo.getObservacion());
-                btnGuardar.setEnabled(false);
-                btnGuardar1.setEnabled(false);
-                lbNoFactura.setText(numPedido);
-
-            } else {
-                limpiar(false, "");
-
-                if (txtCargar.getText().equals("")) {
-                    if (txtNombre.getText().equals("")) {
-                        metodos.msgError(null, "Seleccioné un tercero para buscar el pedido");
-                        return;
-                    } else {
-                        infBuscadorCliente buscador = new infBuscadorCliente();
-                        buscador.cargarRegistros(txtNit.getText(), "pedido", instancias);
-                        buscador.setVisible(true);
-                    }
-                } else {
-                    metodos.msgError(null, "No hay una orden registrada con este número");
+    private void aplicarEstadoVehiculo(Object[][] estadoVehiculo) {
+        for (int i = 0; i < estadoVehiculo.length; i++) {
+            for (int j = 0; j < tblArticulos.getRowCount(); j++) {
+                if (estadoVehiculo[i][0].equals(tblArticulos.getValueAt(j, 0))) {
+                    tblArticulos.setValueAt(true, j, 2);
+                    tblArticulos.setValueAt(estadoVehiculo[i][2], j, 3);
+                    tblArticulos.setValueAt(estadoVehiculo[i][3], j, 4);
+                    tblArticulos.setValueAt(estadoVehiculo[i][4], j, 5);
                 }
             }
         }
-
-        tblProductos.removeEditor();
-        tblInventario.removeEditor();
     }
 
     private void activarCampos(boolean x) {
@@ -8816,16 +8278,16 @@ public class VistaFactura extends javax.swing.JPanel {
         return "FACT-" + prefijo + resolucion.getConsecutivo();
     }
 
-    private String facturar(vistaMetodoPagos devuelta, boolean imprimir, String desde) {
+    private String facturar(VistaMetodoPagos devuelta, boolean imprimir, String desde) {
 
         //SI ES MESA O ESTA ACTIVO SALTAR PASOS DE FACTURA, NO MOSTRAR EL MODULO DE DEVUELTA
         if (tipoProceso.equals("mesa") || saltarPasosFactura) {
-            devuelta = new vistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
+            devuelta = new VistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
                     instancias, "", ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()));
         }
 
         //OBTENEMOS LA BASE DE LA BODEGA QUE SE ESTA UTILIZANDO
-        String baseUtilizada = obtenerBase();
+        String baseUtilizada = "bdProductos";
 
         //VALIDAMOS QUE SI LA FACTURA A REALIZAR TIENE RELACIONADO ALGUN PEDIDO, SE DESACTIVE EL MODULO DE DEVUELTA
         try {
@@ -8860,7 +8322,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         miTipo = "facturacion";
                     }
 
-                    devuelta = new vistaMetodoPagos(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
+                    devuelta = new VistaMetodoPagos(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
                             instancias, miTipo, ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()));
                     devuelta.show();
                 } else {
@@ -9111,10 +8573,6 @@ public class VistaFactura extends javax.swing.JPanel {
                     } catch (Exception e) {
                     }
 
-                    String bodega = txtBodega.getText();
-                    if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-                        bodega = "123-22";
-                    }
 
                     /*if (instancias.getConfiguraciones().isRestaurante()) {
                      String pedidoActivo = "No";
@@ -9202,7 +8660,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         instancias.getComision(), instancias.getValorComision(), instancias.getTotalFacturaComision(), imei, lote, idProd,
                         cmbMes.getSelectedItem(), instancias.getTarjetaCredito(), instancias.getTotalPropina(), instancias.getPorcPropina(),
                         consecutivoCosteo, metodosGenerales.hora(), tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."),
-                        big.getMoneda((String) tblProductos.getValueAt(i, 8)), chkSisteCredito.isSelected(), txtBodega.getText(), ponderado, tipoComprobante
+                        big.getMoneda((String) tblProductos.getValueAt(i, 8)), chkSisteCredito.isSelected(), "", ponderado, tipoComprobante
                     };
 
                     idCosteo = "";
@@ -9381,7 +8839,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         big.getBigDecimal(tblProductos.getValueAt(i, 5).toString().replace(",", ".")).setScale(2, RoundingMode.HALF_DOWN) + "",
                         tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 12) + "", tblProductos.getValueAt(i, 3).toString().replace(",", "."),
                         "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
-                        tblProductos.getValueAt(i, 21), txtBodega.getText()
+                        tblProductos.getValueAt(i, 21), ""
                     };
 
                     nodo = metodos.llenarCotizacion(vector);
@@ -9423,7 +8881,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         big.getBigDecimal(tblProductos.getValueAt(i, 5).toString().replace(",", ".")).setScale(2, RoundingMode.HALF_DOWN) + "",
                         tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 12) + "", tblProductos.getValueAt(i, 3).toString().replace(",", "."),
                         "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
-                        tblProductos.getValueAt(i, 21), txtBodega.getText()
+                        tblProductos.getValueAt(i, 21), ""
                     };
 
                     nodo = metodos.llenarOServicio1(vector);
@@ -9490,11 +8948,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 factura = "PEDIDO-" + instancias.getSql().getNumConsecutivoFact1("PEDIDO")[0].toString();
             }
 
-            String bodega = txtBodega.getText();
-            if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-                bodega = "123-22";
-            }
-
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
                 if (!tblProductos.getValueAt(i, 16).equals("REALIZADO")) {
 
@@ -9529,7 +8982,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         big.getBigDecimal(tblProductos.getValueAt(i, 5).toString().replace(",", ".")).setScale(2, RoundingMode.HALF_DOWN) + "",
                         tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 12) + "", tblProductos.getValueAt(i, 3).toString().replace(",", "."),
                         "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
-                        tblProductos.getValueAt(i, 21), txtBodega.getText(), tblProductos.getValueAt(i, 29), tblProductos.getValueAt(i, 27)
+                        tblProductos.getValueAt(i, 21), "", tblProductos.getValueAt(i, 29), tblProductos.getValueAt(i, 27)
                     };
 
                     nodo = metodos.llenarPedido(vector);
@@ -9606,7 +9059,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 12) + "", tblProductos.getValueAt(i, 3).toString().replace(",", "."),
                         "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19),
                         big.getMoneda(tblProductos.getValueAt(i, 20).toString()), tblProductos.getValueAt(i, 21), tblProductos.getValueAt(i, 27),
-                        tblProductos.getValueAt(i, 29), txtBodega.getText()
+                        tblProductos.getValueAt(i, 29), ""
                     };
 
                     nodo = metodos.llenarPlanSepare(vector);
@@ -9669,11 +9122,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 factura = "CONGELADA-" + instancias.getSql().getNumConsecutivoFact1("CONGELADA")[0].toString();
             }
 
-            String bodega = txtBodega.getText();
-            if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-                bodega = "123-22";
-            }
-
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
                 if (!tblProductos.getValueAt(i, 16).equals("REALIZADO")) {
 
@@ -9686,7 +9134,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
                     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
                         instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                                preparacionProducto, "fisicoInventario", bodega);
+                                preparacionProducto, "fisicoInventario", "");
                     }
 
                     Object[] vector = {factura, ID_CLIENTE_CARGADO, vendedor, "", metodos.fechaConsulta(metodosGenerales.fecha()),
@@ -9708,7 +9156,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
                         preparacionProducto, turno, tblProductos.getValueAt(i, 27), tblProductos.getValueAt(i, 29),
                         big.getMoneda(txtTotalImpoconsumo.getText()), tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."),
-                        big.getMoneda((String) tblProductos.getValueAt(i, 8)), txtBodega.getText()
+                        big.getMoneda((String) tblProductos.getValueAt(i, 8)), ""
                     };
 
                     nodo = metodos.llenarCongelada(vector);
@@ -9870,7 +9318,7 @@ public class VistaFactura extends javax.swing.JPanel {
                         "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
                         cmbPeriodicidad.getSelectedItem(), metodos.desdeDate(dtDesde.getCurrent()), hasta, txtCantIncremento.getText(),
                         big.getMoneda(txtTotalImpoconsumo.getText()), tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."),
-                        big.getMoneda((String) tblProductos.getValueAt(i, 8)), txtBodega.getText()
+                        big.getMoneda((String) tblProductos.getValueAt(i, 8)), ""
                     };
 
                     ndCongelada nodo = metodos.llenarCongelada(vector);
@@ -10002,7 +9450,7 @@ public class VistaFactura extends javax.swing.JPanel {
             if (txtDiasPlazo.getText().equals("0")) {
                 if ((Boolean) datos[91]) {
                     if (!saltarPasosFactura) {
-                        vistaDevuelta devueltaTotal = new vistaDevuelta(instancias.getMenu(), true, instancias, instancias.getDevuelta());
+                        VistaDevuelta devueltaTotal = new VistaDevuelta(instancias.getMenu(), true, instancias, instancias.getDevuelta());
                         devueltaTotal.setVisible(true);
                     }
                 }
@@ -10252,8 +9700,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 if (metodos.msgPregunta(null, "¿Desea generar factura?") == 0) {
 
                     this.tipoProceso = "facturacion";
-                    cmbCargar.setSelectedIndex(1);
-
                     txtCargar.setText(factura.replace("OSERV-", ""));
                     cargarMovimiento();
                     txtObservaciones.setText(factura + ". " + txtObservaciones.getText());
@@ -10452,7 +9898,7 @@ public class VistaFactura extends javax.swing.JPanel {
             return;
         }
 
-        String baseUtilizada = obtenerBase();
+        String baseUtilizada = "bdProductos";
         if (instancias.getConfiguraciones().isRestaurante()) {
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
                 ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
@@ -10490,13 +9936,13 @@ public class VistaFactura extends javax.swing.JPanel {
             }
         }
 
-        vistaMetodoPagos devuelta;
+        VistaMetodoPagos devuelta;
         if (txtFechaFactura.getText().equals(txtVencimiento.getText())) {
             String miTipo = "";
             if (tipoProceso.equals("facturacion")) {
                 miTipo = "facturacion";
             }
-            devuelta = new vistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")), instancias, miTipo,
+            devuelta = new VistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")), instancias, miTipo,
                     ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()));
 //            devuelta.setNC(big.getMoneda(txtNc.getText()));
             devuelta.show();
@@ -10666,7 +10112,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     instancias.getComision(), instancias.getValorComision(), instancias.getTotalFacturaComision(), imei, lote, idProd, "",
                     instancias.getTarjetaCredito(), instancias.getTotalPropina(), instancias.getPorcPropina(), consecutivoCosteo, hora,
                     tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."), big.getMoneda((String) tblProductos.getValueAt(i, 8)),
-                    chkSisteCredito.isSelected(), txtBodega.getText(), ponderado, tipoComprobante
+                    chkSisteCredito.isSelected(), "", ponderado, tipoComprobante
                 };
 
                 idCosteo = "";
@@ -10685,11 +10131,6 @@ public class VistaFactura extends javax.swing.JPanel {
                 }
             }
 
-            String bodega = txtBodega.getText();
-            if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-                bodega = "123-22";
-            }
-
             if (instancias.getConfiguraciones().isRestaurante()) {
                 if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
                     String preparacion = "";
@@ -10700,14 +10141,14 @@ public class VistaFactura extends javax.swing.JPanel {
                     }
 
                     instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                            preparacion, "descontarTodo", bodega);
+                            preparacion, "descontarTodo", "");
                 }
             } else {
                 try {
                     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
                         String preparacion = tblProductos.getValueAt(i, 21).toString();
                         instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(),
-                                tblProductos.getValueAt(i, 3).toString(), preparacion, bodega);
+                                tblProductos.getValueAt(i, 3).toString(), preparacion, "");
                     }
                 } catch (Exception e) {
                 }
@@ -11046,22 +10487,7 @@ public class VistaFactura extends javax.swing.JPanel {
     }
 
     public void ventanaProductos(String codigo) {
-        String base = txtBodega.getText();
-        if (base.equals("123-22")) {
-            base = "productos1";
-        } else if (base.equals("BODEGA-1")) {
-            base = "productos1bodega1";
-        } else if (base.equals("BODEGA-2")) {
-            base = "productos1bodega2";
-        } else if (base.equals("BODEGA-3")) {
-            base = "productos1bodega3";
-        } else if (base.equals("BODEGA-4")) {
-            base = "productos1bodega4";
-        } else {
-            base = "productos1";
-        }
-
-        buscProductos buscar = new buscProductos(null, true, false, "facturacion", base);
+        buscProductos buscar = new buscProductos(null, true, false, "facturacion", "productos1");
         buscar.setOpc("factura");
         buscar.setFactura(this);
         buscar.setLocationRelativeTo(null);
@@ -11708,7 +11134,7 @@ public class VistaFactura extends javax.swing.JPanel {
     public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, Boolean agrupar, String talla, String color,
             String temp, String fechaVence, String detalleMensualidad) {
 
-        String baseUtilizada = obtenerBase();
+        String baseUtilizada = "bdProductos";
         ndProducto nodo = null;
 
         String CodigoProd = "";
@@ -11904,7 +11330,7 @@ public class VistaFactura extends javax.swing.JPanel {
                     }
 
                     if (cant > 0) {
-                        seleccionarPLU pluu = new seleccionarPLU(null, true, obtenerBase());
+                        seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
                         pluu.setFactura(this);
                         pluu.setInstancias(instancias, nodo.getIdSistema());
                         pluu.setOpc("factura");
@@ -12436,10 +11862,9 @@ public class VistaFactura extends javax.swing.JPanel {
 
     public void cargarProductos1(Object[][] productos) {
         String cantEstablecida = txtCant.getText();
-        String baseUtilizada = obtenerBase();
 
         for (int i = 0; i < productos.length; i++) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(productos[i][0].toString(), baseUtilizada);
+            ndProducto nodo = instancias.getSql().getDatosProducto(productos[i][0].toString(), "bdProductos");
 
             String codigo = productos[i][0].toString();
             String cantidad = productos[i][1].toString();
@@ -12543,7 +11968,7 @@ public class VistaFactura extends javax.swing.JPanel {
         }
 
         cargarTotales();
-        vistaMetodoPagos devuelta = new vistaMetodoPagos(null, false, big.getBigDecimal("0"), null, null, cliente, big.getBigDecimal("0"));
+        VistaMetodoPagos devuelta = new VistaMetodoPagos(null, false, big.getBigDecimal("0"), null, null, cliente, big.getBigDecimal("0"));
 
         if (devueltaSino) {
             devuelta = null;
@@ -12588,7 +12013,7 @@ public class VistaFactura extends javax.swing.JPanel {
         txtTotalIva.setText(big.setMonedaExacta(big.getBigDecimal(nodo.getIva())));
         cargarCliente(nodo.getCliente());
 
-        vistaMetodoPagos devuelta2 = new vistaMetodoPagos(null, true, null, null, null, null, null);
+        VistaMetodoPagos devuelta2 = new VistaMetodoPagos(null, true, null, null, null, null, null);
         facturar(devuelta2, true, "");
 
         instancias.getSql().cambiarEstadoPedido("REALIZADO", factura);
@@ -12608,8 +12033,6 @@ public class VistaFactura extends javax.swing.JPanel {
         } else {
             mat = instancias.getSql().getRegistrosCuentaCobro1(factura);
         }
-
-        txtBodega.setText(base);
 
         int a = 0;
         for (Object[] reg : mat) {
@@ -12663,7 +12086,7 @@ public class VistaFactura extends javax.swing.JPanel {
             cmbMes.setSelectedItem(nodo.getPreparacion());
         }
 
-        vistaMetodoPagos devuelta = new vistaMetodoPagos(null, false, big.getBigDecimal("0"), null, null, null, big.getBigDecimal("0"));
+        VistaMetodoPagos devuelta = new VistaMetodoPagos(null, false, big.getBigDecimal("0"), null, null, null, big.getBigDecimal("0"));
         if (devueltaSiNo) {
             devuelta = null;
         }
@@ -12922,7 +12345,7 @@ public class VistaFactura extends javax.swing.JPanel {
 
     private void calcularTabla(int fila, boolean mostrarAlerta) {
 
-        String baseUtilizada = obtenerBase();
+        String baseUtilizada = "bdProductos";
         ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
 
         BigDecimal cantidad = BigDecimal.ONE;
@@ -13790,6 +13213,39 @@ public class VistaFactura extends javax.swing.JPanel {
         return value != null ? value.toString() : "";
     }
 
+    /**
+     * Recorre todos los productos de la tabla y valida si hay inventario
+     * suficiente para procesar el documento. Usa ServicioDiscosteo para
+     * explosionar los productos armados/preparados en sus insumos. Delega en
+     * ServicioValidacionFactura.
+     */
+    private ResultadoValidacionInventario validarInventarioProductos(String baseUtilizada) {
+        List<FilaProductoTabla> filas = extraerFilasDeTabla();
+        ServicioValidacionFactura servicio = new ServicioValidacionFactura(new CargadorProducto() {
+            @Override
+            public ndProducto cargar(String codigo, String tabla) {
+                return instancias.getSql().getDatosProducto(codigo, tabla);
+            }
+        });
+        return servicio.validar(filas, baseUtilizada);
+    }
+
+    /**
+     * Lee de tblProductos los datos que la vista aporta a la validación de
+     * inventario.
+     */
+    private List<FilaProductoTabla> extraerFilasDeTabla() {
+        List<FilaProductoTabla> filas = new ArrayList<>();
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            filas.add(new FilaProductoTabla(
+                    obtenerValorTabla(i, 32),
+                    obtenerValorTabla(i, 21),
+                    Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString()),
+                    obtenerValorTabla(i, 1)));
+        }
+        return filas;
+    }
+
     private InformacionAdicional construirInformacionAdicional() {
         boolean vieneDesdeUnPedido = (ndPedido != null && ndPedido.getIdFactura() != null);
         boolean vieneDesdeUnSepare = (ndSepare != null && ndSepare.getIdFactura() != null);
@@ -13809,7 +13265,6 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JButton btnNuevaParte;
     private javax.swing.JButton btnNuevaParte1;
     private javax.swing.JButton btnPendientes;
-    private javax.swing.JButton btnPendientes1;
     private javax.swing.JButton btnReImprimir;
     private javax.swing.JLabel btnVolver;
     private javax.swing.JLabel btnVolver1;
@@ -13817,7 +13272,6 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JCheckBox chkReteIva;
     private javax.swing.JCheckBox chkSinEstablecer;
     private javax.swing.JCheckBox chkSisteCredito;
-    private javax.swing.JComboBox cmbCargar;
     private javax.swing.JComboBox cmbFuncionamiento;
     private javax.swing.JComboBox cmbListaPrecio;
     private javax.swing.JComboBox cmbListas;
@@ -13850,9 +13304,9 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JScrollPane jtblComprobantes;
-    private javax.swing.JLabel lbBodega;
     private javax.swing.JLabel lbCambiarMesa;
     private javax.swing.JLabel lbCar;
+    private javax.swing.JLabel lbCargarDocumento;
     private javax.swing.JLabel lbCelular1;
     private javax.swing.JLabel lbCupo;
     private javax.swing.JLabel lbDiasPlazo;
@@ -13917,7 +13371,6 @@ public class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JTable tblImagenes;
     private javax.swing.JTable tblInventario;
     private javax.swing.JTable tblProductos;
-    private javax.swing.JTextField txtBodega;
     private javax.swing.JTextField txtCant;
     private javax.swing.JTextField txtCantFacturados;
     private javax.swing.JTextField txtCantIncremento;

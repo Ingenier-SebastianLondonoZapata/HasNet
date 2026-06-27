@@ -990,52 +990,52 @@
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="0">
                             <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
-                              <Title value="FACTURA"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="150" minWidth="-1" prefWidth="120" resizable="true">
-                              <Title value="FACTURA"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="85" minWidth="85" prefWidth="85" resizable="true">
-                              <Title value="FECHA"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="160" minWidth="-1" prefWidth="120" resizable="true">
-                              <Title value="NIT CLIENTE"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title value="CLIENTE"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title value="VENDEDOR"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="150" minWidth="-1" prefWidth="105" resizable="true">
-                              <Title value="TOTAL"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="80" minWidth="80" prefWidth="80" resizable="true">
-                              <Title value="TERMINAL"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="100" minWidth="100" prefWidth="100" resizable="true">
-                              <Title value="CONSE.MANUAL"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
                             <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
-                              <Title value="TIPO_FACTURA"/>
+                              <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>

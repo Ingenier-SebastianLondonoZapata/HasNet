@@ -1,9 +1,6 @@
-package formularios.Ventas;
+package Vista.Ventas;
 
-import Vista.Ventas.VistaFactura;
-import formularios.creditos.*;
-import clases.Instancias;
-import clases.metodosGenerales;
+import Enums.TipoDocumento;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -11,7 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class infCotiza extends javax.swing.JInternalFrame {
+public class factura extends javax.swing.JInternalFrame {
 
     private VistaFactura pnlFactura;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -26,7 +23,7 @@ public class infCotiza extends javax.swing.JInternalFrame {
         this.pnlFactura = pnlFactura;
     }
 
-    public infCotiza() {
+    public factura() {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -36,23 +33,24 @@ public class infCotiza extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        pnlFactura = new VistaFactura("cotizacion");
+        pnlFactura = new VistaFactura(TipoDocumento.FACTURACION.getValor());
         pnlFactura.setSize(pnlContenedor.getSize());
         pnlContenedor.add(pnlFactura, CENTER_ALIGNMENT);
         pnlContenedor.revalidate();
         pnlContenedor.repaint();
         pnlContenedor.setVisible(true);
-
     }
 
     @Override
     public void setSelected(boolean selected) {
         try {
-            super.setSelected(selected); //To change body of generated methods, choose Tools | Templates.
+            super.setSelected(selected);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(infCotiza.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(factura.class.getName()).log(Level.SEVERE, null, ex);
         }
-        pnlFactura.actualizarConsecutivo(0);
+
+        int fila = pnlFactura.obtenerDocumento();
+        pnlFactura.actualizarConsecutivo(fila);
     }
 
     @SuppressWarnings("unchecked")

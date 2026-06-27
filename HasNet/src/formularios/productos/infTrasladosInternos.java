@@ -30,7 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
-public class infTrasladosInternos extends javax.swing.JInternalFrame {
+public class infTrasladosInternos extends javax.swing.JInternalFrame implements Vista.Productos.ReceptorProductoSalida {
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -1622,7 +1622,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame {
 
             if (!tipo.equals("") && idProd.equals("")) {
                 VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida",
-                        "trasladoInterno");
+                        "trasladoInterno", BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
                 return;

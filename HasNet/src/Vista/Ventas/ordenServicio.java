@@ -1,7 +1,6 @@
-package formularios.Ventas;
+package Vista.Ventas;
 
 import Vista.Ventas.VistaFactura;
-import clases.Instancias;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -9,7 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class infFactura extends javax.swing.JInternalFrame {
+public class ordenServicio extends javax.swing.JInternalFrame {
 
     private VistaFactura pnlFactura;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -24,7 +23,7 @@ public class infFactura extends javax.swing.JInternalFrame {
         this.pnlFactura = pnlFactura;
     }
 
-    public infFactura() {
+    public ordenServicio() {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -34,24 +33,13 @@ public class infFactura extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        pnlFactura = new VistaFactura("facturacion");
+        pnlFactura = new VistaFactura("orden");
         pnlFactura.setSize(pnlContenedor.getSize());
         pnlContenedor.add(pnlFactura, CENTER_ALIGNMENT);
         pnlContenedor.revalidate();
         pnlContenedor.repaint();
         pnlContenedor.setVisible(true);
-    }
 
-    @Override
-    public void setSelected(boolean selected) {
-        try {
-            super.setSelected(selected); //To change body of generated methods, choose Tools | Templates.
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(infFactura.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        int fila = pnlFactura.obtenerDocumento();
-        pnlFactura.actualizarConsecutivo(fila);
     }
 
     @SuppressWarnings("unchecked")
@@ -62,7 +50,7 @@ public class infFactura extends javax.swing.JInternalFrame {
         pnlContenedor = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setTitle("Factura");
+        setTitle("Orden Servicio");
 
         scrFormulario.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -96,6 +84,8 @@ public class infFactura extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(scrFormulario)
         );
+
+        getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

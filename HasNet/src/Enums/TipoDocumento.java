@@ -23,7 +23,9 @@ public enum TipoDocumento {
     ANULAR_AJUSTE_SALIDA("anularAjusteSalida"),
 
     COMPRA("ingreso"),
+    ANULAR_COMPRA("anularCompra"),
     ORDEN_COMPRA("ordenCompra"),
+    ANULAR_ORDEN_COMPRA("anularOrdenCompra"),
     EGRESO("egreso"),
 
     INVENTARIO_INICIAL("inventarioInicial");

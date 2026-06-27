@@ -319,35 +319,6 @@
 				<reportElement stretchType="RelativeToTallestObject" x="58" y="0" width="1" height="18" uuid="d814e293-8b8b-4b5e-b844-2ae137cff160"/>
 			</line>
 		</band>
-		<band height="19">
-			<printWhenExpression><![CDATA[!$F{detalle}.equals( "" )]]></printWhenExpression>
-			<line>
-				<reportElement x="0" y="0" width="573" height="1" uuid="93f338ea-cfea-4d58-8ce7-9fff45b71c28"/>
-			</line>
-			<staticText>
-				<reportElement mode="Opaque" x="1" y="1" width="57" height="18" forecolor="#000000" backcolor="#CCCCCC" uuid="890ce4cb-b79c-4d9f-90a1-73e560d5c7ba"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Detalle]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="60" y="1" width="512" height="18" uuid="c3a57314-1c81-4fdb-9a24-552efc53f82b"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{detalle}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="0" y="1" width="1" height="18" uuid="99f09249-4a3d-4e09-af8b-22dbda7081a3"/>
-			</line>
-			<line>
-				<reportElement stretchType="RelativeToTallestObject" x="58" y="1" width="1" height="18" uuid="509b188f-2d77-4940-985b-02f7f3b89445"/>
-			</line>
-			<line>
-				<reportElement x="572" y="1" width="1" height="18" uuid="77e10266-8ee0-4b02-b4ae-04466839eaa3"/>
-			</line>
-		</band>
 		<band height="1">
 			<line>
 				<reportElement x="0" y="0" width="573" height="1" uuid="ef7cb6ce-0ce0-4c25-b415-194c5185b137"/>
