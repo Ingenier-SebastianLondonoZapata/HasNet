@@ -55,7 +55,7 @@ public final class ParserPreparacion {
             }
 
             resultado.add(new OpcionPreparacion(
-                    campos[CAMPO_PRINCIPAL], campos[CAMPO_CODIGO], campos[CAMPO_CANTIDAD], campos[CAMPO_ESTADO]));
+                    campos[CAMPO_PRINCIPAL], campos[CAMPO_CODIGO], Utilidades.convertirBigDecimal(campos[CAMPO_CANTIDAD]), campos[CAMPO_ESTADO]));
         }
 
         return resultado;
@@ -66,7 +66,7 @@ public final class ParserPreparacion {
 
         for (OpcionPreparacion opcion : opciones(preparacion)) {
             if (!opcion.esAdicion() && opcion.activa()) {
-                componentes.add(new ComponenteDiscosteo(opcion.getCodigo(), Utilidades.convertirBigDecimal(opcion.getCantidad())));
+                componentes.add(new ComponenteDiscosteo(opcion.getCodigo(), opcion.getCantidad()));
             }
         }
 

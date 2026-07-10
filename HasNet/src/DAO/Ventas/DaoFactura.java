@@ -3,7 +3,9 @@ package dao.Ventas;
 import Modelo.Ventas.CabeceraDocumento;
 import Modelo.Ventas.DocumentoMovimiento;
 import Modelo.Ventas.LineaProducto;
+import Utilidades.Utilidades;
 import clases.Cartera.ndCxc;
+import clases.Ventas.ndFactura;
 import clases.Ventas.ndOServicio;
 import clases.Ventas.ndPedido;
 import clases.Ventas.ndPlanSepare;
@@ -16,9 +18,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DaoFactura {
 
+    private static final Logger LOGGER = Logger.getLogger(DaoFactura.class.getName());
     private final DaoGenerales daoGenerales = new DaoGenerales();
     private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
 
@@ -312,5 +317,180 @@ public class DaoFactura {
             System.err.println("Error al obtener datos de pedido: " + e.getMessage());
         }
         return new ndPedido();
+    }
+
+    // -------------------------------------------------------------------------
+    // Escritura
+    // -------------------------------------------------------------------------
+
+    public boolean agregarRegistro(ndFactura nodo) {
+        String sql = "INSERT INTO bdFactura(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
+                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
+                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
+                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, preparacion, "
+                + "turno, franquisia, comision, imei, lote, idProd, mesFacturado, porcPropina, idCosteo, hora, sisteCredito, bodega, modeloContable, "
+                + "efectivoGeneral, ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, "
+                + "ivaGeneral, subtotalGeneral, rtIva, rtIca, rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad, porcDescuento, "
+                + "cant2, porcIva, utilidad1, impuesto, impoGeneral, valorComision, totalFacturaComision, tarjetaCredito, totalPropina, porcImpo, impoconsumo, costo) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
+                + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            pstmt.setString(1, nodo.getIdFactura());
+            pstmt.setString(2, nodo.getCliente());
+            pstmt.setString(3, nodo.getVendedor());
+            pstmt.setString(4, nodo.getRed());
+            pstmt.setString(5, nodo.getFechaFactura());
+            pstmt.setString(6, nodo.getFechaVencimiento());
+            pstmt.setString(7, nodo.getComprobante());
+            pstmt.setString(8, nodo.getCotizacion());
+            pstmt.setBoolean(9, nodo.isAnulada());
+            pstmt.setString(10, nodo.getAnula());
+            pstmt.setBoolean(11, nodo.isCredito());
+            pstmt.setString(12, nodo.getCxc());
+            pstmt.setString(13, nodo.getUsuario());
+            pstmt.setString(14, nodo.getObservacion());
+            pstmt.setBoolean(15, nodo.isAnulada1());
+            pstmt.setString(16, nodo.getAnula1());
+            pstmt.setBoolean(17, nodo.isCredito1());
+            pstmt.setString(18, nodo.getCxc1());
+            pstmt.setString(19, nodo.getUsuario1());
+            pstmt.setString(20, nodo.getFechaAlerta());
+            pstmt.setString(21, nodo.getTerminal());
+            pstmt.setString(22, nodo.getEstadoGeneral());
+            pstmt.setString(23, nodo.getEstado2());
+            pstmt.setString(24, nodo.getFactura());
+            pstmt.setString(25, nodo.getResolucion());
+            pstmt.setString(26, nodo.getFechaAnulacion());
+            pstmt.setString(27, nodo.getCuadreAnulacion());
+            pstmt.setString(28, nodo.getUsuarioAnula());
+            pstmt.setString(29, nodo.getPlaca());
+            pstmt.setString(30, nodo.getGarantia());
+            pstmt.setString(31, nodo.getDiasGarantia());
+            pstmt.setString(32, nodo.getRango());
+            pstmt.setString(33, nodo.getTerminos());
+            pstmt.setString(34, nodo.getNotaAnulacion());
+            pstmt.setString(35, nodo.getConseMesa());
+            pstmt.setString(36, nodo.getProducto());
+            pstmt.setString(37, nodo.getNC());
+            pstmt.setString(38, nodo.getConcepto());
+            pstmt.setString(39, nodo.getDescripcion());
+            pstmt.setString(40, nodo.getPlu());
+            pstmt.setString(41, nodo.getEstado());
+            pstmt.setString(42, nodo.getTercero());
+            pstmt.setString(43, nodo.getPreparacion());
+            pstmt.setString(44, nodo.getTurno());
+            pstmt.setString(45, nodo.getFranquisia());
+            pstmt.setString(46, nodo.getComision());
+            pstmt.setString(47, nodo.getImei());
+            pstmt.setString(48, nodo.getLote());
+            pstmt.setString(49, nodo.getIdProd());
+            pstmt.setString(50, nodo.getMesFacturado());
+            pstmt.setString(51, nodo.getPorcPropina());
+            pstmt.setString(52, nodo.getIdCosteo());
+            pstmt.setString(53, nodo.getHora());
+            pstmt.setBoolean(54, nodo.isSisteCredito());
+            pstmt.setString(55, nodo.getBodega());
+            pstmt.setString(56, nodo.getModeloContable());
+            pstmt.setBigDecimal(57, Utilidades.convertirBigDecimal(nodo.getEfectivoGeneral()));
+            pstmt.setBigDecimal(58, Utilidades.convertirBigDecimal(nodo.getNcGeneral()));
+            pstmt.setBigDecimal(59, Utilidades.convertirBigDecimal(nodo.getChequeGeneral()));
+            pstmt.setBigDecimal(60, Utilidades.convertirBigDecimal(nodo.getTargetaGeneral()));
+            pstmt.setBigDecimal(61, Utilidades.convertirBigDecimal(nodo.getTotalGeneral()));
+            pstmt.setBigDecimal(62, Utilidades.convertirBigDecimal(nodo.getDescuentoGeneral()));
+            pstmt.setBigDecimal(63, Utilidades.convertirBigDecimal(nodo.getIvaGeneral()));
+            pstmt.setBigDecimal(64, Utilidades.convertirBigDecimal(nodo.getSubtotalGeneral()));
+            pstmt.setBigDecimal(65, Utilidades.convertirBigDecimal(nodo.getRtIva()));
+            pstmt.setBigDecimal(66, Utilidades.convertirBigDecimal(nodo.getRtIca()));
+            pstmt.setBigDecimal(67, Utilidades.convertirBigDecimal(nodo.getRtFuente()));
+            pstmt.setBigDecimal(68, Utilidades.convertirBigDecimal(nodo.getOtros()));
+            pstmt.setBigDecimal(69, Utilidades.convertirBigDecimal(nodo.getDevuelta()));
+            pstmt.setBigDecimal(70, Utilidades.convertirBigDecimal(nodo.getCopago()));
+            pstmt.setBigDecimal(71, Utilidades.convertirBigDecimal(nodo.getLista()));
+            pstmt.setBigDecimal(72, Utilidades.convertirBigDecimal(nodo.getCantidad()));
+            pstmt.setBigDecimal(73, Utilidades.convertirBigDecimal(nodo.getDescuento()));
+            pstmt.setBigDecimal(74, Utilidades.convertirBigDecimal(nodo.getTotal()));
+            pstmt.setBigDecimal(75, Utilidades.convertirBigDecimal(nodo.getIva()));
+            pstmt.setBigDecimal(76, Utilidades.convertirBigDecimal(nodo.getSubtotal()));
+            pstmt.setBigDecimal(77, Utilidades.convertirBigDecimal(nodo.getUtilidad()));
+            pstmt.setBigDecimal(78, Utilidades.convertirBigDecimal(nodo.getPorcDescuento()));
+            pstmt.setBigDecimal(79, Utilidades.convertirBigDecimal(nodo.getCant2()));
+            pstmt.setBigDecimal(80, Utilidades.convertirBigDecimal(nodo.getPorcIva()));
+            pstmt.setBigDecimal(81, Utilidades.convertirBigDecimal(nodo.getUtilidad1()));
+            pstmt.setBigDecimal(82, Utilidades.convertirBigDecimal(nodo.getImpuestos()));
+            pstmt.setBigDecimal(83, Utilidades.convertirBigDecimal(nodo.getImpoGeneral()));
+            pstmt.setBigDecimal(84, Utilidades.convertirBigDecimal(nodo.getValorComision()));
+            pstmt.setBigDecimal(85, Utilidades.convertirBigDecimal(nodo.getTotalFacturaComision()));
+            pstmt.setBigDecimal(86, Utilidades.convertirBigDecimal(nodo.getTarjetaCredito()));
+            pstmt.setBigDecimal(87, Utilidades.convertirBigDecimal(nodo.getTotalPropina()));
+            pstmt.setBigDecimal(88, Utilidades.convertirBigDecimal(nodo.getPorcImpo()));
+            pstmt.setBigDecimal(89, Utilidades.convertirBigDecimal(nodo.getImpoconsumo()));
+            pstmt.setBigDecimal(90, Utilidades.convertirBigDecimal(nodo.getCosto()));
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al guardar registro de factura: " + nodo.getIdFactura(), e);
+            return false;
+        }
+    }
+
+    public boolean eliminarRegistro(String factura) {
+        String sql = "DELETE FROM bdFactura WHERE factura = ?";
+        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            pstmt.setString(1, factura);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al eliminar registro de factura: " + factura, e);
+            return false;
+        }
+    }
+
+    /**
+     * Devuelve el siguiente consecutivo (cadena) para el tipo indicado.
+     * Delegado a la capa de SQL ya existente para mantener la lógica centralizada.
+     */
+    public String getNextConsecutivo(String clave) {
+        String sql = "SELECT numero, estado FROM bdConsecutivos WHERE Id = ? FOR UPDATE";
+        String numero = "";
+        boolean previousAutoCommit = true;
+        try {
+            previousAutoCommit = conexion.getAutoCommit();
+            conexion.setAutoCommit(false);
+
+            try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+                stmt.setString(1, clave);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        numero = rs.getString("numero");
+                    } else {
+                        // No existe la fila
+                        conexion.rollback();
+                        return "";
+                    }
+                }
+            }
+
+            String update = "UPDATE bdConsecutivos SET estado = 'ON' WHERE Id = ?";
+            try (PreparedStatement ustmt = conexion.prepareStatement(update)) {
+                ustmt.setString(1, clave);
+                ustmt.executeUpdate();
+            }
+
+            conexion.commit();
+            return numero != null ? numero : "";
+        } catch (SQLException e) {
+            try {
+                conexion.rollback();
+            } catch (SQLException re) {
+                System.err.println("Error during rollback: " + re.getMessage());
+            }
+            System.err.println("Error obteniendo consecutivo para " + clave + ": " + e.getMessage());
+        } finally {
+            try {
+                conexion.setAutoCommit(previousAutoCommit);
+            } catch (SQLException e) {
+                System.err.println("Error restaurando autoCommit: " + e.getMessage());
+            }
+        }
+        return "";
     }
 }

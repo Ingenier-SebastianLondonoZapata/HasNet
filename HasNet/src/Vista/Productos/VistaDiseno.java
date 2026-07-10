@@ -1071,7 +1071,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                 metodos.msgError(this, "Error al guardar en el consecutivo del producto");
             }
 
-            metodos.msgExito(this, "Producto registrado con éxito");
+            metodos.msgExito(this, "Diseño registrado con éxito");
 
             if (!chkManejarInventario.isSelected()) {
                 String codigo = txtCodigo.getText();
@@ -1374,21 +1374,21 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             }
 
             if (!instancias.getSql().modificarProducto(nodo, "bdProductos")) {
-                metodos.msgError(this, "Hubo un problema al modificar el producto");
+                metodos.msgError(this, "Hubo un problema al modificar el diseño");
             }
 
             if (instancias.getConfiguraciones().isInventarioBodegas()) {
                 if (!instancias.getSql().modificarProducto(nodo1, "bdProductosBodega1")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el producto");
+                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
                 }
                 if (!instancias.getSql().modificarProducto(nodo2, "bdProductosBodega2")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el producto");
+                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
                 }
                 if (!instancias.getSql().modificarProducto(nodo3, "bdProductosBodega3")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el producto");
+                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
                 }
                 if (!instancias.getSql().modificarProducto(nodo4, "bdProductosBodega4")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el producto");
+                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
                 }
             }
 
@@ -1400,7 +1400,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             //PROCESO GUARDAR COSTEO DEL DISEÑO
             guardarLineasCosteo(nodo.getIdSistema(), tipo);
 
-            metodos.msgExito(this, "Producto modificado con éxito");
+            metodos.msgExito(this, "Diseño modificado con éxito");
 
             if (!chkManejarInventario.isSelected()) {
                 instancias.getArmado().cargarProductoPrincipal(txtCodigo.getText());

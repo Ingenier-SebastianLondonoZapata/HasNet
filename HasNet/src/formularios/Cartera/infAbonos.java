@@ -3473,7 +3473,7 @@ public class infAbonos extends javax.swing.JInternalFrame {
                         bodega = "123-22";
                     }
 
-                    instancias.getFactura().generarFacturaExterior("separe", factura, false, true, bodega);
+                  //  instancias.getFactura().generarFacturaExterior("separe", factura, false, true, bodega);
                 }
             }
 
@@ -3696,7 +3696,7 @@ public class infAbonos extends javax.swing.JInternalFrame {
 
                             if (tipo.equals("separe")) {
                                 if (metodos.msgPregunta(this, "Valor saldado, ¿Desea generar la factura?") == 0) {
-                                    instancias.getFactura().generarFacturaExterior("separe", factura, false, true, "123-22");
+                                    //instancias.getFactura().generarFacturaExterior("separe", factura, false, true, "123-22");
                                 }
                             }
                         }

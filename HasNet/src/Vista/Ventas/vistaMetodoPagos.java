@@ -16,7 +16,7 @@ import javax.swing.KeyStroke;
 public class VistaMetodoPagos extends javax.swing.JDialog {
 
     BigDecimal NC, valorTotal, valorNeto;
-    String tipo, cliente, simbolo;
+    String cliente, simbolo;
     Instancias instancias = Instancias.getInstancias();
     metodosGenerales metodos = new metodosGenerales();
 
@@ -36,7 +36,7 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
         this.NC = NC;
     }
 
-    public VistaMetodoPagos(java.awt.Frame parent, boolean modal, BigDecimal valor, Instancias instancias, String tipo, String cliente, BigDecimal valorNeto) {
+    public VistaMetodoPagos(java.awt.Frame parent, boolean modal, BigDecimal valor, Instancias instancias, String cliente, BigDecimal valorNeto) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
@@ -55,7 +55,6 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
         txtTotalGeneral.setText(this.simbolo + " 0");
         txtPropina.setText(this.simbolo + " 0");
 
-        this.tipo = tipo;
         txtTotal.setText(big.setMoneda(valor));
         txtEfectivo.setText(big.setMoneda(valor));
         txtValor.requestFocus();
@@ -368,7 +367,7 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
         lbEtiqueta.setFont(new java.awt.Font("Century Gothic", 1, 30)); // NOI18N
         lbEtiqueta.setText("PAGA:");
 
-        txtValor.setBackground(new java.awt.Color(255, 153, 153));
+        txtValor.setBackground(new java.awt.Color(255, 204, 204));
         txtValor.setFont(new java.awt.Font("Century Gothic", 0, 28)); // NOI18N
         txtValor.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtValor.setText("0");
@@ -381,7 +380,7 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
         lbNC.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         lbNC.setText("N.C:");
 
-        txtNC.setBackground(new java.awt.Color(255, 153, 153));
+        txtNC.setBackground(new java.awt.Color(255, 204, 204));
         txtNC.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         txtNC.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtNC.setText("0");
@@ -398,7 +397,7 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
             }
         });
 
-        txtCheque.setBackground(new java.awt.Color(255, 153, 153));
+        txtCheque.setBackground(new java.awt.Color(255, 204, 204));
         txtCheque.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         txtCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtCheque.setText("0");
@@ -417,7 +416,7 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
         lbCheque2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         lbCheque2.setText("Cheque:");
 
-        txtTarjetaDebito.setBackground(new java.awt.Color(255, 153, 153));
+        txtTarjetaDebito.setBackground(new java.awt.Color(255, 204, 204));
         txtTarjetaDebito.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         txtTarjetaDebito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtTarjetaDebito.setText("0");
@@ -431,7 +430,7 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
             }
         });
 
-        txtTarjetaCredito.setBackground(new java.awt.Color(255, 153, 153));
+        txtTarjetaCredito.setBackground(new java.awt.Color(255, 204, 204));
         txtTarjetaCredito.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         txtTarjetaCredito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtTarjetaCredito.setText("0");
@@ -955,31 +954,28 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
             instancias.setDevuelta(big.getMoneda(txtCambio.getText()));
         }
 
-        if (tipo.equals("facturacion")) {
-            if (!txtNC.getText().equals("") & !txtNC.getText().equals(this.simbolo) & !txtNC.getText().equals(this.simbolo + " ")) {
-                Object[][] notas = instancias.getSql().getNcCliente(cliente);
-                BigDecimal nc = big.getMoneda(txtNC.getText());
+        if (!txtNC.getText().equals("") & !txtNC.getText().equals(this.simbolo) & !txtNC.getText().equals(this.simbolo + " ")) {
+            Object[][] notas = instancias.getSql().getNcCliente(cliente);
+            BigDecimal nc = big.getMoneda(txtNC.getText());
 
-                for (Object[] nota : notas) {
-                    if (nc.compareTo(big.getBigDecimal("0")) == -1) {
-                        break;
-                    } else if (big.getBigDecimal(nota[0]).compareTo(nc) == -1 || big.getBigDecimal(nota[0]).compareTo(nc) == 0) {
-                        nc = nc.subtract(big.getBigDecimal(nota[0]));
-                        if (!instancias.getSql().descontarNc((String) nota[1], "0")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
-                        }
-                    } else {
-                        if (!instancias.getSql().descontarNc((String) nota[1], String.valueOf((big.getBigDecimal(nota[0])).subtract(nc)))) {
-                            metodos.msgError(null, "Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
-                        }
-                        nc = nc.subtract(big.getBigDecimal(nota[0]));
+            for (Object[] nota : notas) {
+                if (nc.compareTo(big.getBigDecimal("0")) == -1) {
+                    break;
+                } else if (big.getBigDecimal(nota[0]).compareTo(nc) == -1 || big.getBigDecimal(nota[0]).compareTo(nc) == 0) {
+                    nc = nc.subtract(big.getBigDecimal(nota[0]));
+                    if (!instancias.getSql().descontarNc((String) nota[1], "0")) {
+                        metodos.msgError(null, "Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
                     }
+                } else {
+                    if (!instancias.getSql().descontarNc((String) nota[1], String.valueOf((big.getBigDecimal(nota[0])).subtract(nc)))) {
+                        metodos.msgError(null, "Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
+                    }
+                    nc = nc.subtract(big.getBigDecimal(nota[0]));
                 }
             }
         }
 
         instancias.setCancelarFactura(false);
-
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -1232,7 +1228,7 @@ public class VistaMetodoPagos extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                VistaMetodoPagos dialog = new VistaMetodoPagos(new javax.swing.JFrame(), true, new BigDecimal(BigInteger.ZERO), null, "", null, new BigDecimal(BigInteger.ZERO));
+                VistaMetodoPagos dialog = new VistaMetodoPagos(new javax.swing.JFrame(), true, new BigDecimal(BigInteger.ZERO), null, null, new BigDecimal(BigInteger.ZERO));
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

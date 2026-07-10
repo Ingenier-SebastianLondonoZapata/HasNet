@@ -185,7 +185,7 @@ public class dlgCotizacionesPendientes extends javax.swing.JDialog {
             if (tblCotizaciones.getSelectedColumn() == 4) {
 
             } else {
-                instancias.getCotiza().cargarCotizaciones(tblCotizaciones.getValueAt(tblCotizaciones.getSelectedRow(), 0).toString());
+//                instancias.getCotiza().cargarCotizaciones(tblCotizaciones.getValueAt(tblCotizaciones.getSelectedRow(), 0).toString());
                 this.dispose();
             }
         }

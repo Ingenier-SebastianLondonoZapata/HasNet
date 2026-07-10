@@ -1,6 +1,5 @@
 package Vista.Aterrizaje;
 
-import Controlador.Alertas.ControladorAlertas;
 import Utilidades.DatosMaestra;
 import Vista.Cartera.vistaNotaCredito;
 import Vista.Configuraciones.vistaMaestra;
@@ -93,7 +92,7 @@ import formularios.Tesoreria.infRepCuadre;
 import Vista.Ventas.cotizacion;
 import formularios.Ventas.infCuentaCobro;
 import Vista.Ventas.factura;
-import formularios.Ventas.infFacturaCreditos;
+import Vista.Ventas.creditos;
 import formularios.Ventas.infFacturarLotes;
 import Vista.Ventas.VistaMesas;
 import Vista.Ventas.VistaDocumentos;
@@ -115,7 +114,7 @@ import formularios.Veterinario.infHospitalizacion;
 import formularios.Veterinario.infIngresoHospitalizacion;
 
 import formularios.productos.dlgConsultarCodigos;
-import formularios.productos.infGrupos;
+import Vista.Productos.infGrupos;
 import Vista.Productos.ingreso;
 import formularios.productos.infArmado;
 import Vista.Productos.VistaDiseno;
@@ -156,7 +155,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -166,10 +164,9 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.KeyStroke;
+import dao.Configuraciones.DaoMaestra;
 
 public class vistaMenu extends javax.swing.JFrame {
-
-    private Object[] datosMaestra;
 
     private final Rectangle desktop;
     private final metodosGenerales metodos;
@@ -212,9 +209,7 @@ public class vistaMenu extends javax.swing.JFrame {
         pnlMensaje.setVisible(false);
         pnlMiniaturas.setVisible(false);
 
-        datosMaestra = instancias.getSql().getDatosMaestra();
-        DatosMaestra maestra = new DatosMaestra();
-        maestra.setearDatosMaestra(datosMaestra);
+        DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
     }
 
     private void configurarAtajos() {
@@ -456,7 +451,7 @@ public class vistaMenu extends javax.swing.JFrame {
         btnMedicamentos = new javax.swing.JButton();
         sep4 = new javax.swing.JSeparator();
         cmbAccesos = new javax.swing.JComboBox();
-        btnMedicamentos1 = new javax.swing.JButton();
+        btnDocumentos = new javax.swing.JButton();
         sep5 = new javax.swing.JSeparator();
         pnlMiniaturas = new javax.swing.JPanel();
         lbVentas8 = new javax.swing.JButton();
@@ -1206,7 +1201,7 @@ public class vistaMenu extends javax.swing.JFrame {
         pnlMenuLayout.setHorizontalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
+                .addGap(3, 3, 3)
                 .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1317,16 +1312,16 @@ public class vistaMenu extends javax.swing.JFrame {
             }
         });
 
-        btnMedicamentos1.setBackground(new java.awt.Color(54, 54, 52));
-        btnMedicamentos1.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
-        btnMedicamentos1.setForeground(new java.awt.Color(255, 255, 255));
-        btnMedicamentos1.setText("Mis movimientos");
-        btnMedicamentos1.setToolTipText("");
-        btnMedicamentos1.setBorder(null);
-        btnMedicamentos1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnMedicamentos1.addActionListener(new java.awt.event.ActionListener() {
+        btnDocumentos.setBackground(new java.awt.Color(54, 54, 52));
+        btnDocumentos.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
+        btnDocumentos.setForeground(new java.awt.Color(255, 255, 255));
+        btnDocumentos.setText("Mis movimientos");
+        btnDocumentos.setToolTipText("");
+        btnDocumentos.setBorder(null);
+        btnDocumentos.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDocumentos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMedicamentos1ActionPerformed(evt);
+                btnDocumentosActionPerformed(evt);
             }
         });
 
@@ -1356,7 +1351,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addComponent(sep5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
-                .addComponent(btnMedicamentos1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnDocumentos, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1368,7 +1363,7 @@ public class vistaMenu extends javax.swing.JFrame {
             .addComponent(btnMedicamentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(sep4)
             .addComponent(cmbAccesos)
-            .addComponent(btnMedicamentos1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnDocumentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(sep5)
         );
 
@@ -1521,7 +1516,7 @@ public class vistaMenu extends javax.swing.JFrame {
                     .addComponent(lbVentas11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(lbMedico1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnParqueadero1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(5, 5, 5))
+                .addGap(1, 1, 1))
         );
         pnlMiniaturasLayout.setVerticalGroup(
             pnlMiniaturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -3111,7 +3106,7 @@ public class vistaMenu extends javax.swing.JFrame {
         new dlgConsultarCodigos(this, true).setVisible(true);
     }//GEN-LAST:event_btnVerificarActionPerformed
 
-    private void btnMedicamentos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMedicamentos1ActionPerformed
+    private void btnDocumentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocumentosActionPerformed
         /*try {
          instancias.getPlantillas().setSelected(true);
          instancias.getMenu().cambiarTitulo("PLANTILLAS");
@@ -3131,7 +3126,7 @@ public class vistaMenu extends javax.swing.JFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnMedicamentos1ActionPerformed
+    }//GEN-LAST:event_btnDocumentosActionPerformed
 
     private void btnParqueadero1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParqueadero1ActionPerformed
         animacion("parqueadero");
@@ -3163,7 +3158,7 @@ public class vistaMenu extends javax.swing.JFrame {
         this.dispose();
 
         if (!instancias.getUsuario().equals("ADMIN")) {
-            if ((Boolean) datosMaestra[108]) {
+            if (DatosMaestra.isSoloMesas()) {
                 Object[][] vendedores = instancias.getSql().getVendedores1();
 
                 for (int i = 0; i < vendedores.length; i++) {
@@ -3276,8 +3271,8 @@ public class vistaMenu extends javax.swing.JFrame {
         instancias.getMaestra().llenarVendedores(nombre);
         instancias.getReporte().setFirma();
 
-        if (datosMaestra[8] != null) {
-            lbNombreEmpresa.setText(datosMaestra[8].toString());
+        if (DatosMaestra.getD1() != null) {
+            lbNombreEmpresa.setText(DatosMaestra.getD1());
         }
 
         abrirCaja();
@@ -3299,7 +3294,7 @@ public class vistaMenu extends javax.swing.JFrame {
 
             if (instancias.getConfiguraciones().isRestaurante()) {
 
-                if ((Boolean) datosMaestra[108]) {
+                if (DatosMaestra.isSoloMesas()) {
                     Object[][] vendedores = instancias.getSql().getVendedores1();
 
                     for (int i = 0; i < vendedores.length; i++) {
@@ -3364,7 +3359,7 @@ public class vistaMenu extends javax.swing.JFrame {
     private void activarFuncionSolicitudes() {
         solicitudesPermisos solicitudes = new solicitudesPermisos();
         if (instancias.getUsuario().equals("ADMIN")) {
-            if ((Boolean) datosMaestra[96]) {
+            if (DatosMaestra.isCiudadBuscador()) {
                 btnSolicitudes.setVisible(true);
                 sep4.setVisible(true);
                 solicitudes.start();
@@ -3430,7 +3425,7 @@ public class vistaMenu extends javax.swing.JFrame {
 
     private void cargarModulosVentas() {
         try {
-            infFacturaCreditos interno14 = new infFacturaCreditos();
+            creditos interno14 = new creditos();
             dkpFormularios.add(interno14);
             if (instancias.getUsuarioLog().isCreditos()) {
                 interno14.show();
@@ -4843,6 +4838,7 @@ public class vistaMenu extends javax.swing.JFrame {
 
     public void soloMesas() {
         btnSalir.setEnabled(true);
+        btnDocumentos.setVisible(false);
         sep2.setVisible(false);
         pnlContenedor.setVisible(false);
         pnlPrincipal.setVisible(false);
@@ -4918,6 +4914,7 @@ public class vistaMenu extends javax.swing.JFrame {
             btnOcultar.setEnabled(false);
             btnCambiarUsuario.setEnabled(false);
             btnSalir.setEnabled(false);
+            btnDocumentos.setEnabled(false);
             pnlMiniaturas.setVisible(false);
             cmbAccesos.setEnabled(false);
         } else {
@@ -4926,69 +4923,39 @@ public class vistaMenu extends javax.swing.JFrame {
     }
 
     public void expandirMenu() {
-        /*pnlMenu.setBounds(0, 0, (int) pnlMenu.size().getWidth() + 319, (int) pnlMenu.size().getHeight());
-         scrlSubMenu.setBounds(0, 0, (int) scrlSubMenu.size().getWidth(), (int) scrlSubMenu.size().getHeight() + 122);
-         dkpFormularios.setBounds(331, 128, this.getWidth()-319, this.getHeight()-122);*/
-//        pnlMenu.setVisible(true);
-
-        Boolean existe = false;
-        if (!instancias.getUsuario().equals("ADMIN")) {
-
-            if (instancias.getConfiguraciones().isRestaurante()) {
-                if ((Boolean) datosMaestra[108]) {
-                    Object[][] vendedores = instancias.getSql().getVendedores1();
-
-                    for (int i = 0; i < vendedores.length; i++) {
-                        String asociado = "";
-                        try {
-                            asociado = vendedores[i][1].toString();
-                        } catch (Exception e) {
-                        }
-
-                        if (instancias.getUsuario().equals(asociado)) {
-                            existe = true;
-                        }
-                    }
-
-                    if (existe) {
-                        soloMesas();
-                    }
-                }
-            }
-        } else {
-            noAbrir = true;
-            pnlMiniaturas.setVisible(false);
-            pnlContenedor.setVisible(true);
-
-            btnOcultar.setEnabled(true);
-
-            Rectangle auxMenu = new Rectangle(MENU.x, MENU.y, MENU.width, this.getHeight());
-            pnlMenu.setBounds(auxMenu);
-            auxMenu = new Rectangle(SUBMENU.x, SUBMENU.y, this.getWidth() - 320, SUBMENU.height);
-            dkpFormularios.setBounds(323, 128, this.getWidth() - 338, this.getHeight() - 166);
-            seVeElMenu = true;
-
-            btnCambiarUsuario.setEnabled(true);
-            btnSalir.setEnabled(true);
-            cmbAccesos.setEnabled(true);
+        if (esVendedorSoloMesas()) {
+            soloMesas();
+            return;
         }
+        mostrarMenuCompleto();
+    }
 
-        if (!existe) {
-            pnlMiniaturas.setVisible(false);
-            pnlContenedor.setVisible(true);
-            btnOcultar.setEnabled(true);
+    private boolean esVendedorSoloMesas() {
+        if (instancias.getUsuario().equals("ADMIN")) return false;
+        if (!instancias.getConfiguraciones().isRestaurante()) return false;
+        if (!DatosMaestra.isSoloMesas()) return false;
 
-            Rectangle auxMenu = new Rectangle(MENU.x, MENU.y, MENU.width, this.getHeight());
-            pnlMenu.setBounds(auxMenu);
-            auxMenu = new Rectangle(SUBMENU.x, SUBMENU.y, this.getWidth() - 320, SUBMENU.height);
-            dkpFormularios.setBounds(323, 128, this.getWidth() - 338, this.getHeight() - 166);
-            seVeElMenu = true;
-
-            btnCambiarUsuario.setEnabled(true);
-            btnSalir.setEnabled(true);
-            cmbAccesos.setEnabled(true);
+        String usuario = instancias.getUsuario();
+        for (Object[] vendedor : instancias.getSql().getVendedores1()) {
+            try {
+                if (usuario.equals(vendedor[1].toString())) return true;
+            } catch (Exception ignored) {}
         }
+        return false;
+    }
 
+    private void mostrarMenuCompleto() {
+        noAbrir = true;
+        pnlMiniaturas.setVisible(false);
+        pnlContenedor.setVisible(true);
+        btnOcultar.setEnabled(true);
+        pnlMenu.setBounds(MENU.x, MENU.y, MENU.width, this.getHeight());
+        dkpFormularios.setBounds(323, 128, this.getWidth() - 338, this.getHeight() - 166);
+        seVeElMenu = true;
+        btnCambiarUsuario.setEnabled(true);
+        btnSalir.setEnabled(true);
+        btnDocumentos.setEnabled(true);
+        cmbAccesos.setEnabled(true);
     }
 
     public boolean getSeVeElMenu() {
@@ -5080,9 +5047,9 @@ public class vistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnAgenda;
     private javax.swing.JButton btnCambiarUsuario;
     private javax.swing.JButton btnCartera;
+    private javax.swing.JButton btnDocumentos;
     private javax.swing.JButton btnLaboratorio;
     private javax.swing.JButton btnMedicamentos;
-    private javax.swing.JButton btnMedicamentos1;
     private javax.swing.JButton btnMedico;
     private javax.swing.JButton btnOcultar;
     private javax.swing.JButton btnOftalmologia;

@@ -1,5 +1,7 @@
 package clases;
 
+import Vista.Productos.infGrupos;
+import Vista.Ventas.creditos;
 import Vista.Ventas.cotizacion;
 import Vista.Ventas.planSepare;
 import Vista.Ventas.pedido;
@@ -151,7 +153,6 @@ public class Instancias {
     private String diasCobrarMora;
     private String porcentajeMora;
     private buscReporteFacturaPedido reporteFacturaPedido;
-    private dlgPagosProveedores pagosProveedores;
     private buscHorasAgenda buscarHorasAgenda;
     private String[] configAgenda;
     private infInfoAgenda infoAgenda;
@@ -260,7 +261,7 @@ public class Instancias {
     private infCaja caja;
     private pedido pedido;
     private planSepare planSepare;
-    private infFacturaCreditos facturaCreditos;
+    private creditos facturaCreditos;
     private factura factura;
     private infCuentaCobro cuentaCobro;
     private infReportesVentas reportesVentas;
@@ -1369,14 +1370,6 @@ public class Instancias {
 
     public void setPreparacion(VistaPreparacion preparacion) {
         this.preparacion = preparacion;
-    }
-
-    public dlgPagosProveedores getPagosProveedores() {
-        return pagosProveedores;
-    }
-
-    public void setPagosProveedores(dlgPagosProveedores pagosProveedores) {
-        this.pagosProveedores = pagosProveedores;
     }
 
     public buscPlaca1 getBuscPlacas1() {
@@ -2673,11 +2666,11 @@ public class Instancias {
         return facturaCreditos.getPnlFactura();
     }
 
-    public infFacturaCreditos getFacturaCreditosContenedor() {
+    public creditos getFacturaCreditosContenedor() {
         return facturaCreditos;
     }
 
-    public void setFacturaCreditos(infFacturaCreditos facturaCreditos) {
+    public void setFacturaCreditos(creditos facturaCreditos) {
         this.facturaCreditos = facturaCreditos;
     }
 

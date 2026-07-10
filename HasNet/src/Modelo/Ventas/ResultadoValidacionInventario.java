@@ -5,31 +5,23 @@ import java.util.List;
 public class ResultadoValidacionInventario {
 
     private final List<Object[]> productosSinInventario;
-    private final List<Object[]> productosSinInventarioDis;
     private final boolean tieneBolsa;
 
-    public ResultadoValidacionInventario(
-            List<Object[]> productosSinInventario,
-            List<Object[]> productosSinInventarioDis,
-            boolean tieneBolsa) {
+    public ResultadoValidacionInventario(List<Object[]> productosSinInventario, boolean tieneBolsa) {
         this.productosSinInventario = productosSinInventario;
-        this.productosSinInventarioDis = productosSinInventarioDis;
         this.tieneBolsa = tieneBolsa;
     }
 
     public boolean hayProductosSinInventario() {
-        return !productosSinInventario.isEmpty() || !productosSinInventarioDis.isEmpty();
+        return !productosSinInventario.isEmpty();
     }
 
     public boolean tieneBolsa() {
         return tieneBolsa;
     }
 
-    public Object[][] getProductosSinInventarioTabla() {
+    // [0]=id, [1]=descripcion, [2]=disponible, [3]=necesario
+    public Object[][] getProductosSinInventario() {
         return productosSinInventario.toArray(new Object[0][]);
-    }
-
-    public Object[][] getProductosSinInventarioDisTabla() {
-        return productosSinInventarioDis.toArray(new Object[0][]);
     }
 }

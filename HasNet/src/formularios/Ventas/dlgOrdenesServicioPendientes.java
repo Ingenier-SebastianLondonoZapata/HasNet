@@ -299,7 +299,7 @@ public class dlgOrdenesServicioPendientes extends javax.swing.JDialog {
                         return;
                     }
 
-                    instancias.getOrdenServicio().cargarOrdenesServicios(tblTraslados.getValueAt(tblTraslados.getSelectedRow(), 0).toString());
+//                    instancias.getOrdenServicio().cargarOrdenesServicios(tblTraslados.getValueAt(tblTraslados.getSelectedRow(), 0).toString());
 
                     String bodega = "";
                     try {
@@ -319,7 +319,7 @@ public class dlgOrdenesServicioPendientes extends javax.swing.JDialog {
         }
 
         if (evt.getClickCount() == 2) {
-            instancias.getOrdenServicio().cargarOrdenesServicios(tblTraslados.getValueAt(tblTraslados.getSelectedRow(), 0).toString());
+//            instancias.getOrdenServicio().cargarOrdenesServicios(tblTraslados.getValueAt(tblTraslados.getSelectedRow(), 0).toString());
             this.dispose();
         }
     }//GEN-LAST:event_tblTrasladosMouseClicked

@@ -1,6 +1,8 @@
 package Vista.Configuraciones;
 
+import Utilidades.DatosMaestra;
 import clases.Instancias;
+import dao.Configuraciones.DaoMaestra;
 import clases.Medico.ndCamposOrdenPredeterminada;
 import clases.big;
 import clases.cambiarColorTabla;
@@ -33,6 +35,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private Dimension dimBarra = null;
     int teclasPresionadas = 0;
     String turno, valor, url, simbolo = "";
+    private PanelDisenoMesas panelDisenoMesas;
 
     public String getTurno() {
         return turno;
@@ -45,9 +48,16 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     public vistaMaestra() {
 
         initComponents();
-        tblRestaurante.setDefaultRenderer(Object.class, new cambiarColorTabla(22, 0));
         tblImpresoras1.setDefaultRenderer(Object.class, new cambiarColorTabla(14, 0));
         tblDiasBloqueo.setDefaultRenderer(Object.class, new cambiarColorTabla(20, 0));
+
+        panelDisenoMesas = new PanelDisenoMesas();
+        panelDisenoMesas.setListener(new PanelDisenoMesas.ListenerCambio() {
+            public void onCambioCantidad(int totalMesas) {
+                txtNumMesas.setText(String.valueOf(totalMesas));
+            }
+        });
+        jScrollPane11.setViewportView(panelDisenoMesas);
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
         dimBarra = Barra.getPreferredSize();
@@ -5820,8 +5830,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 tituloFactura = txtTituloFactura.getText();
             }
 
-            Object[] datos = instancias.getSql().getDatosMaestra();
-            ndMaestra nodo2 = metodos.llenarMaestra(datos);
+            ndMaestra nodo2 = new DaoMaestra().obtenerMaestra();
 
             String impresionPos = cmbTipoPos.getSelectedItem().toString().toLowerCase();
 
@@ -5902,17 +5911,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
             if (instancias.getConfiguraciones().isRestaurante()) {
                 instancias.getSql().eliminarTodo("bdMesas");
-                for (int i = 0; i < tblRestaurante.getRowCount(); i++) {
-                    for (int j = 0; j < tblRestaurante.getColumnCount(); j++) {
-                        String campo = "";
-                        try {
-                            campo = tblRestaurante.getValueAt(i, j).toString();
-                        } catch (Exception e) {
-                        }
-                        if (!campo.equals("")) {
-                            instancias.getSql().agregarRegistroMesa(i + "," + j, campo);
-                        }
-                    }
+                java.util.List<String[]> mesas = panelDisenoMesas.getMesasParaGuardar();
+                for (int m = 0; m < mesas.size(); m++) {
+                    instancias.getSql().agregarRegistroMesa(mesas.get(m)[0], mesas.get(m)[1]);
                 }
             }
 
@@ -6105,21 +6106,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             llenarDatos();
 
             /* ACTUALIZAMOS MAESTROS EN EL MODULO DE FACTURACION */
+            DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
+
             instancias.getVistaAjusteInventario().consultarMaestros();
             instancias.getPrestamos().consultarMaestros();
             instancias.getTrasladosInternos().consultarMaestros();
-            instancias.getFactura().consultarMaestros();
-            instancias.getCuentaCobro().consultarMaestros();
-            instancias.getCotiza().consultarMaestros();
-            instancias.getOrdenServicio().consultarMaestros();
-            instancias.getPedido().consultarMaestros();
             instancias.getReporte().consultarMaestros();
-
-            if (instancias.getConfiguraciones().isCongeladas()) {
-                instancias.getMesas().consultarMaestros();
-                instancias.getMesa().getPnlFactura().consultarMaestros();
-                instancias.getMesa1().consultarMaestros();
-            }
 
             /* FIN ACTUALIZACION MAESTROS EN EL MODULO DE FACTURACION */
             instancias.getReimpresion().consultarMaestros();
@@ -6342,24 +6334,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         }
 
-        Object[] datos = instancias.getSql().getDatosMaestra();
-        String impresionPos, impresionMediaCarta, impresionCarta;
-
-        try {
-            impresionPos = datos[81].toString();
-        } catch (Exception e) {
-            impresionPos = "";
-        }
-        try {
-            impresionMediaCarta = datos[82].toString();
-        } catch (Exception e) {
-            impresionMediaCarta = "";
-        }
-        try {
-            impresionCarta = datos[83].toString();
-        } catch (Exception e) {
-            impresionCarta = "";
-        }
+        DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
+        String impresionPos = DatosMaestra.getImpresoraPos() != null ? DatosMaestra.getImpresoraPos() : "";
+        String impresionMediaCarta = DatosMaestra.getImpresoraMediaCarta() != null ? DatosMaestra.getImpresoraMediaCarta() : "";
+        String impresionCarta = DatosMaestra.getImpresoraCarta() != null ? DatosMaestra.getImpresoraCarta() : "";
 
         cmbTipoPos.setSelectedItem(impresionPos);
         cmbTipoMediaCarta.setSelectedItem(impresionMediaCarta);
@@ -6508,8 +6486,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         instancias.getSql().aumentarTurno(txtTurno.getText());
         metodos.msgExito(this, "¡Turno actualizado correctamente!");
-        instancias.getFactura().consultarMaestros();
-        instancias.getPedido().consultarMaestros();
+        instancias.getFactura().actualizarVistaConsecutivo();
+        instancias.getPedido().actualizarVistaConsecutivo();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void rdSiConsecutivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiConsecutivoActionPerformed
@@ -6789,40 +6767,19 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtFilasKeyTyped
 
     private void tblRestauranteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRestauranteMouseClicked
-        if (evt.getClickCount() >= 1) {
-            int fila = tblRestaurante.getSelectedRow();
-            if (fila % 2 == 0) {
-
-            } else {
-                String valor = tblRestaurante.getValueAt(tblRestaurante.getSelectedRow(), tblRestaurante.getSelectedColumn()).toString();
-                int num = Integer.parseInt(txtNumMesas.getText());
-
-                if (valor.equals("")) {
-                    num = num + 1;
-                    tblRestaurante.setValueAt("Mesa. " + num, tblRestaurante.getSelectedRow(), tblRestaurante.getSelectedColumn());
-                    txtNumMesas.setText(String.valueOf(num));
-                } else {
-                    tblRestaurante.setValueAt("", tblRestaurante.getSelectedRow(), tblRestaurante.getSelectedColumn());
-                    num = num - 1;
-                    txtNumMesas.setText(String.valueOf(num));
-                }
-            }
-        }
+        // delegado a PanelDisenoMesas.ListenerCambio
     }//GEN-LAST:event_tblRestauranteMouseClicked
 
     private void btnGenerarTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarTablaActionPerformed
-//        if (tblRestaurante.getRowCount() > 0) {
-//            if (metodos.msgPregunta(this, "Se perderan las mesas establecidas, ¿Desea contuniar? ") == 0) {
-//            } else {
-//                return;
-//            }
-//        }
-
         int columnas, filas;
         try {
             columnas = Integer.parseInt(txtColumnas.getText());
         } catch (Exception e) {
             metodos.msgError(null, "Ingrese el número de columnas");
+            return;
+        }
+        if (columnas < 1 || columnas > 26) {
+            metodos.msgError(null, "Las columnas deben estar entre 1 y 26.");
             return;
         }
 
@@ -6832,19 +6789,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             metodos.msgError(null, "Ingrese el número de filas.");
             return;
         }
-
-        cargarColumna();
-        cargarFila();
-
-        for (int i = 0; i < tblRestaurante.getRowCount(); i++) {
-            if (i % 2 == 0) {
-                tblRestaurante.setRowHeight(i, 1);
-            } else {
-                tblRestaurante.setRowHeight(i, 30);
-            }
+        if (filas < 1) {
+            metodos.msgError(null, "Ingrese al menos 1 fila.");
+            return;
         }
 
-        txtNumMesas.setText("0");
+        panelDisenoMesas.setDimensiones(filas, columnas);
     }//GEN-LAST:event_btnGenerarTablaActionPerformed
 
     private void txtCantidadEstablecidaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadEstablecidaKeyTyped
@@ -7708,56 +7658,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }
 
     public void cargarColumna() {
-        DefaultTableModel model = (DefaultTableModel) tblRestaurante.getModel();
-
-        int columnas = Integer.parseInt(txtColumnas.getText());
-        if (columnas > 26) {
-            metodos.msgError(null, "Son 26 columnas como máximo.");
-            txtColumnas.setText("");
-            return;
-        }
-
-        tblRestaurante.setModel(new javax.swing.table.DefaultTableModel(new Object[][]{}, new String[]{
-            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-        }) {
-            boolean[] canEdit = new boolean[]{
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        });
-
-        tblRestaurante.setRowHeight(40);
-        tblRestaurante.getTableHeader().setResizingAllowed(false);
-        tblRestaurante.getTableHeader().setReorderingAllowed(false);
-        jScrollPane11.setViewportView(tblRestaurante);
-
-        for (int i = columnas; i < 26; i++) {
-            if (tblRestaurante.getColumnModel().getColumnCount() > 0) {
-                tblRestaurante.getColumnModel().getColumn(i).setMinWidth(0);
-                tblRestaurante.getColumnModel().getColumn(i).setPreferredWidth(0);
-                tblRestaurante.getColumnModel().getColumn(i).setMaxWidth(0);
-            }
-        }
+        // sin efecto: el panel se genera con btnGenerarTabla
     }
 
     public void cargarFila() {
-        DefaultTableModel model = (DefaultTableModel) tblRestaurante.getModel();
-
-        int filas = Integer.parseInt(txtFilas.getText());
-
-        while (tblRestaurante.getRowCount() > 0) {
-            model.removeRow(0);
-        }
-
-        filas = filas * 2;
-
-        for (int i = 1; i <= filas; i++) {
-            model.addRow(new Object[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""});
-        }
+        // sin efecto: el panel se genera con btnGenerarTabla
     }
 
     public void llenarTablaServicios() {
@@ -7874,12 +7779,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     public void llenarDatos() {
 
-        Object[] datos = instancias.getSql().getDatosMaestra();
+        ndMaestra datos = new DaoMaestra().obtenerMaestra();
 
         cmbMisResponsabilidades.removeAllItems();
 
-        if (datos[113] != null) {
-            String[] responsabilidades = datos[113].toString().split(", ");
+        if (datos.getResponsabilidadesFiscales() != null) {
+            String[] responsabilidades = datos.getResponsabilidadesFiscales().split(", ");
             for (int i = 0; i < responsabilidades.length; i++) {
                 if (!"".equals(responsabilidades[i])) {
                     cmbMisResponsabilidades.addItem(responsabilidades[i]);
@@ -7887,35 +7792,22 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         }
 
-        String passGmail;
-        try {
-            passGmail = datos[115].toString();
-        } catch (Exception e) {
-            passGmail = "";
-        }
-        txtPassword.setText(passGmail);
+        txtPassword.setText(datos.getPasswordGmail() != null ? datos.getPasswordGmail() : "");
+        txtEmail.setText(datos.getGmail() != null ? datos.getGmail() : "");
 
-        String gmail;
-        try {
-            gmail = datos[114].toString();
-        } catch (Exception e) {
-            gmail = "";
-        }
-        txtEmail.setText(gmail);
-
-        if ((Boolean) datos[109]) {
+        if (datos.isBorrarMesas()) {
             rdSiBorrarMesas.setSelected(true);
         } else {
             rdNoBorrarMesas.setSelected(true);
         }
 
-        if ((Boolean) datos[108]) {
+        if (datos.isSoloMesas()) {
             rdSiSoloVisibleMesas.setSelected(true);
         } else {
             rdNoSoloVisibleMesas.setSelected(true);
         }
 
-        if ((Boolean) datos[107]) {
+        if (datos.isFacturarMesas()) {
             rdSiFacturarMesas.setSelected(true);
         } else {
             rdNoFacturarMesas.setSelected(true);
@@ -7923,7 +7815,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
         String impresoraPrefactura;
         try {
-            impresoraPrefactura = datos[106].toString();
+            impresoraPrefactura = datos.getImpresoraPrefactura() != null ? datos.getImpresoraPrefactura() : "";
         } catch (Exception e) {
             impresoraPrefactura = "";
         }
@@ -7931,55 +7823,31 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
         String impresoraComanda;
         try {
-            impresoraComanda = datos[105].toString();
+            impresoraComanda = datos.getImpresoraComanda() != null ? datos.getImpresoraComanda() : "";
         } catch (Exception e) {
             impresoraComanda = "";
         }
         cmbComanda.setSelectedItem(impresoraComanda);
 
-        if ((Boolean) datos[104]) {
+        if (datos.isPrevisualizarPrefactura()) {
             rdSiPrevisualizarPrefactura.setSelected(true);
         } else {
             rdNoPrevisualizarPrefactura.setSelected(true);
         }
 
-        if ((Boolean) datos[103]) {
+        if (datos.isPrevisualizarComanda()) {
             rdSiPrevisualizarComanda.setSelected(true);
         } else {
             rdNoPrevisualizarComanda.setSelected(true);
         }
 
-        String copiasPrefactura;
-        try {
-            copiasPrefactura = datos[102].toString();
-        } catch (Exception e) {
-            copiasPrefactura = "";
-        }
-        txtCantCopiasPrefactura.setText(copiasPrefactura);
+        txtCantCopiasPrefactura.setText(datos.getCopiasPrefactura() != null ? datos.getCopiasPrefactura() : "");
+        txtCantCopiasComanda.setText(datos.getCopiasComanda() != null ? datos.getCopiasComanda() : "0");
+        txtNumFactIncremento.setText(datos.getNumFacturaIncremento() != null ? datos.getNumFacturaIncremento() : "0");
 
-        String copiasComanda;
-        try {
-            copiasComanda = datos[101].toString();
-        } catch (Exception e) {
-            copiasComanda = "0";
-        }
-        txtCantCopiasComanda.setText(copiasComanda);
+        rdImpresionPorGrupo.setSelected(datos.isImpresionPorGrupo());
 
-        String numFacturaIncremento;
-        try {
-            numFacturaIncremento = datos[112].toString();
-        } catch (Exception e) {
-            numFacturaIncremento = "0";
-        }
-        txtNumFactIncremento.setText(numFacturaIncremento);
-
-        if ((Boolean) datos[100]) {
-            rdImpresionPorGrupo.setSelected(true);
-        } else {
-            rdImpresionPorGrupo.setSelected(false);
-        }
-
-        if ((Boolean) datos[99]) {
+        if (datos.isCostoImpoconsumo()) {
             instancias.setCostoConImpoconsumo(true);
             rdSiCostoImpo.setSelected(true);
         } else {
@@ -7987,7 +7855,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             rdNoCostoImpo.setSelected(true);
         }
 
-        if ((Boolean) datos[98]) {
+        if (datos.isPvpImpoconsumo()) {
             instancias.setPvpConImpoconsumo(true);
             rdSiPvpImpo.setSelected(true);
         } else {
@@ -7995,72 +7863,49 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             rdNoPvpImpo.setSelected(true);
         }
 
-        cmbFoco.setSelectedItem(datos[97]);
+        cmbFoco.setSelectedItem(datos.getFoco());
 
-        if ((Boolean) datos[42]) {
+        if (datos.isOcultarInformacionCliente()) {
             rdSiCupoCredito.setSelected(true);
         } else {
             rdNoCupoCredito.setSelected(true);
         }
 
-        if ((Boolean) datos[95]) {
+        if (datos.isDiasAutomaticos()) {
             rdSiDiasAutomaticos.setSelected(true);
         } else {
             rdNoDiasAutomaticos.setSelected(true);
         }
 
-        if ((Boolean) datos[96]) {
+        if (datos.isCiudadBuscador()) {
             rdSiSolicitudesPermisos.setSelected(true);
         } else {
             rdNoSolicitudesPermisos.setSelected(true);
         }
 
-        cmbHoraInicio1.setSelectedItem(datos[92]);
-        cmbHoraFin1.setSelectedItem(datos[93]);
-        cmbIntervalo1.setSelectedItem(datos[94]);
+        cmbHoraInicio1.setSelectedItem(datos.getInicioHosp());
+        cmbHoraFin1.setSelectedItem(datos.getFinHosp());
+        cmbIntervalo1.setSelectedItem(datos.getIntervalosHosp());
 
-        if ((Boolean) datos[43]) {
+        if (datos.isVisualizarTodasLasFacturas()) {
             rdCopiasSi.setSelected(true);
         } else {
             rdCopiasNo.setSelected(true);
         }
 
-        if ((Boolean) datos[91]) {
+        if (datos.isMostrarDevuelta()) {
             rdSiDevuelta.setSelected(true);
         } else {
             rdNoDevuelta.setSelected(true);
         }
 
-        String porcPropina;
-        try {
-            porcPropina = datos[90].toString();
-        } catch (Exception e) {
-            porcPropina = "";
-        }
-        txtPorcPropina.setText(porcPropina);
+        txtPorcPropina.setText(datos.getPorcPropina() != null ? datos.getPorcPropina() : "");
+        txtNombreFormato.setText(datos.getImprimirCada() != null ? datos.getImprimirCada() : "");
 
-        String titulo;
-        try {
-            titulo = datos[86].toString();
-        } catch (Exception e) {
-            titulo = "";
-        }
-        txtNombreFormato.setText(titulo);
-
-        String columnas;
-        try {
-            columnas = datos[89].toString();
-        } catch (Exception e) {
-            columnas = "";
-        }
+        String columnas = datos.getColumnas() != null ? datos.getColumnas() : "";
         txtColumnas.setText(columnas);
 
-        String filas;
-        try {
-            filas = datos[88].toString();
-        } catch (Exception e) {
-            filas = "";
-        }
+        String filas = datos.getFilas() != null ? datos.getFilas() : "";
         txtFilas.setText(filas);
 
         if (!columnas.equals("") && !filas.equals("")) {
@@ -8078,11 +7923,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         if (instancias.getConfiguraciones().isRestaurante()) {
             Object[][] mesas = instancias.getSql().getPosicionesMesas();
             txtNumMesas.setText(String.valueOf(mesas.length));
-            for (int i = 0; i < mesas.length; i++) {
-                int x = Integer.parseInt(mesas[i][0].toString().split(",")[0]);
-                int y = Integer.parseInt(mesas[i][0].toString().split(",")[1]);
-                tblRestaurante.setValueAt(mesas[i][1].toString(), x, y);
-            }
+            panelDisenoMesas.cargarMesasExistentes(mesas);
         } else {
             tabPanel.setEnabledAt(7, false);
         }
@@ -8129,47 +7970,17 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         }
 
         String infoEmpresa = "";
-
-        try {
-            if (!datos[8].equals("")) {
-                infoEmpresa = infoEmpresa + "" + (String) datos[8] + "";
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (!datos[9].equals("")) {
-                infoEmpresa = infoEmpresa + "\n" + (String) datos[9];
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (!datos[10].equals("")) {
-                infoEmpresa = infoEmpresa + "\n" + (String) datos[10];
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (!datos[13].equals("")) {
-                infoEmpresa = infoEmpresa + "\n" + (String) datos[13];
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (!datos[14].equals("")) {
-                infoEmpresa = infoEmpresa + "\n" + (String) datos[14];
-            }
-        } catch (Exception e) {
-        }
+        if (datos.getD1() != null && !datos.getD1().equals("")) infoEmpresa += datos.getD1();
+        if (datos.getD2() != null && !datos.getD2().equals("")) infoEmpresa += "\n" + datos.getD2();
+        if (datos.getD3() != null && !datos.getD3().equals("")) infoEmpresa += "\n" + datos.getD3();
+        if (datos.getD6() != null && !datos.getD6().equals("")) infoEmpresa += "\n" + datos.getD6();
+        if (datos.getD7() != null && !datos.getD7().equals("")) infoEmpresa += "\n" + datos.getD7();
 
         if (!instancias.getRegimen().equals("")) {
             String datosEmpresa = metodosGenerales.convertToMultiline(infoEmpresa);
             String datosEmpresaReimpresion = infoEmpresa;
-            String datosEmpresaCompleto = metodosGenerales.convertToMultiline(infoEmpresa + "" + "");
-            instancias.setDatosEmpresa(datosEmpresa, (String) datos[16], (String) datos[15], datosEmpresaCompleto, datosEmpresaReimpresion);
+            String datosEmpresaCompleto = metodosGenerales.convertToMultiline(infoEmpresa);
+            instancias.setDatosEmpresa(datosEmpresa, datos.getLegal(), datos.getPie(), datosEmpresaCompleto, datosEmpresaReimpresion);
         }
 
         Object[][] grupos = instancias.getSql().getGruposFactura();
@@ -8195,9 +8006,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         int contador = 0;
 
         try {
-            horaIni = Integer.parseInt(datos[37].toString());
-            horaFin = Integer.parseInt(datos[38].toString());
-            intervalo = Integer.parseInt(datos[39].toString());
+            horaIni = Integer.parseInt(datos.getHoraInicioAgenda());
+            horaFin = Integer.parseInt(datos.getHoraFinAgenda());
+            intervalo = Integer.parseInt(datos.getIntervaloAgenda());
         } catch (Exception e) {
         }
 
@@ -8295,165 +8106,98 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         }
 
         /* CARGAMOS LA IMPRESORA SEGUN EL TIPO */
-        String impresionPos, impresionMediaCarta, impresionCarta;
-
-        try {
-            impresionPos = datos[81].toString();
-        } catch (Exception e) {
-            impresionPos = "";
-        }
-        try {
-            impresionMediaCarta = datos[82].toString();
-        } catch (Exception e) {
-            impresionMediaCarta = "";
-        }
-        try {
-            impresionCarta = datos[83].toString();
-        } catch (Exception e) {
-            impresionCarta = "";
-        }
-
-        cmbTipoPos.setSelectedItem(impresionPos);
-        cmbTipoMediaCarta.setSelectedItem(impresionMediaCarta);
-        cmbTipoCarta.setSelectedItem(impresionCarta);
+        cmbTipoPos.setSelectedItem(datos.getImpresoraPos() != null ? datos.getImpresoraPos() : "");
+        cmbTipoMediaCarta.setSelectedItem(datos.getImpresoraMediaCarta() != null ? datos.getImpresoraMediaCarta() : "");
+        cmbTipoCarta.setSelectedItem(datos.getImpresoraCarta() != null ? datos.getImpresoraCarta() : "");
         /* FIN ANEXO */
 
- /* ANEXO DE LA ORDEN DE SERVICIO */
-        String anexoOrden;
-        try {
-            anexoOrden = datos[60].toString();
-        } catch (Exception e) {
-            anexoOrden = "";
-        }
-        txtAnexoOrden.setText(anexoOrden);
+        /* ANEXO DE LA ORDEN DE SERVICIO */
+        txtAnexoOrden.setText(datos.getAnexoOrdenServicio() != null ? datos.getAnexoOrdenServicio() : "");
         /* FIN ANEXO */
 
-        String diasAlertaResolucion;
-        try {
-            diasAlertaResolucion = datos[28].toString();
-        } catch (Exception e) {
-            diasAlertaResolucion = "";
-        }
-        txtDiasAlerta1.setText(diasAlertaResolucion);
+        txtDiasAlerta1.setText(datos.getDiasAlertaResolucion() != null ? datos.getDiasAlertaResolucion() : "");
+        txtAnexoFactura.setText(datos.getAnexoFacturacion() != null ? datos.getAnexoFacturacion() : "");
+        txtCantidadEstablecida.setText(datos.getCantidadEstablecida() != null ? datos.getCantidadEstablecida() : "");
+        txtTurno.setText(datos.getTurno1() != null ? datos.getTurno1() : "1");
 
-        String informacion;
-        try {
-            informacion = datos[56].toString();
-        } catch (Exception e) {
-            informacion = "";
-        }
-        txtAnexoFactura.setText(informacion);
-
-//        String imprimirCada;
-//        try {
-//            imprimirCada = datos[86].toString();
-//        } catch (Exception e) {
-//            imprimirCada = "";
-//        }
-//        txtSegundos.setText(imprimirCada);
-        String cantidadEstablecida;
-        try {
-            cantidadEstablecida = datos[87].toString();
-        } catch (Exception e) {
-            cantidadEstablecida = "";
-        }
-        txtCantidadEstablecida.setText(cantidadEstablecida);
-
-        String turno;
-        try {
-            turno = datos[55].toString();
-        } catch (Exception e) {
-            turno = "1";
-        }
-        txtTurno.setText(turno);
-
-        if ((Boolean) datos[84]) {
+        if (datos.isMostrarImpoconsumo()) {
             mostrarImpoconsumoSi.setSelected(true);
         } else {
             mostrarImpoconsumoNo.setSelected(true);
         }
 
-        if ((Boolean) datos[85]) {
+        if (datos.isMostrarRetenciones()) {
             mostrarRetencionesSi.setSelected(true);
         } else {
             mostrarRetencionesNo.setSelected(true);
         }
 
-        if ((Boolean) datos[79]) {
+        if (datos.isFacturarSeparado()) {
             rdSiFacturarSinInventario.setSelected(true);
         } else {
             rdNoFacturarSinInventario.setSelected(true);
         }
 
-        if ((Boolean) datos[78]) {
+        if (datos.isPagosTerceros()) {
             rdSiPagoTerceros.setSelected(true);
         } else {
             rdNoPagoTerceros.setSelected(true);
         }
 
         //IMPRIMIR
-        if ((Boolean) datos[63]) {
+        if (datos.isCopiasFactura()) {
             rdPreguntaFacturaSI.setSelected(true);
         } else {
             rdPreguntaFacturaNO.setSelected(true);
         }
 
-//        if ((Boolean) datos[80]) {
-//            reimpresionSi.setSelected(true);
-//        } else {
-//            reimpresionNo.setSelected(true);
-//        }
-        if ((Boolean) datos[64]) {
+        if (datos.isCopiasOServicio()) {
             rdPreguntaOServicioSI.setSelected(true);
         } else {
             rdPreguntaOServicioNO.setSelected(true);
         }
 
-        if ((Boolean) datos[65]) {
+        if (datos.isCopiasCotizacion()) {
             rdPreguntaCotizacionSI.setSelected(true);
         } else {
             rdPreguntaCotizacionNO.setSelected(true);
         }
 
-        if ((Boolean) datos[66]) {
+        if (datos.isCopiasPlanSepare()) {
             rdPreguntaPlanSepareSI.setSelected(true);
         } else {
             rdPreguntaPlanSepareNO.setSelected(true);
         }
 
-        if ((Boolean) datos[67]) {
-            rdPreguntaPedidosSI.setSelected(true);
-        } else {
-            rdPreguntaPedidosSI.setSelected(true);
-        }
+        rdPreguntaPedidosSI.setSelected(datos.isCopiasPedido());
         // FIN DEL IMPRIMIR
 
         // PREVISUALIZAR
-        if ((Boolean) datos[68]) {
+        if (datos.isPrevisualizarFactura()) {
             rdPrevisualizarFacturaSI.setSelected(true);
         } else {
             rdPrevisualizarFacturaNO.setSelected(true);
         }
 
-        if ((Boolean) datos[69]) {
+        if (datos.isPrevisualizarOServicio()) {
             rdPrevisualizarOServicioSI.setSelected(true);
         } else {
             rdPrevisualizarOServicioNO.setSelected(true);
         }
 
-        if ((Boolean) datos[70]) {
+        if (datos.isPrevisualizarCotizacion()) {
             rdPrevisualizarCotizacionSI.setSelected(true);
         } else {
             rdPrevisualizarCotizacionNO.setSelected(true);
         }
 
-        if ((Boolean) datos[71]) {
+        if (datos.isPrevisualizarPlanSepare()) {
             rdPrevisualizarPlanSepareSI.setSelected(true);
         } else {
             rdPrevisualizarPlanSepareNO.setSelected(true);
         }
 
-        if ((Boolean) datos[72]) {
+        if (datos.isPrevisualizarPedido()) {
             rdPrevisualizarPedidosSI.setSelected(true);
         } else {
             rdPrevisualizarPedidosNO.setSelected(true);
@@ -8461,121 +8205,70 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         // FIN DEL PREVISUALIZAR
 
         // COPIAS
-        String copiasFactura, copiasOServicio, copiasCotizacion, copiasPlanSepare, copiasPedidos;
-        try {
-            copiasFactura = datos[73].toString();
-        } catch (Exception e) {
-            copiasFactura = "0";
-        }
-
-        try {
-            copiasOServicio = datos[74].toString();
-        } catch (Exception e) {
-            copiasOServicio = "0";
-        }
-
-        try {
-            copiasCotizacion = datos[75].toString();
-        } catch (Exception e) {
-            copiasCotizacion = "0";
-        }
-
-        try {
-            copiasPlanSepare = datos[76].toString();
-        } catch (Exception e) {
-            copiasPlanSepare = "0";
-        }
-
-        try {
-            copiasPedidos = datos[77].toString();
-        } catch (Exception e) {
-            copiasPedidos = "0";
-        }
-
-        txtCantFactura.setText(copiasFactura);
-        txtCantOServicio.setText(copiasOServicio);
-        txtCantCotizacion.setText(copiasCotizacion);
-        txtCantPlanSepare.setText(copiasPlanSepare);
-        txtCantPedidos.setText(copiasPedidos);
+        txtCantFactura.setText(datos.getNumFactura() != null ? datos.getNumFactura() : "0");
+        txtCantOServicio.setText(datos.getNumOServicio() != null ? datos.getNumOServicio() : "0");
+        txtCantCotizacion.setText(datos.getNumCotizacion() != null ? datos.getNumCotizacion() : "0");
+        txtCantPlanSepare.setText(datos.getNumPlanSepare() != null ? datos.getNumPlanSepare() : "0");
+        txtCantPedidos.setText(datos.getNumPedido() != null ? datos.getNumPedido() : "0");
         //FIN COPIAS
 
-        if ((Boolean) datos[62]) {
+        if (datos.isBorrarCongelada()) {
             rdSiBorrarProdMesas.setSelected(true);
         } else {
             rdNoBorrarProdMesas.setSelected(true);
         }
 
-        if ((Boolean) datos[61]) {
+        if (datos.isModificarPrecio()) {
             rdSiModificarPrecio.setSelected(true);
         } else {
             rdNoModificarPrecio.setSelected(true);
         }
 
-        if ((Boolean) datos[57]) {
+        if (datos.isConsecutivo()) {
             rdSiConsecutivo.setSelected(true);
         } else {
             rdNoConsecutivo.setSelected(true);
         }
 
-        if ((Boolean) datos[58]) {
+        if (datos.isHora()) {
             horaSi.setSelected(true);
         } else {
             horaNo.setSelected(true);
         }
 
-        if ((Boolean) datos[54]) {
+        if (datos.isTurno()) {
             rdTurnoSi.setSelected(true);
         } else {
             rdTurnoNo.setSelected(true);
         }
 
-        if ((Boolean) datos[59]) {
-            rdSiPondNegativo.setSelected(true);
-        } else {
-            rdNoPondNegativo.setSelected(true);
-        }
+        rdSiPondNegativo.setSelected(datos.isPondNegativo());
+        if (!datos.isPondNegativo()) rdNoPondNegativo.setSelected(true);
 
-        String valorBolsa;
+        txtValor.setText(datos.getValorBolsa() != null ? datos.getValorBolsa() : "0");
+        rdSiBolsa.setSelected(datos.isImpBolsa());
+        if (!datos.isImpBolsa()) rdNoBolsa.setSelected(true);
+
+        rdSiModificarNombre.setSelected(datos.isModificarNombre());
+        if (!datos.isModificarNombre()) rdNoModificarNombre.setSelected(true);
+
+        rdSiCombinar.setSelected(datos.isCombinarProductos());
+        if (!datos.isCombinarProductos()) rdNoCombinar.setSelected(true);
+
+        txtLimite.setText(datos.getLimite());
+        txtL1.setText(datos.getL1());
         try {
-            valorBolsa = datos[53].toString();
-        } catch (Exception e) {
-            valorBolsa = "0";
-        }
-        txtValor.setText(valorBolsa);
-
-        if ((Boolean) datos[52]) {
-            rdSiBolsa.setSelected(true);
-        } else {
-            rdNoBolsa.setSelected(true);
-        }
-
-        if ((Boolean) datos[51]) {
-            rdSiModificarNombre.setSelected(true);
-        } else {
-            rdNoModificarNombre.setSelected(true);
-        }
-
-        if ((Boolean) datos[50]) {
-            rdSiCombinar.setSelected(true);
-        } else {
-            rdNoCombinar.setSelected(true);
-        }
-
-        txtLimite.setText((String) datos[49]);
-
-        txtL1.setText((String) datos[0]);
-        try {
-            if (datos[1].toString().equals("pos")) {
+            if (datos.getL2().equals("pos")) {
                 pos.setSelected(true);
                 instancias.setTipoImpresion("Pos");
-            } else if (datos[1].toString().equals("facturaCompleta")) {
+            } else if (datos.getL2().equals("facturaCompleta")) {
                 carta.setSelected(true);
                 instancias.setTipoImpresion("");
             } else {
                 mediaCarta.setSelected(true);
                 instancias.setTipoImpresion("");
             }
-            instancias.setImpresion(datos[1].toString());
+            instancias.setImpresion(datos.getL2());
         } catch (Exception e) {
             instancias.setTipoImpresion("");
             instancias.setImpresion("factura");
@@ -8583,7 +8276,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         instancias.getMenu().abrirCaja();
 
         try {
-            if (datos[2].equals("NO")) {
+            if (datos.getL4().equals("NO")) {
                 instancias.setCopias(false);
             } else {
                 instancias.setCopias(true);
@@ -8594,15 +8287,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
         instancias.getMenu().actualizarUsuario(instancias.getUsuario());
 
-//        try {
-//            Integer cant = Integer.parseInt(datos[3].toString());
-//            instancias.setCantCopias(cant);
-//            txtCantFactura.setText(cant + "");
-//        } catch (Exception e) {
-//            instancias.setCantCopias(null);
-//        }
         try {
-            if (datos[5].equals("NO")) {
+            if (datos.getC3().equals("NO")) {
                 utilidadNo.setSelected(true);
             } else {
                 utilidadSi.setSelected(true);
@@ -8611,7 +8297,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             utilidadSi.setSelected(true);
         }
         try {
-            if (datos[6].equals("peso")) {
+            if (datos.getC4().equals("peso")) {
                 descuentoPeso.setSelected(true);
             } else {
                 descuentoPorcentaje.setSelected(true);
@@ -8620,21 +8306,20 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             descuentoPorcentaje.setSelected(true);
         }
 
-        instancias.setSegundaClave(datos[7].toString());
-        txtContra.setText(datos[7].toString());
-        txtContra2.setText(datos[7].toString());
+        instancias.setSegundaClave(datos.getC5());
+        txtContra.setText(datos.getC5());
+        txtContra2.setText(datos.getC5());
 
-        txtNit.setText((String) datos[8]);
-        txtNombre.setText((String) datos[9]);
-        txtRegimen.setText((String) datos[10]);
-
-        txtDireccion.setText((String) datos[13]);
-        txtTelefono.setText((String) datos[14]);
-        txtPiePagina.setText((String) datos[15]);
-        txtLegal.setText((String) datos[16]);
+        txtNit.setText(datos.getD1());
+        txtNombre.setText(datos.getD2());
+        txtRegimen.setText(datos.getD3());
+        txtDireccion.setText(datos.getD6());
+        txtTelefono.setText(datos.getD7());
+        txtPiePagina.setText(datos.getPie());
+        txtLegal.setText(datos.getLegal());
 
         try {
-            if (datos[17].equals("NO")) {
+            if (datos.getC6().equals("NO")) {
                 ubicacionNo.setSelected(true);
             } else {
                 ubicacionSi.setSelected(true);
@@ -8643,9 +8328,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             ubicacionSi.setSelected(true);
         }
 
-        txtDiasAlerta.setText((String) datos[18]);
+        txtDiasAlerta.setText(datos.getC7());
 
-        if ((boolean) datos[19]) {
+        if (datos.isRecogida()) {
             recogidaSi.setSelected(true);
             instancias.setImprimirRecogida(true);
         } else {
@@ -8653,7 +8338,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setImprimirRecogida(false);
         }
 
-        if ((boolean) datos[20]) {
+        if (datos.isLector()) {
             lectorSi.setSelected(true);
             instancias.setLector(true);
         } else {
@@ -8661,10 +8346,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setLector(false);
         }
 
-        txtTituloFactura.setText((String) datos[21]);
-        instancias.setTituloFactura((String) datos[21]);
+        txtTituloFactura.setText(datos.getTituloFactura());
+        instancias.setTituloFactura(datos.getTituloFactura());
 
-        if ((boolean) datos[22]) {
+        if (datos.isPvpSinIva()) {
             rdSiPvpIva.setSelected(true);
             instancias.setPvpConIva(true);
         } else {
@@ -8672,7 +8357,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setPvpConIva(false);
         }
 
-        if ((boolean) datos[23]) {
+        if (datos.isCostoSinIva()) {
             rdSiCostoIva.setSelected(true);
             instancias.setCostoConIva(true);
         } else {
@@ -8680,7 +8365,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setCostoConIva(false);
         }
 
-        if ((boolean) datos[24]) {
+        if (datos.isVentasPredeterminado()) {
             rdSiVentasPredeterminado.setSelected(true);
             instancias.setVentasPredeterminado(true);
         } else {
@@ -8688,7 +8373,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setVentasPredeterminado(false);
         }
 
-        if ((boolean) datos[25]) {
+        if (datos.isMensajeUtilidad()) {
             rdSiMensajeUtilidad.setSelected(true);
             instancias.setMensajeUtilidad(true);
         } else {
@@ -8696,29 +8381,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setMensajeUtilidad(false);
         }
 
-//        if ((boolean) datos[26]) {
-//            instancias.setConsecutivosDiferentes(true);
-//        } else {
-//            instancias.setConsecutivosDiferentes(false);
-//        }
-        instancias.setDiasAlertaResolucion((String) datos[28]);
-
-        try {
-            instancias.setAlertaFechaDias((String) datos[29]);
-        } catch (Exception e) {
-            instancias.setAlertaFechaDias("0");
-        }
-
-        try {
-            instancias.setAlertaCantidadDias((String) datos[30]);
-        } catch (Exception e) {
-            instancias.setAlertaCantidadDias("0");
-        }
-        try {
-            instancias.setAlertaPromedioDias((String) datos[31]);
-        } catch (Exception e) {
-            instancias.setAlertaPromedioDias("0");
-        }
+        instancias.setDiasAlertaResolucion(datos.getDiasAlertaResolucion());
+        instancias.setAlertaFechaDias(datos.getAlertaFechaDias() != null ? datos.getAlertaFechaDias() : "0");
+        instancias.setAlertaCantidadDias(datos.getAlertaCantidadNumeracion() != null ? datos.getAlertaCantidadNumeracion() : "0");
+        instancias.setAlertaPromedioDias(datos.getAlertaPromedioDias() != null ? datos.getAlertaPromedioDias() : "0");
 
 //        //TERMINALES
 //        instancias.getFactura().actualizarResolucion();
@@ -8746,35 +8412,22 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setDescuento("peso");
         }
 
-        try {
-            if (datos[32].toString().equals("")) {
-                datos[32] = "0";
-            }
-            instancias.setDiasCobrarMora((String) datos[32]);
-        } catch (Exception e) {
-            instancias.setDiasCobrarMora("0");
-        }
+        String diasCobrarMora = datos.getDiasCobrarMora() != null && !datos.getDiasCobrarMora().isEmpty() ? datos.getDiasCobrarMora() : "0";
+        instancias.setDiasCobrarMora(diasCobrarMora);
+        txtDiasCobrarMora.setText(diasCobrarMora);
 
-        try {
-            if (datos[33].toString().equals("")) {
-                datos[33] = "0";
-            }
-            instancias.setPorcentajeMora((String) datos[33]);
-        } catch (Exception e) {
-            instancias.setPorcentajeMora("0");
-        }
+        String porcentajeMora = datos.getPorcentajeMora() != null && !datos.getPorcentajeMora().isEmpty() ? datos.getPorcentajeMora() : "0";
+        instancias.setPorcentajeMora(porcentajeMora);
+        txtPorcentajeMora.setText(porcentajeMora);
 
-        txtDiasCobrarMora.setText(datos[32].toString());
-        txtPorcentajeMora.setText(datos[33].toString());
-
-        if ((boolean) datos[34]) {
+        if (datos.isGeneraOrdenMedica()) {
             rdSiGenerarOrden.setSelected(true);
             instancias.setGeneraOrdenMedica(true);
         } else {
             rdNoGenerarOrden.setSelected(true);
             instancias.setGeneraOrdenMedica(false);
         }
-        if ((boolean) datos[35]) {
+        if (datos.isImprimirOrdenMedica()) {
             rdSiImprimirOrden.setSelected(true);
             instancias.setImprimirOrdenMedica(true);
         } else {
@@ -8814,7 +8467,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             tabPanel.setEnabledAt(3, false);
         }
 
-        if ((boolean) datos[36]) {
+        if (datos.isImprimirFacturaOrdenMedica()) {
             rdSiImprimirFactura.setSelected(true);
             instancias.setImprimirFacturaOrdenMedica(true);
         } else {
@@ -8822,29 +8475,21 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setImprimirFacturaOrdenMedica(false);
         }
 
-        cmbHoraInicio.setSelectedItem(datos[37]);
-        cmbHoraFin.setSelectedItem(datos[38]);
-        cmbIntervalo.setSelectedItem(datos[39]);
-        String[] configAgenda = {datos[37].toString(), datos[38].toString(), datos[39].toString()};
+        cmbHoraInicio.setSelectedItem(datos.getHoraInicioAgenda());
+        cmbHoraFin.setSelectedItem(datos.getHoraFinAgenda());
+        cmbIntervalo.setSelectedItem(datos.getIntervaloAgenda());
+        String[] configAgenda = {datos.getHoraInicioAgenda(), datos.getHoraFinAgenda(), datos.getIntervaloAgenda()};
         instancias.setConfigAgenda(configAgenda);
 
-        txtCodigoPrestadorServico.setText(datos[40].toString());
+        txtCodigoPrestadorServico.setText(datos.getCodigoPrestadorServicio() != null ? datos.getCodigoPrestadorServicio() : "");
 
         try {
-            cmbTipoPrestador.setSelectedItem(datos[46].toString());
+            cmbTipoPrestador.setSelectedItem(datos.getTipoPrestadorServicio());
         } catch (Exception e) {
             cmbTipoPrestador.setSelectedIndex(0);
-
         }
 
-//        if ((boolean) datos[42]) {
-//            rdPrevisualizarFacturaSI.setSelected(true);
-//            instancias.setPrevisualizarFactura(false);
-//        } else {
-//            rdPrevisualizarNO.setSelected(true);
-//            instancias.setPrevisualizarFactura(true);
-//        }
-        if ((boolean) datos[41]) {
+        if (datos.isImprimirCuadreFiscal()) {
             rdSiImprimirCuadreFiscal.setSelected(true);
             instancias.setImprimirCuadreFiscal(true);
         } else {
@@ -8895,11 +8540,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         }
 
         try {
-            if (datos[45].toString().equals("")) {
+            String descMax = datos.getDescuentoMaximoVentas();
+            if (descMax == null || descMax.equals("")) {
                 instancias.setDescuentoMaximoVentas(big.getBigDecimal("100"));
             } else {
-                instancias.setDescuentoMaximoVentas(big.getBigDecimal(datos[45]));
-                txtDescuentoMaximo.setText(datos[45].toString());
+                instancias.setDescuentoMaximoVentas(big.getBigDecimal(descMax));
+                txtDescuentoMaximo.setText(descMax);
             }
         } catch (Exception e) {
             instancias.setDescuentoMaximoVentas(big.getBigDecimal("100"));
@@ -8910,13 +8556,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         //ACTUALIZAR CON INSTANCIAS
         //actualizarVariables();
         /*String nombre = "";
-        try {
-            nombre = instancias.getSql().getNombreEmpleadoUsuario(instancias.getUsuarioLog().getUsuario());
-        } catch (Exception e) {
-        }
+         try {
+         nombre = instancias.getSql().getNombreEmpleadoUsuario(instancias.getUsuarioLog().getUsuario());
+         } catch (Exception e) {
+         }
 
-        llenarVendedores(nombre);*/
-        
+         llenarVendedores(nombre);*/
         instancias.getSql().usuarioActivo("ON", instancias.getTerminal());
     }
 
@@ -8967,9 +8612,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.getFactura().cargar1010();
             instancias.getCotiza().cargar1010();
         }
-
-        instancias.getFactura().setTipo("facturacion");
-//        instancias.getMesas().setTipo("facturacion");
 
         try {
             instancias.getFactura().setCantDias(Integer.parseInt(txtDiasAlerta.getText()) * -1);

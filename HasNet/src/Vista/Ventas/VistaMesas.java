@@ -1,30 +1,29 @@
 package Vista.Ventas;
 
-import clases.IconCellRendererConColor;
+import Modelo.Ventas.ModeloMesa;
+import Utilidades.DatosMaestra;
 import clases.Instancias;
-import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
-public class VistaMesas extends javax.swing.JInternalFrame {
+public final class VistaMesas extends javax.swing.JInternalFrame {
 
     metodosGenerales metodos = new metodosGenerales();
-    private Instancias instancias;
+    private final Instancias instancias;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
     DefaultTableModel modelo;
-    Object[] datos;
+    private final PanelMesas panelMesas;
+    private List<ModeloMesa> listaMesas = new ArrayList<>();
 
     public VistaMesas() {
         initComponents();
@@ -35,7 +34,15 @@ public class VistaMesas extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        tblMesas.setDefaultRenderer(Object.class, new IconCellRendererConColor());
+        panelMesas = new PanelMesas();
+        panelMesas.setListener(new PanelMesas.ListenerMesa() {
+            @Override
+            public void mesaSeleccionada(ModeloMesa mesa) {
+                manejarClickMesa(mesa);
+            }
+        });
+        jScrollPane11.setViewportView(panelMesas);
+
         instancias = Instancias.getInstancias();
 
         if (instancias.getConfiguraciones().isRestaurante()) {
@@ -44,10 +51,7 @@ public class VistaMesas extends javax.swing.JInternalFrame {
             lblMesa.setText("CONGELADAS");
         }
 
-        consultarMaestros();
-
-        cargarColumna();
-        cargarFila();
+        cargarDimensiones();
         cargarRegistrosMesas();
         cargarRegistros();
     }
@@ -55,7 +59,11 @@ public class VistaMesas extends javax.swing.JInternalFrame {
     @Override
     public void setSelected(boolean selected) {
         try {
-            super.setSelected(selected); //To change body of generated methods, choose Tools | Templates.
+            super.setSelected(selected);
+            if (selected) {
+                cargarRegistrosMesas();
+                cargarRegistros();
+            }
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMesas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -182,71 +190,10 @@ public class VistaMesas extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        cargarColumna();
-        cargarFila();
-
+        cargarDimensiones();
         cargarRegistrosMesas();
         cargarRegistros();
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void tblMesasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMesasMouseClicked
-        if (evt.getClickCount() >= 1) {
-
-            cargarRegistrosMesas();
-            cargarRegistros();
-
-            String valor = "";
-            if (tblMesas.getSelectedRow() % 2 == 0) {
-                valor = tblMesas.getValueAt(tblMesas.getSelectedRow() + 1, tblMesas.getSelectedColumn()).toString();
-            } else {
-                valor = tblMesas.getValueAt(tblMesas.getSelectedRow(), tblMesas.getSelectedColumn()).toString();
-            }
-
-            String mesa = "";
-
-            if (valor.contains("text=M")) {
-                Object[] cadenas = valor.split(",");
-                for (int i = 0; i < cadenas.length; i++) {
-                    if (cadenas[i].toString().contains("text=M")) {
-                        mesa = cadenas[i].toString().replace("text=", "");
-                        break;
-                    }
-                }
-            }
-
-            String estadoMesa = "", mesaActual = "";
-            if (mesa.contains("-")) {
-                mesaActual = mesa.split("-")[0];
-                mesaActual = mesaActual.replace("M", "Mesa. ");
-                estadoMesa = instancias.getSql().getEstadoMesa(mesaActual);
-            } else if (mesa.length() > 1) {
-                estadoMesa = instancias.getSql().getEstadoMesa(mesa);
-            }
-
-            if (estadoMesa.equals("OCUPADO")) {
-                metodos.msgAdvertenciaAjustado(this, "Esta mesa esta ocupada");
-                return;
-            }
-
-            if (mesa.contains("-")) {
-                instancias.getMenu().ocultarMenu("preparacion");
-                mesa = mesa.split("-")[0];
-                mesa = mesa.replace("M", "Mesa. ");
-
-                instancias.getMenu().cambiarTitulo(mesa.toUpperCase());
-                instancias.getMesa().setSelected(true);
-                instancias.getMesa().getPnlFactura().cargarCongelada(mesa, "MESA", mesa);
-            } else if (mesa.length() > 1) {
-                instancias.getMenu().ocultarMenu("preparacion");
-                instancias.getMenu().cambiarTitulo(mesa.toUpperCase());
-                instancias.getMesa().setSelected(true);
-                instancias.getMesa().getPnlFactura().cargarCongelada("", "MESA", mesa);
-            } else if (valor.equals("")) {
-                metodos.msgError(this, "¡Seleccione una mesa válida!");
-                return;
-            }
-        }
-    }//GEN-LAST:event_tblMesasMouseClicked
 
     private void btnOcultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOcultarActionPerformed
         instancias.getMenu().ocultarMenu("preparacion");
@@ -255,123 +202,85 @@ public class VistaMesas extends javax.swing.JInternalFrame {
         instancias.getMesa().getPnlFactura().cargarCongelada("", "DOMICILIO", "DOMICILIO");
     }//GEN-LAST:event_btnOcultarActionPerformed
 
+    private void tblMesasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMesasMouseClicked
+        // delegado a PanelMesas.ListenerMesa → manejarClickMesa()
+    }//GEN-LAST:event_tblMesasMouseClicked
+
     public void cargarRegistros() {
-
         Object[][] congeladas = instancias.getSql().getDatosCongelada1();
-
         if (congeladas.length > 0) {
-            Icon icono = null;
-            ImageIcon fot = new ImageIcon(getClass().getResource("/imagenes/MESA_ROJA.png"));
-            icono = new ImageIcon(fot.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
-
             for (int i = 0; i < congeladas.length; i++) {
-
-                if (congeladas[i][0] != null) {
-                    String lugar = congeladas[i][2].toString();
-
-                    for (int k = 0; k < tblMesas.getRowCount(); k++) {
-                        for (int s = 0; s < tblMesas.getColumnCount(); s++) {
-
-                            String lugarTabla = tblMesas.getValueAt(k, s).toString();
-                            String mesa = "";
-
-                            Object[] cadenas = lugarTabla.split(",");
-
-                            for (int ser = 0; ser < cadenas.length; ser++) {
-                                if (cadenas[ser].toString().contains("text=Mesa")) {
-                                    mesa = cadenas[ser].toString().replace("text=", "");
-                                }
-                            }
-
-                            if (!mesa.equals("")) {
-                                if (mesa.equals(lugar)) {
-                                    String turno = "";
-                                    BigDecimal total = big.getBigDecimal(congeladas[i][1]);
-                                    if (null == congeladas[i][3] || congeladas[i][3].toString().isEmpty()) {
-                                    } else {
-                                        turno = " - T" + congeladas[i][3].toString();
-                                    }
-
-                                    tblMesas.setValueAt(new JLabel(icono), k - 1, s);
-                                    tblMesas.setValueAt(new JLabel("M" + mesa.replace("Mesa. ", "") + "-" + big.setMonedaExacta(total) + turno), k, s);
-                                }
-                            }
-                        }
+                if (congeladas[i][0] == null) {
+                    continue;
+                }
+                String lugar = congeladas[i][2].toString();
+                BigDecimal total = big.getBigDecimal(congeladas[i][1]);
+                String turno = "";
+                if (congeladas[i][3] != null && !congeladas[i][3].toString().isEmpty()) {
+                    turno = congeladas[i][3].toString();
+                }
+                for (ModeloMesa mesa : listaMesas) {
+                    if (mesa.getNombre().equals(lugar)) {
+                        mesa.setOcupada(true);
+                        mesa.setTotal(total);
+                        mesa.setTurno(turno);
+                        break;
                     }
                 }
             }
         }
-    }
-
-    public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
+        panelMesas.setMesas(listaMesas);
     }
 
     public void cargarRegistrosMesas() {
+        listaMesas = new ArrayList<>();
         Object[][] mesas = instancias.getSql().getPosicionesMesas();
-        Icon icono = null;
-        ImageIcon fot = new ImageIcon(getClass().getResource("/imagenes/MESA_VERDE.png"));
-        icono = new ImageIcon(fot.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
-
         for (int i = 0; i < mesas.length; i++) {
-            int x = Integer.parseInt(mesas[i][0].toString().split(",")[0]);
-            int y = Integer.parseInt(mesas[i][0].toString().split(",")[1]);
-            tblMesas.setValueAt(new JLabel(icono), x - 1, y);
-            tblMesas.setValueAt(new JLabel(mesas[i][1].toString()), x, y);
+            String[] coords = mesas[i][0].toString().split(",");
+            int rawFila = Integer.parseInt(coords[0]);
+            int columna = Integer.parseInt(coords[1]);
+            int fila = (rawFila - 1) / 2;
+            String nombre = mesas[i][1].toString();
+            listaMesas.add(new ModeloMesa(fila, columna, nombre));
         }
+        panelMesas.setMesas(listaMesas);
     }
 
-    public void cargarFila() {
-        DefaultTableModel model = (DefaultTableModel) tblMesas.getModel();
-        int filas = Integer.parseInt(datos[88].toString());
-        while (tblMesas.getRowCount() > 0) {
-            model.removeRow(0);
-        }
-        filas = filas * 2;
-        for (int i = 1; i <= filas; i++) {
-            model.addRow(new Object[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""});
-        }
-
-        for (int i = 0; i < tblMesas.getRowCount(); i++) {
-            if (i % 2 == 0) {
-                tblMesas.setRowHeight(i, 110);
-            } else {
-                tblMesas.setRowHeight(i, 25);
-            }
-        }
+    private void cargarDimensiones() {
+        int filas = Integer.parseInt(DatosMaestra.getFilas());
+        int columnas = Integer.parseInt(DatosMaestra.getColumnas());
+        panelMesas.setDimensiones(filas, columnas);
     }
 
-    public void cargarColumna() {
+    private void manejarClickMesa(ModeloMesa mesa) {
+        cargarRegistrosMesas();
+        cargarRegistros();
 
-        for (int i = 0; i < 26; i++) {
-            tblMesas.getColumnModel().getColumn(i).setMinWidth(0);
-            tblMesas.getColumnModel().getColumn(i).setPreferredWidth(0);
-            tblMesas.getColumnModel().getColumn(i).setMaxWidth(0);
+        ModeloMesa mesaActualizada = null;
+        for (ModeloMesa m : listaMesas) {
+            if (m.getNombre().equals(mesa.getNombre())) {
+                mesaActualizada = m;
+                break;
+            }
+        }
+        if (mesaActualizada == null) {
+            return;
         }
 
-        int columnas = Integer.parseInt(datos[89].toString());
+        String estadoMesa = instancias.getSql().getEstadoMesa(mesaActualizada.getNombre());
+        if ("OCUPADO".equals(estadoMesa)) {
+            metodos.msgAdvertenciaAjustado(this, "Esta mesa esta ocupada");
+            return;
+        }
 
-        tblMesas.setModel(new javax.swing.table.DefaultTableModel(new Object[][]{}, new String[]{
-            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
-        }) {
-            boolean[] canEdit = new boolean[]{
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false, false, false
-            };
+        instancias.getMenu().ocultarMenu("preparacion");
+        instancias.getMenu().cambiarTitulo(mesaActualizada.getNombre().toUpperCase());
+        instancias.getMesa().setSelected(true);
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        });
-
-        tblMesas.getTableHeader().setResizingAllowed(false);
-        tblMesas.getTableHeader().setReorderingAllowed(false);
-        jScrollPane11.setViewportView(tblMesas);
-
-        for (int i = columnas; i < 26; i++) {
-            tblMesas.getColumnModel().getColumn(i).setMinWidth(0);
-            tblMesas.getColumnModel().getColumn(i).setPreferredWidth(0);
-            tblMesas.getColumnModel().getColumn(i).setMaxWidth(0);
+        if (mesaActualizada.isOcupada()) {
+            instancias.getMesa().getPnlFactura().cargarCongelada(mesaActualizada.getNombre(), "MESA", mesaActualizada.getNombre());
+        } else {
+            instancias.getMesa().getPnlFactura().cargarCongelada("", "MESA", mesaActualizada.getNombre());
         }
     }
 

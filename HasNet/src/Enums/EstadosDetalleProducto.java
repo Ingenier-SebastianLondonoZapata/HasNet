@@ -8,7 +8,7 @@ public enum EstadosDetalleProducto {
     EN_PLAN_SEPARE("SEPARADO"),
     EN_MESA("CONGELADO"),
     ANULADO("ANULADO"),
-    EN_TRANSITO("EN-TRANSITO"),;
+    EN_TRANSITO("EN-TRANSITO");
 
     private final String nombre;
 

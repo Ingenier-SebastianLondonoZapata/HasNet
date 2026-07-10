@@ -419,7 +419,7 @@ public class dlgPedidosPendientes extends javax.swing.JDialog {
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
                 if ((Boolean) tblProductos.getValueAt(i, 5)) {
                     cliente = tblProductos.getValueAt(i, 6).toString();
-                    instancias.getFactura().cargarPedidosPendientes(tblProductos.getValueAt(i, 0).toString());
+//                    instancias.getFactura().cargarPedidosPendientes(tblProductos.getValueAt(i, 0).toString());
                     bod = tblProductos.getValueAt(i, 9).toString();
                 }
             }
@@ -470,7 +470,7 @@ public class dlgPedidosPendientes extends javax.swing.JDialog {
                         return;
                     }
 
-                    instancias.getPedido().cargarPedidos(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString());
+//                    instancias.getPedido().cargarPedidos(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString());
 
                     String bodega = "";
                     try {
@@ -483,14 +483,14 @@ public class dlgPedidosPendientes extends javax.swing.JDialog {
                     }
 
                     String baseUtilizada = obtenerBase(bodega);
-                    instancias.getPedido().anularPedido(nota, tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), baseUtilizada);
+//                    instancias.getPedido().anularPedido(nota, tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), baseUtilizada);
                     this.dispose();
                 }
             }
         }
 
         if (evt.getClickCount() == 2) {
-            instancias.getPedido().cargarPedidos(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString());
+//            instancias.getPedido().cargarPedidos(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString());
             this.dispose();
         }
     }//GEN-LAST:event_tblProductosMouseClicked

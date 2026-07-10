@@ -1,5 +1,6 @@
 package Vista.Ventas;
 
+import Utilidades.Utilidades;
 import clases.Instancias;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
@@ -8,6 +9,7 @@ import formularios.productos.buscProductos;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
@@ -291,17 +293,10 @@ public class VistaProductosCambio extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (btnGuardar.getText().equals("CARGAR")) {
-
-            Double cant = 0.0;
-            try {
-                cant = Double.parseDouble(tblListado.getValueAt(tblListado.getSelectedRow(), 2).toString().replace(",", "."));
-            } catch (Exception e) {
-                metodos.msgError(null, "Cantidad incorrecta");
-                return;
-            }
+            BigDecimal cantidad = Utilidades.convertirBigDecimal(tblListado.getValueAt(tblListado.getSelectedRow(), 2).toString());
 
             instancias.getPreparacion().cambiarDeProducto(fila1 - 1, tblListado.getValueAt(tblListado.getSelectedRow(), 0).toString(),
-                    tblListado.getValueAt(tblListado.getSelectedRow(), 1).toString(), String.valueOf(cant));
+                    tblListado.getValueAt(tblListado.getSelectedRow(), 1).toString(), cantidad);
         } else {
             if (tblListado.getRowCount() <= 0) {
                 metodos.msgError(null, "No ha cargado ningun producto relacionado");

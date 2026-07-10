@@ -1,6 +1,6 @@
-package formularios.Ventas;
+package Vista.Ventas;
 
-import Vista.Ventas.VistaFactura;
+import Enums.TipoDocumento;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
-public class infFacturaCreditos extends javax.swing.JInternalFrame {
+public class creditos extends javax.swing.JInternalFrame {
 
     private VistaFactura pnlFactura;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -23,7 +23,7 @@ public class infFacturaCreditos extends javax.swing.JInternalFrame {
         this.pnlFactura = pnlFactura;
     }
 
-    public infFacturaCreditos() {
+    public creditos() {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -33,22 +33,20 @@ public class infFacturaCreditos extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        pnlFactura = new VistaFactura("credito");
+        pnlFactura = new VistaFactura(TipoDocumento.CREDITO.getValor());
         pnlFactura.setSize(pnlContenedor.getSize());
         pnlContenedor.add(pnlFactura, CENTER_ALIGNMENT);
         pnlContenedor.revalidate();
         pnlContenedor.repaint();
         pnlContenedor.setVisible(true);
-
     }
-    
-    
+
     @Override
-    public void setSelected(boolean selected){
+    public void setSelected(boolean selected) {
         try {
-            super.setSelected(selected); //To change body of generated methods, choose Tools | Templates.
+            super.setSelected(selected);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(infFacturaCreditos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(creditos.class.getName()).log(Level.SEVERE, null, ex);
         }
         pnlFactura.actualizarConsecutivo(0);
     }

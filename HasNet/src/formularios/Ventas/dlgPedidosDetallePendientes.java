@@ -361,7 +361,7 @@ public class dlgPedidosDetallePendientes extends javax.swing.JDialog {
         }
 
         instancias.getPedido().setModificarPedidoActivo(true);
-        instancias.getPedido().modificarPedido(id.replace("PEDIDO-", ""), productos);
+        //instancias.getPedido().modificarPedido(id.replace("PEDIDO-", ""), productos);
         instancias.getSql().modificarEstadoPedido(id);
         this.dispose();
 

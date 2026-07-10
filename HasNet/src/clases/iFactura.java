@@ -1355,7 +1355,7 @@ public class iFactura {
         }
     }
 
-    public void ver_Factura(String observaciones, String info, String legal, String tipo, String pie, String nRep, String facturaTerm,
+    public void ver_Factura(String observaciones, String info, String legal, String tipo, String pie, String nombreReporte, String facturaTerm,
             boolean imprimir, String titulo, String impresora, String verImpo, String verReten, String condicion, Boolean nd) {
         JasperReport reporte;
 
@@ -1372,11 +1372,11 @@ public class iFactura {
             }
         }
 
-        System.out.println("Nombre reporte: " + nRep);
+        System.out.println("Nombre reporte: " + nombreReporte);
 
         try {
             //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/impresionesFacturas/" + nRep + ".jasper");
+            URL in = this.getClass().getResource("/impresionesFacturas/" + nombreReporte + ".jasper");
             reporte = (JasperReport) JRLoader.loadObject(in);
             //Se crea un objeto HashMap
             Map parametros = new HashMap();

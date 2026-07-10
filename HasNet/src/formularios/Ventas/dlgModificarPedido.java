@@ -376,7 +376,7 @@ public class dlgModificarPedido extends javax.swing.JDialog {
         }
 
         instancias.getPedido().setModificarPedidoActivo(true);
-        instancias.getPedido().modificarPedido(id.replace("PEDIDO-", ""), productos);
+        //instancias.getPedido().modificarPedido(id.replace("PEDIDO-", ""), productos);
         this.dispose();
 
         if (!instancias.getSql().aumentarConsecutivo("MODPED", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("MODPED")[0]) + 1)) {

@@ -16,7 +16,7 @@ public class ndMaestra {
     private String horaInicioAgenda, horaFinAgenda, intervaloAgenda;
     private String descuentoMaximoVentas, valorBolsa;
     private String codigoPrestadorServicio;
-    private String tipoPrestadorServicio, otros, domicilios, limite, turno1, informacion, anexoOrdenServicio, foco;
+    private String tipoPrestadorServicio, otros, domicilios, limite, turno1, informacion, anexoFacturacion, anexoOrdenServicio, foco;
 
     private boolean copiasFactura, copiasOServicio, copiasCotizacion, copiasPlanSepare, copiasPedido, previsualizarFactura, previsualizarOServicio, previsualizarCotizacion,
             previsualizarPlanSepare, previsualizarPedido, mostrarRetenciones, mostrarImpoconsumo, mostrarDevuelta, pvpImpoconsumo, costoImpoconsumo, impresionPorGrupo,
@@ -456,6 +456,14 @@ public class ndMaestra {
 
     public void setModificarPrecio(boolean modificarPrecio) {
         this.modificarPrecio = modificarPrecio;
+    }
+
+    public String getAnexoFacturacion() {
+        return anexoFacturacion;
+    }
+
+    public void setAnexoFacturacion(String anexoFacturacion) {
+        this.anexoFacturacion = anexoFacturacion;
     }
 
     public String getAnexoOrdenServicio() {

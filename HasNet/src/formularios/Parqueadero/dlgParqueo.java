@@ -603,8 +603,9 @@ public class dlgParqueo extends javax.swing.JDialog {
 
                 if (metodos.msgPregunta(null, "¿Desea continuar") == 0) {
                     /* OBTENEMOS EL PROXIMO CONSECUTIVO PARA RELACIONARLO AL PARQUEO Y PODER REALIZAR LA CONSULTA */
-                    String numFactura = instancias.getFactura().desdeParqueadero(nodo2.getId(),
-                            new String[][]{new String[]{codigo1, txtTotalPagar.getText()}}, diasPlazo, txtPlaca.getText());
+                    String numFactura = "";
+                    //instancias.getFactura().desdeParqueadero(nodo2.getId(),
+                      //      new String[][]{new String[]{codigo1, txtTotalPagar.getText()}}, diasPlazo, txtPlaca.getText());
 
                     if (!instancias.getSql().finalizarParqueadero(idParqueadero, metodos.fechaConsulta(txtFechaSalida.getText()), txtHoraSalida.getText(),
                             String.valueOf(horasTotales), numFactura)) {

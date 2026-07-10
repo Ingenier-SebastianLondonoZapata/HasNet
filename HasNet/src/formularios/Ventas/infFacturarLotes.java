@@ -668,8 +668,8 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                 if (tblClientes.getValueAt(i, 7).equals(true)) {
                     String numLote = "LOTECCOB-" + (String) instancias.getSql().getNumConsecutivo("LOTECCOB")[0];
 
-                    String factura = instancias.getFacturaContenedor().getPnlFactura().facturarCuentaCobro(txtDiasPlazo.getText(),
-                            tblClientes.getValueAt(i, 0).toString(), "123-22", big.getMoneda(this.simbolo + " 0"), numLote, txtFechaFactura.getText());
+//                    String factura = instancias.getFacturaContenedor().getPnlFactura().facturarCuentaCobro(txtDiasPlazo.getText(),
+   //                         tblClientes.getValueAt(i, 0).toString(), "123-22", big.getMoneda(this.simbolo + " 0"), numLote, txtFechaFactura.getText());
 
                     int cantFacturados = Integer.parseInt(instancias.getSql().getCantFacturado(tblClientes.getValueAt(i, 0).toString())[0].toString());
                     cantFacturados = cantFacturados + 1;
@@ -691,13 +691,13 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                         return;
                     }
 
-                    Object[] lote = {numLote, "", factura, metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), tblClientes.getValueAt(i, 0).toString()};
+/*                    Object[] lote = {numLote, "", factura, metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), tblClientes.getValueAt(i, 0).toString()};
 
                     if (!instancias.getSql().agregarLote(lote)) {
                         metodos.msgError(this, "Error al guardar la información del lote");
                         return;
                     }
-
+*/
                     try {
                         Thread.sleep(2000);
                     } catch (Exception e) {

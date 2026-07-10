@@ -1,11 +1,14 @@
-package formularios.productos;
+package Vista.Productos;
 
+import Controlador.Alertas.ControladorAlertas;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import clases.productos.ndProducto;
+import formularios.productos.buscGrupos;
+import formularios.productos.buscSubGrupos;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -13,6 +16,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +67,6 @@ public class infGrupos extends javax.swing.JInternalFrame {
 //            visualizarNo.setVisible(false);
 //            visualizarSi.setVisible(false);
 //        }
-
         pnlFormulario.registerKeyboardAction(accion("guardar"), "guardar", KeyStroke.getKeyStroke(KeyEvent.VK_G, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("productos"), "productos", KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -575,10 +578,6 @@ public class infGrupos extends javax.swing.JInternalFrame {
             cargarTablaSubGrupos(txtCodigo.getText());
 
             btnNuevoActionPerformed(evt);
-
-            instancias.getFactura().cargarTablaRestaurante();
-            instancias.getMesa1().cargarTablaRestaurante();
-            instancias.getPedido().cargarTablaRestaurante();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -653,12 +652,7 @@ public class infGrupos extends javax.swing.JInternalFrame {
 
             Path TO = Paths.get(System.getProperty("user.dir") + "\\imagenes\\grupos\\IMG-" + id + ".jpg");
 
-            //sobreescribir el fichero de destino, si existe, y copiar
-            // los atributos, incluyendo los permisos rwx
-            CopyOption[] options = new CopyOption[]{
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.COPY_ATTRIBUTES
-            };
+            CopyOption[] options = new CopyOption[]{StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES};
 
             try {
                 Files.copy(FROM, TO, options);
@@ -666,8 +660,8 @@ public class infGrupos extends javax.swing.JInternalFrame {
                 Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
                 lbFoto.setIcon(icono);
                 this.repaint();
-            } catch (Exception ex) {
-                metodos.msgError(this, "Hubo un error al cargar el archivo");
+            } catch (IOException ex) {
+                ControladorAlertas.alert("Hubo un error al cargar el archivo");
             }
 
         }
@@ -776,11 +770,6 @@ public class infGrupos extends javax.swing.JInternalFrame {
             cargarTablaSubGrupos(txtCodigo.getText());
 
             instancias.actualizarGrupos(new Object[]{txtCodigo.getText(), txtNombre.getText(), lbFoto.getToolTipText()});
-
-            instancias.getFactura().cargarTablaRestaurante();
-            instancias.getMesa1().cargarTablaRestaurante();
-            instancias.getPedido().cargarTablaRestaurante();
-
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnModificarActionPerformed
@@ -819,9 +808,6 @@ public class infGrupos extends javax.swing.JInternalFrame {
             btnNuevoActionPerformed(evt);
         }
 
-        instancias.getFactura().cargarTablaRestaurante();
-        instancias.getMesa1().cargarTablaRestaurante();
-        instancias.getPedido().cargarTablaRestaurante();
         instancias.actualizarGrupos(new Object[]{txtCodigo.getText(), txtNombre.getText(), lbFoto.getToolTipText()});
     }//GEN-LAST:event_btnEliminarActionPerformed
 

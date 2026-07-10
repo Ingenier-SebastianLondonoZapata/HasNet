@@ -1,9 +1,11 @@
 package Utilidades.BaseDatos;
 
+import Modelo.Ventas.ModeloComanda;
 import Modelo.Egresos.ModeloDetalleEgreso;
 import Modelo.Terceros.ModeloContacto;
 import Modelo.Maestra.modeloConfiguracion;
 import Modelo.Maestra.ModeloResolucion;
+import dao.Ventas.DaoComanda;
 import clases.Cartera.*;
 import clases.Egresos.*;
 import clases.Instancias;
@@ -27,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1143,17 +1146,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarComanda(String congelada, String factura, String cod, String producto, String opciones, String ingrediente,
-            String adiciones, String aderezos, String cant, String obv, String turno, String pedido, String consecutivo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdComanda (congelada, factura, cod, producto, opciones, ingredientes, adiciones,"
-                + " aderezos, cant, observaciones, turno, pedido, consecutivo)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{congelada, factura, cod, producto, opciones, ingrediente,
-            adiciones, aderezos, cant, obv, turno, pedido, consecutivo}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarImpresora(String impresora) {
         boolean ok = false;
         String instruccion_sql = "insert into bdImpresoras (nombre)"
@@ -1858,57 +1850,12 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getTotalizadoVentas(String base) {
-        String colName[] = {
-            "codigo", "Expr1"
-        };
-        String origen = " totalizadoVentas";
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoVentas ", "");
-        return dtDatos;
-    }
-
     public Object[][] getTotalizadoNc(String base) {
         String colName[] = {
             "codigo", "Expr1"
         };
         String origen = " totalizadoNotasCredito";
         Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoNotasCredito ", "");
-        return dtDatos;
-    }
-
-    public Object[][] getTotalizadoAjusteEntrada(String base) {
-        String colName[] = {
-            "codigo", "Expr1"
-        };
-        String origen = " totalizadoAjusteEntrada";
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoAjusteEntrada ", "");
-        return dtDatos;
-    }
-
-    public Object[][] getTotalizadoAjusteSalida(String base) {
-        String colName[] = {
-            "codigo", "Expr1"
-        };
-        String origen = " totalizadoAjusteSalida";
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoAjusteSalida ", "");
-        return dtDatos;
-    }
-
-    public Object[][] getTotalizadoPlanSepares(String base) {
-        String colName[] = {
-            "codigo", "Expr1"
-        };
-        String origen = " totalizadoPlanSepares";
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoPlanSepares ", "");
-        return dtDatos;
-    }
-
-    public Object[][] getTotalizadoOServicio(String sql, String base) {
-        String colName[] = {
-            "codigo", "Expr1"
-        };
-        String origen = base;
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from " + base + sql, sql);
         return dtDatos;
     }
 
@@ -7350,14 +7297,11 @@ public class SQL {
     }
 
     public String getEstadoMesa(String id) {
-        System.out.println("ID_MESA: " + id);
         String instruccion_sql = "select estado from bdMesas where nombre = '" + id + "' ";
-        //columnas de la tabla que se
         String[] colName = {"estado"};
         boolean[] cadena = {true};
-        //se realiza la consulta
         Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data[0].toString();
+        return data[0] != null ? data[0].toString() : "";
     }
 
     public String getUsuarioOrden(String id) {

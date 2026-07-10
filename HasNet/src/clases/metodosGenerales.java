@@ -4820,73 +4820,105 @@ public class metodosGenerales {
     }
 
     public String sentenciaImpresionFactura(String tipo, String condicion) {
+        boolean agrupar = "agrupada".equals(tipo);
 
-        String sentencia = "";
+        // Campos que varían según agrupación
+        String cantidad    = agrupar ? "SUM(bdfactura.cantidad)"    : "bdfactura.cantidad";
+        String descuento   = agrupar ? "SUM(bdfactura.descuento)"   : "bdfactura.descuento";
+        String total       = agrupar ? "SUM(bdfactura.total)"       : "bdfactura.total";
+        String iva         = agrupar ? "SUM(bdfactura.iva)"         : "bdfactura.iva";
+        String subtotal    = agrupar ? "sum(bdfactura.subtotal)"    : "bdfactura.subtotal";
+        String utilidad    = agrupar ? "SUM(bdfactura.utilidad)"    : "bdfactura.utilidad";
+        String cant2       = agrupar ? "SUM(bdfactura.cant2)"       : "bdfactura.cant2";
+        String impoconsumo = agrupar ? "SUM(bdfactura.impoconsumo)" : "bdfactura.impoconsumo";
 
-        if (tipo.equals("agrupada")) {
-            sentencia = "SELECT bdfactura.idFactura AS idFactura, CAST(SUBSTR(bdfactura.idFactura,6,100) AS SIGNED) AS ordenId, CAST(SUBSTR(bdterceros.id,1,100) AS SIGNED) AS cliente, bdterceros.ciudad AS ciudad, bdfactura.vendedor AS vendedor, "
-                    + "bdfactura.red AS red, bdfactura.fechaFactura AS fechaFactura, bdfactura.fechaVencimiento AS fechaVencimiento, bdfactura.efectivoGeneral AS efectivoGeneral, bdfactura.ncGeneral AS ncGeneral, "
-                    + "bdfactura.chequeGeneral AS chequeGeneral, bdfactura.targetaGeneral AS targetaGeneral, bdfactura.totalGeneral AS totalGeneral, bdfactura.descuentoGeneral AS descuentoGeneral, "
-                    + "bdfactura.ivaGeneral AS ivaGeneral, bdfactura.subtotalGeneral AS subtotalGeneral, bdfactura.comprobante AS comprobante, bdfactura.cotizacion AS cotizacion, bdfactura.anulada AS anulada, "
-                    + "bdfactura.anula AS anula, bdfactura.credito AS credito, bdfactura.cxc AS cxc, bdfactura.usuario AS usuario, bdfactura.rtIva AS rtIva, bdfactura.rtIca AS rtIca, bdfactura.rtFuente AS rtFuente, "
-                    + "bdfactura.otros AS otros, bdfactura.observacion AS observacion, bdfactura.anulada1 AS anulada1, bdfactura.anula1 AS anula1, bdfactura.credito1 AS credito1, bdfactura.cxc1 AS cxc1, "
-                    + "bdfactura.usuario1 AS usuario1, bdfactura.fechaAlerta AS fechaAlerta, bdfactura.terminal AS terminal, bdfactura.estadoGeneral AS estadoGeneral, bdfactura.estado2 AS estado2, "
-                    + "bdfactura.devuelta AS devuelta, bdfactura.factura AS factura, bdfactura.resolucion AS resolucion, bdfactura.fechaAnulacion AS fechaAnulacion, bdfactura.cuadreAnulacion AS cuadreAnulacion, "
-                    + "bdfactura.usuarioAnula AS usuarioAnula, bdfactura.copago AS copago, bdfactura.garantia AS garantia, bdfactura.diasGarantia AS diasGarantia, bdfactura.rango AS rango, bdfactura.terminos AS terminos, "
-                    + "bdfactura.notaAnulacion AS notaAnulacion, bdfactura.conseMesa AS conseMesa, bdfactura.producto AS producto, bdfactura.lista AS lista, SUM(bdfactura.cantidad) AS cantidad, "
-                    + "SUM(bdfactura.descuento) AS descuento, SUM(bdfactura.total) AS total, SUM(bdfactura.iva) AS iva, sum(bdfactura.subtotal) AS subtotal, bdfactura.NC AS NC, SUM(bdfactura.utilidad) AS utilidad, "
-                    + "bdfactura.concepto AS concepto, bdfactura.porcDescuento AS porcDescuento, bdfactura.descripcion AS descripcion,  bdfactura.plu AS plu, SUM(bdfactura.cant2) AS cant2, bdfactura.estado AS estado, "
-                    + "bdfactura.porcIva AS porcIva, bdfactura.tercero AS tercero, bdfactura.utilidad1 AS utilidad1, bdterceros.nombre AS nombre, bdterceros.telefono AS telefono, bdterceros.direccion AS direccion, "
-                    + "IF(ISNULL(bdprestamo.cuotaInicial),0,bdprestamo.cuotaInicial) AS cuotaInicial2, bdfactura.factura AS id2, bdproductos.ubicacion1 AS ubicacion1, bdproductos.referencia AS referencia, "
-                    + "(bdfactura.subtotalGeneral - bdfactura.descuentoGeneral) AS valor3, IF((bdfactura.producto = 'PROD-000000032'),bdfactura.impuesto,'0') AS impuesto, bdcxc.plazo AS plazo, "
-                    + "bdterceros.nombreContacto AS nombreContacto, bdterceros.cargo AS cargo, bdfactura.turno AS turno, bdproductos.grupo AS Grupo, bdterceros.eps AS eps, bdepsprecargados.nombre AS nombreEps, "
-                    + "bdfactura.Id AS Id, bdfactura.placa AS placa, bdplacas.tipo AS tipo, bdparqueaderoautos.fIngreso AS fIngreso, bdparqueaderoautos.fSalida AS fSalida, bdparqueaderoautos.hIngreso AS hIngreso, "
-                    + "bdparqueaderoautos.hSalida AS hSalida, bdparqueaderoautos.horas AS horas, bdfactura.imei AS imei, bddetalleproductos.color AS color,  bdterceros.idSistema AS idSistema, "
-                    + "SUM(bdfactura.impoconsumo) AS impoconsumo, bdproductos.Codigo AS Codigo, bdfactura.totalPropina AS totalPropina, bdfactura.hora AS hora, bdfactura.idProd AS idProd, bdgrupo.nombre AS nombreGrupo, "
-                    + "bdfactura.impoGeneral AS impoGeneral,  bdfactura.porcImpo AS porcImpo, bdfactura.bodega AS bodega FROM ((((((((bdfactura LEFT JOIN bdprestamo ON ((bdfactura.idFactura = bdprestamo.factura))) "
-                    + "LEFT JOIN bdcxc ON ((bdfactura.factura = bdcxc.factura2))) LEFT JOIN bdplacas ON ((bdfactura.placa = bdplacas.placa))) LEFT JOIN bdparqueaderoautos ON ((bdparqueaderoautos.factura = bdfactura.factura))) "
-                    + "LEFT JOIN bddetalleproductos ON ((bdfactura.idProd = bddetalleproductos.Id))) LEFT JOIN bdproductos ON ((bdfactura.producto = bdproductos.idSistema))) LEFT JOIN (bdterceros "
-                    + "LEFT JOIN bdepsprecargados ON ((bdepsprecargados.Id = bdterceros.eps))) ON ((bdfactura.cliente = bdterceros.idSistema))) LEFT JOIN bdgrupo ON ((bdproductos.grupo = bdgrupo.codigo))) "
-                    + condicion + " AND (bdcxc.tipo = 'FACT' OR bdcxc.tipo IS NULL) GROUP BY bdfactura.factura, bdfactura.producto, bdfactura.lista, bdfactura.descuento, bdfactura.plu, bdfactura.porcIva, bdfactura.porcImpo";
-        } else {
-            sentencia = "SELECT bdfactura.idFactura AS idFactura, CAST(SUBSTR(bdfactura.idFactura,6,100) AS SIGNED) AS ordenId, CAST(SUBSTR(bdterceros.id,1,100) AS SIGNED) AS cliente, bdterceros.ciudad AS ciudad, bdfactura.vendedor AS vendedor,  bdfactura.red AS red, "
-                    + "bdfactura.fechaFactura AS fechaFactura, bdfactura.fechaVencimiento AS fechaVencimiento, bdfactura.efectivoGeneral AS efectivoGeneral, bdfactura.ncGeneral AS ncGeneral, "
-                    + "bdfactura.chequeGeneral AS chequeGeneral, bdfactura.targetaGeneral AS targetaGeneral, bdfactura.totalGeneral AS totalGeneral, bdfactura.descuentoGeneral AS descuentoGeneral, "
-                    + "bdfactura.ivaGeneral AS ivaGeneral, bdfactura.subtotalGeneral AS subtotalGeneral, bdfactura.comprobante AS comprobante, bdfactura.cotizacion AS cotizacion, bdfactura.anulada AS anulada, "
-                    + "bdfactura.anula AS anula, bdfactura.credito AS credito, bdfactura.cxc AS cxc, bdfactura.usuario AS usuario, bdfactura.rtIva AS rtIva, bdfactura.rtIca AS rtIca, bdfactura.rtFuente AS rtFuente, "
-                    + "bdfactura.otros AS otros, bdfactura.observacion AS observacion, bdfactura.anulada1 AS anulada1, bdfactura.anula1 AS anula1, bdfactura.credito1 AS credito1, bdfactura.cxc1 AS cxc1, "
-                    + "bdfactura.usuario1 AS usuario1, bdfactura.fechaAlerta AS fechaAlerta, bdfactura.terminal AS terminal, bdfactura.estadoGeneral AS estadoGeneral, bdfactura.estado2 AS estado2, "
-                    + "bdfactura.devuelta AS devuelta, bdfactura.factura AS factura, bdfactura.resolucion AS resolucion, bdfactura.fechaAnulacion AS fechaAnulacion, bdfactura.cuadreAnulacion AS cuadreAnulacion, "
-                    + "bdfactura.usuarioAnula AS usuarioAnula, bdfactura.copago AS copago, bdfactura.garantia AS garantia, bdfactura.diasGarantia AS diasGarantia, bdfactura.rango AS rango, "
-                    + "bdfactura.terminos AS terminos,  bdfactura.notaAnulacion AS notaAnulacion, bdfactura.conseMesa AS conseMesa, bdfactura.producto AS producto, bdfactura.lista AS lista, bdfactura.cantidad AS cantidad, "
-                    + "bdfactura.descuento AS descuento,  bdfactura.total AS total, bdfactura.iva AS iva, bdfactura.subtotal AS subtotal, bdfactura.NC AS NC, bdfactura.utilidad AS utilidad, bdfactura.concepto AS concepto, "
-                    + "bdfactura.porcDescuento AS porcDescuento,  bdfactura.descripcion AS descripcion,  bdfactura.plu AS plu, bdfactura.cant2 AS cant2, bdfactura.estado AS estado, bdfactura.porcIva AS porcIva, "
-                    + "bdfactura.tercero AS tercero, bdfactura.utilidad1 AS utilidad1, bdterceros.nombre AS nombre, bdterceros.telefono AS telefono, bdterceros.direccion AS direccion, "
-                    + "IF(ISNULL(bdprestamo.cuotaInicial),0,bdprestamo.cuotaInicial) AS cuotaInicial2, bdfactura.factura AS id2, bdproductos.ubicacion1 AS ubicacion1, bdproductos.referencia AS referencia, "
-                    + "(bdfactura.subtotalGeneral - bdfactura.descuentoGeneral) AS valor3, IF((bdfactura.producto = 'PROD-000000032'),bdfactura.impuesto,'0') AS impuesto, bdcxc.plazo AS plazo, "
-                    + "bdterceros.nombreContacto AS nombreContacto, bdterceros.cargo AS cargo, bdfactura.turno AS turno, bdproductos.grupo AS Grupo, bdterceros.eps AS eps, bdepsprecargados.nombre AS nombreEps, "
-                    + "bdfactura.Id AS Id, bdfactura.placa AS placa,  bdplacas.tipo AS tipo, bdparqueaderoautos.fIngreso AS fIngreso,  bdparqueaderoautos.fSalida AS fSalida, bdparqueaderoautos.hIngreso AS hIngreso, "
-                    + "bdparqueaderoautos.hSalida AS hSalida, bdparqueaderoautos.horas AS horas,  bdfactura.imei AS imei, bddetalleproductos.color AS color,  bdterceros.idSistema AS idSistema, "
-                    + "bdfactura.impoconsumo AS impoconsumo,  bdproductos.Codigo AS Codigo, bdfactura.totalPropina AS totalPropina,  bdfactura.hora AS hora, bdfactura.idProd AS idProd, bdgrupo.nombre AS nombreGrupo, "
-                    + "bdfactura.impoGeneral AS impoGeneral,  bdfactura.porcImpo AS porcImpo, bdfactura.bodega AS bodega "
-                    + "FROM ((((((((bdfactura LEFT JOIN bdprestamo ON ((bdfactura.idFactura = bdprestamo.factura))) LEFT JOIN bdcxc ON ((bdfactura.factura = bdcxc.factura2))) LEFT JOIN bdplacas "
-                    + "ON ((bdfactura.placa = bdplacas.placa))) LEFT JOIN bdparqueaderoautos ON ((bdparqueaderoautos.factura = bdfactura.factura))) LEFT JOIN bddetalleproductos ON ((bdfactura.idProd = bddetalleproductos.Id))) "
-                    + "LEFT JOIN bdproductos ON ((bdfactura.producto = bdproductos.idSistema))) LEFT JOIN (bdterceros LEFT JOIN bdepsprecargados ON ((bdepsprecargados.Id = bdterceros.eps))) "
-                    + "ON ((bdfactura.cliente = bdterceros.idSistema))) LEFT JOIN bdgrupo ON ((bdproductos.grupo = bdgrupo.codigo))) "
-                    + condicion + " GROUP BY bdfactura.idFactura,CAST(SUBSTR(bdfactura.idFactura,6,100)AS SIGNED),bdterceros.id,bdterceros.ciudad,bdfactura.vendedor,bdfactura.red,bdfactura.fechaFactura,bdfactura.fechaVencimiento,bdfactura.efectivoGeneral,"
-                    + "bdfactura.ncGeneral,bdfactura.chequeGeneral,bdfactura.targetaGeneral,bdfactura.totalGeneral,bdfactura.descuentoGeneral,bdfactura.ivaGeneral,bdfactura.subtotalGeneral,bdfactura.comprobante,"
-                    + "bdfactura.cotizacion,bdfactura.anulada,bdfactura.anula,bdfactura.credito,bdfactura.cxc,bdfactura.usuario,bdfactura.rtIva,bdfactura.rtIca,bdfactura.rtFuente,bdfactura.otros,bdfactura.anulada1,"
-                    + "bdfactura.anula1,bdfactura.credito1,bdfactura.cxc1,bdfactura.usuario1,bdfactura.fechaAlerta,bdfactura.terminal,bdfactura.estadoGeneral,bdfactura.estado2,bdfactura.devuelta,bdfactura.resolucion,"
-                    + "bdfactura.fechaAnulacion,bdfactura.cuadreAnulacion,bdfactura.usuarioAnula,bdfactura.copago,bdfactura.garantia,bdfactura.diasGarantia,bdfactura.rango,bdfactura.conseMesa,bdfactura.producto,bdfactura.lista,"
-                    + "bdfactura.cantidad,bdfactura.descuento,bdfactura.total,bdfactura.iva,bdfactura.subtotal,bdfactura.NC,bdfactura.utilidad,bdfactura.porcDescuento,bdfactura.descripcion,bdfactura.plu,bdfactura.cant2,"
-                    + "bdfactura.estado,bdfactura.porcIva,bdfactura.tercero,bdfactura.utilidad1,bdterceros.nombre,bdterceros.telefono,bdterceros.direccion,IF(ISNULL(bdprestamo.cuotaInicial),0,bdprestamo.cuotaInicial),"
-                    + "bdfactura.factura,bdproductos.ubicacion1,bdproductos.referencia,(bdfactura.subtotalGeneral - bdfactura.descuentoGeneral),IF((bdfactura.producto = 'PROD-000000032'),bdfactura.impuesto,'0'),"
-                    + "bdterceros.nombreContacto,bdterceros.cargo,bdfactura.turno,bdproductos.grupo,bdterceros.eps,bdepsprecargados.nombre,bdfactura.Id,bdfactura.placa,bdplacas.tipo,bdparqueaderoautos.fIngreso,"
-                    + "bdparqueaderoautos.fSalida,bdparqueaderoautos.hIngreso,bdparqueaderoautos.hSalida,bdparqueaderoautos.horas,bdfactura.imei,bddetalleproductos.color,bdterceros.idSistema,bdfactura.impoconsumo,"
-                    + "bdproductos.Codigo,bdgrupo.nombre,bdfactura.impoGeneral,bdfactura.porcImpo,bdfactura.bodega ORDER BY bdfactura.Id";
-        }
+        String selectFijo = "SELECT bdfactura.idFactura AS idFactura, CAST(SUBSTR(bdfactura.idFactura,6,100) AS SIGNED) AS ordenId, "
+                + "CAST(SUBSTR(bdterceros.id,1,100) AS SIGNED) AS cliente, bdterceros.ciudad AS ciudad, bdfactura.vendedor AS vendedor, "
+                + "bdfactura.red AS red, bdfactura.fechaFactura AS fechaFactura, bdfactura.fechaVencimiento AS fechaVencimiento, "
+                + "bdfactura.efectivoGeneral AS efectivoGeneral, bdfactura.ncGeneral AS ncGeneral, "
+                + "bdfactura.chequeGeneral AS chequeGeneral, bdfactura.targetaGeneral AS targetaGeneral, "
+                + "bdfactura.totalGeneral AS totalGeneral, bdfactura.descuentoGeneral AS descuentoGeneral, "
+                + "bdfactura.ivaGeneral AS ivaGeneral, bdfactura.subtotalGeneral AS subtotalGeneral, "
+                + "bdfactura.comprobante AS comprobante, bdfactura.cotizacion AS cotizacion, bdfactura.anulada AS anulada, "
+                + "bdfactura.anula AS anula, bdfactura.credito AS credito, bdfactura.cxc AS cxc, bdfactura.usuario AS usuario, "
+                + "bdfactura.rtIva AS rtIva, bdfactura.rtIca AS rtIca, bdfactura.rtFuente AS rtFuente, "
+                + "bdfactura.otros AS otros, bdfactura.observacion AS observacion, bdfactura.anulada1 AS anulada1, "
+                + "bdfactura.anula1 AS anula1, bdfactura.credito1 AS credito1, bdfactura.cxc1 AS cxc1, "
+                + "bdfactura.usuario1 AS usuario1, bdfactura.fechaAlerta AS fechaAlerta, bdfactura.terminal AS terminal, "
+                + "bdfactura.estadoGeneral AS estadoGeneral, bdfactura.estado2 AS estado2, "
+                + "bdfactura.devuelta AS devuelta, bdfactura.factura AS factura, bdfactura.resolucion AS resolucion, "
+                + "bdfactura.fechaAnulacion AS fechaAnulacion, bdfactura.cuadreAnulacion AS cuadreAnulacion, "
+                + "bdfactura.usuarioAnula AS usuarioAnula, bdfactura.copago AS copago, bdfactura.garantia AS garantia, "
+                + "bdfactura.diasGarantia AS diasGarantia, bdfactura.rango AS rango, bdfactura.terminos AS terminos, "
+                + "bdfactura.notaAnulacion AS notaAnulacion, bdfactura.conseMesa AS conseMesa, "
+                + "bdfactura.producto AS producto, bdfactura.lista AS lista, ";
 
-        return sentencia;
+        String selectAgregados = cantidad + " AS cantidad, " + descuento + " AS descuento, "
+                + total + " AS total, " + iva + " AS iva, " + subtotal + " AS subtotal, "
+                + "bdfactura.NC AS NC, " + utilidad + " AS utilidad, "
+                + "bdfactura.concepto AS concepto, bdfactura.porcDescuento AS porcDescuento, "
+                + "bdfactura.descripcion AS descripcion, bdfactura.plu AS plu, "
+                + cant2 + " AS cant2, "
+                + "bdfactura.estado AS estado, bdfactura.porcIva AS porcIva, "
+                + "bdfactura.tercero AS tercero, bdfactura.utilidad1 AS utilidad1, ";
+
+        String selectComun = "bdterceros.nombre AS nombre, bdterceros.telefono AS telefono, bdterceros.direccion AS direccion, "
+                + "IF(ISNULL(bdprestamo.cuotaInicial),0,bdprestamo.cuotaInicial) AS cuotaInicial2, "
+                + "bdfactura.factura AS id2, bdproductos.ubicacion1 AS ubicacion1, bdproductos.referencia AS referencia, "
+                + "(bdfactura.subtotalGeneral - bdfactura.descuentoGeneral) AS valor3, "
+                + "IF((bdfactura.producto = 'PROD-000000032'),bdfactura.impuesto,'0') AS impuesto, bdcxc.plazo AS plazo, "
+                + "bdterceros.nombreContacto AS nombreContacto, bdterceros.cargo AS cargo, bdfactura.turno AS turno, "
+                + "bdproductos.grupo AS Grupo, bdterceros.eps AS eps, bdepsprecargados.nombre AS nombreEps, "
+                + "bdfactura.Id AS Id, bdfactura.placa AS placa, bdplacas.tipo AS tipo, "
+                + "bdparqueaderoautos.fIngreso AS fIngreso, bdparqueaderoautos.fSalida AS fSalida, "
+                + "bdparqueaderoautos.hIngreso AS hIngreso, bdparqueaderoautos.hSalida AS hSalida, "
+                + "bdparqueaderoautos.horas AS horas, bdfactura.imei AS imei, bddetalleproductos.color AS color, "
+                + "bdterceros.idSistema AS idSistema, "
+                + impoconsumo + " AS impoconsumo, "
+                + "bdproductos.Codigo AS Codigo, bdfactura.totalPropina AS totalPropina, bdfactura.hora AS hora, "
+                + "bdfactura.idProd AS idProd, bdgrupo.nombre AS nombreGrupo, "
+                + "bdfactura.impoGeneral AS impoGeneral, bdfactura.porcImpo AS porcImpo, bdfactura.bodega AS bodega ";
+
+        String fromJoins = "FROM ((((((((bdfactura LEFT JOIN bdprestamo ON ((bdfactura.idFactura = bdprestamo.factura))) "
+                + "LEFT JOIN bdcxc ON ((bdfactura.factura = bdcxc.factura2))) "
+                + "LEFT JOIN bdplacas ON ((bdfactura.placa = bdplacas.placa))) "
+                + "LEFT JOIN bdparqueaderoautos ON ((bdparqueaderoautos.factura = bdfactura.factura))) "
+                + "LEFT JOIN bddetalleproductos ON ((bdfactura.idProd = bddetalleproductos.Id))) "
+                + "LEFT JOIN bdproductos ON ((bdfactura.producto = bdproductos.idSistema))) "
+                + "LEFT JOIN (bdterceros LEFT JOIN bdepsprecargados ON ((bdepsprecargados.Id = bdterceros.eps))) "
+                + "ON ((bdfactura.cliente = bdterceros.idSistema))) "
+                + "LEFT JOIN bdgrupo ON ((bdproductos.grupo = bdgrupo.codigo))) ";
+
+        String groupBy = agrupar
+                ? "AND (bdcxc.tipo = 'FACT' OR bdcxc.tipo IS NULL) "
+                  + "GROUP BY bdfactura.factura, bdfactura.producto, bdfactura.lista, "
+                  + "bdfactura.descuento, bdfactura.plu, bdfactura.porcIva, bdfactura.porcImpo"
+                : "GROUP BY bdfactura.idFactura,CAST(SUBSTR(bdfactura.idFactura,6,100)AS SIGNED),bdterceros.id,"
+                  + "bdterceros.ciudad,bdfactura.vendedor,bdfactura.red,bdfactura.fechaFactura,bdfactura.fechaVencimiento,"
+                  + "bdfactura.efectivoGeneral,bdfactura.ncGeneral,bdfactura.chequeGeneral,bdfactura.targetaGeneral,"
+                  + "bdfactura.totalGeneral,bdfactura.descuentoGeneral,bdfactura.ivaGeneral,bdfactura.subtotalGeneral,"
+                  + "bdfactura.comprobante,bdfactura.cotizacion,bdfactura.anulada,bdfactura.anula,bdfactura.credito,"
+                  + "bdfactura.cxc,bdfactura.usuario,bdfactura.rtIva,bdfactura.rtIca,bdfactura.rtFuente,"
+                  + "bdfactura.otros,bdfactura.anulada1,bdfactura.anula1,bdfactura.credito1,bdfactura.cxc1,"
+                  + "bdfactura.usuario1,bdfactura.fechaAlerta,bdfactura.terminal,bdfactura.estadoGeneral,bdfactura.estado2,"
+                  + "bdfactura.devuelta,bdfactura.resolucion,bdfactura.fechaAnulacion,bdfactura.cuadreAnulacion,"
+                  + "bdfactura.usuarioAnula,bdfactura.copago,bdfactura.garantia,bdfactura.diasGarantia,bdfactura.rango,"
+                  + "bdfactura.conseMesa,bdfactura.producto,bdfactura.lista,bdfactura.cantidad,bdfactura.descuento,"
+                  + "bdfactura.total,bdfactura.iva,bdfactura.subtotal,bdfactura.NC,bdfactura.utilidad,"
+                  + "bdfactura.porcDescuento,bdfactura.descripcion,bdfactura.plu,bdfactura.cant2,bdfactura.estado,"
+                  + "bdfactura.porcIva,bdfactura.tercero,bdfactura.utilidad1,bdterceros.nombre,bdterceros.telefono,"
+                  + "bdterceros.direccion,IF(ISNULL(bdprestamo.cuotaInicial),0,bdprestamo.cuotaInicial),"
+                  + "bdfactura.factura,bdproductos.ubicacion1,bdproductos.referencia,"
+                  + "(bdfactura.subtotalGeneral - bdfactura.descuentoGeneral),"
+                  + "IF((bdfactura.producto = 'PROD-000000032'),bdfactura.impuesto,'0'),"
+                  + "bdterceros.nombreContacto,bdterceros.cargo,bdfactura.turno,bdproductos.grupo,bdterceros.eps,"
+                  + "bdepsprecargados.nombre,bdfactura.Id,bdfactura.placa,bdplacas.tipo,bdparqueaderoautos.fIngreso,"
+                  + "bdparqueaderoautos.fSalida,bdparqueaderoautos.hIngreso,bdparqueaderoautos.hSalida,"
+                  + "bdparqueaderoautos.horas,bdfactura.imei,bddetalleproductos.color,bdterceros.idSistema,"
+                  + "bdfactura.impoconsumo,bdproductos.Codigo,bdgrupo.nombre,bdfactura.impoGeneral,"
+                  + "bdfactura.porcImpo,bdfactura.bodega ORDER BY bdfactura.Id";
+
+        return selectFijo + selectAgregados + selectComun + fromJoins + condicion + groupBy;
     }
 
     public boolean soloNum(KeyEvent evt) {

@@ -26,15 +26,18 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
+import Modelo.Ventas.FilaProductoTabla;
 import Modelo.Ventas.OpcionPreparacion;
+import Modelo.Ventas.ModeloValidacionFactura;
+import Modelo.Ventas.ResultadoValidacionInventario;
 import Utilidades.Ventas.ParserPreparacion;
+import inventario.servicio.CargadorProducto;
 import inventario.servicio.ServicioActualizacionPonderado;
 import inventario.servicio.ServicioInventario;
+import inventario.servicio.ServicioValidacionFactura;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
 import formularios.Ventas.dlgInformacionCliente;
-import formularios.Ventas.dlgProductosSinInventario;
-import Vista.Ventas.VistaProductosSinUtilidad;
 import formularios.Ventas.dlgTipoDescuento;
 import formularios.productos.buscProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
@@ -1863,7 +1866,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
         String tipo = "", productoEn = "";
         if (nodo.getTipoProd() != null) {
-            if (nodo.getTipoProd().equals("Variable") || nodo.getTipoProd().equals("Fijas")) {
+            if (nodo.getTipoProd().equals("Variable") || nodo.getTipoProd().equals("FIJAS")) {
                 productoEn = "Desarrollo";
             }
         }
@@ -2708,7 +2711,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
         String tipo = "", productoEn = "";
         try {
-            if (nodo.getTipoProd().equals("Variable") || nodo.getTipoProd().equals("Fijas")) {
+            if (nodo.getTipoProd().equals("Variable") || nodo.getTipoProd().equals("FIJAS")) {
                 productoEn = "Desarrollo";
             }
         } catch (Exception e) {
@@ -3733,7 +3736,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         }
 
         ModeloContacto datosCliente = instancias.getSql().getDatosTercero(txtIdSistema.getText());
-        if (!squemaFacturacion.validaciones_facturacion(datosCliente)) {
+        if (!squemaFacturacion.validaciones_facturacion(new ModeloValidacionFactura(datosCliente))) {
             return "";
         }
 
@@ -3753,7 +3756,15 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             }
         }
 
-        if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoFacturacion, TipoDocumento.NOTA_DEBITO.getValor())) {
+        String baseUtilizada = obtenerBase();
+        Boolean facturarSinInventario = (Boolean) datos[79];
+
+        ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura
+                ? null
+                : validarInventarioProductos(baseUtilizada);
+
+        if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoFacturacion,
+                TipoDocumento.NOTA_DEBITO.getValor(), resultadoValidacion, facturarSinInventario)) {
             return "";
         }
 
@@ -3766,209 +3777,14 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
         tblProductos.removeEditor();
         tblInventario.removeEditor();
-        Boolean bolsa = false;
-        Boolean facturarSinInventario = (Boolean) datos[79];
 
-        int cantProdFact = 0;
-        String baseUtilizada = obtenerBase();
         if (!saltarPasosFactura) {
-            //HACEMOS CONTEO DE LOS ITEMS DE LOS PRODUCTOS PREPARADOS
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-                if (nodo.getUsuario().equals("FACTURA")) {
-                    String opciones = "";
-                    try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
-                    } catch (Exception e) {
-                    }
-
-                    if (opciones.equals("")) {
-                        Object[][] productos = instancias.getSql().getCantidadesDiscosteo(tblProductos.getValueAt(i, 32).toString());
-                        cantProdFact = cantProdFact + productos.length;
-                    } else {
-                        cantProdFact = cantProdFact + opciones.split(", ").length;
-                    }
-                }
-            }
-
-            //CREAMOS LOS OBJETOS
-            Object[][] productosSinInventario = new Object[tblProductos.getRowCount()][4];
-            Object[][] productosUtilidades = new Object[tblProductos.getRowCount()][3];
-            Object[][] productosSinInventarioDis = new Object[cantProdFact][5];
-
-            Boolean entro = false, entroUtilidad = false;
-            int ser = 0, ser1 = 0, contadorUtilidades = 0;
-
-            //INICIAMOS CON LA VALIDACIÓN DEL INVENTARIO
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-
-                //VALIDAMOS QUE LA FACTURA INCLUYA LA BOLSA
-                if (tblProductos.getValueAt(i, 32).equals("PROD-000000032")) {
-                    bolsa = true;
-                }
-
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-
-                BigDecimal num = BigDecimal.ZERO;
-                try {
-                    num = big.getBigDecimal(tblInventario.getValueAt(i, 2).toString().replace(",", "."));
-                } catch (Exception e) {
-                    num = big.getBigDecimal(tblInventario.getValueAt(i, 2).toString().replace(".", "").replace(",", "."));
-                }
-
-                //SI ES UN PRODUCTO CON DISEÑO
-                if (nodo.getUsuario().equals("FACTURA")) {
-                    String opciones = "";
-
-                    try {
-                        opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
-                    } catch (Exception e) {
-                    }
-
-                    if (!opciones.equals("")) {
-                        for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
-                            String codigo = opcion.getCodigo();
-                            String cant = opcion.getCantidad();
-                            String estado = opcion.getEstado();
-
-                            if (estado.equals(" true")) {
-                                ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-                                Double cant1 = Double.parseDouble(nodo1.getFisicoInventario().replace(",", "."));
-                                Double total = cant1 - Double.parseDouble(cant.replace(",", "."));
-
-                                if (total < 0) {
-                                    productosSinInventarioDis[ser1][0] = nodo1.getIdSistema();
-                                    productosSinInventarioDis[ser1][1] = nodo1.getDescripcion();
-                                    productosSinInventarioDis[ser1][2] = cant1;
-                                    productosSinInventarioDis[ser1][3] = total;
-                                    productosSinInventarioDis[ser1][4] = cant;
-                                    entro = true;
-                                    ser1++;
-                                }
-                            }
-                        }
-                    } else {
-                        Object[][] productos = instancias.getSql().getCantidadesDiscosteo(tblProductos.getValueAt(i, 32).toString());
-                        for (int k = 0; k < productos.length; k++) {
-                            String codigo = productos[k][0].toString();
-                            String cant = productos[k][1].toString();
-
-                            ndProducto insumo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-                            Double cant1 = Double.parseDouble(insumo.getFisicoInventario().replace(",", "."));
-                            Double total = cant1 - Double.parseDouble(cant.replace(",", "."));
-
-                            if (total < 0) {
-                                productosSinInventarioDis[ser1][0] = insumo.getIdSistema();
-                                productosSinInventarioDis[ser1][1] = insumo.getDescripcion();
-                                productosSinInventarioDis[ser1][2] = cant1;
-                                productosSinInventarioDis[ser1][3] = total;
-                                productosSinInventarioDis[ser1][4] = cant;
-                                entro = true;
-                                ser1++;
-                            }
-                        }
-                    }
-                } else {
-                    //SI ES UN PRODUCTO NORMAL
-                    if (num.compareTo(BigDecimal.ZERO) < 0) {
-                        if (nodo.getManejaInventario()) {
-                            productosSinInventario[ser][0] = nodo.getIdSistema();
-                            productosSinInventario[ser][1] = nodo.getDescripcion();
-                            productosSinInventario[ser][2] = tblInventario.getValueAt(i, 1);
-                            productosSinInventario[ser][3] = tblInventario.getValueAt(i, 2);
-                            entro = true;
-                            ser++;
-                        } else {
-                            System.out.println("Este producto no maneja inventario.");
-                        }
-                    }
-                }
-
-                //VALIDAMOS LAS UTILIDADES DE LOS PRODUCTOS
-                if (tblProductos.getValueAt(i, 15).equals("ERROR1")) {
-                    productosUtilidades[contadorUtilidades][0] = tblProductos.getValueAt(i, 32);
-                    productosUtilidades[contadorUtilidades][1] = tblProductos.getValueAt(i, 1);
-                    productosUtilidades[contadorUtilidades][2] = "Utilidad minima sobrepasada";
-                    contadorUtilidades++;
-                    entroUtilidad = true;
-                } else if (tblProductos.getValueAt(i, 15).equals("ERROR2")) {
-                    productosUtilidades[contadorUtilidades][0] = tblProductos.getValueAt(i, 32);
-                    productosUtilidades[contadorUtilidades][1] = tblProductos.getValueAt(i, 1);
-                    productosUtilidades[contadorUtilidades][2] = "Utilidad maxima sobrepasada";
-                    contadorUtilidades++;
-                    entroUtilidad = true;
-                }
-            }
-            //FIN DE VALIDACIÓN DEL INVENTARIO
-
-            //VALIDAMOS SI LOS PRODUCTOS PREPARADOS TIENE ALGUNA ADICCIÓN PARA AGREGARLOS A LA FACTURA
             if (instancias.getConfiguraciones().isRestaurante()) {
-                for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                    ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-
-                    if (nodo.getUsuario().equals("FACTURA")) {
-                        String opciones = "";
-
-                        try {
-                            opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
-                        } catch (Exception e) {
-                        }
-
-                        if (!opciones.equals("")) {
-                            for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
-                                String codigo = opcion.getCodigo();
-                                String cant = opcion.getCantidad();
-                                String estado = opcion.getEstado();
-
-                                if (estado.equals(" true")) {
-                                    ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-
-                                    if (nodo1.getGrupo() != null) {
-                                        if (nodo1.getGrupo().equals("GRP-02")) {
-                                            cargarProducto(codigo, cant, 1, "", "", "", false, "", "", "", "", "");
-                                            tblProductos.setValueAt("PRODUCTO-AGREGADO", tblProductos.getRowCount() - 1, 31);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                agregarAdicionesATabla(baseUtilizada);
             }
 
-            //VALIDAMOS SI TIENE ALGUNA ALERTA DE UTILIDAD PARA MOSTRARLO
-            if (entroUtilidad) {
-                if (instancias.isMensajeUtilidad()) {
-                    VistaProductosSinUtilidad prodSinUtilidad = new VistaProductosSinUtilidad(null, true, productosUtilidades, instancias.isUtilidad());
-                    prodSinUtilidad.setVisible(true);
-
-                    if (instancias.getCancelarFactura()) {
-                        instancias.setCancelarFactura(false);
-                        return "";
-                    }
-                }
-            }
-
-            //VALIDAMOS SI TIENE ALGUNA ALERTA DE PRODUCTOS SIN INVENTARIO PARA MOSTRARLO
-            if (entro) {
-                if (!facturarSinInventario) {
-                    metodos.msgError(this, "No tiene inventario suficiente");
-                    return "";
-                } else {
-                    dlgProductosSinInventario prodSinInventario = new dlgProductosSinInventario(null, true, productosSinInventario,
-                            productosSinInventarioDis);
-                    prodSinInventario.setVisible(true);
-
-                    if (instancias.getCancelarFactura()) {
-                        instancias.setCancelarFactura(false);
-                        return "";
-                    }
-                }
-            }
-
-            //SI ES UNA FACTURA Y ES REGIMEN COMÚN, SE VALIDA EL NUMERO DE BOLSAS A FACTURAR
             if (instancias.getRegimen().equals("")) {
-                if (!bolsa) {
+                if (resultadoValidacion != null && !resultadoValidacion.tieneBolsa()) {
                     if (!instancias.getConfiguraciones().isParqueadero()) {
                         if ((Boolean) datos[52]) {
                             int num = 0;
@@ -3978,14 +3794,12 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                                 metodos.msgError(this, "Número no válido");
                                 return "";
                             }
-
                             if (num > 0) {
                                 cargarProducto("IMP01", String.valueOf(num), 1, "", "", "", true, "", "", "", "", "");
                             }
                         }
                     }
                 }
-                entro = false;
             }
         }
 
@@ -4019,7 +3833,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         //SI ES MESA O ESTA ACTIVO SALTAR PASOS DE FACTURA, NO MOSTRAR EL MODULO DE DEVUELTA
         if (saltarPasosFactura) {
             devuelta = new VistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
-                    instancias, "", txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
+                    instancias, txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
         }
 
         //OBTENEMOS LA BASE DE LA BODEGA QUE SE ESTA UTILIZANDO
@@ -4030,7 +3844,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             //VALIDAMOS SI LA FACTURA ES A CONTADO
             if (txtFechaFactura.getText().equals(txtVencimiento.getText())) {
                 devuelta = new VistaMetodoPagos(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
-                        instancias, "NotaDebito", txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
+                        instancias, txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
                 devuelta.show();
             } else {
                 instancias.setEfectivoDevuelta(big.getBigDecimal("0"));
@@ -4089,7 +3903,8 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         }
 
         String factura = "", factura2 = "";
-        factura = "ND-" + prefijo + instancias.getSql().getNumConsecutivoFact1("ND")[0].toString();
+        dao.Ventas.DaoFactura daoFacturaLocal = new dao.Ventas.DaoFactura();
+        factura = "ND-" + prefijo + daoFacturaLocal.getNextConsecutivo("ND");
         factura2 = factura;
 
         String por = "";
@@ -4122,28 +3937,28 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
         //AGREGAR FORMAS DE PAGOS
         if (instancias.getEfectivoDevuelta().compareTo(BigDecimal.ZERO) > 0) {
-            String idPago = "PAGO-" + instancias.getSql().getNumConsecutivoFact1("FORMAPAGO")[0].toString();
+            String idPago = "PAGO-" + daoFacturaLocal.getNextConsecutivo("FORMAPAGO");
             instancias.getSql().agregarFormaPago(idPago, factura2, "10", "EFECTIVO", instancias.getEfectivoDevuelta(), "",
                     metodos.fechaConsulta(metodosGenerales.fecha()), hora, instancias.getUsuario());
             instancias.getSql().aumentarConsecutivo("FORMAPAGO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORMAPAGO")[0]) + 1);
         }
 
         if (instancias.getChequeDevuelta().compareTo(BigDecimal.ZERO) > 0) {
-            String idPago = "PAGO-" + instancias.getSql().getNumConsecutivoFact1("FORMAPAGO")[0].toString();
+            String idPago = "PAGO-" + daoFacturaLocal.getNextConsecutivo("FORMAPAGO");
             instancias.getSql().agregarFormaPago(idPago, factura2, "20", "CHEQUE", instancias.getChequeDevuelta(), "",
                     metodos.fechaConsulta(metodosGenerales.fecha()), hora, instancias.getUsuario());
             instancias.getSql().aumentarConsecutivo("FORMAPAGO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORMAPAGO")[0]) + 1);
         }
 
         if (instancias.getTarjetaDevuelta().compareTo(BigDecimal.ZERO) > 0) {
-            String idPago = "PAGO-" + instancias.getSql().getNumConsecutivoFact1("FORMAPAGO")[0].toString();
+            String idPago = "PAGO-" + daoFacturaLocal.getNextConsecutivo("FORMAPAGO");
             instancias.getSql().agregarFormaPago(idPago, factura2, "49", "TARJETA_DEBITO", instancias.getTarjetaDevuelta(), "",
                     metodos.fechaConsulta(metodosGenerales.fecha()), hora, instancias.getUsuario());
             instancias.getSql().aumentarConsecutivo("FORMAPAGO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORMAPAGO")[0]) + 1);
         }
 
         if (instancias.getTarjetaCredito().compareTo(BigDecimal.ZERO) > 0) {
-            String idPago = "PAGO-" + instancias.getSql().getNumConsecutivoFact1("FORMAPAGO")[0].toString();
+            String idPago = "PAGO-" + daoFacturaLocal.getNextConsecutivo("FORMAPAGO");
             instancias.getSql().agregarFormaPago(idPago, factura2, "48", "TARJETA_CREDITO", instancias.getTarjetaCredito(), "",
                     metodos.fechaConsulta(metodosGenerales.fecha()), hora, instancias.getUsuario());
             instancias.getSql().aumentarConsecutivo("FORMAPAGO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORMAPAGO")[0]) + 1);
@@ -4200,8 +4015,8 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 }
 
                 if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-                    instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-                            preparacion, bodega);
+                    //instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
+                      //      preparacion, bodega);
                 }
 
                 String garantia = "", cotizacionesAsociadas = "", mesFacturar = "", turno = "", placa = "", loteCuentasCobro = "", numPedido = "", consecutivoCosteo = "",
@@ -4349,6 +4164,53 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         }
 
         return movimientos;
+    }
+
+    private ResultadoValidacionInventario validarInventarioProductos(String baseUtilizada) {
+        List<FilaProductoTabla> filas = extraerFilasDeTabla();
+        ServicioValidacionFactura servicio = new ServicioValidacionFactura(new CargadorProducto() {
+            @Override
+            public ndProducto cargar(String codigo, String tabla) {
+                return instancias.getSql().getDatosProducto(codigo, tabla);
+            }
+        });
+        return servicio.validar(filas, baseUtilizada);
+    }
+
+    private List<FilaProductoTabla> extraerFilasDeTabla() {
+        List<FilaProductoTabla> filas = new ArrayList<FilaProductoTabla>();
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            filas.add(new FilaProductoTabla(
+                    obtenerValorTabla(i, 32),
+                    obtenerValorTabla(i, 21),
+                    Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString()),
+                    obtenerValorTabla(i, 1)));
+        }
+        return filas;
+    }
+
+    private void agregarAdicionesATabla(String baseUtilizada) {
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
+            if (!"FACTURA".equals(nodo.getUsuario())) continue;
+
+            String opciones = "";
+            try {
+                opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
+            } catch (Exception e) {
+            }
+
+            if (opciones.isEmpty()) continue;
+
+            for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
+                if (!opcion.activa()) continue;
+                ndProducto nodo1 = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
+                if (nodo1.getGrupo() != null && "GRP-02".equals(nodo1.getGrupo())) {
+                    cargarProducto(opcion.getCodigo(), Utilidades.formatearCantidad(opcion.getCantidad()), 1, "", "", "", false, "", "", "", "", "");
+                    tblProductos.setValueAt("PRODUCTO-AGREGADO", tblProductos.getRowCount() - 1, 31);
+                }
+            }
+        }
     }
 
     private String obtenerValorTabla(int row, int col) {

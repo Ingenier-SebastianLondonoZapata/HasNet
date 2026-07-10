@@ -1411,7 +1411,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             nit = "TERC-" + txtNitBD.getText().split("-")[0];
         }
 
-        instancias.getFactura().desdeTrasladosBodegas(datos2, nit, txtDiasPlazoFact.getText());
+        //instancias.getFactura().desdeTrasladosBodegas(datos2, nit, txtDiasPlazoFact.getText());
 
         if (saltarPasosTraslados) {
             metodos.msgExito(this, "Prestamo liquidado exitosamente");

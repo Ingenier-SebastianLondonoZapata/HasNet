@@ -1,8 +1,6 @@
 package formularios.productos;
 
 import Modelo.Inventario.UltimoPonderado;
-import Modelo.Ventas.OpcionPreparacion;
-import Utilidades.Ventas.ParserPreparacion;
 import inventario.servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
 import clases.productos.ndProducto;
@@ -32,9 +30,7 @@ public class infArmado extends javax.swing.JInternalFrame {
     DefaultTableModel modeloPro;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
-    String codigoPrincipal = "", tipo = "COSTEO";
-    Boolean saltarPasos = false;
-    Object[][] porSaldar;
+    String codigoPrincipal = "";
     int ser = 0;
     String tipoMovimiento = "";
     String numeroFactura = "";
@@ -712,11 +708,10 @@ public class infArmado extends javax.swing.JInternalFrame {
         if (tblProductos.getRowCount() == 0) {
             metodos.msgError(this, "No ha añadido ningun producto");
         } else {
-            if (!saltarPasos) {
-                if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
-                } else {
-                    return;
-                }
+
+            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            } else {
+                return;
             }
 
             String doc = "CST-" + instancias.getSql().getNumConsecutivo("CST")[0];
@@ -727,186 +722,74 @@ public class infArmado extends javax.swing.JInternalFrame {
                 cant = Integer.parseInt(spCantidad.getValue().toString());
             }
 
-            if (tipoMovimiento.equals("fisicoInventario") || tipoMovimiento.equals("fisicoInventarioPedido")) {
-            } else {
+            if (!instancias.getSql().agregarCosteo(doc, metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), String.valueOf(cant),
+                    txtIdSistema.getText(), "COSTEO", big.getMoneda(txtValor3.getText()), txtBodega.getText())) {
+                metodos.msgError(this, "Error al guardar el costeo");
+                return;
+            }
 
-                if (!instancias.getSql().agregarCosteo(doc, metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), String.valueOf(cant),
-                        txtIdSistema.getText(), tipo, big.getMoneda(txtValor3.getText()), txtBodega.getText())) {
-                    metodos.msgError(this, "Error al guardar el costeo");
+            for (int i = 0; i < tblProductos.getRowCount(); i++) {
+                if (!instancias.getSql().agregarCosteoProd(doc, tblProductos.getValueAt(i, 0).toString(),
+                        big.getMoneda(tblProductos.getValueAt(i, 4).toString()).toString(),
+                        big.getMoneda(tblProductos.getValueAt(i, 4).toString()).multiply(big.getBigDecimal(cant)).toString())) {
+                    metodos.msgError(this, "Error al guardar detalle costeo");
                     return;
-                }
-
-                for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                    if (!instancias.getSql().agregarCosteoProd(doc, tblProductos.getValueAt(i, 0).toString(),
-                            big.getMoneda(tblProductos.getValueAt(i, 4).toString()).toString(),
-                            big.getMoneda(tblProductos.getValueAt(i, 4).toString()).multiply(big.getBigDecimal(cant)).toString())) {
-                        metodos.msgError(this, "Error al guardar detalle costeo");
-                        return;
-                    }
                 }
             }
 
             String baseUtilizada = obtenerBase();
 
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                String tipo;
-                try {
-                    tipo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), baseUtilizada).getUsuario();
-                } catch (Exception e) {
-                    tipo = "";
-                }
+            ndProducto producto = instancias.getSql().getDatosProducto(txtCodigo.getText(), baseUtilizada);
+            double cantidad;
+            double fisicoInventario;
+            double inventario;
 
-                if (tipo == null) {
-                    tipo = "";
-                }
-
-                porSaldar = new Object[tblProductos.getRowCount()][2];
-
-                if (tipo.equalsIgnoreCase("FACTURA")) {
-                    porSaldar[ser][0] = tblProductos.getValueAt(i, 0).toString();
-                    porSaldar[ser][1] = tblProductos.getValueAt(i, 2).toString();
-                    ser++;
-                } else {
-                    ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                    double cantidad;
-                    double cantidad1;
-                    double cantidadPedido;
-                    double fisicoInventario;
-                    double inventario;
-
-                    try {
-                        cantidad = Double.parseDouble(producto.getArmado().replace(",", "."));
-                    } catch (Exception e) {
-                        cantidad = 0;
-                    }
-
-                    try {
-                        cantidadPedido = Double.parseDouble(producto.getPedidos().replace(",", "."));
-                    } catch (Exception e) {
-                        cantidadPedido = 0;
-                    }
-
-                    try {
-                        cantidad1 = Double.parseDouble(producto.getCongelada().replace(",", "."));
-                    } catch (Exception e) {
-                        cantidad1 = 0;
-                    }
-
-                    try {
-                        fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-                    } catch (Exception e) {
-                        fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                    }
-
-                    try {
-                        inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                    } catch (Exception e) {
-                        inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                    }
-
-                    Double cantidadesTotales = Double.parseDouble(tblProductos.getValueAt(i, 4).toString().replace(",", ".")) * cant;
-
-                    fisicoInventario = fisicoInventario - cantidadesTotales;
-                    inventario = inventario - cantidadesTotales;
-                    double total = cantidad + cantidadesTotales;
-                    double totalCongelada = cantidad1 + cantidadesTotales;
-                    double totalPedido = cantidadPedido + cantidadesTotales;
-                    double totalPedido1 = cantidadPedido - cantidadesTotales;
-
-                    String total1 = String.valueOf(df.format(total)).replace(".", ",");
-                    String total1Pedido = String.valueOf(df.format(totalPedido)).replace(".", ",");
-                    String total1Pedido2 = String.valueOf(df.format(totalPedido1)).replace(".", ",");
-                    String total1Congelada = String.valueOf(df.format(totalCongelada)).replace(".", ",");
-                    String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-                    String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
-
-                    if (tipoMovimiento.equals("fisicoInventario")) {
-                        instancias.getSql().modificarInventario("congelada", total1Congelada, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                        instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                    } else if (tipoMovimiento.equals("fisicoInventarioPedido")) {
-                        instancias.getSql().modificarInventario("pedidos", total1Pedido, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                        instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                    } else if (tipoMovimiento.equals("inventarioPedido")) {
-                        instancias.getSql().modificarInventario("pedidos", total1Pedido2, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                        instancias.getSql().modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                        instancias.getSql().modificarInventario("armado", total1, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                    } else {
-                        instancias.getSql().modificarInventario("armado", total1, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                        instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                        instancias.getSql().modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 0).toString(), baseUtilizada);
-                    }
-                }
+            try {
+                cantidad = Double.parseDouble(producto.getCosteo().replace(",", "."));
+            } catch (Exception e) {
+                cantidad = 0;
             }
 
-            if (tipoMovimiento.equals("fisicoInventario") || tipoMovimiento.equals("fisicoInventarioPedido")) {
+            try {
+                fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+            } catch (Exception e) {
+                fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+            }
 
+            try {
+                inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+            } catch (Exception e) {
+                inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+            }
+
+            fisicoInventario = fisicoInventario + Double.parseDouble(spCantidad.getValue().toString().replace(",", "."));
+            inventario = inventario + Double.parseDouble(spCantidad.getValue().toString().replace(",", "."));
+            double total = cantidad + Double.parseDouble(spCantidad.getValue().toString().replace(",", "."));
+
+            String total1 = String.valueOf(df.format(total)).replace(".", ",");
+            String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
+            String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
+
+            instancias.getSql().modificarInventario("costeo", total1, codigoPrincipal, baseUtilizada);
+            instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, codigoPrincipal, baseUtilizada);
+            instancias.getSql().modificarInventario("inventario", inventario1, codigoPrincipal, baseUtilizada);
+
+            if (!instancias.getSql().aumentarConsecutivo("CST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CST")[0]) + 1)) {
+                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+            }
+
+            String tipo = instancias.getImpresion();
+            if (tipo.equals("pos")) {
+                tipo = "Pos";
             } else {
-                ndProducto producto = instancias.getSql().getDatosProducto(txtCodigo.getText(), baseUtilizada);
-                double cantidad;
-                double fisicoInventario;
-                double inventario;
-
-                try {
-                    cantidad = Double.parseDouble(producto.getCosteo().replace(",", "."));
-                } catch (Exception e) {
-                    cantidad = 0;
-                }
-
-                try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-                } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                }
-
-                try {
-                    inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                } catch (Exception e) {
-                    inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                }
-
-                fisicoInventario = fisicoInventario + Double.parseDouble(spCantidad.getValue().toString().replace(",", "."));
-                inventario = inventario + Double.parseDouble(spCantidad.getValue().toString().replace(",", "."));
-                double total = cantidad + Double.parseDouble(spCantidad.getValue().toString().replace(",", "."));
-
-                String total1 = String.valueOf(df.format(total)).replace(".", ",");
-                String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-                String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
-
-                instancias.getSql().modificarInventario("costeo", total1, codigoPrincipal, baseUtilizada);
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, codigoPrincipal, baseUtilizada);
-                instancias.getSql().modificarInventario("inventario", inventario1, codigoPrincipal, baseUtilizada);
+                tipo = "";
             }
 
-            if (saltarPasos) {
-                instancias.getFactura().setCostoCosteo(big.getMoneda(txtValor3.getText()));
-                instancias.getFactura().setIdCosteo(doc);
+            if (metodos.msgPregunta(null, "¿Desea imprimir el armado?") == 0) {
+                instancias.getReporte().ver_Armado(doc, tipo);
             }
 
-            if (tipoMovimiento.equals("fisicoInventario") || tipoMovimiento.equals("fisicoInventarioPedido")) {
-            } else {
-                if (!instancias.getSql().aumentarConsecutivo("CST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CST")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
-                }
-            }
-
-            if (!saltarPasos) {
-                String tipo = instancias.getImpresion();
-                if (tipo.equals("pos")) {
-                    tipo = "Pos";
-                } else {
-                    tipo = "";
-                }
-
-                if (metodos.msgPregunta(null, "¿Desea imprimir el armado?") == 0) {
-                    instancias.getReporte().ver_Armado(doc, tipo);
-                }
-
-                metodos.msgExito(this, "Armado guardado con exito");
-            }
-
-            String producto1 = txtDescripcion.getText();
-            tipo = "COSTEO";
-
+            metodos.msgExito(this, "Armado guardado con exito");
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -1612,84 +1495,6 @@ public class infArmado extends javax.swing.JInternalFrame {
 
         txtValor2.setText(big.setMoneda(total1));
         txtValor3.setText(big.setMoneda(total1.multiply(cant)));
-    }
-
-    public void facturarPreparado(String producto, String cantidad, String preparacion, String bodega) {
-
-        ser = 0;
-        porSaldar = null;
-        cargarProductoPrincipal(producto);
-
-        try {
-            spCantidad.setValue(Double.parseDouble(cantidad));
-        } catch (Exception e) {
-            spCantidad.setValue(Double.parseDouble(cantidad.substring(0, cantidad.length() - 2)));
-        }
-
-        txtCodigo.setText(producto);
-        txtBodega.setText(bodega);
-
-        if (preparacion.equals("")) {
-            System.out.println("Diseño en limpio");
-        } else {
-            while (tblProductos.getRowCount() > 0) {
-                modeloPro.removeRow(0);
-            }
-
-            String baseUtilizada = obtenerBase();
-            Object[] productoDis = preparacion.split("; ");
-            for (int i = 0; i < productoDis.length; i++) {
-                Object[] campos = productoDis[i].toString().split("/ ");
-                cargarProducto(campos[0].toString(), baseUtilizada);
-                tblProductos.setValueAt(campos[2].toString(), i, 6);
-                tblProductos.setValueAt(campos[1].toString(), i, 2);
-            }
-        }
-
-        saltarPasos = true;
-        tipo = "FACTURA";
-        btnGuardarActionPerformed(null);
-    }
-
-    public void facturarPlato(String producto, String cantidad, String preparacion, String movimiento, String bodega) {
-
-        tipoMovimiento = movimiento;
-        ser = 0;
-        porSaldar = null;
-        cargarProductoPrincipal(producto);
-
-        try {
-            spCantidad.setValue(Double.parseDouble(cantidad));
-        } catch (Exception e) {
-            spCantidad.setValue(Double.parseDouble(cantidad.substring(0, cantidad.length() - 2)));
-        }
-
-        txtCodigo.setText(producto);
-        txtBodega.setText(bodega);
-
-        String opciones2[], ingredientes2[];
-
-        if (preparacion.equals("")) {
-        } else {
-            DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
-            while (tblProductos.getRowCount() > 0) {
-                modelo.removeRow(0);
-            }
-
-            //INGRESAMOS LOS PRODUCTOS ESCOJIDOS EN LOS PRODUCTOS CON CAMBIO
-            if (ParserPreparacion.tienePreparacion(preparacion)) {
-                String baseUtilizada = obtenerBase();
-                for (OpcionPreparacion opcion : ParserPreparacion.opciones(preparacion)) {
-                    if (opcion.activa()) {
-                        cargarProducto(opcion.getCodigo(), opcion.getCantidad(), baseUtilizada);
-                    }
-                }
-            }
-        }
-
-        saltarPasos = true;
-        tipo = "FACTURA";
-        btnGuardarActionPerformed(null);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

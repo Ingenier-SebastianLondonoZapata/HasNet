@@ -443,8 +443,8 @@ public class dlgDetalleTrasladosPendientes extends javax.swing.JDialog {
             }
         }
 
-        instancias.getFactura().setDescontarFisicoInventario("NO");
-        instancias.getFactura().facturarOrdenesServiciosDetalladas(productos, txtCliente.getText(), txtNit.getText(), txtDias.getText());
+        //instancias.getFactura().setDescontarFisicoInventario("NO");
+//        instancias.getFactura().facturarOrdenesServiciosDetalladas(productos, txtCliente.getText(), txtNit.getText(), txtDias.getText());
 
         for (int i = 0; i < tblTraslados.getRowCount(); i++) {
             if ((Boolean) tblTraslados.getValueAt(i, 7)) {

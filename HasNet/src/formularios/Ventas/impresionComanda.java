@@ -24,14 +24,14 @@ public class impresionComanda extends javax.swing.JDialog {
     private String vendedor;
     metodosGenerales metodos = new metodosGenerales();
 
-    public impresionComanda(java.awt.Frame parent, boolean modal, String observaciones, Object[] datosMaestro, String vend) {
+    public impresionComanda(java.awt.Frame parent, boolean modal, String observaciones, String vend) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
 
         vendedor = vend;
         txtObservaciones.setText(observaciones);
-        datosMaestra = datosMaestro;
+        datosMaestra = instancias.getSql().getDatosMaestra();
     }
 
     public void setDatos(Object[][] datos) {
@@ -334,7 +334,7 @@ public class impresionComanda extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                impresionComanda dialog = new impresionComanda(new javax.swing.JFrame(), true, "", null, "");
+                impresionComanda dialog = new impresionComanda(new javax.swing.JFrame(), true, null, "");
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

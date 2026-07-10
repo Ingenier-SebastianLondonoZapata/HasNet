@@ -859,24 +859,20 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (tblProductos.getSelectedColumn() == 3) {
-
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), "bdProductos");
-            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
-            List<DetalleProducto> detallesProductos = generarDetallesProductos();
-            String tipoMovimiento, tipoDocumento;
-
             if (cmbTipoAjuste.getSelectedIndex() == 0) {
-                tipoMovimiento = "Entrada";
-                tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
-            } else {
-                tipoMovimiento = "Salida";
-                tipoDocumento = TipoDocumento.AJUSTE_SALIDA.getValor();
-            }
+                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), "bdProductos");
+                String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
+                List<DetalleProducto> detallesProductos = generarDetallesProductos();
+                String tipoMovimiento = "Entrada";
+                String tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
 
-            if (!tipo.equals("")) {
-                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, detallesProductos, tipoMovimiento, tipoDocumento, BigDecimal.ZERO);
-                compraDetallada.setLocationRelativeTo(null);
-                compraDetallada.setVisible(true);
+                if (!tipo.equals("")) {
+                    VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, detallesProductos, tipoMovimiento, tipoDocumento, BigDecimal.ZERO);
+                    compraDetallada.setLocationRelativeTo(null);
+                    compraDetallada.setVisible(true);
+                }
+            } else {
+                metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
             }
         }
     }//GEN-LAST:event_tblProductosMouseClicked

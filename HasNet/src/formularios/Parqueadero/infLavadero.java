@@ -1185,7 +1185,8 @@ public class infLavadero extends javax.swing.JInternalFrame {
             }
 
             String conse = "LAV-" + instancias.getSql().getNumConsecutivo("LAV")[0];
-            String conseOrden = instancias.getOrdenServicio().desdeLavadero(productos, txtId.getText(), txtPlaca.getText(), txtObservaciones.getText());
+            String conseOrden = "";
+            //instancias.getOrdenServicio().desdeLavadero(productos, txtId.getText(), txtPlaca.getText(), txtObservaciones.getText());
 
             System.out.println("tres dos uno cero: " + conseOrden);
 
@@ -1294,7 +1295,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
             System.out.println("que dice este men: " + txtoServicio.getText());
 
-            instancias.getOrdenServicio().actualizarOrdenServicio(productos, txtoServicio.getText());
+//            instancias.getOrdenServicio().actualizarOrdenServicio(productos, txtoServicio.getText());
 
 //            metodos.msgExito(this, "Lavado modificado con éxito");
             btnLimpiarActionPerformed(null);
@@ -1574,7 +1575,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
                 productos[i][3] = tblServicios.getValueAt(i, 2);
             }
 
-            instancias.getFactura().desdeLavadero(productos, txtId.getText(), diasPlazo, txtPlaca.getText(), txtObservaciones.getText());
+//            instancias.getFactura().desdeLavadero(productos, txtId.getText(), diasPlazo, txtPlaca.getText(), txtObservaciones.getText());
             instancias.getSql().cambiarEstadoLavado1(lbNoFactura.getText(), "FACTURADO", factura);
             factura = "";
             btnLimpiarActionPerformed(evt);

@@ -1,5 +1,7 @@
 package Modelo.Ventas;
 
+import java.math.BigDecimal;
+
 public class OpcionPreparacion {
 
     private static final String PREFIJO_ADICION = "ADICION-";
@@ -7,10 +9,10 @@ public class OpcionPreparacion {
 
     private final String principal;
     private final String codigo;
-    private final String cantidad;
+    private final BigDecimal cantidad;
     private final String estado;
 
-    public OpcionPreparacion(String principal, String codigo, String cantidad, String estado) {
+    public OpcionPreparacion(String principal, String codigo, BigDecimal cantidad, String estado) {
         this.principal = principal;
         this.codigo = codigo;
         this.cantidad = cantidad;
@@ -25,7 +27,7 @@ public class OpcionPreparacion {
         return codigo;
     }
 
-    public String getCantidad() {
+    public BigDecimal getCantidad() {
         return cantidad;
     }
 
