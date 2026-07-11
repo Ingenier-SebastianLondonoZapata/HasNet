@@ -1746,7 +1746,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
                 instancias.getSql().cambiarEstadoLavado1(lbNoFactura.getText(), "ANULADO", nota);
                 //instancias.getOrdenServicio().cargarOrdenesServicios(txtoServicio.getText());
-                instancias.getOrdenServicio().anularOrdenServicio(nota, txtoServicio.getText(), "bdProductos");
+//                instancias.getOrdenServicio().anularOrdenServicio(nota, txtoServicio.getText(), "bdProductos");
                 btnLimpiarActionPerformed(evt);
 
                 metodos.msgExito(this, "Lavado anulado con exito");

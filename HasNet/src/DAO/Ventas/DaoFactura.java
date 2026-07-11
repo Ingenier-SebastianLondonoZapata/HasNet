@@ -49,6 +49,26 @@ public class DaoFactura {
         return new DocumentoMovimiento(parsearCabeceraPrefactura(mat), parsearLineasPrefactura(mat));
     }
 
+    public DocumentoMovimiento cargarPlanSepare(String id) {
+        ndPlanSepare nodo = getDatosPlanSepare(id);
+        if (nodo.getIdFactura() == null) return DocumentoMovimiento.vacio();
+        Object[][] mat = getRegistrosPlanSepare(id);
+        return new DocumentoMovimiento(parsearCabeceraPlanSepare(nodo), parsearLineasPlanSepare(mat));
+    }
+
+    public DocumentoMovimiento cargarPedido(String id) {
+        ndPedido nodo = getDatosPedido(id);
+        if (nodo.getIdFactura() == null) return DocumentoMovimiento.vacio();
+        Object[][] mat = getRegistrosPedido(id);
+        return new DocumentoMovimiento(parsearCabeceraPedido(nodo), parsearLineasPedido(mat));
+    }
+
+    public DocumentoMovimiento cargarMesa(String id) {
+        Object[][] mat = getRegistrosMesa(id);
+        if (mat.length == 0) return DocumentoMovimiento.vacio();
+        return new DocumentoMovimiento(parsearCabeceraMesa(mat), parsearLineasMesa(mat));
+    }
+
     // -------------------------------------------------------------------------
     // Parsers de cabecera — mapean columnas del Object[][] a CabeceraDocumento
     // -------------------------------------------------------------------------
@@ -164,6 +184,77 @@ public class DaoFactura {
         return lineas;
     }
 
+    private CabeceraDocumento parsearCabeceraPlanSepare(ndPlanSepare nodo) {
+        CabeceraDocumento cab = new CabeceraDocumento();
+        cab.setClienteId(nodo.getCliente());
+        cab.setVendedor(nodo.getVendedor());
+        cab.setSubtotal(nodo.getSubtotalGeneral());
+        cab.setTotalDescuentos(nodo.getDescuentoGeneral());
+        cab.setTotalIva(nodo.getIvaGeneral());
+        cab.setTotal(nodo.getTotalGeneral());
+        cab.setEstadoGeneral(nodo.getEstadoGeneral());
+        cab.setObservacion(nodo.getObservacion());
+        return cab;
+    }
+
+    private List<LineaProducto> parsearLineasPlanSepare(Object[][] mat) {
+        // Columnas: 0=producto,1=descripcion,2=lista,3=cantidad,4=subtotal,5=porcDescuento,
+        //  6=descuento,7=porcIva,8=iva,9=total,10=ubicacion,11=referencia,12=estado,
+        //  13=plu,14=cant2,15=imei,16=idProd
+        List<LineaProducto> lineas = new ArrayList<LineaProducto>();
+        for (Object[] reg : mat) {
+            int plu = Integer.parseInt(reg[13].toString());
+            LineaProducto linea = new LineaProducto();
+            linea.setCodigo(reg[0].toString());
+            linea.setDescripcion(reg[1].toString());
+            linea.setPrecio(reg[2].toString());
+            linea.setPlu(plu);
+            linea.setCantidad(plu == 1 ? toDouble(reg[3]) : toDouble(reg[14]));
+            linea.setPorcDescuento(reg[5].toString());
+            linea.setDescuento(reg[6].toString());
+            linea.setImei(reg[15] != null ? reg[15].toString() : "");
+            linea.setIdProd(reg[16] != null ? reg[16].toString() : "");
+            lineas.add(linea);
+        }
+        return lineas;
+    }
+
+    private CabeceraDocumento parsearCabeceraPedido(ndPedido nodo) {
+        CabeceraDocumento cab = new CabeceraDocumento();
+        cab.setClienteId(nodo.getCliente());
+        cab.setVendedor(nodo.getVendedor());
+        cab.setSubtotal(nodo.getSubtotalGeneral());
+        cab.setTotalDescuentos(nodo.getDescuentoGeneral());
+        cab.setTotalIva(nodo.getIvaGeneral());
+        cab.setTotal(nodo.getTotalGeneral());
+        cab.setEstadoGeneral(nodo.getEstadoGeneral());
+        cab.setObservacion(nodo.getObservacion());
+        return cab;
+    }
+
+    private List<LineaProducto> parsearLineasPedido(Object[][] mat) {
+        // Columnas: 0=producto,1=descripcion,2=lista,3=cantidad,4=subtotal,5=porcDescuento,
+        //  6=descuento,7=porcIva,8=iva,9=total,10=ubicacion1,11=referencia,12=estado,
+        //  13=plu,14=cant2,15=preparacion,16=rango,17=idProd
+        List<LineaProducto> lineas = new ArrayList<LineaProducto>();
+        for (Object[] reg : mat) {
+            int plu = Integer.parseInt(reg[13].toString());
+            LineaProducto linea = new LineaProducto();
+            linea.setCodigo(reg[0].toString());
+            linea.setDescripcion(reg[1].toString());
+            linea.setPrecio(reg[2].toString());
+            linea.setPlu(plu);
+            linea.setCantidad(plu == 1 ? toDouble(reg[3]) : toDouble(reg[14]));
+            linea.setPorcDescuento(reg[5].toString());
+            linea.setDescuento(reg[6].toString());
+            linea.setPreparacion(reg[15] != null ? reg[15].toString() : "");
+            linea.setRango(reg[16] != null ? reg[16].toString() : "");
+            linea.setIdProd(reg[17] != null ? reg[17].toString() : "");
+            lineas.add(linea);
+        }
+        return lineas;
+    }
+
     /** Convierte cualquier valor numérico a String en formato Double (ej: "10.0"). */
     private String toDouble(Object valor) {
         return String.valueOf(Double.parseDouble(valor.toString()));
@@ -211,6 +302,81 @@ public class DaoFactura {
                 + "porcIva, iva, total, ubicacion1, referencia, estado, plu, cant2, vendedor, cliente, "
                 + "subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, rango, imei, idProd "
                 + "FROM factura WHERE factura = '" + factura + "'";
+        return daoGenerales.obtenerDatosTabla(columnas, sql);
+    }
+
+    private CabeceraDocumento parsearCabeceraMesa(Object[][] mat) {
+        // Columnas: 0=cliente,1=vendedor,2=subtotalGeneral,3=descuentoGeneral,4=ivaGeneral,
+        //  5=totalGeneral,6=estadoGeneral,7=observacion
+        CabeceraDocumento cab = new CabeceraDocumento();
+        cab.setClienteId(mat[0][0] != null ? mat[0][0].toString() : null);
+        cab.setVendedor(mat[0][1] != null ? mat[0][1].toString() : null);
+        cab.setSubtotal(mat[0][2].toString());
+        cab.setTotalDescuentos(mat[0][3].toString());
+        cab.setTotalIva(mat[0][4].toString());
+        cab.setTotal(mat[0][5].toString());
+        cab.setEstadoGeneral(mat[0][6] != null ? mat[0][6].toString() : null);
+        cab.setObservacion(mat[0][7] != null ? mat[0][7].toString() : null);
+        return cab;
+    }
+
+    private List<LineaProducto> parsearLineasMesa(Object[][] mat) {
+        // Columnas: 8=producto,9=descripcion,10=lista,11=cantidad,12=cant2,13=porcDescuento,
+        //  14=descuento,15=plu,16=preparacion,17=imei,18=idProd
+        List<LineaProducto> lineas = new ArrayList<LineaProducto>();
+        for (Object[] reg : mat) {
+            int plu = Integer.parseInt(reg[15].toString());
+            LineaProducto linea = new LineaProducto();
+            linea.setCodigo(reg[8].toString());
+            linea.setDescripcion(reg[9].toString());
+            linea.setPrecio(reg[10].toString());
+            linea.setPlu(plu);
+            linea.setCantidad(plu == 1 ? toDouble(reg[11]) : toDouble(reg[12]));
+            linea.setPorcDescuento(reg[13].toString());
+            linea.setDescuento(reg[14].toString());
+            linea.setPreparacion(reg[16] != null ? reg[16].toString() : "");
+            linea.setImei(reg[17] != null ? reg[17].toString() : "");
+            linea.setIdProd(reg[18] != null ? reg[18].toString() : "");
+            lineas.add(linea);
+        }
+        return lineas;
+    }
+
+    private Object[][] getRegistrosMesa(String idFactura) {
+        String[] columnas = {
+            "cliente", "vendedor", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral",
+            "estadoGeneral", "observacion",
+            "producto", "descripcion", "lista", "cantidad", "cant2", "porcDescuento", "descuento", "plu",
+            "preparacion", "imei", "idProd"
+        };
+        String sql = "SELECT cliente, vendedor, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, "
+                + "estadoGeneral, observacion, "
+                + "producto, descripcion, lista, cantidad, cant2, porcDescuento, descuento, plu, "
+                + "preparacion, imei, idProd "
+                + "FROM bdCongelada WHERE idFactura = '" + idFactura + "'";
+        return daoGenerales.obtenerDatosTabla(columnas, sql);
+    }
+
+    private Object[][] getRegistrosPlanSepare(String idFactura) {
+        String[] columnas = {
+            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento",
+            "porcIva", "iva", "total", "ubicacion", "referencia", "estado", "plu", "cant2", "imei", "idProd"
+        };
+        String sql = "SELECT producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, "
+                + "porcIva, iva, total, ubicacion, referencia, estado, plu, cant2, imei, idProd "
+                + "FROM planSepare WHERE idFactura = '" + idFactura + "'";
+        return daoGenerales.obtenerDatosTabla(columnas, sql);
+    }
+
+    private Object[][] getRegistrosPedido(String idFactura) {
+        String[] columnas = {
+            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento",
+            "porcIva", "iva", "total", "ubicacion1", "referencia", "estado", "plu", "cant2",
+            "preparacion", "rango", "idProd"
+        };
+        String sql = "SELECT producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, "
+                + "porcIva, iva, total, ubicacion1, referencia, estado, plu, cant2, preparacion, rango, idProd "
+                + "FROM pedidos WHERE idFactura = '" + idFactura + "'";
         return daoGenerales.obtenerDatosTabla(columnas, sql);
     }
 
@@ -282,13 +448,20 @@ public class DaoFactura {
     }
 
     public ndPlanSepare getDatosPlanSepare(String id) {
-        String sql = "SELECT idFactura, estadoGeneral, observacion FROM bdPlanSepare WHERE idFactura = ?";
+        String sql = "SELECT idFactura, cliente, vendedor, subtotalGeneral, descuentoGeneral, ivaGeneral, "
+                + "totalGeneral, estadoGeneral, observacion FROM bdPlanSepare WHERE idFactura = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     ndPlanSepare nodo = new ndPlanSepare();
                     nodo.setIdFactura(rs.getString("idFactura"));
+                    nodo.setCliente(rs.getString("cliente"));
+                    nodo.setVendedor(rs.getString("vendedor"));
+                    nodo.setSubtotalGeneral(rs.getString("subtotalGeneral"));
+                    nodo.setDescuentoGeneral(rs.getString("descuentoGeneral"));
+                    nodo.setIvaGeneral(rs.getString("ivaGeneral"));
+                    nodo.setTotalGeneral(rs.getString("totalGeneral"));
                     nodo.setEstadoGeneral(rs.getString("estadoGeneral"));
                     nodo.setObservacion(rs.getString("observacion"));
                     return nodo;
@@ -301,13 +474,20 @@ public class DaoFactura {
     }
 
     public ndPedido getDatosPedido(String id) {
-        String sql = "SELECT idFactura, estadoGeneral, observacion FROM bdPedido WHERE idFactura = ?";
+        String sql = "SELECT idFactura, cliente, vendedor, subtotalGeneral, descuentoGeneral, ivaGeneral, "
+                + "totalGeneral, estadoGeneral, observacion FROM bdPedido WHERE idFactura = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     ndPedido nodo = new ndPedido();
                     nodo.setIdFactura(rs.getString("idFactura"));
+                    nodo.setCliente(rs.getString("cliente"));
+                    nodo.setVendedor(rs.getString("vendedor"));
+                    nodo.setSubtotalGeneral(rs.getString("subtotalGeneral"));
+                    nodo.setDescuentoGeneral(rs.getString("descuentoGeneral"));
+                    nodo.setIvaGeneral(rs.getString("ivaGeneral"));
+                    nodo.setTotalGeneral(rs.getString("totalGeneral"));
                     nodo.setEstadoGeneral(rs.getString("estadoGeneral"));
                     nodo.setObservacion(rs.getString("observacion"));
                     return nodo;

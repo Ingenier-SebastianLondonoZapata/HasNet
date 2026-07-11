@@ -1002,7 +1002,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     }
 
     private void despacharFilaSalida(int i, ndProducto productoOficial) {
-        String cantidad = obtenerValorTabla(i, 5).replace(",", ".");
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
         String cod = obtenerValorTabla(i, 6);
         String imei = obtenerValorTabla(i, 0);
         String color = obtenerValorTabla(i, 1);
@@ -1014,7 +1014,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         VistaFactura vistaDocumento = obtenerVistaDocumento();
         if (vistaDocumento != null) {
             if (DetalleTipoProducto.esSerialOImei(tipoProducto)) {
-                vistaDocumento.cargarProducto(id, "1", 1, imei, "", cod, false, "", color, "", "", "");
+                vistaDocumento.cargarProducto(id, BigDecimal.ONE, 1, imei, "", cod, false, "", color, "", "", "");
             } else if (DetalleTipoProducto.esColorOTalla(tipoProducto)) {
                 vistaDocumento.cargarProducto(id, cantidad, 1, "", "", cod, false, color, imei, "", "", "");
             } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
@@ -1026,7 +1026,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         ReceptorProductoSalida receptor = obtenerReceptorSalida();
         if (receptor != null) {
             if (DetalleTipoProducto.esSerialOImei(tipoProducto)) {
-                receptor.cargarProducto(id, "1", 1, imei, "", cod, "", color, "", "");
+                receptor.cargarProducto(id, BigDecimal.ONE, 1, imei, "", cod, "", color, "", "");
             } else if (DetalleTipoProducto.esColorOTalla(tipoProducto)) {
                 receptor.cargarProducto(id, cantidad, 1, "", "", cod, color, imei, "", "");
             } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
@@ -1036,17 +1036,31 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     }
 
     private VistaFactura obtenerVistaDocumento() {
-        if (tipoDocumento.equals(TipoDocumento.FACTURACION.getValor())) return instancias.getFactura();
-        if (tipoDocumento.equals(TipoDocumento.PLAN_SEPARE.getValor())) return instancias.getPlanSepare();
-        if (tipoDocumento.equals(TipoDocumento.MESA.getValor())) return instancias.getMesa1();
-        if (tipoDocumento.equals(TipoDocumento.PEDIDO.getValor())) return instancias.getPedido();
+        if (tipoDocumento.equals(TipoDocumento.FACTURACION.getValor())) {
+            return instancias.getFactura();
+        }
+        if (tipoDocumento.equals(TipoDocumento.PLAN_SEPARE.getValor())) {
+            return instancias.getPlanSepare();
+        }
+        if (tipoDocumento.equals(TipoDocumento.MESA.getValor())) {
+            return instancias.getMesa1();
+        }
+        if (tipoDocumento.equals(TipoDocumento.PEDIDO.getValor())) {
+            return instancias.getPedido();
+        }
         return null;
     }
 
     private ReceptorProductoSalida obtenerReceptorSalida() {
-        if (tipoDocumento.equals(TipoDocumento.AJUSTE_SALIDA.getValor())) return instancias.getVistaAjusteInventario();
-        if (tipoDocumento.equals("trasladoInterno")) return instancias.getTrasladosInternos();
-        if (tipoDocumento.equals("prestamos")) return instancias.getPrestamos();
+        if (tipoDocumento.equals(TipoDocumento.AJUSTE_SALIDA.getValor())) {
+            return instancias.getVistaAjusteInventario();
+        }
+        if (tipoDocumento.equals("trasladoInterno")) {
+            return instancias.getTrasladosInternos();
+        }
+        if (tipoDocumento.equals("prestamos")) {
+            return instancias.getPrestamos();
+        }
         return null;
     }
 

@@ -37,7 +37,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     public void setBtnGuardar(JButton btnGuardar) {
         this.btnGuardar = btnGuardar;
     }
-    
+
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
 
@@ -64,7 +64,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
 
         modeloOrdenado2 = new TableRowSorter<>(modelo2);
         tblAderezo.setRowSorter(modeloOrdenado2);
-        
+
         chkTodas.setSelected(false);
     }
 
@@ -145,13 +145,13 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             }
         });
 
-        btnCancelar.setBackground(new java.awt.Color(255, 153, 153));
+        btnCancelar.setBackground(new java.awt.Color(255, 255, 255));
         btnCancelar.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
-        btnCancelar.setText("CANCELAR");
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnCancelar.setText("VOLVER ");
         btnCancelar.setToolTipText("Ctrl+G");
         btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnCancelar.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -549,7 +549,6 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
 
     private void enviarPreparacion(String cadena) {
         if (lugarDesde.equals("pedido")) {
-            instancias.getMenu().expandirMenu();
             instancias.getPedido().cargarPreparacion(filas, cadena, codigoPrincipal);
             instancias.getPedidoContenedor().setSelected(true);
         } else if (mesaCongelada1) {
@@ -557,10 +556,11 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             instancias.getMesa().getPnlFactura().cargarPreparacion(filas, cadena, codigoPrincipal);
             instancias.getMesa().setSelected(true);
         } else {
-            instancias.getMenu().expandirMenu();
             instancias.getFactura().cargarPreparacion(filas, cadena, codigoPrincipal);
             instancias.getFacturaContenedor().setSelected(true);
         }
+
+        instancias.getMenu().activarBoton();
     }
 
     private void btnGuardarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnGuardarKeyReleased
@@ -646,7 +646,6 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         if (lugarDesde.equals("pedido")) {
-            instancias.getMenu().expandirMenu();
             instancias.getPedidoContenedor().setSelected(true);
         } else {
             if (mesaCongelada1) {
@@ -654,9 +653,10 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
                 instancias.getMesa().setSelected(true);
             } else {
                 instancias.getFacturaContenedor().setSelected(true);
-                instancias.getMenu().expandirMenu();
             }
         }
+
+        instancias.getMenu().activarBoton();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnCancelarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnCancelarKeyReleased

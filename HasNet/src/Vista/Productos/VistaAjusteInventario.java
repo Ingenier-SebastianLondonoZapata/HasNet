@@ -612,7 +612,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String codigo = txtCodProducto.getText();
             plu = true;
-            cargarProducto(codigo.replace("'", "//"), txtCant.getText(), 1, "", "", "", "", "", "", "");
+            cargarProducto(codigo.replace("'", "//"), Utilidades.convertirBigDecimal(txtCant.getText()), 1, "", "", "", "", "", "", "");
         } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
             double cantidad = 1;
             try {
@@ -1190,7 +1190,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         }
     }
 
-    public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
+    public void cargarProducto(String codigo, BigDecimal cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
             String temp, String fechaVence) {
 
         eliminarProductoDetalladoExistente(idProd);
@@ -1272,8 +1272,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                     }
                 }
 
-                String cant = nodo.getFisicoInventario();
-                cant = cant.replace(".", ",");
+                BigDecimal cant = Utilidades.convertirBigDecimal(nodo.getFisicoInventario());
                 String cant2 = "1";
                 String desc = nodo.getDescripcion();
 
@@ -1281,45 +1280,45 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                     case 2:
                         cant2 = nodo.getCantidad2();
                         desc = nodo.getDescripcion2();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad2()), 2, RoundingMode.HALF_DOWN);
+                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad2()), 4, RoundingMode.HALF_UP);
                         break;
                     case 3:
                         cant2 = nodo.getCantidad3();
                         desc = nodo.getDescripcion3();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad3()), 2, RoundingMode.HALF_DOWN);
+                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad3()), 4, RoundingMode.HALF_UP);
                         break;
                     case 4:
                         cant2 = nodo.getCantidad4();
                         desc = nodo.getDescripcion4();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad4()), 2, RoundingMode.HALF_DOWN);
+                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad4()), 4, RoundingMode.HALF_UP);
                         break;
                     case 5:
                         cant2 = nodo.getCantidad5();
                         desc = nodo.getDescripcion5();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad5()), 2, RoundingMode.HALF_DOWN);
+                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad5()), 4, RoundingMode.HALF_UP);
                         break;
                     case 6:
                         cant2 = nodo.getCantidad6();
                         desc = nodo.getDescripcion6();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad6()), 2, RoundingMode.HALF_DOWN);
+                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad6()), 4, RoundingMode.HALF_UP);
                         break;
                     case 7:
                         cant2 = nodo.getCantidad7();
                         desc = nodo.getDescripcion7();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad7()), 2, RoundingMode.HALF_DOWN);
+                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad7()), 4, RoundingMode.HALF_UP);
                         break;
                     case 8:
                         cant2 = nodo.getCantidad8();
                         desc = nodo.getDescripcion8();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad8()), 2, RoundingMode.HALF_DOWN);
+                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad8()), 4, RoundingMode.HALF_UP);
                         break;
                 }
 
                 BigDecimal res = BigDecimal.ONE;
                 if (cmbTipoAjuste.getSelectedIndex() == 0) {
-                    res = big.getBigDecimal(cant.replace(",", ".")).add(big.getBigDecimal(cantidad.replace(",", ".")));
+                    res = cant.add(cantidad);
                 } else {
-                    res = big.getBigDecimal(cant.replace(",", ".")).subtract(big.getBigDecimal(cantidad.replace(",", ".")));
+                    res = cant.subtract(cantidad);
                 }
 
                 BigDecimal ponderado = BigDecimal.ZERO;
@@ -1342,8 +1341,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                 } catch (Exception e) {
                 }
 
-                BigDecimal subtotal = ponderado.multiply(big.getMoneda(cantidad));
-
+                BigDecimal subtotal = ponderado.multiply(cantidad);
                 BigDecimal totalIva = subtotal.multiply(iva).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
                 BigDecimal totalImpoconsumo = subtotal.multiply(impoconsumo).divide(big.getBigDecimal("100"), 2, RoundingMode.CEILING);
 
@@ -1382,9 +1380,9 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                     }
                 }
 
-                modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado), cantidad.replace(".", ","),
-                    big.setMoneda(ponderado.multiply(big.getMoneda(cantidad))), nodo.getIva(), big.setMoneda(totalIva), big.setMoneda(total),
-                    "", plu, cant2, detalle, big.setNumero(big.getMoneda(cant.replace(".", ","))),
+                modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado), Utilidades.formatearCantidadVista(cantidad),
+                    big.setMoneda(ponderado.multiply(cantidad)), nodo.getIva(), big.setMoneda(totalIva), big.setMoneda(total),
+                    "", plu, cant2, detalle, Utilidades.formatearCantidadVista(cant),
                     big.setNumero(res), idProd, nodo.getIdSistema(), big.setMoneda(ponderado), nodo.getImpoconsumoVenta(), big.setMoneda(totalImpoconsumo)});
 
                 tblProductos.setColumnSelectionInterval(5, 5);
@@ -1610,7 +1608,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             }
 
             this.plu = true;
-            cargarProducto(codigo, cantidad, 1, "", "", "", "", "", "", "");
+            cargarProducto(codigo, Utilidades.convertirBigDecimal(cantidad), 1, "", "", "", "", "", "", "");
             KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
             tblProductosKeyReleased(x);
         }
@@ -1623,7 +1621,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         cmbTipoAjuste.setSelectedIndex(1);
 
         for (Object[] prod : productos) {
-            cargarProducto(prod[0].toString(), prod[1].toString(), 1, "", "", "", "", "", "", "");
+            cargarProducto(prod[0].toString(), Utilidades.convertirBigDecimal(prod[1].toString()), 1, "", "", "", "", "", "", "");
         }
 
         int xyz = tblProductos.getRowCount();

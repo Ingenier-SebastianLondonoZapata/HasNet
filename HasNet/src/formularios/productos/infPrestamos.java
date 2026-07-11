@@ -805,7 +805,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String codigo = txtCodProducto.getText();
             plu = true;
-            cargarProducto(codigo.replace("'", "//"), txtCant.getText(), 1, "", "", "", "", "", "", "");
+            cargarProducto(codigo.replace("'", "//"), Utilidades.Utilidades.convertirBigDecimal(txtCant.getText()), 1, "", "", "", "", "", "", "");
         } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
             double cantidad = 1;
             try {
@@ -1697,8 +1697,8 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             }
 
             for (int i = 0; i < prodTraslados.length; i++) {
-                cargarProducto(prodTraslados[i][8].toString(), prodTraslados[i][9].toString(), 1, prodTraslados[i][11].toString(),
-                        prodTraslados[i][14].toString(), prodTraslados[i][15].toString(), "", "", "", "");
+               // cargarProducto(prodTraslados[i][8].toString(), prodTraslados[i][9].toString(), 1, prodTraslados[i][11].toString(),
+                //        prodTraslados[i][14].toString(), prodTraslados[i][15].toString(), "", "", "", "");
 
                 tblProductos.setValueAt(big.setMoneda(big.getMoneda(prodTraslados[i][10].toString().replace(".", ","))), tblProductos.getRowCount() - 1, 2);
                 tblProductos.setValueAt(prodTraslados[i][12], tblProductos.getRowCount() - 1, 9);
@@ -1732,7 +1732,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         }
     }
 
-    public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
+    public void cargarProducto(String codigo, BigDecimal cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
             String temp, String fechaVence) {
 
         if (txtNombreBO.getText().equals("")) {
@@ -1885,7 +1885,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                 String cant = nodo.getFisicoInventario().replace(".", ",");
 
                 Double res = 0.0;
-                if (txtNombreBO.getText().equals("BODEGA PRINCIPAL")) {
+              /*  if (txtNombreBO.getText().equals("BODEGA PRINCIPAL")) {
                     try {
                         res = Double.parseDouble(cant.replace(",", ".")) - Double.parseDouble(cantidad);
                     } catch (Exception e) {
@@ -1905,7 +1905,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                             res = Double.parseDouble(cant.replace(",", ".")) + Integer.parseInt(cantidad);
                         }
                     }
-                }
+                }*/
 
                 BigDecimal listaPrecio = big.getBigDecimal(nodo.getL1());
                 BigDecimal iva = big.getBigDecimal(nodo.getIva());
@@ -1950,7 +1950,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
                 modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), big.setMoneda(listaPrecio),
                     cantidad, big.setMoneda(big.getBigDecimal(listaPrecio).multiply(big.getBigDecimal(cantidad)).add(iva)), detalle, "", big.setMoneda(costoPonderado), idProd, "",
-                    (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), plu, cant, res, big.setMoneda(iva.multiply(big.getBigDecimal(cantidad))),
+                    (big.getBigDecimal(cant2).multiply(cantidad)), plu, cant, res, big.setMoneda(iva.multiply(big.getBigDecimal(cantidad))),
                     talla});
 
                 tblProductos.setColumnSelectionInterval(9, 9);
@@ -2048,7 +2048,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             if (cantidad.equals("0")) {
                 cantidad = cantEstablecida;
             }
-            cargarProducto(codigo, cantidad, 1, "", "", "", "", "", "", "");
+            cargarProducto(codigo, Utilidades.Utilidades.convertirBigDecimal(cantidad), 1, "", "", "", "", "", "", "");
         }
     }
 

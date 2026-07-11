@@ -145,14 +145,16 @@
                                   <Group type="102" attributes="0">
                                       <Component id="lbProducto1" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                                      <Component id="txtCant" min="-2" pref="39" max="-2" attributes="0"/>
+                                      <Component id="txtCantidad" min="-2" pref="39" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                                       <Component id="lbProducto" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                       <Component id="txtCodigoProducto" min="-2" pref="125" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="btnBusProd" min="-2" pref="38" max="-2" attributes="0"/>
-                                      <EmptySpace pref="272" max="32767" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="btnPasarACongelada" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
                                       <Component id="lbVendedor1" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                       <Component id="txtPorcentaje" min="-2" pref="48" max="-2" attributes="0"/>
@@ -161,7 +163,7 @@
                                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                       <Component id="txtCargar" min="-2" pref="50" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="scrProductos1" pref="1011" max="32767" attributes="0"/>
+                                  <Component id="scrProductos1" pref="991" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -176,27 +178,30 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="txtCant" alignment="0" pref="30" max="32767" attributes="0"/>
-                                      <Component id="lbProducto1" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="lbProducto" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtCodigoProducto" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="btnBusProd" alignment="0" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="lbVendedor1" max="32767" attributes="0"/>
-                                      <Component id="txtPorcentaje" max="32767" attributes="0"/>
-                                      <Component id="lbCargarDocumento" alignment="1" max="32767" attributes="0"/>
-                                      <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="txtCargar" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                                          <Component id="btnVerGrupos" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="txtCantidad" alignment="0" pref="30" max="32767" attributes="0"/>
+                                          <Component id="lbProducto1" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="lbProducto" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="txtCodigoProducto" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="btnBusProd" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="lbVendedor1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="txtPorcentaje" max="32767" attributes="0"/>
+                                          <Component id="lbCargarDocumento" alignment="1" max="32767" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtCargar" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                                              <Component id="btnVerGrupos" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
+                                  <Component id="btnPasarACongelada" min="-2" pref="30" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="scrInventario" pref="272" max="32767" attributes="0"/>
+                                  <Component id="scrInventario" pref="277" max="32767" attributes="0"/>
                                   <Component id="scrProductos1" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
@@ -585,7 +590,7 @@
                         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="lbProducto1KeyReleased"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="txtCant">
+                    <Component class="javax.swing.JTextField" name="txtCantidad">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Century Gothic" size="16" style="1"/>
@@ -599,19 +604,19 @@
                         <Property name="name" type="java.lang.String" value="combo" noResource="true"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtCantActionPerformed"/>
-                        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtCantFocusGained"/>
-                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCantKeyPressed"/>
-                        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCantKeyReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtCantidadActionPerformed"/>
+                        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtCantidadFocusGained"/>
+                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCantidadKeyPressed"/>
+                        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCantidadKeyReleased"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JTextField" name="txtPorcentaje">
                       <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Century Gothic" size="18" style="0"/>
                         </Property>
                         <Property name="horizontalAlignment" type="int" value="0"/>
-                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txtPorcentajeMouseClicked"/>
@@ -659,6 +664,20 @@
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVerGruposActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="btnPasarACongelada">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="6f" green="dc" red="f7" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="13" style="1"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Pasar a congelada"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPasarACongeladaActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -786,7 +805,7 @@
                                   <Component id="dtFechaDesenvolso" min="-2" pref="27" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="jScrollPane3" pref="216" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" pref="221" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -1105,7 +1124,7 @@
                                               <Component id="btnNuevaParte1" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
-                                      <EmptySpace min="0" pref="379" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="359" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -1154,7 +1173,7 @@
                                   <Component id="btnNuevaParte1" pref="24" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane4" pref="87" max="32767" attributes="0"/>
+                              <Component id="jScrollPane4" pref="92" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -1486,7 +1505,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="127" max="32767" attributes="0"/>
+                              <EmptySpace pref="132" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1538,7 +1557,7 @@
                                           </Group>
                                       </Group>
                                   </Group>
-                                  <EmptySpace pref="382" max="32767" attributes="0"/>
+                                  <EmptySpace pref="362" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -2059,8 +2078,8 @@
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="lbFacturaNo" alignment="0" min="-2" pref="159" max="-2" attributes="0"/>
-                                              <Component id="lbOtroConsecutivo" alignment="0" min="-2" pref="159" max="-2" attributes="0"/>
+                                              <Component id="lbFacturaNo" min="-2" pref="159" max="-2" attributes="0"/>
+                                              <Component id="lbOtroConsecutivo" min="-2" pref="169" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
@@ -2576,16 +2595,14 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="lbTotalDescuento" alignment="1" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="lbSubtotal" pref="110" max="32767" attributes="0"/>
-                                              <Component id="txtIva" max="32767" attributes="0"/>
-                                          </Group>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="lbSubtotal" pref="110" max="32767" attributes="0"/>
+                                          <Component id="txtIva" max="32767" attributes="0"/>
                                           <Component id="lbImpoconsumo" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="chkReteIva" alignment="0" min="-2" pref="101" max="-2" attributes="0"/>
+                                          <Component id="lbTotalDescuento" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -2599,7 +2616,7 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="cmbRtf" min="-2" pref="87" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                                      <Component id="txtRtf" pref="115" max="32767" attributes="0"/>
+                                      <Component id="txtRtf" min="-2" pref="115" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
@@ -2654,7 +2671,7 @@
                           <Font name="Century Gothic" size="22" style="1"/>
                         </Property>
                         <Property name="horizontalAlignment" type="int" value="2"/>
-                        <Property name="text" type="java.lang.String" value="Total: 0"/>
+                        <Property name="text" type="java.lang.String" value="Total: $ 0"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="lbSubtotal">
@@ -2670,7 +2687,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Arial" size="16" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0"/>
+                        <Property name="text" type="java.lang.String" value="$ 0"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="txtIva">
@@ -2686,7 +2703,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Arial" size="16" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0"/>
+                        <Property name="text" type="java.lang.String" value="$ 0"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="lbTotalDescuento">
@@ -2705,7 +2722,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Arial" size="16" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0"/>
+                        <Property name="text" type="java.lang.String" value="$ 0"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="lbImpoconsumo">
@@ -2721,7 +2738,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Arial" size="16" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0"/>
+                        <Property name="text" type="java.lang.String" value="$ 0"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JComboBox" name="cmbRtf">
@@ -2757,7 +2774,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Arial" size="16" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0"/>
+                        <Property name="text" type="java.lang.String" value="$ 0"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="chkReteIva">
@@ -2786,7 +2803,7 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Arial" size="16" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="0"/>
+                        <Property name="text" type="java.lang.String" value="$ 0"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -2804,13 +2821,13 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Component id="btnImprimir" min="-2" pref="56" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                               <Component id="btnGuardar" min="-2" pref="107" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                               <Component id="btnReImprimir" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                              <Component id="btnActualizar" min="-2" pref="111" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                              <Component id="btnModificar" min="-2" pref="111" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                               <Component id="btnLimpiar" min="-2" pref="96" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           </Group>
@@ -2824,7 +2841,7 @@
                                   <Component id="btnImprimir" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
                                   <Component id="btnGuardar" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
                                   <Component id="btnReImprimir" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
-                                  <Component id="btnActualizar" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
+                                  <Component id="btnModificar" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
                                   <Component id="btnLimpiar" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -2953,7 +2970,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReImprimirActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnActualizar">
+                    <Component class="javax.swing.JButton" name="btnModificar">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="e2" green="ad" red="5d" type="rgb"/>
@@ -2980,7 +2997,7 @@
                         </Property>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizarActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnModificarActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -3158,7 +3175,7 @@
                       <Font name="Century Gothic" size="14" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="2"/>
-                    <Property name="text" type="java.lang.String" value="Otro Consecutivo:"/>
+                    <Property name="text" type="java.lang.String" value="Consecutivo adicional:"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="null"/>
                     </Property>

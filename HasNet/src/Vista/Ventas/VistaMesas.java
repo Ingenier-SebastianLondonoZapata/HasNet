@@ -20,15 +20,14 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
     metodosGenerales metodos = new metodosGenerales();
     private final Instancias instancias;
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
     DefaultTableModel modelo;
     private final PanelMesas panelMesas;
     private List<ModeloMesa> listaMesas = new ArrayList<>();
 
     public VistaMesas() {
+
         initComponents();
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
         Barra.setSize(0, 0);
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
@@ -152,12 +151,12 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(pnlFormularioLayout.createSequentialGroup()
                         .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1234, Short.MAX_VALUE)
                             .addGroup(pnlFormularioLayout.createSequentialGroup()
                                 .addComponent(lblMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1)))
-                        .addGap(24, 24, 24))))
+                                .addComponent(jButton1))
+                            .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE))
+                        .addGap(20, 20, 20))))
         );
         pnlFormularioLayout.setVerticalGroup(
             pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,8 +168,8 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
-                .addGap(30, 30, 30))
+                .addComponent(jScrollPane11)
+                .addGap(20, 20, 20))
         );
 
         jScrollPane1.setViewportView(pnlFormulario);
@@ -199,7 +198,7 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
         instancias.getMenu().ocultarMenu("preparacion");
         instancias.getMenu().cambiarTitulo("DOMICILIO");
         instancias.getMesa().setSelected(true);
-        instancias.getMesa().getPnlFactura().cargarCongelada("", "DOMICILIO", "DOMICILIO");
+        instancias.getMesa().getPnlFactura().abrirNuevaCongelada("DOMICILIO", "DOMICILIO");
     }//GEN-LAST:event_btnOcultarActionPerformed
 
     private void tblMesasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMesasMouseClicked
@@ -234,22 +233,36 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
 
     public void cargarRegistrosMesas() {
         listaMesas = new ArrayList<>();
-        Object[][] mesas = instancias.getSql().getPosicionesMesas();
-        for (int i = 0; i < mesas.length; i++) {
-            String[] coords = mesas[i][0].toString().split(",");
-            int rawFila = Integer.parseInt(coords[0]);
-            int columna = Integer.parseInt(coords[1]);
-            int fila = (rawFila - 1) / 2;
-            String nombre = mesas[i][1].toString();
-            listaMesas.add(new ModeloMesa(fila, columna, nombre));
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            Object[][] mesas = instancias.getSql().getPosicionesMesas();
+            for (int i = 0; i < mesas.length; i++) {
+                String[] coords = mesas[i][0].toString().split(",");
+                int rawFila = Integer.parseInt(coords[0]);
+                int columna = Integer.parseInt(coords[1]);
+                int fila = (rawFila - 1) / 2;
+                String nombre = mesas[i][1].toString();
+                listaMesas.add(new ModeloMesa(fila, columna, nombre));
+            }
+        } else {
+            int slot = 1;
+            for (int fila = 0; fila < 4; fila++) {
+                for (int col = 0; col < 5; col++) {
+                    listaMesas.add(new ModeloMesa(fila, col, "CONGELADA-" + slot));
+                    slot++;
+                }
+            }
         }
         panelMesas.setMesas(listaMesas);
     }
 
     private void cargarDimensiones() {
-        int filas = Integer.parseInt(DatosMaestra.getFilas());
-        int columnas = Integer.parseInt(DatosMaestra.getColumnas());
-        panelMesas.setDimensiones(filas, columnas);
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            int filas = Integer.parseInt(DatosMaestra.getFilas());
+            int columnas = Integer.parseInt(DatosMaestra.getColumnas());
+            panelMesas.setDimensiones(filas, columnas);
+        } else {
+            panelMesas.setDimensiones(4, 5);
+        }
     }
 
     private void manejarClickMesa(ModeloMesa mesa) {
@@ -267,10 +280,13 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
             return;
         }
 
-        String estadoMesa = instancias.getSql().getEstadoMesa(mesaActualizada.getNombre());
-        if ("OCUPADO".equals(estadoMesa)) {
-            metodos.msgAdvertenciaAjustado(this, "Esta mesa esta ocupada");
-            return;
+        boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
+        if (esRestaurante) {
+            String estadoMesa = instancias.getSql().getEstadoMesa(mesaActualizada.getNombre());
+            if ("OCUPADO".equals(estadoMesa)) {
+                metodos.msgAdvertenciaAjustado(this, "Esta mesa esta ocupada");
+                return;
+            }
         }
 
         instancias.getMenu().ocultarMenu("preparacion");
@@ -278,9 +294,10 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
         instancias.getMesa().setSelected(true);
 
         if (mesaActualizada.isOcupada()) {
-            instancias.getMesa().getPnlFactura().cargarCongelada(mesaActualizada.getNombre(), "MESA", mesaActualizada.getNombre());
+            instancias.getMesa().getPnlFactura().cargarMovimientoMesa(mesaActualizada.getNombre());
         } else {
-            instancias.getMesa().getPnlFactura().cargarCongelada("", "MESA", mesaActualizada.getNombre());
+            String tipo = esRestaurante ? "MESA" : "CONG";
+            instancias.getMesa().getPnlFactura().abrirNuevaCongelada(tipo, mesaActualizada.getNombre());
         }
     }
 

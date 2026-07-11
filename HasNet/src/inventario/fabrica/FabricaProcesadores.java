@@ -7,6 +7,9 @@ import inventario.estrategia.ProcesadorAnularAjusteEntrada;
 import inventario.estrategia.ProcesadorAnularFacturacion;
 import inventario.estrategia.ProcesadorAnularAjusteSalida;
 import inventario.estrategia.ProcesadorAnularPlanSepare;
+import inventario.estrategia.ProcesadorAnularPedido;
+import inventario.estrategia.ProcesadorAnularMesa;
+import inventario.estrategia.ProcesadorAnularOrdenServicio;
 import inventario.estrategia.ProcesadorFacturacion;
 import inventario.estrategia.ProcesadorCompra;
 import inventario.estrategia.ProcesadorInventarioInicial;
@@ -51,6 +54,9 @@ public class FabricaProcesadores {
         registro.put(TipoDocumento.AJUSTE_SALIDA, new ProcesadorAjusteSalida());
         registro.put(TipoDocumento.ANULAR_AJUSTE_SALIDA, new ProcesadorAnularAjusteSalida());
         registro.put(TipoDocumento.ANULAR_PLAN_SEPARE, new ProcesadorAnularPlanSepare());
+        registro.put(TipoDocumento.ANULAR_PEDIDO, new ProcesadorAnularPedido());
+        registro.put(TipoDocumento.ANULAR_MESA, new ProcesadorAnularMesa());
+        registro.put(TipoDocumento.ANULAR_ORDER_SERVICIO, new ProcesadorAnularOrdenServicio());
 
         return registro;
     }

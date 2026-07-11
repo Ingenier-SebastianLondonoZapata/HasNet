@@ -97,7 +97,6 @@ import formularios.Ventas.infFacturarLotes;
 import Vista.Ventas.VistaMesas;
 import Vista.Ventas.VistaDocumentos;
 import formularios.Ventas.infMesa;
-import formularios.Ventas.infMesas1;
 import Vista.Ventas.ordenServicio;
 import Vista.Ventas.pedido;
 import Vista.Ventas.planSepare;
@@ -1863,7 +1862,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 }
 
                 if (instancias.getConfiguraciones().isCreditos()) {
-                    textos[5] = "CREDITOS";
+                    textos[5] = "CRÉDITOS";
                 } else {
                     textos[5] = (String) null;
                 }
@@ -1899,7 +1898,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 if (instancias.getConfiguraciones().isRestaurante()) {
                     forms[1] = instancias.getMesas();
                 } else {
-                    forms[1] = instancias.getMesas1();
+                    forms[1] = instancias.getMesas();
                 }
 
                 forms[2] = instancias.getCuentaCobroContenedor();
@@ -2417,10 +2416,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR COBRAR");
             }
 
-            if (formularios[1] instanceof infMesas1) {
-                instancias.getMenu().cambiarTitulo("CONGELADAS");
-            }
-
             if (formularios[1] instanceof infOrdenServicioMedico) {
                 instancias.getMenu().cambiarTitulo("ORDEN DE SERVICIO");
             }
@@ -2518,7 +2513,7 @@ public class vistaMenu extends javax.swing.JFrame {
             }
 
             if (formularios[3] instanceof cotizacion) {
-                instancias.getMenu().cambiarTitulo("COTIZACIÓNES");
+                instancias.getMenu().cambiarTitulo("COTIZACIONES");
             }
 
             if (formularios[3] instanceof infGuarderia) {
@@ -2625,6 +2620,10 @@ public class vistaMenu extends javax.swing.JFrame {
 
             if (formularios[5] instanceof ingreso) {
                 instancias.getMenu().cambiarTitulo("COMPRA");
+            }
+
+            if (formularios[5] instanceof creditos) {
+                instancias.getMenu().cambiarTitulo("CRÉDITOS");
             }
 
             formularios[5].setSelected(true);
@@ -3048,7 +3047,7 @@ public class vistaMenu extends javax.swing.JFrame {
             if (instancias.getConfiguraciones().isRestaurante()) {
                 instancias.getMesas().setSelected(true);
             } else {
-                instancias.getMesas1().setSelected(true);
+                instancias.getMesas().setSelected(true);
             }
             cmbAccesos.setSelectedIndex(0);
         } else if (cmbAccesos.getSelectedIndex() == 3) {
@@ -3939,18 +3938,6 @@ public class vistaMenu extends javax.swing.JFrame {
             Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        try {
-            infMesas1 interno14 = new infMesas1();
-            dkpFormularios.add(interno14);
-            if (instancias.getUsuarioLog().isCongeladas()) {
-                interno14.show();
-            }
-            interno14.setMaximum(true);
-            instancias.setMesas1(interno14);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-
-        }
     }
 
     private void cargarModulosCartera() {
@@ -4927,21 +4914,35 @@ public class vistaMenu extends javax.swing.JFrame {
             soloMesas();
             return;
         }
+
         mostrarMenuCompleto();
     }
 
     private boolean esVendedorSoloMesas() {
-        if (instancias.getUsuario().equals("ADMIN")) return false;
-        if (!instancias.getConfiguraciones().isRestaurante()) return false;
-        if (!DatosMaestra.isSoloMesas()) return false;
+        if (instancias.getUsuario().equals("ADMIN")) {
+            return false;
+        }
+        if (!instancias.getConfiguraciones().isRestaurante()) {
+            return false;
+        }
+        if (!DatosMaestra.isSoloMesas()) {
+            return false;
+        }
 
         String usuario = instancias.getUsuario();
         for (Object[] vendedor : instancias.getSql().getVendedores1()) {
             try {
-                if (usuario.equals(vendedor[1].toString())) return true;
-            } catch (Exception ignored) {}
+                if (usuario.equals(vendedor[1].toString())) {
+                    return true;
+                }
+            } catch (Exception ignored) {
+            }
         }
         return false;
+    }
+
+    public void activarBoton() {
+        btnOcultar.setEnabled(true);
     }
 
     private void mostrarMenuCompleto() {

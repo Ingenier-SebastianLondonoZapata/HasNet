@@ -374,17 +374,17 @@ public class VistaGruposProductos extends JDialog {
 
     private void cargarEnDocumento(String codigo, BigDecimal cantidad) {
         if (TipoDocumento.MESA.getValor().equals(this.tipoProceso)) {
-            instancias.getMesa().getPnlFactura().cargarProducto(codigo, Utilidades.formatearCantidad(cantidad), 1, "", "", "", true, "", "", "", "", "");
+            instancias.getMesa().getPnlFactura().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
         } else if (TipoDocumento.PEDIDO.getValor().equals(tipoProceso)) {
-            instancias.getPedido().cargarProducto(codigo, Utilidades.formatearCantidad(cantidad), 1, "", "", "", true, "", "", "", "", "");
+            instancias.getPedido().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
         } else if (TipoDocumento.COTIZACION.getValor().equals(tipoProceso)) {
-            instancias.getCotiza().cargarProducto(codigo, Utilidades.formatearCantidad(cantidad), 1, "", "", "", true, "", "", "", "", "");
+            instancias.getCotiza().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
         } else if (TipoDocumento.PLAN_SEPARE.getValor().equals(tipoProceso)) {
-            instancias.getPlanSepare().cargarProducto(codigo, Utilidades.formatearCantidad(cantidad), 1, "", "", "", true, "", "", "", "", "");
+            instancias.getPlanSepare().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
         } else if (TipoDocumento.ORDER_SERVICIO.getValor().equals(tipoProceso)) {
-            instancias.getOrdenServicio().cargarProducto(codigo, Utilidades.formatearCantidad(cantidad), 1, "", "", "", true, "", "", "", "", "");
+            instancias.getOrdenServicio().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
         } else if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
-            instancias.getFactura().cargarProducto(codigo, Utilidades.formatearCantidad(cantidad), 1, "", "", "", true, "", "", "", "", "");
+            instancias.getFactura().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
         }
     }
 }

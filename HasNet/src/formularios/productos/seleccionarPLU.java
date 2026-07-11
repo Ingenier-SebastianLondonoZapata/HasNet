@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Utilidades.Utilidades;
 import clases.Instancias;
 import clases.big;
 import clases.cambiarColorTabla;
@@ -163,7 +164,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 factura.setPlu(false);
                 for (int i = 0; i < tblRegistros.getRowCount(); i++) {
                     if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        factura.cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7), "",
+                        factura.cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7), "",
                                 "", "", false, "", "", "", "", "");
                     }
                 }
@@ -203,7 +204,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 instancias.getVistaAjusteInventario().setPlu(false);
                 for (int i = 0; i < tblRegistros.getRowCount(); i++) {
                     if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getVistaAjusteInventario().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7), "", "", "", "", "", "", "");
+                        instancias.getVistaAjusteInventario().cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7), "", "", "", "", "", "", "");
                         break;
                     }
                 }
@@ -213,7 +214,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 instancias.getTrasladosInternos().setPlu(false);
                 for (int i = 0; i < tblRegistros.getRowCount(); i++) {
                     if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getTrasladosInternos().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7), "", "", "",
+                        instancias.getTrasladosInternos().cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7), "", "", "",
                                 "", "", "", "");
                         break;
                     }
@@ -224,7 +225,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 instancias.getPrestamos().setPlu(false);
                 for (int i = 0; i < tblRegistros.getRowCount(); i++) {
                     if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getPrestamos().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7),
+                        instancias.getPrestamos().cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7),
                                 "", "", "", "", "", "", "");
                         break;
                     }

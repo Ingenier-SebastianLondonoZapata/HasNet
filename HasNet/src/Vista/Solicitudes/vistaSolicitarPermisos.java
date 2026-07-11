@@ -472,7 +472,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                     instancias.getReimpresion().anularFactura(txtNota.getText());
                     return;
                 case "borrarMesa":
-                    instancias.getMesa1().limpiar(true, "SI");
+                    instancias.getMesa1().limpiar();
             }
 
             metodos.msgExito(null, "SOLICITUD ACEPTADA");

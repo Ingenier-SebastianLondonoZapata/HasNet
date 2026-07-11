@@ -1334,26 +1334,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getPedidosPendientes(String condicion) {
-        String colName[] = {
-            "idFactura", "fechaFactura", "cliente", "totalGeneral", "nombre", "Id", "vendedor", "bodega"
-        };
-        String origen = "pedidos2";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, fechaFactura, cliente, totalGeneral, nombre, Id, vendedor, bodega "
-                + "from " + origen + " where " + condicion, " where " + condicion);
-        return dtDatos;
-    }
-
-    public Object[][] getOrdenesServicioPendientes() {
-        String colName[] = {
-            "idFactura", "fechaFactura", "cliente", "totalGeneral", "nombre", "bodega"
-        };
-        String origen = "oServicio2";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, fechaFactura, cliente, totalGeneral, nombre, bodega "
-                + "from " + origen + " where estadoGeneral = 'PENDIENTE' and anulada = false ", " where estadoGeneral = 'PENDIENTE' and anulada = false ");
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosFacturacionAutomatica(String condicion) {
         String colName[] = {
             "idFactura", "cliente", "totalGeneral", "descripcion", "fechaUltimoPago", "cantFacturados", "preparacion", "inicio", "hasta", "cantIncremento"};
@@ -3840,17 +3820,6 @@ public class SQL {
         return ok;
     }
 
-    public Object[][] getRegistrosPedidos2(String factura) {
-        String colName[] = {
-            "producto", "Descripcion", "lista", "cantidad", "subtotal", "descuento", "porcIva", "iva", "total", "plu", "cliente", "vendedor"
-        };
-        String origen = " bdPedido ";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, Descripcion, lista, cantidad, subtotal, descuento, porcIva, iva,"
-                + " total, plu, cliente, vendedor from bdPedido where factura = '" + factura + "'", " where factura = '" + factura + "'");
-
-        return dtDatos;
-    }
-
     public void cambiarEstadoPedido(String estado, String id) {
         String instruccion_sql = "update bdPedido set estado2=? WHERE idFactura ='" + id + "' ;";
         Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
@@ -6018,16 +5987,6 @@ public class SQL {
             }
         };
         return datos;
-    }
-
-    public boolean agregarModificacionesPedido(String idModificaciones, String idFactura, String idProducto, String cantVieja,
-            String cantNueva, String obv, String fecha, String usuario) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdModificacionesPedido (idModificacionesPedido, idFactura, idProducto, cantVieja, cantNueva, "
-                + "observaciones, fecha, usuario) "
-                + "values (?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{idModificaciones, idFactura, idProducto, cantVieja, cantNueva, obv, fecha, usuario}, null, instruccion_sql);
-        return ok;
     }
 
     public boolean agregarTalla(String talla) {
@@ -9010,37 +8969,6 @@ public class SQL {
 
             Class[] types = new Class[]{
                 java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-        };
-        return datos;
-    }
-
-    public DefaultTableModel getRegistrosCotizacionesPendientes() {
-        String columNames[] = {
-            "Cotizacion", "Id", "Nombre", "Fecha", "Total", "Fact", "Plazo"
-        };
-        String colName[] = {
-            "idFactura", "Id", "nombre", "fechaFactura", "totalGeneral", "sel", "plazo"
-        };
-        String origen = " cotizacion1 where estadoGeneral='PENDIENTE' ";
-        Object dtDatos2[][] = GetTabla(colName, origen, (new StringBuilder()).append("select idFactura, Id, nombre, fechaFactura, "
-                + "totalGeneral, false as sel, plazo from cotizacion1 where estadoGeneral ='PENDIENTE' ORDER BY fechaFactura ").toString(), new Integer[]{5});
-
-        DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 5 || column == 6) {
-                    return true;
-                }
-                return false;
-            }
-
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {

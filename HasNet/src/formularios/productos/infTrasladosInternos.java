@@ -751,7 +751,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String codigo = txtCodProducto.getText();
             plu = true;
-            cargarProducto(codigo.replace("'", "//"), txtCant.getText(), 1, "", "", "", "", "", "", "");
+            cargarProducto(codigo.replace("'", "//"), Utilidades.Utilidades.convertirBigDecimal(txtCant.getText()), 1, "", "", "", "", "", "", "");
         } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
             double cantidad = 1;
             try {
@@ -1046,13 +1046,12 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
                             //OJO IMPORTANTE ORGANIZAR ESTA PARTE
                             /*if (!instancias.getSql().agregarDetalladoProducto(conse, prod[0][0].toString(), prod[0][1].toString(),
-                                    String.valueOf(df.format(cant2)).replace(".", ","), prod[0][3].toString(), prod[0][4].toString(), prod[0][5].toString(),
-                                    prod[0][6].toString(), "DISPONIBLE", factura, metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(),
-                                    instancias.getUsuario(), prod[0][7].toString(), prod[0][9].toString(), txtNitBD.getText())) {
-                                metodos.msgError(null, "Hubo un problema al guardar el detalle del producto");
-                                return;
-                            }*/
-
+                             String.valueOf(df.format(cant2)).replace(".", ","), prod[0][3].toString(), prod[0][4].toString(), prod[0][5].toString(),
+                             prod[0][6].toString(), "DISPONIBLE", factura, metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(),
+                             instancias.getUsuario(), prod[0][7].toString(), prod[0][9].toString(), txtNitBD.getText())) {
+                             metodos.msgError(null, "Hubo un problema al guardar el detalle del producto");
+                             return;
+                             }*/
                             if (!instancias.getSql().aumentarConsecutivo("DETALLEPROD", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DETALLEPROD")[0]) + 1)) {
                                 metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del detalle del producto");
                             }
@@ -1454,8 +1453,8 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             }
 
             for (int i = 0; i < prodTraslados.length; i++) {
-                cargarProducto(prodTraslados[i][8].toString(), prodTraslados[i][9].toString(), 1, prodTraslados[i][11].toString(),
-                        prodTraslados[i][14].toString(), prodTraslados[i][15].toString(), "", "", "", "");
+                //cargarProducto(prodTraslados[i][8].toString(), prodTraslados[i][9].toString(), 1, prodTraslados[i][11].toString(),
+                //  prodTraslados[i][14].toString(), prodTraslados[i][15].toString(), "", "", "", "");
 
                 tblProductos.setValueAt(big.setMoneda(big.getMoneda(prodTraslados[i][10].toString())), tblProductos.getRowCount() - 1, 2);
                 tblProductos.setValueAt(prodTraslados[i][12], tblProductos.getRowCount() - 1, 7);
@@ -1481,7 +1480,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
         }
     }
 
-    public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
+    public void cargarProducto(String codigo, BigDecimal cantidad, int plu, String imei, String lote, String idProd, String talla, String color,
             String temp, String fechaVence) {
 
         if (txtBaseOrigen.getText().equals("")) {
@@ -1639,16 +1638,15 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 String cant = nodo.getFisicoInventario().replace(".", ",");
                 Double res = 0.0;
 
-                try {
-                    res = Double.parseDouble(cant.replace(",", ".")) - Double.parseDouble(cantidad);
-                } catch (Exception e) {
-                    try {
-                        res = big.getBigDecimal(cant.replace(",", ".")).subtract(big.getBigDecimal(cantidad.replace(",", "."))).doubleValue();
-                    } catch (Exception ex) {
-                        res = Double.parseDouble(cant.replace(",", ".")) - Integer.parseInt(cantidad);
-                    }
-                }
-
+                /*try {
+                 res = Double.parseDouble(cant.replace(",", ".")) - Double.parseDouble(cantidad);
+                 } catch (Exception e) {
+                 try {
+                 res = big.getBigDecimal(cant.replace(",", ".")).subtract(big.getBigDecimal(cantidad.replace(",", "."))).doubleValue();
+                 } catch (Exception ex) {
+                 res = Double.parseDouble(cant.replace(",", ".")) - Integer.parseInt(cantidad);
+                 }
+                 }*/
                 String detalle = "";
                 if (!imei.equals("")) {
                     detalle = imei;
@@ -1683,7 +1681,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 }
 
                 modeloPro.addRow(new Object[]{nodo.getIdSistema(), nodo.getDescripcion(), big.setMoneda(ultimoCosto), cantidad, detalle, "", idProd, "",
-                    (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), plu, "", cant, res});
+                    (big.getBigDecimal(cant2).multiply(cantidad)), plu, "", cant, res});
 
                 tblProductos.setColumnSelectionInterval(7, 7);
                 tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
@@ -1772,7 +1770,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             if (cantidad.equals("0")) {
                 cantidad = cantEstablecida;
             }
-            cargarProducto(codigo, cantidad, 1, "", "", "", "", "", "", "");
+            cargarProducto(codigo, Utilidades.Utilidades.convertirBigDecimal(cantidad), 1, "", "", "", "", "", "", "");
         }
     }
 

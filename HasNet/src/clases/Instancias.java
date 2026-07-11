@@ -275,7 +275,6 @@ public class Instancias {
     private infRepAnulas repAnulas;
     private cotizacion cotiza;
     private VistaMesas mesas;
-    private infMesas1 mesas1;
     private buscTipoVehiculo buscTipoVehiculo;
     private VistaDocumentos reimpresion;
 
@@ -816,13 +815,6 @@ public class Instancias {
         this.resumenDia = resumenDia;
     }
 
-    public infMesas1 getMesas1() {
-        return mesas1;
-    }
-
-    public void setMesas1(infMesas1 mesas1) {
-        this.mesas1 = mesas1;
-    }
 
     public infRepIvasCompras getRepIvasCompras() {
         return repIvasCompras;

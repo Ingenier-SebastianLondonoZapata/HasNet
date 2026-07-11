@@ -176,4 +176,28 @@ public class DaoOrdenServicio {
             return false;
         }
     }
+
+    public boolean eliminarVehiculo(String id) {
+        String sql = "DELETE FROM bdOServicio WHERE id = ?";
+        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al eliminar vehículo orden de servicio: " + id, e);
+            return false;
+        }
+    }
+
+    public boolean eliminarDetalle(String idOrden) {
+        String sql = "DELETE FROM bdDetalleOrdenServicio WHERE ordenServicio = ?";
+        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            pstmt.setString(1, idOrden);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al eliminar detalle orden de servicio: " + idOrden, e);
+            return false;
+        }
+    }
 }

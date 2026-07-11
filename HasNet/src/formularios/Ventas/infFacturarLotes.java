@@ -677,7 +677,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                     int cantParaIncremento = Integer.parseInt(tblClientes.getValueAt(i, 10).toString());
                     if (cantFacturados >= cantParaIncremento) {
                         cantFacturados = 0;
-                        instancias.getCuentaCobroContenedor().getPnlFactura().modificarCuentaCobro(tblClientes.getValueAt(i, 0).toString().replace("CCOBRO-", ""));
+//                        instancias.getCuentaCobroContenedor().getPnlFactura().modificarCuentaCobro(tblClientes.getValueAt(i, 0).toString().replace("CCOBRO-", ""));
                     }
 
                     String mes = String.valueOf(cmbMes.getSelectedIndex());

@@ -4231,7 +4231,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 //        e[0][3] = "0";
 //        e[0][4] = "0";
 
-        instancias.getFactura().desdeOrden(txtIdentificacion.getText(), producto);
+//        instancias.getFactura().desdeOrden(txtIdentificacion.getText(), producto);
     }
 
     public void setPaciente(String paciente, String producto) {
