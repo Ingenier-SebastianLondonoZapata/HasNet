@@ -48,6 +48,7 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
             lblMesa.setText("MESAS");
         } else {
             lblMesa.setText("CONGELADAS");
+            panelMesas.setTipo(PanelMesas.TipoPanel.SUPERMERCADO);
         }
 
         cargarDimensiones();

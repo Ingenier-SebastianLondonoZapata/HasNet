@@ -95,6 +95,8 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -136,7 +138,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private List<LineaProducto> lineasOriginales = new ArrayList<>();
 
     private boolean focusDiasPlazo = false, cambioMesa = false, plu = false, mesaCongelada = false,
-            saltarPasosFactura = false, solicitudPermiso = false;
+            saltarPasosFactura = false, solicitudPermiso = false, pasandoACongelada = false;
 
     private String tipoProceso, credito1, loteGeneral = "", permisoNumero = "",
             terminal = "", loteCuentasCobro = "", fechaFacturaAutomatica = "";
@@ -1168,12 +1170,12 @@ public final class VistaFactura extends javax.swing.JPanel {
             tblProductos.getColumnModel().getColumn(6).setMinWidth(100);
             tblProductos.getColumnModel().getColumn(6).setPreferredWidth(100);
             tblProductos.getColumnModel().getColumn(6).setMaxWidth(100);
-            tblProductos.getColumnModel().getColumn(7).setMinWidth(35);
-            tblProductos.getColumnModel().getColumn(7).setPreferredWidth(35);
-            tblProductos.getColumnModel().getColumn(7).setMaxWidth(35);
-            tblProductos.getColumnModel().getColumn(8).setMinWidth(80);
-            tblProductos.getColumnModel().getColumn(8).setPreferredWidth(100);
-            tblProductos.getColumnModel().getColumn(8).setMaxWidth(140);
+            tblProductos.getColumnModel().getColumn(7).setMinWidth(0);
+            tblProductos.getColumnModel().getColumn(7).setPreferredWidth(0);
+            tblProductos.getColumnModel().getColumn(7).setMaxWidth(0);
+            tblProductos.getColumnModel().getColumn(8).setMinWidth(0);
+            tblProductos.getColumnModel().getColumn(8).setPreferredWidth(0);
+            tblProductos.getColumnModel().getColumn(8).setMaxWidth(0);
             tblProductos.getColumnModel().getColumn(9).setMinWidth(80);
             tblProductos.getColumnModel().getColumn(9).setPreferredWidth(100);
             tblProductos.getColumnModel().getColumn(9).setMaxWidth(150);
@@ -1461,7 +1463,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
+                .addGap(2, 2, 2)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -1471,16 +1473,16 @@ public final class VistaFactura extends javax.swing.JPanel {
                             .addComponent(txtCodigoProducto, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(lbVendedor1)
                             .addComponent(txtPorcentaje)
                             .addComponent(lbCargarDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(txtCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnVerGrupos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnVerGrupos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lbVendedor1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(btnPasarACongelada, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrInventario, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                    .addComponent(scrInventario, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                     .addComponent(scrProductos1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(1, 1, 1))
         );
@@ -3389,22 +3391,16 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     public void limpiar(boolean actualizar) {
-
         instancias.setCancelarFactura(false);
+        reiniciarEstadoInterno();
 
-        this.saltarPasosFactura = false;
-        this.fechaFacturaAutomatica = "";
-        this.loteCuentasCobro = "";
-
+        btnLimpiar.setVisible(true);
         btnPasarACongelada.setVisible(false);
-
         chkSinEstablecer.setSelected(false);
         txtCantIncremento.setText("");
         txtCantFacturados.setText("");
-
         dtDesde.setSelectedDate(metodos.haciaDate(metodos.fecha3(metodosGenerales.fecha())));
         dtHasta.setSelectedDate(metodos.haciaDate(metodos.fecha3(metodosGenerales.fecha())));
-
         chkSisteCredito.setEnabled(false);
         chkSisteCredito.setSelected(false);
 
@@ -3415,49 +3411,21 @@ public final class VistaFactura extends javax.swing.JPanel {
         lbCupo.setVisible(false);
         txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         tblProductos.setEnabled(true);
-
         setTipo();
         txtNombre.setEnabled(false);
         txtNombre.setEditable(false);
 
-        if (tipoProceso.equals("mesa")) {
+        if (this.tipoProceso.equals("mesa")) {
             instancias.getSql().cambiarEstadoMesa(instancias.getTitulo(), "DISPONIBLE");
         }
 
         btnGuardar.setEnabled(true);
         btnGuardar.setVisible(true);
-
         btnImprimir.setVisible(true);
         btnImprimir.setEnabled(true);
 
-        String turno = "";
-        if (txtTurno.isVisible() && instancias.getConfiguraciones().isRestaurante()) {
-            turno = instancias.getSql().getTurno();
-            txtTurno.setText(turno);
-        } else {
-            txtTurno.setText("");
-        }
-
-        instancias.getMaestra().setTurno(turno);
-        instancias.getMaestra().actualizarTurno();
-
-//        lbNombre2.setForeground(Color.red);
-        txtPlaca.setEnabled(true);
-        txtModelo.setEnabled(true);
-        txtTipoVehiculo.setEnabled(true);
-        txtNumChasis.setEnabled(true);
-        txtMarca.setEnabled(true);
-        txtKm.setEnabled(true);
-        txtMotor.setEnabled(true);
-        txtColor.setEnabled(true);
-        txtPlaca.setText("");
-        txtModelo.setText("");
-        txtTipoVehiculo.setText("");
-        txtNumChasis.setText("");
-        txtMarca.setText("");
-        txtKm.setText("");
-        txtMotor.setText("");
-        txtColor.setText("");
+        sincronizarTurno();
+        habilitarYLimpiarCamposVehiculo();
 
         txtRtf.setText(this.simbolo + " 0");
         txtDescGeneral.setText(this.simbolo + " 0");
@@ -3471,94 +3439,133 @@ public final class VistaFactura extends javax.swing.JPanel {
         tblArticulos.setEnabled(true);
         txtCantProductos.setText("0");
         txtCantUnidades.setText("0");
-        focusDiasPlazo = false;
 
-        //PANEL DE CREDITO
         if (esFacturaCredito) {
-            txtCuotas.setText("");
-            txtInteres.setText("");
-            txtValorCredito.setText("");
-            txtTotalIntereses.setText("");
-            txtCuotaInicial.setText(this.simbolo + " 0");
-            txtValorVenta.setText(this.simbolo + " 0");
-            txtTotalCredito.setText(this.simbolo + " 0");
-            txtValorCredito.setText(this.simbolo + " 0");
-            txtTotalIntereses.setText(this.simbolo + " 0");
-            cmbTipoPlazo.setSelectedIndex(0);
-            dtFechaDesenvolso.setSelectedDate(metodos.haciaDate2(metodosGenerales.fecha()));
-            DefaultTableModel c = (DefaultTableModel) tblCuotas.getModel();
-            int h = tblCuotas.getRowCount();
-            for (int m = 0; m < h; m++) {
-                c.removeRow(0);
-            }
-        }
-
-        txtMarca.setText("");
-        txtKm.setText("");
-        txtModelo.setText("");
-        txtMotor.setText("");
-        txtPlaca.setText("");
-        txtNumChasis.setText("");
-        txtColor.setText("");
-        txtMotor.setText("");
-
-        ndPeluqueria = "";
-        ndGuarderia = "";
-        ndHospitalizacion = "";
-        diasHospitalizacion = "";
-        horasHospitalizacion = "";
-
-        if (tipoProceso.equals("mesa")) {
-            btnReImprimir.setEnabled(true);
-        } else {
-            btnReImprimir.setEnabled(false);
+            limpiarPanelCredito();
         }
 
         btnModificar.setEnabled(false);
 
         tblInventario.removeEditor();
         modeloInventario = (DefaultTableModel) tblInventario.getModel();
+        limpiarTabla(modeloPro);
+        limpiarTabla(modeloInventario);
 
-        while (tblProductos.getRowCount() > 0) {
-            modeloPro.removeRow(0);
+        limpiarTotalesDocumento();
+
+        if (actualizar) {
+            actualizarClienteYConsecutivo();
         }
 
-        while (tblInventario.getRowCount() > 0) {
-            modeloInventario.removeRow(0);
+        activarCampos(true);
+        reiniciarInstanciasPagos();
+        limpiarTabla((DefaultTableModel) tblArticulos.getModel());
+
+        if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()) || (tipoProceso.equals("mesa") && lbTitulo.getText().equals("DOMICILIO"))) {
+            instancias.setTitulo("");
         }
 
+        if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor())) {
+            btnReImprimir.setVisible(false);
+            btnModificar.setVisible(false);
+        }
+
+        tblProductos.removeEditor();
+        tblInventario.removeEditor();
+    }
+
+    private void reiniciarEstadoInterno() {
+        this.lineasOriginales = new ArrayList<>();
+        this.saltarPasosFactura = false;
+        this.fechaFacturaAutomatica = "";
+        this.loteCuentasCobro = "";
+        this.focusDiasPlazo = false;
+        this.ndPeluqueria = "";
+        this.ndGuarderia = "";
+        this.ndHospitalizacion = "";
+        this.diasHospitalizacion = "";
+        this.horasHospitalizacion = "";
+    }
+
+    private void sincronizarTurno() {
+        String turno = "";
+        if (txtTurno.isVisible() && instancias.getConfiguraciones().isRestaurante()) {
+            turno = instancias.getSql().getTurno();
+            txtTurno.setText(turno);
+        } else {
+            txtTurno.setText("");
+        }
+        instancias.getMaestra().setTurno(turno);
+        instancias.getMaestra().actualizarTurno();
+    }
+
+    private void habilitarYLimpiarCamposVehiculo() {
+        txtPlaca.setEnabled(true);
+        txtPlaca.setText("");
+        txtModelo.setEnabled(true);
+        txtModelo.setText("");
+        txtTipoVehiculo.setEnabled(true);
+        txtTipoVehiculo.setText("");
+        txtNumChasis.setEnabled(true);
+        txtNumChasis.setText("");
+        txtMarca.setEnabled(true);
+        txtMarca.setText("");
+        txtKm.setEnabled(true);
+        txtKm.setText("");
+        txtMotor.setEnabled(true);
+        txtMotor.setText("");
+        txtColor.setEnabled(true);
+        txtColor.setText("");
+    }
+
+    private void limpiarTabla(DefaultTableModel modelo) {
+        while (modelo.getRowCount() > 0) {
+            modelo.removeRow(0);
+        }
+    }
+
+    private void limpiarPanelCredito() {
+        txtCuotas.setText("");
+        txtInteres.setText("");
+        txtCuotaInicial.setText(this.simbolo + " 0");
+        txtValorVenta.setText(this.simbolo + " 0");
+        txtTotalCredito.setText(this.simbolo + " 0");
+        txtValorCredito.setText(this.simbolo + " 0");
+        txtTotalIntereses.setText(this.simbolo + " 0");
+        cmbTipoPlazo.setSelectedIndex(0);
+        dtFechaDesenvolso.setSelectedDate(metodos.haciaDate2(metodosGenerales.fecha()));
+        limpiarTabla((DefaultTableModel) tblCuotas.getModel());
+    }
+
+    private void limpiarTotalesDocumento() {
         txtSubTotal.setText(this.simbolo + " 0");
         txtTotal.setText("Total: " + this.simbolo + " 0");
         txtTotalIva.setText(this.simbolo + " 0");
         txtTotalImpoconsumo.setText(this.simbolo + " 0");
         txtTotalDescuentos.setText(this.simbolo + " 0");
+    }
 
-//        try {
-//            this.setPlazo("0", big.getBigDecimal("0"));
-//        } catch (Exception e) {
-//        }
-        if (actualizar) {
-            txtNit.setText("");
-            txtNombre.setText("");
-            txtDiasPlazo.setText("0");
-            txtVencimiento.setText(txtFechaFactura.getText());
+    private void actualizarClienteYConsecutivo() {
+        txtNit.setText("");
+        txtNombre.setText("");
+        txtDiasPlazo.setText("0");
+        txtVencimiento.setText(txtFechaFactura.getText());
 
-            int fila = 0;
-            for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
-                if ((Boolean) tblComprobantes.getValueAt(i, 2)) {
-                    fila = i;
-                }
-            }
-
-            actualizarConsecutivo(fila);
-
-            if (instancias.isVentasPredeterminado() && !tipoProceso.equals("pedido") && !tipoProceso.equals("separe")) {
-                cargar1010();
+        int fila = 0;
+        for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
+            if ((Boolean) tblComprobantes.getValueAt(i, 2)) {
+                fila = i;
             }
         }
+        actualizarConsecutivo(fila);
 
-        activarCampos(true);
+        if (instancias.isVentasPredeterminado()
+                && !(this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor()) && this.tipoProceso.equals(TipoDocumento.PLAN_SEPARE.getValor()))) {
+            cargar1010();
+        }
+    }
 
+    private void reiniciarInstanciasPagos() {
         instancias.setDevuelta(BigDecimal.ZERO);
         instancias.setEfectivoDevuelta(big.getBigDecimal("0"));
         instancias.setFranquisia("");
@@ -3571,18 +3578,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         instancias.setTarjetaCredito(big.getBigDecimal("0"));
         instancias.setPropina(big.getBigDecimal("0"));
         instancias.setPorcPropina("0");
-
-        DefaultTableModel modelo = (DefaultTableModel) tblArticulos.getModel();
-        while (tblArticulos.getRowCount() > 0) {
-            modelo.removeRow(0);
-        }
-
-        if (tipoProceso.equals("facturacion") || (tipoProceso.equals("mesa") && lbTitulo.getText().equals("DOMICILIO"))) {
-            instancias.setTitulo("");
-        }
-
-        tblProductos.removeEditor();
-        tblInventario.removeEditor();
     }
 
     private void redireccionarRestauranteAlLimpiar() {
@@ -4189,7 +4184,9 @@ public final class VistaFactura extends javax.swing.JPanel {
                     return;
                 }
 
-                if (tblProductos.getRowCount() == 0 || metodos.msgPregunta(null, "¿Desea limpiar la mesa?") == 0) {
+                boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
+                String mensaje = esRestaurante ? "¿Desea limpiar la mesa?" : "¿Desea limpiar la congelada?";
+                if (tblProductos.getRowCount() == 0 || ControladorAlertas.option(mensaje)) {
                     limpiar();
                 }
                 break;
@@ -4202,7 +4199,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         instancias.setCancelarFactura(false);
 
-        if (btnGuardar.getText().equals("FACTURAR") && (lbTitulo.getText().contains("CONG") || lbTitulo.getText().contains("Mesa."))) {
+        if (btnGuardar.getText().equals("FACTURAR") && this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
 //            facturarCongelada(false);
         } else {
             validacionInicialFactura(false);
@@ -4240,7 +4237,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         tblProductos.removeEditor();
         tblInventario.removeEditor();
 
-        ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada);
+        ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada, lineasOriginales);
 
         ModeloContacto datosCliente = !ID_CLIENTE_CARGADO.equals("")
                 ? instancias.getSql().getDatosTercero(ID_CLIENTE_CARGADO)
@@ -4362,19 +4359,26 @@ public final class VistaFactura extends javax.swing.JPanel {
 
             if (!saltarPasosFactura) {
                 if (instancias.getConfiguraciones().isRestaurante()) {
-                    Object[][] productosNuevos = new Object[tblProductos.getRowCount()][1];
-                    int ser = 0;
+
+                    Boolean existeProductoNuevo = false;
+                    List<Object> productosIniciales = new ArrayList<>();
                     for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                        if (!tblProductos.getValueAt(i, 30).equals("Nuevo")) {
-                            productosNuevos[ser][0] = tblProductos.getValueAt(i, 30);
-                            ser++;
+                        Object valor = tblProductos.getValueAt(i, 30);
+
+                        if (!"Nuevo".equals(valor)) {
+                            productosIniciales.add(valor);
+                        } else {
+                            existeProductoNuevo = true;
                         }
                     }
 
-                    VistaImpresionComanda comanda = new VistaImpresionComanda(null, true, txtObservaciones.getText(), cmbVendedor.getSelectedItem().toString());
-                    comanda.setInstancias(instancias, lbNoFactura.getText(), false, productosNuevos);
-                    comanda.setLocationRelativeTo(null);
-                    comanda.setVisible(true);
+                    if (existeProductoNuevo) {
+                        VistaImpresionComanda comanda = new VistaImpresionComanda(null, true, txtObservaciones.getText(), cmbVendedor.getSelectedItem().toString());
+                        comanda.setInstancias(instancias, lbNoFactura.getText(), false, productosIniciales);
+                        comanda.setLocationRelativeTo(null);
+                        comanda.setVisible(true);
+                    }
+
                     //metodos.msgExito(null, "Mesa modificada con éxito");
                 } else {
                     ControladorAlertas.alertSuccess("Congelada modificada con éxito");
@@ -4723,6 +4727,10 @@ public final class VistaFactura extends javax.swing.JPanel {
         if ((Boolean) tblProductos.getValueAt(fila, 36) == true) {
             BigDecimal num1 = big.getMoneda(tblInventario.getValueAt(fila, 1).toString());
             BigDecimal num2 = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", "."));
+            if (!lineasOriginales.isEmpty()) {
+                String idProducto = obtenerValorTabla(fila, 32);
+                num2 = num2.subtract(getCantidadOriginalProducto(idProducto));
+            }
             BigDecimal total = num1.subtract(num2);
             tblInventario.setValueAt(big.setNumero(total), fila, 2);
         } else {
@@ -5078,9 +5086,32 @@ public final class VistaFactura extends javax.swing.JPanel {
     }//GEN-LAST:event_btnVerGruposActionPerformed
 
     private void btnPasarACongeladaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasarACongeladaActionPerformed
+        String slotDisponible = funcionalidadVentas.buscarCongeladaDisponible(instancias);
+        if (slotDisponible == null) {
+            ControladorAlertas.alert("No existen congeladas disponibles");
+            return;
+        }
+
+        instancias.setCancelarFactura(false);
+        String tipoProcesoOriginal = this.tipoProceso;
+        String tituloOriginal = instancias.getTitulo();
+
         this.tipoProceso = TipoDocumento.MESA.getValor();
-        btnGuardarActionPerformed(evt);
-        this.tipoProceso = TipoDocumento.FACTURACION.getValor();
+        instancias.setTitulo(slotDisponible);
+        pasandoACongelada = true;
+
+        String resultado = validacionInicialFactura(false);
+        pasandoACongelada = false;
+
+        if (resultado != null && !resultado.isEmpty()) {
+            String numeroCongelada = slotDisponible.replace("CONGELADA-", "");
+            this.tipoProceso = tipoProcesoOriginal;
+            this.saltarPasosFactura = false;
+            instancias.setTitulo(tituloOriginal);
+            limpiar(true);
+
+            ControladorAlertas.bigAlert("Congelada #" + numeroCongelada + " guardada con éxito");
+        }
     }//GEN-LAST:event_btnPasarACongeladaActionPerformed
 
     public void actualizarResolucion(int fila) {
@@ -5259,6 +5290,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         cargarLineasDocumento(doc.getLineas());
         mostrarResumenDocumento(doc.getCabecera(), false);
         this.lineasOriginales = doc.getLineas();
+        recalcularInventarioTabla();
 
         ndOServicio nodoOrden = daoFactura.getDatosOServicio(orden);
         cargarDatosVehiculo(nodoOrden);
@@ -5343,6 +5375,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         cargarLineasDocumento(doc.getLineas());
         mostrarResumenDocumento(doc.getCabecera(), false);
         this.lineasOriginales = doc.getLineas();
+        recalcularInventarioTabla();
 
         String estadoGeneral = doc.getCabecera().getEstadoGeneral();
         if ("REALIZADO".equals(estadoGeneral)) {
@@ -5461,6 +5494,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         mostrarResumenDocumento(doc.getCabecera(), false);
 
         this.lineasOriginales = doc.getLineas();
+        recalcularInventarioTabla();
         for (int j = 0; j < tblProductos.getRowCount(); j++) {
             tblProductos.setValueAt("PLATO-" + j, j, 30);
         }
@@ -5478,6 +5512,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         btnModificar.setEnabled(true);
         btnReImprimir.setEnabled(true);
         btnReImprimir.setVisible(true);
+        btnLimpiar.setVisible(false);
 
         if (!instancias.getUsuario().equals("ADMIN") && !DatosMaestra.isFacturarMesas()) {
             Object[][] vendedores = instancias.getSql().getVendedores1();
@@ -5495,9 +5530,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers de carga de productos en tabla
-    // -------------------------------------------------------------------------
     private void cargarLineasCotizacion(List<LineaProducto> lineas) {
         for (int i = 0; i < lineas.size(); i++) {
             LineaProducto linea = lineas.get(i);
@@ -6075,16 +6107,18 @@ public final class VistaFactura extends javax.swing.JPanel {
             instancias.getReporte().verPrestamo(credito1, instancias.getInformacionEmpresa());
         }
 
-        if (tipoProceso.equals("mesa")) {
+        if (this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
             if (instancias.getConfiguraciones().isRestaurante()) {
                 instancias.getMesas().cargarRegistrosMesas();
                 instancias.getMesas().cargarRegistros();
                 instancias.getMesas().setSelected(true);
             } else {
-                instancias.getMesas().setSelected(true);
+                if (!pasandoACongelada) {
+                    instancias.getMesas().setSelected(true);
+                }
             }
 
-            if (!instancias.getMenu().getSeVeElMenu()) {
+            if (!pasandoACongelada && !instancias.getMenu().getSeVeElMenu()) {
                 instancias.getMenu().expandirMenu();
             }
         } else {
@@ -8604,12 +8638,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         return value != null ? value.toString() : "";
     }
 
-    /**
-     * Recorre todos los productos de la tabla y valida si hay inventario
-     * suficiente para procesar el documento. Usa ServicioDiscosteo para
-     * explosionar los productos armados/preparados en sus insumos. Delega en
-     * ServicioValidacionFactura.
-     */
     private ResultadoValidacionInventario validarInventarioProductos(String baseUtilizada) {
         List<FilaProductoTabla> filas = extraerFilasDeTabla();
         ServicioValidacionFactura servicio = new ServicioValidacionFactura(new CargadorProducto() {
@@ -8621,10 +8649,66 @@ public final class VistaFactura extends javax.swing.JPanel {
         return servicio.validar(filas, baseUtilizada);
     }
 
-    /**
-     * Lee de tblProductos los datos que la vista aporta a la validación de
-     * inventario.
-     */
+    private ResultadoValidacionInventario validarInventarioProductos(String baseUtilizada, List<LineaProducto> originales) {
+        List<FilaProductoTabla> filas = extraerFilasDeTabla();
+        List<FilaProductoTabla> filasAValidar = originales.isEmpty()
+                ? filas
+                : calcularFilasNetasModificacion(filas, originales);
+        ServicioValidacionFactura servicio = new ServicioValidacionFactura(new CargadorProducto() {
+            @Override
+            public ndProducto cargar(String codigo, String tabla) {
+                return instancias.getSql().getDatosProducto(codigo, tabla);
+            }
+        });
+        return servicio.validar(filasAValidar, baseUtilizada);
+    }
+
+    private List<FilaProductoTabla> calcularFilasNetasModificacion(List<FilaProductoTabla> filas, List<LineaProducto> originales) {
+        List<FilaProductoTabla> filasNetas = new ArrayList<>();
+        for (FilaProductoTabla fila : filas) {
+            BigDecimal cantOriginal = BigDecimal.ZERO;
+            for (LineaProducto linea : originales) {
+                if (fila.getIdProducto().equals(linea.getCodigo())) {
+                    cantOriginal = cantOriginal.add(Utilidades.convertirBigDecimal(linea.getCantidad()));
+                }
+            }
+            BigDecimal incremento = fila.getCantidad().subtract(cantOriginal);
+            if (incremento.compareTo(BigDecimal.ZERO) > 0) {
+                filasNetas.add(new FilaProductoTabla(
+                        fila.getIdProducto(),
+                        fila.getPreparacion(),
+                        incremento,
+                        fila.getDescripcion()));
+            }
+        }
+        return filasNetas;
+    }
+
+    private BigDecimal getCantidadOriginalProducto(String idProducto) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (LineaProducto linea : lineasOriginales) {
+            if (idProducto.equals(linea.getCodigo())) {
+                total = total.add(Utilidades.convertirBigDecimal(linea.getCantidad()));
+            }
+        }
+        return total;
+    }
+
+    private void recalcularInventarioTabla() {
+        for (int i = 0; i < tblInventario.getRowCount(); i++) {
+            Object valorActual = tblInventario.getValueAt(i, 1);
+            if (valorActual == null || "N/A".equals(valorActual.toString())) {
+                continue;
+            }
+            String idProducto = obtenerValorTabla(i, 32);
+            BigDecimal stockActual = big.getMoneda(valorActual.toString());
+            BigDecimal cantNueva = big.getBigDecimal(tblProductos.getValueAt(i, 3).toString().replace(",", "."));
+            BigDecimal cantOriginal = getCantidadOriginalProducto(idProducto);
+            BigDecimal netIncrement = cantNueva.subtract(cantOriginal);
+            tblInventario.setValueAt(Utilidades.formatearCantidadVista(stockActual.subtract(netIncrement)), i, 2);
+        }
+    }
+
     private List<FilaProductoTabla> extraerFilasDeTabla() {
         List<FilaProductoTabla> filas = new ArrayList<>();
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
@@ -9046,8 +9130,6 @@ public final class VistaFactura extends javax.swing.JPanel {
             if (!tblProductos.getValueAt(i, 16).equals("REALIZADO")) {
                 String preparacionProducto = obtenerValorTabla(i, 21);
 
-                System.out.println("movimiento: " + movimiento.getCongelada());
-                
                 Object[] vector = {movimiento.getFactura(), ID_CLIENTE_CARGADO, movimiento.getVendedor(), "",
                     metodos.fechaConsulta(metodosGenerales.fecha()), metodos.fechaConsulta(txtVencimiento.getText()),
                     instancias.getEfectivoDevuelta(), instancias.getNcDevuelta(), instancias.getChequeDevuelta(), instancias.getTarjetaDevuelta(),
@@ -9419,10 +9501,12 @@ public final class VistaFactura extends javax.swing.JPanel {
         } else if (this.tipoProceso.equals(TipoDocumento.PLAN_SEPARE.getValor())) {
             metodos.msgExito(null, "Separe Exitoso");
         } else if (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) && !lbTitulo.getText().equals("DOMICILIO")) {
-            if (instancias.getConfiguraciones().isRestaurante()) {
-                metodos.msgExito(null, "Mesa Exitosa");
-            } else {
-                metodos.msgExito(null, "Congelada Exitosa");
+            if (!pasandoACongelada) {
+                if (instancias.getConfiguraciones().isRestaurante()) {
+                    metodos.msgExito(null, "Mesa Exitosa");
+                } else {
+                    metodos.msgExito(null, "Congelada Exitosa");
+                }
             }
 
             btnReImprimir.setVisible(true);

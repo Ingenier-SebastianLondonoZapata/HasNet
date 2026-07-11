@@ -133,6 +133,24 @@ public class FuncionalidadVentas {
         return numeroCongelada;
     }
 
+    public String buscarCongeladaDisponible(Instancias instancias) {
+        Object[][] congeladas = instancias.getSql().getDatosCongelada1();
+        for (int i = 1; i <= 20; i++) {
+            String slot = "CONGELADA-" + i;
+            boolean ocupada = false;
+            for (Object[] fila : congeladas) {
+                if (fila[2] != null && slot.equals(fila[2].toString())) {
+                    ocupada = true;
+                    break;
+                }
+            }
+            if (!ocupada) {
+                return slot;
+            }
+        }
+        return null;
+    }
+
     public void agregamosRegistrosMediosDePago(Instancias instancias, String factura) {
         String hora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         String fecha = new SimpleDateFormat("yyyy-MM-dd").format(new Date());

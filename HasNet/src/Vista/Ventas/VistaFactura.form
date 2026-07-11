@@ -177,7 +177,7 @@
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="103" groupAlignment="1" attributes="0">
                                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -188,20 +188,20 @@
                                           <Component id="btnBusProd" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="lbVendedor1" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtPorcentaje" max="32767" attributes="0"/>
                                           <Component id="lbCargarDocumento" alignment="1" max="32767" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="txtCargar" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                                               <Component id="btnVerGrupos" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                                           </Group>
+                                          <Component id="lbVendedor1" alignment="1" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Component id="btnPasarACongelada" min="-2" pref="30" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="scrInventario" pref="277" max="32767" attributes="0"/>
+                                  <Component id="scrInventario" pref="280" max="32767" attributes="0"/>
                                   <Component id="scrProductos1" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
@@ -300,12 +300,12 @@
                                   <Editor/>
                                   <Renderer/>
                                 </Column>
-                                <Column maxWidth="35" minWidth="35" prefWidth="35" resizable="true">
+                                <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
                                   <Title/>
                                   <Editor/>
                                   <Renderer/>
                                 </Column>
-                                <Column maxWidth="140" minWidth="80" prefWidth="100" resizable="true">
+                                <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
                                   <Title/>
                                   <Editor/>
                                   <Renderer/>

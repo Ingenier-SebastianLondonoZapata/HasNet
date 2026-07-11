@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Vista.Ventas;
 
 import Utilidades.DatosMaestra;
 import clases.Instancias;
 import clases.metodosGenerales;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author .CLIK
- */
 public class VistaImpresionComanda extends javax.swing.JDialog {
 
     private Instancias instancias;
@@ -23,7 +15,7 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
     public VistaImpresionComanda(java.awt.Frame parent, boolean modal, String observaciones, String vendedor) {
         super(parent, modal);
         initComponents();
-        
+
         this.setLocationRelativeTo(null);
         this.vendedor = vendedor;
         txtObservaciones.setText(observaciones);
@@ -242,7 +234,7 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
                             txtNit.getText().replace("MESA-", ""), DatosMaestra.isPrevisualizarComanda(), impresoraComanda, vendedor);
                 }
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
         }
 
         this.dispose();
@@ -252,7 +244,7 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    public void setInstancias(Instancias instancias, String congelada, Boolean estado, Object[][] prod) {
+    public void setInstancias(Instancias instancias, String congelada, Boolean estado, List<Object> productosIniciales) {
         this.instancias = instancias;
         txtCongelada.setText(congelada);
 
@@ -263,20 +255,10 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
             ((DefaultTableModel) tblProductos.getModel()).addRow(new Object[]{reg[0], reg[2], estado, reg[9]});
         }
 
-        if (prod != null) {
+        if (!productosIniciales.isEmpty()) {
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                tblProductos.setValueAt(true, i, 2);
-                for (int j = 0; j < prod.length; j++) {
-                    String codPlato = "";
-                    try {
-                        codPlato = prod[j][0].toString();
-                    } catch (Exception e) {
-                    }
-
-                    if (tblProductos.getValueAt(i, 3).equals(codPlato)) {
-                        tblProductos.setValueAt(false, i, 2);
-                    }
-                }
+                Object codigo = tblProductos.getValueAt(i, 3);
+                tblProductos.setValueAt(!productosIniciales.contains(codigo), i, 2);
             }
         }
     }
