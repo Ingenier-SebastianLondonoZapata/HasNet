@@ -75,6 +75,7 @@ import inventario.servicio.ServicioDiscosteo;
 import inventario.servicio.ServicioProcesadorComandas;
 import inventario.servicio.ServicioValidacionFactura;
 import inventario.vista.VistaMovimientoDetalleProducto;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -95,8 +96,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -111,7 +111,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     DefaultTableModel modeloPro;
     DefaultTableModel modeloComprobantes;
-    DefaultTableModel modeloInventario;
     DefaultTableModel modeloCredito;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
@@ -142,6 +141,8 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private String tipoProceso, credito1, loteGeneral = "", permisoNumero = "",
             terminal = "", loteCuentasCobro = "", fechaFacturaAutomatica = "";
+
+    private PanelGruposCompacto panelGruposEmbebido;
 
     //NODOS
     private String ndPeluqueria = "", ndGuarderia = "", ndHospitalizacion = "", diasHospitalizacion = "",
@@ -194,10 +195,9 @@ public final class VistaFactura extends javax.swing.JPanel {
             tblComprobantes.setValueAt(true, 0, 2);
         }
 
-        tblInventario.removeEditor();
         modeloPro = (DefaultTableModel) tblProductos.getModel();
 
-        TableColumn tc = tblInventario.getColumnModel().getColumn(0);
+        TableColumn tc = tblProductos.getColumnModel().getColumn(37);
         TableCellEditor tce = new DefaultCellEditor(cmbListas);
         tc.setCellEditor(tce);
 
@@ -215,6 +215,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         actualizarVistaSegunTipoDocumento(tipo);
         actualizarResolucion(0);
         actualizarConsecutivo(0);
+        inicializarPanelGruposEmbebido();
 
         this.registerKeyboardAction(accion("guardarFactura"), "guardarFactura", KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
         this.registerKeyboardAction(accion("imprimir"), "imprimir", KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -546,7 +547,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
             if ("PRODUCTO-AGREGADO".equals(desde)) {
                 modeloPro.removeRow(num2);
-                modeloInventario.removeRow(num2);
                 num2 = num2 - 1;
             } else {
             }
@@ -555,7 +555,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
     }
 
     public void actualizarConsecutivo(int fila) {
@@ -958,16 +957,14 @@ public final class VistaFactura extends javax.swing.JPanel {
         lbProducto = new javax.swing.JLabel();
         txtCodigoProducto = new javax.swing.JTextField();
         btnBusProd = new javax.swing.JButton();
-        scrInventario = new javax.swing.JScrollPane();
-        tblInventario = new javax.swing.JTable();
         lbProducto1 = new javax.swing.JLabel();
         txtCantidad = new javax.swing.JTextField();
         txtPorcentaje = new javax.swing.JTextField();
         lbVendedor1 = new javax.swing.JLabel();
         txtCargar = new javax.swing.JTextField();
         lbCargarDocumento = new javax.swing.JLabel();
-        btnVerGrupos = new javax.swing.JButton();
         btnPasarACongelada = new javax.swing.JButton();
+        pnlGrupos = new javax.swing.JPanel();
         pnlCredito = new javax.swing.JPanel();
         lbVendedor8 = new javax.swing.JLabel();
         cmbTipoPlazo = new javax.swing.JComboBox();
@@ -1124,11 +1121,11 @@ public final class VistaFactura extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Codigo", "Descripción", "Valor/Unit", "Cant", "Subtotal", "Desc %", "Desc", "Iva %", "Impo", "Total", "Ubicación", "Referencia", "plu", "cant2", "ponderado", "Utilidad", "Estado", "Copago", "datoGrupo", "Pago Tercero", "Utilidad1", "Orden/Aviso", "Borrar", "Impo %", "Orden", "Aviso", "F. Entrega", "Detalle", "Lote", "IdProd", "paraComanda", "permisoDesc", "idSistema", "Iva", "Grupo", "Medida", "ControlInv"
+                "Codigo", "Descripción", "Valor/Unit", "Cant", "Subtotal", "Desc %", "Desc", "Iva %", "Impo", "Total", "Ubicación", "Referencia", "plu", "cant2", "ponderado", "Utilidad", "Estado", "Copago", "datoGrupo", "Pago Tercero", "Utilidad1", "Orden/Aviso", "Borrar", "Impo %", "Orden", "Aviso", "F. Entrega", "Detalle", "Lote", "IdProd", "paraComanda", "permisoDesc", "idSistema", "Iva", "Grupo", "Medida", "ControlInv", "Lista", "Actual", "Final"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, false, true, true, false, false, false, false, false, false, false, false, false, false, true, false, true, true, true, false, true, true, true, true, false, false, false, true, true, true, true, true, false, true
+                false, true, true, true, false, true, true, false, false, false, false, false, false, false, false, false, false, true, false, true, true, true, false, true, true, true, true, false, false, false, true, true, true, true, true, false, true, true, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1259,6 +1256,15 @@ public final class VistaFactura extends javax.swing.JPanel {
             tblProductos.getColumnModel().getColumn(36).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(36).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(36).setMaxWidth(0);
+            tblProductos.getColumnModel().getColumn(37).setMinWidth(35);
+            tblProductos.getColumnModel().getColumn(37).setPreferredWidth(35);
+            tblProductos.getColumnModel().getColumn(37).setMaxWidth(35);
+            tblProductos.getColumnModel().getColumn(38).setMinWidth(35);
+            tblProductos.getColumnModel().getColumn(38).setPreferredWidth(50);
+            tblProductos.getColumnModel().getColumn(38).setMaxWidth(80);
+            tblProductos.getColumnModel().getColumn(39).setMinWidth(35);
+            tblProductos.getColumnModel().getColumn(39).setPreferredWidth(50);
+            tblProductos.getColumnModel().getColumn(39).setMaxWidth(80);
         }
 
         lbProducto.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
@@ -1305,39 +1311,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                 btnBusProdActionPerformed(evt);
             }
         });
-
-        tblInventario.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        tblInventario.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "", "Actual", "Final"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                true, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblInventario.setToolTipText("Doble Click para cambiar la lista");
-        tblInventario.setMinimumSize(new java.awt.Dimension(45, 203));
-        tblInventario.setRowHeight(30);
-        tblInventario.getTableHeader().setReorderingAllowed(false);
-        tblInventario.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblInventarioMouseClicked(evt);
-            }
-        });
-        scrInventario.setViewportView(tblInventario);
-        if (tblInventario.getColumnModel().getColumnCount() > 0) {
-            tblInventario.getColumnModel().getColumn(0).setMinWidth(30);
-            tblInventario.getColumnModel().getColumn(0).setPreferredWidth(30);
-            tblInventario.getColumnModel().getColumn(0).setMaxWidth(30);
-        }
 
         lbProducto1.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         lbProducto1.setText("Cantidad:");
@@ -1408,15 +1381,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         lbCargarDocumento.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         lbCargarDocumento.setText("Cargar Documento:");
 
-        btnVerGrupos.setBackground(new java.awt.Color(247, 220, 111));
-        btnVerGrupos.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        btnVerGrupos.setText("Ver Grupos");
-        btnVerGrupos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVerGruposActionPerformed(evt);
-            }
-        });
-
         btnPasarACongelada.setBackground(new java.awt.Color(247, 220, 111));
         btnPasarACongelada.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         btnPasarACongelada.setText("Pasar a congelada");
@@ -1425,6 +1389,19 @@ public final class VistaFactura extends javax.swing.JPanel {
                 btnPasarACongeladaActionPerformed(evt);
             }
         });
+
+        pnlGrupos.setBackground(new java.awt.Color(204, 204, 204));
+
+        javax.swing.GroupLayout pnlGruposLayout = new javax.swing.GroupLayout(pnlGrupos);
+        pnlGrupos.setLayout(pnlGruposLayout);
+        pnlGruposLayout.setHorizontalGroup(
+            pnlGruposLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 158, Short.MAX_VALUE)
+        );
+        pnlGruposLayout.setVerticalGroup(
+            pnlGruposLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -1453,38 +1430,34 @@ public final class VistaFactura extends javax.swing.JPanel {
                         .addComponent(lbCargarDocumento)
                         .addGap(2, 2, 2)
                         .addComponent(txtCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(scrProductos1, javax.swing.GroupLayout.DEFAULT_SIZE, 991, Short.MAX_VALUE))
+                    .addComponent(scrProductos1, javax.swing.GroupLayout.DEFAULT_SIZE, 1015, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(scrInventario, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(btnVerGrupos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(3, 3, 3))
+                .addComponent(pnlGrupos, 200, 200, 200)
+                .addGap(1, 1, 1))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtCantidad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                            .addComponent(lbProducto1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtCodigoProducto, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtPorcentaje)
-                            .addComponent(lbCargarDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnVerGrupos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lbVendedor1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(btnPasarACongelada, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrInventario, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                    .addComponent(scrProductos1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(1, 1, 1))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtCantidad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                                    .addComponent(lbProducto1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lbProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtCodigoProducto, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtPorcentaje)
+                                    .addComponent(lbCargarDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtCargar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lbVendedor1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(btnPasarACongelada, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(3, 3, 3)
+                        .addComponent(scrProductos1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))
+                    .addComponent(pnlGrupos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         tapControl.addTab("Facturación", jPanel2);
@@ -1720,7 +1693,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                         .addComponent(txtTotalCredito, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(dtFechaDesenvolso, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                 .addGap(5, 5, 5))
         );
 
@@ -1973,7 +1946,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     .addComponent(btnNuevaParte, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnNuevaParte1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -2136,7 +2109,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             .addGroup(pnlFacturacionAutomaticaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(132, Short.MAX_VALUE))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
 
         tapControl.addTab("Facturación Automatica", pnlFacturacionAutomatica);
@@ -3340,7 +3313,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
 
         ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada);
 
@@ -3356,7 +3328,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
 
         if (!saltarPasosFactura) {
             if (instancias.getRegimen().equals("")) {
@@ -3446,10 +3417,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         btnModificar.setEnabled(false);
 
-        tblInventario.removeEditor();
-        modeloInventario = (DefaultTableModel) tblInventario.getModel();
         limpiarTabla(modeloPro);
-        limpiarTabla(modeloInventario);
 
         limpiarTotalesDocumento();
 
@@ -3471,7 +3439,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
     }
 
     private void reiniciarEstadoInterno() {
@@ -3603,11 +3570,11 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     public void cambiarListaCliente() {
-        if (tblInventario.getSelectedRow() != -1) {
-            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), "bdProductos");
+        if (tblProductos.getSelectedRow() != -1) {
+            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), "bdProductos");
             String valor = "";
 
-            switch ((String) tblInventario.getValueAt(tblInventario.getSelectedRow(), 0)) {
+            switch ((String) tblProductos.getValueAt(tblProductos.getSelectedRow(), 37)) {
                 case "L1":
                     valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL1()));
                     break;
@@ -3635,12 +3602,12 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
 
             tblProductos.setColumnSelectionInterval(3, 3);
-            tblProductos.setRowSelectionInterval(tblInventario.getSelectedRow(), tblInventario.getSelectedRow());
-            tblProductos.setValueAt(valor, tblInventario.getSelectedRow(), 2);
+            tblProductos.setRowSelectionInterval(tblProductos.getSelectedRow(), tblProductos.getSelectedRow());
+            tblProductos.setValueAt(valor, tblProductos.getSelectedRow(), 2);
             tblProductos.transferFocus();
 
             //simulando enter sobre el producto
-            KeyEvent evento = new KeyEvent(tblInventario, 0, 0, 0, 0);
+            KeyEvent evento = new KeyEvent(tblProductos, 0, 0, 0, 0);
             evento.setKeyCode(KeyEvent.VK_ENTER);
             tblProductosKeyReleased(evento);
         }
@@ -3713,14 +3680,14 @@ public final class VistaFactura extends javax.swing.JPanel {
     }//GEN-LAST:event_cmbListasItemStateChanged
 
     private void cmbListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbListasActionPerformed
-        if (tblInventario.getSelectedRow() != -1) {
+        if (tblProductos.getSelectedRow() != -1) {
 
             String baseUtilizada = "bdProductos";
 
-            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), baseUtilizada);
+            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
             String valor = "";
 
-            switch ((String) tblInventario.getValueAt(tblInventario.getSelectedRow(), 0)) {
+            switch ((String) tblProductos.getValueAt(tblProductos.getSelectedRow(), 37)) {
                 case "L1":
                     valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL1()));
                     break;
@@ -3749,13 +3716,12 @@ public final class VistaFactura extends javax.swing.JPanel {
 
             tblProductos.setColumnSelectionInterval(3, 3);
             tblProductos.setColumnSelectionInterval(6, 6);
-            tblProductos.setRowSelectionInterval(tblInventario.getSelectedRow(), tblInventario.getSelectedRow());
-            tblProductos.setValueAt(valor, tblInventario.getSelectedRow(), 2);
-//            tblProductos.editCellAt(tblInventario.getSelectedRow(), 6);
+            tblProductos.setRowSelectionInterval(tblProductos.getSelectedRow(), tblProductos.getSelectedRow());
+            tblProductos.setValueAt(valor, tblProductos.getSelectedRow(), 2);
             tblProductos.transferFocus();
 
             //simulando enter sobre el producto
-            KeyEvent evento = new KeyEvent(tblInventario, 0, 0, 0, 0);
+            KeyEvent evento = new KeyEvent(tblProductos, 0, 0, 0, 0);
             evento.setKeyCode(KeyEvent.VK_ENTER);
             tblProductosKeyReleased(evento);
         }
@@ -4235,7 +4201,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
 
         ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada, lineasOriginales);
 
@@ -4530,7 +4495,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                         int r = tblProductos.getSelectedRow();
                         tblProductos.changeSelection(r, 0, false, false);
                         tblProductos.removeEditor();
-                        tblInventario.removeEditor();
 
                         tblProductos.editCellAt(r, 3);
                         tblProductos.setColumnSelectionInterval(3, 3);
@@ -4567,7 +4531,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     if (!DatosMaestra.isModificarPrecio()) {
                         ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
 
-                        String lista = tblInventario.getValueAt(tblProductos.getSelectedRow(), 0).toString();
+                        String lista = tblProductos.getValueAt(tblProductos.getSelectedRow(), 37).toString();
                         if (lista.equals("L1")) {
                             tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL1())), tblProductos.getSelectedRow(), 2);
                         } else if (lista.equals("L2")) {
@@ -4587,7 +4551,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     if (!DatosMaestra.isModificarPrecio()) {
                         ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
 
-                        String lista = tblInventario.getValueAt(fila, 0).toString();
+                        String lista = tblProductos.getValueAt(fila, 37).toString();
                         if (lista.equals("L1")) {
                             tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL1())), fila, 2);
                         } else if (lista.equals("L2")) {
@@ -4725,17 +4689,17 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         if ((Boolean) tblProductos.getValueAt(fila, 36) == true) {
-            BigDecimal num1 = big.getMoneda(tblInventario.getValueAt(fila, 1).toString());
+            BigDecimal num1 = big.getMoneda(tblProductos.getValueAt(fila, 38).toString());
             BigDecimal num2 = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", "."));
             if (!lineasOriginales.isEmpty()) {
                 String idProducto = obtenerValorTabla(fila, 32);
                 num2 = num2.subtract(getCantidadOriginalProducto(idProducto));
             }
             BigDecimal total = num1.subtract(num2);
-            tblInventario.setValueAt(big.setNumero(total), fila, 2);
+            tblProductos.setValueAt(big.setNumero(total), fila, 39);
         } else {
-            tblInventario.setValueAt("N/A", fila, 1);
-            tblInventario.setValueAt("N/A", fila, 2);
+            tblProductos.setValueAt("N/A", fila, 38);
+            tblProductos.setValueAt("N/A", fila, 39);
         }
     }//GEN-LAST:event_tblProductosKeyReleased
 
@@ -5080,10 +5044,40 @@ public final class VistaFactura extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbOtroConsecutivoActionPerformed
 
-    private void btnVerGruposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerGruposActionPerformed
-        VistaGruposProductos dlg = new VistaGruposProductos(null, true, this.tipoProceso);
-        dlg.setVisible(true);
-    }//GEN-LAST:event_btnVerGruposActionPerformed
+    public void inicializarPanelGruposEmbebido() {
+        Object[][] grupos = instancias.getSql().getGruposVisualizarFactura();
+
+        if (!instancias.getConfiguraciones().isRestaurante() || grupos.length == 0) {
+            pnlGrupos.setVisible(false);
+            return;
+        }
+
+        panelGruposEmbebido = new PanelGruposCompacto();
+        panelGruposEmbebido.setListener(new PanelGruposCompacto.ListenerGrupo() {
+            @Override
+            public void grupoSeleccionado(String codigo, String nombre) {
+                VistaGruposProductos dlg = new VistaGruposProductos(null, true, tipoProceso);
+                dlg.seleccionarGrupo(codigo, nombre);
+                dlg.setVisible(true);
+            }
+        });
+
+        panelGruposEmbebido.setGrupos(grupos);
+
+        int n = grupos != null ? grupos.length : 0;
+        int alturaVisible = Math.min(n * PanelGruposCompacto.CARD_H + 10, 196);
+
+        JScrollPane scroll = new JScrollPane(panelGruposEmbebido);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(PanelGruposCompacto.CARD_H);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setPreferredSize(new java.awt.Dimension(200, alturaVisible));
+
+        pnlGrupos.setLayout(new BorderLayout());
+        pnlGrupos.add(scroll, BorderLayout.CENTER);
+        pnlGrupos.revalidate();
+        pnlGrupos.repaint();
+    }
 
     private void btnPasarACongeladaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasarACongeladaActionPerformed
         String slotDisponible = funcionalidadVentas.buscarCongeladaDisponible(instancias);
@@ -5249,7 +5243,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
     }
 
     private void cargarMovimientoCotizacion() {
@@ -5874,10 +5867,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
         modelo.removeRow(fila);
 
-        modeloInventario = (DefaultTableModel) tblInventario.getModel();
-        modeloInventario.removeRow(fila);
-
-        tblInventario.removeEditor();
         tblProductos.removeEditor();
 
         btnPasarACongelada.setVisible(esValidoParaPasarACongeladas());
@@ -6127,7 +6116,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         lbNit.requestFocus();
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
 
         actualizarTablaResoluciones();
 
@@ -7407,7 +7395,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                     }
                 }
 
-                modeloInventario = (DefaultTableModel) tblInventario.getModel();
                 BigDecimal aux = new BigDecimal("0.0"), iva, valor;
                 valor = big.getBigDecimal(nodo.getL1());
                 iva = big.getBigDecimal(nodo.getIva());
@@ -7476,11 +7463,11 @@ public final class VistaFactura extends javax.swing.JPanel {
 
                 BigDecimal restante = cant.subtract(cantidad);
 
-                if (!nodo.getManejaInventario()) {
-                    modeloInventario.addRow(new Object[]{lista1, "N/A", "N/A"});
-                } else {
-                    modeloInventario.addRow(new Object[]{lista1, Utilidades.formatearCantidadVista(cant),
-                        Utilidades.formatearCantidadVista(restante)});
+                String invActual = "N/A";
+                String invFinal = "N/A";
+                if (nodo.getManejaInventario()) {
+                    invActual = Utilidades.formatearCantidadVista(cant);
+                    invFinal = Utilidades.formatearCantidadVista(restante);
                 }
 
                 boolean datosGrupo = true;
@@ -7553,7 +7540,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     Utilidades.formatearCantidadVista(big.getBigDecimal(cant2).multiply(cantidad)), this.simbolo + " 0", "", "PENDIENTE", this.simbolo + " 0", datosGrupo, this.simbolo + " 0",
                     this.simbolo + " 0", cadena, new JLabel(icono), big.setMonedaExacta(big.getBigDecimal(nodo.getImpoconsumoVenta())).replace(this.simbolo + " ", ""), "", "", "",
                     detalle, lote, idProd, "Nuevo", "Sin-Permiso", nodo.getIdSistema(), big.setMoneda(big.getBigDecimal(aux)), grupo, nodo.getUnd(),
-                    nodo.getManejaInventario()});
+                    nodo.getManejaInventario(), lista1, invActual, invFinal});
                 txtCodigoProducto.setText("");
 
                 tblProductos.scrollRectToVisible(tblProductos.getCellRect(tblProductos.getRowCount() - 1, 0, true));
@@ -7565,9 +7552,9 @@ public final class VistaFactura extends javax.swing.JPanel {
                 if (!this.plu) {
                     if (cmbListaPrecio.getSelectedIndex() > 0) {
                         cmbListas.setSelectedItem(cmbListaPrecio.getSelectedItem());
-                        tblInventario.setValueAt(cmbListaPrecio.getSelectedItem(), tblInventario.getRowCount() - 1, 0);
-                        tblInventario.setColumnSelectionInterval(0, 0);
-                        tblInventario.setRowSelectionInterval(tblInventario.getRowCount() - 1, tblInventario.getRowCount() - 1);
+                        tblProductos.setValueAt(cmbListaPrecio.getSelectedItem(), tblProductos.getRowCount() - 1, 37);
+                        tblProductos.setColumnSelectionInterval(37, 37);
+                        tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
                         cambiarListaCliente();
                     }
                 }
@@ -7582,11 +7569,11 @@ public final class VistaFactura extends javax.swing.JPanel {
                 txtCodigoProducto.requestFocus();
             } else {
                 if (DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor")) {
-                    tblProductos.editCellAt(tblInventario.getRowCount() - 1, 2);
+                    tblProductos.editCellAt(tblProductos.getRowCount() - 1, 2);
                     tblProductos.setColumnSelectionInterval(2, 2);
                     tblProductos.transferFocus();
                 } else {
-                    tblProductos.editCellAt(tblInventario.getRowCount() - 1, 3);
+                    tblProductos.editCellAt(tblProductos.getRowCount() - 1, 3);
                     tblProductos.setColumnSelectionInterval(3, 3);
                     tblProductos.transferFocus();
                 }
@@ -7624,7 +7611,6 @@ public final class VistaFactura extends javax.swing.JPanel {
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
                 if (tblProductos.getValueAt(i, 32).equals(prod)) {
                     modeloPro.removeRow(i);
-                    modeloInventario.removeRow(i);
                     break;
                 }
             }
@@ -7706,7 +7692,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         tblProductos.changeSelection(tblProductos.getRowCount() - 1, 0, false, false);
         tblProductos.removeEditor();
-        tblInventario.removeEditor();
 
         if (tblProductos.editCellAt(tblProductos.getRowCount() - 1, 0)) {
             tblProductos.setColumnSelectionInterval(0, 0);
@@ -7714,11 +7699,11 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         if (DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor")) {
-            tblProductos.editCellAt(tblInventario.getRowCount() - 1, 2);
+            tblProductos.editCellAt(tblProductos.getRowCount() - 1, 2);
             tblProductos.setColumnSelectionInterval(2, 2);
             tblProductos.transferFocus();
         } else {
-            tblProductos.editCellAt(tblInventario.getRowCount() - 1, 3);
+            tblProductos.editCellAt(tblProductos.getRowCount() - 1, 3);
             tblProductos.setColumnSelectionInterval(3, 3);
             tblProductos.transferFocus();
         }
@@ -7802,11 +7787,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         btnModificar.setEnabled(false);
         btnGuardar.setEnabled(true);
         btnImprimir.setEnabled(true);
-        DefaultTableModel x = (DefaultTableModel) tblInventario.getModel();
         int i, j = tblProductos.getRowCount();
 
         for (i = 0; i < j; i++) {
-            x.removeRow(0);
             modeloPro.removeRow(0);
         }
         txtSubTotal.setText(this.simbolo + " 0");
@@ -7919,7 +7902,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         BigDecimal descuento, total, porcentaje2, compra, utilidadMax, utilidadMin;
 
-        String listaPrecio = tblInventario.getValueAt(fila, 0).toString();
+        String listaPrecio = tblProductos.getValueAt(fila, 37).toString();
         if (!DatosMaestra.isModificarPrecio()) {
             BigDecimal valorReal = funcionalidadVentas.revisarPrecioProducto(listaPrecio, valorUnitario, nodo);
             tblProductos.setValueAt(big.setMoneda(valorReal), fila, 2);
@@ -8695,8 +8678,8 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private void recalcularInventarioTabla() {
-        for (int i = 0; i < tblInventario.getRowCount(); i++) {
-            Object valorActual = tblInventario.getValueAt(i, 1);
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            Object valorActual = tblProductos.getValueAt(i, 38);
             if (valorActual == null || "N/A".equals(valorActual.toString())) {
                 continue;
             }
@@ -8705,7 +8688,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             BigDecimal cantNueva = big.getBigDecimal(tblProductos.getValueAt(i, 3).toString().replace(",", "."));
             BigDecimal cantOriginal = getCantidadOriginalProducto(idProducto);
             BigDecimal netIncrement = cantNueva.subtract(cantOriginal);
-            tblInventario.setValueAt(Utilidades.formatearCantidadVista(stockActual.subtract(netIncrement)), i, 2);
+            tblProductos.setValueAt(Utilidades.formatearCantidadVista(stockActual.subtract(netIncrement)), i, 39);
         }
     }
 
@@ -9605,7 +9588,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JButton btnNuevaParte1;
     private javax.swing.JButton btnPasarACongelada;
     private javax.swing.JButton btnReImprimir;
-    private javax.swing.JButton btnVerGrupos;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox chkReteIva;
     private javax.swing.JCheckBox chkSinEstablecer;
@@ -9687,6 +9669,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JPanel pnlCuentaCobro;
     private javax.swing.JPanel pnlFacturacionAutomatica;
     private javax.swing.JPanel pnlFormulario;
+    private javax.swing.JPanel pnlGrupos;
     private javax.swing.JPanel pnlOcultar;
     private javax.swing.JPanel pnlOrdenServicio;
     private javax.swing.JMenuItem popBorrar;
@@ -9695,13 +9678,11 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JRadioButton rdPos;
     private javax.swing.JRadioButton rdTipoCopago;
     private javax.swing.JRadioButton rdTipoNormal;
-    private javax.swing.JScrollPane scrInventario;
     private javax.swing.JScrollPane scrProductos1;
     private javax.swing.JTabbedPane tapControl;
     private javax.swing.JTable tblArticulos;
     private javax.swing.JTable tblComprobantes;
     private javax.swing.JTable tblCuotas;
-    private javax.swing.JTable tblInventario;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txtCantFacturados;
     private javax.swing.JTextField txtCantIncremento;

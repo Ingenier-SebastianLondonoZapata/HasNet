@@ -267,6 +267,10 @@ public class VistaGruposProductos extends JDialog {
         panelGruposRef.setGrupos(datos);
     }
 
+    public void seleccionarGrupo(String codigo, String nombre) {
+        cargarProductosGrupo(codigo, nombre);
+    }
+
     private void cargarProductosGrupo(String codigo, String nombre) {
         lblGrupo.setText(nombre);
         txtBuscar.setText("");

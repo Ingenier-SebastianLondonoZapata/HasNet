@@ -4090,15 +4090,6 @@ public class SQL {
         return datos;
     }
 
-    public String imagenGrupo(String consulta) {
-
-        String colName[] = {
-            "imagen"
-        };
-        String origen = " bdGrupo";
-        Object dtDatos[][] = getDatos(colName, origen, "select imagen FROM bdGrupo where codigo = '" + consulta + "' ", " where codigo = '" + consulta + "' ");
-        return dtDatos[0][0].toString();
-    }
 
 //    public boolean modificarEstadoProductosOrden(String id, String estado, String producto) {
 //        boolean ok = false;

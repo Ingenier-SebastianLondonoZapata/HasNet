@@ -113,7 +113,7 @@ import formularios.Veterinario.infHospitalizacion;
 import formularios.Veterinario.infIngresoHospitalizacion;
 
 import formularios.productos.dlgConsultarCodigos;
-import Vista.Productos.infGrupos;
+import Vista.Productos.VistaGrupos;
 import Vista.Productos.ingreso;
 import formularios.productos.infArmado;
 import Vista.Productos.VistaDiseno;
@@ -2420,7 +2420,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("ORDEN DE SERVICIO");
             }
 
-            if (formularios[1] instanceof infGrupos) {
+            if (formularios[1] instanceof VistaGrupos) {
                 instancias.getMenu().cambiarTitulo("CREACIÓN DE GRUPOS Y SUBGRUPOS");
             }
 
@@ -3592,7 +3592,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infGrupos interno14 = new infGrupos();
+            VistaGrupos interno14 = new VistaGrupos();
             dkpFormularios.add(interno14);
             instancias.setGrupos(interno14);
             if (instancias.getUsuarioLog().isGrupos()) {

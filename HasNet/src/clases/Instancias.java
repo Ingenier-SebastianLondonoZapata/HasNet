@@ -1,6 +1,6 @@
 package clases;
 
-import Vista.Productos.infGrupos;
+import Vista.Productos.VistaGrupos;
 import Vista.Ventas.creditos;
 import Vista.Ventas.cotizacion;
 import Vista.Ventas.planSepare;
@@ -281,7 +281,7 @@ public class Instancias {
     /* INICIO PRODUCTOS */
     private infInventario inventario;
     private VistaProductos productos;
-    private infGrupos grupos;
+    private VistaGrupos grupos;
     private infKardexProductos kardexProductos;
     private buscProductos buscProductos;
     private buscSeriales buscSeriales;
@@ -2294,11 +2294,11 @@ public class Instancias {
         this.empresas = empresas;
     }
 
-    public infGrupos getGrupos() {
+    public VistaGrupos getGrupos() {
         return grupos;
     }
 
-    public void setGrupos(infGrupos grupos) {
+    public void setGrupos(VistaGrupos grupos) {
         this.grupos = grupos;
     }
 
