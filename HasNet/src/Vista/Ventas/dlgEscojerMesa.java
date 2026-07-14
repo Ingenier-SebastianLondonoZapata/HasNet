@@ -1,4 +1,4 @@
-package formularios.Ventas;
+package Vista.Ventas;
 
 import clases.IconCellRenderer;
 import clases.IconCellRendererConColor;

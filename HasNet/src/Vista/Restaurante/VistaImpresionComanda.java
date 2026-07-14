@@ -1,4 +1,4 @@
-package Vista.Ventas;
+package Vista.Restaurante;
 
 import Utilidades.DatosMaestra;
 import clases.Instancias;

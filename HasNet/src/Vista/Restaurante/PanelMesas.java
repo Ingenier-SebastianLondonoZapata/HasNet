@@ -1,4 +1,4 @@
-package Vista.Ventas;
+package Vista.Restaurante;
 
 import Modelo.Ventas.ModeloMesa;
 import clases.big;

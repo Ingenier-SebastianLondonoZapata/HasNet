@@ -1,4 +1,4 @@
-package Vista.Ventas;
+package Vista.Restaurante;
 
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;

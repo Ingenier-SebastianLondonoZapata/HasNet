@@ -1,4 +1,4 @@
-package Vista.Ventas;
+package Vista.Restaurante;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

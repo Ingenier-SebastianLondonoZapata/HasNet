@@ -1,6 +1,7 @@
 package Vista.Ventas;
 
 import Controlador.Alertas.ControladorAlertas;
+import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
@@ -13,6 +14,7 @@ import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import dao.Configuraciones.DaoResoluciones;
 import dao.Ventas.DaoFactura;
+import dao.Ventas.DaoOrdenServicio;
 import inventario.servicio.ServicioInventario;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -115,21 +117,21 @@ public class FuncionalidadVentas {
 
     public String obtenerNumeroCongelada(Instancias instancias, String tipoProceso) {
         String numeroCongelada = "";
-        if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
-            numeroCongelada = "SIN-CONSECUTIVO";
-        } else {
-            try {
-                String titulo = instancias.getTitulo();
-                if (titulo != null) {
-                    numeroCongelada = instancias.getConfiguraciones().isRestaurante()
-                            ? titulo
-                            : titulo.replace(": ", "-");
-                }
-            } catch (Exception e) {
-                System.out.println("Falló al obtener el titulo de la mesa");
+        try {
+            String titulo = instancias.getTitulo();
+            if (titulo != null && !titulo.isEmpty()) {
+                numeroCongelada = instancias.getConfiguraciones().isRestaurante()
+                        ? titulo
+                        : titulo.replace(": ", "-");
+            } else if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
+                numeroCongelada = "SIN-CONSECUTIVO";
+            }
+        } catch (Exception e) {
+            System.out.println("Falló al obtener el titulo de la mesa");
+            if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
+                numeroCongelada = "SIN-CONSECUTIVO";
             }
         }
-
         return numeroCongelada;
     }
 
@@ -317,6 +319,51 @@ public class FuncionalidadVentas {
             default:
                 return BigDecimal.ZERO;
         }
+    }
+
+    public ConversorDocumentoAFactura inicializarConversorDocumentos(final Instancias instancias, final DaoOrdenServicio daoOrdenServicio) {
+        return new ConversorDocumentoAFactura()
+                .registrar(TipoDocumento.MESA.getValor(), TipoDocumento.ANULAR_MESA,
+                        new ConversorDocumentoAFactura.ActualizadorDocumento() {
+                            @Override
+                            public void actualizar(String idDocumento, String tituloDocumento) {
+                                instancias.getSql().eliminarComanda(idDocumento, "factura");
+                                instancias.getSql().eliminarMesa(idDocumento);
+                                instancias.getSql().cambiarEstadoMesa(tituloDocumento, EstadosTipoDocumento.DISPONIBLE.getNombre());
+                            }
+                        })
+                .registrar(TipoDocumento.PEDIDO.getValor(), TipoDocumento.ANULAR_PEDIDO,
+                        new ConversorDocumentoAFactura.ActualizadorDocumento() {
+                            @Override
+                            public void actualizar(String idDocumento, String tituloDocumento) {
+                                String idPedido = instancias.getSql().pedidoExistente(idDocumento);
+                                instancias.getSql().eliminarComanda(idPedido, "pedido");
+                                instancias.getSql().eliminarPedido(idPedido);
+                            }
+                        })
+                .registrar(TipoDocumento.ORDER_SERVICIO.getValor(), TipoDocumento.ANULAR_ORDER_SERVICIO,
+                        new ConversorDocumentoAFactura.ActualizadorDocumento() {
+                            @Override
+                            public void actualizar(String idDocumento, String tituloDocumento) {
+                                daoOrdenServicio.eliminarVehiculo(idDocumento);
+                                daoOrdenServicio.eliminarDetalle(idDocumento);
+                                instancias.getSql().eliminarOServicio(idDocumento);
+                            }
+                        })
+                .registrar(TipoDocumento.COTIZACION.getValor(), null,
+                        new ConversorDocumentoAFactura.ActualizadorDocumento() {
+                            @Override
+                            public void actualizar(String idDocumento, String tituloDocumento) {
+                                instancias.getSql().eliminarCotizacion(idDocumento);
+                            }
+                        })
+                .registrar(TipoDocumento.CUENTA_COBRO.getValor(), null,
+                        new ConversorDocumentoAFactura.ActualizadorDocumento() {
+                            @Override
+                            public void actualizar(String idDocumento, String tituloDocumento) {
+                                instancias.getSql().eliminarCuentaCobro(idDocumento);
+                            }
+                        });
     }
 
 }

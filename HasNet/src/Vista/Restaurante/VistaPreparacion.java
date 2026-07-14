@@ -1,4 +1,4 @@
-package Vista.Ventas;
+package Vista.Restaurante;
 
 import clases.Instancias;
 import clases.cambiarColorTabla;

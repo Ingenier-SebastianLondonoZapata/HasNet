@@ -1,4 +1,4 @@
-package Vista.Ventas;
+package Vista.Restaurante;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -38,7 +38,7 @@ public class PanelGruposCompacto extends JPanel {
         }
     }
 
-    static final int CARD_H = 46;
+    public static final int CARD_H = 46;
     private static final int GAP = 3;
     private static final int PADDING = 5;
     private static final int ARC = 8;

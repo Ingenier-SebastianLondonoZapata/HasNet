@@ -12,7 +12,7 @@ import clases.big;
 import clases.metodosGenerales;
 import formularios.productos.buscMedidas;
 import formularios.productos.buscProductos;
-import Vista.Ventas.VistaProductosCambio;
+import Vista.Restaurante.VistaProductosCambio;
 import formularios.productos.seleccionarPLU;
 import java.awt.Dimension;
 import java.awt.Event;

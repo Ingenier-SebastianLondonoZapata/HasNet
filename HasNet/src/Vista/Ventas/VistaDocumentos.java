@@ -1,34 +1,35 @@
 package Vista.Ventas;
 
-import dao.Terceros.DaoTerceros;
-import dao.Ventas.DaoReimpresiones;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
-import Modelo.Terceros.ModeloDatosVehiculo;
-import Utilidades.CambiarColorTablaReimpresionYAnulacion;
-import clases.Cartera.ndCxc;
-import clases.Instancias;
-import clases.Ventas.ndFactura;
-import clases.Ventas.ndPlanSepare;
-import clases.big;
-import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
+import Modelo.Terceros.ModeloDatosVehiculo;
 import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
-import inventario.servicio.CargadorProducto;
-import inventario.servicio.ServicioDiscosteo;
-import inventario.servicio.ServicioInventario;
+import Utilidades.CambiarColorTablaReimpresionYAnulacion;
 import Utilidades.Constantes;
+import Utilidades.DatosMaestra;
 import Utilidades.Fechas;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
+import Vista.Solicitudes.vistaSolicitarPermisos;
+import clases.Cartera.ndCxc;
+import clases.Instancias;
 import clases.Ventas.ndCotizacion;
+import clases.Ventas.ndFactura;
 import clases.Ventas.ndOServicio1;
 import clases.Ventas.ndPedido;
-import Vista.Solicitudes.vistaSolicitarPermisos;
+import clases.Ventas.ndPlanSepare;
+import clases.big;
+import clases.metodosGenerales;
 import clases.productos.ndProducto;
+import dao.Terceros.DaoTerceros;
+import dao.Ventas.DaoReimpresiones;
+import inventario.servicio.CargadorProducto;
+import inventario.servicio.ServicioDiscosteo;
+import inventario.servicio.ServicioInventario;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -69,8 +70,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
     //Barra de titulo
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
-    private int posicionFact = 1;
+    private final int posicionFact = 1;
 
     public boolean isDetectarClicABoton() {
         return detectarClicABoton;
@@ -84,7 +84,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         initComponents();
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
         Barra.setSize(0, 0);
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
@@ -303,7 +302,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         limpiarDatosTabla();
         cargarDocumentosTabla(documentos);
-        asginarFiltrosTablaDocumentos();
+        asignarFiltrosTablaDocumentos();
     }
 
     @SuppressWarnings("unchecked")
@@ -1945,7 +1944,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
     }
 
-    private void asginarFiltrosTablaDocumentos() {
+    private void asignarFiltrosTablaDocumentos() {
         tblDocumentos.setAutoCreateRowSorter(true);
         modeloOrdenado = new TableRowSorter<>(modeloTablaDocumentos);
         tblDocumentos.setRowSorter(modeloOrdenado);

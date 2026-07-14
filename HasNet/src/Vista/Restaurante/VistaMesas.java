@@ -1,5 +1,6 @@
-package Vista.Ventas;
+package Vista.Restaurante;
 
+import Vista.Restaurante.PanelMesas;
 import Modelo.Ventas.ModeloMesa;
 import Utilidades.DatosMaestra;
 import clases.Instancias;

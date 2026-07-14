@@ -1,6 +1,6 @@
 package formularios.productos;
 
-import Vista.Ventas.VistaProductosCambio;
+import Vista.Restaurante.VistaProductosCambio;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;

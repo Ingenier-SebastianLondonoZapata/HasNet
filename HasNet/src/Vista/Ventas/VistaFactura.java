@@ -1,5 +1,8 @@
 package Vista.Ventas;
 
+import Vista.Restaurante.PanelGruposCompacto;
+import Vista.Restaurante.VistaImpresionComanda;
+import Vista.Restaurante.VistaGruposProductos;
 import Consumidor.FacturacionElectronica.consumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.DetalleTipoProducto;
@@ -61,7 +64,6 @@ import Modelo.Ventas.ModeloDetalleOrdenServicio;
 import formularios.Parqueadero.buscPlacas;
 import formularios.Ventas.buscProblemas;
 import formularios.Ventas.buscTipoVehiculo;
-import formularios.Ventas.dlgEscojerMesa;
 import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgPedirPermiso;
 import formularios.Ventas.dlgTipoDescuento;
@@ -130,6 +132,8 @@ public final class VistaFactura extends javax.swing.JPanel {
     private final DaoFactura daoFactura = new DaoFactura();
     private final DaoOrdenServicio daoOrdenServicio = new DaoOrdenServicio();
 
+    private ConversorDocumentoAFactura conversorDocumentoAFactura;
+
     boolean topeDescuento = false;
     private int cantDias = 0;
 
@@ -178,6 +182,8 @@ public final class VistaFactura extends javax.swing.JPanel {
         this.instancias = Instancias.getInstancias();
         this.terminal = instancias.getTerminal();
         this.simbolo = instancias.getSimbolo();
+
+        funcionalidadVentas.inicializarConversorDocumentos(instancias, daoOrdenServicio);
         setearOpcionesAlIniciar();
 
         if (tipo.equals(TipoDocumento.CREDITO.getValor())) {
@@ -206,7 +212,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         setBorder(null);
         repaint();
 
-//        tblProductos.setDefaultRenderer(Object.class, new cambiarColorTabla(3, 0));
         txtNit.requestFocus();
         pnlOrdenServicio.setVisible(false);
         btnModificar.setVisible(false);
@@ -4164,9 +4169,8 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         instancias.setCancelarFactura(false);
-
         if (btnGuardar.getText().equals("FACTURAR") && this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
-//            facturarCongelada(false);
+            convertirDocumentoAFactura(false);
         } else {
             validacionInicialFactura(false);
         }
@@ -4179,8 +4183,9 @@ public final class VistaFactura extends javax.swing.JPanel {
     }//GEN-LAST:event_btnGuardarKeyReleased
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        if (lbTitulo.getText().contains("CONG") || lbTitulo.getText().contains("Mesa.")) {
-            // facturarCongelada(true);
+        instancias.setCancelarFactura(false);
+        if (btnGuardar.getText().equals("FACTURAR") && this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
+            convertirDocumentoAFactura(true);
         } else {
             validacionInicialFactura(true);
         }
@@ -6171,489 +6176,42 @@ public final class VistaFactura extends javax.swing.JPanel {
         actualizarResolucion(0);
     }
 
-    /*  public void facturarCongelada(Boolean imprimir) {
+    private void convertirDocumentoAFactura(boolean imprimir) {
+        if (TipoDocumento.MESA.getValor().equals(this.tipoProceso) && lbTitulo.getText().equals("DOMICILIO")) {
+            validacionInicialFactura(imprimir);
+            return;
+        }
+
+        String tipoProcesoOrigen = this.tipoProceso;
+        String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(tipoProcesoOrigen);
+        String idDocumentoOrigen = prefijoGeneral + "-" + lbNoFactura.getText();
+        String tituloOrigen = instancias.getTitulo();
+
+        try {
+            revertirInventarioOriginal();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("Error al revertir el inventario del documento origen");
+            return;
+        }
+
+        conversorDocumentoAFactura.actualizarDocumentoOrigen(tipoProcesoOrigen, idDocumentoOrigen, tituloOrigen);
+
+        this.tipoProceso = TipoDocumento.FACTURACION.getValor();
+        validacionInicialFactura(imprimir);
+
+        if (TipoDocumento.MESA.getValor().equals(tipoProcesoOrigen) && tblProductos.getRowCount() == 0) {
+            if (instancias.getConfiguraciones().isRestaurante()) {
+                instancias.getMesas().cargarRegistrosMesas();
+                instancias.getMesas().cargarRegistros();
+            }
+            if (!instancias.getMenu().getSeVeElMenu()) {
+                instancias.getMenu().expandirMenu();
+            }
+            instancias.getMesas().setSelected(true);
+        }
+    }
 
-     ModeloContacto datosCliente = !ID_CLIENTE_CARGADO.equals("") ? instancias.getSql().getDatosTercero(ID_CLIENTE_CARGADO) : new ModeloContacto();
-     if (!validacionesGeneralesDeFacturacion(datosCliente)) {
-     return;
-     }
-
-     String baseUtilizada = "bdProductos";
-     if (instancias.getConfiguraciones().isRestaurante()) {
-     for (int i = 0; i < tblProductos.getRowCount(); i++) {
-     ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-
-     if (nodo.getUsuario().equals("FACTURA")) {
-     String opciones = "";
-
-     try {
-     opciones = tblProductos.getValueAt(i, 21).toString().split("; ")[1];
-     } catch (Exception e) {
-     }
-
-     if (!opciones.equals("")) {
-     for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
-
-     if (opcion.esAdicion()) {
-     String codigo = opcion.getCodigo();
-     String cant = opcion.getCantidad();
-     String estado = opcion.getEstado();
-
-     if (estado.equals(" true")) {
-     ndProducto nodo1 = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-
-     if (nodo1.getGrupo() != null) {
-     if (nodo1.getGrupo().equals("GRP-02")) {
-     cargarProducto(codigo, cant, 1, "", "", "", false, "", "", "", "", "");
-     tblProductos.setValueAt("PRODUCTO-AGREGADO", tblProductos.getRowCount() - 1, 31);
-     }
-     }
-     }
-     }
-     }
-     }
-     }
-     }
-     }
-
-     VistaMetodoPagos devuelta;
-     if (txtFechaFactura.getText().equals(txtVencimiento.getText())) {
-     devuelta = new VistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")), instancias,
-     ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()));
-     //            devuelta.setNC(big.getMoneda(txtNc.getText()));
-     devuelta.show();
-     }
-
-     if (instancias.getCancelarFactura()) {
-     borrarAdiciones();
-     System.out.println("DEVOLVIO LA FACTURA");
-     instancias.setCancelarFactura(false);
-     return;
-     }
-
-     String factura = "", factura2 = "", prefijo = "";
-     int fila = 0;
-     for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
-     if ((Boolean) tblComprobantes.getValueAt(i, 2)) {
-     fila = i;
-     }
-     }
-
-     try {
-     prefijo = tblComprobantes.getValueAt(fila, 8).toString();
-     } catch (Exception e) {
-     prefijo = "";
-     }
-
-     int idResolucion = Integer.parseInt(tblComprobantes.getValueAt(fila, 0).toString());
-     factura2 = funcionalidadVentas.validarYObtenerFactura(idResolucion);
-     factura = factura2.replace(prefijo, "");
-
-     String vendedor = "";
-     try {
-     vendedor = cmbVendedor.getSelectedItem().toString();
-     } catch (Exception e) {
-     vendedor = "";
-     }
-
-     String congelada = "";
-     try {
-     congelada = instancias.getTitulo();
-     } catch (Exception e) {
-     }
-
-     String terminal = instancias.getTerminal();
-
-     String turno = "";
-     if (DatosMaestra.isTurnoActivo() && instancias.getConfiguraciones().isRestaurante()) {
-     turno = instancias.getSql().getTurno();
-     } else if (txtTurno.isVisible()) {
-     turno = txtTurno.getText();
-     }
-
-     agregamosRegistrosMediosDePago(factura2);
-
-     String tipoComprobante = obtenerTipoComprobante();
-     tipoComprobante = tipoComprobante.equals("") ? Constantes.FACTURACION_NORMAL : tipoComprobante;
-
-     if (instancias.getConfiguraciones().isFacturaElectronica() && Constantes.esFacturacionElectronica(tipoComprobante)) {
-     boolean facturaElectronicaExitosa = false;
-     ModeloFacturacionElectronica modeloFacturacionElectronica = crearModeloFacturacionEletronica(factura, factura2, datosCliente);
-
-     try {
-     facturaElectronicaExitosa = consumidorFacturacionElectronica.generarFacturacionElectronica(modeloFacturacionElectronica, false, false,
-     false, rdPos.isSelected());
-     } catch (Exception ex) {
-     System.err.println("Hubo un error al enviar el JSON de la factura electronica: " + ex);
-     }
-
-     if (!facturaElectronicaExitosa) {
-     borrarAdiciones();
-     instancias.setCancelarFactura(false);
-     return;
-     }
-     }
-
-     ndFactura nodo;
-     instancias.getSql().agregarVerificarFactura(factura, ID_CLIENTE_CARGADO, factura2, terminal,
-     big.getMoneda(txtTotal.getText().replace("Total: ", "")),
-     metodos.fechaConsulta(metodosGenerales.fecha()), metodos.fechaConsulta(txtVencimiento.getText()),
-     metodos.fechaConsulta(metodos.sumarFecha(txtVencimiento.getText(), cantDias)), vendedor, congelada, txtPlaca1.getText(), turno);
-
-     int diasPlazo;
-     try {
-     diasPlazo = Integer.parseInt(txtDiasPlazo.getText());
-     } catch (Exception e) {
-     diasPlazo = 0;
-     }
-
-     BigDecimal efectivo = instancias.getEfectivoDevuelta();
-     if (diasPlazo > 0) {
-     //            efectivo = big.getMoneda(txtTotal.getText().replace("Total: ", ""));
-     efectivo = big.getMoneda("0");
-     }
-
-     String por = "";
-     if (cmbRtf.getSelectedIndex() == 0) {
-     por = "0";
-     } else {
-     por = cmbRtf.getSelectedItem().toString();
-     }
-
-     if (congelada.length() > 20) {
-     Object[] nombres = congelada.split("<br>");
-     congelada = nombres[0].toString().substring(26, nombres[0].toString().length());
-     }
-
-     String hora = metodosGenerales.hora();
-
-     for (int i = 0; i < tblProductos.getRowCount(); i++) {
-     if (!tblProductos.getValueAt(i, 16).equals("REALIZADO")) {
-
-     String imei = "", lote = "", idProd = "";
-
-     if (instancias.getConfiguraciones().isProductosDetallados()) {
-     imei = tblProductos.getValueAt(i, 27).toString();
-     lote = tblProductos.getValueAt(i, 28).toString();
-     idProd = tblProductos.getValueAt(i, 29).toString();
-     }
-
-     BigDecimal totalUtilidad = BigDecimal.ZERO;
-
-     if (!consecutivoCosteo.equals("")) {
-     totalUtilidad = big.getMoneda(tblProductos.getValueAt(i, 9).toString()).subtract(costoCosteo1);
-     } else {
-     totalUtilidad = big.getMoneda((String) tblProductos.getValueAt(i, 14));
-     if (totalUtilidad.compareTo(BigDecimal.ZERO) < 0) {
-     totalUtilidad = BigDecimal.ZERO;
-     }
-     }
-
-     BigDecimal ponderado = BigDecimal.ZERO;
-     try {
-     UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(tblProductos.getValueAt(i, 32).toString());
-     ponderado = ultimoPonderado.getNuevoPonderado();
-     } catch (SQLException ex) {
-     Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-     alertas.bigAlert("No se pudo consultar el último ponderado del producto");
-     }
-
-     Object[] vector = {factura, ID_CLIENTE_CARGADO, vendedor, "", metodos.fechaConsulta(metodosGenerales.fecha()), metodos.fechaConsulta(txtVencimiento.getText()),
-     efectivo, instancias.getNcDevuelta(), instancias.getChequeDevuelta(), instancias.getTarjetaDevuelta(),
-     big.getMoneda(txtTotal.getText().replace("Total: ", "")), big.getMoneda(txtTotalDescuentos.getText()),
-     big.getMoneda(txtTotalIva.getText()), big.getMoneda(txtSubTotal.getText()), "",
-     factura.replace("FACT-", ""), false, "", !txtFechaFactura.getText().equals(txtVencimiento.getText()),
-     "", instancias.getUsuario(), big.getMoneda(txtRiva.getText()), big.getMoneda("0"), big.getMoneda(txtRtf.getText()), big.getMoneda(por),
-     txtObservaciones.getText(), false, "", false, "", "", metodos.fechaConsulta(metodos.sumarFecha(txtVencimiento.getText(), cantDias)), instancias.getTerminal(),
-     "PENDIENTE", "", instancias.getDevuelta(), factura2, instancias.getResolucion(), metodos.fechaConsulta(metodosGenerales.fecha()), "", "",
-     "0", txtPlaca1.getText(), "", "", "", "",
-     "", congelada, tblProductos.getValueAt(i, 32), big.getMoneda((String) tblProductos.getValueAt(i, 2)),
-     tblProductos.getValueAt(i, 3).toString().replace(",", "."), big.getMoneda((String) tblProductos.getValueAt(i, 6)),
-     big.getMoneda((String) tblProductos.getValueAt(i, 9)), big.getMoneda((String) tblProductos.getValueAt(i, 33)),
-     big.getMoneda((String) tblProductos.getValueAt(i, 4)), "", totalUtilidad, "",
-     big.getBigDecimal(tblProductos.getValueAt(i, 5).toString().replace(",", ".")).setScale(2, RoundingMode.HALF_DOWN) + "",
-     tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 12) + "", tblProductos.getValueAt(i, 13).toString().replace(",", "."),
-     "PENDIENTE", tblProductos.getValueAt(i, 7), tblProductos.getValueAt(i, 19), big.getMoneda(tblProductos.getValueAt(i, 20).toString()),
-     tblProductos.getValueAt(i, 21), BigDecimal.ZERO, turno, big.getMoneda(txtTotalImpoconsumo.getText()), instancias.getFranquisia(),
-     instancias.getComision(), instancias.getValorComision(), instancias.getTotalFacturaComision(), imei, lote, idProd, "",
-     instancias.getTarjetaCredito(), instancias.getTotalPropina(), instancias.getPorcPropina(), consecutivoCosteo, hora,
-     tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."), big.getMoneda((String) tblProductos.getValueAt(i, 8)),
-     chkSisteCredito.isSelected(), "", ponderado, tipoComprobante
-     };
-
-     nodo = metodos.llenarFactura(vector);
-
-     if (!instancias.getSql().agregarFactura(nodo)) {
-     boolean noPuedaGuardar = false;
-     instancias.getSql().eliminarFactura(factura);
-     while (!noPuedaGuardar) {
-     noPuedaGuardar = instancias.getSql().eliminarFactura(factura);
-     }
-
-     metodos.msgError(null, "Hubo un problema al guardar la factura");
-     }
-     }
-
-     if (instancias.getConfiguraciones().isRestaurante()) {
-     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-     String preparacion = "";
-
-     try {
-     preparacion = tblProductos.getValueAt(i, 21).toString();
-     } catch (Exception e) {
-     }
-
-     instancias.getArmado().facturarPlato(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
-     preparacion, "descontarTodo", "");
-     }
-     } else {
-     try {
-     if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
-     String preparacion = tblProductos.getValueAt(i, 21).toString();
-     instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(),
-     tblProductos.getValueAt(i, 3).toString(), preparacion, "");
-     }
-     } catch (Exception e) {
-     }
-     }
-
-     if (tipoProceso.equals("facturacion") || tipoProceso.equals("mesa")) {
-     String cadena = "";
-
-     try {
-     cadena = tblProductos.getValueAt(i, 21).toString();
-     } catch (Exception e) {
-     }
-
-     if (!cadena.equals("")) {
-     String opciones1 = "Adiciones: ", ingredientes1 = "Sin: ", aderezos1 = "Aderezos: ";
-     String opciones2[], aderezos2[];
-
-     String observaciones = "";
-     try {
-     observaciones = cadena.split("; ")[2];
-     } catch (Exception e) {
-     }
-
-     String opciones = cadena.split("; ")[1];
-     String aderezos = cadena.split("; ")[0];
-
-     //INGRESAMOS LOS PRODUCTOS ESCOJIDOS EN LOS PRODUCTOS CON CAMBIO
-     if (!opciones.equals("")) {
-     for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
-     Boolean esAdicion = opcion.esAdicion();
-     String principal = opcion.getPrincipal();
-
-     if (esAdicion) {
-     String codigo = opcion.getCodigo();
-     String cant = opcion.getCantidad();
-     String estadoProducto = opcion.getEstado();
-
-     if (principal.equals("") || principal.equals(" ")) {
-     if (estadoProducto.equals(" false")) {
-     ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
-     ingredientes1 = ingredientes1 + nodoProd.getDescripcion() + ", ";
-     }
-     } else {
-     if (!principal.equals(codigo)) {
-     if (estadoProducto.equals(" true")) {
-     ndProducto nodoProd = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
-     if (nodoProd.getGrupo() != null) {
-     if (nodoProd.getGrupo().equals("GRP-02")) {
-     if (cant.substring(cant.length() - 1, cant.length()).equals("0")) {
-     opciones1 = opciones1 + cant.substring(0, cant.length() - 2) + " " + nodoProd.getDescripcion() + ", ";
-     } else {
-     opciones1 = opciones1 + cant + " " + nodoProd.getDescripcion() + ", ";
-     }
-     } else {
-     opciones1 = opciones1 + nodoProd.getDescripcion() + ", ";
-     }
-     } else {
-     opciones1 = opciones1 + nodoProd.getDescripcion() + ", ";
-     }
-     }
-     }
-     }
-     }
-
-     if (!opciones1.equals("Adiciones: ")) {
-     opciones1 = opciones1.substring(0, opciones1.length() - 2);
-     }
-
-     if (!ingredientes1.equals("Sin: ")) {
-     ingredientes1 = ingredientes1.substring(0, ingredientes1.length() - 2);
-     }
-     }
-     }
-
-     if (!aderezos.equals("")) {
-     aderezos2 = aderezos.split(", ");
-     for (int k = 0; k < aderezos2.length; k++) {
-     ndProducto nodoProd = instancias.getSql().getDatosProducto(aderezos2[k], baseUtilizada);
-     aderezos1 = aderezos1 + nodoProd.getDescripcion() + ", ";
-     }
-     aderezos1 = aderezos1.substring(0, aderezos1.length() - 2);
-     }
-
-     DaoComanda daoComanda = new DaoComanda();
-     int turnoInt = 0;
-     try {
-     turnoInt = turno.isEmpty() ? 0 : Integer.parseInt(turno);
-     } catch (NumberFormatException ex) {
-     Logger.getLogger(VistaFactura.class.getName()).log(Level.WARNING, "Turno no es un número válido: " + turno);
-     }
-
-     if (tipoProceso.equals("mesa")) {
-     if (!daoComanda.agregarComanda(factura, "", tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 1).toString(),
-     opciones1, ingredientes1, "", aderezos1, tblProductos.getValueAt(i, 3).toString(), observaciones, turnoInt, "", "PLATO-" + i)) {
-     metodos.msgError(null, "Error al guardar la comanda.");
-     }
-     } else if (tipoProceso.equals("facturacion")) {
-     if (!daoComanda.agregarComanda("", factura, tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 1).toString(),
-     opciones1, ingredientes1, "", aderezos1, tblProductos.getValueAt(i, 3).toString(), observaciones, turnoInt, "", "PLATO-" + i)) {
-     metodos.msgError(null, "Error al guardar la comanda.");
-     }
-     }
-     }
-
-     instancias.getSql().cambiarEstadoMesa(instancias.getTitulo(), "DISPONIBLE");
-     }
-
-     ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-     double cantidad;
-     double inventario;
-     double fisicoInventario;
-
-     try {
-     cantidad = Double.parseDouble(producto.getVentas().replace(",", "."));
-     } catch (Exception e) {
-     cantidad = 0;
-     }
-
-     try {
-     inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-     } catch (Exception e) {
-     inventario = 0;
-     }
-
-     try {
-     fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-     } catch (Exception e) {
-     fisicoInventario = 0;
-     }
-
-     double cant2;
-     try {
-     cant2 = Double.parseDouble(tblProductos.getValueAt(i, 13).toString());
-     } catch (Exception e) {
-     cant2 = Double.parseDouble(tblProductos.getValueAt(i, 13).toString().substring(0, tblProductos.getValueAt(i, 13).toString().length() - 2));
-     }
-
-     inventario = inventario - cant2;
-     fisicoInventario = fisicoInventario - cant2;
-     double total = cantidad + cant2;
-
-     String total1 = String.valueOf(df.format(total)).replace(".", ",");
-     String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
-     String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-
-     instancias.getSql().modificarInventario("ventas", total1, tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-     instancias.getSql().modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-     instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
-
-     // DESCONTAR DEL INVENTARIO DETALLADO //
-     if (instancias.getConfiguraciones().isProductosDetallados()) {
-     String cod = "";
-     try {
-     cod = tblProductos.getValueAt(i, 29).toString();
-     } catch (Exception e) {
-     }
-
-     if (!cod.equals("")) {
-     String tipoProd = "";
-     if (producto.getTipoProducto() != null) {
-     if (producto.getTipoProducto().equals("IMEI")) {
-     tipoProd = "Imei";
-     } else if (producto.getTipoProducto().equals("Fecha/Lote")) {
-     tipoProd = "Fecha/Lote";
-     } else if (producto.getTipoProducto().equals("Color")) {
-     tipoProd = "Color";
-     } else if (producto.getTipoProducto().equals("Serial")) {
-     tipoProd = "Serial";
-     } else if (producto.getTipoProducto().equals("Talla")) {
-     tipoProd = "Talla";
-     } else if (producto.getTipoProducto().equals("ColorTalla")) {
-     tipoProd = "ColorTalla";
-     } else if (producto.getTipoProducto().equals("SerialColor")) {
-     tipoProd = "SerialColor";
-     } else {
-     tipoProd = "";
-     }
-     }
-
-     if (tipoProd.equals("Imei") || tipoProd.equals("Serial") || tipoProd.equals("SerialColor")) {
-     instancias.getSql().modificarEstadoDetalleProductos(cod, "NO-DISPONIBLE");
-     } else {
-     BigDecimal cantidadActual = new BigDecimal(instancias.getSql().getCantidadProductos(cod).replace(",", "."));
-     BigDecimal cantidadTabla1 = new BigDecimal(tblProductos.getValueAt(i, 13).toString().replace(",", "."));
-     BigDecimal cantidadFinal = cantidadActual.subtract(cantidadTabla1);
-     instancias.getSql().modificarCantidadesDetalleProductos(cod, cantidadFinal);
-     }
-     }
-     }
-     // FIN DE DESCONTAR DEL INVENTARIO SEPARADO // 
-     }
-
-     this.tipoProceso = "facturacion";
-     aumentarConsecutivo(fila);
-
-     if (!txtFechaFactura.getText().equals(txtVencimiento.getText())) {
-     if (txtDiasPlazo.getText().equals("")) {
-     txtDiasPlazo.setText("0");
-     }
-
-     boolean cuotas = false;
-     if (facturaCredito) {
-     cuotas = true;
-     }
-
-     String tipoCxc = "FACT";
-
-     Object[] vectCxc = {factura, tipoCxc, "PEND", "", big.getMoneda(txtTotal.getText().replace("Total: ", "")), txtDiasPlazo.getText(),
-     metodos.fechaConsulta(txtVencimiento.getText()), instancias.getUsuario(), instancias.getTerminal(), cuotas, factura2
-     };
-
-     ndCxc nodoCxc = metodos.llenarCxc(vectCxc);
-
-     if (!instancias.getSql().agregarCxc(nodoCxc)) {
-     metodos.msgError(null, "Hubo un problema al guardar la factura en cartera");
-     }
-     }
-
-     metodos.msgExito(null, "Factura Exitosa");
-     instancias.setEfectivoDevuelta(big.getBigDecimal("0"));
-
-     if (imprimir) {
-     imprimir(factura, factura2);
-     }
-
-     this.tipoProceso = "mesa";
-
-     instancias.getSql().eliminarMesa("CONGELADA-" + consecutivoMesa);
-
-     if (instancias.getConfiguraciones().isRestaurante()) {
-     instancias.getMesas().cargarRegistrosMesas();
-     instancias.getMesas().cargarRegistros();
-     instancias.getMesas().setSelected(true);
-     } else {
-     instancias.getMesas().setSelected(true);
-     }
-
-     if (!instancias.getMenu().getSeVeElMenu()) {
-     instancias.getMenu().expandirMenu();
-     }
-     }
-     */
     public void guardarCredito(String factura, String factura2) {
 //        String credito = "CREDITO-" + sql.getNumConsecutivo("CREDITO")[0];
         String credito = "CREDITO-" + factura.replace("FACT-", "");
@@ -8804,16 +8362,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private TipoDocumento obtenerTipoAnulacion() {
-        switch (this.tipoProceso) {
-            case "pedido":
-                return TipoDocumento.ANULAR_PEDIDO;
-            case "mesa":
-                return TipoDocumento.ANULAR_MESA;
-            case "orden":
-                return TipoDocumento.ANULAR_ORDER_SERVICIO;
-            default:
-                return null;
-        }
+        return conversorDocumentoAFactura.obtenerTipoAnulacion(this.tipoProceso);
     }
 
     private List<MovimientoInventario> construirMovimientosDesdeLineas(List<LineaProducto> lineas) throws SQLException {
