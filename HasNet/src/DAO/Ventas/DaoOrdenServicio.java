@@ -177,6 +177,19 @@ public class DaoOrdenServicio {
         }
     }
 
+    public boolean modificarEstadoOrden(String estado, String idDocumento) {
+        String sql = "UPDATE bdOServicio1 SET estadoGeneral = ? WHERE factura = ?";
+
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setString(1, estado);
+            stmt.setString(2, idDocumento);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al modificar estado orden: " + e.getMessage());
+            return false;
+        }
+    }
+
     public boolean eliminarVehiculo(String id) {
         String sql = "DELETE FROM bdOServicio WHERE id = ?";
         try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {

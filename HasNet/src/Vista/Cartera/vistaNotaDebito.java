@@ -3764,7 +3764,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 : validarInventarioProductos(baseUtilizada);
 
         if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoFacturacion,
-                TipoDocumento.NOTA_DEBITO.getValor(), resultadoValidacion, facturarSinInventario)) {
+                TipoDocumento.NOTA_DEBITO.getValor(), resultadoValidacion, facturarSinInventario, this.saltarPasosFactura)) {
             return "";
         }
 

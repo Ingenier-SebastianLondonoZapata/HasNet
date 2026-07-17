@@ -58,7 +58,7 @@ public class squemaFacturacion extends javax.swing.JPanel {
             if (datos.getNit().isEmpty() || datos.getNit().equals(USUARIO_POR_DEFECTO)) {
                 errores.add("¡Debe asociar un cliente!");
             }
-            
+
             if (datos.getCantIncremento().isEmpty()) {
                 errores.add("Falta la cantidad para el incremento");
             }
@@ -169,11 +169,11 @@ public class squemaFacturacion extends javax.swing.JPanel {
     private static final String MARCA_UTILIDAD_MAX = "ERROR2";
 
     public boolean validaciones_detalle_facturacion(JTable tablaProductos, String tipoComprobante, String tipoProceso) {
-        return validaciones_detalle_facturacion(tablaProductos, tipoComprobante, tipoProceso, null, false);
+        return validaciones_detalle_facturacion(tablaProductos, tipoComprobante, tipoProceso, null, false, false);
     }
 
     public boolean validaciones_detalle_facturacion(JTable tablaProductos, String tipoComprobante, String tipoProceso,
-            ResultadoValidacionInventario inventario, boolean facturarSinInventario) {
+            ResultadoValidacionInventario inventario, boolean facturarSinInventario, boolean saltarPasosFactura) {
 
         List<Object> errores_validacion = new ArrayList<>();
         List<Object> alertas_validacion = new ArrayList<>();
@@ -230,11 +230,11 @@ public class squemaFacturacion extends javax.swing.JPanel {
 
             String idSistema = obtenerValorTabla(tablaProductos, "ID_SISTEMA", i, esNotaCredito, esNotaDebito);
             String costoProducto = instancias.getSql().obtenerUltimoCostoProducto(idSistema);
-            if (valorProducto.compareTo(big.getBigDecimal(costoProducto)) < 0) {
+            if (valorProducto.compareTo(big.getBigDecimal(costoProducto)) < 0 && !saltarPasosFactura) {
                 alertas_validacion.add("El producto '" + descripcionProducto + "' se esta facturando por debajo del costo");
             }
 
-            if (instancias.isMensajeUtilidad()) {
+            if (instancias.isMensajeUtilidad() && !saltarPasosFactura) {
                 Object marcaUtilidad = tablaProductos.getValueAt(i, COLUMNA_MARCA_UTILIDAD);
                 if (marcaUtilidad != null) {
                     String mensaje = null;

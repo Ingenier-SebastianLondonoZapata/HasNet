@@ -13,8 +13,10 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import dao.Configuraciones.DaoResoluciones;
+import dao.Ventas.DaoCotizacion;
 import dao.Ventas.DaoFactura;
 import dao.Ventas.DaoOrdenServicio;
+import dao.Ventas.DaoPedido;
 import inventario.servicio.ServicioInventario;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -66,7 +68,7 @@ public class FuncionalidadVentas {
     }
 
     public int incrementarTurno(Instancias instancias) {
-        int nuevoTurno = Integer.parseInt(instancias.getSql().getTurno()) + 1;
+        int nuevoTurno = Integer.parseInt(instancias.getSql().getTurno().trim()) + 1;
         if (nuevoTurno > 100) {
             nuevoTurno = 1;
         }
@@ -321,7 +323,8 @@ public class FuncionalidadVentas {
         }
     }
 
-    public ConversorDocumentoAFactura inicializarConversorDocumentos(final Instancias instancias, final DaoOrdenServicio daoOrdenServicio) {
+    public ConversorDocumentoAFactura inicializarConversorDocumentos(final Instancias instancias, final DaoOrdenServicio daoOrdenServicio,
+            final DaoPedido daoPedido, final DaoCotizacion daoCotizacion) {
         return new ConversorDocumentoAFactura()
                 .registrar(TipoDocumento.MESA.getValor(), TipoDocumento.ANULAR_MESA,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
@@ -336,32 +339,29 @@ public class FuncionalidadVentas {
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
                             public void actualizar(String idDocumento, String tituloDocumento) {
-                                String idPedido = instancias.getSql().pedidoExistente(idDocumento);
-                                instancias.getSql().eliminarComanda(idPedido, "pedido");
-                                instancias.getSql().eliminarPedido(idPedido);
+                                instancias.getSql().eliminarComanda(idDocumento, "pedido");
+                                daoPedido.modificarEstadoPedido(EstadosTipoDocumento.FACTURADA.getNombre(), idDocumento);
                             }
                         })
                 .registrar(TipoDocumento.ORDER_SERVICIO.getValor(), TipoDocumento.ANULAR_ORDER_SERVICIO,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
                             public void actualizar(String idDocumento, String tituloDocumento) {
-                                daoOrdenServicio.eliminarVehiculo(idDocumento);
-                                daoOrdenServicio.eliminarDetalle(idDocumento);
-                                instancias.getSql().eliminarOServicio(idDocumento);
+                                daoOrdenServicio.modificarEstadoOrden(EstadosTipoDocumento.FACTURADA.getNombre(), idDocumento);
                             }
                         })
                 .registrar(TipoDocumento.COTIZACION.getValor(), null,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
                             public void actualizar(String idDocumento, String tituloDocumento) {
-                                instancias.getSql().eliminarCotizacion(idDocumento);
+                                daoCotizacion.modificarEstadoCotizacion(EstadosTipoDocumento.FACTURADA.getNombre(), idDocumento);
                             }
                         })
                 .registrar(TipoDocumento.CUENTA_COBRO.getValor(), null,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
                             public void actualizar(String idDocumento, String tituloDocumento) {
-                                instancias.getSql().eliminarCuentaCobro(idDocumento);
+                                //instancias.getSql().modificarEstadoCxcFactura(idDocumento, "");
                             }
                         });
     }

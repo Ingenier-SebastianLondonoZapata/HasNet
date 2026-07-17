@@ -61,6 +61,8 @@ import dao.Ventas.DaoComanda;
 import dao.Ventas.DaoFactura;
 import dao.Ventas.DaoOrdenServicio;
 import Modelo.Ventas.ModeloDetalleOrdenServicio;
+import dao.Ventas.DaoCotizacion;
+import dao.Ventas.DaoPedido;
 import formularios.Parqueadero.buscPlacas;
 import formularios.Ventas.buscProblemas;
 import formularios.Ventas.buscTipoVehiculo;
@@ -131,6 +133,8 @@ public final class VistaFactura extends javax.swing.JPanel {
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
     private final DaoFactura daoFactura = new DaoFactura();
     private final DaoOrdenServicio daoOrdenServicio = new DaoOrdenServicio();
+    private final DaoCotizacion daoCotizacion = new DaoCotizacion();
+    private final DaoPedido daoPedido = new DaoPedido();
 
     private ConversorDocumentoAFactura conversorDocumentoAFactura;
 
@@ -183,7 +187,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         this.terminal = instancias.getTerminal();
         this.simbolo = instancias.getSimbolo();
 
-        funcionalidadVentas.inicializarConversorDocumentos(instancias, daoOrdenServicio);
+        this.conversorDocumentoAFactura = funcionalidadVentas.inicializarConversorDocumentos(instancias, daoOrdenServicio, daoPedido, daoCotizacion);
         setearOpcionesAlIniciar();
 
         if (tipo.equals(TipoDocumento.CREDITO.getValor())) {
@@ -1437,7 +1441,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                         .addComponent(txtCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(scrProductos1, javax.swing.GroupLayout.DEFAULT_SIZE, 1015, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
-                .addComponent(pnlGrupos, 200, 200, 200)
+                .addComponent(pnlGrupos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1))
         );
         jPanel2Layout.setVerticalGroup(
@@ -2783,11 +2787,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                 btnImprimirActionPerformed(evt);
             }
         });
-        btnImprimir.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                btnImprimirKeyReleased(evt);
-            }
-        });
 
         btnReImprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReImprimir.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
@@ -3228,10 +3227,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         return tipoComprobante.isEmpty() ? Constantes.FACTURACION_NORMAL : tipoComprobante;
     }
 
-    /**
-     * Overload sin inventario — para facturarCongelada. Solo valida cliente y
-     * productos.
-     */
     private boolean validacionesGeneralesDeFacturacion(ModeloContacto datosCliente) {
         String tipoComprobante = obtenerTipoComprobante();
         String vendedor = cmbVendedor.getItemCount() > 0 ? cmbVendedor.getSelectedItem().toString() : "";
@@ -3248,7 +3243,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
         }
 
-        if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoComprobante, tipoProceso, null, false)) {
+        if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoComprobante, tipoProceso, null, false, this.saltarPasosFactura)) {
             return false;
         }
 
@@ -3271,7 +3266,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         datosValidacion.setTitulo(lbTitulo.getText());
         datosValidacion.setNit(txtNit.getText());
         datosValidacion.setCantIncremento(txtCantIncremento.getText());
-        datosValidacion.setSaltarPasos(saltarPasosFactura);
+        datosValidacion.setSaltarPasos(this.saltarPasosFactura);
         datosValidacion.setCheckCupo(DatosMaestra.isOcultarInformacionTercero());
         datosValidacion.setDiasPlazo(txtDiasPlazo.getText());
         datosValidacion.setCupo(txtCupo.getText());
@@ -3298,8 +3293,8 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
         }
 
-        if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoComprobante, tipoProceso,
-                inventario, facturarSinInventario)) {
+        if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoComprobante, this.tipoProceso,
+                inventario, facturarSinInventario, this.saltarPasosFactura)) {
             return false;
         }
 
@@ -3319,7 +3314,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         tblProductos.removeEditor();
 
-        ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada);
+        ResultadoValidacionInventario resultadoValidacion = this.saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada);
 
         ModeloContacto datosCliente = !ID_CLIENTE_CARGADO.equals("") ? instancias.getSql().getDatosTercero(ID_CLIENTE_CARGADO) : new ModeloContacto();
         if (!validacionesGeneralesDeFacturacion(datosCliente, resultadoValidacion, DatosMaestra.isFacturarSinInventario())) {
@@ -4170,7 +4165,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         instancias.setCancelarFactura(false);
         if (btnGuardar.getText().equals("FACTURAR") && this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
-            convertirDocumentoAFactura(false);
+            convertirDocumentoAFactura(false, "");
         } else {
             validacionInicialFactura(false);
         }
@@ -4185,17 +4180,15 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         instancias.setCancelarFactura(false);
         if (btnGuardar.getText().equals("FACTURAR") && this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
-            convertirDocumentoAFactura(true);
+            convertirDocumentoAFactura(true, "");
         } else {
             validacionInicialFactura(true);
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
 
-    private void btnImprimirKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnImprimirKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnImprimirKeyReleased
-
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        instancias.setCancelarFactura(false);
+
         String baseUtilizada = "bdProductos";
         if (instancias.getConfiguraciones().isRestaurante()) {
             agregarAdicionesATabla(baseUtilizada);
@@ -4251,9 +4244,8 @@ public final class VistaFactura extends javax.swing.JPanel {
                 return;
             }
 
-            String idPedido = instancias.getSql().pedidoExistente(factura);
-            instancias.getSql().eliminarComanda(idPedido, "pedido");
-            instancias.getSql().eliminarPedido(idPedido);
+            instancias.getSql().eliminarComanda(factura, "pedido");
+            instancias.getSql().eliminarPedido(factura);
 
             if (!agregarMovimientoPedido(movimiento)) {
                 return;
@@ -5545,8 +5537,11 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void cargarLineasDocumento(List<LineaProducto> lineas) {
         for (int i = 0; i < lineas.size(); i++) {
             LineaProducto linea = lineas.get(i);
+            String imeiSerial = linea.getImei() != null ? linea.getImei() : "";
+            String idProductoDetallado = linea.getIdProd() != null ? linea.getIdProd() : "";
+
             cargarProducto(linea.getCodigo(), Utilidades.convertirBigDecimal(linea.getCantidad()), linea.getPlu(),
-                    linea.getImei(), "", linea.getIdProd(), false, "", "", "", "", "");
+                    imeiSerial, "", idProductoDetallado, false, "", "", "", "", "");
             String rango = linea.getRango();
             if (rango != null && !rango.isEmpty()) {
                 tblProductos.setValueAt(rango, i, 31);
@@ -6066,9 +6061,8 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         //IMPRIMIR LA COMANDA
-        if (instancias.getConfiguraciones().isRestaurante()) {
-            if (tipoProceso.equals("facturacion") //&& ndPedido == null
-                    ) {
+        if (instancias.getConfiguraciones().isRestaurante() && !this.saltarPasosFactura) {
+            if (tipoProceso.equals("facturacion")) {
                 if (metodos.msgPregunta(null, "¿Desea generar comanda?") == 0) {
                     imprimirComanda("where factura = '" + factura + "'", factura, "", impresoraComanda);
                 }
@@ -6176,7 +6170,139 @@ public final class VistaFactura extends javax.swing.JPanel {
         actualizarResolucion(0);
     }
 
-    private void convertirDocumentoAFactura(boolean imprimir) {
+    public String getTipoProceso() {
+        return this.tipoProceso;
+    }
+
+    public void setSaltarPasosFactura(boolean saltar) {
+        this.saltarPasosFactura = saltar;
+    }
+
+    public boolean cargarDocumentoParaConversionAFactura(String tipoDocumento, String idDocumento) {
+        if (tblComprobantes.getRowCount() == 0) {
+            actualizarTablaResoluciones();
+        }
+
+        DocumentoMovimiento doc;
+        boolean esCotizacion = TipoDocumento.COTIZACION.getValor().equals(tipoDocumento);
+
+        switch (tipoDocumento) {
+            case "pedido":
+                doc = daoFactura.cargarPedido(idDocumento);
+                break;
+            case "cotizacion":
+                doc = daoFactura.cargarCotizacion(idDocumento);
+                break;
+            case "orden":
+                doc = daoFactura.cargarOrdenServicio(idDocumento);
+                break;
+            default:
+                return false;
+        }
+
+        if (doc == null || doc.isEmpty()) {
+            return false;
+        }
+
+        limpiar(false);
+
+        if (esCotizacion) {
+            cargarLineasCotizacion(doc.getLineas());
+        } else {
+            cargarLineasDocumento(doc.getLineas());
+            this.lineasOriginales = doc.getLineas();
+            recalcularInventarioTabla();
+        }
+
+        mostrarResumenDocumento(doc.getCabecera(), false);
+
+        String numDocumento = idDocumento.contains("-")
+                ? idDocumento.substring(idDocumento.lastIndexOf("-") + 1)
+                : idDocumento;
+        lbNoFactura.setText(numDocumento);
+
+        return true;
+    }
+
+    public boolean agregarDocumentoParaUnificacion(String tipoDocumento, String idDocumento) {
+        DocumentoMovimiento doc;
+        boolean esCotizacion = TipoDocumento.COTIZACION.getValor().equals(tipoDocumento);
+
+        switch (tipoDocumento) {
+            case "pedido":
+                doc = daoFactura.cargarPedido(idDocumento);
+                break;
+            case "cotizacion":
+                doc = daoFactura.cargarCotizacion(idDocumento);
+                break;
+            case "orden":
+                doc = daoFactura.cargarOrdenServicio(idDocumento);
+                break;
+            default:
+                return false;
+        }
+
+        if (doc == null || doc.isEmpty()) {
+            return false;
+        }
+
+        List<LineaProducto> lineas = doc.getLineas();
+        int offset = tblProductos.getRowCount();
+
+        for (int i = 0; i < lineas.size(); i++) {
+            LineaProducto linea = lineas.get(i);
+            String imeiSerial = linea.getImei() != null ? linea.getImei() : "";
+            String idProductoDetallado = linea.getIdProd() != null ? linea.getIdProd() : "";
+
+            cargarProducto(linea.getCodigo(), Utilidades.convertirBigDecimal(linea.getCantidad()),
+                    linea.getPlu(), imeiSerial, "", idProductoDetallado, false, "", "", "", "", "");
+            int rowIndex = offset + i;
+            String permisoDescuento = linea.getRango();
+            if (permisoDescuento != null && !permisoDescuento.isEmpty()) {
+                tblProductos.setValueAt(permisoDescuento, rowIndex, 31);
+            }
+            tblProductos.setValueAt(linea.getDescripcion(), rowIndex, 1);
+            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(linea.getPrecio())), rowIndex, 2);
+            String porcDesc = linea.getPorcDescuento();
+            if (porcDesc != null) {
+                tblProductos.setValueAt(porcDesc.replace(",", "."), rowIndex, 5);
+            }
+            String desc = linea.getDescuento();
+            if (desc != null) {
+                tblProductos.setValueAt(desc.replace(".", ","), rowIndex, 6);
+            }
+            tblProductos.setValueAt(linea.getPreparacion(), rowIndex, 21);
+            calcularTabla(rowIndex, false);
+        }
+
+        if (!esCotizacion) {
+            this.lineasOriginales.addAll(lineas);
+        }
+
+        return true;
+    }
+
+    public void seleccionarComprobanteParaConversion(int filaIndex) {
+        for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
+            tblComprobantes.setValueAt(false, i, 2);
+        }
+        if (filaIndex >= 0 && filaIndex < tblComprobantes.getRowCount()) {
+            tblComprobantes.setValueAt(true, filaIndex, 2);
+            actualizarResolucion(filaIndex);
+        }
+    }
+
+    public void ejecutarConversionAFactura(boolean imprimir, String idDocumentoOrigen) {
+        convertirDocumentoAFactura(imprimir, idDocumentoOrigen);
+    }
+
+    public void marcarDocumentoOrigenComoConvertido(String tipoProcesoOriginal, String idDocumento) {
+        if (conversorDocumentoAFactura != null) {
+            conversorDocumentoAFactura.actualizarDocumentoOrigen(tipoProcesoOriginal, idDocumento, instancias.getTitulo());
+        }
+    }
+
+    private void convertirDocumentoAFactura(boolean imprimir, String idDocumentoOrigen) {
         if (TipoDocumento.MESA.getValor().equals(this.tipoProceso) && lbTitulo.getText().equals("DOMICILIO")) {
             validacionInicialFactura(imprimir);
             return;
@@ -6184,8 +6310,11 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         String tipoProcesoOrigen = this.tipoProceso;
         String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(tipoProcesoOrigen);
-        String idDocumentoOrigen = prefijoGeneral + "-" + lbNoFactura.getText();
-        String tituloOrigen = instancias.getTitulo();
+        String tituloOrigen = instancias.getTitulo() != null ? instancias.getTitulo() : "";
+
+        if (TipoDocumento.MESA.getValor().equals(this.tipoProceso)) {
+            idDocumentoOrigen = prefijoGeneral + "-" + lbNoFactura.getText();
+        }
 
         try {
             revertirInventarioOriginal();
@@ -6195,7 +6324,9 @@ public final class VistaFactura extends javax.swing.JPanel {
             return;
         }
 
-        conversorDocumentoAFactura.actualizarDocumentoOrigen(tipoProcesoOrigen, idDocumentoOrigen, tituloOrigen);
+        if (conversorDocumentoAFactura != null) {
+            conversorDocumentoAFactura.actualizarDocumentoOrigen(tipoProcesoOrigen, idDocumentoOrigen, tituloOrigen);
+        }
 
         this.tipoProceso = TipoDocumento.FACTURACION.getValor();
         validacionInicialFactura(imprimir);
@@ -6767,7 +6898,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    public void cargarProducto(String codigo, BigDecimal cantidad, int plu, String imei, String lote, String idProd, Boolean agrupar, String talla, String color,
+    public void cargarProducto(String codigo, BigDecimal cantidad, int plu, String imei, String lote, String idProductoACargar, Boolean agrupar, String talla, String color,
             String temp, String fechaVence, String detalleMensualidad) {
 
         String baseUtilizada = "bdProductos";
@@ -6807,17 +6938,14 @@ public final class VistaFactura extends javax.swing.JPanel {
 
             if (instancias.getConfiguraciones().isProductosDetallados()) {
                 for (int j = 0; j < tblProductos.getRowCount(); j++) {
-                    String idPro = tblProductos.getValueAt(j, 29).toString();
-                    if (!idPro.equals("")) {
-                        if (idPro.equals(idProd)) {
-                            if (!imei.equals("")) {
-                                ControladorAlertas.bigAlert("El imei '" + imei + "' ya esta cargado.");
-                                return;
-                            } else {
-                                ControladorAlertas.bigAlert("Este producto con el lote '" + lote + "' ya se cargó.");
-                                return;
-
-                            }
+                    String idProductoTabla = tblProductos.getValueAt(j, 29).toString();
+                    if (!idProductoTabla.isEmpty() && idProductoTabla.equals(idProductoACargar)) {
+                        if (!imei.isEmpty()) {
+                            ControladorAlertas.bigAlert("El imei '" + imei + "' ya esta cargado.");
+                            return;
+                        } else if (!lote.isEmpty()) {
+                            ControladorAlertas.bigAlert("Este producto con el lote '" + lote + "' ya se cargó.");
+                            return;
                         }
                     }
                 }
@@ -6910,7 +7038,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
             String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
-            if (!tipo.equals("") && idProd.equals("") && !this.tipoProceso.equals("cotizacion")) {
+            if (!tipo.equals("") && idProductoACargar.equals("") && !this.tipoProceso.equals("cotizacion")) {
                 VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", this.tipoProceso, BigDecimal.ZERO);
                 compraDetallada.setLocationRelativeTo(null);
                 compraDetallada.setVisible(true);
@@ -7097,7 +7225,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     nodo.getUbicacion1(), nodo.getReferencia(), plu,
                     Utilidades.formatearCantidadVista(big.getBigDecimal(cant2).multiply(cantidad)), this.simbolo + " 0", "", "PENDIENTE", this.simbolo + " 0", datosGrupo, this.simbolo + " 0",
                     this.simbolo + " 0", cadena, new JLabel(icono), big.setMonedaExacta(big.getBigDecimal(nodo.getImpoconsumoVenta())).replace(this.simbolo + " ", ""), "", "", "",
-                    detalle, lote, idProd, "Nuevo", "Sin-Permiso", nodo.getIdSistema(), big.setMoneda(big.getBigDecimal(aux)), grupo, nodo.getUnd(),
+                    detalle, lote, idProductoACargar, "Nuevo", "Sin-Permiso", nodo.getIdSistema(), big.setMoneda(big.getBigDecimal(aux)), grupo, nodo.getUnd(),
                     nodo.getManejaInventario(), lista1, invActual, invFinal});
                 txtCodigoProducto.setText("");
 
@@ -8271,6 +8399,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private void registrarMetodosDePago(VistaMetodoPagos devuelta) {
+
         if (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) || saltarPasosFactura) {
             devuelta = new VistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
                     instancias, ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()));
@@ -8362,7 +8491,11 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private TipoDocumento obtenerTipoAnulacion() {
-        return conversorDocumentoAFactura.obtenerTipoAnulacion(this.tipoProceso);
+        if (conversorDocumentoAFactura != null) {
+            return conversorDocumentoAFactura.obtenerTipoAnulacion(this.tipoProceso);
+        }
+
+        return null;
     }
 
     private List<MovimientoInventario> construirMovimientosDesdeLineas(List<LineaProducto> lineas) throws SQLException {
@@ -8880,7 +9013,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             big.getMoneda((String) tblProductos.getValueAt(fila, 9)), big.getMoneda((String) tblProductos.getValueAt(fila, 33)),
             big.getMoneda((String) tblProductos.getValueAt(fila, 4)), "", totalUtilidad, "",
             porcentajeDescuento + "", tblProductos.getValueAt(fila, 1), tblProductos.getValueAt(fila, 12) + "", tblProductos.getValueAt(fila, 13).toString().replace(",", "."),
-            "PENDIENTE", tblProductos.getValueAt(fila, 7), tblProductos.getValueAt(fila, 19), big.getMoneda((String) tblProductos.getValueAt(fila, 20)),
+            EstadosTipoDocumento.FACTURADA.getNombre(), tblProductos.getValueAt(fila, 7), tblProductos.getValueAt(fila, 19), big.getMoneda((String) tblProductos.getValueAt(fila, 20)),
             preparacion, BigDecimal.ZERO, turno, big.getMoneda(txtTotalImpoconsumo.getText()), instancias.getFranquisia(),
             instancias.getComision(), instancias.getValorComision(), instancias.getTotalFacturaComision(), imei, lote, idProd,
             cmbMes.getSelectedItem(), instancias.getTarjetaCredito(), instancias.getTotalPropina(), instancias.getPorcPropina(),

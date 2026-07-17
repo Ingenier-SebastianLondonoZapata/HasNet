@@ -4110,13 +4110,6 @@ public class SQL {
         ok = Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
         return ok;
     }
-
-    public boolean modificarEstadoPedido(String id) {
-        boolean ok = false;
-        String instruccion_sql = "update bdPedido set estadoGeneral=? where idFactura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", "REVISADO"}, null, instruccion_sql);
-        return ok;
-    }
     
     public Object[][] getTiposVehiculos() {
         String colName[] = {
@@ -6919,13 +6912,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean modificarPedido(String id, String doc, String estado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdPedido set red=?, estadoGeneral=? where idFactura='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean modificarCuadreNotasCredito(String id, String doc, String estado) {
         boolean ok = false;
         String instruccion_sql = "update bdPlanSepare set red=?,estadoGeneral =? where factura ='" + id + "' ;";
@@ -7301,16 +7287,6 @@ public class SQL {
 
     public String ordenExistente(String id) {
         String instruccion_sql = "select idFactura from bdOServicio1 where idFactura = '" + id + "' ";
-        //columnas de la tabla que se
-        String[] colName = {"idFactura"};
-        boolean[] cadena = {true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data[0].toString();
-    }
-
-    public String pedidoExistente(String id) {
-        String instruccion_sql = "select idFactura from bdPedido where idFactura = '" + id + "' ";
         //columnas de la tabla que se
         String[] colName = {"idFactura"};
         boolean[] cadena = {true};

@@ -3,7 +3,8 @@ package Enums;
 public enum EstadosTipoDocumento {
 
     PENDIENTE("PENDIENTE"),
-    DISPONIBLE("DISPONIBLE");
+    DISPONIBLE("DISPONIBLE"),
+    FACTURADA("FACTURADA");
 
     private final String nombre;
 

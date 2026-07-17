@@ -1,5 +1,7 @@
 package Vista.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
 import Modelo.Inventario.DetalleProducto;
@@ -10,7 +12,6 @@ import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
 import Utilidades.CambiarColorTablaReimpresionYAnulacion;
 import Utilidades.Constantes;
-import Utilidades.DatosMaestra;
 import Utilidades.Fechas;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
@@ -30,7 +31,11 @@ import dao.Ventas.DaoReimpresiones;
 import inventario.servicio.CargadorProducto;
 import inventario.servicio.ServicioDiscosteo;
 import inventario.servicio.ServicioInventario;
+import Modelo.Maestra.ModeloResolucion;
+import Modelo.Ventas.DocumentoSeleccionado;
+import dao.Configuraciones.DaoResoluciones;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -40,8 +45,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -129,6 +137,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         cmbTipoDocumento.addItem("NOTA DÉBITO");
         cmbTipoDocumento.addItem("FACTURA");
         cmbTipoDocumento.setSelectedItem("FACTURA");
+        mostrarOInactivarCamposDocumentosFactura(false);
     }
 
     public void consultarMaestros() {
@@ -207,6 +216,24 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
     }
 
+    private void agregarCondicionPorEstado(StringBuilder builder) {
+        Object seleccion = cmbEstadoDocumento.getSelectedItem();
+        if (seleccion == null) {
+            return;
+        }
+
+        if (cmbTipoDocumento.getSelectedItem().equals("FACTURA")) {
+            return;
+        }
+
+        String estadoDocumento = seleccion.toString();
+        if (EstadosTipoDocumento.PENDIENTE.getNombre().equals(estadoDocumento)) {
+            builder.append("estadoGeneral = '").append(EstadosTipoDocumento.PENDIENTE.getNombre()).append("' ");
+        } else {
+            builder.append("estadoGeneral = '").append(EstadosTipoDocumento.FACTURADA.getNombre()).append("' ");
+        }
+    }
+
     private void agregarCondicionPorTipoDocumento(StringBuilder builder) {
         Object seleccion = cmbTipoDocumento.getSelectedItem();
         if (seleccion == null) {
@@ -214,11 +241,21 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
 
         String tipo = seleccion.toString();
-
-        if ("FACTURA".equals(tipo)) {
-            builder.append("factura LIKE 'FACT-%' ");
-        } else if ("NOTA DÉBITO".equals(tipo)) {
-            builder.append("factura LIKE 'ND-%' ");
+        if (null != tipo) {
+            switch (tipo) {
+                case "FACTURA":
+                    if (builder.length() > 0) {
+                        builder.append("AND ");
+                    }
+                    builder.append("factura LIKE 'FACT-%' ");
+                    break;
+                case "NOTA DÉBITO":
+                    if (builder.length() > 0) {
+                        builder.append("AND ");
+                    }
+                    builder.append("factura LIKE 'ND-%' ");
+                    break;
+            }
         }
     }
 
@@ -287,6 +324,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         StringBuilder condicionBuilder = new StringBuilder();
 
+        agregarCondicionPorEstado(condicionBuilder);
         agregarCondicionPorTipoDocumento(condicionBuilder);
         agregarCondicionPorFechas(condicionBuilder);
         agregarCondicionPorTerminal(condicionBuilder);
@@ -381,6 +419,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         lbNit9 = new javax.swing.JLabel();
         dtFinal = new datechooser.beans.DateChooserCombo();
         chkSoloAnuladas = new javax.swing.JCheckBox();
+        btnFacturar = new javax.swing.JButton();
+        btnImprimir = new javax.swing.JButton();
+        chkUnificarFacturas = new javax.swing.JCheckBox();
 
         jMenuItem1.setText("Ascendente");
         jPopupMenu1.add(jMenuItem1);
@@ -867,7 +908,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                             .addGap(3, 3, 3)
                             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -881,21 +922,22 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "FACTURA", "FACTURA", "FECHA", "NIT CLIENTE", "CLIENTE", "VENDEDOR", "TOTAL", "TERMINAL", "CONSE.MANUAL", "TIPO_FACTURA", "FACTURAR"
+                "FACTURA", "FACTURA", "FECHA", "NIT CLIENTE", "CLIENTE", "VENDEDOR", "TOTAL", "TERMINAL", "CONSE.MANUAL", "TIPO_FACTURA", "FACTURAR", "ESTADO"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, true
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
-            }
-
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                if (columnIndex == 10) return Boolean.class;
-                return Object.class;
             }
         });
         tblDocumentos.setRowHeight(24);
@@ -931,7 +973,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             tblDocumentos.getColumnModel().getColumn(10).setMinWidth(0);
             tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(0);
             tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(0);
-            tblDocumentos.getColumnModel().getColumn(10).setHeaderValue("FACTURAR");
+            tblDocumentos.getColumnModel().getColumn(11).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(11).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(11).setMaxWidth(0);
         }
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -991,7 +1035,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         lbNit10.setText("Estado del documento:");
 
         cmbEstadoDocumento.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        cmbEstadoDocumento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FINALIZADO", "PENDIENTE" }));
+        cmbEstadoDocumento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FACTURADA", "PENDIENTE" }));
         cmbEstadoDocumento.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbEstadoDocumentoItemStateChanged(evt);
@@ -1135,6 +1179,39 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5))
         );
 
+        btnFacturar.setBackground(new java.awt.Color(46, 204, 113));
+        btnFacturar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnFacturar.setText("FACTURAR");
+        btnFacturar.setToolTipText("Ctrl+G");
+        btnFacturar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnFacturar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnFacturar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnFacturar.setMargin(new java.awt.Insets(2, 14, 2, 5));
+        btnFacturar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFacturarActionPerformed(evt);
+            }
+        });
+
+        btnImprimir.setBackground(new java.awt.Color(46, 204, 113));
+        btnImprimir.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnImprimir.setText("FACTURAR E IMPRIMIR");
+        btnImprimir.setToolTipText("Ctrl+I");
+        btnImprimir.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnImprimir.setMargin(new java.awt.Insets(2, 14, 2, 5));
+        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirActionPerformed(evt);
+            }
+        });
+
+        chkUnificarFacturas.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
+        chkUnificarFacturas.setText("Unificar factura para documentos del mismo cliente");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1145,14 +1222,27 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chkUnificarFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkUnificarFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -1338,7 +1428,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
 
             default:
-                return;
         }
     }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
 
@@ -1354,12 +1443,18 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
         }
 
-        if (evt.getClickCount() == 2 && tblDocumentos.getSelectedColumn() != 9) {
+        if (evt.getClickCount() == 2 && tblDocumentos.getSelectedColumn() != 9 && tblDocumentos.getSelectedColumn() != 10) {
             verInformacionDetalladaDocumento();
         }
     }//GEN-LAST:event_tblDocumentosMouseClicked
 
     private void cmbTipoDocumentoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTipoDocumentoItemStateChanged
+        if (cmbTipoDocumento.getSelectedItem().toString().equals("PLAN SEPARE")) {
+            mostrarOInactivarCamposDocumentosFactura(false);
+        } else {
+            mostrarOInactivarCamposDocumentosFactura(!cmbEstadoDocumento.getSelectedItem().equals(EstadosTipoDocumento.FACTURADA.getNombre()));
+        }
+
         actualizarTablaDocumentos();
     }//GEN-LAST:event_cmbTipoDocumentoItemStateChanged
 
@@ -1427,9 +1522,10 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         if (cmbEstadoDocumento.getSelectedItem().toString().equals("PENDIENTE")) {
             cmbTipoDocumento.removeItem("FACTURA");
             cmbTipoDocumento.removeItem("NOTA DÉBITO");
-            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(70);
-            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(80);
-            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(100);
+
+            if (!cmbTipoDocumento.getSelectedItem().toString().equals("PLAN SEPARE")) {
+                mostrarOInactivarCamposDocumentosFactura(true);
+            }
         } else {
 
             if (!existeTipoDocumentoEnCombo("FACTURA")) {
@@ -1441,15 +1537,23 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
 
             cmbTipoDocumento.setSelectedItem("FACTURA");
-            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(0);
-            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(0);
-            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(0);
+            mostrarOInactivarCamposDocumentosFactura(false);
         }
+
+        actualizarTablaDocumentos();
     }//GEN-LAST:event_cmbEstadoDocumentoItemStateChanged
 
     private void chkSoloAnuladasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkSoloAnuladasItemStateChanged
         actualizarTablaDocumentos();
     }//GEN-LAST:event_chkSoloAnuladasItemStateChanged
+
+    private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
+        iniciarFacturacion(false);
+    }//GEN-LAST:event_btnFacturarActionPerformed
+
+    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
+        iniciarFacturacion(true);
+    }//GEN-LAST:event_btnImprimirActionPerformed
 
     private boolean existeTipoDocumentoEnCombo(String tipoDocumento) {
         for (int i = 0; i < cmbTipoDocumento.getItemCount(); i++) {
@@ -1581,6 +1685,22 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
 
         return movimientos;
+    }
+
+    private void mostrarOInactivarCamposDocumentosFactura(boolean esVisible) {
+        if (esVisible) {
+            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(70);
+            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(80);
+            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(100);
+        } else {
+            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(0);
+        }
+
+        btnFacturar.setVisible(esVisible);
+        btnImprimir.setVisible(esVisible);
+        chkUnificarFacturas.setVisible(esVisible);
     }
 
     private String obtenerValorTabla(int row, int col) {
@@ -1950,13 +2070,122 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         tblDocumentos.setRowSorter(modeloOrdenado);
     }
 
+    private void iniciarFacturacion(boolean imprimir) {
+        List<DocumentoSeleccionado> seleccionados = recolectarDocumentosSeleccionados();
+
+        if (seleccionados.isEmpty()) {
+            ControladorAlertas.alert("Seleccione al menos un documento para facturar.");
+            return;
+        }
+
+        String tipoCombo = cmbTipoDocumento.getSelectedItem() != null
+                ? cmbTipoDocumento.getSelectedItem().toString() : "";
+
+        if (!esTipoConvertibleAFactura(tipoCombo)) {
+            JOptionPane.showMessageDialog(this,
+                    "El tipo de documento '" + tipoCombo + "' no se puede convertir a factura.",
+                    "Tipo no soportado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int indexComprobante = solicitarSeleccionComprobante();
+        if (indexComprobante < 0) {
+            return;
+        }
+
+        boolean unificar = chkUnificarFacturas.isSelected();
+        int totalDocs = seleccionados.size();
+        String mensaje = unificar
+                ? "Se facturarán " + totalDocs + " documento(s) agrupando por cliente. ¿Continuar?"
+                : "Se generará una factura por cada uno de los " + totalDocs + " documento(s). ¿Continuar?";
+
+        int confirmacion = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar facturación",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        ServicioFacturacionMasiva servicio = new ServicioFacturacionMasiva(instancias);
+        if (unificar) {
+            servicio.procesarUnificado(seleccionados, tipoCombo, indexComprobante, imprimir);
+        } else {
+            servicio.procesarIndividual(seleccionados, tipoCombo, indexComprobante, imprimir);
+        }
+
+        actualizarTablaDocumentos();
+    }
+
+    private List<DocumentoSeleccionado> recolectarDocumentosSeleccionados() {
+        List<DocumentoSeleccionado> resultado = new ArrayList<>();
+        int totalFilas = tblDocumentos.getRowCount();
+        for (int i = 0; i < totalFilas; i++) {
+            Object checkValue = tblDocumentos.getValueAt(i, 10);
+            if (Boolean.TRUE.equals(checkValue)) {
+                String idDocumento = tblDocumentos.getValueAt(i, 0) != null
+                        ? tblDocumentos.getValueAt(i, 0).toString() : "";
+                String nit = tblDocumentos.getValueAt(i, 3) != null
+                        ? tblDocumentos.getValueAt(i, 3).toString() : "";
+                String nombre = tblDocumentos.getValueAt(i, 4) != null
+                        ? tblDocumentos.getValueAt(i, 4).toString() : "";
+                if (!idDocumento.isEmpty()) {
+                    resultado.add(new DocumentoSeleccionado(idDocumento, nit, nombre));
+                }
+            }
+        }
+        return resultado;
+    }
+
+    private boolean esTipoConvertibleAFactura(String tipoCombo) {
+        switch (tipoCombo) {
+            case "PEDIDOS":
+            case "COTIZACIÓN":
+            case "ORDEN DE SERVICIO":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private int solicitarSeleccionComprobante() {
+        DaoResoluciones daoResoluciones = new DaoResoluciones();
+        List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(
+                TipoDocumento.FACTURACION.getValor());
+
+        if (resoluciones == null || resoluciones.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No hay comprobantes de facturación configurados.",
+                    "Sin comprobantes", JOptionPane.ERROR_MESSAGE);
+            return -1;
+        }
+
+        String[] opciones = new String[resoluciones.size()];
+        for (int i = 0; i < resoluciones.size(); i++) {
+            String desc = resoluciones.get(i).getDescripcionResolucion();
+            opciones[i] = desc != null ? desc : "Comprobante " + (i + 1);
+        }
+
+        JComboBox<String> comboComprobantes = new JComboBox<>(opciones);
+        Frame frame = (Frame) SwingUtilities.getWindowAncestor(this);
+        int resultado = JOptionPane.showConfirmDialog(frame, comboComprobantes,
+                "Seleccione el tipo de comprobante", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (resultado != JOptionPane.OK_OPTION) {
+            return -1;
+        }
+        return comboComprobantes.getSelectedIndex();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnular;
     private javax.swing.JButton btnBuscTerceros1;
     private javax.swing.JButton btnBuscTerceros2;
+    private javax.swing.JButton btnFacturar;
+    private javax.swing.JButton btnImprimir;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton carta;
     private javax.swing.JCheckBox chkSoloAnuladas;
+    private javax.swing.JCheckBox chkUnificarFacturas;
     private javax.swing.JComboBox cmbEstadoDocumento;
     private javax.swing.JComboBox cmbTipoDocumento;
     private datechooser.beans.DateChooserCombo dtFinal;

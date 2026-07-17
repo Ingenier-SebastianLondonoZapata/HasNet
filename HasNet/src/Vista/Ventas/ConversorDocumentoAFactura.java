@@ -37,8 +37,8 @@ public class ConversorDocumentoAFactura {
         return entrada != null ? entrada.tipoAnulacion : null;
     }
 
-    public void actualizarDocumentoOrigen(String tipoProceso, String idDocumento, String tituloDocumento) {
-        EntradaConversion entrada = registro.get(tipoProceso);
+    public void actualizarDocumentoOrigen(String tipoProcesoOriginal, String idDocumento, String tituloDocumento) {
+        EntradaConversion entrada = registro.get(tipoProcesoOriginal);
         if (entrada != null) {
             entrada.actualizador.actualizar(idDocumento, tituloDocumento);
         }
