@@ -4,7 +4,8 @@ public enum EstadosTipoDocumento {
 
     PENDIENTE("PENDIENTE"),
     DISPONIBLE("DISPONIBLE"),
-    FACTURADA("FACTURADA");
+    FACTURADA("FACTURADA"),
+    ANULADA("ANULADA");
 
     private final String nombre;
 

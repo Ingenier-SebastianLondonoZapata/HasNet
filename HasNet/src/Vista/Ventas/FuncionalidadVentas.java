@@ -338,9 +338,9 @@ public class FuncionalidadVentas {
                 .registrar(TipoDocumento.PEDIDO.getValor(), TipoDocumento.ANULAR_PEDIDO,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
-                            public void actualizar(String idDocumento, String tituloDocumento) {
+                            public void actualizar(String idDocumento, String idFacturaGenerada) {
                                 instancias.getSql().eliminarComanda(idDocumento, "pedido");
-                                daoPedido.modificarEstadoPedido(EstadosTipoDocumento.FACTURADA.getNombre(), idDocumento);
+                                daoPedido.modificarEstadoPedido(EstadosTipoDocumento.FACTURADA.getNombre(), idFacturaGenerada, idDocumento);
                             }
                         })
                 .registrar(TipoDocumento.ORDER_SERVICIO.getValor(), TipoDocumento.ANULAR_ORDER_SERVICIO,

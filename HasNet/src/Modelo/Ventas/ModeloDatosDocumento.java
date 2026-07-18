@@ -1,21 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo.Ventas;
 
 import Utilidades.Fechas;
 import clases.big;
 import java.math.BigDecimal;
 
-/**
- *
- * @author sebastian.londono
- */
 public class ModeloDatosDocumento {
 
-    String identificadorFactura, identificadorCliente, vendedor, fechaFactura, fechaVencimiento, observaciones, resolucion, bodega;
+    String identificadorFactura, identificadorCliente, vendedor, fechaFactura, fechaVencimiento, observaciones, resolucion, bodega, estadoGeneral, estado2;
     BigDecimal subtotalGeneral, descuentoGeneral, ivaGeneral, impoconsumoGeneral, totalGeneral;
     boolean esAnulado;
 
@@ -135,7 +126,23 @@ public class ModeloDatosDocumento {
         this.bodega = bodega;
     }
 
-    public ModeloDatosDocumento(String identificadorFactura, String identificadorCliente, String vendedor, String fechaFactura, String fechaVencimiento, String observaciones, String resolucion, BigDecimal subtotalGeneral, BigDecimal descuentoGeneral, BigDecimal ivaGeneral, BigDecimal impoconsumoGeneral, BigDecimal totalGeneral, boolean esAnulado, String bodega) {
+    public String getEstadoGeneral() {
+        return estadoGeneral;
+    }
+
+    public void setEstadoGeneral(String estadoGeneral) {
+        this.estadoGeneral = estadoGeneral;
+    }
+
+    public String getEstado2() {
+        return estado2;
+    }
+
+    public void setEstado2(String estado2) {
+        this.estado2 = estado2;
+    }
+
+    public ModeloDatosDocumento(String identificadorFactura, String identificadorCliente, String vendedor, String fechaFactura, String fechaVencimiento, String observaciones, String resolucion, BigDecimal subtotalGeneral, BigDecimal descuentoGeneral, BigDecimal ivaGeneral, BigDecimal impoconsumoGeneral, BigDecimal totalGeneral, boolean esAnulado, String bodega, String estadoGeneral, String estado2) {
         this.identificadorFactura = identificadorFactura;
         this.identificadorCliente = identificadorCliente;
         this.vendedor = vendedor;
@@ -150,6 +157,8 @@ public class ModeloDatosDocumento {
         this.totalGeneral = totalGeneral;
         this.esAnulado = esAnulado;
         this.bodega = bodega;
+        this.estadoGeneral = estadoGeneral;
+        this.estado2 = estado2;
     }
 
     public static ModeloDatosDocumento construirModelo(Object datos, BigDecimal impoConsumo) {
@@ -169,7 +178,9 @@ public class ModeloDatosDocumento {
                 impoConsumo,
                 big.getBigDecimal(obtenerNumero(datos, "getTotalGeneral")),
                 esAnulada,
-                String.valueOf(obtenerValor(datos, "getBodega"))
+                String.valueOf(obtenerValor(datos, "getBodega")),
+                String.valueOf(obtenerValor(datos, "getEstadoGeneral")),
+                String.valueOf(obtenerValor(datos, "getEstado2"))
         );
     }
 

@@ -4165,7 +4165,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         instancias.setCancelarFactura(false);
         if (btnGuardar.getText().equals("FACTURAR") && this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
-            convertirDocumentoAFactura(false, "");
+            convertirDocumentoAFactura(false, "", this.tipoProceso);
         } else {
             validacionInicialFactura(false);
         }
@@ -4180,7 +4180,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         instancias.setCancelarFactura(false);
         if (btnGuardar.getText().equals("FACTURAR") && this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
-            convertirDocumentoAFactura(true, "");
+            convertirDocumentoAFactura(true, "", this.tipoProceso);
         } else {
             validacionInicialFactura(true);
         }
@@ -6292,8 +6292,8 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    public void ejecutarConversionAFactura(boolean imprimir, String idDocumentoOrigen) {
-        convertirDocumentoAFactura(imprimir, idDocumentoOrigen);
+    public void ejecutarConversionAFactura(boolean imprimir, String idDocumentoOrigen, String tipoDocumento) {
+        convertirDocumentoAFactura(imprimir, idDocumentoOrigen, tipoDocumento);
     }
 
     public void marcarDocumentoOrigenComoConvertido(String tipoProcesoOriginal, String idDocumento) {
@@ -6302,17 +6302,16 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    private void convertirDocumentoAFactura(boolean imprimir, String idDocumentoOrigen) {
+    private void convertirDocumentoAFactura(boolean imprimir, String idDocumentoOrigen, String tipoDocumentoOrigen) {
         if (TipoDocumento.MESA.getValor().equals(this.tipoProceso) && lbTitulo.getText().equals("DOMICILIO")) {
             validacionInicialFactura(imprimir);
             return;
         }
 
-        String tipoProcesoOrigen = this.tipoProceso;
-        String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(tipoProcesoOrigen);
         String tituloOrigen = instancias.getTitulo() != null ? instancias.getTitulo() : "";
 
         if (TipoDocumento.MESA.getValor().equals(this.tipoProceso)) {
+            String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(tipoDocumentoOrigen);
             idDocumentoOrigen = prefijoGeneral + "-" + lbNoFactura.getText();
         }
 
@@ -6324,14 +6323,15 @@ public final class VistaFactura extends javax.swing.JPanel {
             return;
         }
 
+        this.tipoProceso = TipoDocumento.FACTURACION.getValor();
+        String facturaGenerada = validacionInicialFactura(imprimir);
+        tituloOrigen = TipoDocumento.MESA.getValor().equals(this.tipoProceso) ? tituloOrigen : facturaGenerada;
+
         if (conversorDocumentoAFactura != null) {
-            conversorDocumentoAFactura.actualizarDocumentoOrigen(tipoProcesoOrigen, idDocumentoOrigen, tituloOrigen);
+            conversorDocumentoAFactura.actualizarDocumentoOrigen(tipoDocumentoOrigen, idDocumentoOrigen, tituloOrigen);
         }
 
-        this.tipoProceso = TipoDocumento.FACTURACION.getValor();
-        validacionInicialFactura(imprimir);
-
-        if (TipoDocumento.MESA.getValor().equals(tipoProcesoOrigen) && tblProductos.getRowCount() == 0) {
+        if (TipoDocumento.MESA.getValor().equals(tipoDocumentoOrigen) && tblProductos.getRowCount() == 0) {
             if (instancias.getConfiguraciones().isRestaurante()) {
                 instancias.getMesas().cargarRegistrosMesas();
                 instancias.getMesas().cargarRegistros();

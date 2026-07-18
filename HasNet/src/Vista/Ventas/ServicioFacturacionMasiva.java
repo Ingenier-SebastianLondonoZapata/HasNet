@@ -40,7 +40,7 @@ public class ServicioFacturacionMasiva {
                 }
                 vistaFactura.seleccionarComprobanteParaConversion(indexComprobante);
                 vistaFactura.setSaltarPasosFactura(true);
-                vistaFactura.ejecutarConversionAFactura(imprimir, doc.getIdDocumento());
+                vistaFactura.ejecutarConversionAFactura(imprimir, doc.getIdDocumento(), tipoDocumento);
                 exitosos++;
             } catch (Exception e) {
                 errores.add(doc.getIdDocumento() + ": " + e.getMessage());
@@ -86,7 +86,7 @@ public class ServicioFacturacionMasiva {
 
                 vistaFactura.seleccionarComprobanteParaConversion(indexComprobante);
                 vistaFactura.setSaltarPasosFactura(true);
-                vistaFactura.ejecutarConversionAFactura(imprimir, "");
+                vistaFactura.ejecutarConversionAFactura(imprimir, "", tipoDocumento);
 
                 for (int i = 0; i < grupo.size(); i++) {
                     vistaFactura.marcarDocumentoOrigenComoConvertido(tipoDocumento, grupo.get(i).getIdDocumento());

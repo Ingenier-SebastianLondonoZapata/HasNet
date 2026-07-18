@@ -3991,6 +3991,13 @@ public class SQL {
         ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion, "ANULADA"}, null, instruccion_sql);
         return ok;
     }
+    
+    public boolean modificarCotizacionFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota, boolean anula, String anulacion) {
+        boolean ok = false;
+        String instruccion_sql = "update bdCotizacion set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=?, estadoGeneral=? where factura ='" + id + "' ;";
+        ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion, "ANULADA"}, null, instruccion_sql);
+        return ok;
+    }
 
     public boolean modificarOServicioFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota,
             boolean anula, String anulacion) {
