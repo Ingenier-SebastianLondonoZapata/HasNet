@@ -3256,7 +3256,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void calcularTabla(int fila) {
 
         BigDecimal valorProducto = big.getMoneda(tblProductos.getValueAt(fila, 2).toString());
-        BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(fila, 3).toString());
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(".", "").replace(",", "."));
         if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
             cantidad = BigDecimal.ONE;
         }

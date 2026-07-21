@@ -86,7 +86,7 @@ import formularios.Parqueadero.infRepParqueadero;
 
 import formularios.Tesoreria.infBancos;
 import formularios.Tesoreria.infRepBancos;
-import formularios.Tesoreria.infCaja;
+import Vista.Tesoreria.VistaCuadreCaja;
 import formularios.Tesoreria.infRepCuadre;
 
 import Vista.Ventas.cotizacion;
@@ -2602,7 +2602,7 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("REPORTE DE PAGOS DEL LAVADERO");
             }
 
-            if (formularios[5] instanceof infCaja) {
+            if (formularios[5] instanceof VistaCuadreCaja) {
                 instancias.getMenu().cambiarTitulo("CUADRE DE CAJA");
             }
 
@@ -3790,7 +3790,7 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infCaja interno15 = new infCaja();
+            VistaCuadreCaja interno15 = new VistaCuadreCaja();
             dkpFormularios.add(interno15);
             instancias.setCaja(interno15);
             if (instancias.getUsuarioLog().isCuadreCaja()) {

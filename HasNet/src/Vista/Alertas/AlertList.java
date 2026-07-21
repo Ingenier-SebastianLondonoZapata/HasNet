@@ -69,7 +69,7 @@ public final class AlertList extends javax.swing.JDialog {
             }
         });
 
-        btnDevolver.setBackground(new java.awt.Color(255, 153, 153));
+        btnDevolver.setBackground(new java.awt.Color(255, 178, 2));
         btnDevolver.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         btnDevolver.setText("DEVOLVER");
         btnDevolver.addActionListener(new java.awt.event.ActionListener() {

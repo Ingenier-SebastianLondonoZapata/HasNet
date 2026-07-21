@@ -2207,12 +2207,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         for (int i = 0; i < totalFilas; i++) {
             Object checkValue = tblDocumentos.getValueAt(i, 10);
             if (Boolean.TRUE.equals(checkValue)) {
-                String idDocumento = tblDocumentos.getValueAt(i, 0) != null
-                        ? tblDocumentos.getValueAt(i, 0).toString() : "";
-                String nit = tblDocumentos.getValueAt(i, 3) != null
-                        ? tblDocumentos.getValueAt(i, 3).toString() : "";
-                String nombre = tblDocumentos.getValueAt(i, 4) != null
-                        ? tblDocumentos.getValueAt(i, 4).toString() : "";
+                String idDocumento = tblDocumentos.getValueAt(i, 0) != null ? tblDocumentos.getValueAt(i, 0).toString() : "";
+                String nit = tblDocumentos.getValueAt(i, 3) != null ? tblDocumentos.getValueAt(i, 3).toString() : "";
+                String nombre = tblDocumentos.getValueAt(i, 4) != null ? tblDocumentos.getValueAt(i, 4).toString() : "";
                 if (!idDocumento.isEmpty()) {
                     resultado.add(new DocumentoSeleccionado(idDocumento, nit, nombre));
                 }

@@ -4376,10 +4376,9 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         String baseUtilizada = "bdProductos";
 
-        if (evt.getClickCount() > 1 && (tblProductos.getSelectedColumn() == 5 || tblProductos.getSelectedColumn() == 6)) {
-            if (instancias.getConfiguraciones().isFacturaElectronica()) {
-                abrirModalDescuentosProducto(tblProductos.getSelectedRow());
-            }
+        if (instancias.getConfiguraciones().isFacturaElectronica() && evt.getClickCount() >= 1
+                && (tblProductos.getSelectedColumn() == 5 || tblProductos.getSelectedColumn() == 6)) {
+            abrirModalDescuentosProducto(tblProductos.getSelectedRow());
         }
 
         if (!this.tipoProceso.equals(TipoDocumento.COTIZACION.getValor())) {
@@ -4687,7 +4686,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         if ((Boolean) tblProductos.getValueAt(fila, 36) == true) {
             BigDecimal num1 = big.getMoneda(tblProductos.getValueAt(fila, 38).toString());
-            BigDecimal num2 = big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", "."));
+            BigDecimal num2 = Utilidades.convertirBigDecimal(tblProductos.getValueAt(fila, 13).toString().replace(".", "").replace(",", "."));
             if (!lineasOriginales.isEmpty()) {
                 String idProducto = obtenerValorTabla(fila, 32);
                 num2 = num2.subtract(getCantidadOriginalProducto(idProducto));
@@ -7579,7 +7578,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
 
         BigDecimal copago = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 17)));
-        BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 3));
+        BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 3).replace(".", "").replace(",", "."));
         BigDecimal valorDescuento = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 6)));
         BigDecimal valorUnitario = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
         BigDecimal subtotal = valorUnitario.multiply(cantidad);
@@ -7738,7 +7737,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 break;
         }
 
-        tblProductos.setValueAt(cantidad, fila, 3);
+        tblProductos.setValueAt(Utilidades.formatearCantidadVista(cantidad), fila, 3);
 
         BigDecimal costo = BigDecimal.ZERO;
         try {
@@ -8371,7 +8370,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
             String idProducto = obtenerValorTabla(i, 32);
             BigDecimal stockActual = big.getMoneda(valorActual.toString());
-            BigDecimal cantNueva = big.getBigDecimal(tblProductos.getValueAt(i, 3).toString().replace(",", "."));
+            BigDecimal cantNueva = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString().replace(".", "").replace(",", "."));
             BigDecimal cantOriginal = getCantidadOriginalProducto(idProducto);
             BigDecimal netIncrement = cantNueva.subtract(cantOriginal);
             tblProductos.setValueAt(Utilidades.formatearCantidadVista(stockActual.subtract(netIncrement)), i, 39);

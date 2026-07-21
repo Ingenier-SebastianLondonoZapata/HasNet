@@ -1,5 +1,6 @@
 package clases;
 
+import Vista.Tesoreria.VistaCuadreCaja;
 import Vista.Productos.VistaGrupos;
 import Vista.Ventas.creditos;
 import Vista.Ventas.cotizacion;
@@ -258,7 +259,7 @@ public class Instancias {
     private infResumenDia resumenDia;
     private infIndicadoresVentas indicadoresVentas;
     private infFacturarLotes facturarLotes;
-    private infCaja caja;
+    private VistaCuadreCaja caja;
     private pedido pedido;
     private planSepare planSepare;
     private creditos facturaCreditos;
@@ -2458,7 +2459,7 @@ public class Instancias {
         this.maestra = maestra;
     }
 
-    public infCaja getCaja() {
+    public VistaCuadreCaja getCaja() {
         return caja;
     }
 
@@ -2470,7 +2471,7 @@ public class Instancias {
         this.reimpresion = reimpresion;
     }
 
-    public void setCaja(infCaja caja) {
+    public void setCaja(VistaCuadreCaja caja) {
         this.caja = caja;
     }
 

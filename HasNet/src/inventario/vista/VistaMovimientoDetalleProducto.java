@@ -11,6 +11,7 @@ import Vista.Productos.VistaInventarioInicial;
 import Vista.Ventas.VistaFactura;
 import clases.Instancias;
 import Utilidades.Utilidades;
+import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import formularios.productos.buscColores;
@@ -912,7 +913,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
                     return false;
                 }
 
-                BigDecimal stock = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
+                BigDecimal stock = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3).replace(".", "").replace(",", "."));
                 if (stock.compareTo(cantidad) < 0) {
                     seleccionarCeldaError(i, 1);
                     metodos.msgAdvertenciaAjustado(null, "¡Cantidades insuficientes!");
@@ -954,7 +955,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             }
         } else if (DetalleTipoProducto.esColorOTalla(tipoProducto)) {
             for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
+                BigDecimal cantidad = big.getMoneda(obtenerValorTabla(i, 3));
                 cantidadTotal = cantidadTotal.add(cantidad);
                 if (esTipo(tipoProducto, DetalleTipoProducto.TALLA)) {
                     receptor.cargarDetallado(idProducto, "", "", "", "", cantidad, descripcion, "", obtenerValorTabla(i, 0));
@@ -964,7 +965,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             }
         } else if (esTipo(tipoProducto, DetalleTipoProducto.FECHA_LOTE)) {
             for (int i = 0; i < tblDetalle.getRowCount(); i++) {
-                BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
+                BigDecimal cantidad = big.getMoneda(obtenerValorTabla(i, 3));
                 cantidadTotal = cantidadTotal.add(cantidad);
                 receptor.cargarDetallado(idProducto, "", obtenerValorTabla(i, 0), obtenerValorTabla(i, 1),
                         obtenerValorTabla(i, 2), cantidad, descripcion, "", "");

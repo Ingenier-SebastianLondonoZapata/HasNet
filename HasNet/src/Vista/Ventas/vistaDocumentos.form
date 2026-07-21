@@ -1306,10 +1306,8 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="lbFacturaRelacionada" pref="55" max="32767" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="btnAnular" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="btnBuscTerceros2" alignment="0" pref="55" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="btnAnular" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="btnBuscTerceros2" alignment="0" pref="55" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
@@ -1444,9 +1442,6 @@
                       </Border>
                     </Property>
                   </Properties>
-                  <AccessibilityProperties>
-                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Observaciones del documento"/>
-                  </AccessibilityProperties>
 
                   <Layout>
                     <DimensionLayout dim="0">
