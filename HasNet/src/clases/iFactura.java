@@ -2605,58 +2605,6 @@ public class iFactura {
         }
     }
 
-    public void ver_RepBancos(String sql, String encabezado, String tipo) {
-        JasperReport reporte;
-
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesTesoreria/repBancos" + tipo + ".jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map<String, String> parametros = new HashMap<String, String>();
-            parametros.clear();
-            parametros.put("cliente", sql);
-            parametros.put("encabezado", encabezado);
-            parametros.put("simbolo", instancia.getSimbolo());
-            parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
-    public void ver_RepAdjuntosBancos(String sql, String encabezado) {
-        JasperReport reporte;
-
-        String ruta = System.getProperty("user.dir") + "\\imagenes\\recibos\\";
-
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesTesoreria/repArchivosAdjuntos.jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map<String, String> parametros = new HashMap<String, String>();
-            parametros.clear();
-            parametros.put("cliente", sql);
-            parametros.put("encabezado", encabezado);
-            parametros.put("ruta", ruta);
-            parametros.put("informacionLegalClick", informacionLegalClick);
-            parametros.put("simbolo", instancia.getSimbolo());
-            parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
     public void ver_RepAbonosCxp(String tipo, String sql, String encabezado) {
         JasperReport reporte;
 

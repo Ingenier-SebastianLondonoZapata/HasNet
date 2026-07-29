@@ -10,7 +10,7 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
-import Vista.Tesoreria.vistaEgresos;
+import Vista.Tesoreria.VistaEgresos;
 import formularios.productos.buscProductos;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
@@ -2437,7 +2437,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         try {
             this.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(vistaEgresos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VistaEgresos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         if (nodo.getId() != null) {

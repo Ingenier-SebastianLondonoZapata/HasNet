@@ -23,9 +23,7 @@ import Validaciones.Tesoreria.squemaEgresos;
 import clases.big;
 import clases.convertirNumeroALetras;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
 import formularios.Tesoreria.buscEgresos;
-import formularios.Tesoreria.dlgMovimientosBanco;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -43,11 +41,13 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
-public class vistaEgresos extends javax.swing.JInternalFrame {
-    
+public class VistaEgresos extends javax.swing.JInternalFrame {
+
+    private String CODIGO_CONCEPTO_SELECCIONADO = "";
+
     private final DaoResoluciones daoResoluciones = new DaoResoluciones();
     private final DaoEgresos daoEgresos = new DaoEgresos();
-    
+
     private final DocumentosElectronicos documentosElectronicos = new DocumentosElectronicos();
     private final consumidorDocumentoSoporte consumidorDocumentoSoporte = new consumidorDocumentoSoporte();
     private final squemaDocumentoSoporte squemaDocumentoSoporte = new squemaDocumentoSoporte();
@@ -55,7 +55,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
     private final squemaEgresos squemaEgresos = new squemaEgresos();
     private ModeloContacto DATOS_CLIENTE_CARGADO = null;
     DefaultTableModel modeloTablaConceptos;
-    
+
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
     private Boolean mensaje = true;
@@ -66,72 +66,74 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
     String ingresoAsociado = "", tipoMovimiento = "", consecutivoBanco = "", simbolo = "";
     Boolean saltarPasos = false, cancelarEgreso = false;
     DecimalFormat df = new DecimalFormat("#.00");
-    
+
     public String getConsecutivoBanco() {
         return consecutivoBanco;
     }
-    
+
     public void setConsecutivoBanco(String consecutivoBanco) {
         this.consecutivoBanco = consecutivoBanco;
     }
-    
+
     public String getIngresoAsociado() {
         return ingresoAsociado;
     }
-    
+
     public void setIngresoAsociado(String ingresoAsociado) {
         this.ingresoAsociado = ingresoAsociado;
     }
-    
+
     public Boolean getSaltarPasos() {
         return saltarPasos;
     }
-    
+
     public void setSaltarPasos(Boolean saltarPasos) {
         this.saltarPasos = saltarPasos;
     }
-    
+
     public Boolean getCancelarEgreso() {
         return cancelarEgreso;
     }
-    
+
     public void setCancelarEgreso(Boolean cancelarEgreso) {
         this.cancelarEgreso = cancelarEgreso;
     }
-    
-    public vistaEgresos() {
-        
+
+    public VistaEgresos() {
+
         initComponents();
         codigos = new TreeMap();
-        
+
         instancias = Instancias.getInstancias();
-        
+
         simbolo = instancias.getSimbolo();
         txtCheque.setText(this.simbolo + " 0");
         txtBanco.setText(this.simbolo + " 0");
-        
+
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
         dimBarra = Barra.getPreferredSize();
         Barra.setSize(0, 0);
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
         repaint();
-        
+
         btnLimpiarActionPerformed(null);
         Object[][] codigos = instancias.getSql().getCodsEgresos();
-        
+
         pnlFormulario.registerKeyboardAction(accion("guardar"), "guardar", KeyStroke.getKeyStroke(KeyEvent.VK_G, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("proveedor"), "proveedor", KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("terceros"), "terceros", KeyStroke.getKeyStroke(KeyEvent.VK_T, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
-        
-        actualizarTabla();
+
+        actualizarTablaConceptos();
         actualizarTablaResoluciones();
         establecerTipoImpresion();
-        
+
         tapEgresos.setSelectedIndex(1);
+        btnModificarConcepto.setVisible(false);
+        btnInactivarConcepto.setVisible(false);
     }
-    
+
     private ActionListener accion(final String opc) {
         ActionListener a = new ActionListener() {
             @Override
@@ -162,7 +164,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         };
         return a;
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -176,12 +178,13 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         lbTelefono1 = new javax.swing.JLabel();
         lbTelefono2 = new javax.swing.JLabel();
-        txtCodigo1 = new javax.swing.JTextField();
-        txtConcepto = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        btnGuardar1 = new javax.swing.JButton();
+        txtCodigoConcepto = new javax.swing.JTextField();
+        txtDescripcionConcepto = new javax.swing.JTextField();
         lbTelefono3 = new javax.swing.JLabel();
-        btnEliminar = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        btnInactivarConcepto = new javax.swing.JButton();
+        btnModificarConcepto = new javax.swing.JButton();
+        btnAgregarConcepto = new javax.swing.JButton();
         scrFormulario = new javax.swing.JScrollPane();
         pnlFormulario = new javax.swing.JPanel();
         pnlCliente = new javax.swing.JPanel();
@@ -214,7 +217,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
-        btnBuscTerceros2 = new javax.swing.JButton();
+        btnAnularEgreso = new javax.swing.JButton();
         btnBuscTerceros3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         lbLetras2 = new javax.swing.JLabel();
@@ -273,112 +276,126 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 14))); // NOI18N
 
-        lbTelefono1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        lbTelefono1.setText("Descripción concepto:");
+        lbTelefono1.setFont(new java.awt.Font("Arial", 0, 17)); // NOI18N
+        lbTelefono1.setText("Descripción:");
 
-        lbTelefono2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        lbTelefono2.setText("Codigo concepto:");
+        lbTelefono2.setFont(new java.awt.Font("Arial", 0, 17)); // NOI18N
+        lbTelefono2.setText("Codigo:");
 
-        txtCodigo1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txtCodigo1.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCodigoConcepto.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtCodigoConcepto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCodigo1KeyReleased(evt);
+                txtCodigoConceptoKeyReleased(evt);
             }
         });
 
-        txtConcepto.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txtConcepto.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtDescripcionConcepto.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtDescripcionConcepto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtConceptoKeyTyped(evt);
+                txtDescripcionConceptoKeyTyped(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(93, 173, 226));
-        jButton2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jButton2.setText("MODIFICAR");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.setEnabled(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        lbTelefono3.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
+        lbTelefono3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbTelefono3.setText("Crear un nuevo concepto");
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+
+        btnInactivarConcepto.setBackground(new java.awt.Color(241, 148, 138));
+        btnInactivarConcepto.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        btnInactivarConcepto.setText("INACTIVAR");
+        btnInactivarConcepto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnInactivarConcepto.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnInactivarConcepto.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnInactivarConcepto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnInactivarConceptoActionPerformed(evt);
             }
         });
 
-        btnGuardar1.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        btnGuardar1.setText("AGREGAR");
-        btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar1.addActionListener(new java.awt.event.ActionListener() {
+        btnModificarConcepto.setBackground(new java.awt.Color(93, 173, 226));
+        btnModificarConcepto.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        btnModificarConcepto.setText("MODIFICAR");
+        btnModificarConcepto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarConcepto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardar1ActionPerformed(evt);
+                btnModificarConceptoActionPerformed(evt);
             }
         });
 
-        lbTelefono3.setFont(new java.awt.Font("Arial", 1, 28)); // NOI18N
-        lbTelefono3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTelefono3.setText("CONCEPTOS");
-
-        btnEliminar.setBackground(new java.awt.Color(241, 148, 138));
-        btnEliminar.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        btnEliminar.setText("INACTIVAR");
-        btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEliminar.setEnabled(false);
-        btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnEliminar.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarConcepto.setBackground(new java.awt.Color(46, 204, 113));
+        btnAgregarConcepto.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        btnAgregarConcepto.setText("AGREGAR");
+        btnAgregarConcepto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarConcepto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
+                btnAgregarConceptoActionPerformed(evt);
             }
         });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnInactivarConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnModificarConcepto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAgregarConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnModificarConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnInactivarConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAgregarConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
+        );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 57, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardar1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(lbTelefono3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbTelefono3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(lbTelefono1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                                    .addComponent(lbTelefono2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtCodigo1, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
-                                    .addComponent(txtConcepto))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                    .addComponent(txtCodigoConcepto)
+                                    .addComponent(lbTelefono2, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE))
+                                .addGap(11, 11, 11)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtDescripcionConcepto)
+                                    .addComponent(lbTelefono1, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE))))))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(lbTelefono3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbTelefono2)
-                    .addComponent(txtCodigo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbTelefono1)
-                    .addComponent(txtConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
+                .addComponent(lbTelefono3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnGuardar1, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addComponent(lbTelefono2, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(lbTelefono1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCodigoConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDescripcionConcepto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -386,12 +403,10 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1097, Short.MAX_VALUE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1112, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -400,11 +415,11 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                .addGap(21, 21, 21))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
         );
 
-        tapEgresos.addTab("Códigos egreso", jPanel4);
+        tapEgresos.addTab("Conceptos egreso", jPanel4);
 
         pnlFormulario.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -793,7 +808,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                     .addComponent(txtCodigo, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnBusProd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbLetras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtTotalLetras, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(txtTotalLetras, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbLetras8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(5, 5, 5))
         );
@@ -826,16 +841,16 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
             }
         });
 
-        btnBuscTerceros2.setBackground(new java.awt.Color(241, 148, 138));
-        btnBuscTerceros2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
-        btnBuscTerceros2.setText("ANULAR  ");
-        btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnBuscTerceros2.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnBuscTerceros2.addActionListener(new java.awt.event.ActionListener() {
+        btnAnularEgreso.setBackground(new java.awt.Color(241, 148, 138));
+        btnAnularEgreso.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        btnAnularEgreso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnularEgreso.setText("ANULAR  ");
+        btnAnularEgreso.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAnularEgreso.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnAnularEgreso.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnAnularEgreso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscTerceros2ActionPerformed(evt);
+                btnAnularEgresoActionPerformed(evt);
             }
         });
 
@@ -864,7 +879,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBuscTerceros3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBuscTerceros2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAnularEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(269, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -875,7 +890,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                     .addComponent(btnGuardar)
                     .addComponent(btnLimpiar)
                     .addComponent(btnBuscTerceros3)
-                    .addComponent(btnBuscTerceros2))
+                    .addComponent(btnAnularEgreso))
                 .addGap(5, 5, 5))
         );
 
@@ -1093,12 +1108,12 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                             .addComponent(lbLetras5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbNoEgreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(pnlValores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(pnlCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(5, 5, 5)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10))
@@ -1167,12 +1182,12 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
 
     private void tblEgresosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblEgresosKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            
+
             int filaSeleccionada = tblEgresos.getSelectedRow();
             if (filaSeleccionada < 0) {
                 return;
             }
-            
+
             switch (tblEgresos.getSelectedColumn()) {
                 case 2:
                     tblEgresos.editCellAt(filaSeleccionada, 3);
@@ -1195,7 +1210,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 default:
                     break;
             }
-            
+
             calcularValorFila();
             calcularValores();
         }
@@ -1213,7 +1228,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         if (txtCheque.getText().equals("") || txtCheque.getText().equals(this.simbolo) || txtCheque.getText().equals(this.simbolo + " ")) {
             txtCheque.setText("0");
         }
-        
+
         txtCheque.setText(big.setMoneda(big.getMoneda(txtCheque.getText())));
         calcularValores();
     }//GEN-LAST:event_txtChequeKeyReleased
@@ -1222,7 +1237,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         if (txtBanco.getText().equals("") || txtBanco.getText().equals(this.simbolo) || txtBanco.getText().equals(this.simbolo + " ")) {
             txtBanco.setText("0");
         }
-        
+
         txtBanco.setText(big.setMoneda(big.getMoneda(txtBanco.getText())));
         calcularValores();
     }//GEN-LAST:event_txtBancoKeyReleased
@@ -1237,99 +1252,98 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         tblEgresos.removeEditor();
-        
+
         if (!saltarPasos) {
             ModeloContacto datosCliente = DATOS_CLIENTE_CARGADO == null ? new ModeloContacto() : DATOS_CLIENTE_CARGADO;
             if (!squemaEgresos.validacionesEgreso(datosCliente, cmbTipoEgreso.getSelectedItem().toString())) {
                 return;
             }
-            
+
             if (Constantes.esDocumentoSoporte(obtenerTipoComprobante())) {
                 if (!squemaDocumentoSoporte.validacionesDocumentoSoporte(datosCliente, true)) {
                     return;
                 }
             }
-            
+
             if (!squemaEgresos.validacionesDetalleEgreso(tblEgresos, obtenerTipoComprobante())) {
                 return;
             }
-            
+
             if (metodos.msgPregunta(null, "¿Desea continuar?") != 0) {
                 return;
             }
         }
-        
+
         guardarEgreso();
     }//GEN-LAST:event_btnGuardarActionPerformed
-    
+
     private void guardarEgreso() {
-        
+
         cancelarEgreso = false;
-        generarMovimientoBancario();
-        
+
         if (cancelarEgreso) {
             return;
         }
-        
+
         if (!consecutivoBanco.equals("")) {
             ingresoAsociado = consecutivoBanco;
         }
-        
+
         String prefijo = instancias.getIdEgreso() != null ? instancias.getIdEgreso() : "";
         String consecutivo = instancias.getSql().getNumConsecutivo("EGR")[0].toString();
         String identificadorEgreso = "EGR-" + consecutivo;
         String egreso2 = "EGR-" + prefijo + consecutivo;
         String estado = cmbTipoEgreso.getSelectedIndex() == 2 ? "REALIZADO" : "PENDIENTE";
-        
+
         if (instancias.getConfiguraciones().isFacturaElectronica() && Constantes.esDocumentoSoporte(obtenerTipoComprobante())) {
             boolean documentoSoporteExitoso = false;
             ModeloDocumentoSoporte modeloDocumentoSoporte = crearModeloDocumentoSoporte(identificadorEgreso, DATOS_CLIENTE_CARGADO);
-            
+
             try {
                 documentoSoporteExitoso = consumidorDocumentoSoporte.generarDocumentoSoporte(modeloDocumentoSoporte, false);
             } catch (Exception ex) {
                 System.err.println("Hubo un error al enviar el JSON de la factura electronica: " + ex);
             }
-            
+
             if (!documentoSoporteExitoso) {
                 return;
             }
         }
-        
+
         Object[] vector = {identificadorEgreso, txtIdCliente.getText(), txtNombreCliente.getText(), txtTelefono.getText(),
             txtDireccion.getText(), big.getMoneda(txtTotal.getText()), big.getMoneda(txtSubTotal.getText()), big.getMoneda(txtIVA.getText()),
             DATOS_CLIENTE_CARGADO.getIdSistema(), "", "", "", big.getMoneda(txtCheque.getText()),
             big.getMoneda(txtBanco.getText()), big.getMoneda(txtEfectivo.getText()), metodos.fechaConsulta(metodosGenerales.fecha()),
             identificadorEgreso.replace("EGR-", ""), instancias.getUsuario(), instancias.getTerminal(), estado, cmbTipoEgreso.getSelectedItem(), ingresoAsociado,
             egreso2, ""};
-        
+
         ndEgreso nodo = metodos.llenarEgreso(vector);
-        
+
         if (!instancias.getSql().agregarEgreso(nodo)) {
-            
+
             boolean noPuedaGuardar = false;
-            
+
             instancias.getSql().eliminarEgreso(identificadorEgreso);
             while (!noPuedaGuardar) {
                 noPuedaGuardar = instancias.getSql().eliminarCodEgreso(identificadorEgreso);
             }
-            
+
             metodos.msgError(this, "Hubo un problema al guardar el egreso");
             return;
         }
 
         //PROCESO GUARDAR VENTA
         for (int i = 0; i < tblEgresos.getRowCount(); i++) {
-            
+
             ModeloDetalleEgreso detalleEgreso = obtenerDetalleEgreso(identificadorEgreso, i);
-            
+
             if (!daoEgresos.agregarDetalleEgreso(detalleEgreso)) {
                 boolean noPuedaGuardar = false;
                 instancias.getSql().eliminarEgreso(identificadorEgreso);
                 while (!noPuedaGuardar) {
                     noPuedaGuardar = instancias.getSql().eliminarCodEgreso(identificadorEgreso);
                 }
-                
+
                 ControladorAlertas.alertFail("Error al guardar detalle del egreso");
             }
 
@@ -1343,18 +1357,18 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         if (!instancias.getSql().aumentarConsecutivo("EGR", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("EGR")[0]) + 1)) {
             metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del egreso");
         }
-        
+
         lbNoEgreso.setText((String) instancias.getSql().getNumConsecutivo("EGR")[0]);
-        
+
         if (!saltarPasos) {
             metodos.msgExito(this, "Egreso exitoso");
         }
-        
+
         String tipo = "";
         if (cmbTipoImpresion.getSelectedIndex() == 1) {
             tipo = "Pos";
         }
-        
+
         if (!saltarPasos) {
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
                 instancias.getReporte().ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), true, tipo);
@@ -1364,7 +1378,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         } else {
             instancias.getReporte().ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), false, tipo);
         }
-        
+
         saltarPasos = false;
         btnLimpiarActionPerformed(null);
     }
@@ -1377,16 +1391,16 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 textField.setEditable(true);
             }
         }
-        
+
         for (int x = 0; x < pnlValores.getComponentCount(); x++) {
             if (pnlValores.getComponent(x) instanceof JTextField) {
                 JTextField textField = (JTextField) pnlValores.getComponent(x);
                 textField.setText("");
             }
         }
-        
+
         consecutivoBanco = "";
-        
+
         txtCheque.setText(this.simbolo + " 0");
         txtBanco.setText(this.simbolo + " 0");
         txtEfectivo.setText(this.simbolo + " 0");
@@ -1394,17 +1408,17 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         txtIVA.setText(this.simbolo + " 0");
         txtTotal.setText(this.simbolo + " 0");
         ingresoAsociado = "";
-        
+
         DefaultTableModel x = (DefaultTableModel) tblEgresos.getModel();
         int i, j = tblEgresos.getRowCount();
-        
+
         for (i = 0; i < j; i++) {
             x.removeRow(0);
         }
-        
+
         cmbTipoEgreso.setSelectedIndex(0);
         txtTotalLetras.setText("");
-        
+
         String prefijo = "";
         if (instancias.getIdEgreso() != null) {
             prefijo = instancias.getIdEgreso();
@@ -1417,13 +1431,13 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBuscTercerosActionPerformed
 
     private void popBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popBorrarActionPerformed
-        
+
         if (tblEgresos.getSelectedRow() > -1) {
             int fila = tblEgresos.getSelectedRow();
-            
+
             DefaultTableModel modelo = (DefaultTableModel) tblEgresos.getModel();
             modelo.removeRow(fila);
-            
+
             calcularValores();
         } else {
             metodos.msgAdvertencia(this, "Seleccione un producto");
@@ -1432,11 +1446,11 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
 
     private void btnBuscTerceros3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros3ActionPerformed
         String consecutivo = "EGR-" + metodos.msgIngresarEnter(this, "Documento a reimprimir");
-        
+
         if (consecutivo.equals("EGR-")) {
             return;
         }
-        
+
         boolean anulado = false;
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where egreso ='" + consecutivo + "' ");
@@ -1444,222 +1458,83 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
             metodos.msgError(this, "El egreso no existe");
             return;
         }
-        
+
         if (anulado) {
             metodos.msgError(this, "El egreso ya esta anulado");
             return;
         }
-        
+
         ndEgreso nodo = instancias.getSql().getDatosEgreso(consecutivo);
-        
+
         if (nodo.getId() == null) {
             metodos.msgError(this, "Este egreso no existe.");
             return;
         }
-        
+
         String tipo = "";
         if (cmbTipoImpresion.getSelectedIndex() == 1) {
             tipo = "Pos";
         }
-        
+
         instancias.getReporte().ver_Egreso(consecutivo, instancias.getInformacionEmpresa(), convertirNumeroALetras.Convertir(nodo.getTotal()), false, tipo);
     }//GEN-LAST:event_btnBuscTerceros3ActionPerformed
 
-    private void btnBuscTerceros2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros2ActionPerformed
+    private void btnAnularEgresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularEgresoActionPerformed
         String consecutivo = "EGR-" + metodos.msgIngresarEnter(this, "Documento a anular");
-        
         if (consecutivo.equals("EGR-")) {
             return;
         }
-        
-        boolean anulado = false;
+
+        boolean anulado;
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where egreso = '" + consecutivo + "' ");
         } catch (Exception e) {
             metodos.msgError(this, "El egreso no existe");
             return;
         }
-        
+
         if (anulado) {
             metodos.msgError(this, "El egreso ya esta anulado");
             return;
         }
-        
-        String pago = "";
-        
-        try {
-            pago = instancias.getSql().getIngresoAsociado(consecutivo);
-        } catch (Exception e) {
-        }
-        
-        String mensaje = "";
-        if (!pago.equals("")) {
-            mensaje = "Se anulará tambien el " + pago;
-        } else {
-            mensaje = "¿Anular egreso?";
-        }
-        
+
+        String pago = instancias.getSql().getIngresoAsociado(consecutivo);
+
+        String mensaje = pago.isEmpty() ? "¿Anular egreso?" : "Se anulará tambien el " + pago;
         metodos.msgAdvertenciaAjustado(this, mensaje);
-        
+
         if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
-            
+
             if (!instancias.getSql().anularEgreso(consecutivo)) {
                 metodos.msgError(this, "Hubo un problema al anular el egreso");
                 return;
             }
-            
-            if (pago.contains("MOVBANC")) {
-                
-                Object[][] mov = instancias.getSql().getMovimientoBanco(pago);
-                
-                String monto = "0";
-                try {
-                    monto = instancias.getSql().montoBanco(mov[0][3].toString());
-                } catch (Exception e) {
-                }
-                monto = big.setMoneda(big.getMoneda(monto));
-                
-                String tipo = mov[0][1].toString();
-                BigDecimal total = BigDecimal.ZERO;
-                
-                if (tipo.equals("Entrada")) {
-                    tipo = "Salida";
-                    total = big.getMoneda(monto).subtract(big.getBigDecimal(mov[0][0]));
-                } else if (tipo.equals("Salida")) {
-                    tipo = "Entrada";
-                    total = big.getMoneda(monto).add(big.getBigDecimal(mov[0][0]));
-                }
-                
-                String consecutivoMovimiento = "MOVBANC-" + instancias.getSql().getNumConsecutivo("MOVBANC")[0];
-                Object[] vector = {consecutivoMovimiento, mov[0][2], mov[0][3], "ANULACIÓN DEL MOVIMIENTO DEL BANCO '" + pago + "' ", instancias.getUsuario(),
-                    metodos.fechaConsulta(metodosGenerales.fecha()), tipo, "", metodosGenerales.hora(), ""};
-                
-                Object[] vector1 = {big.getMoneda(monto), big.getBigDecimal(mov[0][0]), big.getMoneda(big.setMoneda(total))};
-                
-                if (!instancias.getSql().agregarMovimientoBanco(vector, vector1)) {
-                    metodos.msgError(null, "Hubo un problema al guardar el movimiento");
-                    return;
-                }
-                
-                instancias.getSql().modificarMontoBanco(big.getMoneda(big.setMoneda(total)), mov[0][3].toString());
-                instancias.getSql().aumentarConsecutivo("MOVBANC", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("MOVBANC")[0]) + 1);
-                
-            } else if (pago.contains("PAGO")) {
-                String estadoCuenta, id;
-                try {
-                    id = instancias.getSql().getIdCxp("Where recibo ='" + pago + "' ");
-                    estadoCuenta = instancias.getSql().getEstadoPago("Where ingreso = '" + id + "' and tipo <> 'PAGO' ");
-                    
-                    if (!estadoCuenta.equals("PEND")) {
-                        instancias.getSql().modificarRegistroCxp(" where ingreso = '" + id + "' and tipo <> 'PAGO' ");
-                    }
-                    instancias.getSql().modificarRegistroCxp1(pago, "ANULADO");
-                } catch (Exception e) {
-                }
-            } else {
-                if (!instancias.getSql().anularDocumento(pago, "bdIngreso")) {
-                    metodos.msgError(null, "Hubo un problema al anular la compra");
-                    return;
-                }
-                
-                instancias.getSql().eliminarPonderadoIngreso(" bdPonderado ", pago);
-//                instancias.getSql().eliminarPonderadoIngreso(" bdUltimoPonderado ", pago);
 
-                if (!instancias.getSql().modificarRegistroCxp(pago, "ANULADA")) {
-                    metodos.msgError(null, "Hubo un problema al anular la Cxp");
-                    return;
+            if (pago.contains("PAGO")) {
+                String id = instancias.getSql().getIdCxp("Where recibo ='" + pago + "' ");
+                String estadoCuenta = instancias.getSql().getEstadoPago("Where ingreso = '" + id + "' and tipo <> 'PAGO' ");
+
+                if (!estadoCuenta.equals("PEND")) {
+                    instancias.getSql().modificarRegistroCxp(" where ingreso = '" + id + "' and tipo <> 'PAGO' ");
                 }
-                
-                Object[][] Productos = instancias.getSql().getProductosCompra(pago);
-                for (Object[] Producto : Productos) {
-                    
-                    String idPonderado = instancias.getSql().getConsecutivoPonderado(Producto[0].toString());
-                    Object[] ponderados = instancias.getSql().getUltimoPonderado1(idPonderado);
-                    
-                    String ingreso = "";
-                    try {
-                        ingreso = ponderados[9].toString();
-                    } catch (Exception e) {
-                    }
-                    
-                    if (!instancias.getSql().modificarPonderado(ponderados[8].toString(), Producto[0].toString(),
-                            big.getBigDecimal(ponderados[1].toString()), String.valueOf(ponderados[2]), ponderados[3].toString(),
-                            big.getBigDecimal(ponderados[4]), String.valueOf(ponderados[5]), instancias.getUsuario(),
-                            big.getBigDecimal(ponderados[7]), ingreso)) {
-                        metodos.msgError(null, "Error al modificar ponderado");
-                    }
-                    
-                    ndProducto producto = instancias.getSql().getDatosProducto(Producto[0].toString(), "bdProductos");
-                    double cantidad;
-                    double inventario;
-                    double fisicoInventario;
-                    
-                    try {
-                        cantidad = Double.parseDouble(producto.getCompras().replace(",", "."));
-                    } catch (Exception e) {
-                        cantidad = 0;
-                    }
-                    
-                    try {
-                        inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                    } catch (Exception e) {
-                        inventario = 0;
-                    }
-                    
-                    try {
-                        fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
-                    } catch (Exception e) {
-                        fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
-                    }
-                    
-                    double inv = Double.parseDouble(Producto[1].toString().replace(",", "."));
-                    
-                    inventario = inventario - inv;
-                    fisicoInventario = fisicoInventario - inv;
-                    double total = cantidad - inv;
-                    
-                    String total1 = String.valueOf(df.format(total)).replace(".", ",");
-                    String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
-                    String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
-                    
-                    instancias.getSql().modificarInventario("compras", total1, Producto[0].toString(), "bdProductos");
-                    instancias.getSql().modificarInventario("inventario", inventario1, Producto[0].toString(), "bdProductos");
-                    instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, Producto[0].toString(), "bdProductos");
-                    
-                    if (instancias.getConfiguraciones().isProductosDetallados()) {
-                        instancias.getSql().anularCompraDetalladoInventario(consecutivo);
-                    }
-                }
+
+                instancias.getSql().modificarRegistroCxp1(pago, "ANULADO");
+
+            } else {
+                instancias.getIngresos().anularCompra(pago);
             }
 
-//                if (banco.length > 0) {
-//
-//                    Object[] vector = {banco[0][0], banco[0][1], "Anulación del egreso " + idEgreso, instancias.getUsuario(), metodosGenerales.fechaHora(), "Entrada", ""};
-//                    Object[] vector1 = {big.getMoneda(banco[0][2].toString()), big.getMoneda(txtValor.getText()), big.getMoneda(txtTotal.getText())};
-//
-//                    if (!instancias.getSql().agregarMovimientoBanco(vector, vector1)) {
-//                        metodos.msgError(null, "Hubo un problema al guardar el movimiento");
-//                        return;
-//                    } else {
-//                        metodos.msgExito(null, "Movimiento registrado con exito");
-//                        instancias.getSql().modificarMontoBanco(big.getMoneda(txtTotal.getText()), banco[0][1].toString());
-//                        instancias.getBancos().refrescarDatos();
-//                        this.dispose();
-//                    }
-//                }
             if (pago.equals("")) {
                 metodos.msgExito(this, "Egreso anulado con éxito");
             } else {
-                if (pago.contains("MOVBANC")) {
-                    metodos.msgExito(this, "Mov.Banco y pago anulado con éxito");
-                } else if (pago.contains("PAGO")) {
+                if (pago.contains("PAGO")) {
                     metodos.msgExito(this, "Egreso y pago anulado con éxito");
                 } else {
                     metodos.msgExito(this, "Egreso y compra anulado con éxito");
                 }
             }
         }
-    }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
+    }//GEN-LAST:event_btnAnularEgresoActionPerformed
 
     private void txtTotalLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalLetrasActionPerformed
         // TODO add your handling code here:
@@ -1686,13 +1561,13 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
     private void txtCodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             Object[][] datos = instancias.getSql().getDatosCodsEgreso(txtCodigo.getText());
-            
+
             if (datos.length > 0) {
                 Object[] fila = {datos[0][1].toString(), datos[0][2].toString(), "", this.simbolo + " 0", "0", this.simbolo + " 0", this.simbolo + " 0", "", datos[0][0].toString()};
-                
+
                 DefaultTableModel modelo = (DefaultTableModel) tblEgresos.getModel();
                 modelo.addRow(fila);
-                
+
                 tblEgresos.setColumnSelectionInterval(2, 2);
                 tblEgresos.setRowSelectionInterval(tblEgresos.getRowCount() - 1, tblEgresos.getRowCount() - 1);
                 tblEgresos.editCellAt(tblEgresos.getRowCount() - 1, 2);
@@ -1726,7 +1601,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
             tblComprobantes.setValueAt(false, i, 2);
         }
-        
+
         if (tblComprobantes.getSelectedRow() == -1) {
             tblComprobantes.setValueAt(true, 0, 2);
             actualizarResolucion(0);
@@ -1744,7 +1619,7 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
             tblComprobantes.setValueAt(false, i, 2);
         }
-        
+
         if (tblComprobantes.getSelectedRow() == -1) {
             tblComprobantes.setValueAt(true, 0, 2);
             actualizarResolucion(0);
@@ -1755,34 +1630,22 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblComprobantesMouseExited
 
     private void tblConceptosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblConceptosMouseClicked
-        int f = tblConceptos.getSelectedRow();
-        if (f != -1) {
-            if (evt.getClickCount() == 2) {
-                
-                if (tblConceptos.getValueAt(f, 3).equals("INACTIVO")) {
-                    btnEliminar.setText("ACTIVAR");
-                } else {
-                    btnEliminar.setText("INACTIVAR");
-                }
-                
-                if (tblConceptos.getValueAt(f, 1).equals("PAGOS PROVEEDORES")) {
-                    jButton2.setEnabled(false);
-                    btnEliminar.setEnabled(false);
-                } else {
-                    jButton2.setEnabled(true);
-                    btnEliminar.setEnabled(true);
-                }
-                
-                txtCodigo.setText(tblConceptos.getValueAt(f, 0).toString());
-                txtConcepto.setText(tblConceptos.getValueAt(f, 1).toString());
-                this.codigo = tblConceptos.getValueAt(f, 2).toString();
-                btnGuardar.setText("CANCELAR");
-                
-            }
+        int filaSeleccionada = tblConceptos.getSelectedRow();
+        boolean esConceptoPagoProveedores = tblConceptos.getValueAt(filaSeleccionada, 1).equals("PAGOS PROVEEDORES");
+
+        if (filaSeleccionada != -1 && evt.getClickCount() == 2 && !esConceptoPagoProveedores) {
+            String textoBotonEliminar = tblConceptos.getValueAt(filaSeleccionada, 3).equals("INACTIVO") ? "ACTIVAR" : "INACTIVAR";
+            btnInactivarConcepto.setText(textoBotonEliminar);
+            txtCodigoConcepto.setText(tblConceptos.getValueAt(filaSeleccionada, 0).toString());
+            txtDescripcionConcepto.setText(tblConceptos.getValueAt(filaSeleccionada, 1).toString());
+            this.CODIGO_CONCEPTO_SELECCIONADO = tblConceptos.getValueAt(filaSeleccionada, 2).toString();
+            btnAgregarConcepto.setVisible(false);
+            btnModificarConcepto.setVisible(true);
+            btnInactivarConcepto.setVisible(true);
         }
     }//GEN-LAST:event_tblConceptosMouseClicked
 
-    private void txtCodigo1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigo1KeyReleased
+    private void txtCodigoConceptoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoConceptoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!txtCodigo.getText().equals("")) {
                 cargarCodigo(txtCodigo.getText());
@@ -1790,107 +1653,89 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         } else {
             //            limpiar();
         }
-    }//GEN-LAST:event_txtCodigo1KeyReleased
+    }//GEN-LAST:event_txtCodigoConceptoKeyReleased
 
-    private void txtConceptoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtConceptoKeyTyped
+    private void txtDescripcionConceptoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionConceptoKeyTyped
 
-    }//GEN-LAST:event_txtConceptoKeyTyped
+    }//GEN-LAST:event_txtDescripcionConceptoKeyTyped
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (!txtCodigo.getText().equals("") && codigo != null) {
-            if (!instancias.getSql().modificarCodEgreso(new Object[]{codigo, txtConcepto.getText(), txtCodigo.getText()})) {
+    private void btnModificarConceptoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarConceptoActionPerformed
+        if (!txtCodigoConcepto.getText().equals("") && this.CODIGO_CONCEPTO_SELECCIONADO != null) {
+            if (!instancias.getSql().modificarCodEgreso(new Object[]{this.CODIGO_CONCEPTO_SELECCIONADO, txtDescripcionConcepto.getText(), txtCodigoConcepto.getText()})) {
                 metodos.msgError(this, "Error al modificar el concepto");
                 return;
             }
-            
-            txtCodigo.setText("");
-            limpiar();
-            actualizarTabla();
-            actualizar();
+
+            txtCodigoConcepto.setText("");
+            txtDescripcionConcepto.setText("");
+            this.CODIGO_CONCEPTO_SELECCIONADO = "";
+            actualizarTablaConceptos();
+
+            btnAgregarConcepto.setVisible(true);
+            btnModificarConcepto.setVisible(false);
+            btnInactivarConcepto.setVisible(false);
+
             metodos.msgExito(this, "Concepto modificado con exito");
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnModificarConceptoActionPerformed
 
-    private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
-        if (btnGuardar.getText().equals("CANCELAR")) {
-            btnGuardar.setText("AGREGAR");
-            txtConcepto.setText("");
-            txtCodigo.setText("");
-            jButton2.setEnabled(false);
-            btnEliminar.setEnabled(false);
-        } else {
-            
-            if (txtConcepto.getText().equals("")) {
-                metodos.msgAdvertenciaAjustado(this, "Debe ingresar un concepto");
+    private void btnAgregarConceptoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarConceptoActionPerformed
+        if (validacionesCamposConceptos() && metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+
+            if (!instancias.getSql().agregarCodEgreso(txtDescripcionConcepto.getText(), txtCodigoConcepto.getText())) {
+                metodos.msgError(this, "Error al guardar el concepto");
                 return;
             }
-            
-            if (txtCodigo.getText().equals("")) {
-                metodos.msgAdvertenciaAjustado(this, "Debe ingresar un codigo");
-                return;
-            }
-            
-            Object[][] datos = instancias.getSql().getCodsEgresos();
-            
-            String codigo = txtCodigo.getText();
-            String concepto = txtConcepto.getText();
-            
-            for (int i = 0; i < datos.length; i++) {
-                if (datos[i][1].equals(concepto)) {
-                    metodos.msgAdvertenciaAjustado(this, "El concepto ya existe");
-                    txtConcepto.setText("");
-                    return;
-                }
-                
-                if (datos[i][0].equals(codigo)) {
-                    metodos.msgAdvertenciaAjustado(this, "El codigo ya existe");
-                    txtCodigo.setText("");
-                    return;
-                }
-            }
-            
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
-                
-                if (!instancias.getSql().agregarCodEgreso(txtConcepto.getText(), txtCodigo.getText())) {
-                    metodos.msgError(this, "Error al guardar el concepto");
-                    return;
-                }
-                
-                metodos.msgExito(this, "Concepto registrado con exito");
-                actualizarTabla();
-                actualizar();
-                txtCodigo.setText("");
-                limpiar();
-            }
+
+            txtCodigoConcepto.setText("");
+            txtDescripcionConcepto.setText("");
+            actualizarTablaConceptos();
+
+            metodos.msgExito(this, "Concepto registrado con exito");
+            txtCodigoConcepto.requestFocus();
         }
-    }//GEN-LAST:event_btnGuardar1ActionPerformed
+    }//GEN-LAST:event_btnAgregarConceptoActionPerformed
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        if (btnEliminar.getText().equalsIgnoreCase("ACTIVAR")) {
+    private void btnInactivarConceptoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInactivarConceptoActionPerformed
+        if (btnInactivarConcepto.getText().equalsIgnoreCase("ACTIVAR")) {
             if (metodos.msgPregunta(this, "¿Activar este concepto?") == 0) {
-                instancias.getSql().activarRegistro1(this.codigo, "codsEgresos");
-                metodos.msgExito(this, "Concepto activado con éxito");
-                btnGuardarActionPerformed(evt);
-                actualizarTabla();
+                if (instancias.getSql().activarRegistro1(this.CODIGO_CONCEPTO_SELECCIONADO, "codsEgresos")) {
+                    metodos.msgExito(this, "Concepto activado con éxito");
+                }
+            }
+        } else {
+            if (metodos.msgPregunta(this, "¿Inactivar este concepto?") == 0) {
+                if (instancias.getSql().inactivarRegistro1(this.CODIGO_CONCEPTO_SELECCIONADO, "codsEgresos")) {
+                    metodos.msgExito(this, "Concepto inactivado con éxito");
+                }
+            }
+        }
+
+        btnAgregarConcepto.setVisible(true);
+        btnModificarConcepto.setVisible(false);
+        btnInactivarConcepto.setVisible(false);
+        actualizarTablaConceptos();
+    }//GEN-LAST:event_btnInactivarConceptoActionPerformed
+
+    private void cargarCodigo(String codigo) {
+        for (int i = 0; i < tblConceptos.getRowCount(); i++) {
+            if (tblConceptos.getValueAt(i, 0).equals(codigo)) {
+                txtDescripcionConcepto.setText(tblConceptos.getValueAt(i, 1).toString());
+                this.CODIGO_CONCEPTO_SELECCIONADO = tblConceptos.getValueAt(i, 2).toString();
+                btnModificarConcepto.setEnabled(true);
                 return;
             }
         }
-        
-        if (metodos.msgPregunta(this, "¿Inactivar este concepto?") == 0) {
-            instancias.getSql().inactivarRegistro1(this.codigo, "codsEgresos");
-            metodos.msgExito(this, "Concepto inactivado con éxito");
-            btnGuardarActionPerformed(evt);
-        }
-        
-        actualizarTabla();
-    }//GEN-LAST:event_btnEliminarActionPerformed
-    
+        limpiar();
+        metodos.msgAdvertenciaAjustado(this, "El codigo no existe");
+    }
+
     private ModeloDetalleEgreso obtenerDetalleEgreso(String identificadorEgreso, int fila) {
         String facturaRegistro = "";
         if (tblEgresos.getValueAt(fila, 6) != null) {
             facturaRegistro = tblEgresos.getValueAt(fila, 7).toString();
         }
-        
+
         return new ModeloDetalleEgreso(
                 identificadorEgreso,
                 tblEgresos.getValueAt(fila, 8).toString(),
@@ -1902,14 +1747,14 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 big.getMoneda((String) tblEgresos.getValueAt(fila, 6)),
                 Integer.parseInt(tblEgresos.getValueAt(fila, 4).toString()));
     }
-    
+
     private Object[][] obtenerImpuestosPorProducto(ModeloDetalleProductos detalleProducto, int filaProducto) {
-        
+
         int secuencia = 0;
         Object[][] informacionImpuestosFactura = new Object[1][4];
-        
+
         BigDecimal baseProducto = big.getMoneda(tblEgresos.getValueAt(filaProducto, 3).toString());
-        
+
         if (detalleProducto.getValorIva().compareTo(BigDecimal.ZERO) > 0) {
             informacionImpuestosFactura[secuencia][0] = baseProducto;
             informacionImpuestosFactura[secuencia][1] = detalleProducto.getValorIva();
@@ -1917,12 +1762,12 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
             informacionImpuestosFactura[secuencia][3] = "IVA";
             secuencia++;
         }
-        
+
         return informacionImpuestosFactura;
     }
-    
+
     private ModeloDetalleImpuestos obtenerImpuestosEgreso() {
-        
+
         List<Integer> ivas = new ArrayList<>();
         for (int i = 0; i < tblEgresos.getRowCount(); i++) {
             int porcentajeIva = Integer.parseInt(tblEgresos.getValueAt(i, 4).toString());
@@ -1930,9 +1775,9 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 ivas.add(porcentajeIva);
             }
         }
-        
+
         Object[][] informacionImpuestoIva = new Object[ivas.size()][4];
-        
+
         for (int i = 0; i < ivas.size(); i++) {
             BigDecimal subtotal = BigDecimal.ZERO;
             BigDecimal impuesto = BigDecimal.ZERO;
@@ -1942,78 +1787,78 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                     impuesto = impuesto.add(big.getMoneda(tblEgresos.getValueAt(j, 5).toString()));
                 }
             }
-            
+
             informacionImpuestoIva[i][0] = subtotal;
             informacionImpuestoIva[i][1] = impuesto;
             informacionImpuestoIva[i][2] = Numeros.formatoDosDecimales.format(ivas.get(i)).replace(",", ".");
             informacionImpuestoIva[i][3] = "IVA";
         }
-        
+
         ModeloDetalleImpuestos detalleImpuestos = new ModeloDetalleImpuestos();
         detalleImpuestos.setImpuestosIvas(informacionImpuestoIva);
         detalleImpuestos.setImpuestosImpoconsumo(Utilidades.objetoVacio());
         detalleImpuestos.setImpuestosReteIva(Utilidades.objetoVacio());
         detalleImpuestos.setImpuestosReteFuente(Utilidades.objetoVacio());
-        
+
         return detalleImpuestos;
     }
-    
+
     private ModeloDetalleProductos[] obtenerDetalleProductos(String egreso) {
-        
+
         int cantidadTotal = tblEgresos.getRowCount();
         ModeloDetalleProductos[] detalladoProductos = new ModeloDetalleProductos[cantidadTotal];
-        
+
         for (int i = 0; i < tblEgresos.getRowCount(); i++) {
             ModeloDetalleProductos modeloIndividual = new ModeloDetalleProductos();
             modeloIndividual.setNumeroFactura(egreso);
             modeloIndividual.setEstandarProducto("UNSPSC");
             modeloIndividual.setUnidadMedida("UNIDAD");
-            
+
             modeloIndividual.setValorTotalBruto(big.getMoneda(tblEgresos.getValueAt(i, 3).toString()));
             modeloIndividual.setValorIva(big.getMoneda(tblEgresos.getValueAt(i, 5).toString()));
             modeloIndividual.setPorcentajeIva(big.getBigDecimal(tblEgresos.getValueAt(i, 4).toString()));
             modeloIndividual.setDescripcionArticulo(tblEgresos.getValueAt(i, 1).toString());
             modeloIndividual.setObservacionDetalle(tblEgresos.getValueAt(i, 2).toString());
             modeloIndividual.setUnidadesEmpaque(BigDecimal.ONE);
-            
+
             modeloIndividual.setCodigoArticulo(tblEgresos.getValueAt(i, 0).toString());
             modeloIndividual.setCodigoVendedor(DATOS_CLIENTE_CARGADO.getId());
             modeloIndividual.setPrecioUnitario(big.getMoneda(tblEgresos.getValueAt(i, 3).toString()));
             modeloIndividual.setCantidad("1");
-            
+
             modeloIndividual.setFechaInicio(metodos.fecha4(metodosGenerales.fecha()));
             modeloIndividual.setCodigoGeneracion("POR_OPERACION");
-            
+
             Object[][] impuestosProducto = obtenerImpuestosPorProducto(modeloIndividual, i);
             modeloIndividual.setImpuestosProducto(impuestosProducto);
-            
+
             ModeloDescuentos[] resultadosDescuentos = new ModeloDescuentos[0];
             modeloIndividual.setDescuentoProducto(resultadosDescuentos);
-            
+
             detalladoProductos[i] = modeloIndividual;
         }
-        
+
         return detalladoProductos;
     }
-    
+
     private void actualizarTablaResoluciones() {
         DefaultTableModel modeloComprobantes = (DefaultTableModel) tblComprobantes.getModel();;
         while (tblComprobantes.getRowCount() > 0) {
             modeloComprobantes.removeRow(0);
         }
-        
+
         modeloComprobantes.addRow(new Object[]{"0", "EGRESO NORMAL", true, "", "", "", "", "", "", "", ""});
-        
+
         List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(TipoDocumento.EGRESO.getValor());
         for (ModeloResolucion resolucion : resoluciones) {
             modeloComprobantes.addRow(new Object[]{resolucion.getIdResolucion(), resolucion.getDescripcionResolucion(), false, resolucion.getNumeroResolucion(), resolucion.getFechaInicio(),
                 resolucion.getNumeracionDel(), resolucion.getNumeracionHasta(), resolucion.getTipoResolucion(), resolucion.getPrefijo(), resolucion.getConsecutivo(), resolucion.getDisenho()});
         }
-        
+
         tblComprobantes.setValueAt(true, 0, 2);
         actualizarResolucion(0);
     }
-    
+
     private void actualizarResolucion(int filaSeleccionada) {
         if (filaSeleccionada <= 0) {
             String prefijo = "";
@@ -2026,18 +1871,18 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
             if (null != tblComprobantes.getValueAt(filaSeleccionada, 8)) {
                 prefijo = tblComprobantes.getValueAt(filaSeleccionada, 8).toString();
             }
-            
+
             if (null == tblComprobantes.getValueAt(filaSeleccionada, 9)) {
                 alertas.alert("Resolución sin consecutivo, verifique para que pueda continuar");
                 return;
             } else {
                 consecutivo = tblComprobantes.getValueAt(filaSeleccionada, 9).toString();
             }
-            
+
             lbNoEgreso.setText(prefijo + consecutivo);
         }
     }
-    
+
     private String obtenerResolucionDocumentoSoporte() {
         int filaSeleccionada = 0;
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
@@ -2046,49 +1891,49 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 break;
             }
         }
-        
+
         String resolucionDocumentoSoporte = "";
         if (null != tblComprobantes.getValueAt(filaSeleccionada, 3)) {
             resolucionDocumentoSoporte = tblComprobantes.getValueAt(filaSeleccionada, 3).toString();
         }
-        
+
         return resolucionDocumentoSoporte;
     }
-    
+
     private String obtenerPrefijoDocumentoSoporte() {
         int filaSeleccionada = 0;
         String prefijoDocumentoSoporte = "";
-        
+
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
             if ((Boolean) tblComprobantes.getValueAt(i, 2)) {
                 filaSeleccionada = i;
                 break;
             }
         }
-        
+
         if (null != tblComprobantes.getValueAt(filaSeleccionada, 8)) {
             prefijoDocumentoSoporte = tblComprobantes.getValueAt(filaSeleccionada, 8).toString();
         }
-        
+
         return prefijoDocumentoSoporte;
     }
-    
+
     private ModeloDocumentoSoporte crearModeloDocumentoSoporte(String egreso, ModeloContacto datosCliente) {
-        
+
         ModeloDocumentoSoporte modeloDocumentoSoporte = new ModeloDocumentoSoporte();
-        
+
         modeloDocumentoSoporte.setDsPrefijo(obtenerPrefijoDocumentoSoporte());
         modeloDocumentoSoporte.setDsNumeroFactura(egreso.replace("EGR-", ""));
-        
+
         String tipoOperacion = cmbTipoImpresion.getSelectedItem().equals("POS") ? "POS" : "ESTANDAR";
         modeloDocumentoSoporte.setTipoOperacion(tipoOperacion);
         modeloDocumentoSoporte.setFechaEmision(metodos.fecha4(metodosGenerales.fecha()) + " " + metodosGenerales.fechaHora().split(" ")[1]);
         modeloDocumentoSoporte.setFechaVencimiento(metodos.fecha4(metodosGenerales.fecha()) + " " + metodosGenerales.fechaHora().split(" ")[1]);
         modeloDocumentoSoporte.setTipoDocumentoElectronico("SOPORTE_ADQUISICION");
         modeloDocumentoSoporte.setDsResolucionDian(obtenerResolucionDocumentoSoporte());
-        
+
         documentosElectronicos.construirDatosCliente(modeloDocumentoSoporte, datosCliente);
-        
+
         if (big.getMoneda(txtCheque.getText()).compareTo(BigDecimal.ZERO) > 0 || big.getMoneda(txtBanco.getText()).compareTo(BigDecimal.ZERO) > 0) {
             modeloDocumentoSoporte.setFormaPago("CONTADO");
             modeloDocumentoSoporte.setMedioPago("CHEQUE");
@@ -2096,34 +1941,34 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
             modeloDocumentoSoporte.setFormaPago("CONTADO");
             modeloDocumentoSoporte.setMedioPago("EFECTIVO");
         }
-        
+
         modeloDocumentoSoporte.setValorBruto(big.getMoneda(txtSubTotal.getText()));
         modeloDocumentoSoporte.setValorBrutoMasTributos(big.getMoneda(txtTotal.getText()));
-        
+
         BigDecimal valorBaseImponible = BigDecimal.ZERO;
         for (int i = 0; i < tblEgresos.getRowCount(); i++) {
             if (Integer.parseInt(tblEgresos.getValueAt(i, 4).toString()) > 0) {
                 valorBaseImponible = valorBaseImponible.add(big.getMoneda(tblEgresos.getValueAt(i, 3).toString()));
             }
         }
-        
+
         modeloDocumentoSoporte.setValorBaseImponible(valorBaseImponible);
         modeloDocumentoSoporte.setDescuentoTotal(BigDecimal.ZERO);
         modeloDocumentoSoporte.setCargoTotal(BigDecimal.ZERO);
         modeloDocumentoSoporte.setValorNeto(big.getMoneda(txtTotal.getText()));
-        
+
         ModeloDetalleImpuestos resultadosImpuestos = obtenerImpuestosEgreso();
         modeloDocumentoSoporte.setImpuestosCompra(resultadosImpuestos);
-        
+
         ModeloDetalleProductos[] detalleProductos = obtenerDetalleProductos(egreso);
         modeloDocumentoSoporte.setDetalleProductos(detalleProductos);
-        
+
         ModeloDescuentos[] resultadosDescuentos = new ModeloDescuentos[0];
         modeloDocumentoSoporte.setDescuentosFactura(resultadosDescuentos);
-        
+
         return modeloDocumentoSoporte;
     }
-    
+
     private String obtenerTipoComprobante() {
         String tipoComprobante = "";
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
@@ -2133,31 +1978,10 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
                 }
             }
         }
-        
+
         return tipoComprobante;
     }
-    
-    private void generarMovimientoBancario() {
-        if (instancias.getUsuario().equals("ADMIN")) {
-            if (cmbTipoEgreso.getSelectedItem().equals("GENERAL")) {
-                if (metodos.msgPregunta(this, "¿Sacar dinero del banco?") == 0) {
-                    
-                    if (tipoMovimiento.equals("")) {
-                        tipoMovimiento = "movEgreso";
-                    }
-                    
-                    dlgMovimientosBanco movimiento = new dlgMovimientosBanco(null, true, "", "", BigDecimal.ZERO, "Salida", "EGRESO", big.getMoneda(txtTotal.getText()),
-                            "EGRESO NÚM " + lbNoEgreso.getText() + "," + " CONCEPTO " + tblEgresos.getValueAt(0, 1) + ", " + "No.Factura " + tblEgresos.getValueAt(0, 6),
-                            tipoMovimiento);
-                    movimiento.setLocationRelativeTo(null);
-                    movimiento.setVisible(true);
-                }
-            }
-        }
-        
-        tipoMovimiento = "";
-    }
-    
+
     private void establecerTipoImpresion() {
         if (instancias.getTipoImpresion() != null) {
             if (instancias.getTipoImpresion().equals("Pos")) {
@@ -2169,11 +1993,11 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
             cmbTipoImpresion.setSelectedIndex(0);
         }
     }
-    
+
     public void limpiar() {
         btnLimpiarActionPerformed(null);
     }
-    
+
     public void ventanaEgresos(String nit) {
         buscEgresos buscar = new buscEgresos(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
@@ -2183,147 +2007,147 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         buscar.noEncontrado(nit);
         buscar.show();
     }
-    
+
     public void cargarEgreso(String nit, BigDecimal total, String factura, String codEgreso, String concepto, String tipo, String ingresoAsociado,
             BigDecimal iva, BigDecimal subtotal, BigDecimal efectivo, BigDecimal tarjeta, BigDecimal cheque, BigDecimal rtf, BigDecimal rtIva, String desde) {
-        
+
         if (tipo.equals("GENERAL")) {
             cmbTipoEgreso.setSelectedIndex(2);
         } else {
             cmbTipoEgreso.setSelectedIndex(1);
         }
-        
+
         txtIdCliente.setText(nit);
-        
+
         txtCheque.setText(big.setMonedaExacta(cheque));
         txtBanco.setText(big.setMonedaExacta(tarjeta));
         txtEfectivo.setText(big.setMonedaExacta(efectivo));
-        
+
         cargarCliente(txtIdCliente.getText());
         this.ingresoAsociado = ingresoAsociado;
         Object dato[] = instancias.getSql().getInfoCodEgreso(codEgreso);
-        
+
         Object[] fila = {dato[2].toString(), dato[1].toString(), concepto, big.setMoneda(subtotal), big.setMoneda(iva),
             big.setMoneda(total), factura, dato[0].toString()};
-        
+
         DefaultTableModel modelo = (DefaultTableModel) tblEgresos.getModel();
         modelo.addRow(fila);
         calcularValores();
-        
+
         if (desde.equals("registrandoCompra")) {
             tipoMovimiento = "movCompra";
         } else if (desde.equals("registrandoPago")) {
             tipoMovimiento = "movPago";
         }
-        
+
         guardarEgreso();
     }
-    
+
     public void desdeLavadero(String nit, String valor, String factura, String codEgreso, String concepto, String ingresoAsociado, String tipo) {
-        
+
         if (tipo.equals("GENERAL")) {
             cmbTipoEgreso.setSelectedIndex(2);
         } else {
             cmbTipoEgreso.setSelectedIndex(1);
         }
-        
+
         txtIdCliente.setText(nit);
         cargarCliente(txtIdCliente.getText());
-        
+
         this.ingresoAsociado = ingresoAsociado;
         Object dato[] = instancias.getSql().getInfoCodEgreso(codEgreso);
-        
+
         Object[] fila = {dato[2].toString(), dato[1].toString(), concepto, valor, this.simbolo + " 0", valor, factura, dato[0].toString()};
-        
+
         DefaultTableModel modelo = (DefaultTableModel) tblEgresos.getModel();
         modelo.addRow(fila);
         calcularValores();
-        
+
         guardarEgreso();
     }
-    
+
     private void calcularValorFila() {
         int filaSeleccionada = tblEgresos.getSelectedRow();
         if (filaSeleccionada < 0) {
             return;
         }
-        
+
         try {
             tblEgresos.setValueAt(big.setMonedaExacta(big.getMoneda(((String) tblEgresos.getValueAt(filaSeleccionada, 3)))), filaSeleccionada, 3);
         } catch (NumberFormatException e) {
             tblEgresos.setValueAt(this.simbolo + " 0", filaSeleccionada, 3);
         }
-        
+
         BigDecimal subtotal = big.getBigDecimal("0");
         try {
             subtotal = big.getMoneda(tblEgresos.getValueAt(filaSeleccionada, 3).toString());
         } catch (Exception e) {
             tblEgresos.setValueAt(this.simbolo + " 0", filaSeleccionada, 3);
         }
-        
+
         try {
             subtotal = big.getMoneda(tblEgresos.getValueAt(filaSeleccionada, 3).toString());
         } catch (Exception e) {
             tblEgresos.setValueAt(this.simbolo + " 0", filaSeleccionada, 3);
         }
-        
+
         int ivaSeleccionado = 0;
         try {
             ivaSeleccionado = Integer.parseInt(tblEgresos.getValueAt(filaSeleccionada, 4).toString());
         } catch (Exception e) {
             tblEgresos.setValueAt(this.simbolo + " 0", filaSeleccionada, 4);
         }
-        
+
         BigDecimal totalIva = BigDecimal.valueOf(ivaSeleccionado).multiply(subtotal).divide(big.getBigDecimal(100), RoundingMode.HALF_UP);
         BigDecimal total = subtotal.add(totalIva);
-        
+
         tblEgresos.setValueAt(ivaSeleccionado, filaSeleccionada, 4);
         tblEgresos.setValueAt(big.setMonedaExacta(totalIva), filaSeleccionada, 5);
         tblEgresos.setValueAt(big.setMonedaExacta(total), filaSeleccionada, 6);
     }
-    
+
     public void calcularValores() {
-        
+
         BigDecimal subtotal = big.getBigDecimal("0");
         BigDecimal iva = big.getBigDecimal("0");
         BigDecimal total = big.getBigDecimal("0");
-        
+
         for (int i = 0; i < tblEgresos.getRowCount(); i++) {
             subtotal = subtotal.add(big.getMoneda(((String) tblEgresos.getValueAt(i, 3))));
             iva = iva.add(big.getMoneda(((String) tblEgresos.getValueAt(i, 5))));
             total = total.add(big.getMoneda(((String) tblEgresos.getValueAt(i, 6))));
         }
-        
+
         txtSubTotal.setText(big.setMoneda(subtotal));
         txtIVA.setText(big.setMoneda(iva));
         txtTotal.setText(big.setMoneda(total));
-        
+
         total = (total.subtract(big.getMoneda(txtBanco.getText()))).subtract(big.getMoneda(txtCheque.getText()));
-        
+
         int res = total.compareTo(big.getBigDecimal("0"));
-        
+
         if (res == 1) {
             txtEfectivo.setText(big.setMoneda(total));
         } else {
             txtEfectivo.setText(this.simbolo + " 0");
         }
-        
+
         txtTotalLetras.setText(convertirNumeroALetras.Convertir(big.getMoneda(txtTotal.getText()).toString()));
     }
-    
+
     public void cargarCliente(String nit) {
-        
+
         ModeloContacto nodo = instancias.getSql().getDatosTercero(nit);
 //            ndProveedor nodPro = instancias.getSql().getDatosProveedor(nit);
 
         if (nodo.getId() != null) {
-            
+
             if (nodo.isActivo()) {
                 metodos.msgError(this, "Este cliente esta inactivado");
                 lbNit.requestFocus();
                 return;
             }
-            
+
             DATOS_CLIENTE_CARGADO = nodo;
             txtNombreCliente.setText(nodo.getNombre());
             txtTelefono.setText(nodo.getTelefono());
@@ -2353,11 +2177,11 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         txtNombreCliente.setEditable(true);
         txtTelefono.setEditable(true);
         txtDireccion.setEditable(true);
-        
+
         ventanaTerceros("");
-        
+
     }
-    
+
     public void ventanaTerceros(String nit) {
         buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setOpc("egreso");
@@ -2368,15 +2192,12 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
         buscar.noEncontrado(nit);
         buscar.show();
     }
-    
-    private void actualizarTabla() {
-        String columNames[] = {
-            "Codigo", "Concepto", "Codigo Interno", "Estado"
-        };
-        
+
+    private void actualizarTablaConceptos() {
+        String columNames[] = {"Codigo", "Concepto", "Codigo Interno", "Estado"};
         modeloTablaConceptos = (DefaultTableModel) tblConceptos.getModel();
         modeloTablaConceptos.setDataVector(instancias.getSql().getCodsEgresos(), columNames);
-        
+
         if (tblConceptos.getColumnModel().getColumnCount() > 0) {
             tblConceptos.getColumnModel().getColumn(0).setMinWidth(75);
             tblConceptos.getColumnModel().getColumn(0).setPreferredWidth(105);
@@ -2385,18 +2206,49 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
             tblConceptos.getColumnModel().getColumn(2).setPreferredWidth(0);
             tblConceptos.getColumnModel().getColumn(2).setMaxWidth(0);
             tblConceptos.getColumnModel().getColumn(3).setMinWidth(50);
-            tblConceptos.getColumnModel().getColumn(3).setPreferredWidth(80);
-            tblConceptos.getColumnModel().getColumn(3).setMaxWidth(110);
+            tblConceptos.getColumnModel().getColumn(3).setPreferredWidth(90);
+            tblConceptos.getColumnModel().getColumn(3).setMaxWidth(120);
         }
-        
+
         for (int i = 0; i < tblConceptos.getRowCount(); i++) {
-            if (tblConceptos.getValueAt(i, 3).equals("0")) {
-                tblConceptos.setValueAt("ACTIVO", i, 3);
-            } else {
-                tblConceptos.setValueAt("INACTIVO", i, 3);
+            tblConceptos.setValueAt(tblConceptos.getValueAt(i, 3).equals("0")
+                    ? "ACTIVO"
+                    : "INACTIVO", i, 3);
+        }
+
+        if (instancias.getRepEgresos() != null) {
+            instancias.getRepEgresos().actualizarConceptos();
+        }
+    }
+
+    private boolean validacionesCamposConceptos() {
+        String concepto = txtDescripcionConcepto.getText();
+        if (concepto.isEmpty()) {
+            metodos.msgAdvertenciaAjustado(this, "Debe ingresar un concepto");
+            return false;
+        }
+
+        String codigoConcepto = txtCodigoConcepto.getText();
+        if (codigoConcepto.isEmpty()) {
+            metodos.msgAdvertenciaAjustado(this, "Debe ingresar un codigo");
+            return false;
+        }
+
+        Object[][] datos = instancias.getSql().getCodsEgresos();
+        for (Object[] dato : datos) {
+            if (dato[0].equals(codigoConcepto)) {
+                metodos.msgAdvertenciaAjustado(this, "El codigo ya existe");
+                txtCodigoConcepto.requestFocus();
+                return false;
+            }
+            if (dato[1].equals(concepto)) {
+                metodos.msgAdvertenciaAjustado(this, "El concepto ya existe");
+                txtDescripcionConcepto.requestFocus();
+                return false;
             }
         }
-        
+
+        return true;
     }
 
 //    public void ventanaProveedores(String nit) {
@@ -2421,22 +2273,23 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarConcepto;
+    private javax.swing.JButton btnAnularEgreso;
     private javax.swing.JButton btnBusProd;
     private javax.swing.JButton btnBuscTerceros;
-    private javax.swing.JButton btnBuscTerceros2;
     private javax.swing.JButton btnBuscTerceros3;
-    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnGuardar1;
+    private javax.swing.JButton btnInactivarConcepto;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnModificarConcepto;
     private javax.swing.JComboBox cmbTipoEgreso;
     private javax.swing.JComboBox cmbTipoImpresion;
-    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -2472,8 +2325,8 @@ public class vistaEgresos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtBanco;
     private javax.swing.JTextField txtCheque;
     private javax.swing.JTextField txtCodigo;
-    private javax.swing.JTextField txtCodigo1;
-    private javax.swing.JTextField txtConcepto;
+    private javax.swing.JTextField txtCodigoConcepto;
+    private javax.swing.JTextField txtDescripcionConcepto;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEfectivo;
     private javax.swing.JLabel txtIVA;

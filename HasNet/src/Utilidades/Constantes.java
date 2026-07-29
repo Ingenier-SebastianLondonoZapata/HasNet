@@ -46,9 +46,17 @@ public class Constantes {
     public static final int COLUMNA_VALOR_PRODUCTO = 2;
     public static final int COLUMNA_CANTIDAD = 3;
     public static final int COLUMNA_SUBTOTAL = 4;
+    public static final int COLUMNA_DESCUENTO_PORCENTAJE = 5;
     public static final int COLUMNA_PORCENTAJE_IVA = 7;
     public static final int COLUMNA_VALOR_IMPOCONSUMO = 8;
+    public static final int COLUMNA_TOTAL = 9;
+    public static final int COLUMNA_COPAGO = 17;
+    public static final int COLUMNA_PAGO_TERCERO = 19;
+    public static final int COLUMNA_UTILIDAD_PAGO_TERCERO = 20;
     public static final int COLUMNA_PORCENTAJE_IMPOCONSUMO = 23;
+    public static final int COLUMNA_ORDEN = 24;
+    public static final int COLUMNA_AVISO = 25;
+    public static final int COLUMNA_FECHA_ENTREGA = 26;
 
     public static final int COLUMNA_ID_SISTEMA = 32;
     public static final int COLUMNA_ID_SISTEMA_NOTA_CREDITO = 0;

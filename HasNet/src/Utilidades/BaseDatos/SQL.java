@@ -991,13 +991,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean modificarMontoBanco(BigDecimal monto, String numero) {
-        boolean ok = false;
-        String instruccion_sql = "update bdBancos set monto=? where numero = '" + numero + "' ;";
-        ok = Actualizar_Registro(null, new Object[]{monto}, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarParqueaderoAutos(ndParqueadero nodo) {
         boolean ok = false;
         String instruccion_sql = "insert into bdParqueaderoAutos(Id, placa, producto, fIngreso, fSalida, hIngreso, hSalida,"
@@ -1755,13 +1748,6 @@ public class SQL {
         return dtDatos[0][0].toString();
     }
 
-    public String getMovimientoAsociado(String id) {
-        String colName[] = {"numero"};
-        String origen = " bdMovimientosBancos";
-        Object dtDatos[][] = getDatos(colName, origen, "select numero FROM bdMovimientosBancos where egreso ='" + id + "' ", " where egreso = '" + id + "' ");
-        return dtDatos[0][0].toString();
-    }
-
     public boolean agregarFechasBloqueo(String fecha) {
         boolean ok = false;
         String instruccion_sql = "insert into bdLogErroresBloqueo(fecha) values (?);";
@@ -2223,15 +2209,14 @@ public class SQL {
     }
 
     /*public Object[] getUltimoPonderado(String producto) {
-        boolean ok = false;
-        String instruccion_sql = "select producto, ponderadoAntiguo, cantidadAntigua, cantidadEntrante, nuevoPonderado, nuevaCantidad, usuario, ultimoCosto, fecha"
-                + " from ultimoPonderado where producto = '" + producto + "' ";
-        String[] colName = {"producto", "ponderadoAntiguo", "cantidadAntigua", "cantidadEntrante", "nuevoPonderado", "nuevaCantidad", "usuario", "ultimoCosto", "fecha"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true};
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data;
-    }*/
-
+     boolean ok = false;
+     String instruccion_sql = "select producto, ponderadoAntiguo, cantidadAntigua, cantidadEntrante, nuevoPonderado, nuevaCantidad, usuario, ultimoCosto, fecha"
+     + " from ultimoPonderado where producto = '" + producto + "' ";
+     String[] colName = {"producto", "ponderadoAntiguo", "cantidadAntigua", "cantidadEntrante", "nuevoPonderado", "nuevaCantidad", "usuario", "ultimoCosto", "fecha"};
+     boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true};
+     Object[] data = GetRegistro(colName, cadena, instruccion_sql);
+     return data;
+     }*/
     public String obtenerUltimoCostoProducto(String codigoProducto) {
         String instruccion_sql = "select ultimoCosto from ultimoPonderado where producto = '" + codigoProducto + "'; ";
         String[] colName = {"ultimoCosto"};
@@ -3991,7 +3976,7 @@ public class SQL {
         ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion, "ANULADA"}, null, instruccion_sql);
         return ok;
     }
-    
+
     public boolean modificarCotizacionFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota, boolean anula, String anulacion) {
         boolean ok = false;
         String instruccion_sql = "update bdCotizacion set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=?, estadoGeneral=? where factura ='" + id + "' ;";
@@ -4097,7 +4082,6 @@ public class SQL {
         return datos;
     }
 
-
 //    public boolean modificarEstadoProductosOrden(String id, String estado, String producto) {
 //        boolean ok = false;
 //        String instruccion_sql = "update bdOServicio1 set estadoGeneral=? where idFactura='" + id + "' and producto='" + producto + "';";
@@ -4117,7 +4101,7 @@ public class SQL {
         ok = Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
         return ok;
     }
-    
+
     public Object[][] getTiposVehiculos() {
         String colName[] = {
             "nombre"
@@ -5352,31 +5336,6 @@ public class SQL {
                 + "inventario, fecha, hora, usuario)"
                 + " values(?,?,?,?,?,?,?,?,?,?);";
         ok = Agregar_Registro(dato, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarBanco(Object[] dato, Object[] dato1) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdBancos(nombre, tipo, numero, descripcion, fecha, usuario, monto)"
-                + " values(?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(dato, dato1, instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarMovimientoBanco(Object[] dato, Object[] dato1) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdMovimientosBancos(Id, cuenta, numero, nota, usuario, fecha, tipo, recibo, hora, nombreDoc, "
-                + "saldoActual, valorMovimiento, saldoFinal)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(dato, dato1, instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarMovimientoBancoPendiente(Object[] dato, Object[] dato1) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdMovimientosBancosPendientes(nota, usuario, fecha, tipo, valorMovimiento)"
-                + " values(?,?,?,?,?);";
-        ok = Agregar_Registro(dato, dato1, instruccion_sql);
         return ok;
     }
 
@@ -6855,7 +6814,7 @@ public class SQL {
         }
         return true;
     }
-    
+
     public boolean aumentarTurno(String turno) {
         boolean ok = false;
         String instruccion_sql = "update bdMaestra set turno1 = ? ";
@@ -8162,7 +8121,7 @@ public class SQL {
 
         return data[0].toString();
     }
-    
+
     public boolean agregarMutiempresas(String id, String descripcion, String base) {
         boolean ok = false;
         String instruccion_sql = "insert into bdMultiEmpresa(id, descripcion, base) values(?,?,?);";
@@ -9266,25 +9225,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getBancos() {
-        String colName[] = {
-            "nombre", "numero", "monto",};
-        String origen = " bdBancos";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select nombre, numero, monto "
-                + "from ").append(origen).toString());
-        return dtDatos;
-    }
-
-    public Object[][] getBancosEgreso(String egreso) {
-        String colName[] = {
-            "nombre", "numero", "monto"
-        };
-        String origen = " bdBancos";
-        Object dtDatos[][] = getDatos(colName, origen, "select nombre, numero, monto from bdBancos "
-                + "where egreso = '" + egreso + "' ", " where egreso = '" + egreso + "' ");
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosGuarderia() {
         String colName[] = {
             "mascota", "producto", "fIngreso", "hIngreso", "Id"
@@ -9292,36 +9232,6 @@ public class SQL {
         String origen = " bdGuarderia";
         Object dtDatos[][] = getDatos(colName, origen, "select mascota, producto, fIngreso, hIngreso, Id from bdGuarderia "
                 + " where activo = false ", " where activo = false ");
-        return dtDatos;
-    }
-
-    public Object[][] getBancosPendientes() {
-        String colName[] = {
-            "Id", "valorMovimiento", "nota", "usuario", "fecha", "tipo"
-        };
-        String origen = " bdMovimientosBancosPendientes";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select Id, valorMovimiento, nota, usuario, fecha, tipo  from ").append(origen).toString());
-        return dtDatos;
-    }
-
-    public Object[][] getMovimientoBanco(String Id) {
-        String colName[] = {
-            "valorMovimiento", "tipo", "cuenta", "numero"
-        };
-        String origen = " bdMovimientosBancos";
-        Object dtDatos[][] = getDatos(colName, origen, "select valorMovimiento, tipo, cuenta, numero from bdMovimientosBancos where Id = '" + Id + "' ",
-                " where Id = '" + Id + "' ");
-
-        return dtDatos;
-    }
-
-    public Object[][] getMovimientosBancos(String numero) {
-        String colName[] = {
-            "fecha", "saldoActual", "valorMovimiento", "saldoFinal", "nota", "tipo", "recibo"
-        };
-        String origen = " bdMovimientosBancos";
-        Object dtDatos[][] = getDatos(colName, origen, "select fecha, saldoActual, valorMovimiento, saldoFinal, nota, tipo, recibo from bdMovimientosBancos where numero = '" + numero + "' ", " where numero = '" + numero + "' ");
-
         return dtDatos;
     }
 
@@ -9979,16 +9889,11 @@ public class SQL {
         //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
         Object dtDatos[][] = getDatos(colName, origen, "select SumaDetotal from " + origen + " where " + ini + " ", " where " + ini + "");
 
-        return dtDatos[0][0].toString();
-    }
-
-    public String montoBanco(String num) {
-        String colName[] = {"monto"};
-        String origen = " bdBancos";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select monto from " + origen + " where numero = '" + num + "' ", " where numero = '" + num + "'");
-
-        return dtDatos[0][0].toString();
+        try {
+            return dtDatos[0][0].toString();
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     public String gastosEgresosContAdmin(String ini) {
@@ -9998,7 +9903,11 @@ public class SQL {
         //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
         Object dtDatos[][] = getDatos(colName, origen, "select contGastos from " + origen + " where " + ini + " ", " where " + ini + "");
 
-        return dtDatos[0][0].toString();
+        try {
+            return dtDatos[0][0].toString();
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     public Object[][] getRegistrosCajaPendiente() {
@@ -10032,7 +9941,11 @@ public class SQL {
         //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
         Object dtDatos[][] = getDatos(colName, origen, "select SumaDetotal from " + origen + " where " + ini + " AND usuario='" + usuario + "'", " where " + ini + " AND usuario='" + usuario + "'");
 
-        return dtDatos[0][0].toString();
+        try {
+            return dtDatos[0][0].toString();
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     public String gastosEgresosCont(String ini, String usuario) {
@@ -10042,7 +9955,11 @@ public class SQL {
         //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
         Object dtDatos[][] = getDatos(colName, origen, "select contGastos from " + origen + " where " + ini + " AND usuario='" + usuario + "'", " where " + ini + " AND usuario='" + usuario + "'");
 
-        return dtDatos[0][0].toString();
+        try {
+            return dtDatos[0][0].toString();
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     public DefaultTableModel getPendientesCuadre(String factura) {
@@ -10131,7 +10048,6 @@ public class SQL {
 //
 //        return dtDatos;
 //    }
-
     public Object[][] getTodasBodegas() {
         String colName[] = {
             "codigo", "abreviado"
@@ -10249,7 +10165,7 @@ public class SQL {
         return ok;
     }
 
-public boolean modificarCodEgreso(Object[] datos) {
+    public boolean modificarCodEgreso(Object[] datos) {
         boolean ok = false;
         String instruccion_sql = "update codsEgresos set concepto=?, codigoUsuario=? where codigo=" + datos[0] + ";";
         ok = Actualizar_Registro(datos, null, instruccion_sql);

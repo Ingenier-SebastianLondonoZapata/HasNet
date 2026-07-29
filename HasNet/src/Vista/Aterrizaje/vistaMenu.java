@@ -27,8 +27,7 @@ import formularios.Cartera.infRepCartera;
 import formularios.Cartera.infRepNc;
 import formularios.Cartera.infRepPagos;
 
-import Vista.Tesoreria.vistaCodigosEgresos;
-import Vista.Tesoreria.vistaEgresos;
+import Vista.Tesoreria.VistaEgresos;
 import formularios.Tesoreria.infRepEgresos;
 import formularios.Labotario.infAcidoUrico;
 import formularios.Labotario.infAcidos;
@@ -84,8 +83,6 @@ import formularios.Parqueadero.infRepLavadero1;
 import formularios.Parqueadero.infRepMensualidades;
 import formularios.Parqueadero.infRepParqueadero;
 
-import formularios.Tesoreria.infBancos;
-import formularios.Tesoreria.infRepBancos;
 import Vista.Tesoreria.VistaCuadreCaja;
 import formularios.Tesoreria.infRepCuadre;
 
@@ -506,7 +503,9 @@ public class vistaMenu extends javax.swing.JFrame {
         lbLogo.setBackground(new java.awt.Color(242, 244, 244));
         lbLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/logoNuevo.png"))); // NOI18N
         lbLogo.setBorder(null);
+        lbLogo.setContentAreaFilled(false);
         lbLogo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbLogo.setFocusPainted(false);
         lbLogo.setFocusable(false);
         lbLogo.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
@@ -2138,13 +2137,13 @@ public class vistaMenu extends javax.swing.JFrame {
                 break;
 
             case "egresos":
-                textos[0] = "CODIGOS";
-                textos[1] = "EGRESOS";
+                textos[0] = "EGRESOS";
+                textos[1] = "CUADRE CAJA";
                 textos[2] = "R.EGRESOS";
-                textos[3] = "BANCOS";
-                textos[4] = "REP.BANCOS";
-                textos[5] = "CUADRE CAJA";
-                textos[6] = "REP.CUADRE";
+                textos[3] = "REP.CUADRE";
+                textos[4] = (String) null;
+                textos[5] = (String) null;
+                textos[6] = (String) null;
                 textos[7] = (String) null;
                 textos[8] = (String) null;
                 textos[9] = (String) null;
@@ -2154,13 +2153,13 @@ public class vistaMenu extends javax.swing.JFrame {
                 textos[13] = (String) null;
                 textos[14] = (String) null;
 
-                forms[0] = instancias.getCodigosEgresos();
-                forms[1] = instancias.getEgresos();
+                forms[0] = instancias.getEgresos();
+                forms[1] = instancias.getCaja();
                 forms[2] = instancias.getRepEgresos();
-                forms[3] = instancias.getBancos();
-                forms[4] = instancias.getRepBancos();
-                forms[5] = instancias.getCaja();
-                forms[6] = instancias.getRepCuadre();
+                forms[3] = instancias.getRepCuadre();
+                forms[4] = null;
+                forms[5] = null;
+                forms[6] = null;
                 forms[7] = null;
                 forms[8] = null;
                 forms[9] = null;
@@ -2353,10 +2352,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("MASCOTAS");
             }
 
-            if (formularios[0] instanceof vistaCodigosEgresos) {
-                instancias.getMenu().cambiarTitulo("CODIGOS DE EGRESOS");
-            }
-
             if (formularios[0] instanceof infRepCartera) {
                 instancias.getMenu().cambiarTitulo("REPORTE CARTERA CXC");
             }
@@ -2376,6 +2371,10 @@ public class vistaMenu extends javax.swing.JFrame {
 
             if (formularios[0] instanceof VistaProductos) {
                 instancias.getMenu().cambiarTitulo("CREACIÓN DE PRODUCTO");
+            }
+
+            if (formularios[0] instanceof VistaEgresos) {
+                instancias.getMenu().cambiarTitulo("EGRESOS");
             }
 
             if (formularios[0] instanceof infAgendaConsulta) {
@@ -2408,10 +2407,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("MESAS");
             }
 
-            if (formularios[1] instanceof vistaEgresos) {
-                instancias.getMenu().cambiarTitulo("EGRESOS");
-            }
-
             if (formularios[1] instanceof infAbonos) {
                 instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR COBRAR");
             }
@@ -2422,6 +2417,10 @@ public class vistaMenu extends javax.swing.JFrame {
 
             if (formularios[1] instanceof VistaGrupos) {
                 instancias.getMenu().cambiarTitulo("CREACIÓN DE GRUPOS Y SUBGRUPOS");
+            }
+
+            if (formularios[1] instanceof VistaCuadreCaja) {
+                instancias.getMenu().cambiarTitulo("CUADRE DE CAJA");
             }
 
             formularios[1].setSelected(true);
@@ -2500,10 +2499,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("MENSUALIDAD");
             }
 
-            if (formularios[3] instanceof infBancos) {
-                instancias.getMenu().cambiarTitulo("BANCOS");
-            }
-
             if (formularios[3] instanceof VistaDiseno) {
                 instancias.getMenu().cambiarTitulo("DISEÑO DE PRODUCTO");
             }
@@ -2522,6 +2517,10 @@ public class vistaMenu extends javax.swing.JFrame {
 
             if (formularios[3] instanceof infRepPagos) {
                 instancias.getMenu().cambiarTitulo("REPORTE DE CARTERA CXP");
+            }
+
+            if (formularios[3] instanceof infRepCuadre) {
+                instancias.getMenu().cambiarTitulo("REPORTE DE CUADRE DE CAJA");
             }
 
             if (formularios[3] instanceof infHistoriaMedica) {
@@ -2570,10 +2569,6 @@ public class vistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR PAGAR");
             }
 
-            if (formularios[4] instanceof infRepBancos) {
-                instancias.getMenu().cambiarTitulo("REPORTES DE BANCOS");
-            }
-
             if (formularios[4] instanceof infGuarderia) {
                 instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR PAGAR");
             }
@@ -2600,10 +2595,6 @@ public class vistaMenu extends javax.swing.JFrame {
 
             if (formularios[5] instanceof infRepLavadero) {
                 instancias.getMenu().cambiarTitulo("REPORTE DE PAGOS DEL LAVADERO");
-            }
-
-            if (formularios[5] instanceof VistaCuadreCaja) {
-                instancias.getMenu().cambiarTitulo("CUADRE DE CAJA");
             }
 
             if (formularios[5] instanceof infConvenio) {
@@ -2653,10 +2644,6 @@ public class vistaMenu extends javax.swing.JFrame {
 
             if (formularios[6] instanceof infNotaEnfermeria) {
                 instancias.getMenu().cambiarTitulo("NOTA ENFERMERIA");
-            }
-
-            if (formularios[6] instanceof infRepCuadre) {
-                instancias.getMenu().cambiarTitulo("REPORTE DE CUADRE DE CAJA");
             }
 
             if (formularios[6] instanceof infRepPeluqueria) {
@@ -3778,7 +3765,7 @@ public class vistaMenu extends javax.swing.JFrame {
 
     private void cargarModulosTesoreria() {
         try {
-            vistaEgresos interno11 = new vistaEgresos();
+            VistaEgresos interno11 = new VistaEgresos();
             dkpFormularios.add(interno11);
             instancias.setEgresos(interno11);
             if (instancias.getUsuarioLog().isEgresos()) {
@@ -3839,19 +3826,6 @@ public class vistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            vistaCodigosEgresos interno = new vistaCodigosEgresos();
-            dkpFormularios.add(interno);
-            if (instancias.getUsuarioLog().isCodigos()) {
-                interno.show();
-            }
-            instancias.setCodigosEgresos(interno);
-            interno.setMaximum(true);
-            interno.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
             infRepCuadre interno14 = new infRepCuadre();
             dkpFormularios.add(interno14);
             if (instancias.getUsuarioLog().isReporteCuadreCaja()) {
@@ -3859,31 +3833,6 @@ public class vistaMenu extends javax.swing.JFrame {
             }
             interno14.setMaximum(true);
             instancias.setRepCuadre(interno14);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            infBancos interno11 = new infBancos();
-            dkpFormularios.add(interno11);
-            instancias.setBancos(interno11);
-            if (instancias.getUsuarioLog().isBancos()) {
-                interno11.show();
-            }
-            interno11.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            infRepBancos interno = new infRepBancos();
-            dkpFormularios.add(interno);
-            instancias.setRepBancos(interno);
-            if (instancias.getUsuarioLog().isReporteBancos()) {
-                interno.show();
-            }
-            interno.setMaximum(true);
-            interno.setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }

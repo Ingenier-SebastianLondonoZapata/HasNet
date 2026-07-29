@@ -40,15 +40,6 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
         txtCodigoSubGrupo.setVisible(false);
         btnNuevoActionPerformed(null);
 
-//        if (instancias.getConfiguraciones().isRestaurante()) {
-//            lbVisor.setVisible(true);
-//            visualizarNo.setVisible(true);
-//            visualizarSi.setVisible(true);
-//        } else {
-//            lbVisor.setVisible(false);
-//            visualizarNo.setVisible(false);
-//            visualizarSi.setVisible(false);
-//        }
         pnlFormulario.registerKeyboardAction(accion("guardar"), "guardar", KeyStroke.getKeyStroke(KeyEvent.VK_G, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("productos"), "productos", KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -651,8 +642,8 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
             cargarTablaSubGrupos(txtCodigo.getText());
 
             instancias.getFactura().inicializarPanelGruposEmbebido();
-
             instancias.actualizarGrupos(new Object[]{txtCodigo.getText(), txtNombre.getText()});
+
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnModificarActionPerformed

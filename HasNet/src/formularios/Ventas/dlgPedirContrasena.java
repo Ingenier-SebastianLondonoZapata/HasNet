@@ -9,10 +9,8 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 
-
 public class dlgPedirContrasena extends javax.swing.JDialog {
 
-    
     private metodosGenerales metodos;
     private String opc;
 
@@ -37,7 +35,7 @@ public class dlgPedirContrasena extends javax.swing.JDialog {
         };
         return a;
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

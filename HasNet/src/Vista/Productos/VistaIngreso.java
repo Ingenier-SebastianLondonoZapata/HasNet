@@ -381,11 +381,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         txtCodigoProducto.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
         txtCodigoProducto.setName("combo"); // NOI18N
-        txtCodigoProducto.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtCodigoProductoFocusGained(evt);
-            }
-        });
         txtCodigoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtCodigoProductoActionPerformed(evt);
@@ -1368,11 +1363,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCodigoProductoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoProductoFocusGained
-        tblProductos.removeEditor();
-        cargarTotales();
-    }//GEN-LAST:event_txtCodigoProductoFocusGained
-
     private void txtCodigoProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoProductoKeyReleased
         String codigoProducto = txtCodigoProducto.getText();
 
@@ -2278,7 +2268,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
     }//GEN-LAST:event_tblComprobantesMouseExited
 
-    private void anularCompra(String consecutivo) {
+    public void anularCompra(String consecutivo) {
         if (instancias.getSql().getRegistrosPagos(consecutivo).length > 0) {
             metodos.msgError(null, "Tiene abonos, no se puede anular");
             btnLimpiarActionPerformed(null);
@@ -3027,10 +3017,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void ventanaProductos(String codigo) {
         String lugar = "sinArmados";
-//        if (tipo.equals("ordenCompra")) {
-//            lugar = "sinSerial";
-//        }
-
         buscProductos buscar = new buscProductos(null, true, false, lugar, "productos1");
         buscar.setOpc(tipoProceso);
         buscar.setIngreso(this);
@@ -3232,7 +3218,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         cargarProducto(id, "1", 1, "");
     }
 
-    public void cargarProductos(Object[][] productos) {
+    public void cargarProductos(Object[][] productos) {        
         String cantEstablecida = txtCant.getText();
         for (int i = 0; i < productos.length; i++) {
             this.plu = true;

@@ -1,7 +1,6 @@
 package inventario.estrategia;
 
 import Enums.EstadosDetalleProducto;
-import Enums.Tablas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
@@ -84,31 +83,15 @@ public class ProcesadorFacturacion extends AbstractProcesadorMovimiento {
             return;
         }
 
-        boolean aplicarSqlDetallado = !(informacionAdicional.isVieneDesdePedido()
-                || informacionAdicional.isVieneDesdePlanSepare()
-                || informacionAdicional.isVieneDesdeOrdenServicio());
+        sentencias.add(sqlDetalleDescontarConEstado(
+                movimiento.getIdDetalleProducto(),
+                movimiento.getCantidad(),
+                EstadosDetalleProducto.NO_DISPONIBLE.getNombre()));
 
-        if (aplicarSqlDetallado) {
-            sentencias.add(sqlDetalleDescontarConEstado(
-                    movimiento.getIdDetalleProducto(),
-                    movimiento.getCantidad(),
-                    EstadosDetalleProducto.NO_DISPONIBLE.getNombre()));
-        } else {
-            sentencias.add(generarSqlActualizarEstadoDetalle(movimiento));
-        }
     }
 
     @Override
     protected List<DetalleProducto> detallesAPersistir(List<DetalleProducto> detallesProductos) {
         return Collections.emptyList();
-    }
-
-    private SentenciaSql generarSqlActualizarEstadoDetalle(MovimientoInventario movimiento) {
-        String sql = "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre() + " SET "
-                + "estado = ? WHERE Id = ? AND cantidadDisponible <= 0";
-
-        return new SentenciaSql(sql,
-                EstadosDetalleProducto.NO_DISPONIBLE.getNombre(),
-                movimiento.getIdDetalleProducto());
     }
 }

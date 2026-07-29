@@ -116,6 +116,15 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         }
         txtIdSistema.setText("PROD-" + consecutivo);
 
+        Object[][] datos = instancias.getSql().getUltimosPonderados();
+        Boolean sinPonderado = false;
+        for (Object[] dato : datos) {
+            if (dato[1] != null && big.getMoneda(dato[1].toString()).compareTo(BigDecimal.ZERO) <= 0) {
+                sinPonderado = true;
+            }
+        }
+        lbMensajeProductosSinPonderado.setVisible(sinPonderado);
+        
         pnlFormulario.registerKeyboardAction(accion("guardar"), "guardar", KeyStroke.getKeyStroke(KeyEvent.VK_G, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("productos"), "productos", KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -394,6 +403,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         pnlInvisible = new javax.swing.JPanel();
         txtIdSistema = new javax.swing.JTextField();
         txtProveedor = new javax.swing.JTextField();
+        lbMensajeProductosSinPonderado = new javax.swing.JLabel();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
@@ -489,7 +499,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbInfoObligatorios, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                    .addComponent(lbInfoObligatorios, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnNuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -2825,7 +2835,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
                         .addComponent(txtDescripcionUnificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnUnificar)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 635, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
 
@@ -2964,28 +2974,45 @@ public class VistaProductos extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        lbMensajeProductosSinPonderado.setBackground(new java.awt.Color(255, 255, 0));
+        lbMensajeProductosSinPonderado.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        lbMensajeProductosSinPonderado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbMensajeProductosSinPonderado.setText("ATENCIÓN ALGUNOS PRODUCTOS TIENEN PONDERADO EN 0 Ó NEGATIVO ");
+        lbMensajeProductosSinPonderado.setOpaque(true);
+        lbMensajeProductosSinPonderado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbMensajeProductosSinPonderadoMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlFormularioLayout = new javax.swing.GroupLayout(pnlFormulario);
         pnlFormulario.setLayout(pnlFormularioLayout);
         pnlFormularioLayout.setHorizontalGroup(
             pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(pnlFormularioLayout.createSequentialGroup()
                 .addContainerGap(20, Short.MAX_VALUE)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 713, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(mensaje4, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-                    .addComponent(mensaje2, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-                    .addComponent(mensaje3, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-                    .addComponent(pnlInvisible, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbMensajeProductosSinPonderado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlFormularioLayout.createSequentialGroup()
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 713, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(mensaje4, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                            .addComponent(mensaje2, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                            .addComponent(mensaje3, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                            .addComponent(pnlInvisible, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         pnlFormularioLayout.setVerticalGroup(
             pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFormularioLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(10, 10, 10)
+                .addComponent(lbMensajeProductosSinPonderado, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 757, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlFormularioLayout.createSequentialGroup()
                         .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2996,10 +3023,9 @@ public class VistaProductos extends javax.swing.JInternalFrame {
                         .addComponent(mensaje2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(3, 3, 3)
                         .addComponent(mensaje4, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pnlInvisible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16))
+                        .addGap(42, 42, 42)
+                        .addComponent(pnlInvisible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         jTabbedPane1.getAccessibleContext().setAccessibleName("Productos");
@@ -4575,6 +4601,11 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_chkSerialColorActionPerformed
 
+    private void lbMensajeProductosSinPonderadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbMensajeProductosSinPonderadoMouseClicked
+        dlgPonderadoNegativo ponderadoNegativo = new dlgPonderadoNegativo(null, true, null);
+        ponderadoNegativo.setVisible(true);
+    }//GEN-LAST:event_lbMensajeProductosSinPonderadoMouseClicked
+
     public void ventanaTipoProd(String nit) {
         buscTiposProductos buscar = new buscTiposProductos(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
@@ -5259,6 +5290,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbInfoObligatorios;
     private javax.swing.JCheckBox lbIvaCompra;
     private javax.swing.JLabel lbIvaVenta;
+    private javax.swing.JLabel lbMensajeProductosSinPonderado;
     private javax.swing.JLabel lbNit;
     private javax.swing.JLabel lbRazon;
     private javax.swing.JLabel lbRazon1;

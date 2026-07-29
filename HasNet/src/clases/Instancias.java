@@ -16,8 +16,7 @@ import Vista.Ventas.VistaFactura;
 import Vista.Productos.ordenCompra;
 import Vista.Productos.ingreso;
 import Vista.Productos.VistaIngreso;
-import Vista.Tesoreria.vistaCodigosEgresos;
-import Vista.Tesoreria.vistaEgresos;
+import Vista.Tesoreria.VistaEgresos;
 import Vista.Terceros.vistaContactos;
 import Vista.Restaurante.VistaMesas;
 import Vista.Ventas.VistaDocumentos;
@@ -306,12 +305,9 @@ public class Instancias {
     private ordenCompra ordenCompra;
 
     /* INICIO TESORERIA */
-    private vistaEgresos egresos;
-    private vistaCodigosEgresos codigosEgresos;
+    private VistaEgresos egresos;
     private infRepEgresos repEgresos;
     private buscEgresos buscarEgresos;
-    private infBancos bancos;
-    private infRepBancos repBancos;
 
     /* INICIO LABORATORIO */
     private infAcidoUrico acidoUrico;
@@ -1055,22 +1051,6 @@ public class Instancias {
 
     public void setPaquimetria(infPaquimetria paquimetria) {
         this.paquimetria = paquimetria;
-    }
-
-    public infRepBancos getRepBancos() {
-        return repBancos;
-    }
-
-    public void setRepBancos(infRepBancos repBancos) {
-        this.repBancos = repBancos;
-    }
-
-    public infBancos getBancos() {
-        return bancos;
-    }
-
-    public void setBancos(infBancos bancos) {
-        this.bancos = bancos;
     }
 
     public infHistoriaLaboratorio getHistoriaLaboratorio() {
@@ -2387,10 +2367,6 @@ public class Instancias {
         this.repMascotas = repMascotas;
     }
 
-    public vistaCodigosEgresos getCodigosEgresos() {
-        return codigosEgresos;
-    }
-
     public infRepCartera getRepCartera() {
         return repCartera;
     }
@@ -2445,10 +2421,6 @@ public class Instancias {
 
     public void setUsuarioLog(ndUsuario usuarioLog) {
         this.usuarioLog = usuarioLog;
-    }
-
-    public void setCodigosEgresos(vistaCodigosEgresos codigosEgresos) {
-        this.codigosEgresos = codigosEgresos;
     }
 
     public vistaMaestra getMaestra() {
@@ -2531,7 +2503,7 @@ public class Instancias {
         this.empleados = empleados;
     }
 
-    public vistaEgresos getEgresos() {
+    public VistaEgresos getEgresos() {
         return egresos;
     }
 
@@ -2551,7 +2523,7 @@ public class Instancias {
         this.nc = nc;
     }
 
-    public void setEgresos(vistaEgresos egresos) {
+    public void setEgresos(VistaEgresos egresos) {
         this.egresos = egresos;
     }
 
