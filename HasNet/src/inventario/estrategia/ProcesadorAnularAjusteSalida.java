@@ -19,6 +19,7 @@ public class ProcesadorAnularAjusteSalida extends AbstractProcesadorMovimiento {
         BigDecimal cantidad = movimiento.getCantidad();
 
         BigDecimal ajusteSalida = Utilidades.convertirBigDecimal(producto.getAjusteSalida()).subtract(cantidad);
+        producto.setAjusteSalida(UtilidadInventario.formatear(ajusteSalida));
 
         if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
             String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET ajusteSalida = ? WHERE idSistema = ?";
@@ -27,6 +28,8 @@ public class ProcesadorAnularAjusteSalida extends AbstractProcesadorMovimiento {
 
         BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).add(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
+        producto.setInventario(UtilidadInventario.formatear(inventario));
+        producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "inventario = ?, fisicoInventario = ?, ajusteSalida = ? "

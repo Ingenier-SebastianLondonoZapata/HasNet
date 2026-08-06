@@ -2,89 +2,126 @@ package Vista.Solicitudes;
 
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
+import Enums.TipoDocumento;
+import Modelo.Solicitudes.AccionesPermisos;
 import formularios.*;
 import clases.Instancias;
 import clases.metodosGenerales;
-import Vista.Ventas.VistaFactura;
 import configuracion.dlgEsperandoRespuesta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.math.BigDecimal;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileSystemView;
 
-public class vistaSolicitarPermisos extends javax.swing.JDialog {
+public class VistaSolicitarPermisos extends javax.swing.JDialog {
 
-    private metodosGenerales metodos;
-    private Instancias instancias;
-    private String opc;
-    jcThread barra2;
+    private final metodosGenerales metodos;
+    private final Instancias instancias;
+    private final String tipoProceso;
+    private jcThread barra2;
 
-    public vistaSolicitarPermisos(java.awt.Frame parent, boolean modal, String mensaje, String tipo, String valor, String lugar) {
-        super(parent, modal);
+    private final AccionesPermisos accionRealizar;
+
+    public VistaSolicitarPermisos(java.awt.Frame parent, String tipoProceso, AccionesPermisos accion, String valor, BigDecimal descuentoMaximo) {
+
+        super(parent, true);
 
         initComponents();
+
         instancias = Instancias.getInstancias();
         metodos = new metodosGenerales();
 
-        lbMensaje.setText(mensaje);
-        txtTipo.setText(tipo);
+        this.accionRealizar = accion;
+        this.tipoProceso = tipoProceso;
+
+        configurarPantalla(tipoProceso, descuentoMaximo);
+
         txtValor.setText(valor);
-        opc = lugar;
 
-        if (opc.equals("anulacion")) {
-            lbTitulo.setText("DOCUMENTO A ANULAR:");
-        } else if (opc.equals("acceso")) {
-            lbTitulo.setText("MÓDULO A ENTRAR:");
-        } else if (opc.equals("borrarMesa")) {
-            lbTitulo.setText("DOCUMENTO A BORRAR:");
-        }
-
-        this.getRootPane().registerKeyboardAction(accion("cerrar", this), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        getRootPane().registerKeyboardAction(
+                accion("cerrar", this),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    public static void muestraContenido(String archivo, String consecutivo) throws FileNotFoundException, IOException {
-        String cadena;
-        FileReader f = new FileReader(archivo);
-        BufferedReader b = new BufferedReader(f);
+    private void configurarPantalla(String tipoProceso, BigDecimal descuentoMaximo) {
 
-        String validacion1 = "KG8KH/GbXbA=";
-        String validacion2 = "2782763659899507458";
-        String validacion3 = "2.0136721508259097";
-
-        Boolean val1 = false, val2 = false, val3 = false;
-
-        while ((cadena = b.readLine()) != null) {
-//            System.out.println(cadena);
-            if (cadena.equals(validacion1)) {
-                val1 = true;
-            }
-
-            if (cadena.equals(validacion2)) {
-                val2 = true;
-            }
-
-            if (cadena.equals(validacion3)) {
-                val3 = true;
-            }
+        if (TipoDocumento.ANULAR_FACTURACION.getValor().equals(tipoProceso)) {
+            lbMensaje.setText("ANULACIÓN FACTURA");
+            txtTipo.setText("ANULACION");
+            lbTitulo.setText("DOCUMENTO A ANULAR:");
+            return;
         }
 
-        if (val1 && val2 && val3) {
-            Instancias.getInstancias().getSql().cambiarEstadoGeneral("DISPOSITIVO-USB", consecutivo, " bdPermisos");
-        } else {
-            Instancias.getInstancias().getSql().cambiarEstadoGeneral("RECHAZADA", consecutivo, " bdPermisos");
+        if (TipoDocumento.NOTA_CREDITO.getValor().equals(tipoProceso)) {
+            lbMensaje.setText("NOTAS CRÉDITO");
+            txtTipo.setText("NOTA-CREDITO");
+            lbTitulo.setText("DOCUMENTO A GENERAR:");
+            return;
         }
 
-        b.close();
+        lbMensaje.setText(obtenerMensaje(descuentoMaximo));
+        txtTipo.setText(obtenerTipo());
+        lbTitulo.setText(obtenerTitulo());
+    }
+
+    private String obtenerMensaje(BigDecimal descuentoMaximo) {
+        if (accionRealizar.isAccionDescuento()) {
+            return "DESCUENTO MÁXIMO PRODUCTO " + descuentoMaximo + "%";
+        }
+
+        if (accionRealizar.isAccionLimpiar()) {
+            return obtenerMensajeLimpiar();
+        }
+
+        if (accionRealizar.isAccionBorrarProducto()) {
+            return "ELIMINAR PRODUCTO";
+        }
+
+        return "";
+    }
+
+    private String obtenerMensajeLimpiar() {
+        if (!TipoDocumento.MESA.getValor().equals(tipoProceso)) {
+            return "LIMPIAR FACTURA";
+        }
+
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            return "LIMPIAR MESA";
+        }
+
+        return "LIMPIAR CONGELADA";
+    }
+
+    private String obtenerTipo() {
+        if (accionRealizar.isAccionDescuento()) {
+            return "DESCUENTO";
+        }
+
+        if (accionRealizar.isAccionLimpiar()) {
+            return "LIMPIAR";
+        }
+
+        return "ELIMINAR";
+    }
+
+    private String obtenerTitulo() {
+        if (accionRealizar.isAccionDescuento()) {
+            return "DESCUENTO A APLICAR";
+        }
+
+        if (accionRealizar.isAccionLimpiar()) {
+            return "DOCUMENTO A LIMPIAR";
+        }
+
+        if (accionRealizar.isAccionBorrarProducto()) {
+            return "PRODUCTO A ELIMINAR";
+        }
+
+        return "";
     }
 
     private ActionListener accion(final String opc, final JDialog ventana) {
@@ -108,12 +145,12 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
         jPanel5 = new javax.swing.JPanel();
         lbMensaje = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        btnSolicitar = new javax.swing.JButton();
+        btnSolicitarPermiso = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtNota = new javax.swing.JTextArea();
         jPanel3 = new javax.swing.JPanel();
-        btnSolicitar2 = new javax.swing.JButton();
+        btnSolicitarPermisoContrasenha = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -136,13 +173,13 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Solicitar permiso", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 14))); // NOI18N
 
-        btnSolicitar.setBackground(new java.awt.Color(0, 204, 102));
-        btnSolicitar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnSolicitar.setText("SOLICITAR");
-        btnSolicitar.setBorder(null);
-        btnSolicitar.addActionListener(new java.awt.event.ActionListener() {
+        btnSolicitarPermiso.setBackground(new java.awt.Color(0, 204, 102));
+        btnSolicitarPermiso.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnSolicitarPermiso.setText("SOLICITAR");
+        btnSolicitarPermiso.setBorder(null);
+        btnSolicitarPermiso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSolicitarActionPerformed(evt);
+                btnSolicitarPermisoActionPerformed(evt);
             }
         });
 
@@ -176,7 +213,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSolicitar, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSolicitarPermiso, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(158, 158, 158))
         );
         jPanel1Layout.setVerticalGroup(
@@ -186,7 +223,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSolicitar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSolicitarPermiso, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -194,13 +231,13 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Permiso del administrador", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 14))); // NOI18N
 
-        btnSolicitar2.setBackground(new java.awt.Color(0, 204, 102));
-        btnSolicitar2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnSolicitar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
-        btnSolicitar2.setBorder(null);
-        btnSolicitar2.addActionListener(new java.awt.event.ActionListener() {
+        btnSolicitarPermisoContrasenha.setBackground(new java.awt.Color(0, 204, 102));
+        btnSolicitarPermisoContrasenha.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnSolicitarPermisoContrasenha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnSolicitarPermisoContrasenha.setBorder(null);
+        btnSolicitarPermisoContrasenha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSolicitar2ActionPerformed(evt);
+                btnSolicitarPermisoContrasenhaActionPerformed(evt);
             }
         });
 
@@ -215,7 +252,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSolicitar2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSolicitarPermisoContrasenha, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -224,7 +261,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPasswordField1)
-                    .addComponent(btnSolicitar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSolicitarPermisoContrasenha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18))
         );
 
@@ -243,7 +280,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
         lbTitulo.setText("VALOR A SOLICITAR:");
 
         txtValor.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        txtValor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtValor.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         txtValor.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         txtValor.setEnabled(false);
 
@@ -253,26 +290,29 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(lbTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtValor)
-                .addGap(22, 22, 22))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtValor)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(txtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtTipo)
-                        .addComponent(txtValor)
-                        .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtValor))
+                .addGap(5, 5, 5))
         );
 
         lbMensaje1.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
@@ -336,7 +376,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void btnSolicitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarActionPerformed
+    private void btnSolicitarPermisoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarPermisoActionPerformed
         if (txtNota.getText().equalsIgnoreCase("") || txtNota.getText().equalsIgnoreCase(" ")) {
             metodos.msgError(null, "Debe ingresar la nota");
             txtNota.requestFocus();
@@ -356,13 +396,12 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
         }
 
         instancias.getSql().aumentarConsecutivo("PERMISO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PERMISO")[0]) + 1);
-        btnSolicitar.setEnabled(false);
+        btnSolicitarPermiso.setEnabled(false);
         txtNota.setEnabled(false);
         this.dispose();
 
         String estado = "PENDIENTE";
         int cant = 0;
-        int validador = 0;
 
         while (estado.equals("PENDIENTE")) {
             Object[] datos = instancias.getSql().getInformacionPermiso("PERMISO-" + consecutivo);
@@ -370,7 +409,7 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
 
             try {
                 Thread.sleep(1000);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
             }
 
             cant = cant + 1;
@@ -388,136 +427,14 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
                 } else {
                     instancias.getSql().cambiarEstadoGeneral("CANCELADA", "PERMISO-" + consecutivo, " bdPermisos");
                 }
-
-//                if (metodos.msgPregunta(null, "¿Desea seguir esperando?") != 0) {
-//                 
-//                } else {
-//                
-//                }
-            }
-
-            File unidades[] = File.listRoots();
-
-            for (int i = 0; i < unidades.length; i++) {
-                System.out.println(unidades[i]);
-
-                if (FileSystemView.getFileSystemView().getSystemDisplayName(unidades[i]).contains("PERMISO ADM")) {
-                    try {
-                        muestraContenido(unidades[i] + "/DESBLOQ/password.txt", "PERMISO-" + consecutivo);
-                    } catch (IOException ex) {
-                        Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else {
-                    if (validador > 0) {
-                        if (unidades.length > validador) {
-                            barra2.detener(true);
-
-                            if (!FileSystemView.getFileSystemView().getSystemDisplayName(unidades[unidades.length - 1]).contains("PERMISO ADM")) {
-                                metodos.msgError(null, "El dispositivo insertado no es válido");
-                            }
-
-                            controladorBarra = new controladorBarraProceso();
-                            barra = new esperandoRespuesta(controladorBarra, Instancias.getInstancias(), "ESPERANDO RESPUESTA");
-                            barra.show();
-                            barra2 = controladorBarra.getBarra();
-                        }
-                    }
-                }
-
-                validador = unidades.length;
             }
         }
 
         barra2.detener(true);
+        procesarEstado(estado, consecutivo);
+    }//GEN-LAST:event_btnSolicitarPermisoActionPerformed
 
-        if (estado.equals("ACEPTADA") || estado.equals("DISPOSITIVO-USB")) {
-
-            switch (opc) {
-                case "pedido":
-                    instancias.getPedido().setSolicitudPermiso(true);
-                    instancias.getPedido().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "orden":
-                    instancias.getOrdenServicio().setSolicitudPermiso(true);
-                    instancias.getOrdenServicio().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "separe":
-                    instancias.getPlanSepare().setSolicitudPermiso(true);
-                    instancias.getPlanSepare().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "credito":
-                    instancias.getFacturaCreditos().setSolicitudPermiso(true);
-                    instancias.getFacturaCreditos().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "cuentaCobro":
-                    instancias.getCuentaCobro().setSolicitudPermiso(true);
-                    instancias.getCuentaCobro().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "cotizacion":
-                    instancias.getCotiza().setSolicitudPermiso(true);
-                    instancias.getCotiza().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "facturacion":
-                    instancias.getFactura().setSolicitudPermiso(true);
-                    instancias.getFactura().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "mesa":
-                    instancias.getMesa1().setSolicitudPermiso(true);
-                    instancias.getMesa1().setPermisoNumero("PERMISO-" + consecutivo);
-                    break;
-                case "notaCredito":
-                    instancias.getNc().realizarNc();
-                    return;
-                case "anulacion":
-                    instancias.getReimpresion().anularFactura(txtNota.getText());
-                    return;
-                case "borrarMesa":
-                    instancias.getMesa1().limpiar();
-            }
-
-            metodos.msgExito(null, "SOLICITUD ACEPTADA");
-        } else if (estado.equals("RECHAZADA")) {
-            switch (opc) {
-                case "pedido":
-                    instancias.getPedido().setSolicitudPermiso(false);
-                    break;
-                case "orden":
-                    instancias.getOrdenServicio().setSolicitudPermiso(false);
-                    break;
-                case "separe":
-                    instancias.getPlanSepare().setSolicitudPermiso(false);
-                    break;
-                case "credito":
-                    instancias.getFacturaCreditos().setSolicitudPermiso(false);
-                    break;
-                case "cuentaCobro":
-                    instancias.getOrdenServicio().setSolicitudPermiso(false);
-                    break;
-                case "cotizacion":
-                    instancias.getCotiza().setSolicitudPermiso(false);
-                    break;
-                case "facturacion":
-                    instancias.getFactura().setSolicitudPermiso(false);
-                    break;
-                case "mesa":
-                    instancias.getMesa1().setSolicitudPermiso(false);
-                    break;
-                case "notaCredito":
-                    System.out.println("Nota credito rechazada.");
-                    break;
-                case "anulacion":
-                    System.out.println("Anulacion rechazada.");
-                    break;
-                case "borrarMesa":
-                    System.out.println("Solicitud rechazada.");
-                    break;
-            }
-
-            metodos.msgError(null, "SOLICITUD RECHAZADA");
-        }
-    }//GEN-LAST:event_btnSolicitarActionPerformed
-
-    private void btnSolicitar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitar2ActionPerformed
+    private void btnSolicitarPermisoContrasenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarPermisoContrasenhaActionPerformed
         if (txtNota.getText().equalsIgnoreCase("") || txtNota.getText().equalsIgnoreCase(" ")) {
             metodos.msgError(null, "Debe ingresar la nota");
             txtNota.requestFocus();
@@ -525,93 +442,162 @@ public class vistaSolicitarPermisos extends javax.swing.JDialog {
         }
 
         if (instancias.getSegundaClave().equals(jPasswordField1.getText())) {
-
             String consecutivo = instancias.getSql().getNumConsecutivo("PERMISO")[0].toString();
             if (!instancias.getSql().agregarPermiso("PERMISO-" + consecutivo, txtTipo.getText(), txtValor.getText(),
                     txtNota.getText(), metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), "AUTO-CONFIRMADO", instancias.getUsuario())) {
                 metodos.msgError(null, "Hubo un error al ingresar la medida");
                 return;
             }
+
             instancias.getSql().aumentarConsecutivo("PERMISO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PERMISO")[0]) + 1);
 
-            switch (opc) {
-                case "pedido":
-                    instancias.getPedido().setSolicitudPermiso(true);
-                    instancias.getPedido().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "orden":
-                    instancias.getOrdenServicio().setSolicitudPermiso(true);
-                    instancias.getOrdenServicio().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "separe":
-                    instancias.getPlanSepare().setSolicitudPermiso(true);
-                    instancias.getPlanSepare().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "credito":
-                    instancias.getFacturaCreditos().setSolicitudPermiso(true);
-                    instancias.getFacturaCreditos().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "cuentaCobro":
-                    instancias.getCuentaCobro().setSolicitudPermiso(true);
-                    instancias.getCuentaCobro().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "cotizacion":
-                    instancias.getCotiza().setSolicitudPermiso(true);
-                    instancias.getCotiza().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "facturacion":
-                    instancias.getFactura().setSolicitudPermiso(true);
-                    instancias.getFactura().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "mesa":
-                    instancias.getMesa1().setSolicitudPermiso(true);
-                    instancias.getMesa1().setPermisoNumero("PERMISO-" + consecutivo);
-                    this.dispose();
-                    break;
-                case "notaCredito":
-                    this.dispose();
-                    instancias.getNc().realizarNc();
-                    break;
-                case "anulacion":
-                    this.dispose();
-                    instancias.getReimpresion().anularFactura(txtNota.getText());
-                    break;
-                case "copiaSeguridad":
-                    this.dispose();
-                    try {
-                        String origen = System.getProperty("user.dir") + "\\bdClick.accdb";
-                        System.out.println(origen);
-                        String destino = metodos.obtenerRuta2(null, "bdClick");
-                        metodosGenerales.copiarArchivo(origen, destino);
-                        metodos.msgExito(null, "Copia de seguridad registrada con exito");
-                    } catch (Exception e) {
-                        metodos.msgError(null, "Hubo un error al guardar la copia de seguridad, llamar a soporte tecnico");
-                        System.out.println(e);
-                    }
-                    break;
-            }
+            procesarAceptada(consecutivo);
+            this.dispose();
         } else {
             metodos.msgError(null, "Contraseña incorrecta");
             jPasswordField1.setText("");
             jPasswordField1.requestFocus();
         }
-    }//GEN-LAST:event_btnSolicitar2ActionPerformed
+    }//GEN-LAST:event_btnSolicitarPermisoContrasenhaActionPerformed
 
     private void lbMensaje1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbMensaje1MouseClicked
         this.dispose();
     }//GEN-LAST:event_lbMensaje1MouseClicked
 
+    private void procesarEstado(String estado, String consecutivo) {
+
+        if ("ACEPTADA".equals(estado)) {
+            procesarAceptada(consecutivo);
+            metodos.msgExito(null, "SOLICITUD ACEPTADA");
+            return;
+        }
+
+        if ("RECHAZADA".equals(estado)) {
+            procesarRechazada();
+            metodos.msgError(null, "SOLICITUD RECHAZADA");
+        }
+    }
+
+    private void procesarAceptada(String consecutivo) {
+
+        if (accionRealizar.isAccionDescuento()) {
+            actualizarSolicitudPermiso(true, consecutivo);
+            return;
+        }
+
+        switch (tipoProceso) {
+            case "notaCredito":
+                instancias.getNc().realizarNc();
+                break;
+
+            case "anular_facturacion":
+                instancias.getReimpresion().anularFactura(txtNota.getText());
+                break;
+
+            case "borrarMesa":
+                instancias.getMesa1().limpiarMesa();
+                break;
+
+            case "borrarFactura":
+                instancias.getFactura().limpiar(false);
+                break;
+
+            case "borrarProductoMesa":
+                instancias.getMesa1().eliminarFila();
+                break;
+
+            case "borrarProductoFactura":
+                instancias.getFactura().eliminarFila();
+                break;
+        }
+    }
+
+    private void procesarRechazada() {
+
+        actualizarSolicitudPermiso(false, null);
+
+        switch (tipoProceso) {
+            case "notaCredito":
+                System.out.println("Nota credito rechazada.");
+                break;
+
+            case "anular_facturacion":
+                System.out.println("Anulación rechazada.");
+                break;
+
+            case "borrarMesa":
+                System.out.println("Solicitud rechazada.");
+                break;
+        }
+    }
+
+    private void actualizarSolicitudPermiso(boolean autorizado, String consecutivo) {
+
+        String permiso = consecutivo == null ? null : "PERMISO-" + consecutivo;
+
+        switch (tipoProceso) {
+
+            case "pedido":
+                instancias.getPedido().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getPedido().setPermisoNumero(permiso);
+                }
+                break;
+
+            case "orden":
+                instancias.getOrdenServicio().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getOrdenServicio().setPermisoNumero(permiso);
+                }
+                break;
+
+            case "separe":
+                instancias.getPlanSepare().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getPlanSepare().setPermisoNumero(permiso);
+                }
+                break;
+
+            case "credito":
+                instancias.getFacturaCreditos().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getFacturaCreditos().setPermisoNumero(permiso);
+                }
+                break;
+
+            case "cuentaCobro":
+                instancias.getCuentaCobro().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getCuentaCobro().setPermisoNumero(permiso);
+                }
+                break;
+
+            case "cotizacion":
+                instancias.getCotiza().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getCotiza().setPermisoNumero(permiso);
+                }
+                break;
+
+            case "facturacion":
+                instancias.getFactura().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getFactura().setPermisoNumero(permiso);
+                }
+                break;
+
+            case "mesa":
+                instancias.getMesa1().setSolicitudPermiso(autorizado);
+                if (autorizado) {
+                    instancias.getMesa1().setPermisoNumero(permiso);
+                }
+                break;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSolicitar;
-    private javax.swing.JButton btnSolicitar2;
+    private javax.swing.JButton btnSolicitarPermiso;
+    private javax.swing.JButton btnSolicitarPermisoContrasenha;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;

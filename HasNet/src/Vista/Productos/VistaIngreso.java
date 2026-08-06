@@ -7,6 +7,7 @@ import Controlador.BarraProceso.jcThread;
 import Enums.EstadosDetalleProducto;
 import dao.Configuraciones.DaoResoluciones;
 import Enums.TipoDocumento;
+import Enums.TipoProducto;
 import Enums.enumBodegas;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
@@ -16,6 +17,8 @@ import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
 import Modelo.Maestra.ModeloResolucion;
+import Modelo.Productos.ResultadoBusquedaProducto;
+import Modelo.Productos.ResultadoPluProducto;
 import Utilidades.Constantes;
 import Validaciones.Compras.squemaCompras;
 import Validaciones.DocumentoSoporte.squemaDocumentoSoporte;
@@ -38,18 +41,16 @@ import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
 import Utilidades.DocumentosElectronicos;
 import Utilidades.Numeros;
 import Utilidades.Utilidades;
+import dao.Productos.DaoProducto;
 import formularios.Tesoreria.dlgTipoEgreso;
 import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgTipoDescuento;
-import formularios.productos.buscProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.dlgDetalleCompra;
-import formularios.productos.seleccionarPLU;
 import formularios.terceros.buscClientes;
 import java.awt.Color;
 import java.awt.Event;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -69,6 +70,8 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -88,8 +91,10 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private final squemaCompras squemaCompras = new squemaCompras();
     private final squemaDocumentoSoporte squemaDocumentoSoporte = new squemaDocumentoSoporte();
     private ModeloContacto DATOS_CLIENTE_CARGADO = null;
+
     private final DaoResoluciones daoResoluciones = new DaoResoluciones();
     private final DaoDetalleProducto daoDetalleProducto = new DaoDetalleProducto();
+    private final DaoProducto daoProducto = new DaoProducto();
 
     DefaultTableModel modeloComprobantes;
 
@@ -155,7 +160,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         pnlFormulario.registerKeyboardAction(accion("valor"), "valor", KeyStroke.getKeyStroke(KeyEvent.VK_V, Event.ALT_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("cantidad"), "cantidad", KeyStroke.getKeyStroke(KeyEvent.VK_C, Event.ALT_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
 
         if (tipo.equals("ingreso")) {
             btnImportarExcel.setVisible(true);
@@ -297,7 +302,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         lbProducto1 = new javax.swing.JLabel();
         btnBusProd = new javax.swing.JButton();
         lbProducto2 = new javax.swing.JLabel();
-        txtCant = new javax.swing.JTextField();
+        txtCantidad = new javax.swing.JTextField();
         scrollTblProductos = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
         jPanel10 = new javax.swing.JPanel();
@@ -441,24 +446,24 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             }
         });
 
-        txtCant.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        txtCant.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtCant.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtCant.setEnabled(false);
-        txtCant.setName("combo"); // NOI18N
-        txtCant.addActionListener(new java.awt.event.ActionListener() {
+        txtCantidad.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtCantidad.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCantidad.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtCantidad.setEnabled(false);
+        txtCantidad.setName("combo"); // NOI18N
+        txtCantidad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCantActionPerformed(evt);
+                txtCantidadActionPerformed(evt);
             }
         });
-        txtCant.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtCantidad.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtCantFocusGained(evt);
+                txtCantidadFocusGained(evt);
             }
         });
-        txtCant.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCantidad.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCantKeyReleased(evt);
+                txtCantidadKeyReleased(evt);
             }
         });
 
@@ -474,7 +479,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                     .addGroup(pblBotonesLayout.createSequentialGroup()
                         .addComponent(lbProducto2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)
                         .addComponent(lbProducto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -490,7 +495,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 .addGroup(pblBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnBusProd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pblBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lbProducto2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtCodigoProducto))
@@ -1369,12 +1374,12 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_ENTER:
                 plu = true;
-                cargarProducto(codigoProducto.replace("'", "//"), txtCant.getText(), 1, "Directo");
+                cargarProducto(codigoProducto.replace("'", "//"), Utilidades.convertirBigDecimal(txtCantidad.getText()), 1, "Directo");
                 break;
 
             case KeyEvent.VK_MULTIPLY:
                 BigDecimal cantidad = obtenerCantidad(codigoProducto);
-                txtCant.setText(Utilidades.formatearCantidadVista(cantidad));
+                txtCantidad.setText(Utilidades.formatearCantidadVista(cantidad));
                 txtCodigoProducto.setText("");
                 break;
 
@@ -1652,7 +1657,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             }
         }
 
-        txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         txtObservaciones.setText("");
         txtNit.setText("");
         txtPorcentaje.setText("0");
@@ -2128,21 +2133,21 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         // TODO add your handling code here:
     }//GEN-LAST:event_lbProducto2KeyReleased
 
-    private void txtCantFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantFocusGained
+    private void txtCantidadFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidadFocusGained
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtCantFocusGained
+    }//GEN-LAST:event_txtCantidadFocusGained
 
-    private void txtCantKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantKeyReleased
+    private void txtCantidadKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadKeyReleased
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtCantKeyReleased
+    }//GEN-LAST:event_txtCantidadKeyReleased
 
     private void txtCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoProductoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCodigoProductoActionPerformed
 
-    private void txtCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantActionPerformed
+    private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtCantActionPerformed
+    }//GEN-LAST:event_txtCantidadActionPerformed
 
     private void btnBuscTerceros3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros3ActionPerformed
         if (tblProductos.getRowCount() <= 0) {
@@ -2524,58 +2529,15 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     }
 
     public void cargarProductoDesdeDetalleProducto(String codigo, BigDecimal cantidad, BigDecimal valorPonderadoDigitado) {
+        cargarProducto(codigo, cantidad, 1, "DetalleProducto");
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+        ResultadoBusquedaProducto resultado = daoProducto.buscarPorCodigo(codigo);
+        ndProducto producto = resultado.getProducto();
+        BigDecimal utilidad = big.getBigDecimal(producto.getL1()).subtract(valorPonderadoDigitado);
 
-        if (nodo.getCodigo() != null) {
-            if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
-                lbProducto.requestFocus();
-                return;
-            }
-
-            BigDecimal ultimoCosto = BigDecimal.ZERO;
-            try {
-                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
-                ultimoCosto = ultimoPonderado.getUltimoCosto();
-            } catch (SQLException ex) {
-                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
-            }
-
-            BigDecimal utilidad = big.getBigDecimal(nodo.getL1()).subtract(valorPonderadoDigitado);
-
-            modeloProductos.addRow(new Object[]{
-                nodo.getCodigo(),
-                nodo.getDescripcion(),
-                big.setMoneda(valorPonderadoDigitado),
-                Utilidades.formatearCantidadVista(cantidad),
-                big.setMoneda(big.getBigDecimal("0")),
-                "0",
-                big.setMoneda(big.getBigDecimal("0")),
-                big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())),
-                "0",
-                nodo.getUnd(),
-                big.setMoneda(ultimoCosto),
-                big.setMoneda(big.getBigDecimal(nodo.getL1())),
-                "1",
-                Utilidades.formatearCantidadVista(cantidad),
-                valorPonderadoDigitado, 0, big.setMoneda(utilidad),
-                "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
-
-            tblProductos.setColumnSelectionInterval(1, 1);
-            tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
-            tblProductos.editCellAt(tblProductos.getRowCount() - 1, 1);
-            tblProductos.transferFocus();
-            txtCodigoProducto.setText("");
-
-            KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-            tblProductosKeyReleased(x);
-            return;
-        }
-
-        ventanaProductos(codigo);
+        tblProductos.setValueAt(big.setNumero(utilidad), tblProductos.getRowCount() - 1, 17);
+        tblProductos.setValueAt(big.setNumero(valorPonderadoDigitado), tblProductos.getRowCount() - 1, 2);
+        tblProductos.setValueAt(big.setNumero(valorPonderadoDigitado), tblProductos.getRowCount() - 1, 15);
     }
 
     public void cargarProductoDesdeExcel(String codigo, String valorUnit, String cantidad, String descuento, String iva, String impo) {
@@ -2664,11 +2626,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             tblProductos.transferFocus();
             txtCodigoProducto.setText("");
             calcularTabla(tblProductos.getRowCount() - 1);
-
-//            KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-//            tblProductosKeyReleased(x);
-            return;
-
         }
     }
 
@@ -2744,195 +2701,145 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         ventanaProductos(codigo);
     }
 
-    public void cargarProducto(String codigo, String cantidad, int plu, String formaCargo) {
+    public void cargarProducto(String codigo, BigDecimal cantidad, int pluProducto, String formaCargo) {
 
-//        for (int j = 0; j < tblProductos.getRowCount(); j++) {
-//            if (codigo.equalsIgnoreCase((String) tblProductos.getValueAt(j, 0)) && (plu + "").equals(((int) tblProductos.getValueAt(j, 13)) + "")) {
-//                metodos.msgAdvertencia(null, "El producto ya esta cargado");
-//                tblProductos.setColumnSelectionInterval(2, 2);
-//                tblProductos.setRowSelectionInterval(j, j);
-//                tblProductos.editCellAt(j, 2);
-//                tblProductos.transferFocus();
-//                txtCodProducto.setText("");
-//                return;
-//            }
-//        }
-        ndProducto nodo = null;
-        String codigoProd = "";
+        ResultadoBusquedaProducto resultado = daoProducto.buscarPorCodigo(codigo);
+        codigo = resultado.getCodigoResuelto();
+        ndProducto nodo = resultado.getProducto();
 
-        if (codigo.equals("")) {
-            codigoProd = "";
+        if (nodo.getCodigo() == null || nodo.getCodigo().isEmpty()) {
+            ventanaProductos(codigo);
+            return;
+        }
+
+        if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
+            metodos.msgError(null, "Este producto esta inactivo");
+            lbProducto.requestFocus();
+            return;
+        }
+
+        if (DatosMaestra.isCombinarProductos() && nodo.getUsuario().equals(TipoProducto.GENERICO.getValue())
+                && combinarConFilaExistente(nodo, pluProducto, cantidad)) {
+            return;
+        }
+
+        String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
+
+        if (!tipo.equals("") && !formaCargo.equals("DetalleProducto")) {
+            VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Entrada", this.tipoProceso, BigDecimal.ZERO);
+            compraDetallada.setLocationRelativeTo(null);
+            compraDetallada.setVisible(true);
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
+            if (!formaCargo.equals("Directo") && this.plu) {
+                this.plu = false;
+                if (daoProducto.productoConPlu(nodo)) {
+                    VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, "bdProductos");
+                    pluu.setInstancias(instancias, nodo.getIdSistema());
+                    pluu.setOpc(this.tipoProceso);
+                    pluu.setVisible(true);
+                    return;
+                }
             }
 
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
-            if (nodo.getIdSistema() != null) {
-                codigoProd = nodo.getIdSistema();
+            ResultadoPluProducto resultadoPluProducto = daoProducto.obtenerDatosPluProducto(nodo, pluProducto);
+            BigDecimal cantidadPlu = resultadoPluProducto.getCantidadPlu();
+            BigDecimal listaPrecio = resultadoPluProducto.getListaPrecio();
+            String codigoLista = resultadoPluProducto.getCodigoLista();
+            String descripcion = resultadoPluProducto.getDescripcion();
+
+            BigDecimal ponderado = BigDecimal.ZERO;
+            BigDecimal ultimoCosto = BigDecimal.ZERO;
+            try {
+                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
+                ponderado = ultimoPonderado.getNuevoPonderado();
+                ultimoCosto = ultimoPonderado.getUltimoCosto();
+            } catch (SQLException ex) {
+                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
+                ControladorAlertas.bigAlert("No se pudo consultar el último ponderado del producto");
             }
+
+            BigDecimal utilidad;
+            utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
+
+            modeloProductos.addRow(new Object[]{
+                codigoLista,
+                descripcion,
+                big.setMoneda(ponderado.multiply(cantidadPlu)),
+                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                big.setMoneda(listaPrecio),
+                pluProducto,
+                cantidadPlu.multiply(cantidad),
+                big.setMoneda(ponderado), 0,
+                big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
+
+            txtCodigoProducto.setText("");
+
+            KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
+            tblProductosKeyReleased(x);
+
+            txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
+            marcarFocoTabla();
+        }
+    }
+
+    private boolean combinarConFilaExistente(ndProducto nodo, int pluProducto, BigDecimal cantidad) {
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            String idProductoTabla = tblProductos.getValueAt(i, 24).toString();
+            boolean mismoProducto = nodo.getIdSistema().equals(idProductoTabla);
+
+            int pluTabla = Integer.parseInt(tblProductos.getValueAt(i, 13).toString());
+            boolean mismoPlu = pluProducto == pluTabla;
+            if (!mismoProducto || !mismoPlu) {
+                continue;
+            }
+
+            BigDecimal cantidadActual = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 3).toString());
+            BigDecimal cantidadFinal = cantidadActual.add(cantidad);
+            tblProductos.setValueAt(Utilidades.formatearCantidadVista(cantidadFinal), i, 3);
+
+            calcularTabla(i);
+            txtCodigoProducto.setText("");
+            tblProductos.setColumnSelectionInterval(0, 0);
+            tblProductos.setRowSelectionInterval(i, i);
+            txtCodigoProducto.requestFocus();
+
+            txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
+            return true;
         }
 
-        if (!codigoProd.equals("")) {
-            if (codigo.equals(nodo.getCodigo2())) {
-                plu = 2;
-            } else if (codigo.equals(nodo.getCodigo3())) {
-                plu = 3;
-            } else if (codigo.equals(nodo.getCodigo4())) {
-                plu = 4;
-            } else if (codigo.equals(nodo.getCodigo5())) {
-                plu = 5;
-            } else if (codigo.equals(nodo.getCodigo6())) {
-                plu = 6;
-            } else if (codigo.equals(nodo.getCodigo7())) {
-                plu = 7;
-            } else if (codigo.equals(nodo.getCodigo8())) {
-                plu = 8;
-            }
-
-            if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
-                lbProducto.requestFocus();
-                return;
-            }
-
-            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
-
-            if (!tipo.equals("")) {
-                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Entrada", this.tipoProceso, BigDecimal.ZERO);
-                compraDetallada.setLocationRelativeTo(null);
-                compraDetallada.setVisible(true);
-                return;
-            } else {
-                if (!formaCargo.equals("Directo")) {
-                    if (this.plu) {
-                        this.plu = false;
-                        int cant = 0;
-                        if (nodo.isPlu2()) {
-                            cant++;
-                        }
-                        if (nodo.isPlu3()) {
-                            cant++;
-                        }
-                        if (nodo.isPlu4()) {
-                            cant++;
-                        }
-                        if (nodo.getPlu5()) {
-                            cant++;
-                        }
-                        if (nodo.getPlu6()) {
-                            cant++;
-                        }
-                        if (nodo.getPlu7()) {
-                            cant++;
-                        }
-                        if (nodo.getPlu8()) {
-                            cant++;
-                        }
-
-                        if (cant > 0) {
-                            seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
-                            pluu.setInstancias(instancias, nodo.getIdSistema());
-                            pluu.setOpc(this.tipoProceso);
-                            pluu.setVisible(true);
-                            return;
-                        }
-                    }
-                }
-
-                String cant2 = "1";
-                String desc = nodo.getDescripcion();
-                String lista = nodo.getL1();
-                switch (plu) {
-                    case 2:
-                        cant2 = nodo.getCantidad2();
-                        desc = nodo.getDescripcion2();
-                        lista = nodo.getL2();
-                        break;
-                    case 3:
-                        cant2 = nodo.getCantidad3();
-                        desc = nodo.getDescripcion3();
-                        lista = nodo.getL3();
-                        break;
-                    case 4:
-                        cant2 = nodo.getCantidad4();
-                        desc = nodo.getDescripcion4();
-                        lista = nodo.getL4();
-                        break;
-                    case 5:
-                        cant2 = nodo.getCantidad5();
-                        desc = nodo.getDescripcion5();
-                        lista = nodo.getL5();
-                        break;
-                    case 6:
-                        cant2 = nodo.getCantidad6();
-                        desc = nodo.getDescripcion6();
-                        lista = nodo.getL6();
-                        break;
-                    case 7:
-                        cant2 = nodo.getCantidad7();
-                        desc = nodo.getDescripcion7();
-                        lista = nodo.getL7();
-                        break;
-                    case 8:
-                        cant2 = nodo.getCantidad8();
-                        desc = nodo.getDescripcion8();
-                        lista = nodo.getL8();
-                        break;
-                }
-
-                if (cantidad.contains(".")) {
-                    cantidad = cantidad.replace(".", ",");
-                }
-
-                BigDecimal ponderado = BigDecimal.ZERO;
-                BigDecimal ultimoCosto = BigDecimal.ZERO;
-                try {
-                    UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
-                    ponderado = ultimoPonderado.getNuevoPonderado();
-                    ultimoCosto = ultimoPonderado.getUltimoCosto();
-                } catch (SQLException ex) {
-                    Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                    alertas.bigAlert("No se pudo consultar el último ponderado del producto");
-                }
-
-                BigDecimal utilidad;
-                utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
-
-                modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado.multiply(big.getMoneda(cant2))),
-                    cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                    big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
-                    big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0,
-                    big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
-
-                txtCodigoProducto.setText("");
-
-                KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-                tblProductosKeyReleased(x);
-
-                txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
-                marcarFocoTabla();
-                return;
-            }
-        }
-
-        ventanaProductos(codigo);
+        return false;
     }
 
     private void marcarFocoTabla() {
-        int ultimaFila = tblProductos.getRowCount() - 1;
-        tblProductos.scrollRectToVisible(tblProductos.getCellRect(ultimaFila, 0, true));
+        final int ultimaFila = tblProductos.getRowCount() - 1;
+        if (ultimaFila < 0) {
+            return;
+        }
 
         if (instancias.isLector()) {
+            tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             txtCodigoProducto.requestFocus();
         } else {
-            int col = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
-            tblProductos.setColumnSelectionInterval(col, col);
+            int columna = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
+            tblProductos.setColumnSelectionInterval(columna, columna);
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
-            tblProductos.editCellAt(ultimaFila, col);
+            tblProductos.editCellAt(ultimaFila, columna);
             tblProductos.transferFocus();
         }
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                tblProductos.scrollRectToVisible(tblProductos.getCellRect(ultimaFila, 0, true));
+
+                JScrollPane scrollPane = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, tblProductos);
+                if (scrollPane != null) {
+                    JScrollBar barraVertical = scrollPane.getVerticalScrollBar();
+                    barraVertical.setValue(barraVertical.getMaximum());
+                }
+            }
+        });
     }
 
     public void cargarProductoPreCompra(String codigo, String cantidad, int plu, String valor, String tipoDescuento) {
@@ -3017,7 +2924,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void ventanaProductos(String codigo) {
         String lugar = "sinArmados";
-        buscProductos buscar = new buscProductos(null, true, false, lugar, "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, lugar, "productos1");
         buscar.setOpc(tipoProceso);
         buscar.setIngreso(this);
         buscar.setLocationRelativeTo(null);
@@ -3184,7 +3091,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         cargarCliente(cliente);
 
         for (String[] producto : productos) {
-            cargarProducto(producto[0], "1", 1, "");
+            cargarProducto(producto[0], BigDecimal.ONE, 1, "");
         }
 
         tblProductos.editCellAt(tblProductos.getSelectedRow(), 6);
@@ -3215,11 +3122,11 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void nuevoProducto(String id) {
         System.out.println("id producto nuevo " + id);
-        cargarProducto(id, "1", 1, "");
+        cargarProducto(id, BigDecimal.ONE, 1, "");
     }
 
-    public void cargarProductos(Object[][] productos) {        
-        String cantEstablecida = txtCant.getText();
+    public void cargarProductos(Object[][] productos) {
+        String cantEstablecida = txtCantidad.getText();
         for (int i = 0; i < productos.length; i++) {
             this.plu = true;
 
@@ -3228,7 +3135,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             if (cantidad.equals("0")) {
                 cantidad = cantEstablecida;
             }
-            cargarProducto(codigo, cantidad, 1, "");
+            cargarProducto(codigo, Utilidades.convertirBigDecimal(cantidad), 1, "");
         }
     }
 
@@ -3561,33 +3468,13 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         String codigoProducto = tblProductos.getValueAt(fila, 24).toString();
 
         ndProducto producto = instancias.getSql().getDatosProducto(codigoProducto, "bdProductos");
-        int numeroPLU = Integer.parseInt(tblProductos.getValueAt(fila, 13).toString());
+        int numeroPLU = Integer.parseInt(Utilidades.formatearCantidad(tblProductos.getValueAt(fila, 13).toString()));
 
-        BigDecimal cantidadPLU = getCantidadProductoPLU(producto, numeroPLU, cantidad);
+        ResultadoPluProducto resultadoPluProducto = daoProducto.obtenerDatosPluProducto(producto, numeroPLU);
+        BigDecimal cantidadPLU = resultadoPluProducto.getCantidadPlu();
+
         tblProductos.setValueAt(big.setNumero(cantidad.multiply(cantidadPLU)), fila, 14);
-    }
-
-    private BigDecimal getCantidadProductoPLU(ndProducto producto, int numeroPLU, BigDecimal cantidad) {
-        switch (numeroPLU) {
-            case 1:
-                return BigDecimal.ONE;
-            case 2:
-                return big.getBigDecimal(producto.getCantidad2());
-            case 3:
-                return big.getBigDecimal(producto.getCantidad3());
-            case 4:
-                return big.getBigDecimal(producto.getCantidad4());
-            case 5:
-                return big.getBigDecimal(producto.getCantidad5());
-            case 6:
-                return big.getBigDecimal(producto.getCantidad6());
-            case 7:
-                return big.getBigDecimal(producto.getCantidad7());
-            case 8:
-                return big.getBigDecimal(producto.getCantidad8());
-            default:
-                return BigDecimal.ZERO;
-        }
+        tblProductos.setValueAt(resultadoPluProducto.getDescripcion(), fila, 1);
     }
 
     private ModeloDetalleProductos[] obtenerDetalleProductos(String factura) {
@@ -3780,9 +3667,9 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private javax.swing.JTable tblComprobantes;
     private javax.swing.JTable tblDetalle;
     private javax.swing.JTable tblProductos;
-    private javax.swing.JTextField txtCant;
     private javax.swing.JLabel txtCantProductos;
     private javax.swing.JLabel txtCantUnidades;
+    private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtCargarCompra;
     private javax.swing.JTextField txtCodigoProducto;
     private javax.swing.JTextField txtDiasPlazo;

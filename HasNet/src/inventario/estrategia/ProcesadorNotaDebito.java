@@ -20,6 +20,7 @@ public class ProcesadorNotaDebito extends AbstractProcesadorMovimiento {
         BigDecimal cantidad = movimiento.getCantidad();
 
         BigDecimal notaDebito = Utilidades.convertirBigDecimal(producto.getNotaDebito()).add(cantidad);
+        producto.setNotaDebito(UtilidadInventario.formatear(notaDebito));
 
         if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
             String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET notaDebito = ? WHERE idSistema = ?";
@@ -28,6 +29,8 @@ public class ProcesadorNotaDebito extends AbstractProcesadorMovimiento {
 
         BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).subtract(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
+        producto.setInventario(UtilidadInventario.formatear(inventario));
+        producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "inventario = ?, fisicoInventario = ?, notaDebito = ? "

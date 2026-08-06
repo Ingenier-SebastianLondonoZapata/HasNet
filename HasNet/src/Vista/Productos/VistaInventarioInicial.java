@@ -19,7 +19,6 @@ import clases.productos.ndCompra;
 import clases.productos.ndIngreso;
 import clases.productos.ndInventarioInicial;
 import clases.productos.ndProducto;
-import formularios.productos.buscProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -825,7 +824,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtProducto);

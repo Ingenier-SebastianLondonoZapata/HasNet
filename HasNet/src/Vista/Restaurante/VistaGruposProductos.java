@@ -379,16 +379,18 @@ public class VistaGruposProductos extends JDialog {
     private void cargarEnDocumento(String codigo, BigDecimal cantidad) {
         if (TipoDocumento.MESA.getValor().equals(this.tipoProceso)) {
             instancias.getMesa().getPnlFactura().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
-        } else if (TipoDocumento.PEDIDO.getValor().equals(tipoProceso)) {
+        } else if (TipoDocumento.PEDIDO.getValor().equals(this.tipoProceso)) {
             instancias.getPedido().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
-        } else if (TipoDocumento.COTIZACION.getValor().equals(tipoProceso)) {
+        } else if (TipoDocumento.COTIZACION.getValor().equals(this.tipoProceso)) {
             instancias.getCotiza().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
-        } else if (TipoDocumento.PLAN_SEPARE.getValor().equals(tipoProceso)) {
+        } else if (TipoDocumento.PLAN_SEPARE.getValor().equals(this.tipoProceso)) {
             instancias.getPlanSepare().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
-        } else if (TipoDocumento.ORDER_SERVICIO.getValor().equals(tipoProceso)) {
+        } else if (TipoDocumento.ORDER_SERVICIO.getValor().equals(this.tipoProceso)) {
             instancias.getOrdenServicio().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
-        } else if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
+        } else if (TipoDocumento.FACTURACION.getValor().equals(this.tipoProceso)) {
             instancias.getFactura().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
+        } else if (TipoDocumento.CREDITO.getValor().equals(this.tipoProceso)) {
+            instancias.getFacturaCreditos().cargarProducto(codigo, cantidad, 1, "", "", "", true, "", "", "", "", "");
         }
     }
 }

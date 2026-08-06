@@ -4,7 +4,7 @@ import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -887,7 +887,7 @@ public class infMensualidad extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBuscTerceros1ActionPerformed
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "parqueadero", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "parqueadero", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);

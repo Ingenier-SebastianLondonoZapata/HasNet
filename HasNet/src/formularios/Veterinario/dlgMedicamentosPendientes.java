@@ -5,7 +5,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import java.applet.AudioClip;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -868,7 +868,7 @@ public class dlgMedicamentosPendientes extends javax.swing.JDialog {
     }//GEN-LAST:event_txtCodKeyReleased
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtMedicamento);

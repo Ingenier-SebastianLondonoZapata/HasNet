@@ -7,7 +7,7 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import formularios.Agenda.ndAgenda;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
 import formularios.terceros.nuevoTercero;
 import java.awt.Dimension;
@@ -1638,7 +1638,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
     }
 
 //    public void ventanaProductos(String codigo) {
-//        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled, false);
+//        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false);
 //        buscar.setLocationRelativeTo(null);
 //        buscar.setClaseBuscador("Agenda");
 //        buscar.cargarTablaProductos(false);
@@ -1649,7 +1649,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
 //        buscar.show();
 //    }
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         buscar.setClaseBuscador("Agenda");
         buscar.cargarTablaProductos(false);

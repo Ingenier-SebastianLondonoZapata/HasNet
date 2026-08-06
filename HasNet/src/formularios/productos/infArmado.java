@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Vista.Productos.VistaBuscadorProductos;
 import Modelo.Inventario.UltimoPonderado;
 import inventario.servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
@@ -1204,7 +1205,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             return;
         }
 
-        buscProductos buscar = new buscProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo", base);
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);
@@ -1346,7 +1347,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             base = "productos1";
         }
 
-        buscProductos buscar = new buscProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "", base);
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);

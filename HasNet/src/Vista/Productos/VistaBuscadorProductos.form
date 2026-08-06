@@ -68,7 +68,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnNuevoProducto" min="-2" pref="119" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btnEste" min="-2" pref="150" max="-2" attributes="0"/>
+                                  <Component id="btnIngresar" min="-2" pref="150" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -134,7 +134,7 @@
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="btnNuevoProducto" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
                       <Component id="btnEste2" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnEste" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
+                      <Component id="btnIngresar" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -375,7 +375,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNuevoProductoActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnEste">
+        <Component class="javax.swing.JButton" name="btnIngresar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -383,10 +383,10 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Century Gothic" size="13" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="SELECCIONAR"/>
+            <Property name="text" type="java.lang.String" value="INGRESAR"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEsteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIngresarActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">

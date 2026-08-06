@@ -1,5 +1,6 @@
 package formularios.Parqueadero;
 
+import Modelo.Solicitudes.AccionesPermisos;
 import clases.Instancias;
 import clases.Parqueadero.ndLavado;
 import Utilidades.BaseDatos.SQL;
@@ -7,9 +8,9 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
-import Vista.Solicitudes.vistaSolicitarPermisos;
+import Vista.Solicitudes.VistaSolicitarPermisos;
 import formularios.Tesoreria.dlgTipoEgreso;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;
@@ -1724,11 +1725,12 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
         if (!instancias.getUsuario().equals("ADMIN")) {
-            vistaSolicitarPermisos permisos = new vistaSolicitarPermisos(null, true,
+            AccionesPermisos accion = new AccionesPermisos(false, false, false);
+            /*VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, true,
                     "ANULACIÓN LAVADERO", "ANULACION", lbNoFactura.getText(), "anulacion");
             permisos.setLocationRelativeTo(null);
             permisos.setVisible(true);
-            return;
+            return;*/
         } else {
             if (metodos.msgPregunta(this, "¿Desea anular el lavado?") != 0) {
                 return;
@@ -1946,7 +1948,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "lavado", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "lavado", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);
@@ -1956,7 +1958,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos1(String codigo) {
-        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);

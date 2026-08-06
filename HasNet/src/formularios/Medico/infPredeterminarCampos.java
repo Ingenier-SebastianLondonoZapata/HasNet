@@ -7,7 +7,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import java.awt.event.KeyEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -911,7 +911,7 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtaCobrar);

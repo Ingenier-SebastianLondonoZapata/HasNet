@@ -1,4 +1,4 @@
-package formularios.productos;
+package Vista.Productos;
 
 import Utilidades.Utilidades;
 import clases.Instancias;
@@ -18,7 +18,7 @@ import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
-public class seleccionarPLU extends javax.swing.JDialog {
+public class VistaSeleccionarPLU extends javax.swing.JDialog {
 
     private Instancias instancias;
     private String codigo;
@@ -42,7 +42,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
         this.notaDebito = notaDebito;
     }
 
-    public seleccionarPLU(java.awt.Frame parent, boolean modal, String base) {
+    public VistaSeleccionarPLU(java.awt.Frame parent, boolean modal, String base) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
@@ -80,7 +80,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRegistros = new javax.swing.JTable();
-        btnEste = new javax.swing.JButton();
+        btnIngresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Seleccionar PLU");
@@ -94,7 +94,6 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 "PLU", "Descripción", "Referencia", "Ubicación", "Cant", "Inv", "Ingresar"
             }
         ));
-        tblRegistros.setCellSelectionEnabled(true);
         tblRegistros.setRowHeight(24);
         tblRegistros.setSelectionBackground(new java.awt.Color(0, 0, 0));
         tblRegistros.getTableHeader().setReorderingAllowed(false);
@@ -110,11 +109,11 @@ public class seleccionarPLU extends javax.swing.JDialog {
             tblRegistros.getColumnModel().getColumn(0).setMaxWidth(150);
         }
 
-        btnEste.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnEste.setText("Ingresar");
-        btnEste.addActionListener(new java.awt.event.ActionListener() {
+        btnIngresar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnIngresar.setText("Ingresar");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEsteActionPerformed(evt);
+                btnIngresarActionPerformed(evt);
             }
         });
 
@@ -126,7 +125,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnEste, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 886, Short.MAX_VALUE)))
@@ -138,7 +137,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnEste)
+                .addComponent(btnIngresar)
                 .addGap(10, 10, 10))
         );
 
@@ -147,111 +146,61 @@ public class seleccionarPLU extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnEsteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEsteActionPerformed
-//        try {
-        switch (opc) {
-            case "NotaDebito":
-                notaDebito.setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        notaDebito.cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7), "",
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+        for (int i = 0; i < tblRegistros.getRowCount(); i++) {
+            BigDecimal cantidadAIngresar = Utilidades.convertirBigDecimal(tblRegistros.getValueAt(i, 6).toString());
+            int numeroPlu = Integer.parseInt(tblRegistros.getValueAt(i, 7).toString());
+
+            if (cantidadAIngresar.compareTo(BigDecimal.ZERO) > 0) {
+                switch (opc) {
+                    case "NotaDebito":
+                        notaDebito.setPlu(false);
+                        notaDebito.cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), numeroPlu, "",
                                 "", "", false, "", "", "", "", "");
-                    }
-                }
-                this.dispose();
-                break;
-            case "factura":
-                factura.setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        factura.cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7), "",
-                                "", "", false, "", "", "", "", "");
-                    }
-                }
-                this.dispose();
-                break;
-            case "ordenCompra":
-                instancias.getOrdenCompra().setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getOrdenCompra().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))),
-                                (int) tblRegistros.getValueAt(i, 7), "");
-                    }
-                }
-                this.dispose();
-                break;
-            case "ingreso":
-                instancias.getIngresos().setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getIngresos().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))),
-                                (int) tblRegistros.getValueAt(i, 7), "");
-                    }
-                }
-                this.dispose();
-                break;
-            case "diseño":
-                instancias.getCosteo().setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getCosteo().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), (int) tblRegistros.getValueAt(i, 7));
                         break;
-                    }
-                }
-                this.dispose();
-                break;
-            case "ajuste":
-                instancias.getVistaAjusteInventario().setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getVistaAjusteInventario().cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7), "", "", "", "", "", "", "");
+                    case "factura":
+                        factura.setPlu(false);
+                        factura.cargarProducto(codigo, cantidadAIngresar, numeroPlu, "", "", "", true, "", "", "", "", "");
                         break;
-                    }
-                }
-                this.dispose();
-                break;
-            case "trasladoInterno":
-                instancias.getTrasladosInternos().setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getTrasladosInternos().cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7), "", "", "",
-                                "", "", "", "");
+                    case "ordenCompra":
+                        instancias.getOrdenCompra().setPlu(false);
+                        instancias.getOrdenCompra().cargarProducto(codigo, cantidadAIngresar, numeroPlu, "");
                         break;
-                    }
-                }
-                this.dispose();
-                break;
-            case "traslado":
-                instancias.getPrestamos().setPlu(false);
-                for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-                    if (big.getMoneda(tblRegistros.getValueAt(i, 6).toString()).compareTo(BigDecimal.ZERO) == 1) {
-                        instancias.getPrestamos().cargarProducto(codigo, Utilidades.convertirBigDecimal((String) tblRegistros.getValueAt(i, 6)), (int) tblRegistros.getValueAt(i, 7),
-                                "", "", "", "", "", "", "");
+                    case "ingreso":
+                        instancias.getIngresos().setPlu(false);
+                        instancias.getIngresos().cargarProducto(codigo, cantidadAIngresar, numeroPlu, "");
                         break;
-                    }
+                    case "diseño":
+                        instancias.getCosteo().setPlu(false);
+                        instancias.getCosteo().cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), numeroPlu);
+                        break;
+                    case "ajuste":
+                        instancias.getVistaAjusteInventario().setPlu(false);
+                        instancias.getVistaAjusteInventario().cargarProducto(codigo, cantidadAIngresar, numeroPlu, "", "", "", "", "", "", "");
+                        break;
+                    case "trasladoInterno":
+                        instancias.getTrasladosInternos().setPlu(false);
+                        instancias.getTrasladosInternos().cargarProducto(codigo, cantidadAIngresar, numeroPlu, "", "", "", "", "", "", "");
+                        break;
+                    case "traslado":
+                        instancias.getPrestamos().setPlu(false);
+                        instancias.getPrestamos().cargarProducto(codigo, cantidadAIngresar, numeroPlu, "", "", "", "", "", "", "");
+                        break;
+                    default:
+                        instancias.setValorCampo((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
+                        metodosGenerales.presionarEnter(instancias.getCampoActual());
+                        break;
                 }
-                this.dispose();
-                break;
-            default:
-                instancias.setValorCampo((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
-                this.dispose();
-                metodosGenerales.presionarEnter(instancias.getCampoActual());
-                break;
+            }
         }
 
-//        } catch (Exception e) {
-//
-//            instancias.setValorCampo((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
-//            this.dispose();
-//            metodosGenerales.presionarEnter(instancias.getCampoActual());
-//        }
-
-    }//GEN-LAST:event_btnEsteActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void tblRegistrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRegistrosMouseClicked
         if (evt.getClickCount() == 2) {
             tblRegistros.setValueAt("1", tblRegistros.getSelectedRow(), 6);
-            btnEsteActionPerformed(null);
+            btnIngresarActionPerformed(null);
         }
     }//GEN-LAST:event_tblRegistrosMouseClicked
 
@@ -441,20 +390,20 @@ public class seleccionarPLU extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(seleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaSeleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(seleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaSeleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(seleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaSeleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(seleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaSeleccionarPLU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                seleccionarPLU dialog = new seleccionarPLU(new javax.swing.JFrame(), true, "");
+                VistaSeleccionarPLU dialog = new VistaSeleccionarPLU(new javax.swing.JFrame(), true, "");
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -467,7 +416,7 @@ public class seleccionarPLU extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnEste;
+    private javax.swing.JButton btnIngresar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblRegistros;
     // End of variables declaration//GEN-END:variables

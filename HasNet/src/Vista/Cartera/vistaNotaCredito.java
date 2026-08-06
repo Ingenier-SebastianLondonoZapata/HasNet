@@ -13,6 +13,7 @@ import Modelo.FacturacionElectronica.Entrada.ModeloFacturacionElectronica;
 import Modelo.FacturacionElectronica.Salida.ConsultaFacturaElectronicaDTO;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
+import Modelo.Solicitudes.AccionesPermisos;
 import Utilidades.Constantes;
 import Validaciones.Facturacion.squemaFacturacion;
 import Validaciones.FacturacionElectronica.squemaFacturacionElectronica;
@@ -27,7 +28,7 @@ import clases.Ventas.ndNotasCredito;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import Vista.Solicitudes.vistaSolicitarPermisos;
+import Vista.Solicitudes.VistaSolicitarPermisos;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -1346,8 +1347,9 @@ public class vistaNotaCredito extends javax.swing.JInternalFrame {
         }
 
         if (!instancias.getUsuario().equals("ADMIN")) {
-            vistaSolicitarPermisos permisos = new vistaSolicitarPermisos(null, true, "NOTAS CREDITO", "NOTA-CREDITO",
-                    big.setNumero(big.getMoneda(txtTotal.getText().replace("Total: ", ""))), "notaCredito");
+            AccionesPermisos accion = new AccionesPermisos(false, false, false);
+            VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, TipoDocumento.NOTA_CREDITO.getValor(), accion,
+                    big.setNumero(big.getMoneda(txtTotal.getText().replace("Total: ", ""))), BigDecimal.ZERO);
             permisos.setLocationRelativeTo(null);
             permisos.setVisible(true);
             return;

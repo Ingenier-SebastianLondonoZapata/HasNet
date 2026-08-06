@@ -7,7 +7,7 @@ import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.productos.buscGrupos;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
@@ -1347,7 +1347,7 @@ public class infRepVentas extends javax.swing.JPanel {
     }
 
     public void ventanaProducto(String nit) {
-        buscProductos buscar = new buscProductos(instancias.getMenu(), false, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), false, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

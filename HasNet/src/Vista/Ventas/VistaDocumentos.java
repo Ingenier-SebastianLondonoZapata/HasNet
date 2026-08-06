@@ -15,7 +15,7 @@ import Utilidades.Constantes;
 import Utilidades.Fechas;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
-import Vista.Solicitudes.vistaSolicitarPermisos;
+import Vista.Solicitudes.VistaSolicitarPermisos;
 import clases.Cartera.ndCxc;
 import clases.Instancias;
 import clases.Ventas.ndCotizacion;
@@ -32,6 +32,7 @@ import inventario.servicio.CargadorProducto;
 import inventario.servicio.ServicioDiscosteo;
 import inventario.servicio.ServicioInventario;
 import Modelo.Maestra.ModeloResolucion;
+import Modelo.Solicitudes.AccionesPermisos;
 import Modelo.Ventas.DocumentoSeleccionado;
 import dao.Configuraciones.DaoResoluciones;
 import java.awt.Dimension;
@@ -1535,7 +1536,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
         if (!instancias.getUsuario().equals("ADMIN")) {
-            vistaSolicitarPermisos permisos = new vistaSolicitarPermisos(null, true, "ANULACIÓN FACTURA", "ANULACION", "FACT-" + NUMERO_DOCUMENTO_SELECCIONADO, "anulacion");
+            AccionesPermisos accion = new AccionesPermisos(false, false, false);
+            VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, TipoDocumento.ANULAR_FACTURACION.getValor(), accion, "FACT-" + NUMERO_DOCUMENTO_SELECCIONADO, BigDecimal.ZERO);
             permisos.setLocationRelativeTo(null);
             permisos.setVisible(true);
         } else {

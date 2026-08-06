@@ -5,6 +5,7 @@
  */
 package formularios.productos;
 
+import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
 import clases.big;
 import java.awt.event.ActionEvent;
@@ -28,13 +29,13 @@ public class buscProductos2 extends javax.swing.JDialog {
     TableRowSorter modeloOrdenado;
     Instancias instancias;
 
-    private buscProductos buscador;
+    private VistaBuscadorProductos buscador;
 
-    public buscProductos getBuscador() {
+    public VistaBuscadorProductos getBuscador() {
         return buscador;
     }
 
-    public void setBuscador(buscProductos buscador) {
+    public void setBuscador(VistaBuscadorProductos buscador) {
         this.buscador = buscador;
     }
 

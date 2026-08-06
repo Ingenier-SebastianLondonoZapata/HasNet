@@ -6,7 +6,7 @@ import clases.Medico.ndEpsPrecargados;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -1172,7 +1172,7 @@ public class infRips extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtId1);

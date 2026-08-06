@@ -173,11 +173,11 @@
                               <Group type="102" attributes="0">
                                   <Component id="lbProducto1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtCant" min="-2" pref="55" max="-2" attributes="0"/>
+                                  <Component id="txtCantidad" min="-2" pref="55" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                                   <Component id="lbProducto" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                                  <Component id="txtCodProducto" pref="319" max="32767" attributes="0"/>
+                                  <Component id="txtCodigoProducto" pref="319" max="32767" attributes="0"/>
                                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                   <Component id="btnBusProd" min="-2" pref="43" max="-2" attributes="0"/>
                               </Group>
@@ -192,9 +192,9 @@
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="lbProducto1" alignment="0" max="32767" attributes="0"/>
-                              <Component id="txtCant" alignment="0" max="32767" attributes="0"/>
+                              <Component id="txtCantidad" alignment="0" max="32767" attributes="0"/>
                               <Component id="lbProducto" alignment="0" max="32767" attributes="0"/>
-                              <Component id="txtCodProducto" alignment="0" max="32767" attributes="0"/>
+                              <Component id="txtCodigoProducto" alignment="0" max="32767" attributes="0"/>
                               <Component id="btnBusProd" min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -216,7 +216,7 @@
                     <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="lbProductoKeyReleased"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtCodProducto">
+                <Component class="javax.swing.JTextField" name="txtCodigoProducto">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Century Gothic" size="16" style="0"/>
@@ -224,7 +224,7 @@
                     <Property name="name" type="java.lang.String" value="combo" noResource="true"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCodProductoKeyReleased"/>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCodigoProductoKeyReleased"/>
                   </Events>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -389,7 +389,7 @@
                     <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="lbProducto1KeyReleased"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtCant">
+                <Component class="javax.swing.JTextField" name="txtCantidad">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Century Gothic" size="18" style="0"/>
@@ -403,7 +403,7 @@
                     <Property name="name" type="java.lang.String" value="combo" noResource="true"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCantKeyReleased"/>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCantidadKeyReleased"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnBusProd">

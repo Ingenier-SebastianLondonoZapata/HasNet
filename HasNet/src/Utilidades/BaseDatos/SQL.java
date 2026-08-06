@@ -5371,15 +5371,6 @@ public class SQL {
         return ok;
     }
 
-//    public Object[][] getRegistrosPreventa(String factura) {
-//        String colName[] = {
-//            "producto", "Descripcion", "lista", "cantidad", "subtotal", "descuento", "porIva", "valIva", "total"
-//        };
-//        String origen = " conPreventa";
-//        Object dtDatos[][] = getDatos(colName, origen, "select producto, Descripcion, lista, cantidad, subtotal, descuento, porIva, valIva, total from conPreventa where factura = '" + factura + "'", " where factura = '" + factura + "'");
-//
-//        return dtDatos;
-//    }
     public Object[][] getNotasCredito(String tipo) {
 
         String colName[] = {

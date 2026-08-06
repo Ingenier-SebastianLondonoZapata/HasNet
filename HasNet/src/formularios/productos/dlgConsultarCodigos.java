@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
 import clases.big;
 import clases.productos.ndProducto;
@@ -336,7 +337,7 @@ public class dlgConsultarCodigos extends javax.swing.JDialog {
     }//GEN-LAST:event_btnBuscTercerosActionPerformed
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

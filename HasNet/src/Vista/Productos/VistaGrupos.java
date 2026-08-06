@@ -492,15 +492,15 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
             if (!instancias.getSql().aumentarConsecutivo("GRP", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("GRP")[0]) + 1)) {
                 metodos.msgError(this, "Error al guardar en el consecutivo ");
             }
+            
             metodos.msgExito(this, "Grupo registrado con éxito");
-
-            instancias.actualizarGrupos(new Object[]{txtCodigo.getText(), txtNombre.getText()});
             btnGuardar.setEnabled(false);
             btnModificar.setEnabled(true);
             btnEliminar.setEnabled(true);
-            cargarTablaSubGrupos(txtCodigo.getText());
 
-            instancias.getFactura().inicializarPanelGruposEmbebido();
+            cargarTablaSubGrupos(txtCodigo.getText());
+            instancias.actualizarGrupos(new Object[]{txtCodigo.getText(), txtNombre.getText()});
+
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -640,10 +640,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
             }
 
             cargarTablaSubGrupos(txtCodigo.getText());
-
-            instancias.getFactura().inicializarPanelGruposEmbebido();
             instancias.actualizarGrupos(new Object[]{txtCodigo.getText(), txtNombre.getText()});
-
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnModificarActionPerformed

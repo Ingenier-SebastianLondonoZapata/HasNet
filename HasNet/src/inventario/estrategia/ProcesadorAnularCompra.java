@@ -25,6 +25,7 @@ public class ProcesadorAnularCompra extends AbstractProcesadorMovimiento {
         if (compras.compareTo(BigDecimal.ZERO) < 0) {
             compras = BigDecimal.ZERO;
         }
+        producto.setCompras(UtilidadInventario.formatear(compras));
 
         if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
             String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET compras = ? WHERE idSistema = ?";
@@ -33,6 +34,8 @@ public class ProcesadorAnularCompra extends AbstractProcesadorMovimiento {
 
         BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).subtract(cantidad);
         BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
+        producto.setInventario(UtilidadInventario.formatear(inventario));
+        producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "inventario = ?, fisicoInventario = ?, compras = ? "

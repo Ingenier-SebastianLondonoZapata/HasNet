@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
@@ -3536,7 +3537,7 @@ public class infKardexProductos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, true, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, true, "", "productos1");
         buscar.setOpc("");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);

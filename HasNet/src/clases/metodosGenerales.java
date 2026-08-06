@@ -82,7 +82,7 @@ import configuracion.msgPregunta;
 import datechooser.beans.DateChooserCombo;
 import formularios.Agenda.ndAgenda;
 import formularios.Disk;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Graphics2D;
@@ -4953,7 +4953,7 @@ public class metodosGenerales {
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
         } catch (AWTException ex) {
-            Logger.getLogger(buscProductos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VistaBuscadorProductos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -4983,7 +4983,7 @@ public class metodosGenerales {
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
         } catch (AWTException ex) {
-            Logger.getLogger(buscProductos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VistaBuscadorProductos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

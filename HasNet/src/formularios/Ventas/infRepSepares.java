@@ -6,7 +6,7 @@ import clases.Instancias;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
 import java.awt.event.KeyEvent;
@@ -858,7 +858,7 @@ public class infRepSepares extends javax.swing.JPanel {
     }
 
     public void ventanaProducto(String nit) {
-        buscProductos buscar = new buscProductos(instancias.getMenu(), true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

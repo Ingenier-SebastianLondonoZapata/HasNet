@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Vista.Productos.VistaBuscadorProductos;
 import dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
@@ -629,7 +630,7 @@ public class infRepAjustes extends javax.swing.JPanel {
     }
 
     public void ventanaProducto(String nit) {
-        buscProductos buscar = new buscProductos(instancias.getMenu(), true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

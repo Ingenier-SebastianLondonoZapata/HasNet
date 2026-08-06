@@ -13,7 +13,6 @@ import Utilidades.Constantes;
 import formularios.Ventas.dlgPonderadoNegativo;
 import formularios.productos.buscMarcas;
 import formularios.productos.buscMedidas;
-import formularios.productos.buscProductos;
 import formularios.productos.buscSubGrupos;
 import formularios.productos.buscTiposProductos;
 import formularios.productos.dlgCodigoRelacionados;
@@ -4951,7 +4950,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, true, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, true, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);
@@ -4961,7 +4960,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductosUnificar(String codigo) {
-        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         buscar.setOpc("producto");
         instancias.setBusProductos(buscar);

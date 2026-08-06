@@ -1,4 +1,4 @@
-package formularios.productos;
+package Vista.Productos;
 
 import Vista.Productos.VistaIngreso;
 import clases.IconCellRenderer;
@@ -8,6 +8,10 @@ import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import com.mxrck.autocompleter.TextAutoCompleter;
 import Vista.Ventas.VistaFactura;
+import formularios.productos.buscGrupos;
+import formularios.productos.buscProductos2;
+import formularios.productos.nuevoProducto;
+import formularios.productos.verLogo;
 import java.awt.Image;
 import java.util.Vector;
 import javax.swing.JComponent;
@@ -23,7 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
-public final class buscProductos extends javax.swing.JDialog {
+public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
     DefaultTableModel modelo;
     TableRowSorter modeloOrdenado;
@@ -44,7 +48,7 @@ public final class buscProductos extends javax.swing.JDialog {
         this.claseBuscador = claseBuscador;
     }
 
-    public buscProductos(java.awt.Frame parent, boolean modal, boolean buscarInactivos, String lugar, String base) {
+    public VistaBuscadorProductos(java.awt.Frame parent, boolean modal, boolean buscarInactivos, String lugar, String base) {
         super(parent, modal);
         initComponents();
 
@@ -373,7 +377,7 @@ public final class buscProductos extends javax.swing.JDialog {
         btnDerecha = new javax.swing.JButton();
         btnEste2 = new javax.swing.JButton();
         btnNuevoProducto = new javax.swing.JButton();
-        btnEste = new javax.swing.JButton();
+        btnIngresar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtDescripcion = new javax.swing.JLabel();
 
@@ -543,12 +547,12 @@ public final class buscProductos extends javax.swing.JDialog {
             }
         });
 
-        btnEste.setBackground(new java.awt.Color(204, 204, 204));
-        btnEste.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
-        btnEste.setText("SELECCIONAR");
-        btnEste.addActionListener(new java.awt.event.ActionListener() {
+        btnIngresar.setBackground(new java.awt.Color(204, 204, 204));
+        btnIngresar.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        btnIngresar.setText("INGRESAR");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEsteActionPerformed(evt);
+                btnIngresarActionPerformed(evt);
             }
         });
 
@@ -577,7 +581,7 @@ public final class buscProductos extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnNuevoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnEste, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(3, 3, 3))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -630,7 +634,7 @@ public final class buscProductos extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(btnNuevoProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEste2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnEste, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnIngresar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -648,11 +652,9 @@ public final class buscProductos extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnEsteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEsteActionPerformed
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         txtId.setText("");
         tblRegistros.removeEditor();
-
-        //QUITAR EL FILTRO
         modeloOrdenado.setRowFilter(RowFilter.regexFilter("", 0));
 
         //REVISAR SI INGRESARON ALGUNA CANTIDAD SIN EL CHULO
@@ -743,7 +745,7 @@ public final class buscProductos extends javax.swing.JDialog {
                 }
             }
         }
-    }//GEN-LAST:event_btnEsteActionPerformed
+    }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void txtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdKeyReleased
         filtrar(evt);
@@ -775,7 +777,7 @@ public final class buscProductos extends javax.swing.JDialog {
 
             if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                 tblRegistros.setValueAt(true, tblRegistros.getSelectedRow(), 6);
-                btnEsteActionPerformed(null);
+                btnIngresarActionPerformed(null);
                 return;
             }
         } catch (Exception e) {
@@ -835,32 +837,30 @@ public final class buscProductos extends javax.swing.JDialog {
     }
 
     private void tblRegistrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRegistrosMouseClicked
-        int columna = tblRegistros.getSelectedColumn();
+        int filaSeleccionada = tblRegistros.getSelectedRow();
+        int columnaSeleccionada = tblRegistros.getSelectedColumn();
 
-        if (evt.getClickCount() >= 1 && columna == 11) {
-            verLogo verLogo = new verLogo(null, rootPaneCheckingEnabled, tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10).toString());
-            verLogo.setLocationRelativeTo(null);
-            verLogo.setVisible(true);
-        } else if (evt.getClickCount() >= 1 && columna == 6) {
-            txtId.setText("");
-            txtId.requestFocus();
-        } else if (evt.getClickCount() >= 1) {
+        if (evt.getClickCount() > 1) {
+            btnIngresarActionPerformed(null);
+        }
 
-            try {
-                txtDescripcion.setText(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 16).toString());
-            } catch (Exception e) {
-                txtDescripcion.setText(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 1).toString());
-            }
+        if (evt.getClickCount() > 0) {
+            txtDescripcion.setText(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 16).toString());
 
-            if (opc != null) {
-                if (!opc.equals("")) {
-
-                    if ((Boolean) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 6)) {
-//                        tblRegistros.setValueAt(false, tblRegistros.getSelectedRow(), 6);
-//                        txtId.setText("");
-//                        txtId.requestFocus();
-                    } else {
-
+            if (columnaSeleccionada == 11) {
+                txtId.setText("");
+                txtId.requestFocus();
+            } else if (columnaSeleccionada == 11) {
+                verLogo verLogo = new verLogo(null, rootPaneCheckingEnabled, tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10).toString());
+                verLogo.setLocationRelativeTo(null);
+                verLogo.setVisible(true);
+            } else {
+                boolean estadoColumna = Boolean.parseBoolean(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 6).toString());
+                tblRegistros.setValueAt(!estadoColumna, filaSeleccionada, 6);
+                if (estadoColumna) {
+                    tblRegistros.setValueAt("", filaSeleccionada, 7);
+                } else {
+                    if (opc != null && !opc.isEmpty()) {
                         tblRegistros.editCellAt(tblRegistros.getSelectedRow(), 7);
                         tblRegistros.setColumnSelectionInterval(7, 7);
                         tblRegistros.transferFocus();
@@ -868,14 +868,7 @@ public final class buscProductos extends javax.swing.JDialog {
                         txtId.setText("");
                     }
                 }
-            } else {
-
             }
-        }
-
-        if (evt.getClickCount() > 1) {
-            tblRegistros.setValueAt(true, tblRegistros.getSelectedRow(), 6);
-            btnEsteActionPerformed(null);
         }
     }//GEN-LAST:event_tblRegistrosMouseClicked
 
@@ -902,7 +895,7 @@ public final class buscProductos extends javax.swing.JDialog {
                 tblRegistros.setValueAt(true, tblRegistros.getSelectionModel().getMinSelectionIndex() - 1, tblRegistros.getSelectionModel().getMinSelectionIndex() - 1);
             }
 
-            btnEsteActionPerformed(null);
+            btnIngresarActionPerformed(null);
         }
         if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
             tblRegistros.scrollRectToVisible(tblRegistros.getCellRect(tblRegistros.getSelectedRow(), 0, true));
@@ -1077,13 +1070,13 @@ public final class buscProductos extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(buscProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(buscProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(buscProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(buscProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -1093,7 +1086,7 @@ public final class buscProductos extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                buscProductos dialog = new buscProductos(new javax.swing.JFrame(), true, false, null, null);
+                VistaBuscadorProductos dialog = new VistaBuscadorProductos(new javax.swing.JFrame(), true, false, null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -1107,10 +1100,10 @@ public final class buscProductos extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDerecha;
-    private javax.swing.JButton btnEste;
     private javax.swing.JButton btnEste2;
     private javax.swing.JButton btnEste3;
     private javax.swing.JButton btnEste4;
+    private javax.swing.JButton btnIngresar;
     private javax.swing.JButton btnIzquierda;
     private javax.swing.JButton btnNuevoProducto;
     private javax.swing.ButtonGroup filtro;

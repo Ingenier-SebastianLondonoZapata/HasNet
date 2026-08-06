@@ -5,7 +5,7 @@ import clases.productos.ndProducto;
 import Utilidades.BaseDatos.SQL;
 import Modelo.Terceros.ModeloContacto;
 import clases.metodosGenerales;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;
@@ -674,7 +674,7 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProducto(String nit) {
-        buscProductos buscar = new buscProductos(null, true, false, "lavado", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "lavado", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

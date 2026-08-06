@@ -9,7 +9,7 @@ import Modelo.Terceros.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
 import formularios.Ventas.dlgPedirContrasena;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -988,7 +988,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
     }
 
 //    public void ventanaProductos(String codigo) {
-//        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled, false, "parqueadero");
+//        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "parqueadero");
 //        buscar.setLocationRelativeTo(null);
 ////        buscar.setParque(false);
 //        instancias.setBusProductos(buscar);

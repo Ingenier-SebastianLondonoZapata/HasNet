@@ -18,7 +18,7 @@ import formularios.Agenda.infInfoAgenda;
 import formularios.Medico.buscAntecedentes;
 import formularios.Medico.buscCies;
 import formularios.Medico.buscCups;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -3819,7 +3819,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String nit) {
-        buscProductos buscar = new buscProductos(instancias.getMenu(), true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
 //        buscar.setInstancia(instancias);

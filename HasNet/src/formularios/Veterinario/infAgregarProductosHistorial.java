@@ -7,9 +7,9 @@ import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
-import formularios.productos.seleccionarPLU;
+import Vista.Productos.VistaSeleccionarPLU;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -429,7 +429,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblProductos1KeyReleased
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);
@@ -521,7 +521,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
                     cant++;
                 }
                 if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
+                    VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, "bdProductos");
                     pluu.setInstancias(instancias, nodo.getCodigo());
                     pluu.setOpc("trasladoBodega");
                     pluu.setVisible(true);

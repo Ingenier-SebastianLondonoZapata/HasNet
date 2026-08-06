@@ -1,6 +1,6 @@
 package formularios.Veterinario;
 
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndIngresoHospitalizacion;
@@ -1030,7 +1030,7 @@ public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-//        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled);
+//        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled);
 //        buscar.setLocationRelativeTo(null);
 //        buscar.setOpc("ingresoHospital");
 //        buscar.setAgenda(true);

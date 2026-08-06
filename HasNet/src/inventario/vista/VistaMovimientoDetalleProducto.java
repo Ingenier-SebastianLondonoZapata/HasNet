@@ -422,6 +422,11 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         tblDetalle.setComponentPopupMenu(jPopupMenu1);
         tblDetalle.setRowHeight(30);
         tblDetalle.getTableHeader().setReorderingAllowed(false);
+        tblDetalle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblDetalleMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblDetalle);
         if (tblDetalle.getColumnModel().getColumnCount() > 0) {
             tblDetalle.getColumnModel().getColumn(3).setMinWidth(50);
@@ -835,6 +840,12 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     }//GEN-LAST:event_formKeyReleased
 
     private void btnCargarRegistrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarRegistrosActionPerformed
+        if (tblDetalle.isEditing()) {
+            tblDetalle.getCellEditor().stopCellEditing();
+        }
+
+        tblDetalle.removeEditor();
+        tblDetalle.clearSelection();
         ndProducto productoOficial = instancias.getSql().getDatosProducto(prodOficial, "bdProductos");
 
         if (tipoMovimiento.equals("Entrada")) {
@@ -894,10 +905,13 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
     private boolean validarSalida() {
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
+
             if (!(Boolean) tblDetalle.getValueAt(i, 4)) {
                 continue;
             }
+
             if (!DetalleTipoProducto.esSerialOImei(tipoProducto)) {
+
                 BigDecimal cantidad;
                 try {
                     cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
@@ -977,7 +991,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     private void cargarDetalleEnVista(VistaAjusteInventario vista, ndProducto productoOficial) {
         vista.eliminarRegistros(productoOficial.getIdSistema());
         BigDecimal cantidadTotal = cargarFilasDetalle(productoOficial.getIdSistema(), productoOficial.getDescripcion(), vista);
-        vista.cargarProducto1(productoOficial.getIdSistema(), cantidadTotal, 1);
+        vista.cargarProducto(productoOficial.getIdSistema(), cantidadTotal, 1, "Check-seguridad", "", "", "", "", "", "");
     }
 
     private void cargarDetalleEnVista(VistaIngreso vista, ndProducto productoOficial) {
@@ -1039,6 +1053,9 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     private VistaFactura obtenerVistaDocumento() {
         if (tipoDocumento.equals(TipoDocumento.FACTURACION.getValor())) {
             return instancias.getFactura();
+        }
+        if (tipoDocumento.equals(TipoDocumento.CREDITO.getValor())) {
+            return instancias.getFacturaCreditos();
         }
         if (tipoDocumento.equals(TipoDocumento.PLAN_SEPARE.getValor())) {
             return instancias.getPlanSepare();
@@ -1350,6 +1367,15 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             btnCargarFechaActionPerformed(null);
         }
     }//GEN-LAST:event_txtTempKeyReleased
+
+    private void tblDetalleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDetalleMouseClicked
+        if (evt.getClickCount() >= 1 && tblDetalle.getSelectedColumn() != 4 && this.tipoMovimiento.equals("Salida")) {
+            tblDetalle.setValueAt(true, tblDetalle.getSelectedRow(), 4);
+            tblDetalle.editCellAt(tblDetalle.getSelectedRow(), 5);
+            tblDetalle.setColumnSelectionInterval(5, 5);
+            tblDetalle.transferFocus();
+        }
+    }//GEN-LAST:event_tblDetalleMouseClicked
 
     public void ventanaTallas(String nit) {
         buscTallas buscar = new buscTallas(instancias.getMenu(), rootPaneCheckingEnabled);

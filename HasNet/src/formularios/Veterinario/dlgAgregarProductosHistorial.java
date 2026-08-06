@@ -10,9 +10,9 @@ import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
 import inventario.servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
-import formularios.productos.seleccionarPLU;
+import Vista.Productos.VistaSeleccionarPLU;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -1112,7 +1112,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                     cant++;
                 }
                 if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
+                    VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, "bdProductos");
                     pluu.setInstancias(instancias, nodo.getCodigo());
                     pluu.setOpc("trasladoBodega");
                     pluu.setVisible(true);
@@ -1289,7 +1289,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                     cant++;
                 }
                 if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
+                    VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, "bdProductos");
                     pluu.setInstancias(instancias, nodo.getCodigo());
                     pluu.setOpc("trasladoBodega");
                     pluu.setVisible(true);
@@ -1396,7 +1396,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);

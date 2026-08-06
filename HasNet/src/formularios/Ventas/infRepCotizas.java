@@ -5,7 +5,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
 import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;
@@ -632,7 +632,7 @@ public class infRepCotizas extends javax.swing.JPanel {
     }
 
     public void ventanaProducto(String nit) {
-        buscProductos buscar = new buscProductos(instancias.getMenu(), true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), true, false, "", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

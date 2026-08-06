@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Vista.Productos.VistaBuscadorProductos;
+import Vista.Productos.VistaSeleccionarPLU;
 import inventario.vista.VistaMovimientoDetalleProducto;
 import Modelo.Inventario.UltimoPonderado;
 import clases.Instancias;
@@ -1568,7 +1570,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     cant++;
                 }
                 if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, txtBaseOrigen.getText());
+                    VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, txtBaseOrigen.getText());
                     pluu.setInstancias(instancias, nodo.getCodigo());
                     pluu.setOpc("trasladoInterno");
                     pluu.setVisible(true);
@@ -1727,7 +1729,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             return;
         }
 
-        buscProductos buscar = new buscProductos(null, true, false, "", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", base);
         buscar.setOpc("trasladoInterno");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);

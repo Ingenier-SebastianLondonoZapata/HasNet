@@ -39,9 +39,9 @@ import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
 import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgTipoDescuento;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import inventario.vista.VistaMovimientoDetalleProducto;
-import formularios.productos.seleccionarPLU;
+import Vista.Productos.VistaSeleccionarPLU;
 import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
 import java.awt.Color;
@@ -2965,7 +2965,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             base = "productos1";
         }
 
-        buscProductos buscar = new buscProductos(null, true, false, "facturacion", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "facturacion", base);
         buscar.setOpc("NotaDebito");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
@@ -3246,7 +3246,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     }
 
                     if (cant > 0) {
-                        seleccionarPLU pluu = new seleccionarPLU(null, true, obtenerBase());
+                        VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, obtenerBase());
                         pluu.setNotaDebito(this);
                         pluu.setInstancias(instancias, nodo.getIdSistema());
                         pluu.setOpc("NotaDebito");

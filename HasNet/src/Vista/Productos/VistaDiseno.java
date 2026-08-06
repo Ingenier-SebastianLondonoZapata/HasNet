@@ -11,9 +11,7 @@ import clases.productos.ndProducto;
 import clases.big;
 import clases.metodosGenerales;
 import formularios.productos.buscMedidas;
-import formularios.productos.buscProductos;
 import Vista.Restaurante.VistaProductosCambio;
-import formularios.productos.seleccionarPLU;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -1640,7 +1638,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                     cant++;
                 }
                 if (cant > 0) {
-                    seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
+                    VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, "bdProductos");
                     pluu.setInstancias(instancias, nodo.getCodigo());
                     pluu.setOpc("diseño");
                     pluu.setVisible(true);
@@ -1705,7 +1703,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "", "productos1");
         buscar.setOpc("diseño");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
@@ -1717,7 +1715,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos2() {
-        buscProductos buscar = new buscProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

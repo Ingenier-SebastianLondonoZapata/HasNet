@@ -5,7 +5,7 @@ import clases.cambiarColorTabla;
 import clases.convertirNumeroALetras;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import Modelo.Ventas.OpcionPreparacion;
 import Utilidades.Utilidades;
 import Utilidades.Ventas.ParserPreparacion;
@@ -711,7 +711,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "adiciones", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "adiciones", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);

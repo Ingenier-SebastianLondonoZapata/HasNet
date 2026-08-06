@@ -1,5 +1,6 @@
 package clases;
 
+import Vista.Productos.VistaBuscadorProductos;
 import Vista.Tesoreria.VistaCuadreCaja;
 import Vista.Productos.VistaGrupos;
 import Vista.Ventas.creditos;
@@ -283,7 +284,7 @@ public class Instancias {
     private VistaProductos productos;
     private VistaGrupos grupos;
     private infKardexProductos kardexProductos;
-    private buscProductos buscProductos;
+    private VistaBuscadorProductos buscProductos;
     private buscSeriales buscSeriales;
     private buscColores buscColores;
     private buscTallas buscTallas;
@@ -812,7 +813,6 @@ public class Instancias {
         this.resumenDia = resumenDia;
     }
 
-
     public infRepIvasCompras getRepIvasCompras() {
         return repIvasCompras;
     }
@@ -1293,7 +1293,7 @@ public class Instancias {
         this.remision = remision;
     }
 
-    public buscProductos getBusProductos() {
+    public VistaBuscadorProductos getBusProductos() {
         return buscProductos;
     }
 
@@ -1305,7 +1305,7 @@ public class Instancias {
         this.reportesProductos = reportesProductos;
     }
 
-    public void setBusProductos(buscProductos buscProductos) {
+    public void setBusProductos(VistaBuscadorProductos buscProductos) {
         this.buscProductos = buscProductos;
     }
 
@@ -2706,5 +2706,14 @@ public class Instancias {
     public void actualizarGrupos(Object[] dato) {
         getProductos().actualizarGrupos();
         getCosteo().actualizarGrupos();
+
+        getFactura().inicializarPanelGruposEmbebido();
+        getMesa1().inicializarPanelGruposEmbebido();
+        getPedido().inicializarPanelGruposEmbebido();
+        getCotiza().inicializarPanelGruposEmbebido();
+        getOrdenServicio().inicializarPanelGruposEmbebido();
+        getPlanSepare().inicializarPanelGruposEmbebido();
+        getFacturaCreditos().inicializarPanelGruposEmbebido();
     }
 }
+

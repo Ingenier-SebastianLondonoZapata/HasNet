@@ -17,6 +17,7 @@ public class ProcesadorOrdenCompra extends AbstractProcesadorMovimiento {
         BigDecimal cantidad = movimiento.getCantidad();
 
         BigDecimal enTransito = Utilidades.convertirBigDecimal(producto.getEnTransito()).add(cantidad);
+        producto.setEnTransito(UtilidadInventario.formatear(enTransito));
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "enTransito = ? "

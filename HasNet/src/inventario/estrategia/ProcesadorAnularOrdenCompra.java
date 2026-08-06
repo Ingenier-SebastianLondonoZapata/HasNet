@@ -24,6 +24,7 @@ public class ProcesadorAnularOrdenCompra extends AbstractProcesadorMovimiento {
         if (enTransito.compareTo(BigDecimal.ZERO) < 0) {
             enTransito = BigDecimal.ZERO;
         }
+        producto.setEnTransito(UtilidadInventario.formatear(enTransito));
 
         String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
                 + "enTransito = ? "

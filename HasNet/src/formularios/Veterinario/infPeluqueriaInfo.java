@@ -9,7 +9,7 @@ import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.Agenda.ndAgenda;
-import formularios.productos.buscProductos;
+import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
 import formularios.terceros.nuevoTercero;
 import java.awt.Dimension;
@@ -2012,7 +2012,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
     }
 
 //    public void ventanaProductos(String codigo) {
-//        buscProductos buscar = new buscProductos(null, rootPaneCheckingEnabled, false);
+//        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false);
 //        buscar.setLocationRelativeTo(null);
 //        buscar.setClaseBuscador("Agenda");
 //        buscar.cargarTablaProductos(false);
@@ -2023,7 +2023,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 //        buscar.show();
 //    }
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "peluqueria", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "peluqueria", "productos1");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);

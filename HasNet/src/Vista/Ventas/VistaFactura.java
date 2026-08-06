@@ -12,6 +12,7 @@ import Enums.TipoProducto;
 import Enums.enumBodegas;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
+import ImpresionesCreditos.GenerarReportes;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
 import Modelo.DocumentosElectronicos.ModeloDetalleProductos;
@@ -32,6 +33,9 @@ import Modelo.Ventas.ModeloValidacionFactura;
 import Modelo.Ventas.MovimientoDocumento;
 import Modelo.Ventas.OpcionPreparacion;
 import Modelo.Ventas.ResultadoValidacionInventario;
+import Modelo.Productos.ResultadoBusquedaProducto;
+import Modelo.Productos.ResultadoPluProducto;
+import Modelo.Solicitudes.AccionesPermisos;
 import Utilidades.Constantes;
 import Utilidades.DatosMaestra;
 import Utilidades.Utilidades;
@@ -39,7 +43,7 @@ import Utilidades.Ventas.ParserPreparacion;
 import Validaciones.Facturacion.squemaFacturacion;
 import Validaciones.FacturacionElectronica.squemaFacturacionElectronica;
 import Vista.Productos.VistaInventarioInicial;
-import Vista.Solicitudes.vistaSolicitarPermisos;
+import Vista.Solicitudes.VistaSolicitarPermisos;
 import clases.Cartera.ndCxc;
 import clases.IconCellRenderer;
 import clases.Instancias;
@@ -63,15 +67,15 @@ import dao.Ventas.DaoOrdenServicio;
 import Modelo.Ventas.ModeloDetalleOrdenServicio;
 import dao.Ventas.DaoCotizacion;
 import dao.Ventas.DaoPedido;
+import dao.Productos.DaoProducto;
 import formularios.Parqueadero.buscPlacas;
 import formularios.Ventas.buscProblemas;
 import formularios.Ventas.buscTipoVehiculo;
 import formularios.Ventas.dlgInformacionCliente;
-import formularios.Ventas.dlgPedirPermiso;
 import formularios.Ventas.dlgTipoDescuento;
 import formularios.Ventas.infNuevaParte;
-import formularios.productos.buscProductos;
-import formularios.productos.seleccionarPLU;
+import Vista.Productos.VistaBuscadorProductos;
+import Vista.Productos.VistaSeleccionarPLU;
 import formularios.terceros.buscClientes;
 import inventario.servicio.CargadorProducto;
 import inventario.servicio.ServicioActualizacionPonderado;
@@ -83,7 +87,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -97,15 +100,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollBar;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -135,8 +137,11 @@ public final class VistaFactura extends javax.swing.JPanel {
     private final DaoOrdenServicio daoOrdenServicio = new DaoOrdenServicio();
     private final DaoCotizacion daoCotizacion = new DaoCotizacion();
     private final DaoPedido daoPedido = new DaoPedido();
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private ConversorDocumentoAFactura conversorDocumentoAFactura;
+
+    private String idCreditoGenerado = "";
 
     boolean topeDescuento = false;
     private int cantDias = 0;
@@ -147,7 +152,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private boolean focusDiasPlazo = false, cambioMesa = false, plu = false, mesaCongelada = false,
             saltarPasosFactura = false, solicitudPermiso = false, pasandoACongelada = false;
 
-    private String tipoProceso, credito1, loteGeneral = "", permisoNumero = "",
+    private String tipoProceso, loteGeneral = "", permisoNumero = "",
             terminal = "", loteCuentasCobro = "", fechaFacturaAutomatica = "";
 
     private PanelGruposCompacto panelGruposEmbebido;
@@ -3654,11 +3659,23 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void popBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popBorrarActionPerformed
         if (tblProductos.getSelectedRow() > -1) {
-            if (!DatosMaestra.isBorrarCongelada() && this.tipoProceso.equals(TipoDocumento.MESA.getValor()) && !instancias.getUsuario().equals("ADMIN")) {
+
+            int fila = tblProductos.getSelectedRow();
+            if (tblProductos.getValueAt(fila, 16).equals("REALIZADO")) {
+                metodos.msgAdvertencia(null, "No puede Borrar este producto");
+                return;
+            }
+
+            if (!DatosMaestra.isBorrarCongelada()
+                    && (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) || this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()))
+                    && !instancias.getUsuario().equals("ADMIN")) {
                 if (metodos.msgPregunta(null, "No se puede borrar ¿Pedir permiso?") == 0) {
-                    dlgPedirPermiso permiso = new dlgPedirPermiso(null, true, "mesa");
-                    permiso.setLocationRelativeTo(null);
-                    permiso.setVisible(true);
+                    String descripcionProducto = tblProductos.getValueAt(fila, 1).toString();
+                    AccionesPermisos accion = new AccionesPermisos(false, false, true);
+                    String tipoProcesoBorrar = this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()) ? "borrarProductoFactura" : "borrarProductoMesa";
+                    VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, tipoProcesoBorrar, accion, descripcionProducto, BigDecimal.ZERO);
+                    permisos.setLocationRelativeTo(null);
+                    permisos.setVisible(true);
                     return;
                 } else {
                     return;
@@ -4139,7 +4156,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
                 String mensaje = esRestaurante ? "¿Desea limpiar la mesa?" : "¿Desea limpiar la congelada?";
                 if (tblProductos.getRowCount() == 0 || ControladorAlertas.option(mensaje)) {
-                    limpiar();
+                    limpiarMesa();
                 }
                 break;
             default:
@@ -4402,43 +4419,53 @@ public final class VistaFactura extends javax.swing.JPanel {
             ControladorAlertas.alert("El nombre no se puede modificar");
         } else if (tblProductos.getSelectedColumn() == 2 && !DatosMaestra.isModificarPrecio()) {
             ControladorAlertas.alert("El precio no se puede modificar");
-        } else if (tblProductos.getSelectedColumn() == 22) {
-            int fila = tblProductos.getSelectedRow();
-            if (tblProductos.getValueAt(fila, 16).equals("REALIZADO")) {
-                metodos.msgAdvertencia(null, "No puede Borrar este producto");
-                return;
-            }
-
-            if (!DatosMaestra.isBorrarCongelada()) {
-                if (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) && !instancias.getUsuario().equals("ADMIN")) {
-                    if (metodos.msgPregunta(null, "No se puede borrar ¿Pedir permiso?") == 0) {
-                        dlgPedirPermiso permiso = new dlgPedirPermiso(null, true, "mesa");
-                        permiso.setLocationRelativeTo(null);
-                        permiso.setVisible(true);
-                        return;
-                    } else {
-                        return;
-                    }
-                }
-            }
-
-            eliminarFila();
         }
     }//GEN-LAST:event_tblProductosMouseClicked
 
     private void tblProductosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProductosKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
-            popBorrarActionPerformed(null);
-            return;
-        }
+        int filaSeleccionada = tblProductos.getSelectedRow();
 
-        int fila = tblProductos.getSelectedRow();
+        if (filaSeleccionada > -1) {
 
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            procesarEnterEnTablaProductos(fila);
-            calcularTabla(fila, true);
-        } else if (esTeclaDeNavegacionTablaProductos(evt.getKeyCode())) {
-            calcularTabla(ajustarFilaSegunNavegacion(fila, evt.getKeyCode()), true);
+            if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                switch (tblProductos.getSelectedColumn()) {
+                    case 1:
+                        tblProductos.editCellAt(filaSeleccionada, 2);
+                        tblProductos.setColumnSelectionInterval(2, 2);
+                        tblProductos.transferFocus();
+                        break;
+                    case 2:
+                        String idProductoDetalle = obtenerValorTabla(filaSeleccionada, 29);
+                        if (idProductoDetalle.isEmpty()) {
+                            tblProductos.editCellAt(filaSeleccionada, 3);
+                            tblProductos.setColumnSelectionInterval(3, 3);
+                            tblProductos.transferFocus();
+                        } else {
+                            txtCodigoProducto.requestFocus();
+                        }
+                        break;
+                    case 3:
+                    case 5:
+                    case 6:
+                        txtCodigoProducto.requestFocus();
+                        break;
+                    default:
+                        break;
+                }
+
+                int columnaSeleccionada = tblProductos.getSelectedColumn();
+                if (columnaSeleccionada == Constantes.COLUMNA_COPAGO) {
+                    actualizarCopago(filaSeleccionada);
+                }
+
+                validarPorcentajeDescuento(filaSeleccionada);
+                avanzarEntreOrdenAvisoYEntrega(filaSeleccionada, columnaSeleccionada);
+                calcularTabla(filaSeleccionada, true);
+            } else if (esTeclaDeNavegacionTablaProductos(evt.getKeyCode())) {
+                calcularTabla(ajustarFilaSegunNavegacion(filaSeleccionada, evt.getKeyCode()), true);
+            } else if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
+                popBorrarActionPerformed(null);
+            }
         }
     }//GEN-LAST:event_tblProductosKeyReleased
 
@@ -4465,39 +4492,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         return fila;
     }
 
-    private void procesarEnterEnTablaProductos(int fila) {
-        int columnaSeleccionada = tblProductos.getSelectedColumn();
-        int columnaAVerificarVacia = Constantes.COLUMNA_VALOR_PRODUCTO;
-
-        if (instancias.isLector()) {
-            txtCodigoProducto.requestFocus();
-        } else if (columnaSeleccionada == Constantes.COLUMNA_CODIGO_PRODUCTO) {
-            moverEdicionDeCodigoACantidad(fila);
-        } else if (columnaSeleccionada == Constantes.COLUMNA_CANTIDAD) {
-            txtCodigoProducto.requestFocus();
-            columnaAVerificarVacia = Constantes.COLUMNA_CANTIDAD;
-        } else if (columnaSeleccionada == Constantes.COLUMNA_DESCUENTO_PORCENTAJE) {
-            txtCodigoProducto.requestFocus();
-            columnaAVerificarVacia = Constantes.COLUMNA_DESCUENTO_PORCENTAJE;
-        }
-
-        if (columnaSeleccionada == Constantes.COLUMNA_COPAGO) {
-            actualizarCopago(fila);
-        }
-
-        validarPorcentajeDescuento(fila, columnaAVerificarVacia);
-        avanzarEntreOrdenAvisoYEntrega(fila, columnaSeleccionada);
-    }
-
-    private void moverEdicionDeCodigoACantidad(int fila) {
-        tblProductos.changeSelection(fila, Constantes.COLUMNA_CODIGO_PRODUCTO, false, false);
-        tblProductos.removeEditor();
-
-        tblProductos.editCellAt(fila, Constantes.COLUMNA_CANTIDAD);
-        tblProductos.setColumnSelectionInterval(Constantes.COLUMNA_CANTIDAD, Constantes.COLUMNA_CANTIDAD);
-        tblProductos.transferFocus();
-    }
-
     private void actualizarCopago(int fila) {
         tblProductos.editCellAt(fila, Constantes.COLUMNA_COPAGO);
         tblProductos.setColumnSelectionInterval(Constantes.COLUMNA_COPAGO, Constantes.COLUMNA_COPAGO);
@@ -4509,12 +4503,11 @@ public final class VistaFactura extends javax.swing.JPanel {
         tblProductos.transferFocus();
     }
 
-    private void validarPorcentajeDescuento(int fila, int columnaAVerificarVacia) {
+    private void validarPorcentajeDescuento(int fila) {
         BigDecimal porcentajeDescuento = big.getBigDecimal(tblProductos.getValueAt(fila, Constantes.COLUMNA_DESCUENTO_PORCENTAJE).toString().replace(",", "."));
         boolean descuentoNegativo = porcentajeDescuento.compareTo(BigDecimal.ZERO) < 0;
-        boolean columnaVacia = String.valueOf(tblProductos.getValueAt(fila, columnaAVerificarVacia)).equals("");
 
-        if (descuentoNegativo || columnaVacia) {
+        if (descuentoNegativo) {
             tblProductos.setValueAt(0, fila, Constantes.COLUMNA_DESCUENTO_PORCENTAJE);
         }
     }
@@ -4886,7 +4879,8 @@ public final class VistaFactura extends javax.swing.JPanel {
         panelGruposEmbebido.setListener(new PanelGruposCompacto.ListenerGrupo() {
             @Override
             public void grupoSeleccionado(String codigo, String nombre) {
-                VistaGruposProductos dlg = new VistaGruposProductos(null, true, tipoProceso);
+                String tipoProcesoMovimiento = esFacturaCredito ? TipoDocumento.CREDITO.getValor() : tipoProceso;
+                VistaGruposProductos dlg = new VistaGruposProductos(null, true, tipoProcesoMovimiento);
                 dlg.seleccionarGrupo(codigo, nombre);
                 dlg.setVisible(true);
             }
@@ -4904,7 +4898,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         scroll.setPreferredSize(new java.awt.Dimension(200, alturaVisible));
 
         pnlGrupos.setLayout(new BorderLayout());
+        pnlGrupos.removeAll();
         pnlGrupos.add(scroll, BorderLayout.CENTER);
+        pnlGrupos.setVisible(true);
         pnlGrupos.revalidate();
         pnlGrupos.repaint();
     }
@@ -4917,7 +4913,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         instancias.setCancelarFactura(false);
-        String tipoProcesoOriginal = this.tipoProceso;
         String tituloOriginal = instancias.getTitulo();
 
         this.tipoProceso = TipoDocumento.MESA.getValor();
@@ -4929,11 +4924,10 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         if (resultado != null && !resultado.isEmpty()) {
             String numeroCongelada = slotDisponible.replace("CONGELADA-", "");
-            this.tipoProceso = tipoProcesoOriginal;
+            this.tipoProceso = TipoDocumento.FACTURACION.getValor();
             this.saltarPasosFactura = false;
             instancias.setTitulo(tituloOriginal);
             limpiar(true);
-
             ControladorAlertas.bigAlert("Congelada #" + numeroCongelada + " guardada con éxito");
         }
     }//GEN-LAST:event_btnPasarACongeladaActionPerformed
@@ -5051,8 +5045,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         //        }
     }
 
-    public void limpiar() {
-        instancias.setCancelarFactura(false);
+    public void limpiarMesa() {
         limpiar(true);
         redireccionarRestauranteAlLimpiar();
     }
@@ -5684,12 +5677,12 @@ public final class VistaFactura extends javax.swing.JPanel {
         modelo.removeRow(fila);
 
         tblProductos.removeEditor();
-
         btnPasarACongelada.setVisible(esValidoParaPasarACongeladas());
         cargarTotales();
     }
 
     private boolean esValidoParaPasarACongeladas() {
+        System.out.println("que tipo soy: " + this.tipoProceso);
         return !instancias.getConfiguraciones().isRestaurante() && modeloPro.getRowCount() > 0 && this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor());
     }
 
@@ -5908,7 +5901,8 @@ public final class VistaFactura extends javax.swing.JPanel {
         generarImpresionDocumento(desde, factura, factura2, imprimir);
 
         if (esFacturaCredito) {
-            instancias.getReporte().verPrestamo(credito1, instancias.getInformacionEmpresa());
+            GenerarReportes reportes = new GenerarReportes(instancias);
+            reportes.verCredito(idCreditoGenerado);
         }
 
         if (this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
@@ -6159,8 +6153,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    public void guardarCredito(String factura, String factura2) {
-//        String credito = "CREDITO-" + sql.getNumConsecutivo("CREDITO")[0];
+    private void guardarCredito(String factura, String factura2) {
         String credito = "CREDITO-" + factura.replace("FACT-", "");
         Object[] vector = {credito, factura, instancias.getUsuario(),
             metodos.fechaConsulta(metodosGenerales.fecha()), ID_CLIENTE_CARGADO, "", "",
@@ -6193,14 +6186,10 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         try {
             Thread.sleep(500);
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
         }
 
-        credito1 = credito;
-
-//        if (!sql.aumentarConsecutivo("CREDITO", Integer.parseInt((String) sql.getNumConsecutivo("CREDITO")[0]) + 1)) {
-        //            metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del credito");
-        //        }
+        idCreditoGenerado = credito;
     }
 
     public String getTipo() {
@@ -6262,7 +6251,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProductos buscar = new buscProductos(null, true, false, "facturacion", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "facturacion", "productos1");
         buscar.setOpc("factura");
         buscar.setFactura(this);
         buscar.setLocationRelativeTo(null);
@@ -6714,417 +6703,276 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    public void cargarProducto(String codigo, BigDecimal cantidad, int plu, String imei, String lote, String idProductoACargar, Boolean agrupar, String talla, String color,
-            String temp, String fechaVence, String detalleMensualidad) {
-
-        String baseUtilizada = "bdProductos";
-        ndProducto nodo = null;
-
-        String CodigoProd = "";
-        if (codigo.equals("")) {
-            CodigoProd = "";
-        } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
-            if (nodo.getIdSistema() != null) {
-                CodigoProd = nodo.getIdSistema();
+    private boolean validacionesAlCargarProducto(String idProductoDetallado, String imei, String lote) {
+        if (instancias.getConfiguraciones().isProductosDetallados() && !idProductoDetallado.isEmpty()) {
+            for (int j = 0; j < tblProductos.getRowCount(); j++) {
+                String idProductoTabla = tblProductos.getValueAt(j, 29).toString();
+                if (!idProductoTabla.isEmpty() && idProductoTabla.equals(idProductoDetallado)) {
+                    if (!imei.isEmpty()) {
+                        ControladorAlertas.bigAlert("El imei '" + imei + "' ya esta cargado.");
+                        return false;
+                    } else if (!lote.isEmpty()) {
+                        ControladorAlertas.bigAlert("Este producto con el lote '" + lote + "' ya se cargó.");
+                        return false;
+                    } else {
+                        ControladorAlertas.bigAlert("Uno de los productos dellatados ya se cargó.");
+                        return false;
+                    }
+                }
             }
         }
 
-        if (!CodigoProd.equals("")) {
-            if (codigo.equals(nodo.getCodigo2())) {
-                plu = 2;
-            } else if (codigo.equals(nodo.getCodigo3())) {
-                plu = 3;
-            } else if (codigo.equals(nodo.getCodigo4())) {
-                plu = 4;
-            } else if (codigo.equals(nodo.getCodigo5())) {
-                plu = 5;
-            } else if (codigo.equals(nodo.getCodigo6())) {
-                plu = 6;
-            } else if (codigo.equals(nodo.getCodigo7())) {
-                plu = 7;
-            } else if (codigo.equals(nodo.getCodigo8())) {
-                plu = 8;
-            }
-
-            if (instancias.getConfiguraciones().isProductosDetallados()) {
-                for (int j = 0; j < tblProductos.getRowCount(); j++) {
-                    String idProductoTabla = tblProductos.getValueAt(j, 29).toString();
-                    if (!idProductoTabla.isEmpty() && idProductoTabla.equals(idProductoACargar)) {
-                        if (!imei.isEmpty()) {
-                            ControladorAlertas.bigAlert("El imei '" + imei + "' ya esta cargado.");
-                            return;
-                        } else if (!lote.isEmpty()) {
-                            ControladorAlertas.bigAlert("Este producto con el lote '" + lote + "' ya se cargó.");
-                            return;
-                        }
-                    }
+        int limiteProductos = Integer.parseInt(DatosMaestra.getLimite());
+        if (!rdPos.isSelected() && limiteProductos > 0) {
+            if (tblProductos.getRowCount() >= limiteProductos) {
+                if (!ControladorAlertas.option("Limite de productos, ¿Desea continuar?")) {
+                    return false;
                 }
             }
+        }
 
-            tblProductos.setDefaultRenderer(Object.class, new IconCellRenderer());
+        return true;
+    }
 
-            try {
-                int num = Integer.parseInt(DatosMaestra.getLimite());
-                if (!rdPos.isSelected()) {
-                    if (num > 0) {
-                        if (tblProductos.getRowCount() >= num) {
-                            if (!ControladorAlertas.option("Limite de productos, ¿Desea continuar?")) {
-                                return;
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
+    private boolean combinarConFilaExistente(ndProducto nodo, int plu, BigDecimal cantidad) {
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            boolean mismoProducto = nodo.getIdSistema().equals(tblProductos.getValueAt(i, 32).toString());
+            boolean mismoPlu = plu == Integer.parseInt(tblProductos.getValueAt(i, 12).toString());
+            if (!mismoProducto || !mismoPlu) {
+                continue;
             }
 
-            if (agrupar) {
-                if (nodo.getCodigo() != null) {
-                    if (nodo.getGrupo() != null) {
-                        if (nodo.getCodigo().equals("IMP01") || nodo.getGrupo().equals("GRP-02")) {
-                            for (int j = 0; j < tblProductos.getRowCount(); j++) {
-                                if (nodo.getIdSistema().equalsIgnoreCase((String) tblProductos.getValueAt(j, 32)) && (plu + "").equals(((int) tblProductos.getValueAt(j, 12)) + "")) {
-                                    tblProductos.setValueAt((big.getMoneda(tblProductos.getValueAt(j, 3).toString().replace(".", ",")).add(cantidad)).toString().replace(".", ","), j, 3);
-                                    txtCodigoProducto.setText("");
-                                    tblProductos.setColumnSelectionInterval(0, 0);
-                                    tblProductos.setRowSelectionInterval(j, j);
-                                    KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-                                    tblProductosKeyReleased(x);
-                                    if (instancias.isLector()) {
-                                        txtCodigoProducto.requestFocus();
-                                    } else {
-                                        tblProductos.editCellAt(0, 3);
-                                        tblProductos.setColumnSelectionInterval(3, 3);
-                                        tblProductos.transferFocus();
-                                    }
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            BigDecimal cantidadActual = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 3).toString());
+            BigDecimal cantidadFinal = cantidadActual.add(cantidad);
+            tblProductos.setValueAt(Utilidades.formatearCantidadVista(cantidadFinal), i, 3);
 
-            if (agrupar) {
-                try {
-                    if (DatosMaestra.isCombinarProductos()) {
-                        if (nodo.getUsuario().equals("ADMIN")) {
-                            for (int j = 0; j < tblProductos.getRowCount(); j++) {
-                                if (nodo.getIdSistema().equalsIgnoreCase((String) tblProductos.getValueAt(j, 32)) && (plu + "").equals(((int) tblProductos.getValueAt(j, 12)) + "")) {
-                                    tblProductos.setValueAt((big.getMoneda(tblProductos.getValueAt(j, 3).toString().replace(".", ",")).add(cantidad)).toString().replace(".", ","), j, 3);
-                                    txtCodigoProducto.setText("");
+            calcularTabla(i, false);
+            txtCodigoProducto.setText("");
+            tblProductos.setColumnSelectionInterval(0, 0);
+            tblProductos.setRowSelectionInterval(i, i);
+            txtCodigoProducto.requestFocus();
 
-                                    tblProductos.setColumnSelectionInterval(0, 0);
-                                    tblProductos.setRowSelectionInterval(j, j);
-
-                                    KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-                                    tblProductosKeyReleased(x);
-
-                                    if (instancias.isLector()) {
-                                        txtCodigoProducto.requestFocus();
-                                    } else {
-                                        tblProductos.editCellAt(0, 3);
-                                        tblProductos.setColumnSelectionInterval(3, 3);
-                                        tblProductos.transferFocus();
-                                    }
-
-                                    txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
-
-                                    return;
-                                }
-                            }
-                        } else {
-
-                        }
-                    }
-                } catch (Exception e) {
-                }
-            }
-
-            if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
-                lbProducto.requestFocus();
-                return;
-            }
-
-            String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
-
-            if (!tipo.equals("") && idProductoACargar.equals("") && !this.tipoProceso.equals("cotizacion")) {
-                VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", this.tipoProceso, BigDecimal.ZERO);
-                compraDetallada.setLocationRelativeTo(null);
-                compraDetallada.setVisible(true);
-                return;
-            } else {
-
-                if (this.plu) {
-                    this.plu = false;
-                    int cant = 0;
-
-                    if (nodo.isPlu2()) {
-                        cant++;
-                    }
-                    if (nodo.isPlu3()) {
-                        cant++;
-                    }
-                    if (nodo.isPlu4()) {
-                        cant++;
-                    }
-                    if (nodo.getPlu5()) {
-                        cant++;
-                    }
-                    if (nodo.getPlu6()) {
-                        cant++;
-                    }
-                    if (nodo.getPlu7()) {
-                        cant++;
-                    }
-                    if (nodo.getPlu8()) {
-                        cant++;
-                    }
-
-                    if (cant > 0) {
-                        seleccionarPLU pluu = new seleccionarPLU(null, true, "bdProductos");
-                        pluu.setFactura(this);
-                        pluu.setInstancias(instancias, nodo.getIdSistema());
-                        pluu.setOpc("factura");
-                        pluu.setVisible(true);
-                        return;
-                    }
-                }
-
-                BigDecimal aux = new BigDecimal("0.0"), iva, valor;
-                valor = big.getBigDecimal(nodo.getL1());
-                iva = big.getBigDecimal(nodo.getIva());
-                iva = (iva.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
-                aux = valor.divide(iva, 2);
-                aux = valor.subtract(aux);
-
-                BigDecimal cant = Utilidades.convertirBigDecimal(nodo.getFisicoInventario());
-
-                aux = aux.divide(new BigDecimal("100"));
-                //
-                String cant2 = "1";
-                String desc = nodo.getDescripcion();
-                String lista = nodo.getL1(), lista1 = "L1";
-                switch (plu) {
-                    case 2:
-                        cant2 = nodo.getCantidad2();
-                        desc = nodo.getDescripcion2();
-                        lista = nodo.getL2();
-                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad2()), 4, RoundingMode.HALF_UP);
-                        lista1 = "L2";
-                        break;
-                    case 3:
-                        cant2 = nodo.getCantidad3();
-                        desc = nodo.getDescripcion3();
-                        lista = nodo.getL3();
-                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad3()), 4, RoundingMode.HALF_UP);
-                        lista1 = "L3";
-                        break;
-                    case 4:
-                        cant2 = nodo.getCantidad4();
-                        desc = nodo.getDescripcion4();
-                        lista = nodo.getL4();
-                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad4()), 4, RoundingMode.HALF_UP);
-                        lista1 = "L4";
-                        break;
-                    case 5:
-                        cant2 = nodo.getCantidad5();
-                        desc = nodo.getDescripcion5();
-                        lista = nodo.getL5();
-                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad5()), 4, RoundingMode.HALF_UP);
-                        lista1 = "L5";
-                        break;
-                    case 6:
-                        cant2 = nodo.getCantidad6();
-                        desc = nodo.getDescripcion6();
-                        lista = nodo.getL6();
-                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad6()), 4, RoundingMode.HALF_UP);
-                        lista1 = "L6";
-                        break;
-                    case 7:
-                        cant2 = nodo.getCantidad7();
-                        desc = nodo.getDescripcion7();
-                        lista = nodo.getL7();
-                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad7()), 4, RoundingMode.HALF_UP);
-                        lista1 = "L7";
-                        break;
-                    case 8:
-                        cant2 = nodo.getCantidad8();
-                        desc = nodo.getDescripcion8();
-                        lista = nodo.getL8();
-                        cant = cant.divide(big.getBigDecimal(nodo.getCantidad8()), 4, RoundingMode.HALF_UP);
-                        lista1 = "L8";
-                        break;
-                }
-
-                BigDecimal restante = cant.subtract(cantidad);
-
-                String invActual = "N/A";
-                String invFinal = "N/A";
-                if (nodo.getManejaInventario()) {
-                    invActual = Utilidades.formatearCantidadVista(cant);
-                    invFinal = Utilidades.formatearCantidadVista(restante);
-                }
-
-                boolean datosGrupo = true;
-                try {
-                    datosGrupo = (boolean) instancias.getSql().getDatosGrupo(nodo.getGrupo())[1];
-                } catch (Exception e) {
-                    datosGrupo = true;
-                }
-
-                Icon icono = null;
-                ImageIcon fot = new ImageIcon(getClass().getResource("/imagenes/eliminar.png"));
-                icono = new ImageIcon(fot.getImage().getScaledInstance(30, 25, Image.SCALE_DEFAULT));
-
-                String cadena = "";
-                if (instancias.getConfiguraciones().isRestaurante()) {
-
-                } else {
-//                    if (!idProd.equals("")) {
-//                        cadena = idProd;
-//                    }
-                }
-
-                String grupo = "";
-                if (nodo.getGrupo() != null) {
-                    grupo = nodo.getGrupo();
-                }
-
-                String detalle = "";
-                if (!imei.equals("")) {
-                    detalle = imei;
-                }
-
-                if (!color.equals("")) {
-                    if (detalle.equals("")) {
-                        detalle = color;
-                    } else {
-                        detalle = detalle + "-" + color;
-                    }
-                }
-
-                if (!talla.equals("")) {
-                    if (detalle.equals("")) {
-                        detalle = talla;
-                    } else {
-                        detalle = detalle + "-" + talla;
-                    }
-                }
-
-                if (!lote.equals("")) {
-                    detalle = lote;
-                }
-
-                if (!fechaVence.equals("")) {
-                    if (detalle.equals("")) {
-                        detalle = fechaVence;
-                    } else {
-                        detalle = detalle + "-" + fechaVence;
-                    }
-                }
-
-                if (!detalleMensualidad.equals("")) {
-                    detalle = detalleMensualidad;
-                }
-
-                modeloPro.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(big.getBigDecimal(lista)),
-                    Utilidades.formatearCantidadVista(cantidad), big.setMoneda(big.getBigDecimal(lista)), "0", "0",
-                    big.setMoneda(big.getBigDecimal(nodo.getIva())).replace(this.simbolo + " ", ""),
-                    this.simbolo + " 0", big.setMoneda(big.getBigDecimal(lista)),
-                    nodo.getUbicacion1(), nodo.getReferencia(), plu,
-                    Utilidades.formatearCantidadVista(big.getBigDecimal(cant2).multiply(cantidad)), this.simbolo + " 0", "", "PENDIENTE", this.simbolo + " 0", datosGrupo, this.simbolo + " 0",
-                    this.simbolo + " 0", cadena, new JLabel(icono), big.setMonedaExacta(big.getBigDecimal(nodo.getImpoconsumoVenta())).replace(this.simbolo + " ", ""), "", "", "",
-                    detalle, lote, idProductoACargar, "Nuevo", "Sin-Permiso", nodo.getIdSistema(), big.setMoneda(big.getBigDecimal(aux)), grupo, nodo.getUnd(),
-                    nodo.getManejaInventario(), lista1, invActual, invFinal});
-                txtCodigoProducto.setText("");
-
-                tblProductos.scrollRectToVisible(tblProductos.getCellRect(tblProductos.getRowCount() - 1, 0, true));
-                cargarTotales();
-
-                tblProductos.setColumnSelectionInterval(0, 0);
-                tblProductos.setRowSelectionInterval(modeloPro.getRowCount() - 1, modeloPro.getRowCount() - 1);
-
-                if (!this.plu) {
-                    if (cmbListaPrecio.getSelectedIndex() > 0) {
-                        cmbListas.setSelectedItem(cmbListaPrecio.getSelectedItem());
-                        tblProductos.setValueAt(cmbListaPrecio.getSelectedItem(), tblProductos.getRowCount() - 1, 37);
-                        tblProductos.setColumnSelectionInterval(37, 37);
-                        tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
-                        cambiarListaCliente();
-                    }
-                }
-            }
-
-            btnPasarACongelada.setVisible(esValidoParaPasarACongeladas());
-
-            calcularTabla(modeloPro.getRowCount() - 1, false);
             txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
+            return true;
+        }
 
-            if (instancias.isLector()) {
-                txtCodigoProducto.requestFocus();
+        return false;
+    }
+
+    private String construirDetalle(String imei, String color, String talla, String lote, String fechaVence, String detalleMensualidad) {
+        String detalle = "";
+        if (!imei.equals("")) {
+            detalle = imei;
+        }
+
+        if (!color.equals("")) {
+            if (detalle.equals("")) {
+                detalle = color;
             } else {
-                if (DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor")) {
-                    tblProductos.editCellAt(tblProductos.getRowCount() - 1, 2);
-                    tblProductos.setColumnSelectionInterval(2, 2);
-                    tblProductos.transferFocus();
-                } else {
-                    tblProductos.editCellAt(tblProductos.getRowCount() - 1, 3);
-                    tblProductos.setColumnSelectionInterval(3, 3);
-                    tblProductos.transferFocus();
-                }
+                detalle = detalle + "-" + color;
             }
+        }
 
+        if (!talla.equals("")) {
+            if (detalle.equals("")) {
+                detalle = talla;
+            } else {
+                detalle = detalle + "-" + talla;
+            }
+        }
+
+        if (!lote.equals("")) {
+            detalle = lote;
+        }
+
+        if (!fechaVence.equals("")) {
+            if (detalle.equals("")) {
+                detalle = fechaVence;
+            } else {
+                detalle = detalle + "-" + fechaVence;
+            }
+        }
+
+        if (!detalleMensualidad.equals("")) {
+            detalle = detalleMensualidad;
+        }
+
+        return detalle;
+    }
+
+    public void cargarProducto(String codigo, BigDecimal cantidad, int pluProducto, String imei, String lote, String idProductoDetallado, Boolean agrupar, String talla, String color,
+            String temp, String fechaVence, String detalleMensualidad) {
+
+        if (!validacionesAlCargarProducto(idProductoDetallado, imei, lote)) {
             return;
         }
 
-        if (codigo.equals("")) {
-            try {
-                int num = Integer.parseInt(DatosMaestra.getLimite());
-                if (!rdPos.isSelected()) {
-                    if (num > 0) {
-                        if (tblProductos.getRowCount() >= num) {
-                            if (!ControladorAlertas.option("Limite de productos, ¿Desea continuar?")) {
-                                return;
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
+        ResultadoBusquedaProducto resultado = daoProducto.buscarPorCodigo(codigo);
+        codigo = resultado.getCodigoResuelto();
+        ndProducto nodo = resultado.getProducto();
+
+        if (this.plu) {
+            this.plu = false;
+            if (daoProducto.productoConPlu(nodo)) {
+                VistaSeleccionarPLU seleccionarPLU = new VistaSeleccionarPLU(null, true, "bdProductos");
+                seleccionarPLU.setFactura(this);
+                seleccionarPLU.setInstancias(instancias, nodo.getIdSistema());
+                seleccionarPLU.setOpc("factura");
+                seleccionarPLU.setVisible(true);
+                return;
+            }
+        }
+
+        if (nodo.getCodigo() == null || nodo.getCodigo().isEmpty()) {
+            ventanaProductos(codigo);
+            return;
+        }
+
+        if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
+            metodos.msgError(null, "Este producto esta inactivo");
+            lbProducto.requestFocus();
+            return;
+        }
+
+        String tipoProducto = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
+
+        if (agrupar) {
+            boolean productoConsolidable = nodo.getCodigo() != null && nodo.getGrupo() != null
+                    && (nodo.getCodigo().equals("IMP01") || nodo.getGrupo().equals("GRP-02"));
+
+            if (productoConsolidable && combinarConFilaExistente(nodo, pluProducto, cantidad)) {
+                return;
             }
 
-            ventanaProductos(codigo);
-        } else {
-            ControladorAlertas.alert("El codigo no existe!");
-            txtCodigoProducto.setText("");
-            lbProducto.requestFocus();
+            if (DatosMaestra.isCombinarProductos() && nodo.getUsuario().equals("ADMIN")
+                    && tipoProducto.isEmpty() && combinarConFilaExistente(nodo, pluProducto, cantidad)) {
+                return;
+            }
         }
+
+        if (!tipoProducto.equals("") && idProductoDetallado.equals("") && !this.tipoProceso.equals("cotizacion")) {
+            String tipoProcesoMovimiento = this.esFacturaCredito ? TipoDocumento.CREDITO.getValor() : this.tipoProceso;
+            VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, "Salida", tipoProcesoMovimiento, BigDecimal.ZERO);
+            compraDetallada.setLocationRelativeTo(null);
+            compraDetallada.setVisible(true);
+            return;
+        } else {
+            ResultadoPluProducto resultadoPluProducto = daoProducto.obtenerDatosPluProducto(nodo, pluProducto);
+            BigDecimal cantidadPlu = resultadoPluProducto.getCantidadPlu();
+            BigDecimal listaPrecio = resultadoPluProducto.getListaPrecio();
+            String listaTexto = resultadoPluProducto.getListaPrecioTexto();
+            String descripcion = resultadoPluProducto.getDescripcion();
+            String codigoProducto = resultadoPluProducto.getCodigoLista();
+
+            BigDecimal aux = new BigDecimal("0.0"), iva, valor;
+            valor = big.getBigDecimal(nodo.getL1());
+            iva = big.getBigDecimal(nodo.getIva());
+            iva = (iva.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
+            aux = valor.divide(iva, 2);
+            aux = valor.subtract(aux);
+            aux = aux.divide(new BigDecimal("100"));
+
+            String invActual = "N/A";
+            String invFinal = "N/A";
+            if (nodo.getManejaInventario()) {
+                BigDecimal cantidadFisicoInventarioActual = resultadoPluProducto.getCantidadFisicoInventarioActual();
+                invActual = Utilidades.formatearCantidadVista(cantidadFisicoInventarioActual);
+
+                BigDecimal restante = cantidadFisicoInventarioActual.subtract(cantidad);
+                invFinal = Utilidades.formatearCantidadVista(restante);
+            }
+
+            boolean datosGrupo = true;
+            try {
+                datosGrupo = (boolean) instancias.getSql().getDatosGrupo(nodo.getGrupo())[1];
+            } catch (Exception e) {
+                datosGrupo = true;
+            }
+
+            String grupo = "";
+            if (nodo.getGrupo() != null) {
+                grupo = nodo.getGrupo();
+            }
+
+            String detalle = construirDetalle(imei, color, talla, lote, fechaVence, detalleMensualidad);
+            String preparacion = "";
+
+            modeloPro.addRow(new Object[]{
+                codigoProducto,
+                descripcion,
+                big.setMoneda(listaPrecio),
+                Utilidades.formatearCantidadVista(cantidad),
+                big.setMoneda(listaPrecio),
+                "0",
+                "0",
+                big.setMoneda(big.getBigDecimal(nodo.getIva())).replace(this.simbolo + " ", ""),
+                this.simbolo + " 0",
+                big.setMoneda(listaPrecio),
+                nodo.getUbicacion1(),
+                nodo.getReferencia(),
+                pluProducto,
+                Utilidades.formatearCantidadVista(big.getBigDecimal(cantidadPlu).multiply(cantidad)),
+                this.simbolo + " 0",
+                "",
+                "PENDIENTE",
+                this.simbolo + " 0", datosGrupo, this.simbolo + " 0",
+                this.simbolo + " 0", preparacion, "SinIconoBorrar", big.setMonedaExacta(big.getBigDecimal(nodo.getImpoconsumoVenta())).replace(this.simbolo + " ", ""), "", "", "",
+                detalle, lote, idProductoDetallado, "Nuevo", "Sin-Permiso", nodo.getIdSistema(), big.setMoneda(big.getBigDecimal(aux)), grupo, nodo.getUnd(),
+                nodo.getManejaInventario(), listaTexto, invActual, invFinal});
+            txtCodigoProducto.setText("");
+
+            tblProductos.scrollRectToVisible(tblProductos.getCellRect(tblProductos.getRowCount() - 1, 0, true));
+            cargarTotales();
+
+            tblProductos.setColumnSelectionInterval(0, 0);
+            tblProductos.setRowSelectionInterval(modeloPro.getRowCount() - 1, modeloPro.getRowCount() - 1);
+
+            if (!this.plu) {
+                if (cmbListaPrecio.getSelectedIndex() > 0) {
+                    cmbListas.setSelectedItem(cmbListaPrecio.getSelectedItem());
+                    tblProductos.setValueAt(cmbListaPrecio.getSelectedItem(), tblProductos.getRowCount() - 1, 37);
+                    tblProductos.setColumnSelectionInterval(37, 37);
+                    tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
+                    cambiarListaCliente();
+                }
+            }
+        }
+
+        btnPasarACongelada.setVisible(esValidoParaPasarACongeladas());
+        calcularTabla(modeloPro.getRowCount() - 1, false);
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
+        marcarFocoTabla();
     }
 
-    public void ventaDiseno(String mov, String cadena, String prod, String precio) {
-        if (mov.equals("Guardar")) {
+    private void marcarFocoTabla() {
+        final int ultimaFila = tblProductos.getRowCount() - 1;
+        if (ultimaFila < 0) {
+            return;
+        }
 
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                if (tblProductos.getValueAt(i, 32).equals(prod)) {
-                    modeloPro.removeRow(i);
-                    break;
+        if (instancias.isLector()) {
+            tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
+            txtCodigoProducto.requestFocus();
+        } else {
+            int columna = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
+            tblProductos.setColumnSelectionInterval(columna, columna);
+            tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
+            tblProductos.editCellAt(ultimaFila, columna);
+            tblProductos.transferFocus();
+        }
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                tblProductos.scrollRectToVisible(tblProductos.getCellRect(ultimaFila, 0, true));
+
+                JScrollPane scrollPane = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, tblProductos);
+                if (scrollPane != null) {
+                    JScrollBar barraVertical = scrollPane.getVerticalScrollBar();
+                    barraVertical.setValue(barraVertical.getMaximum());
                 }
             }
-
-            String cantidadEstablecida = DatosMaestra.getCantidadEstablecidaAlCargar();
-            cargarProducto(prod, Utilidades.convertirBigDecimal(cantidadEstablecida), 1, "", "", cadena, false, "", "", "", "", "");
-
-            tblProductos.setValueAt(precio, tblProductos.getRowCount() - 1, 2);
-
-        } else {
-            txtCodigoProducto.setText("");
-        }
+        });
     }
 
     public void cargarArticulos(String tipo) {
@@ -8994,9 +8842,10 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private void solicitarPermisoParaLimpiar() {
-        if (metodos.msgPregunta(null, "No se puede borrar ¿Pedir permiso?") == 0) {
-            vistaSolicitarPermisos permisos = new vistaSolicitarPermisos(null, true, "No se puede limpiar la mesa.", "LIMPIAR",
-                    instancias.getTitulo(), "borrarMesa");
+        if (metodos.msgPregunta(null, "No se puede limpiar ¿Pedir permiso?") == 0) {
+            AccionesPermisos accion = new AccionesPermisos(true, false, false);
+            String tipoProcesoBorrar = this.tipoProceso.equals(TipoDocumento.MESA.getValor()) ? "borrarMesa" : "borrarFactura";
+            VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, tipoProcesoBorrar, accion, instancias.getTitulo(), BigDecimal.ZERO);
             permisos.setLocationRelativeTo(null);
             permisos.setVisible(true);
         }
@@ -9045,8 +8894,9 @@ public final class VistaFactura extends javax.swing.JPanel {
                         Object[] informacion = instancias.getSql().getInformacionPermiso(idPermisoAsignado);
 
                         if (big.getBigDecimal(informacion[2]).compareTo(porcentaje2) < 0) {
-                            vistaSolicitarPermisos permisos = new vistaSolicitarPermisos(null, true, "El descuento máximo es " + informacion[2] + "%.", "DESCUENTO",
-                                    big.setNumero(porcentaje2), this.tipoProceso);
+                            AccionesPermisos accion = new AccionesPermisos(false, true, false);
+                            VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, this.tipoProceso, accion,
+                                    big.setNumero(porcentaje2), big.getBigDecimal(informacion[2]));
                             permisos.setLocationRelativeTo(null);
                             permisos.setVisible(true);
 
@@ -9063,9 +8913,9 @@ public final class VistaFactura extends javax.swing.JPanel {
                             }
                         }
                     } else {
-                        vistaSolicitarPermisos permisos = new vistaSolicitarPermisos(null, true,
-                                "El descuento máximo es " + instancias.getDescuentoMaximoVentas() + "%.", "DESCUENTO",
-                                big.setNumero(porcentaje2), this.tipoProceso);
+                        AccionesPermisos accion = new AccionesPermisos(false, true, false);
+                        VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, this.tipoProceso, accion,
+                                big.setNumero(porcentaje2), instancias.getDescuentoMaximoVentas());
                         permisos.setLocationRelativeTo(null);
                         permisos.setVisible(true);
 

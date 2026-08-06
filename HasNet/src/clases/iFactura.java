@@ -1019,28 +1019,6 @@ public class iFactura {
 
     //CLUB Y CUENTA CORRIENTE
     //CONTRATO DE CREDITO
-    public void verPrestamo(String contrato, String info) {
-        JasperReport reporte;
-
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesCreditos/credito" + Instancias.getInstancias().getTipoImpresion() + ".jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map parametros = new HashMap();
-            parametros.clear();
-            parametros.put("id", contrato);
-//            parametros.put("urlImagen", this.getClass().getResourceAsStream(firma));
-            parametros.put("info", info);
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
     public void verEstadoDeCuenta(String contrato, String info) {
         JasperReport reporte;
 
