@@ -323,7 +323,7 @@ public class DaoFactura {
     private List<LineaProducto> parsearLineasMesa(Object[][] mat) {
         // Columnas: 8=producto,9=descripcion,10=lista,11=cantidad,12=cant2,13=porcDescuento,
         //  14=descuento,15=plu,16=preparacion,17=imei,18=idProd
-        List<LineaProducto> lineas = new ArrayList<LineaProducto>();
+        List<LineaProducto> lineas = new ArrayList<>();
         for (Object[] reg : mat) {
             int plu = Integer.parseInt(reg[15].toString());
             LineaProducto linea = new LineaProducto();

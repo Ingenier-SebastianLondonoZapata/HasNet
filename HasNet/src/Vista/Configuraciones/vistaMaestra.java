@@ -7572,7 +7572,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos1(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "parqueadero", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "parqueadero");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);
@@ -7582,7 +7582,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtaCobrar);

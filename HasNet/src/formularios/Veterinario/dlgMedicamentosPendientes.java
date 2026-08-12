@@ -868,7 +868,7 @@ public class dlgMedicamentosPendientes extends javax.swing.JDialog {
     }//GEN-LAST:event_txtCodKeyReleased
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtMedicamento);

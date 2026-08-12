@@ -3819,7 +3819,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String nit) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), true, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
 //        buscar.setInstancia(instancias);

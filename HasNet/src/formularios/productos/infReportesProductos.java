@@ -63,7 +63,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
         );
 
         cmbTipoReporte.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        cmbTipoReporte.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "Reporte de productos", "Reporte de prestamos", "Reporte de compras", "Reporte de ajustes", "Reporte de orden de compras", "Reporte de inventario", "Reporte de traslados internos", "Reporte de ivas de compra", "Reporte de movimientos por serial", "Kardex del producto" }));
+        cmbTipoReporte.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "Reporte de productos", "Reporte de prestamos", "Reporte de compras", "Reporte de ajustes", "Reporte de orden de compras", "Reporte de inventario", "Reporte de traslados internos", "Reporte de ivas de compra", "Reporte de movimientos por serial" }));
         cmbTipoReporte.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbTipoReporteItemStateChanged(evt);
@@ -96,7 +96,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                     .addComponent(cmbTipoReporte)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
         );
 
@@ -275,28 +275,6 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 pnlReporte.setSize(jPanel1.getSize());
                 jPanel1.removeAll();
                 jPanel1.add(pnlReporte, CENTER_ALIGNMENT);
-                jPanel1.revalidate();
-                jPanel1.repaint();
-                jPanel1.setVisible(true);
-            } else {
-                cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
-            }
-        }
-
-        if (cmbTipoReporte.getSelectedIndex() == 10) {
-            if (instancias.getUsuarioLog().isKardex()) {
-                infKardexProductos pnlReporte = new infKardexProductos();
-                instancias.setKardexProductos(pnlReporte);
-                javax.swing.JDesktopPane dkp = new javax.swing.JDesktopPane();
-                dkp.setSize(jPanel1.getSize());
-                dkp.add(pnlReporte);
-                try {
-                    pnlReporte.show();
-                    pnlReporte.setMaximum(true);
-                } catch (java.beans.PropertyVetoException ex) { }
-                jPanel1.removeAll();
-                jPanel1.add(dkp, CENTER_ALIGNMENT);
                 jPanel1.revalidate();
                 jPanel1.repaint();
                 jPanel1.setVisible(true);

@@ -2023,7 +2023,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 //        buscar.show();
 //    }
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "peluqueria", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "peluqueria");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);

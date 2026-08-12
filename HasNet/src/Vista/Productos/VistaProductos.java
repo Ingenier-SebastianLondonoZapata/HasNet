@@ -4950,7 +4950,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, true, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, true, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);
@@ -4960,7 +4960,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductosUnificar(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "");
         buscar.setLocationRelativeTo(null);
         buscar.setOpc("producto");
         instancias.setBusProductos(buscar);

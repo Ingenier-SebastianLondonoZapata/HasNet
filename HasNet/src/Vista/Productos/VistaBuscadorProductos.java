@@ -1,6 +1,5 @@
 package Vista.Productos;
 
-import Vista.Productos.VistaIngreso;
 import clases.IconCellRenderer;
 import clases.Instancias;
 import clases.big;
@@ -13,7 +12,6 @@ import formularios.productos.buscProductos2;
 import formularios.productos.nuevoProducto;
 import formularios.productos.verLogo;
 import java.awt.Image;
-import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
@@ -22,6 +20,7 @@ import javax.swing.table.TableRowSorter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -32,7 +31,10 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     DefaultTableModel modelo;
     TableRowSorter modeloOrdenado;
     Instancias instancias;
-    private String opc, tipo, baseDatos;
+    
+    private String TIPO_BUSQUEDA;
+    
+    private String opc;
     private VistaFactura factura;
     private VistaIngreso ingreso;
     private TextAutoCompleter autoCompletar;
@@ -48,7 +50,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         this.claseBuscador = claseBuscador;
     }
 
-    public VistaBuscadorProductos(java.awt.Frame parent, boolean modal, boolean buscarInactivos, String lugar, String base) {
+    public VistaBuscadorProductos(java.awt.Frame parent, boolean modal, boolean buscarInactivos, String tipoBusqueda) {
         super(parent, modal);
         initComponents();
 
@@ -58,8 +60,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         instancias = Instancias.getInstancias();
         datos = instancias.getSql().getDatosMaestra();
 
-        baseDatos = base;
-        tipo = lugar;
+        TIPO_BUSQUEDA = tipoBusqueda;
         autoCompletar = new TextAutoCompleter(txtGrupo);
 
         cargarTablaProductos(buscarInactivos);
@@ -90,19 +91,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             consulta = "Where activo=false ";
         }
 
-        String base = "bdProductos";
-        if (baseDatos.equals("productos1")) {
-            base = "bdProductos";
-        } else if (baseDatos.equals("productos1bodega1")) {
-            base = "bdProductosBodega1";
-        } else if (baseDatos.equals("productos1bodega2")) {
-            base = "bdProductosBodega2";
-        } else if (baseDatos.equals("productos1bodega3")) {
-            base = "bdProductosBodega3";
-        } else if (baseDatos.equals("productos1bodega4")) {
-            base = "bdProductosBodega4";
-        }
-
         //Si tiene alguna clase especial para buscar
         if (claseBuscador.equals("Agenda")) {
             if (consulta.equals("")) {
@@ -122,7 +110,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("adiciones")) {
+        if (TIPO_BUSQUEDA.equals("adiciones")) {
             if (consulta.equals("")) {
                 consulta = "Where grupo = 'GRP-02' ";
             } else {
@@ -130,7 +118,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("peluqueria")) {
+        if (TIPO_BUSQUEDA.equals("peluqueria")) {
             if (consulta.equals("")) {
                 consulta = "Where grupo = 'GRP-06' ";
             } else {
@@ -138,7 +126,8 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("desdeCosteo")) {
+        String base = "bdProductos";
+        if (TIPO_BUSQUEDA.equals("desdeCosteo")) {
             if (consulta.equals("")) {
                 consulta = "Where " + base + ".Usuario = 'FACTURA' OR " + base + ".Usuario = 'COSTEO' ";
             } else {
@@ -146,7 +135,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("parqueadero")) {
+        if (TIPO_BUSQUEDA.equals("parqueadero")) {
             if (consulta.equals("")) {
                 consulta = "Where Grupo = 'GRP-0' ";
             } else {
@@ -154,7 +143,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("lavado")) {
+        if (TIPO_BUSQUEDA.equals("lavado")) {
             if (consulta.equals("")) {
                 consulta = "Where Grupo = 'GRP-01' ";
             } else {
@@ -162,7 +151,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("showRoom")) {
+        if (TIPO_BUSQUEDA.equals("showRoom")) {
             if (consulta.equals("")) {
                 consulta = "Where Grupo = 'GRP-04' ";
             } else {
@@ -170,7 +159,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("sinArmados")) {
+        if (TIPO_BUSQUEDA.equals("sinArmados")) {
             if (consulta.equals("")) {
                 consulta = "Where " + base + ".Usuario = 'ADMIN' ";
             } else {
@@ -178,7 +167,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         }
 
-        if (tipo.equals("sinSerial")) {
+        if (TIPO_BUSQUEDA.equals("sinSerial")) {
             if (consulta.equals("")) {
                 consulta = "Where (tipoProducto = '' OR tipoProducto is NULL) && " + base + ".Usuario = 'ADMIN' ";
             } else {
@@ -1086,7 +1075,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                VistaBuscadorProductos dialog = new VistaBuscadorProductos(new javax.swing.JFrame(), true, false, null, null);
+                VistaBuscadorProductos dialog = new VistaBuscadorProductos(new javax.swing.JFrame(), true, false, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

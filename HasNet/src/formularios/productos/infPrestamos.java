@@ -1995,7 +1995,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             tipo = "sinSerial";
         }
 
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, tipo, "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, tipo);
         buscar.setOpc("traslado");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);

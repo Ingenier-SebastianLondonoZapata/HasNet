@@ -1172,7 +1172,7 @@ public class infRips extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtId1);

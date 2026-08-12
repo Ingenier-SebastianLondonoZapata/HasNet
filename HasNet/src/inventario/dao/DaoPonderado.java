@@ -37,6 +37,23 @@ public class DaoPonderado extends AbstractDao {
         return new UltimoPonderado(BigDecimal.ZERO, BigDecimal.ZERO, "");
     }
 
+    public String obtenerIdUltimoRegistroPonderado(String idProducto) throws SQLException {
+        
+        String sql = "SELECT MAX(Id) AS Id FROM bdPonderado WHERE producto = ?";
+
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setString(1, idProducto);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Id");
+                }
+            }
+        }
+
+        return "";
+    }
+    
     public void actualizarUltimoPonderado(Connection conn, String producto, PonderadoPendiente calculo, String usuario, String movimiento) throws SQLException {
 
         String sql = "UPDATE " + Tablas.ULTIMO_PONDERADO.getNombre() + " SET ultimoCosto=?, ponderadoAntiguo=?, cantidadAntigua=?, "

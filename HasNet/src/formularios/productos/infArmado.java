@@ -1184,28 +1184,13 @@ public class infArmado extends javax.swing.JInternalFrame {
 
     public void ventanaProductos2() {
         String base = txtBodega.getText();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (base.equals("123-22")) {
-                base = "productos1";
-            } else if (base.equals("BODEGA-1")) {
-                base = "productos1bodega1";
-            } else if (base.equals("BODEGA-2")) {
-                base = "productos1bodega2";
-            } else if (base.equals("BODEGA-3")) {
-                base = "productos1bodega3";
-            } else if (base.equals("BODEGA-4")) {
-                base = "productos1bodega4";
-            }
-        } else {
-            base = "productos1";
-        }
-
-        if (base.equals("")) {
+        
+        if (base.isEmpty()) {
             metodos.msgAdvertenciaAjustado(this, "Seleccione una bodega...");
             return;
         }
 
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);
@@ -1330,24 +1315,7 @@ public class infArmado extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        String base = txtBodega.getText();
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (base.equals("123-22")) {
-                base = "productos1";
-            } else if (base.equals("BODEGA-1")) {
-                base = "productos1bodega1";
-            } else if (base.equals("BODEGA-2")) {
-                base = "productos1bodega2";
-            } else if (base.equals("BODEGA-3")) {
-                base = "productos1bodega3";
-            } else if (base.equals("BODEGA-4")) {
-                base = "productos1bodega4";
-            }
-        } else {
-            base = "productos1";
-        }
-
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);

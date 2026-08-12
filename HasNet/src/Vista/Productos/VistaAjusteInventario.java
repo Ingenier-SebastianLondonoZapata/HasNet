@@ -4,7 +4,7 @@ import Enums.EstadosDetalleProducto;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
 import Enums.enumBodegas;
-import ImpresionesProductos.GenerarReportes;
+import Impresiones.ImpresionesProductos.GeneradorReporteProducto;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
@@ -863,10 +863,10 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (tblProductos.getSelectedColumn() == 3) {
+            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), "bdProductos");
+            String tipoProducto = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
             if (cmbTipoAjuste.getSelectedIndex() == 0) {
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), "bdProductos");
-                String tipoProducto = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
                 List<DetalleProducto> detallesProductos = generarDetallesProductos();
                 String tipoMovimiento = "Entrada";
                 String tipoDocumento = TipoDocumento.AJUSTE_ENTRADA.getValor();
@@ -877,7 +877,9 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                     compraDetallada.setVisible(true);
                 }
             } else {
-                metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
+                if (!tipoProducto.isEmpty()) {
+                    metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
+                }
             }
         }
     }//GEN-LAST:event_tblProductosMouseClicked
@@ -903,7 +905,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                         break;
                     case 2:
                         String codigoProducto = obtenerValorTabla(filaSeleccionada, 15);
-                        if (!existeProductoDetalle(codigoProducto)) {
+                        if (!existeProductoDetalle(codigoProducto, filaSeleccionada)) {
                             tblProductos.editCellAt(filaSeleccionada, 3);
                             tblProductos.setColumnSelectionInterval(3, 3);
                             tblProductos.transferFocus();
@@ -940,7 +942,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     }//GEN-LAST:event_btnBusProdActionPerformed
 
     private void generarReporte(String consecutivo) {
-        GenerarReportes reportes = new GenerarReportes(instancias);
+        GeneradorReporteProducto reportes = new GeneradorReporteProducto(instancias);
         reportes.verAjusteInventario(consecutivo);
 
         boolean esAjusteEntrada = instancias.getSql().tipoAjuste(consecutivo).equals("123-11");
@@ -1378,12 +1380,16 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         }
     }
 
-    private boolean existeProductoDetalle(String codigoProducto) {
+    private boolean existeProductoDetalle(String codigoProducto, int filaSeleccionada) {
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
             String producto = tblDetalle.getValueAt(i, 0).toString();
             if (producto.equals(codigoProducto)) {
                 return true;
             }
+        }
+
+        if (!tblProductos.getValueAt(filaSeleccionada, 11).toString().isEmpty()) {
+            return true;
         }
 
         return false;
@@ -1426,7 +1432,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     }
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "");
         buscar.setOpc("ajuste");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);

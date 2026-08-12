@@ -1948,7 +1948,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "lavado", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "lavado");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);
@@ -1958,7 +1958,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos1(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, rootPaneCheckingEnabled, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);

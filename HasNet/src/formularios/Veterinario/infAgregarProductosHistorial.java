@@ -429,7 +429,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblProductos1KeyReleased
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);

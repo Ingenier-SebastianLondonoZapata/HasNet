@@ -2950,22 +2950,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        String base = txtBodega.getText();
-        if (base.equals("123-22")) {
-            base = "productos1";
-        } else if (base.equals("BODEGA-1")) {
-            base = "productos1bodega1";
-        } else if (base.equals("BODEGA-2")) {
-            base = "productos1bodega2";
-        } else if (base.equals("BODEGA-3")) {
-            base = "productos1bodega3";
-        } else if (base.equals("BODEGA-4")) {
-            base = "productos1bodega4";
-        } else {
-            base = "productos1";
-        }
-
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "facturacion", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "facturacion");
         buscar.setOpc("NotaDebito");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);

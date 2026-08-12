@@ -132,7 +132,6 @@ import formularios.Veterinario.infRepPeluqueria;
 
 import Vista.Productos.VistaAjusteInventario;
 import Vista.Productos.VistaInventarioInicial;
-import formularios.productos.infKardexProductos;
 import Vista.Productos.ordenCompra;
 import formularios.infUsuarios;
 import formularios.productos.infPrestamos;
@@ -3542,18 +3541,6 @@ public class vistaMenu extends javax.swing.JFrame {
     }
 
     private void cargarModulosProductos() {
-        try {
-            infKardexProductos interno4 = new infKardexProductos();
-            dkpFormularios.add(interno4);
-            instancias.setKardexProductos(interno4);
-            if (instancias.getUsuarioLog().isKardex()) {
-                interno4.show();
-            }
-            interno4.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         try {
             VistaProductos interno4 = new VistaProductos();
             dkpFormularios.add(interno4);

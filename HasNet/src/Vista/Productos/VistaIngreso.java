@@ -48,6 +48,7 @@ import formularios.Ventas.dlgTipoDescuento;
 import inventario.vista.VistaMovimientoDetalleProducto;
 import formularios.productos.dlgDetalleCompra;
 import formularios.terceros.buscClientes;
+import inventario.dao.DaoPonderado;
 import java.awt.Color;
 import java.awt.Event;
 import java.awt.Image;
@@ -95,6 +96,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private final DaoResoluciones daoResoluciones = new DaoResoluciones();
     private final DaoDetalleProducto daoDetalleProducto = new DaoDetalleProducto();
     private final DaoProducto daoProducto = new DaoProducto();
+    private final DaoPonderado daoPonderado = new DaoPonderado();
 
     DefaultTableModel modeloComprobantes;
 
@@ -2285,7 +2287,14 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
             Object[][] productos = instancias.getSql().getProductosCompra(consecutivo);
             for (Object[] producto : productos) {
-                String idPonderado = instancias.getSql().getConsecutivoPonderado(producto[0].toString());
+                String idPonderado;
+                try {
+                    idPonderado = daoPonderado.obtenerIdUltimoRegistroPonderado(producto[0].toString());
+                } catch (SQLException ex) {
+                    System.out.println("Hubo un error al obtener el id del ultimo registro ponderado" + ex);
+                    return;
+                }
+                
                 Object[] ponderados = instancias.getSql().getUltimoPonderado1(idPonderado);
                 String ingreso = ponderados[9] != null ? ponderados[9].toString() : "";
                 instancias.getSql().modificarPonderado(ponderados[8].toString(), producto[0].toString(),
@@ -2924,7 +2933,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void ventanaProductos(String codigo) {
         String lugar = "sinArmados";
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, lugar, "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, lugar);
         buscar.setOpc(tipoProceso);
         buscar.setIngreso(this);
         buscar.setLocationRelativeTo(null);

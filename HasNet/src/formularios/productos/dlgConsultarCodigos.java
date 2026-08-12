@@ -337,7 +337,7 @@ public class dlgConsultarCodigos extends javax.swing.JDialog {
     }//GEN-LAST:event_btnBuscTercerosActionPerformed
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

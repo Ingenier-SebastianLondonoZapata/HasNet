@@ -1711,25 +1711,12 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
     public void ventanaProductos(String codigo) {
 
-        String base = "";
-        if (txtBaseOrigen.getText().equals("bdProductosBodega1")) {
-            base = "productos1Bodega1";
-        } else if (txtBaseOrigen.getText().equals("bdProductosBodega2")) {
-            base = "productos1Bodega2";
-        } else if (txtBaseOrigen.getText().equals("bdProductosBodega3")) {
-            base = "productos1Bodega3";
-        } else if (txtBaseOrigen.getText().equals("bdProductosBodega4")) {
-            base = "productos1Bodega4";
-        } else {
-            base = "productos1";
-        }
-
         if (txtNombreBO.getText().equals("")) {
             metodos.msgAdvertenciaAjustado(this, "Seleccionar una bodega");
             return;
         }
 
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", base);
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "");
         buscar.setOpc("trasladoInterno");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);

@@ -659,7 +659,7 @@ public class infRepParqueadero extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProducto(String nit) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "parqueadero", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "parqueadero");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo1);

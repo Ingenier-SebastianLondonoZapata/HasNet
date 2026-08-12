@@ -2229,18 +2229,6 @@ public class SQL {
         }
     }
 
-    public String getConsecutivoPonderado(String cod) {
-        String instruccion_sql = "select Id from ultimoPonderado1 where producto = '" + cod + "'; ";
-        String[] colName = {"Id"};
-        boolean[] cadena = {true};
-
-        try {
-            return GetRegistro(colName, cadena, instruccion_sql)[0].toString();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public Object[] getUltimoPonderado1(String producto) {
         boolean ok = false;
         String instruccion_sql = "select producto, ponderadoAntiguo, cantidadAntigua, cantidadEntrante, nuevoPonderado, nuevaCantidad, usuario, ultimoCosto, fecha, ingreso "
@@ -6303,32 +6291,6 @@ public class SQL {
         return ok;
     }
 
-    public Object[][] getProductosInvInicialKardex1(String prod) {
-        String colName[] = {
-            "producto", "total", "costo"};
-        String instruccion_sql = "select producto, total, costo from bdInventarioInicial where producto = '" + prod + "' ";
-        Object dtDatos[][] = getDatos(colName, " bdInventarioInicial ", instruccion_sql, " where producto ='" + prod + "' ");
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosInvInicialKardex(String prod) {
-        String colName[] = {
-            "ingreso", "cantidad", "valor", "descuento", "subtotal", "iva", "porIva", "total"};
-        String instruccion_sql = "select ingreso, cantidad, valor, descuento, subtotal, iva, porIva, total from bdCompra where producto = '" + prod + "' and ingreso = 'ING-0' ";
-        Object dtDatos[][] = getDatos(colName, " bdCompra ", instruccion_sql, " where producto ='" + prod + "'  and ingreso = 'ING-0' ");
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosComprasKardex(String prod) {
-        String colName[] = {
-            "ingreso", "cantidad", "valor", "descuento", "subtotal", "iva", "porIva", "total"};
-        String instruccion_sql = "select ingreso, cantidad, valor, descuento, subtotal, iva, porIva, total from bdCompra where producto = '" + prod + "' and ingreso <> 'ING-0' ";
-        Object dtDatos[][] = getDatos(colName, " bdCompra ", instruccion_sql, " where producto ='" + prod + "'  and ingreso <> 'ING-0' ");
-        return dtDatos;
-    }
-
     public Object[][] getAjustesMovimientos(String prod) {
         String colName[] = {
             "Id", "origen", "tipo", "fecha", "valor", "usuario"};
@@ -6469,121 +6431,6 @@ public class SQL {
         String instruccion_sql = "select traslado, imeil from bdTrasladosBodegasProd where imeil LIKE '" + imei + "%' and estado = 'PENDIENTE' ";
         Object dtDatos[][] = getDatos(colName, " bdTrasladosBodegasProd ", instruccion_sql, " where imeil LIKE '" + imei + "%' and estado = 'PENDIENTE' ");
 
-        return dtDatos;
-    }
-
-    public Object[][] getProductosAjustesKardex(String prod, String tabla, String bodega) {
-        String colName[] = {
-            "Id", "fecha", "cantidad", "lista", "total", "usuario"};
-
-        String condicion = "";
-        if (bodega.equals("123-22")) {
-            condicion = " where producto = '" + prod + "' and (bodega = '" + bodega + "' or bodega = ''); ";
-        } else {
-            condicion = " where producto = '" + prod + "' and bodega = '" + bodega + "' ; ";
-        }
-
-        String instruccion_sql = "select Id, fecha, cantidad, lista, total, usuario from " + tabla + condicion;
-        Object dtDatos[][] = getDatos(colName, tabla, instruccion_sql, condicion);
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosAjustesKardex1(String prod, String tabla) {
-        String colName[] = {
-            "Id", "fecha", "cantidad", "lista", "total", "usuario"};
-        String instruccion_sql = "select Id, fecha, cantidad, lista, total, usuario from " + tabla + " where producto = '" + prod + "' ";
-        Object dtDatos[][] = getDatos(colName, tabla, instruccion_sql, " where producto = '" + prod + "' ");
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosNotaCreditoKardex(String prod, String bodega) {
-        String colName[] = {
-            "factura", "idTercero", "nombre", "fecha", "lista", "cantidad", "subtotal", "descuento", "valIva", "porIva", "total", "usuario"};
-
-        String condicion = "";
-        if (bodega.equals("123-22")) {
-            condicion = " where producto = '" + prod + "' and (bodega = '" + bodega + "' or bodega = ''); ";
-        } else {
-            condicion = " where producto = '" + prod + "' and bodega = '" + bodega + "' ; ";
-        }
-
-        String instruccion_sql = "select factura, idTercero, nombre, fecha, lista, cantidad, subtotal, descuento, valIva, porIva, total, usuario"
-                + " from notasCredito1 " + condicion;
-        Object dtDatos[][] = getDatos(colName, "notasCredito1", instruccion_sql, condicion);
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosAnuladaKardex(String prod, String tabla, String campo, String bodega) {
-        String colName[] = {
-            "factura", campo, "nombre", "fechaFactura", "lista", "cantidad", "subtotal", "descuento", "iva", "porcIva", "total", "usuario"};
-
-        String condicion = "";
-        if (bodega.equals("123-22")) {
-            condicion = " where producto = '" + prod + "' and (bodega = '" + bodega + "' or bodega = ''); ";
-        } else {
-            condicion = " where producto = '" + prod + "' and bodega = '" + bodega + "' ; ";
-        }
-
-        String instruccion_sql = "select factura, " + campo + ", nombre, fechaFactura, lista, cantidad, subtotal, descuento, iva, porcIva, total, usuario"
-                + " from " + tabla + condicion;
-        Object dtDatos[][] = getDatos(colName, tabla, instruccion_sql, condicion);
-        return dtDatos;
-    }
-
-    public Object[][] getProductosTipoSepareKardex(String prod, String tabla, String campo, String bodega) {
-        String colName[] = {
-            "factura", campo, "nombre", "fechaFactura", "lista", "cantidad", "subtotal", "descuento", "iva", "porcIva", "total", "usuario"};
-
-        String condicion = "";
-        if (bodega.equals("123-22")) {
-            condicion = " where producto = '" + prod + "' and anulada = false and estado2 = '' and (bodega = '" + bodega + "' or bodega = ''); ";
-        } else {
-            condicion = " where producto = '" + prod + "' and anulada = false and estado2 = '' and bodega = '" + bodega + "' ; ";
-        }
-
-        String instruccion_sql = "select factura, " + campo + ", nombre, fechaFactura, lista, cantidad, subtotal, descuento, iva, porcIva, total, usuario"
-                + " from " + tabla + condicion;
-
-        Object dtDatos[][] = getDatos(colName, tabla, instruccion_sql, condicion);
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosCongeladaKardex(String prod, String tabla, String campo, String bodega) {
-        String colName[] = {
-            "idFactura", campo, "nombre", "fechaFactura", "lista", "cantidad", "subtotal", "descuento", "iva", "porcIva", "total", "usuario"};
-
-        String condicion = "";
-        if (bodega.equals("123-22")) {
-            condicion = " where producto = '" + prod + "' and anulada = false and (bodega = '" + bodega + "' or bodega = ''); ";
-        } else {
-            condicion = " where producto = '" + prod + "' and anulada = false and bodega = '" + bodega + "' ; ";
-        }
-
-        String instruccion_sql = "select idFactura, " + campo + ", nombre, fechaFactura, lista, cantidad, subtotal, descuento, iva, porcIva, total, usuario"
-                + " from " + tabla + condicion;
-        Object dtDatos[][] = getDatos(colName, tabla, instruccion_sql, condicion);
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosTipoFacturacionKardex(String prod, String tabla, String bodega) {
-        String colName[] = {
-            "factura", "cliente", "nombre", "fechaFactura", "lista", "cantidad", "subtotal", "descuento", "iva", "porcIva", "total", "usuario"};
-
-        String condicion = "";
-        if (bodega.equals("123-22")) {
-            condicion = " where producto = '" + prod + "' and anulada = false and (bodega = '" + bodega + "' or bodega = '') ";
-        } else {
-            condicion = " where producto = '" + prod + "' and anulada = false and bodega = '" + bodega + "' ";
-        }
-
-        String instruccion_sql = "select factura, cliente, nombre, fechaFactura, lista, cantidad, subtotal, descuento, iva, porcIva, total, usuario"
-                + " from " + tabla + condicion;
-        Object dtDatos[][] = getDatos(colName, tabla, instruccion_sql, condicion);
         return dtDatos;
     }
 

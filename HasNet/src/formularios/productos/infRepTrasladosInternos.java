@@ -823,7 +823,7 @@ public class infRepTrasladosInternos extends javax.swing.JPanel {
     }
 
     public void ventanaProducto(String nit) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), false, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), false, false, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

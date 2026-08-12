@@ -1703,7 +1703,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "");
         buscar.setOpc("diseño");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
@@ -1715,7 +1715,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos2() {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(instancias.getMenu(), rootPaneCheckingEnabled, false, "desdeCosteo");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

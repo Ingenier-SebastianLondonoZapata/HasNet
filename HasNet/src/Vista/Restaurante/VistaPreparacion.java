@@ -711,7 +711,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "adiciones", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "adiciones");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodProducto);

@@ -795,7 +795,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProducto(String nit) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "lavado", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "lavado");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtCodigo);

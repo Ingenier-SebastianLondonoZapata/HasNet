@@ -58,8 +58,8 @@ public class Instancias {
 
     private static Instancias instancias;
 
-    private SQL sql;
-    private SQL1 sqlPagos;
+    private final SQL sql;
+    private final SQL1 sqlPagos;
 
     Instancias() {
         menu = null;
@@ -283,7 +283,6 @@ public class Instancias {
     private infInventario inventario;
     private VistaProductos productos;
     private VistaGrupos grupos;
-    private infKardexProductos kardexProductos;
     private VistaBuscadorProductos buscProductos;
     private buscSeriales buscSeriales;
     private buscColores buscColores;
@@ -916,15 +915,7 @@ public class Instancias {
     public void setBodegasClientes(infBodegasClientes bodegasClientes) {
         this.bodegasClientes = bodegasClientes;
     }
-
-    public infKardexProductos getKardexProductos() {
-        return kardexProductos;
-    }
-
-    public void setKardexProductos(infKardexProductos kardexProductos) {
-        this.kardexProductos = kardexProductos;
-    }
-
+    
     public infRepHistorial getRepHistorial() {
         return repHistorial;
     }

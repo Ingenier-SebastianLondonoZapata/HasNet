@@ -1,5 +1,6 @@
 package Vista.Ventas;
 
+import Vista.Restaurante.VistaCambiarMesa;
 import Vista.Restaurante.PanelGruposCompacto;
 import Vista.Restaurante.VistaImpresionComanda;
 import Vista.Restaurante.VistaGruposProductos;
@@ -12,7 +13,9 @@ import Enums.TipoProducto;
 import Enums.enumBodegas;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
-import ImpresionesCreditos.GenerarReportes;
+import Impresiones.ImpresionesCreditos.GeneradorReporteCredito;
+import Impresiones.ImpresionesPedidos.GeneradorReportePedido;
+import Impresiones.ImpresionesSepares.GeneradorReporteSepare;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
 import Modelo.DocumentosElectronicos.ModeloDetalleProductos;
@@ -874,8 +877,8 @@ public final class VistaFactura extends javax.swing.JPanel {
                 break;
             case "pedido":
                 String tipo1 = this.getTipo();
-
-                instancias.getReporte().ver_Pedido(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), legal, "", instancias.getPie(), this.getTipo(), !DatosMaestra.isPrevisualizarPedido());
+                GeneradorReportePedido reportes = new GeneradorReportePedido(instancias);
+                reportes.ver_Pedido(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "", this.getTipo(), !DatosMaestra.isPrevisualizarPedido());
 
                 try {
                     Thread.sleep(500);
@@ -887,7 +890,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     try {
                         if (copias != null || !copias.equals("")) {
                             for (int i = 0; i < Integer.parseInt(copias); i++) {
-                                instancias.getReporte().ver_Pedido(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), legal, "Copia " + (i + 1), instancias.getPie(), this.getTipo(), !DatosMaestra.isPrevisualizarPedido());
+                                reportes.ver_Pedido(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "Copia " + (i + 1), this.getTipo(), !DatosMaestra.isPrevisualizarPedido());
                             }
                         }
                     } catch (NumberFormatException e) {
@@ -896,20 +899,21 @@ public final class VistaFactura extends javax.swing.JPanel {
                     int cantidad = Integer.parseInt(DatosMaestra.getNumPedido());
                     if (cantidad > 0) {
                         for (int i = 0; i < cantidad; i++) {
-                            instancias.getReporte().ver_Pedido(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), legal, "Copia " + (i + 1), instancias.getPie(), this.getTipo(), !DatosMaestra.isPrevisualizarPedido());
+                            reportes.ver_Pedido(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "Copia " + (i + 1), this.getTipo(), !DatosMaestra.isPrevisualizarPedido());
                         }
                     }
                 }
                 break;
             case "separe":
-                instancias.getReporte().ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), legal, "", instancias.getPie(), this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
+                GeneradorReporteSepare reportesSepare = new GeneradorReporteSepare(instancias);
+                reportesSepare.ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "", this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
 
                 if (DatosMaestra.isCopiasPlanSepare()) {
                     String copias = JOptionPane.showInputDialog("Cantidad de copias");
                     try {
                         if (copias != null || !copias.equals("")) {
                             for (int i = 0; i < Integer.parseInt(copias); i++) {
-                                instancias.getReporte().ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), legal, "", instancias.getPie(), this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
+                                reportesSepare.ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "", this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
                             }
                         }
                     } catch (NumberFormatException e) {
@@ -918,7 +922,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     int cantidad = Integer.parseInt(DatosMaestra.getNumPlanSepare());
                     if (cantidad > 0) {
                         for (int i = 0; i < cantidad; i++) {
-                            instancias.getReporte().ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), legal, "", instancias.getPie(), this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
+                            reportesSepare.ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "", this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
                         }
                     }
                 }
@@ -1109,7 +1113,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         lbOtroConsecutivo = new javax.swing.JTextField();
         txtTurno = new javax.swing.JTextField();
         pnlCambiarMesa = new javax.swing.JPanel();
-        lbCambiarMesa = new javax.swing.JLabel();
         btnCambiarMesa = new javax.swing.JButton();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
@@ -1477,7 +1480,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     .addComponent(pnlGrupos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        tapControl.addTab("Facturación", jPanel2);
+        tapControl.addTab("Productos", jPanel2);
 
         pnlCredito.setBackground(new java.awt.Color(255, 255, 255));
         pnlCredito.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Información del crédito", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 14))); // NOI18N
@@ -3005,11 +3008,9 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         pnlCambiarMesa.setBackground(new java.awt.Color(255, 255, 255));
 
-        lbCambiarMesa.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        lbCambiarMesa.setText("CAMBIAR MESA");
-
-        btnCambiarMesa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cambiarMesa.png"))); // NOI18N
+        btnCambiarMesa.setText("CAMBIAR DE MESA");
         btnCambiarMesa.setToolTipText("Ctrl+M");
+        btnCambiarMesa.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnCambiarMesa.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnCambiarMesa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3021,18 +3022,13 @@ public final class VistaFactura extends javax.swing.JPanel {
         pnlCambiarMesa.setLayout(pnlCambiarMesaLayout);
         pnlCambiarMesaLayout.setHorizontalGroup(
             pnlCambiarMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlCambiarMesaLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(btnCambiarMesa, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbCambiarMesa))
+            .addComponent(btnCambiarMesa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
         );
         pnlCambiarMesaLayout.setVerticalGroup(
             pnlCambiarMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlCambiarMesaLayout.createSequentialGroup()
                 .addComponent(btnCambiarMesa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(lbCambiarMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -4543,28 +4539,19 @@ public final class VistaFactura extends javax.swing.JPanel {
     }//GEN-LAST:event_txtFechaFacturaActionPerformed
 
     private void btnCambiarMesaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarMesaActionPerformed
-        String num = instancias.getSql().getNumeroMesas();
-
-        Object[][] congeladas = instancias.getSql().getDatosCongelada1();
-        if (congeladas.length >= Integer.parseInt(num)) {
-            metodos.msgAdvertenciaAjustado(null, "No hay mesas disponibles");
-            return;
-        }
-
         String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(this.tipoProceso);
         String factura = prefijoGeneral + "-" + lbNoFactura.getText();
-        dlgEscojerMesa mesa = new dlgEscojerMesa(null, true, factura);
+        VistaCambiarMesa mesa = new VistaCambiarMesa(null, true, factura);
         mesa.setVisible(true);
 
         if (cambioMesa) {
-            //btnVolverMouseClicked(null);
-//            instancias.getMesas().cargarRegistrosMesas();
-//            instancias.getMesas().cargarRegistros();
-//            instancias.getMesas().setSelected(true);
-//
-//            if (!instancias.getMenu().getSeVeElMenu()) {
-//                instancias.getMenu().expandirMenu();
-//            }
+            instancias.getMesas().cargarRegistrosMesas();
+            instancias.getMesas().cargarRegistros();
+            instancias.getMesas().setSelected(true);
+
+            if (!instancias.getMenu().getSeVeElMenu()) {
+                instancias.getMenu().expandirMenu();
+            }
         }
     }//GEN-LAST:event_btnCambiarMesaActionPerformed
 
@@ -5682,7 +5669,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private boolean esValidoParaPasarACongeladas() {
-        System.out.println("que tipo soy: " + this.tipoProceso);
         return !instancias.getConfiguraciones().isRestaurante() && modeloPro.getRowCount() > 0 && this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor());
     }
 
@@ -5901,7 +5887,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         generarImpresionDocumento(desde, factura, factura2, imprimir);
 
         if (esFacturaCredito) {
-            GenerarReportes reportes = new GenerarReportes(instancias);
+            GeneradorReporteCredito reportes = new GeneradorReporteCredito(instancias);
             reportes.verCredito(idCreditoGenerado);
         }
 
@@ -6251,7 +6237,8 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "facturacion", "productos1");
+        String tipoBusqueda = this.tipoProceso.equals(TipoDocumento.ORDER_SERVICIO.getValor()) ? "sinSerial" : "";
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, tipoBusqueda);
         buscar.setOpc("factura");
         buscar.setFactura(this);
         buscar.setLocationRelativeTo(null);
@@ -8985,7 +8972,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JScrollPane jtblComprobantes;
-    private javax.swing.JLabel lbCambiarMesa;
     private javax.swing.JLabel lbCar;
     private javax.swing.JLabel lbCargarDocumento;
     private javax.swing.JLabel lbCelular1;

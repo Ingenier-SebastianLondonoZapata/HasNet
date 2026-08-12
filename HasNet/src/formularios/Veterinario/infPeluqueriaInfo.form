@@ -118,7 +118,7 @@
                                   <Component id="jScrollPane3" alignment="1" pref="0" max="32767" attributes="0"/>
                                   <Component id="lbFoto" max="32767" attributes="0"/>
                                   <Component id="btnInasistencia" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="btnAgregarProductos" alignment="0" pref="302" max="32767" attributes="0"/>
+                                  <Component id="btnAgregarProductos" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -306,7 +306,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="lbProxima" pref="25" max="32767" attributes="0"/>
-                              <Component id="dtProxima" max="32767" attributes="0"/>
+                              <Component id="dtProxima" pref="25" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       </Group>

@@ -1649,7 +1649,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
 //        buscar.show();
 //    }
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "");
         buscar.setLocationRelativeTo(null);
         buscar.setClaseBuscador("Agenda");
         buscar.cargarTablaProductos(false);

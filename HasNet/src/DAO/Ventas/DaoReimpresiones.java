@@ -95,6 +95,8 @@ public class DaoReimpresiones {
         boolean tieneImpoconsumo = existeColumnaEnTabla(tabla, "impoconsumo");
         boolean tieneIdCosteo = existeColumnaEnTabla(tabla, "idCosteo");
         boolean tieneIdProducto = existeColumnaEnTabla(tabla, "idProd");
+        boolean tieneImei = existeColumnaEnTabla(tabla, "imei");
+        boolean tieneDetalle = existeColumnaEnTabla(tabla, "detalle");
 
         String[] nombreColumnasBD = {
             "Codigo", "descripcion", "lista", "cantidad", "subtotal", "descuento",
@@ -112,21 +114,25 @@ public class DaoReimpresiones {
         String idCosteoSQL = tieneIdCosteo ? "F.idCosteo" : "'' AS idCosteo";
         String idProductoSQL = tieneIdProducto ? "F.idProd" : "'' AS idProd";
 
-        String sql = "SELECT P.Codigo, F.descripcion, F.lista, F.cantidad, F.subtotal, F.descuento, "
+        String columnaDetalle = tieneImei ? "F.imei" : (tieneDetalle ? "F.detalle" : null);
+        String descripcionSQL = columnaDetalle != null
+                ? "CASE WHEN " + columnaDetalle + " IS NULL OR TRIM(" + columnaDetalle + ") = '' "
+                + "THEN F.descripcion ELSE CONCAT(F.descripcion, ' ', " + columnaDetalle + ") END AS descripcion"
+                : "F.descripcion";
+
+        String sql = "SELECT P.Codigo, " + descripcionSQL + ", F.lista, F.cantidad, F.subtotal, F.descuento, "
                 + "F.porcIva, F.iva, " + impoconsumoSQL + ", " + idProductoSQL + ", F.preparacion, " + idCosteoSQL + ", "
                 + "F.total, F.cant2, P.idSistema "
                 + "FROM " + tabla + " F "
                 + "INNER JOIN bdProductos P ON F.producto = P.idSistema "
                 + "WHERE F.factura = '" + identificadorDocumento + "' ";
 
-        System.out.println("sql productos: " + sql);
-
         Object[][] datos = daoGenerales.obtenerDatosTabla(nombreColumnasBD, sql);
 
         return new DefaultTableModel(datos, nombreColumnasTabla) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return true;
+                return false;
             }
         };
     }

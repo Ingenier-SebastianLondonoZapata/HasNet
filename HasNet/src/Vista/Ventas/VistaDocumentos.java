@@ -4,6 +4,8 @@ import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
+import Impresiones.ImpresionesPedidos.GeneradorReportePedido;
+import Impresiones.ImpresionesSepares.GeneradorReporteSepare;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Terceros.ModeloContacto;
@@ -436,7 +438,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         pos = new javax.swing.JRadioButton();
         carta = new javax.swing.JRadioButton();
         mediaCarta = new javax.swing.JRadioButton();
-        btnBuscTerceros2 = new javax.swing.JButton();
+        btnReimprimir = new javax.swing.JButton();
         btnAnular = new javax.swing.JButton();
         lbFacturaRelacionada = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
@@ -1134,16 +1136,16 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
         });
 
-        btnBuscTerceros2.setBackground(new java.awt.Color(247, 220, 111));
-        btnBuscTerceros2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
-        btnBuscTerceros2.setText("REIMPRIMIR");
-        btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnBuscTerceros2.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnBuscTerceros2.addActionListener(new java.awt.event.ActionListener() {
+        btnReimprimir.setBackground(new java.awt.Color(247, 220, 111));
+        btnReimprimir.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir.setText("REIMPRIMIR");
+        btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReimprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnReimprimir.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnReimprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscTerceros2ActionPerformed(evt);
+                btnReimprimirActionPerformed(evt);
             }
         });
 
@@ -1172,7 +1174,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnBuscTerceros2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReimprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(pos)
                         .addGap(18, 18, 18)
@@ -1199,9 +1201,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbFacturaRelacionada, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnAnular, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBuscTerceros2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)))
+                    .addComponent(btnAnular, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReimprimir, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1278,8 +1279,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addContainerGap())
         );
-
-        jPanel8.getAccessibleContext().setAccessibleName("Observaciones del documento");
 
         tapPanel.addTab("Vista Previa", pnlFormulario1);
 
@@ -1395,7 +1394,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jPanel5FocusGained
 
-    private void btnBuscTerceros2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros2ActionPerformed
+    private void btnReimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirActionPerformed
         boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
         boolean esServicioAutomotor = instancias.getConfiguraciones().isServicioAutomotor();
 
@@ -1413,6 +1412,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         String encabezado = datosDocumento.isEsAnulado() ? "Reimpresión (Anulada)" : "Reimpresión";
         encabezado = mantenerEncabezado ? encabezado : "";
         String impresoraEstablecida = obtenerImpresoraEstablecida();
+        
+        FuncionalidadVentas funcionalidadVentas = new FuncionalidadVentas();
         String tipoImpresion = obtenerTipoImpresion();
         String informacionLegal = instancias.getLegal() == null ? "" : instancias.getLegal();
         String pieDePagina = instancias.getPie() == null ? "" : instancias.getLegal();
@@ -1437,7 +1438,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
             case "PLAN SEPARE": {
                 String documento = "SEPARE-" + NUMERO_DOCUMENTO_SELECCIONADO;
-                instancias.getReporte().ver_Separe(documento, txtObservaciones.getText(), infoEmpresa, informacionLegal, encabezado, pieDePagina, tipoImpresion, false);
+                GeneradorReporteSepare reportes = new GeneradorReporteSepare(instancias);
+                reportes.ver_Separe(documento, txtObservaciones.getText(), infoEmpresa, encabezado, tipoImpresion, false);
                 break;
             }
 
@@ -1451,7 +1453,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             case "PEDIDOS": {
                 boolean previsualizarPedidos = (Boolean) datosMaestra[72];
                 String documento = "PEDIDO-" + NUMERO_DOCUMENTO_SELECCIONADO;
-                instancias.getReporte().ver_Pedido(documento, txtObservaciones.getText(), infoEmpresa, informacionLegal, "", pieDePagina, tipoImpresion, previsualizarPedidos);
+                GeneradorReportePedido reportes = new GeneradorReportePedido(instancias);
+                reportes.ver_Pedido(documento, txtObservaciones.getText(), infoEmpresa, "", tipoImpresion, previsualizarPedidos);
                 break;
             }
 
@@ -1464,7 +1467,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
             default:
         }
-    }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
+    }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void tblDocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDocumentosMouseClicked
         Object tipoSeleccionado = cmbTipoDocumento.getSelectedItem();
@@ -1969,6 +1972,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(i, 2).toString().replace(".", ","))), i, 2);
+            tblProductos.setValueAt(Utilidades.formatearCantidadVista(tblProductos.getValueAt(i, 3).toString()), i, 3);
             tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(i, 4).toString().replace(".", ","))), i, 4);
             tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(i, 5).toString().replace(".", ","))), i, 5);
             tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(i, 7).toString().replace(".", ","))), i, 7);
@@ -2264,9 +2268,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnular;
     private javax.swing.JButton btnBuscTerceros1;
-    private javax.swing.JButton btnBuscTerceros2;
     private javax.swing.JButton btnFacturar;
     private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnReimprimir;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton carta;
     private javax.swing.JCheckBox chkSoloAnuladas;

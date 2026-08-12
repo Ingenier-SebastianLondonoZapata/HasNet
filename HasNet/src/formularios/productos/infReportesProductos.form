@@ -73,7 +73,7 @@
                           <Component id="jLabel1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel1" pref="636" max="32767" attributes="0"/>
+                      <Component id="jPanel1" pref="640" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -115,7 +115,7 @@
                   <Font name="Century Gothic" size="18" style="1"/>
                 </Property>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="11">
+                  <StringArray count="10">
                     <StringItem index="0" value=" "/>
                     <StringItem index="1" value="Reporte de productos"/>
                     <StringItem index="2" value="Reporte de prestamos"/>
@@ -126,7 +126,6 @@
                     <StringItem index="7" value="Reporte de traslados internos"/>
                     <StringItem index="8" value="Reporte de ivas de compra"/>
                     <StringItem index="9" value="Reporte de movimientos por serial"/>
-                    <StringItem index="10" value="Kardex del producto"/>
                   </StringArray>
                 </Property>
               </Properties>

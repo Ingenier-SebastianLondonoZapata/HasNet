@@ -887,7 +887,7 @@ public class infMensualidad extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBuscTerceros1ActionPerformed
 
     public void ventanaProductos(String codigo) {
-        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "parqueadero", "productos1");
+        VistaBuscadorProductos buscar = new VistaBuscadorProductos(null, true, false, "parqueadero");
         buscar.setLocationRelativeTo(null);
         instancias.setBusProductos(buscar);
         instancias.setCampoActual(txtServicio);
