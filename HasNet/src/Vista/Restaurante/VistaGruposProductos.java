@@ -67,6 +67,7 @@ public class VistaGruposProductos extends JDialog {
         registrarAtajos();
 
         setSize(1050, 660);
+        setResizable(false);
         setLocationRelativeTo(parent);
     }
 

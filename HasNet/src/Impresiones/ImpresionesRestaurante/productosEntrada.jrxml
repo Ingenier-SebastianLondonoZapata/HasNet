@@ -16,21 +16,59 @@
 	<parameter name="id" class="java.lang.String"/>
 	<parameter name="hora" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[Select * from productosEntradas $P!{sql}]]>
+		<![CDATA[SELECT
+    c.Id AS Id,
+    c.congelada AS congelada,
+    c.factura AS factura,
+    c.cod AS cod,
+    c.producto AS producto,
+    c.opciones AS opciones,
+    c.ingredientes AS ingredientes,
+    c.aderezos AS aderezos,
+    c.cantidad AS cant,
+    c.observaciones AS observaciones,
+    c.consecutivo AS consecutivo,
+    p.grupo AS Grupo
+FROM bdcomanda c
+INNER JOIN bdproductos p
+    ON c.cod = p.idSistema
+    AND p.grupo = 'GRP-05'
+$P!{sql}]]>
 	</queryString>
-	<field name="Id" class="java.lang.Integer"/>
-	<field name="congelada" class="java.lang.String"/>
-	<field name="factura" class="java.lang.String"/>
-	<field name="pedido" class="java.lang.String"/>
-	<field name="cod" class="java.lang.String"/>
-	<field name="producto" class="java.lang.String"/>
-	<field name="opciones" class="java.lang.String"/>
-	<field name="ingredientes" class="java.lang.String"/>
-	<field name="aderezos" class="java.lang.String"/>
-	<field name="cant" class="java.lang.String"/>
-	<field name="observaciones" class="java.lang.String"/>
-	<field name="consecutivo" class="java.lang.String"/>
-	<field name="Grupo" class="java.lang.String"/>
+	<field name="Id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="congelada" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="factura" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cod" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="producto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="opciones" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ingredientes" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="aderezos" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cant" class="java.math.BigDecimal"/>
+	<field name="observaciones" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="consecutivo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Grupo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

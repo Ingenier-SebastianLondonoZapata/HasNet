@@ -4662,12 +4662,16 @@ public class SQL {
 
     //Obtener el estado de una cuenta(Anulada o no anulada)
     public boolean getDocumentoAnulado(String tabla, String condicion) {
+
         String instruccion_sql = "select anulada from " + tabla + " " + condicion + " ; ";
+        System.out.println("consulta completa: " + instruccion_sql);
+
         //columnas de la tabla que se
         String[] colName = {"anulada"};
         boolean[] cadena = {true};
         //se realiza la consulta
         Object[] data = GetRegistro(colName, cadena, instruccion_sql);
+        System.out.println("respuesta: " + data[0].toString());
         if (data[0].toString().equals("0")) {
             return false;
         } else {
@@ -6718,23 +6722,11 @@ public class SQL {
 
     public boolean modificarCuadreNotasCredito(String id, String doc, String estado) {
         boolean ok = false;
-        String instruccion_sql = "update bdPlanSepare set red=?,estadoGeneral =? where factura ='" + id + "' ;";
+        String instruccion_sql = "update bdNotasCredito set red=?, estadoGeneral =? where factura = '" + id + "' ;";
         ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
         return ok;
     }
 
-//    public boolean modificarInventario(String nombre, int total, String id) {
-//        boolean ok = false;
-//        String instruccion_sql = "update bdProductos set " + nombre + " =? where Codigo = '" + id + "' ;";
-//        ok = Actualizar_Registro(new Object[]{"", total}, null, instruccion_sql);
-//        return ok;
-//    }
-//    public boolean modificarInventario1(String nombre, String total, String id) {
-//        boolean ok = false;
-//        String instruccion_sql = "update bdProductos set " + nombre + " =? where Codigo = '" + id + "' ;";
-//        ok = Actualizar_Registro(new Object[]{"", total}, null, instruccion_sql);
-//        return ok;
-//    }
     public boolean modificarInventario(String nombre, String total, String id, String base) {
         boolean ok = false;
         String instruccion_sql = "update " + base + " set " + nombre + " =? where idSistema = '" + id + "' ;";
@@ -6781,18 +6773,11 @@ public class SQL {
         return dtDatos;
     }
 
-    public boolean modificarEstadoEgreso(String fecha, String estado) {
+    public boolean modificarEstadoEgreso(String fecha, String estado, String documento) {
         boolean ok = false;
-        String instruccion_sql = "update bdEgreso set estado=? where fecha = '" + fecha + "' AND "
+        String instruccion_sql = "update bdEgreso set estado=?, modeloContable=? where fecha = '" + fecha + "' AND "
                 + "terminal='" + Instancias.getInstancias().getTerminal() + "' AND usuario='" + Instancias.getInstancias().getUsuario() + "'";
-        ok = Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarEstadoEgreso1(String fecha, String estado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdEgreso set estado=? where fecha = '" + fecha + "' AND terminal='" + Instancias.getInstancias().getTerminal() + "' AND usuario='" + Instancias.getInstancias().getUsuario() + "'";
-        ok = Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
+        ok = Actualizar_Registro(new Object[]{"", estado, documento}, null, instruccion_sql);
         return ok;
     }
 

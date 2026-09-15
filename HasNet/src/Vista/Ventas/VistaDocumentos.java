@@ -119,6 +119,10 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
 
         filtrar.setSelected(true);
+
+        if (!instancias.getConfiguraciones().isFacturaElectronica()) {
+            chkSoloFacturasElectronicas.setVisible(false);
+        }
     }
 
     private void cargarTiposDocumentos() {
@@ -331,6 +335,20 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         builder.append("anulada = true ");
     }
 
+    private void agregarCondicionFacturasElectronicas(StringBuilder builder) {
+        boolean soloFacturasElectronicas = chkSoloFacturasElectronicas.isSelected();
+        if (!soloFacturasElectronicas) {
+            return;
+        }
+
+        if (builder.length() > 0) {
+            builder.append("AND ");
+        }
+
+        builder.append("modeloContable = '" + Constantes.FACTURACION_ELECTRONICA + "' "
+                + "OR modeloContable = '" + Constantes.FACTURACION_ELECTRONICA_POS + "' ");
+    }
+
     public void actualizarTablaDocumentos() {
         if (!detectarClicABoton) {
             return;
@@ -351,6 +369,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         agregarCondicionPorFechas(condicionBuilder);
         agregarCondicionPorTerminal(condicionBuilder);
         agregarCondicionAnuladas(condicionBuilder);
+        agregarCondicionFacturasElectronicas(condicionBuilder);
 
         String condicion = condicionBuilder.toString().trim();
         if (!condicion.isEmpty()) {
@@ -398,6 +417,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         lbNit9 = new javax.swing.JLabel();
         dtFinal = new datechooser.beans.DateChooserCombo();
         chkSoloAnuladas = new javax.swing.JCheckBox();
+        chkSoloFacturasElectronicas = new javax.swing.JCheckBox();
         btnFacturar = new javax.swing.JButton();
         btnImprimir = new javax.swing.JButton();
         chkUnificarFacturas = new javax.swing.JCheckBox();
@@ -625,6 +645,15 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
         });
 
+        chkSoloFacturasElectronicas.setBackground(new java.awt.Color(255, 255, 255));
+        chkSoloFacturasElectronicas.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        chkSoloFacturasElectronicas.setText("¿Ver solo facturas eletrónicas?");
+        chkSoloFacturasElectronicas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkSoloFacturasElectronicasItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -641,8 +670,10 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dtFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39)
-                .addComponent(chkSoloAnuladas)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkSoloFacturasElectronicas)
+                    .addComponent(chkSoloAnuladas))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -657,7 +688,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                         .addComponent(dtInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addComponent(lbNit8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(filtrar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chkSoloFacturasElectronicas, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -688,7 +721,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                             .addComponent(txtIdentificadorCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtConseManual, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -779,7 +812,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1276,7 +1309,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                             .addGap(3, 3, 3)
                             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1412,7 +1445,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         String encabezado = datosDocumento.isEsAnulado() ? "Reimpresión (Anulada)" : "Reimpresión";
         encabezado = mantenerEncabezado ? encabezado : "";
         String impresoraEstablecida = obtenerImpresoraEstablecida();
-        
+
         FuncionalidadVentas funcionalidadVentas = new FuncionalidadVentas();
         String tipoImpresion = obtenerTipoImpresion();
         String informacionLegal = instancias.getLegal() == null ? "" : instancias.getLegal();
@@ -1591,6 +1624,10 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         iniciarFacturacion(true);
     }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void chkSoloFacturasElectronicasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkSoloFacturasElectronicasItemStateChanged
+        actualizarTablaDocumentos();
+    }//GEN-LAST:event_chkSoloFacturasElectronicasItemStateChanged
 
     private boolean existeTipoDocumentoEnCombo(String tipoDocumento) {
         for (int i = 0; i < cmbTipoDocumento.getItemCount(); i++) {
@@ -2180,7 +2217,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             return;
         }
 
-        int indexComprobante = solicitarSeleccionComprobante();
+        int indexComprobante = solicitarSeleccionComprobante(seleccionados);
         if (indexComprobante < 0) {
             return;
         }
@@ -2235,7 +2272,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
     }
 
-    private int solicitarSeleccionComprobante() {
+    private int solicitarSeleccionComprobante(List<DocumentoSeleccionado> seleccionados) {
         DaoResoluciones daoResoluciones = new DaoResoluciones();
         List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(
                 TipoDocumento.FACTURACION.getValor());
@@ -2262,7 +2299,32 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         if (resultado != JOptionPane.OK_OPTION) {
             return -1;
         }
-        return comboComprobantes.getSelectedIndex();
+
+        int indexSeleccionado = comboComprobantes.getSelectedIndex();
+
+        // El cliente por defecto (1010) no puede usarse para facturación electrónica.
+        String tipoResolucion = resoluciones.get(indexSeleccionado).getTipoResolucion();
+        if (Constantes.esFacturacionElectronica(tipoResolucion) && contieneClientePorDefecto(seleccionados)) {
+            JOptionPane.showMessageDialog(this,
+                    "No es posible generar facturación electrónica con el cliente por defecto ("
+                    + Constantes.CLIENTE_POR_DEFECTO + ").\n"
+                    + "La facturación electrónica requiere un cliente válido.",
+                    "Facturación electrónica no permitida", JOptionPane.WARNING_MESSAGE);
+            return -1;
+        }
+
+        return indexSeleccionado;
+    }
+
+    private boolean contieneClientePorDefecto(List<DocumentoSeleccionado> seleccionados) {
+        for (DocumentoSeleccionado doc : seleccionados) {
+            String nit = doc.getNitCliente() != null ? doc.getNitCliente() : "";
+            String nitBase = nit.contains("-") ? nit.split("-")[0] : nit;
+            if (Constantes.CLIENTE_POR_DEFECTO.equals(nitBase)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2274,6 +2336,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton carta;
     private javax.swing.JCheckBox chkSoloAnuladas;
+    private javax.swing.JCheckBox chkSoloFacturasElectronicas;
     private javax.swing.JCheckBox chkUnificarFacturas;
     private javax.swing.JComboBox cmbEstadoDocumento;
     private javax.swing.JComboBox cmbTipoDocumento;

@@ -71,14 +71,14 @@ public class squemaDocumentosElectronicos extends javax.swing.JPanel {
                     listadoDetalles.add(descripcionError);
                 }
                 
-                alerts.alertaGrandeListado("Se presentaron los siguientes errores...", listadoDetalles, false);
+                ControladorAlertas.alertaGrandeListado("Se presentaron los siguientes errores...", listadoDetalles, false);
                 return false;
             } else {
                 return true;
             }
         } else {
             System.out.println("Respuesta diferente a JSON: " + respuesta);
-            alerts.alertFail("Error al generar factura electrónica");
+            ControladorAlertas.alertFail("Error al generar factura electrónica");
             return false;
         }
     }
@@ -109,12 +109,12 @@ public class squemaDocumentosElectronicos extends javax.swing.JPanel {
                 String resultado = respuestaJSON.get("resultado").toString();
                 String estadoTransaccion = respuestaJSON.getJSONArray("resoluciones").toString();
                 listadoDetalles.add(estadoTransaccion);
-                alerts.alertaGrandeListado(resultado, listadoDetalles, false);
+                ControladorAlertas.alertaGrandeListado(resultado, listadoDetalles, false);
             } else {
                 String estadoTransaccion = respuestaJSON.getJSONObject("estado").getString("codigo");
                 if (estadoTransaccion.equals(ERROR) || estadoTransaccion.equals(ERRORDIAN)) {
                     listadoDetalles.add(respuestaJSON.getJSONObject("estado").getString("descripcion"));
-                    alerts.alertaGrandeListado("Se presentaron los siguientes errores...", listadoDetalles, false);
+                    ControladorAlertas.alertaGrandeListado("Se presentaron los siguientes errores...", listadoDetalles, false);
                     return false;
                 }
             }

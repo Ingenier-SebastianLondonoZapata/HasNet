@@ -5,6 +5,7 @@
  */
 package Modelo.DocumentoSoporte.Entrada;
 
+import Modelo.DocumentosElectronicos.DatosClienteAsignable;
 import Modelo.DocumentosElectronicos.ModeloDetalleProductos;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
  *
  * @author sebastian.londono
  */
-public class ModeloDocumentoSoporte {
+public class ModeloDocumentoSoporte implements DatosClienteAsignable {
 
     String dsPrefijo;
     String dsNumeroFactura;
@@ -426,5 +427,61 @@ public class ModeloDocumentoSoporte {
 
     public void setDescripcionNotaCreditoReferencia(String descripcionNotaCreditoReferencia) {
         this.descripcionNotaCreditoReferencia = descripcionNotaCreditoReferencia;
+    }
+
+    // Delegadores del contrato DatosClienteAsignable (mapean al vocabulario "Vendedor")
+    @Override
+    public void setEmailCliente(String email) {
+        setEmailVendedor(email);
+    }
+
+    @Override
+    public void setTipoIdentificacionCliente(String tipoIdentificacion) {
+        setTipoIdentificacionVendedor(tipoIdentificacion);
+    }
+
+    @Override
+    public void setIdentificacionCliente(String identificacion) {
+        setIdentificacionVendedor(identificacion);
+    }
+
+    @Override
+    public void setDigitoVerificacionCliente(String digitoVerificacion) {
+        setDigitoVerificacionVendedor(digitoVerificacion);
+    }
+
+    @Override
+    public void setCodigoPostalCliente(String codigoPostal) {
+        setCodigoPostalVendedor(codigoPostal);
+    }
+
+    @Override
+    public void setTipoPersonaCliente(String tipoPersona) {
+        setTipoPersonaVendedor(tipoPersona);
+    }
+
+    @Override
+    public void setNombresCliente(String nombres) {
+        setNombresVendedor(nombres);
+    }
+
+    @Override
+    public void setDireccionCliente(String direccion) {
+        setDireccionVendedor(direccion);
+    }
+
+    @Override
+    public void setClienteResponsable(boolean responsable) {
+        setVendedorResponsable(responsable);
+    }
+
+    @Override
+    public void setRegimenCliente(String regimen) {
+        setRegimenVendedor(regimen);
+    }
+
+    @Override
+    public void setTelefonoCliente(String telefono) {
+        setTelefonoVendedor(telefono);
     }
 }

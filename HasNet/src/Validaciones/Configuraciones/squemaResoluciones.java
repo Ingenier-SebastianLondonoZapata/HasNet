@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Validaciones.Configuraciones;
 
 import Controlador.Alertas.ControladorAlertas;
@@ -12,16 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTable;
 
-/**
- *
- * @author sebastian.londono
- */
 public class squemaResoluciones extends javax.swing.JPanel {
 
-    /**
-     * Creates new form squemaProduct
-     */
-    private Instancias instancias;
+    private final Instancias instancias;
 
     public squemaResoluciones() {
         initComponents();
@@ -98,7 +86,7 @@ public class squemaResoluciones extends javax.swing.JPanel {
             } else {
                 try {
                     Integer.parseInt(numeracionDel);
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     errores_validacion.add("Debe ingresar un número en el inicio de la numeración del comprobante en la fila #" + (i + 1));
                 }
             }
@@ -108,7 +96,7 @@ public class squemaResoluciones extends javax.swing.JPanel {
             } else {
                 try {
                     Integer.parseInt(numeracionHasta);
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     errores_validacion.add("Debe ingresar un número en el final de la numeración del comprobante en la fila #" + (i + 1));
                 }
             }

@@ -1,5 +1,6 @@
 package Vista.Restaurante;
 
+import Impresiones.ImpresionesRestaurante.GeneradorReporteRestaurante;
 import Utilidades.DatosMaestra;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -34,8 +35,8 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtObservaciones = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnNoGenerarComanda = new javax.swing.JButton();
+        btnGenerarComanda = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -110,22 +111,22 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
         txtObservaciones.setRows(3);
         jScrollPane2.setViewportView(txtObservaciones);
 
-        jButton2.setBackground(new java.awt.Color(255, 153, 153));
-        jButton2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jButton2.setText("NO GENERAR");
-        jButton2.setBorder(null);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnNoGenerarComanda.setBackground(new java.awt.Color(255, 153, 153));
+        btnNoGenerarComanda.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnNoGenerarComanda.setText("NO GENERAR");
+        btnNoGenerarComanda.setBorder(null);
+        btnNoGenerarComanda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnNoGenerarComandaActionPerformed(evt);
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(0, 204, 102));
-        jButton1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jButton1.setText("GENERAR COMANDA");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnGenerarComanda.setBackground(new java.awt.Color(0, 204, 102));
+        btnGenerarComanda.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnGenerarComanda.setText("GENERAR COMANDA");
+        btnGenerarComanda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnGenerarComandaActionPerformed(evt);
             }
         });
 
@@ -148,9 +149,9 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
                 .addGap(6, 6, 6))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnNoGenerarComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btnGenerarComanda)
                 .addGap(119, 119, 119))
         );
         jPanel1Layout.setVerticalGroup(
@@ -170,8 +171,8 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnGenerarComanda, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                    .addComponent(btnNoGenerarComanda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -199,10 +200,10 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNitKeyTyped
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnGenerarComandaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarComandaActionPerformed
         String congelada = "CONGELADA-" + txtCongelada.getText();
 
-        String condicion = "where congelada = '" + congelada + "' AND (";
+        String condicion = "where factura = '" + congelada + "' AND (";
         boolean entro = false;
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             if ((Boolean) tblProductos.getValueAt(i, 2) == true) {
@@ -211,14 +212,15 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
             }
         }
         if (entro) {
-            condicion = condicion.substring(0, condicion.length() - 2) + ") order by opciones";
+            condicion = condicion.substring(0, condicion.length() - 2) + ") ";
         } else {
-            condicion = "where congelada ='" + congelada + "' order by opciones ";
+            condicion = "where factura ='" + congelada + "' ";
         }
 
         String impresoraComanda = DatosMaestra.getImpresoraComanda();
 
-        instancias.getReporte().ver_Comanda(condicion, txtCongelada.getText(), txtObservaciones.getText(), txtCongelada.getText(),
+        GeneradorReporteRestaurante reporteRestaurante = new GeneradorReporteRestaurante(instancias);
+        reporteRestaurante.verComanda(condicion, txtCongelada.getText(), txtObservaciones.getText(), txtCongelada.getText(),
                 txtNit.getText().replace("MESA-", ""), DatosMaestra.isPrevisualizarComanda(), impresoraComanda, vendedor);
 
         String copias = "";
@@ -230,7 +232,7 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
         try {
             if (copias != null || !copias.equals("")) {
                 for (int i = 0; i < Integer.parseInt(copias); i++) {
-                    instancias.getReporte().ver_Comanda(condicion, txtCongelada.getText(), txtObservaciones.getText(), txtCongelada.getText(),
+                    reporteRestaurante.verComanda(condicion, txtCongelada.getText(), txtObservaciones.getText(), txtCongelada.getText(),
                             txtNit.getText().replace("MESA-", ""), DatosMaestra.isPrevisualizarComanda(), impresoraComanda, vendedor);
                 }
             }
@@ -238,11 +240,11 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
         }
 
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnGenerarComandaActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnNoGenerarComandaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNoGenerarComandaActionPerformed
         this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnNoGenerarComandaActionPerformed
 
     public void setInstancias(Instancias instancias, String congelada, Boolean estado, List<Object> productosIniciales) {
         this.instancias = instancias;
@@ -311,8 +313,8 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnGenerarComanda;
+    private javax.swing.JButton btnNoGenerarComanda;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

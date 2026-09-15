@@ -1755,9 +1755,13 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
 
         if (tipoProceso.equals(TipoDocumento.ORDEN_COMPRA.getValor())) {
-            anularOrdenCompra(consecutivo);
+            if (metodos.msgPregunta(null, "¿Anular esta orden de compra?") == 0) {
+                anularOrdenCompra(consecutivo);
+            }
         } else {
-            anularCompra(consecutivo);
+            if (metodos.msgPregunta(null, "¿Anular esta compra?") == 0) {
+                anularCompra(consecutivo);
+            }
         }
     }//GEN-LAST:event_btnAnularActionPerformed
 
@@ -2282,19 +2286,19 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Anular esta compra?") == 0) {
-            instancias.getSql().eliminarPonderadoIngreso(" bdPonderado ", consecutivo);
+        instancias.getSql().eliminarPonderadoIngreso(" bdPonderado ", consecutivo);
 
-            Object[][] productos = instancias.getSql().getProductosCompra(consecutivo);
-            for (Object[] producto : productos) {
-                String idPonderado;
-                try {
-                    idPonderado = daoPonderado.obtenerIdUltimoRegistroPonderado(producto[0].toString());
-                } catch (SQLException ex) {
-                    System.out.println("Hubo un error al obtener el id del ultimo registro ponderado" + ex);
-                    return;
-                }
-                
+        Object[][] productos = instancias.getSql().getProductosCompra(consecutivo);
+        for (Object[] producto : productos) {
+            String idPonderado;
+            try {
+                idPonderado = daoPonderado.obtenerIdUltimoRegistroPonderado(producto[0].toString());
+            } catch (SQLException ex) {
+                System.out.println("Hubo un error al obtener el id del ultimo registro ponderado" + ex);
+                return;
+            }
+
+            if (idPonderado != null && !idPonderado.isEmpty()) {
                 Object[] ponderados = instancias.getSql().getUltimoPonderado1(idPonderado);
                 String ingreso = ponderados[9] != null ? ponderados[9].toString() : "";
                 instancias.getSql().modificarPonderado(ponderados[8].toString(), producto[0].toString(),
@@ -2302,40 +2306,40 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                         big.getBigDecimal(ponderados[4]), String.valueOf(ponderados[5]), instancias.getUsuario(),
                         big.getBigDecimal(ponderados[7]), ingreso);
             }
-
-            devolverCantidadesDocumento(consecutivo, TipoDocumento.ANULAR_COMPRA);
-
-            if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
-                metodos.msgError(null, "Hubo un problema al anular la compra");
-                return;
-            }
-
-            if (!instancias.getSql().modificarRegistroCxp(consecutivo, "ANULADA")) {
-                metodos.msgError(null, "Hubo un problema al anular la Cxp");
-                return;
-            }
-
-            String egreso = "";
-            try {
-                egreso = instancias.getSql().idEgresoIngresoAsociado(consecutivo);
-            } catch (Exception e) {
-            }
-
-            if (!egreso.isEmpty()) {
-                boolean egresoAnulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where id='" + egreso + "' ");
-                if (egresoAnulado) {
-                    metodos.msgAdvertencia(null, "Este egreso ya se encuentra anulado");
-                    return;
-                }
-
-                if (!instancias.getSql().anularDocumento(egreso, "bdEgreso")) {
-                    metodos.msgError(null, "Hubo un problema al anular el egreso");
-                    return;
-                }
-            }
-
-            metodos.msgExito(null, egreso.isEmpty() ? "Compra anulada con éxito" : "Compra y egreso anulados con éxito");
         }
+
+        devolverCantidadesDocumento(consecutivo, TipoDocumento.ANULAR_COMPRA);
+
+        String egreso = "";
+        try {
+            egreso = instancias.getSql().idEgresoIngresoAsociado(consecutivo);
+        } catch (Exception e) {
+        }
+
+        if (!egreso.isEmpty()) {
+            boolean egresoAnulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where id='" + egreso + "' ");
+            if (egresoAnulado) {
+                metodos.msgAdvertencia(null, "Este egreso ya se encuentra anulado");
+                return;
+            }
+
+            if (!instancias.getSql().anularDocumento(egreso, "bdEgreso")) {
+                metodos.msgError(null, "Hubo un problema al anular el egreso");
+                return;
+            }
+        }
+
+        if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
+            metodos.msgError(null, "Hubo un problema al anular la compra");
+            return;
+        }
+
+        if (!instancias.getSql().modificarRegistroCxp(consecutivo, "ANULADA")) {
+            metodos.msgError(null, "Hubo un problema al anular la Cxp");
+            return;
+        }
+
+        metodos.msgExito(null, egreso.isEmpty() ? "Compra anulada con éxito" : "Compra y egreso anulados con éxito");
 
         preguntaLimpiar = false;
         btnLimpiarActionPerformed(null);
@@ -2348,14 +2352,13 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Anular esta orden de compra?") == 0) {
-            if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
-                metodos.msgError(null, "Hubo un problema al anular la orden de compra");
-                return;
-            }
-            devolverCantidadesDocumento(consecutivo, TipoDocumento.ANULAR_ORDEN_COMPRA);
-            metodos.msgExito(null, "Orden de compra anulada con éxito");
+        if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
+            metodos.msgError(null, "Hubo un problema al anular la orden de compra");
+            return;
         }
+
+        devolverCantidadesDocumento(consecutivo, TipoDocumento.ANULAR_ORDEN_COMPRA);
+        metodos.msgExito(null, "Orden de compra anulada con éxito");
 
         preguntaLimpiar = false;
         btnLimpiarActionPerformed(null);
@@ -3215,6 +3218,17 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         cargarTotales();
     }
 
+    private String obtenerResolucionDocumentoSoporte() {
+        for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
+            if (Boolean.TRUE.equals(tblComprobantes.getValueAt(i, 2))) {
+                Object resolucion = tblComprobantes.getValueAt(i, 3);
+                return resolucion != null ? resolucion.toString() : "";
+            }
+        }
+
+        return "";
+    }
+
     private ModeloDocumentoSoporte crearModeloDocumentoSoporte(String factura, ModeloContacto datosCliente) {
 
         ModeloDocumentoSoporte modeloDocumentoSoporte = new ModeloDocumentoSoporte();
@@ -3227,7 +3241,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         modeloDocumentoSoporte.setFechaEmision(metodos.fecha4(metodosGenerales.fecha()) + " " + metodosGenerales.fechaHora().split(" ")[1]);
         modeloDocumentoSoporte.setFechaVencimiento(metodos.fecha4(txtVencimiento.getText()));
         modeloDocumentoSoporte.setTipoDocumentoElectronico("SOPORTE_ADQUISICION");
-        //modeloDocumentoSoporte.setDsResolucionDian("PENDIENTE");
+        modeloDocumentoSoporte.setDsResolucionDian(documentosElectronicos.obtenerResolucionDocumento(tblComprobantes));
 
         documentosElectronicos.construirDatosCliente(modeloDocumentoSoporte, datosCliente);
 

@@ -16,7 +16,39 @@
 	<parameter name="id" class="java.lang.String"/>
 	<parameter name="hora" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[Select * from productosSinPreparacion $P!{sql}]]>
+		<![CDATA[SELECT
+    Id,
+    congelada,
+    factura,
+    cod,
+    producto,
+    opciones,
+    ingredientes,
+    aderezos,
+    cantidad,
+    observaciones,
+    consecutivo
+FROM (
+    SELECT
+        Id,
+        congelada,
+        factura,
+        cod,
+        producto,
+        opciones,
+        ingredientes,
+        aderezos,
+        cantidad,
+        observaciones,
+        consecutivo
+    FROM bdcomanda
+    WHERE opciones = ''
+      AND ingredientes = ''
+      AND aderezos = ''
+      AND observaciones = ''
+      AND adiciones != 'PRODUCTO-AGREGADO'
+) AS productosSinPreparacion
+$P!{sql}]]>
 	</queryString>
 	<field name="Id" class="java.lang.Integer"/>
 	<field name="congelada" class="java.lang.String"/>
@@ -26,7 +58,9 @@
 	<field name="opciones" class="java.lang.String"/>
 	<field name="ingredientes" class="java.lang.String"/>
 	<field name="aderezos" class="java.lang.String"/>
-	<field name="cant" class="java.lang.String"/>
+	<field name="cantidad" class="java.math.BigDecimal"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="consecutivo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -40,7 +74,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cant}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="20" y="0" width="145" height="13" uuid="12eaaee8-ed1e-49d2-873f-4008f293ef47"/>

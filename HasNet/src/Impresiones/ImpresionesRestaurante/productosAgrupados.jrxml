@@ -16,13 +16,25 @@
 	<parameter name="id" class="java.lang.String"/>
 	<parameter name="hora" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[Select * from productosAgrupados $P!{sql}]]>
+		<![CDATA[SELECT congelada, factura, cod, producto, cant1, opciones, consecutivo FROM ( SELECT congelada, factura, cod, producto, SUM(cantidad) AS cant1, '' AS opciones, consecutivo FROM bdcomanda GROUP BY congelada, factura, cod, producto, consecutivo ) AS productosAgrupados $P!{sql}]]>
 	</queryString>
-	<field name="congelada" class="java.lang.String"/>
-	<field name="factura" class="java.lang.String"/>
-	<field name="cod" class="java.lang.String"/>
-	<field name="producto" class="java.lang.String"/>
-	<field name="cant1" class="java.lang.Double"/>
+	<field name="congelada" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="factura" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cod" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="producto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cant1" class="java.math.BigDecimal"/>
+	<field name="opciones" class="java.lang.String"/>
+	<field name="consecutivo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -31,7 +43,7 @@
 	</columnHeader>
 	<detail>
 		<band height="13" splitType="Stretch">
-			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+			<textField isStretchWithOverflow="true" pattern="#,##0.####">
 				<reportElement x="170" y="0" width="42" height="13" uuid="70d80465-6ef3-4c6e-9709-97d6c9d3889c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="false"/>

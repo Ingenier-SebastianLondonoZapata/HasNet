@@ -40,7 +40,11 @@ public class ServicioFacturacionMasiva {
                 }
                 vistaFactura.seleccionarComprobanteParaConversion(indexComprobante);
                 vistaFactura.setSaltarPasosFactura(true);
-                vistaFactura.ejecutarConversionAFactura(imprimir, doc.getIdDocumento(), tipoDocumento);
+                boolean facturado = vistaFactura.ejecutarConversionAFactura(imprimir, doc.getIdDocumento(), tipoDocumento);
+                if (!facturado) {
+                    errores.add(doc.getIdDocumento() + ": no se generó la factura (validación de facturación electrónica).");
+                    continue;
+                }
                 exitosos++;
             } catch (Exception e) {
                 errores.add(doc.getIdDocumento() + ": " + e.getMessage());
@@ -86,10 +90,14 @@ public class ServicioFacturacionMasiva {
 
                 vistaFactura.seleccionarComprobanteParaConversion(indexComprobante);
                 vistaFactura.setSaltarPasosFactura(true);
-                vistaFactura.ejecutarConversionAFactura(imprimir, "", tipoDocumento);
+                boolean facturado = vistaFactura.ejecutarConversionAFactura(imprimir, "", tipoDocumento);
+                if (!facturado) {
+                    errores.add(principal.getIdDocumento() + ": no se generó la factura (validación de facturación electrónica).");
+                    continue;
+                }
 
-                for (int i = 0; i < grupo.size(); i++) {
-                    vistaFactura.marcarDocumentoOrigenComoConvertido(tipoDocumento, grupo.get(i).getIdDocumento());
+                for (DocumentoSeleccionado grupoSeleccionado : grupo) {
+                    vistaFactura.marcarDocumentoOrigenComoConvertido(tipoDocumento, grupoSeleccionado.getIdDocumento());
                 }
 
                 exitosos++;

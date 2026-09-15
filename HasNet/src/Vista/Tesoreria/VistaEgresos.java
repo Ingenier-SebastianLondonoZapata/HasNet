@@ -1108,7 +1108,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
                             .addComponent(lbLetras5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbNoEgreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(pnlValores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, Short.MAX_VALUE)
                     .addComponent(pnlCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(5, 5, 5)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1447,11 +1447,11 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
     private void btnBuscTerceros3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros3ActionPerformed
         String consecutivo = "EGR-" + metodos.msgIngresarEnter(this, "Documento a reimprimir");
 
-        if (consecutivo.equals("EGR-")) {
+        if (consecutivo != null && consecutivo.equals("EGR-")) {
             return;
         }
 
-        boolean anulado = false;
+        boolean anulado;
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where egreso ='" + consecutivo + "' ");
         } catch (Exception e) {
@@ -1460,7 +1460,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         }
 
         if (anulado) {
-            metodos.msgError(this, "El egreso ya esta anulado");
+            ControladorAlertas.alert("El egreso ya esta anulado");
             return;
         }
 
@@ -1494,23 +1494,17 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         }
 
         if (anulado) {
-            metodos.msgError(this, "El egreso ya esta anulado");
+            ControladorAlertas.alert("El egreso ya esta anulado");
             return;
         }
 
         String pago = instancias.getSql().getIngresoAsociado(consecutivo);
+        String mensaje = pago.isEmpty() ? "¿Anular egreso?" : "¿Anular egreso y " + pago;
 
-        String mensaje = pago.isEmpty() ? "¿Anular egreso?" : "Se anulará tambien el " + pago;
-        metodos.msgAdvertenciaAjustado(this, mensaje);
-
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
-
-            if (!instancias.getSql().anularEgreso(consecutivo)) {
-                metodos.msgError(this, "Hubo un problema al anular el egreso");
-                return;
-            }
-
-            if (pago.contains("PAGO")) {
+        if (metodos.msgPregunta(this, mensaje) == 0) {
+            if (pago.equals("")) {
+                //No hace nada
+            } else if (pago.contains("PAGO")) {
                 String id = instancias.getSql().getIdCxp("Where recibo ='" + pago + "' ");
                 String estadoCuenta = instancias.getSql().getEstadoPago("Where ingreso = '" + id + "' and tipo <> 'PAGO' ");
 
@@ -1519,19 +1513,19 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
                 }
 
                 instancias.getSql().modificarRegistroCxp1(pago, "ANULADO");
-
             } else {
                 instancias.getIngresos().anularCompra(pago);
             }
 
+            if (!instancias.getSql().anularEgreso(consecutivo)) {
+                metodos.msgError(this, "Hubo un problema al anular el egreso");
+                return;
+            }
+
             if (pago.equals("")) {
                 metodos.msgExito(this, "Egreso anulado con éxito");
-            } else {
-                if (pago.contains("PAGO")) {
-                    metodos.msgExito(this, "Egreso y pago anulado con éxito");
-                } else {
-                    metodos.msgExito(this, "Egreso y compra anulado con éxito");
-                }
+            } else if (pago.contains("PAGO")) {
+                metodos.msgExito(this, "Egreso y pago anulado con éxito");
             }
         }
     }//GEN-LAST:event_btnAnularEgresoActionPerformed
@@ -2027,7 +2021,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         this.ingresoAsociado = ingresoAsociado;
         Object dato[] = instancias.getSql().getInfoCodEgreso(codEgreso);
 
-        Object[] fila = {dato[2].toString(), dato[1].toString(), concepto, big.setMoneda(subtotal), big.setMoneda(iva),
+        Object[] fila = {dato[2].toString(), dato[1].toString(), concepto, big.setMoneda(subtotal), "0", big.setMoneda(iva),
             big.setMoneda(total), factura, dato[0].toString()};
 
         DefaultTableModel modelo = (DefaultTableModel) tblEgresos.getModel();

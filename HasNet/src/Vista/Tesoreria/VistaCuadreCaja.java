@@ -923,20 +923,15 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
         boolean aux = calcular;
 
-        /*if (txtVenta.getText().equals("$ 0")) {
-         metodos.msgAdvertencia(this, "No se puede guardar con ventas en $ 0");
-         return;
-         }*/
+        BigDecimal totalFacturas = big.getMoneda(tblIngresos.getValueAt(3, 1).toString());
+        if (totalFacturas.compareTo(BigDecimal.ZERO) == 0) {
+            metodos.msgAdvertencia(this, "No se puede guardar sin facturas");
+            return;
+        }
+
         if (!faltantes.equals("")) {
             metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes);
         }
-
-//        if (mensaje2.isVisible()) {
-//            metodos.msgAdvertencia(this, "Hay algunos productos sin precio ponderado y no habra una utilidad válida!");
-//        }
-        Object[] productosFacturas = new Object[tblDocumentos1.getRowCount()];
-        int ser = 0;
-        Boolean entro = false;
 
         Object[][] congeladas = instancias.getSql().getDatosCongelada();
         if (congeladas.length > 0) {
@@ -949,49 +944,6 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             }
         }
 
-//        if (!(Boolean) sql.getDatosMaestra()[59]) {
-//            for (int i = 0; i < tblDocumentos1.getRowCount(); i++) {
-//                Object[][] datos = sql.getRegistrosPrefacturas(tblDocumentos1.getValueAt(i, 0).toString());
-//                for (int j = 0; j < datos.length; j++) {
-//                    double ponderado;
-//                    Object[] datosProducto = sql.getUltimoPonderado(datos[j][0].toString());
-//                    ponderado = Double.parseDouble(datosProducto[4].toString().replace(",", "."));
-//                    if (ponderado < 0) {
-//                        metodos.msgError(this, "¡El producto " + datos[j][1].toString() + " tiene ponderado negativo y no se puede continar!");
-//                        return;
-//                    }
-//                }
-//            }
-//        } else {
-//            Iniciar2 ini = new Iniciar2();
-//            cargando barra = new cargando(ini, Instancias.getInstancias());
-//            barra.show();
-//            this.barra2 = ini.getBarra();
-//
-//            for (int i = 0; i < tblDocumentos1.getRowCount(); i++) {
-//                Object[][] datos = sql.getRegistrosPrefacturas(tblDocumentos1.getValueAt(i, 0).toString());
-//                for (int j = 0; j < datos.length; j++) {
-//                    double ponderado;
-//                    Object[] datosProducto = sql.getUltimoPonderado(datos[j][0].toString());
-//                    System.out.println("producto " + datos[j][0].toString());
-//                    System.out.println("ponderado " + datosProducto[4].toString());
-//                    ponderado = Double.parseDouble(datosProducto[4].toString().replace(",", "."));
-//                    if (ponderado < 0) {
-//                        productosFacturas[ser] = datos[j][0].toString();
-//                        entro = true;
-//                        ser++;
-//                    }
-//                }
-//            }
-//            this.barra2.detener(true);
-//        }
-//        if (entro) {
-//            if (metodos.msgPregunta(this, "¿Ponderados malos. ¿Desea revisarlos?") == 0) {
-//                dlgPonderadoNegativo ponderadoNegativo = new dlgPonderadoNegativo(null, true, productosFacturas);
-//                ponderadoNegativo.setVisible(true);
-//                return;
-//            }
-//        }
         if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
 
             if (!instancias.getUsuario().equals("ADMIN")) {
@@ -1019,7 +971,6 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             BigDecimal totalFacturasCredito = big.getMoneda(tblIngresos.getValueAt(0, 1).toString());
             BigDecimal totalFacturasContado = big.getMoneda(tblIngresos.getValueAt(1, 1).toString());
             BigDecimal totalFacturasSistecredito = big.getMoneda(tblIngresos.getValueAt(2, 1).toString());
-            BigDecimal totalFacturas = big.getMoneda(tblIngresos.getValueAt(3, 1).toString());
             BigDecimal totalAbonosCartera = big.getMoneda(tblIngresos.getValueAt(5, 1).toString());
             BigDecimal totalAbonosPlanSepare = big.getMoneda(tblIngresos.getValueAt(6, 1).toString());
             BigDecimal totalAbonos = big.getMoneda(tblIngresos.getValueAt(7, 1).toString());
@@ -1032,7 +983,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             BigDecimal totalNotasCredito = big.getMoneda(tblSalidas.getValueAt(2, 1).toString());
 
             BigDecimal totalGastosRegistrados = big.getMoneda(tblSalidas.getValueAt(4, 1).toString());
-            BigDecimal totalGastosNoRegistrados = big.getMoneda(tblSalidas.getValueAt(5, 1).toString());
+            BigDecimal totalGastosNoRegistrados = BigDecimal.ZERO;
 
             Object[] vector = {documento, fecha, metodosGenerales.hora(), big.getMoneda(efectivoPend.getText()),
                 big.getMoneda(tarjetaPend.getText()), big.getMoneda(chequePend.getText()), big.getMoneda(ncPend.getText()), "cajero",
@@ -1056,16 +1007,6 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             }
 
             for (int i = 0; i < tblDocumentos1.getRowCount(); i++) {
-                String documentoTabla = tblDocumentos1.getValueAt(i, 0).toString();
-                if (documentoTabla.contains("NC")) {
-                    if (!instancias.getSql().modificarRedNc((String) modelo.getValueAt(i, 0), documento)) {
-                        metodos.msgError(this, "Hubo un problema al cambiar el estado del cuadre NC.");
-                    }
-                }
-            }
-
-            int registros = tblDocumentos1.getRowCount();
-            for (int i = 0; i < registros; i++) {
                 boolean actualizo = false;
 
                 String tipo = tblDocumentos1.getValueAt(i, 0).toString().split("-")[0];
@@ -1077,6 +1018,10 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 } else if (tipo.equals("ABONO")) {
                     actualizo = instancias.getSql().modificarCuadreAbonos((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
                 } else if (tipo.equals("NC")) {
+                    if (!instancias.getSql().modificarRedNc((String) modelo.getValueAt(i, 0), documento)) {
+                        metodos.msgError(this, "Hubo un problema al cambiar el estado del cuadre NC.");
+                    }
+
                     actualizo = instancias.getSql().modificarCuadreNotasCredito((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
                 }
 
@@ -1105,16 +1050,14 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 }
             }
 
-            if (!instancias.getSql().modificarEstadoEgreso(metodos.desdeDate(dtInicio.getCurrent()), "REALIZADO")) {
+            if (!instancias.getSql().modificarEstadoEgreso(metodos.desdeDate(dtInicio.getCurrent()), "REALIZADO", documento)) {
                 metodos.msgError(this, "Error al modificar la recogida.");
             }
 
-            System.out.println("no creo que aqui");
             if (!instancias.getSql().desactivarRecogidaParcial()) {
                 metodos.msgError(this, "Error al desactivar la recogida.");
             }
 
-            System.out.println("uy zonas como asi x2");
             if (instancias.getUsuario().equals("ADMIN")) {
                 if (!instancias.getSql().desactivarBasesDeCaja(metodos.desdeDate(dtInicio.getCurrent()))) {
                     metodos.msgError(this, "Error al modificar la recogida");
@@ -1123,15 +1066,13 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                     metodos.msgError(this, "Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
                 }
             } else {
-                System.out.println("uy zonas como asi");
                 if (!instancias.getSql().desactivarBasesDeCaja(metodos.desdeDate(dtInicio.getCurrent()), "")) {
                     metodos.msgError(this, "Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
                 }
-                System.out.println("que gono");
+
                 if (!instancias.getSql().asignarCuadreABase(documento, metodos.desdeDate(dtInicio.getCurrent()), "")) {
                     metodos.msgError(this, "Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
                 }
-                System.out.println("uy zonas como asi fakll");
             }
 
             if (!instancias.getSql().aumentarConsecutivo("CUADRE", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CUADRE")[0]) + 1)) {
@@ -1149,16 +1090,13 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 tipoImpresion = "Pos";
             }
 
-            System.out.println("cuadre de caja");
             instancias.getReporte().verCuadreCaja(documento, tipoImpresion, instancias.getInformacionEmpresa());
-
-            System.out.println("fallo");
 
             if (instancias.isImprimirCuadreFiscal()) {
                 instancias.getReporte().verCuadreFiscal(documento, instancias.getInformacionEmpresa());
             }
+
             calcular = aux;
-            System.out.println("fiscal");
 //            instancias.getReporte().verCaja(fecha, usuario, metodosGenerales.hora(), String.valueOf(registros),
 //                    txtEfectivoSistema.getText(), txtTarjetaSistema.getText(), txtChequeSistema.getText(), txtNcSistema.getText(), txtAbonos.getText(),
 //                    txtVenta.getText(), String.valueOf(tblDocumentos1.getRowCount()), efectivoPend.getText(), gastosPend.getText(), chequePend.getText(),

@@ -3,6 +3,7 @@ package dao.Ventas;
 import Modelo.Ventas.ModeloComanda;
 import Utilidades.BaseDatos.MySql_connection;
 import Utilidades.Constantes;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -20,11 +21,10 @@ public class DaoComanda {
 
     public boolean agregarComanda(String congelada, String factura, String codigo, String producto,
             String opciones, String ingredientes, String adiciones, String aderezos,
-            String cantidad, String observaciones, int turno, String pedido,
-            String consecutivo) {
+            BigDecimal cantidad, String observaciones, int turno, String consecutivo) {
         String instruccionSql = "INSERT INTO bdComanda (congelada, factura, cod, producto, opciones, "
-                + "ingredientes, adiciones, aderezos, cant, observaciones, turno, pedido, consecutivo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "ingredientes, adiciones, aderezos, cantidad, observaciones, turno, consecutivo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = conexion.prepareStatement(instruccionSql)) {
             pstmt.setString(1, congelada);
@@ -35,11 +35,10 @@ public class DaoComanda {
             pstmt.setString(6, ingredientes);
             pstmt.setString(7, adiciones);
             pstmt.setString(8, aderezos);
-            pstmt.setString(9, cantidad);
+            pstmt.setBigDecimal(9, cantidad);
             pstmt.setString(10, observaciones);
             pstmt.setInt(11, turno);
-            pstmt.setString(12, pedido);
-            pstmt.setString(13, consecutivo);
+            pstmt.setString(12, consecutivo);
 
             int filasInsertadas = pstmt.executeUpdate();
             return filasInsertadas > 0;
@@ -57,10 +56,6 @@ public class DaoComanda {
 
         boolean todasCorrectas = true;
         for (ModeloComanda comanda : comandas) {
-            String cantidadStr = comanda.getCantidad() != null
-                    ? comanda.getCantidad().toPlainString()
-                    : "0";
-
             boolean resultado = agregarComanda(
                     comanda.getCongelada(),
                     comanda.getFactura(),
@@ -70,10 +65,9 @@ public class DaoComanda {
                     comanda.getIngredientes(),
                     comanda.getAdiciones(),
                     comanda.getAderezos(),
-                    cantidadStr,
+                    comanda.getCantidad(),
                     comanda.getObservaciones(),
                     comanda.getTurno(),
-                    comanda.getPedido(),
                     comanda.getConsecutivo()
             );
 

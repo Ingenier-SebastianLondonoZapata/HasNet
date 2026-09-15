@@ -337,6 +337,7 @@ public class DaoFactura {
             linea.setPreparacion(reg[16] != null ? reg[16].toString() : "");
             linea.setImei(reg[17] != null ? reg[17].toString() : "");
             linea.setIdProd(reg[18] != null ? reg[18].toString() : "");
+            linea.setRango(reg[19] != null ? reg[19].toString() : "");
             lineas.add(linea);
         }
         return lineas;
@@ -347,12 +348,12 @@ public class DaoFactura {
             "cliente", "vendedor", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral",
             "estadoGeneral", "observacion",
             "producto", "descripcion", "lista", "cantidad", "cant2", "porcDescuento", "descuento", "plu",
-            "preparacion", "imei", "idProd"
+            "preparacion", "imei", "idProd", "rango"
         };
         String sql = "SELECT cliente, vendedor, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, "
                 + "estadoGeneral, observacion, "
                 + "producto, descripcion, lista, cantidad, cant2, porcDescuento, descuento, plu, "
-                + "preparacion, imei, idProd "
+                + "preparacion, imei, idProd, rango "
                 + "FROM bdCongelada WHERE idFactura = '" + idFactura + "'";
         return daoGenerales.obtenerDatosTabla(columnas, sql);
     }

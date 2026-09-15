@@ -39,6 +39,18 @@ public abstract class GeneradorReporteBase {
         }
     }
 
+    protected void ejecutarEnImpresora(String nombreReporte, Map<String, ?> parametros, boolean imprimir, String impresora) {
+        try {
+            URL in = getClass().getResource(nombreReporte + ".jasper");
+            JasperReport reporte = (JasperReport) JRLoader.loadObject(in);
+            IniciarImpresion ini = new IniciarImpresion(parametros, reporte, imprimir, true, instancias, impresora);
+            vistaBarraProceso barra = new vistaBarraProceso(ini, instancias);
+            barra.show();
+        } catch (JRException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
     protected InputStream logo() {
         try {
             String logo = System.getProperty("user.dir") + "//imagenes//conf//logoEmpresa.png";

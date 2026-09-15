@@ -15,7 +15,6 @@ public class ModeloComanda {
     private BigDecimal cantidad;
     private String observaciones;
     private int turno;
-    private String pedido;
     private String consecutivo;
 
     public ModeloComanda() {
@@ -23,7 +22,7 @@ public class ModeloComanda {
 
     public ModeloComanda(String congelada, String factura, String codigo, String producto,
             String opciones, String ingredientes, String adiciones, String aderezos,
-            BigDecimal cantidad, String observaciones, int turno, String pedido, String consecutivo) {
+            BigDecimal cantidad, String observaciones, int turno, String consecutivo) {
         this.congelada = congelada;
         this.factura = factura;
         this.codigo = codigo;
@@ -35,7 +34,6 @@ public class ModeloComanda {
         this.cantidad = cantidad;
         this.observaciones = observaciones;
         this.turno = turno;
-        this.pedido = pedido;
         this.consecutivo = consecutivo;
     }
 
@@ -125,14 +123,6 @@ public class ModeloComanda {
 
     public void setTurno(int turno) {
         this.turno = turno;
-    }
-
-    public String getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(String pedido) {
-        this.pedido = pedido;
     }
 
     public String getConsecutivo() {

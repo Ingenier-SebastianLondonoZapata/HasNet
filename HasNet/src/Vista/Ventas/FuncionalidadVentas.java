@@ -117,23 +117,18 @@ public class FuncionalidadVentas {
         return "FACT-" + prefijo + resolucion.getConsecutivo();
     }
 
-    public String obtenerNumeroCongelada(Instancias instancias, String tipoProceso) {
+    public String obtenerNumeroCongelada(Instancias instancias, String tipoProceso, Instancias instancias1) {
         String numeroCongelada = "";
-        try {
-            String titulo = instancias.getTitulo();
-            if (titulo != null && !titulo.isEmpty()) {
-                numeroCongelada = instancias.getConfiguraciones().isRestaurante()
-                        ? titulo
-                        : titulo.replace(": ", "-");
-            } else if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
-                numeroCongelada = "SIN-CONSECUTIVO";
-            }
-        } catch (Exception e) {
-            System.out.println("Falló al obtener el titulo de la mesa");
-            if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
-                numeroCongelada = "SIN-CONSECUTIVO";
-            }
+
+        String titulo = instancias1.getTitulo();
+        if (titulo != null && !titulo.isEmpty()) {
+            numeroCongelada = instancias.getConfiguraciones().isRestaurante()
+                    ? titulo
+                    : titulo.replace(": ", "-");
+        } else if (TipoDocumento.FACTURACION.getValor().equals(tipoProceso)) {
+            numeroCongelada = "SIN-CONSECUTIVO";
         }
+
         return numeroCongelada;
     }
 

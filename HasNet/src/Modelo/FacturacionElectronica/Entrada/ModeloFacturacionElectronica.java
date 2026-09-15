@@ -5,6 +5,7 @@
  */
 package Modelo.FacturacionElectronica.Entrada;
 
+import Modelo.DocumentosElectronicos.DatosClienteAsignable;
 import Modelo.DocumentosElectronicos.ModeloDetalleProductos;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
  *
  * @author sebastian.londono
  */
-public class ModeloFacturacionElectronica {
+public class ModeloFacturacionElectronica implements DatosClienteAsignable {
 
     String dsPrefijo;
     String dsNumeroFactura;
@@ -660,5 +661,61 @@ public class ModeloFacturacionElectronica {
 
     public void setDescripcionNotaCredito(String descripcionNotaCredito) {
         this.descripcionNotaCredito = descripcionNotaCredito;
+    }
+
+    // Delegadores del contrato DatosClienteAsignable (mapean al vocabulario "Adquiriente")
+    @Override
+    public void setEmailCliente(String email) {
+        setEmailAdquiriente(email);
+    }
+
+    @Override
+    public void setTipoIdentificacionCliente(String tipoIdentificacion) {
+        setTipoIdentificacionAdquiriente(tipoIdentificacion);
+    }
+
+    @Override
+    public void setIdentificacionCliente(String identificacion) {
+        setIdentificacionAdquiriente(identificacion);
+    }
+
+    @Override
+    public void setDigitoVerificacionCliente(String digitoVerificacion) {
+        setDigitoVerificacionAdquiriente(digitoVerificacion);
+    }
+
+    @Override
+    public void setCodigoPostalCliente(String codigoPostal) {
+        setCodigoPostalAdquirente(codigoPostal);
+    }
+
+    @Override
+    public void setTipoPersonaCliente(String tipoPersona) {
+        setTipoPersonaAdquiriente(tipoPersona);
+    }
+
+    @Override
+    public void setNombresCliente(String nombres) {
+        setNombresAdquiriente(nombres);
+    }
+
+    @Override
+    public void setDireccionCliente(String direccion) {
+        setDireccionAdquiriente(direccion);
+    }
+
+    @Override
+    public void setClienteResponsable(boolean responsable) {
+        setAdquirenteResponsable(responsable);
+    }
+
+    @Override
+    public void setRegimenCliente(String regimen) {
+        setRegimenAdquirente(regimen);
+    }
+
+    @Override
+    public void setTelefonoCliente(String telefono) {
+        setTelefonoAdquiriente(telefono);
     }
 }

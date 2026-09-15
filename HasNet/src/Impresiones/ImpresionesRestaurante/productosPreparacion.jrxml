@@ -16,18 +16,47 @@
 	<parameter name="id" class="java.lang.String"/>
 	<parameter name="hora" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[Select * from productosPreparacion $P!{sql}]]>
+		<![CDATA[SELECT
+    Id,
+    congelada,
+    factura,
+    cod,
+    producto,
+    opciones,
+    ingredientes,
+    aderezos,
+    cantidad,
+    observaciones,
+    consecutivo
+FROM (
+    SELECT
+        Id,
+        congelada,
+        factura,
+        cod,
+        producto,
+        opciones,
+        ingredientes,
+        aderezos,
+        cantidad,
+        observaciones,
+        consecutivo
+    FROM bdcomanda
+    WHERE opciones <> ''
+      OR ingredientes <> ''
+      OR aderezos <> ''
+) AS productosPreparacion
+$P!{sql}]]>
 	</queryString>
 	<field name="Id" class="java.lang.Integer"/>
 	<field name="congelada" class="java.lang.String"/>
 	<field name="factura" class="java.lang.String"/>
-	<field name="pedido" class="java.lang.String"/>
 	<field name="cod" class="java.lang.String"/>
 	<field name="producto" class="java.lang.String"/>
 	<field name="opciones" class="java.lang.String"/>
 	<field name="ingredientes" class="java.lang.String"/>
 	<field name="aderezos" class="java.lang.String"/>
-	<field name="cant" class="java.lang.String"/>
+	<field name="cantidad" class="java.math.BigDecimal"/>
 	<field name="observaciones" class="java.lang.String"/>
 	<field name="consecutivo" class="java.lang.String"/>
 	<background>
@@ -43,7 +72,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cant}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="20" y="0" width="145" height="14" uuid="8081b0ec-eba8-4d06-93a0-7dd4c863b2ac"/>
@@ -54,7 +83,7 @@
 			</textField>
 		</band>
 		<band height="14" splitType="Stretch">
-			<printWhenExpression><![CDATA[!$F{opciones}.equalsIgnoreCase("Con: ")]]></printWhenExpression>
+			<printWhenExpression><![CDATA[$F{opciones} != null && $F{opciones}.trim().length() > 0 && !$F{opciones}.trim().equalsIgnoreCase("Con:")]]></printWhenExpression>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="20" y="1" width="196" height="13" uuid="c7c4e789-80ef-4668-a0c8-bf8d36f36a7f"/>
 				<textElement>
@@ -64,7 +93,7 @@
 			</textField>
 		</band>
 		<band height="15" splitType="Stretch">
-			<printWhenExpression><![CDATA[!$F{aderezos}.equalsIgnoreCase("Aderezos: ")]]></printWhenExpression>
+			<printWhenExpression><![CDATA[$F{aderezos} != null && $F{aderezos}.trim().length() > 0 && !$F{aderezos}.trim().equalsIgnoreCase("Aderezos:")]]></printWhenExpression>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="20" y="1" width="196" height="14" uuid="c729b087-865b-405d-ae55-26abae2ce274"/>
 				<textElement>
@@ -74,7 +103,7 @@
 			</textField>
 		</band>
 		<band height="15" splitType="Stretch">
-			<printWhenExpression><![CDATA[!$F{ingredientes}.equalsIgnoreCase("Sin: ")]]></printWhenExpression>
+			<printWhenExpression><![CDATA[$F{ingredientes} != null && $F{ingredientes}.trim().length() > 0 && !$F{ingredientes}.trim().equalsIgnoreCase("Sin:")]]></printWhenExpression>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="20" y="1" width="196" height="13" uuid="1a312fc6-30ec-43e1-8ebc-c5eede00e998"/>
 				<textElement>
@@ -84,7 +113,7 @@
 			</textField>
 		</band>
 		<band height="15">
-			<printWhenExpression><![CDATA[!$F{observaciones}.equalsIgnoreCase("")]]></printWhenExpression>
+			<printWhenExpression><![CDATA[$F{observaciones} != null && $F{observaciones}.trim().length() > 0]]></printWhenExpression>
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="44" y="1" width="172" height="14" uuid="c17c5d60-b2f5-4fa3-b96d-03c2cf68b345"/>
 				<textElement>
