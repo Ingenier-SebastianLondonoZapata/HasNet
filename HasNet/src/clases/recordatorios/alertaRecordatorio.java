@@ -3,7 +3,7 @@ package clases.recordatorios;
 import clases.Instancias;
 import clases.metodosGenerales;
 import formularios.recordatorios.infRecordatorios;
-import Vista.Aterrizaje.vistaMenu;
+import Vista.Aterrizaje.VistaMenu;
 
 public class alertaRecordatorio extends Thread {
 
@@ -20,7 +20,7 @@ public class alertaRecordatorio extends Thread {
         metodos = new metodosGenerales();
         instancias = Instancias.getInstancias();
         System.out.println("entro al Cronometro");
-        vistaMenu menu = new vistaMenu();
+        VistaMenu menu = new VistaMenu();
 
         int minutosCont = 0, segundosCont = 0, horasCont = 0;
 

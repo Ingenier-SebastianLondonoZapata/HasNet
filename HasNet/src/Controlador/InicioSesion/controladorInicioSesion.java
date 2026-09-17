@@ -10,7 +10,7 @@ import Vista.BarraProceso.vistaBarraProceso;
 import clases.Instancias;
 import clases.metodosGenerales;
 import clases.ndUsuario;
-import Vista.Aterrizaje.vistaMenu;
+import Vista.Aterrizaje.VistaMenu;
 import java.io.File;
 import javax.swing.JFrame;
 
@@ -77,7 +77,7 @@ public class controladorInicioSesion {
         }
 
         public void run() {
-            vistaMenu formularioMenu = new vistaMenu();
+            VistaMenu formularioMenu = new VistaMenu();
 
             instancias.setMenu(formularioMenu);
             instancias.setUsuario(nodo.getUsuario());

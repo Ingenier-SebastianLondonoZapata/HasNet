@@ -1646,14 +1646,13 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             case "PLAN SEPARE":
                 if (!instancias.getSql().modificarPlanSepareFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
                         nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                    metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                    ControladorAlertas.alert("Error al anular el plan separe");
                     return;
                 }
 
                 if (!txtDiasPlazo.getText().equals("") || !txtDiasPlazo.getText().equals("0")) {
-                    if (!instancias.getSql().modificarEstadoCxcFactura(nodo1.getFactura(), "ANULADA")) {
-                        metodos.msgError(this, "Error al cambiar el estado de la Cxc");
-                        return;
+                    if (!instancias.getSql().modificarEstadoCxcFactura(datosDocumento.getIdentificadorFactura(), "ANULADA")) {
+                        ControladorAlertas.alert("Error al anular la cuenta pendiente");
                     }
                 }
 
@@ -1663,34 +1662,35 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             case "COTIZACIÓN":
                 if (!instancias.getSql().modificarCotizacionFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
                         nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                    metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                    ControladorAlertas.alert("Error al anular la cotización plan separe");
                 }
-                break;
 
+                break;
             case "PEDIDOS":
                 if (!instancias.getSql().modificarPedidoFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
                         nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                    metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                    ControladorAlertas.alert("Error al anular el pedido");
                 }
-                break;
 
+                break;
             case "FACTURA":
                 if (!instancias.getSql().modificarFacturaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
                         nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                    metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                    ControladorAlertas.alert("Error al anular la factura");
                     return;
                 }
 
                 if (!instancias.getSql().anularFacturaVerificadorFacturas(datosDocumento.getIdentificadorFactura())) {
-                    metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                    ControladorAlertas.alert("Error al anular la factura");
                     return;
                 }
 
                 if (!txtDiasPlazo.getText().equals("") || !txtDiasPlazo.getText().equals("0")) {
                     if (!instancias.getSql().modificarEstadoCxcFactura(datosDocumento.getIdentificadorFactura(), "ANULADA")) {
-                        metodos.msgError(this, "Error al cambiar el estado de la Cxc");
+                        ControladorAlertas.alert("Error al anular la cuenta pendiente");
                     }
                 }
+                
                 break;
             default:
                 break;

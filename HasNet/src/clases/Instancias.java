@@ -1,5 +1,20 @@
 package clases;
 
+import Vista.ReportesCarteras.VistaReporteCuentasPendientes;
+import Vista.ReportesCarteras.VistaReportePagosPedientes;
+import Vista.ReportesCarteras.VistaReporteNotasCredito;
+import Vista.ReportesVentas.VistaReporteCotizaciones;
+import Vista.ReportesVentas.VistaReportePlanSepares;
+import Vista.ReportesVentas.VistaReporteCuentasCobro;
+import Vista.ReportesVentas.VistaReporteIvas;
+import Vista.ReportesVentas.VistaReporteOrdenes;
+import Vista.ReportesVentas.VistaReporteCreditos;
+import Vista.ReportesVentas.VistaReporteAnuladas;
+import Vista.ReportesVentas.VistaReporteResumenDia;
+import Vista.ReportesVentas.VistaReporteVentas;
+import Vista.Ventas.VistaReportesVentas;
+import Vista.Cartera.VistaAbonos;
+import Vista.Cartera.VistaPagos;
 import Vista.Productos.VistaBuscadorProductos;
 import Vista.Tesoreria.VistaCuadreCaja;
 import Vista.Productos.VistaGrupos;
@@ -12,7 +27,7 @@ import Vista.Restaurante.VistaPreparacion;
 import Vista.Productos.VistaDiseno;
 import Vista.Productos.VistaAjusteInventario;
 import Vista.Productos.VistaInventarioInicial;
-import Vista.Aterrizaje.vistaMenu;
+import Vista.Aterrizaje.VistaMenu;
 import Vista.Ventas.VistaFactura;
 import Vista.Productos.ordenCompra;
 import Vista.Productos.ingreso;
@@ -97,7 +112,7 @@ public class Instancias {
     Boolean cancelarFactura = false;
 
     private JFrame ingreso;
-    private vistaMenu menu;
+    private VistaMenu menu;
     private JTextField campoActual;
 
     private String valor;
@@ -256,7 +271,7 @@ public class Instancias {
 
     /* INICIO VENTAS */
     private VistaPreparacion preparacion;
-    private infResumenDia resumenDia;
+    private VistaReporteResumenDia resumenDia;
     private infIndicadoresVentas indicadoresVentas;
     private infFacturarLotes facturarLotes;
     private VistaCuadreCaja caja;
@@ -265,15 +280,15 @@ public class Instancias {
     private creditos facturaCreditos;
     private factura factura;
     private infCuentaCobro cuentaCobro;
-    private infReportesVentas reportesVentas;
-    private infRepCreditos repCreditos;
-    private infRepSepares repSepares;
-    private infRepVentas repVentas;
-    private infRepIvas repIvas;
-    private infRepCotizas repCotizas;
-    private infRepCuentaCobro repCuentaCobro;
+    private VistaReportesVentas reportesVentas;
+    private VistaReporteCreditos repCreditos;
+    private VistaReportePlanSepares repSepares;
+    private VistaReporteVentas repVentas;
+    private VistaReporteIvas repIvas;
+    private VistaReporteCotizaciones repCotizas;
+    private VistaReporteCuentasCobro repCuentaCobro;
     private infMesa mesa;
-    private infRepAnulas repAnulas;
+    private VistaReporteAnuladas repAnulas;
     private cotizacion cotiza;
     private VistaMesas mesas;
     private buscTipoVehiculo buscTipoVehiculo;
@@ -360,11 +375,11 @@ public class Instancias {
     /* INICIO CARTERA */
     private vistaNotaCredito nc;
     private VistaNotaDebito nd;
-    private infRepNc repNC;
-    private infPagos pagos;
-    private infRepPagos repPagos;
-    private infRepCartera repCartera;
-    private infAbonos abonos;
+    private VistaReporteNotasCredito repNC;
+    private VistaPagos pagos;
+    private VistaReportePagosPedientes repPagos;
+    private VistaReporteCuentasPendientes repCartera;
+    private VistaAbonos abonos;
 
     /* INICIO AGENDA */
     private infAgendaConsulta agendaConsulta;
@@ -484,11 +499,11 @@ public class Instancias {
         this.nd = nd;
     }
 
-    public infRepCuentaCobro getRepCuentaCobro() {
+    public VistaReporteCuentasCobro getRepCuentaCobro() {
         return repCuentaCobro;
     }
 
-    public void setRepCuentaCobro(infRepCuentaCobro repCuentaCobro) {
+    public void setRepCuentaCobro(VistaReporteCuentasCobro repCuentaCobro) {
         this.repCuentaCobro = repCuentaCobro;
     }
 
@@ -804,11 +819,11 @@ public class Instancias {
         this.cantCambio = cantCambio;
     }
 
-    public infResumenDia getResumenDia() {
+    public VistaReporteResumenDia getResumenDia() {
         return resumenDia;
     }
 
-    public void setResumenDia(infResumenDia resumenDia) {
+    public void setResumenDia(VistaReporteResumenDia resumenDia) {
         this.resumenDia = resumenDia;
     }
 
@@ -828,11 +843,11 @@ public class Instancias {
         this.cancelarFactura = cancelarFactura;
     }
 
-    public infRepIvas getRepIvas() {
+    public VistaReporteIvas getRepIvas() {
         return repIvas;
     }
 
-    public void setRepIvas(infRepIvas repIvas) {
+    public void setRepIvas(VistaReporteIvas repIvas) {
         this.repIvas = repIvas;
     }
 
@@ -1778,51 +1793,51 @@ public class Instancias {
         this.buscarHorasAgenda = buscarHorasAgenda;
     }
 
-    public infRepAnulas getRepAnulas() {
+    public VistaReporteAnuladas getRepAnulas() {
         return repAnulas;
     }
 
-    public void setRepAnulas(infRepAnulas repAnulas) {
+    public void setRepAnulas(VistaReporteAnuladas repAnulas) {
         this.repAnulas = repAnulas;
     }
 
-    public infRepCotizas getRepCotizas() {
+    public VistaReporteCotizaciones getRepCotizas() {
         return repCotizas;
     }
 
-    public void setRepCotizas(infRepCotizas repCotizas) {
+    public void setRepCotizas(VistaReporteCotizaciones repCotizas) {
         this.repCotizas = repCotizas;
     }
 
-    public infRepVentas getRepVentas() {
+    public VistaReporteVentas getRepVentas() {
         return repVentas;
     }
 
-    public void setRepVentas(infRepVentas repVentas) {
+    public void setRepVentas(VistaReporteVentas repVentas) {
         this.repVentas = repVentas;
     }
 
-    public infRepCreditos getRepCreditos() {
+    public VistaReporteCreditos getRepCreditos() {
         return repCreditos;
     }
 
-    public void setRepCreditos(infRepCreditos repCreditos) {
+    public void setRepCreditos(VistaReporteCreditos repCreditos) {
         this.repCreditos = repCreditos;
     }
 
-    public infRepSepares getRepSepares() {
+    public VistaReportePlanSepares getRepSepares() {
         return repSepares;
     }
 
-    public void setRepSepares(infRepSepares repSepares) {
+    public void setRepSepares(VistaReportePlanSepares repSepares) {
         this.repSepares = repSepares;
     }
 
-    public infReportesVentas getReportesVentas() {
+    public VistaReportesVentas getReportesVentas() {
         return reportesVentas;
     }
 
-    public void setReportesVentas(infReportesVentas reportesVentas) {
+    public void setReportesVentas(VistaReportesVentas reportesVentas) {
         this.reportesVentas = reportesVentas;
     }
 
@@ -1956,13 +1971,13 @@ public class Instancias {
         this.configuraciones = configuraciones;
     }
 
-    private infRepOrden repOrden;
+    private VistaReporteOrdenes repOrden;
 
-    public infRepOrden getRepOrden() {
+    public VistaReporteOrdenes getRepOrden() {
         return repOrden;
     }
 
-    public void setRepOrden(infRepOrden repOrden) {
+    public void setRepOrden(VistaReporteOrdenes repOrden) {
         this.repOrden = repOrden;
     }
 
@@ -2202,19 +2217,19 @@ public class Instancias {
         this.buscGrupos = buscGrupos;
     }
 
-    public infPagos getPagos() {
+    public VistaPagos getPagos() {
         return pagos;
     }
 
-    public void setPagos(infPagos pagos) {
+    public void setPagos(VistaPagos pagos) {
         this.pagos = pagos;
     }
 
-    public infRepPagos getRepPagos() {
+    public VistaReportePagosPedientes getRepPagos() {
         return repPagos;
     }
 
-    public void setRepPagos(infRepPagos repPagos) {
+    public void setRepPagos(VistaReportePagosPedientes repPagos) {
         this.repPagos = repPagos;
     }
 
@@ -2358,11 +2373,11 @@ public class Instancias {
         this.repMascotas = repMascotas;
     }
 
-    public infRepCartera getRepCartera() {
+    public VistaReporteCuentasPendientes getRepCartera() {
         return repCartera;
     }
 
-    public void setRepCartera(infRepCartera repCartera) {
+    public void setRepCartera(VistaReporteCuentasPendientes repCartera) {
         this.repCartera = repCartera;
     }
 
@@ -2542,11 +2557,11 @@ public class Instancias {
         return ingresos;
     }
 
-    public infAbonos getAbonos() {
+    public VistaAbonos getAbonos() {
         return abonos;
     }
 
-    public void setAbonos(infAbonos abonos) {
+    public void setAbonos(VistaAbonos abonos) {
         this.abonos = abonos;
     }
 
@@ -2602,11 +2617,11 @@ public class Instancias {
         this.busClientes = busClientes;
     }
 
-    public vistaMenu getMenu() {
+    public VistaMenu getMenu() {
         return menu;
     }
 
-    public void setMenu(vistaMenu menu) {
+    public void setMenu(VistaMenu menu) {
         this.menu = menu;
     }
 
@@ -2678,11 +2693,11 @@ public class Instancias {
         return valor;
     }
 
-    public infRepNc getRepNC() {
+    public VistaReporteNotasCredito getRepNC() {
         return repNC;
     }
 
-    public void setRepNC(infRepNc repNC) {
+    public void setRepNC(VistaReporteNotasCredito repNC) {
         this.repNC = repNC;
     }
 
