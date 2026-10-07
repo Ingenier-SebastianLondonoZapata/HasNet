@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Impresiones.ImpresionesArmado.GeneradorReporteArmado;
 import Vista.Productos.VistaBuscadorProductos;
 import Modelo.Inventario.UltimoPonderado;
 import inventario.servicio.ServicioActualizacionPonderado;
@@ -787,7 +788,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             }
 
             if (metodos.msgPregunta(null, "¿Desea imprimir el armado?") == 0) {
-                instancias.getReporte().ver_Armado(doc, tipo);
+                new GeneradorReporteArmado(instancias).ver_Armado(doc, tipo);
             }
 
             metodos.msgExito(this, "Armado guardado con exito");
@@ -1004,7 +1005,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             tipo = "";
         }
 
-        instancias.getReporte().ver_Armado(consecutivo, tipo);
+        new GeneradorReporteArmado(instancias).ver_Armado(consecutivo, tipo);
     }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed

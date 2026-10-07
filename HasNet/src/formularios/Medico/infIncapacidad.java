@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndIncapacidad;
@@ -676,7 +677,7 @@ public class infIncapacidad extends javax.swing.JInternalFrame {
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
                 }
-                instancias.getReporte().verIncapacidad(id, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
+                new GeneradorReporteMedico(instancias).verIncapacidad(id, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
             }
 
             try {
@@ -870,7 +871,7 @@ public class infIncapacidad extends javax.swing.JInternalFrame {
         if (rbtCarta.isSelected()) {
             tipo = "Completa";
         }
-        instancias.getReporte().verIncapacidad(consecutivo, instancias.getInformacionEmpresa(), nodo.getUsuarioRegistro(), tipo);
+        new GeneradorReporteMedico(instancias).verIncapacidad(consecutivo, instancias.getInformacionEmpresa(), nodo.getUsuarioRegistro(), tipo);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

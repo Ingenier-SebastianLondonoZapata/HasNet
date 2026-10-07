@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndConsultaClinica;
 import clases.Medico.ndFormulaMedica;
@@ -679,7 +680,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
                 }
-                instancias.getReporte().verFormulaMedica(id, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
+                new GeneradorReporteMedico(instancias).verFormulaMedica(id, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
             }
 
             try {
@@ -871,7 +872,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
         if (rbtCarta.isSelected()) {
             tipo = "Completa";
         }
-        instancias.getReporte().verFormulaMedica(consecutivo, instancias.getInformacionEmpresa(), nodo.getUsuario(), tipo);
+        new GeneradorReporteMedico(instancias).verFormulaMedica(consecutivo, instancias.getInformacionEmpresa(), nodo.getUsuario(), tipo);
     }
 
     public void nuevaFormula(ndHistoriaClinica nodo, String frecCardiaca, String presionArterial,

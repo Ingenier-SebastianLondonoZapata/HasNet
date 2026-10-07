@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import clases.Medico.ndFormulaMedica;
 import clases.Medico.ndTablaFormula;
@@ -920,7 +921,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
                 }
-                instancias.getReporte().verFormulaMedicaVeterinaria(id, txtNombre.getText(),
+                new GeneradorReporteVeterinario(instancias).verFormulaMedicaVeterinaria(id, txtNombre.getText(),
                         txtGenero.getText(), txtRaza.getText(), txtEdad.getText(), txtCodigo.getText(), txtReproductivo.getText(),
                         txtCedula.getText(), txtNombrePropietario.getText(), txtTelefono.getText(), txtDireccion.getText(),
                         proximoControl, tipo, txtHistoria.getText());
@@ -1226,7 +1227,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
             tipo = "Completa";
         }
 
-        instancias.getReporte().verFormulaMedicaVeterinaria(consecutivo, txtNombre.getText(),
+        new GeneradorReporteVeterinario(instancias).verFormulaMedicaVeterinaria(consecutivo, txtNombre.getText(),
                 txtGenero.getText(), txtRaza.getText(), txtEdad.getText(), txtCodigo.getText(), txtReproductivo.getText(),
                 txtCedula.getText(), txtNombrePropietario.getText(), txtTelefono.getText(), txtDireccion.getText(), "", tipo,
                 txtHistoria.getText());

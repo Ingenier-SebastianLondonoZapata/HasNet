@@ -54,12 +54,12 @@ public class DaoReimpresiones {
 
                 try {
                     documento.setTurno(rs.getString("turno"));
-                } catch (Exception e) {
+                } catch (SQLException e) {
                 }
 
                 try {
                     documento.setTipoFactura(rs.getString("modeloContable"));
-                } catch (Exception e) {
+                } catch (SQLException e) {
                 }
 
                 listaDocumentos.add(documento);

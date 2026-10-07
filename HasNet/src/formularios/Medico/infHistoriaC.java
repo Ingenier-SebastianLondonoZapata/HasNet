@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndOrdenServicio;
@@ -1004,7 +1005,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
         if (!txtId.getText().equals("")) {
             ModeloContacto Paciente = instancias.getSql().getDatosTercero(txtId.getText());
             if (Paciente.getId() != null) {
-                instancias.getReporte().verHistoria(historia.getId(), "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
+                new GeneradorReporteMedico(instancias).verHistoria(historia.getId(), "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
             } else {
                 metodos.msgError(this, "El paciente con identificación " + txtId.getText() + " no existe");
             }

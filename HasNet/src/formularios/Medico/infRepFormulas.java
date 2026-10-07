@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndEpsPrecargados;
 import clases.Medico.ndMedicamentos;
@@ -459,7 +460,7 @@ public class infRepFormulas extends javax.swing.JPanel {
                 tipo = "xls";
                 instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte de formulas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
-            instancias.getReporte().ver_RepFormulas(sql, enca, tipo);
+            new GeneradorReporteMedico(instancias).ver_RepFormulas(sql, enca, tipo);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndEpsPrecargados;
 import Utilidades.BaseDatos.SQL;
@@ -637,7 +638,7 @@ public class infRepOrdenesMedicas extends javax.swing.JPanel {
                 tipo = "xls";
                 instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte de ordenes " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
-            instancias.getReporte().verRepMedico(sql, tipo);
+            new GeneradorReporteMedico(instancias).verRepMedico(sql, tipo);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

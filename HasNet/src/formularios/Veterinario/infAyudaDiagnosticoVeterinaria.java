@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import clases.Medico.ndAyudaDiagnostica;
 import clases.Medico.ndTablaDiagnostica;
@@ -774,7 +775,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
             ndHistoria historia = instancias.getSql().getDatosHistoria(txtHistoria.getText());
 
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verAyudaDiagnosticaVeterinaria(id, txtNombre.getText(), txtGenero.getText(),
+                new GeneradorReporteVeterinario(instancias).verAyudaDiagnosticaVeterinaria(id, txtNombre.getText(), txtGenero.getText(),
                         txtRaza.getText(), txtEdad.getText(), txtCodigo.getText(), txtReproductivo.getText(),
                         txtCedula.getText(), txtNombrePropietario.getText(), txtTelefono.getText(), txtDireccion.getText(), txtHistoria.getText());
             }
@@ -815,7 +816,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
 
         nuevaAyuda(instancias.getSql().getIdHistoria(txtCodigo.getText()));
 
-        instancias.getReporte().verAyudaDiagnosticaVeterinaria(consecutivo, txtNombre.getText(), txtGenero.getText(),
+        new GeneradorReporteVeterinario(instancias).verAyudaDiagnosticaVeterinaria(consecutivo, txtNombre.getText(), txtGenero.getText(),
                 txtRaza.getText(), txtEdad.getText(), txtCodigo.getText(), txtReproductivo.getText(),
                 txtCedula.getText(), txtNombrePropietario.getText(), txtTelefono.getText(), txtDireccion.getText(), txtHistoria.getText());
 
@@ -851,7 +852,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
 
     private void btnBuscTerceros3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros3ActionPerformed
         if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
-            instancias.getReporte().verNegativa(txtNombre.getText(), txtGenero.getText(),
+            new GeneradorReporteVeterinario(instancias).verNegativa(txtNombre.getText(), txtGenero.getText(),
                     txtRaza.getText(), txtEdad.getText(), txtCodigo.getText(), txtReproductivo.getText(),
                     txtCedula.getText(), txtNombrePropietario.getText(), txtTelefono.getText(), txtDireccion.getText(), txtHistoria.getText());
 

@@ -44,7 +44,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="1187" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="1189" max="32767" attributes="0"/>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Component id="pnlFormulario" alignment="0" max="32767" attributes="0"/>
           </Group>
@@ -156,7 +156,7 @@
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Component id="lbProducto" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="txtCodigoProducto" pref="205" max="32767" attributes="0"/>
+                              <Component id="txtCodigoProducto" pref="207" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                               <Component id="btnBusProd" min="-2" pref="42" max="-2" attributes="0"/>
                           </Group>
@@ -953,7 +953,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane3" min="-2" pref="918" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="162" max="-2" attributes="0"/>
-                      <Component id="txtVencimiento" pref="57" max="32767" attributes="0"/>
+                      <Component id="txtVencimiento" pref="68" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -1073,7 +1073,7 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="btnImportarExcel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -1094,7 +1094,7 @@
                           <Component id="cmbTipo" min="-2" pref="117" max="-2" attributes="0"/>
                           <Component id="txtFechaFactura" min="-2" pref="117" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="cmbCargar" pref="139" max="32767" attributes="0"/>
                           <Component id="lbVendedor1" max="32767" attributes="0"/>
@@ -1540,7 +1540,7 @@
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
+                        <Column maxWidth="0" minWidth="0" prefWidth="100" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>

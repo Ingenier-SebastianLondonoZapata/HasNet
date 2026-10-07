@@ -1,6 +1,7 @@
 package Vista.Cartera;
 
 import Controlador.Alertas.ControladorAlertas;
+import Impresiones.ImpresionesAbonos.GeneradorReporteAbono;
 import clases.Cartera.ndCxc;
 import clases.Instancias;
 import clases.Ventas.ndGarantia;
@@ -12,7 +13,7 @@ import clases.metodosGenerales;
 import Modelo.Cartera.AbonoCuenta;
 import Modelo.Cartera.MediosPagoAbono;
 import Modelo.Terceros.ModeloContacto;
-import Vista.Cartera.FuncionalidadAbonos;
+import Utilidades.Utilidades;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -130,8 +131,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         pnlAbonos = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel5 = new javax.swing.JPanel();
-        btnBuscTerceros1 = new javax.swing.JLabel();
-        btnVolver1 = new javax.swing.JLabel();
         txtPendiente = new javax.swing.JTextField();
         lbPendiente = new javax.swing.JLabel();
         txtAbonado = new javax.swing.JTextField();
@@ -174,7 +173,8 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblCartera = new javax.swing.JTable();
         jPanel11 = new javax.swing.JPanel();
-        btnGuardar = new javax.swing.JButton();
+        btnGuardarAbono = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
         lbAbono = new javax.swing.JLabel();
         txtNoAbono = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -207,7 +207,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         btnFacturar = new javax.swing.JButton();
         txtTotalizado = new javax.swing.JLabel();
         pnlFormulario1 = new javax.swing.JPanel();
-        lbNit11 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         txtCelular = new javax.swing.JTextField();
         txtTelefono = new javax.swing.JTextField();
@@ -218,7 +217,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         lbDireccion = new javax.swing.JLabel();
         lbNit1 = new javax.swing.JLabel();
         txtNombre1 = new javax.swing.JTextField();
-        txtId = new javax.swing.JTextField();
+        txtNumeroDocumento = new javax.swing.JTextField();
         txtTipo = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         lbCelular1 = new javax.swing.JLabel();
@@ -243,15 +242,15 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         txtTotalIntereses = new javax.swing.JTextField();
         lbTelefono4 = new javax.swing.JLabel();
         btnBuscTerceros2 = new javax.swing.JButton();
-        btnBuscTerceros = new javax.swing.JButton();
-        btnGuardar2 = new javax.swing.JButton();
+        btnGenerarEstadoCuenta = new javax.swing.JButton();
+        btnGenerarCertificado = new javax.swing.JButton();
         txtAbonar = new javax.swing.JTextField();
         jPanel8 = new javax.swing.JPanel();
         jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton3 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         jRadioButton1 = new javax.swing.JRadioButton();
-        btnGuardar1 = new javax.swing.JButton();
+        btnGuardarAbonoCredito = new javax.swing.JButton();
         pnlInvisible = new javax.swing.JPanel();
         txtFactura = new javax.swing.JTextField();
         cmbListas = new javax.swing.JComboBox();
@@ -359,24 +358,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
-        btnBuscTerceros1.setFont(new java.awt.Font("Century Gothic", 1, 36)); // NOI18N
-        btnBuscTerceros1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
-        btnBuscTerceros1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnBuscTerceros1MouseClicked(evt);
-            }
-        });
-
-        btnVolver1.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnVolver1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnVolver1.setText("VOLVER");
-        btnVolver1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnVolver1MouseClicked(evt);
-            }
-        });
-
         txtPendiente.setEditable(false);
         txtPendiente.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtPendiente.setName("CC/NIT"); // NOI18N
@@ -422,30 +403,19 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtPendiente)
                     .addComponent(lbPendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnBuscTerceros1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnVolver1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(8, 8, 8)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbAbonado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbPendiente))
+                .addGap(2, 2, 2)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lbAbonado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbPendiente))
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPendiente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtAbonado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(btnBuscTerceros1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btnVolver1)))
-                .addGap(5, 5, 5))
+                    .addComponent(txtPendiente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAbonado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
@@ -854,7 +824,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(5, 5, 5))
         );
 
         pnlSaldo.setBackground(new java.awt.Color(255, 255, 255));
@@ -916,6 +886,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         pnlSaldoLayout.setHorizontalGroup(
             pnlSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSaldoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtSaldo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbNit24, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -923,7 +894,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                     .addComponent(lbNit25, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtSaldoCuentas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbNit26, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 38, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         pnlSaldoLayout.setVerticalGroup(
             pnlSaldoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -972,16 +943,29 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         jPanel11.setBackground(new java.awt.Color(255, 255, 255));
 
-        btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        btnGuardar.setText("GUARDAR  ");
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnGuardar.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarAbono.setBackground(new java.awt.Color(46, 204, 113));
+        btnGuardarAbono.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnGuardarAbono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarAbono.setText("GUARDAR  ");
+        btnGuardarAbono.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardarAbono.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGuardarAbono.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnGuardarAbono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
+                btnGuardarAbonoActionPerformed(evt);
+            }
+        });
+
+        btnVolver.setBackground(new java.awt.Color(204, 204, 204));
+        btnVolver.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnVolver.setText("VOLVER");
+        btnVolver.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVolver.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnVolver.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
             }
         });
 
@@ -991,15 +975,19 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGuardarAbono, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGap(3, 3, 3)
-                .addComponent(btnGuardar)
-                .addGap(3, 3, 3))
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnVolver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGuardarAbono, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(5, 5, 5))
         );
 
         lbAbono.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
@@ -1018,7 +1006,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane3)
             .addGroup(pnlFormularioLayout.createSequentialGroup()
-                .addContainerGap(35, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(pnlDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1030,7 +1018,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtNoAbono, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbAbono, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         pnlFormularioLayout.setVerticalGroup(
             pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1044,16 +1032,17 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                         .addComponent(lbAbono, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(txtNoAbono, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlAbonos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+                    .addGroup(pnlFormularioLayout.createSequentialGroup()
+                        .addComponent(pnlAbonos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(13, 13, 13)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
         );
 
         scrFormulario.setViewportView(pnlFormulario);
 
-        jTabbedPane1.addTab("VISTA PREVIA", scrFormulario);
+        jTabbedPane1.addTab("Generar abono", scrFormulario);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -1405,7 +1394,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                             .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(txtTotalizado, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1420,16 +1409,12 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 .addGap(15, 15, 15))
         );
 
-        jTabbedPane1.addTab("LISTA", jPanel2);
+        jTabbedPane1.addTab("Lista cuentas pendientes", jPanel2);
 
         pnlFormulario1.setBackground(new java.awt.Color(255, 255, 255));
 
-        lbNit11.setFont(new java.awt.Font("Century Gothic", 1, 36)); // NOI18N
-        lbNit11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbNit11.setText("ABONO A CREDITO");
-
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos personales", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos personales", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 14))); // NOI18N
 
         txtCelular.setEditable(false);
         txtCelular.setName("Celular"); // NOI18N
@@ -1458,11 +1443,11 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         txtNombre1.setEditable(false);
         txtNombre1.setName("Razón social"); // NOI18N
 
-        txtId.setEditable(false);
-        txtId.setName("CC/NIT"); // NOI18N
-        txtId.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtNumeroDocumento.setEditable(false);
+        txtNumeroDocumento.setName("CC/NIT"); // NOI18N
+        txtNumeroDocumento.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtIdKeyReleased(evt);
+                txtNumeroDocumentoKeyReleased(evt);
             }
         });
 
@@ -1487,7 +1472,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                         .addComponent(lbCelular)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtId))
+                    .addComponent(txtNumeroDocumento))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbRazon, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1501,11 +1486,11 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbRazon, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNumeroDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbNit1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
@@ -1522,7 +1507,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos Factura", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos Factura", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 14))); // NOI18N
 
         lbCelular1.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbCelular1.setText("Fecha  credito:");
@@ -1630,22 +1615,19 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                             .addComponent(txtCuotas1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                             .addComponent(txtFechaDesenvolso)))
                     .addComponent(txtObservaciones))
-                .addContainerGap(175, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(3, 3, 3)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbNit12, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtFechaDesenvolso, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbCelular1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtVendedor, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtContrato, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                            .addComponent(lbRazon2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtFechaDesenvolso, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbCelular1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtVendedor, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtContrato, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                    .addComponent(lbRazon2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbNit12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1674,7 +1656,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "No.Cuota", "Fecha", "Abono", "Fecha pago", "Estado", "Mora", "Valor Cuota", "saldoAtrasado", "saldoMora", "Estado"
+                "No.Cuota", "Fecha", "Abono", "Fecha pago", "Estado", "Mora", "Valor Cuota", "Saldo Atrasado", "Saldo en Mora", "Estado"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1693,12 +1675,20 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane2.setViewportView(tblCuotas);
+        if (tblCuotas.getColumnModel().getColumnCount() > 0) {
+            tblCuotas.getColumnModel().getColumn(0).setMinWidth(70);
+            tblCuotas.getColumnModel().getColumn(0).setPreferredWidth(70);
+            tblCuotas.getColumnModel().getColumn(0).setMaxWidth(70);
+            tblCuotas.getColumnModel().getColumn(1).setMinWidth(100);
+            tblCuotas.getColumnModel().getColumn(1).setPreferredWidth(100);
+            tblCuotas.getColumnModel().getColumn(1).setMaxWidth(100);
+        }
 
-        lbDireccion4.setFont(new java.awt.Font("Bell MT", 1, 36)); // NOI18N
+        lbDireccion4.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
         lbDireccion4.setText("Saldo:");
 
         txtTotalIntereses.setEditable(false);
-        txtTotalIntereses.setFont(new java.awt.Font("Tahoma", 0, 32)); // NOI18N
+        txtTotalIntereses.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         txtTotalIntereses.setName("Dirección"); // NOI18N
         txtTotalIntereses.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -1706,20 +1696,20 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             }
         });
 
-        lbTelefono4.setFont(new java.awt.Font("Bell MT", 1, 36)); // NOI18N
-        lbTelefono4.setText("Abonar");
+        lbTelefono4.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        lbTelefono4.setText("Valor a abonar:");
         lbTelefono4.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 lbTelefono4KeyReleased(evt);
             }
         });
 
-        btnBuscTerceros2.setBackground(new java.awt.Color(102, 204, 255));
+        btnBuscTerceros2.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros2.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnBuscTerceros2.setText("VOLVER");
         btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnBuscTerceros2.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBuscTerceros2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1727,36 +1717,39 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             }
         });
 
-        btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
-        btnBuscTerceros.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
-        btnBuscTerceros.setText("ESTADO DE CUENTA");
-        btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnBuscTerceros.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnBuscTerceros.addActionListener(new java.awt.event.ActionListener() {
+        btnGenerarEstadoCuenta.setBackground(new java.awt.Color(204, 204, 204));
+        btnGenerarEstadoCuenta.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        btnGenerarEstadoCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnGenerarEstadoCuenta.setText("ESTADO DE CUENTA");
+        btnGenerarEstadoCuenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGenerarEstadoCuenta.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGenerarEstadoCuenta.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnGenerarEstadoCuenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscTercerosActionPerformed(evt);
+                btnGenerarEstadoCuentaActionPerformed(evt);
             }
         });
 
-        btnGuardar2.setBackground(new java.awt.Color(0, 153, 153));
-        btnGuardar2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/historia.png"))); // NOI18N
-        btnGuardar2.setText("CERTIFICADO");
-        btnGuardar2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnGuardar2.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnGuardar2.addActionListener(new java.awt.event.ActionListener() {
+        btnGenerarCertificado.setBackground(new java.awt.Color(204, 204, 204));
+        btnGenerarCertificado.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        btnGenerarCertificado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/historia.png"))); // NOI18N
+        btnGenerarCertificado.setText("CERTIFICADO");
+        btnGenerarCertificado.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGenerarCertificado.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGenerarCertificado.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnGenerarCertificado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardar2ActionPerformed(evt);
+                btnGenerarCertificadoActionPerformed(evt);
             }
         });
 
-        txtAbonar.setFont(new java.awt.Font("Calibri", 0, 36)); // NOI18N
+        txtAbonar.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         txtAbonar.setText("0");
+        txtAbonar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAbonarActionPerformed(evt);
+            }
+        });
         txtAbonar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtAbonarKeyReleased(evt);
@@ -1797,7 +1790,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap(37, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jRadioButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton1)
@@ -1805,7 +1798,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 .addComponent(jRadioButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jRadioButton4)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1815,20 +1808,19 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                     .addComponent(jRadioButton3)
                     .addComponent(jRadioButton4)
                     .addComponent(jRadioButton1))
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
-        btnGuardar1.setBackground(new java.awt.Color(0, 153, 153));
-        btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        btnGuardar1.setText("GUARDAR  ");
-        btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnGuardar1.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnGuardar1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarAbonoCredito.setBackground(new java.awt.Color(46, 204, 113));
+        btnGuardarAbonoCredito.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        btnGuardarAbonoCredito.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarAbonoCredito.setText("GUARDAR ABONO  ");
+        btnGuardarAbonoCredito.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardarAbonoCredito.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGuardarAbonoCredito.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnGuardarAbonoCredito.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardar1ActionPerformed(evt);
+                btnGuardarAbonoCreditoActionPerformed(evt);
             }
         });
 
@@ -1840,68 +1832,64 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlFormulario1Layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(pnlFormulario1Layout.createSequentialGroup()
-                                .addComponent(lbTelefono4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtAbonar))
-                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormulario1Layout.createSequentialGroup()
-                                .addComponent(btnGuardar2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(10, 10, 10))
+                    .addGroup(pnlFormulario1Layout.createSequentialGroup()
+                        .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnGenerarCertificado, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscTerceros2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(7, 7, 7)
+                        .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnlFormulario1Layout.createSequentialGroup()
+                                .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lbTelefono4)
+                                    .addComponent(lbDireccion4))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnBuscTerceros)
+                                .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtAbonar, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                    .addComponent(txtTotalIntereses)))
+                            .addGroup(pnlFormulario1Layout.createSequentialGroup()
+                                .addComponent(btnGenerarEstadoCuenta)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
+                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnGuardar1))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormulario1Layout.createSequentialGroup()
-                                .addComponent(lbDireccion4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19)
-                                .addComponent(txtTotalIntereses, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jScrollPane2)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormulario1Layout.createSequentialGroup()
-                        .addComponent(lbNit11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBuscTerceros2)))
-                .addGap(10, 10, 10))
+                                .addComponent(btnGuardarAbonoCredito, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())))
         );
         pnlFormulario1Layout.setVerticalGroup(
             pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFormulario1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbNit11, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                    .addComponent(btnBuscTerceros2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(10, 10, 10)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
-                .addGap(10, 10, 10)
-                .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbTelefono4)
-                    .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtAbonar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtTotalIntereses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lbDireccion4)))
-                .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                .addGap(3, 3, 3)
+                .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbDireccion4, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                    .addComponent(txtTotalIntereses, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                    .addComponent(btnBuscTerceros2))
+                .addGap(3, 3, 3)
+                .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnlFormulario1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnBuscTerceros)
-                            .addComponent(btnGuardar2)
-                            .addComponent(btnGuardar1)))
-                    .addGroup(pnlFormulario1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(10, 10, 10))
+                        .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lbTelefono4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAbonar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(3, 3, 3)
+                        .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnGuardarAbonoCredito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnGenerarCertificado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGenerarEstadoCuenta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(15, 15, 15))
         );
 
-        jTabbedPane1.addTab("CREDITO", pnlFormulario1);
+        jTabbedPane1.addTab("Abonos a crédito", pnlFormulario1);
 
         txtFactura.setEditable(false);
         txtFactura.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
@@ -2195,13 +2183,13 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         calcularDomicilios();
     }//GEN-LAST:event_tblRegistrosMouseClicked
 
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+    private void btnGuardarAbonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAbonoActionPerformed
         if (rdAbonoFactura.isSelected()) {
             guardar();
         } else if (rdAbonoGeneral.isSelected()) {
             guardarGeneral();
         }
-    }//GEN-LAST:event_btnGuardarActionPerformed
+    }//GEN-LAST:event_btnGuardarAbonoActionPerformed
 
     private void txtSaldoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSaldoKeyTyped
         // TODO add your handling code here:
@@ -2469,7 +2457,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
 //        String infoEmpresa = metodosGenerales.convertToMultiline(instancias.getInformacionEmpresaReimpresion() + "\n" + nodo1.getResolucion());
         String infoEmpresa = metodosGenerales.convertToMultiline(instancias.getInformacionEmpresaReimpresion());
-        instancias.getReporte().verAbono(consecutivo, "Reimpresión", infoEmpresa);
+        new GeneradorReporteAbono(instancias).verAbono(consecutivo, "Reimpresión", infoEmpresa);
     }//GEN-LAST:event_btnReImprimirActionPerformed
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
@@ -2560,9 +2548,9 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         txtMes.setText("");
     }//GEN-LAST:event_txtConsecutivoKeyReleased
 
-    private void txtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdKeyReleased
+    private void txtNumeroDocumentoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroDocumentoKeyReleased
 
-    }//GEN-LAST:event_txtIdKeyReleased
+    }//GEN-LAST:event_txtNumeroDocumentoKeyReleased
 
     private void txtValorAprovadoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorAprovadoKeyReleased
 
@@ -2574,7 +2562,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
     private void txtObservacionesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtObservacionesKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            btnGuardarActionPerformed(null);
+            btnGuardarAbonoActionPerformed(null);
         }
     }//GEN-LAST:event_txtObservacionesKeyReleased
 
@@ -2590,26 +2578,22 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalInteresesKeyReleased
 
-    private void btnBuscTerceros2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros2ActionPerformed
-        jTabbedPane1.setSelectedIndex(1);
-    }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
-
-    private void btnBuscTercerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTercerosActionPerformed
+    private void btnGenerarEstadoCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarEstadoCuentaActionPerformed
         instancias.getReporte().verEstadoDeCuenta(txtContrato.getText(), instancias.getInformacionEmpresa());
-    }//GEN-LAST:event_btnBuscTercerosActionPerformed
+    }//GEN-LAST:event_btnGenerarEstadoCuentaActionPerformed
 
-    private void btnGuardar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar2ActionPerformed
+    private void btnGenerarCertificadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarCertificadoActionPerformed
+        String entidad = metodos.msgIngresar(this, "Nombre de entidad que va dirigida");
 
-        instancias.getReporte().verCertificado(metodos.msgIngresar(this, "ESCRIBA AQUI LA ENTIDAD A LA CUAL VA DIRIGIDA EL CERTIFICADO"), txtNombre.getText(), txtId.getText(),
+        instancias.getReporte().verCertificado(entidad, txtNombre.getText(), txtNumeroDocumento.getText(),
                 txtCuotas.getText(), tblCuotas.getValueAt(0, 2).toString(),
-                instancias.getSql().getDatosTercero(txtId.getText()).getCiudad(), txtValorAprovado.getText(),
+                instancias.getSql().getDatosTercero(txtNumeroDocumento.getText()).getCiudad(), txtValorAprovado.getText(),
                 txtSaldo.getText(), tblRegistros.getToolTipText(), instancias.getInformacionEmpresa());
-    }//GEN-LAST:event_btnGuardar2ActionPerformed
+    }//GEN-LAST:event_btnGenerarCertificadoActionPerformed
 
     private void txtAbonarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAbonarKeyReleased
-
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            btnGuardar1ActionPerformed(null);
+            btnGuardarAbonoCreditoActionPerformed(null);
         } else {
             if (txtAbonar.getText().equals("") || txtAbonar.getText().equals(this.simbolo) || txtAbonar.getText().equals(this.simbolo + " ")) {
                 txtAbonar.setText("0");
@@ -2623,7 +2607,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jRadioButton4ActionPerformed
 
-    private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
+    private void btnGuardarAbonoCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAbonoCreditoActionPerformed
         BigDecimal saldoAbono;
         BigDecimal abonoTotal = BigDecimal.ZERO, abonoTotalMora = BigDecimal.ZERO;
         BigDecimal abonar = big.getMoneda(txtAbonar.getText());
@@ -2657,34 +2641,31 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             }
         }
 
-        try {
-            while (saldoAbono.compareTo(BigDecimal.ZERO) != 0) {
-                if (!(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()).toString()).equals("0")) {
+        while (saldoAbono.compareTo(BigDecimal.ZERO) != 0) {
+            if (!(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()).toString()).equals("0")) {
 
-                    BigDecimal abonoMora;
-                    abonoMora = saldoAbono;
-                    saldoAbono = saldoAbono.subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()));
+                BigDecimal abonoMora;
+                abonoMora = saldoAbono;
+                saldoAbono = saldoAbono.subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()));
 
-                    if (saldoAbono.compareTo(BigDecimal.ZERO) == -1 || saldoAbono.compareTo(BigDecimal.ZERO) == 0) {
-                        saldoAbono = BigDecimal.ZERO;
-                        abonoTotalMora = abonoTotalMora.add(abonoMora);
-                    } else {
-                        abonoTotalMora = abonoTotalMora.add(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()));
-                    }
-                }
-
-                if (saldoAbono.compareTo(BigDecimal.ZERO) > 0) {
-                    if (saldoAbono.compareTo(big.getMoneda(tblCuotas.getValueAt(fila, 6).toString()).subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()))) == -1) {
-                        abonoTotal = abonoTotal.add(saldoAbono);
-                        saldoAbono = BigDecimal.ZERO;
-                    } else {
-                        abonoTotal = abonoTotal.add(big.getMoneda(tblCuotas.getValueAt(fila, 6).toString()).subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString())));
-                        saldoAbono = saldoAbono.subtract(big.getMoneda(tblCuotas.getValueAt(fila, 6).toString()).subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString())));
-                    }
-                    fila++;
+                if (saldoAbono.compareTo(BigDecimal.ZERO) == -1 || saldoAbono.compareTo(BigDecimal.ZERO) == 0) {
+                    saldoAbono = BigDecimal.ZERO;
+                    abonoTotalMora = abonoTotalMora.add(abonoMora);
+                } else {
+                    abonoTotalMora = abonoTotalMora.add(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()));
                 }
             }
-        } catch (Exception e) {
+
+            if (saldoAbono.compareTo(BigDecimal.ZERO) > 0) {
+                if (saldoAbono.compareTo(big.getMoneda(tblCuotas.getValueAt(fila, 6).toString()).subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString()))) == -1) {
+                    abonoTotal = abonoTotal.add(saldoAbono);
+                    saldoAbono = BigDecimal.ZERO;
+                } else {
+                    abonoTotal = abonoTotal.add(big.getMoneda(tblCuotas.getValueAt(fila, 6).toString()).subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString())));
+                    saldoAbono = saldoAbono.subtract(big.getMoneda(tblCuotas.getValueAt(fila, 6).toString()).subtract(big.getMoneda(tblCuotas.getValueAt(fila, 5).toString())));
+                }
+                fila++;
+            }
         }
 
         saldoAbono = abonar;
@@ -2711,9 +2692,20 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         String abono = "ABONO-" + (String) instancias.getSql().getNumConsecutivo("ABONO")[0];
 
         if (abonoTotalMora.compareTo(BigDecimal.ZERO) > 0) {
-            facturaMora = instancias.getFactura().generarFacturaExterior(txtId.getText(), new String[][]{new String[]{"INT.MORA",
-                big.getBigDecimal(abonoTotalMora).toString()}}, "1", false, "", "");
-            documentoAbonoMora = guardarAbonoMora(facturaMora, big.getBigDecimal(abonoTotalMora).toString());
+
+            System.out.println("valor mora: " + abonoTotalMora);
+            Object[][] productoInteresMora = {
+                new Object[]{"INT.MORA", abonoTotalMora}
+            };
+
+            facturaMora = instancias.getFactura().generarFacturaExterior(
+                    txtNumeroDocumento.getText(),
+                    productoInteresMora,
+                    "1",
+                    false,
+                    "",
+                    "");
+            documentoAbonoMora = guardarAbonoMora(facturaMora, abonoTotalMora);
         }
 
         fila = 0;
@@ -2833,7 +2825,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
 //        }
 
-    }//GEN-LAST:event_btnGuardar1ActionPerformed
+    }//GEN-LAST:event_btnGuardarAbonoCreditoActionPerformed
 
     private void tblCuotasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCuotasKeyReleased
 
@@ -2983,14 +2975,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         txtPlaca.setText("");
     }//GEN-LAST:event_txtMesKeyReleased
 
-    private void btnBuscTerceros1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscTerceros1MouseClicked
-        jTabbedPane1.setSelectedIndex(1);
-    }//GEN-LAST:event_btnBuscTerceros1MouseClicked
-
-    private void btnVolver1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVolver1MouseClicked
-        jTabbedPane1.setSelectedIndex(1);
-    }//GEN-LAST:event_btnVolver1MouseClicked
-
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
         Boolean entro = false;
         for (int i = 0; i < tblRegistros.getRowCount(); i++) {
@@ -3018,7 +3002,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 txtEfectivo.setText(txtSaldoTotal.getText());
                 calcularSaldo(txtEfectivo);
                 saltarPasos = true;
-                btnGuardarActionPerformed(evt);
+                btnGuardarAbonoActionPerformed(evt);
             }
         }
 
@@ -3054,6 +3038,18 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     private void txtNombreFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreFiltroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreFiltroActionPerformed
+
+    private void txtAbonarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAbonarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAbonarActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnBuscTerceros2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros2ActionPerformed
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
 
     public void seleccionarRadio() {
         if (rdAbonoGeneral.isSelected()) {
@@ -3114,17 +3110,14 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             modelo.removeRow(0);
         }
 
-        String condicion = "";
         if (tipo.equals("separe")) {
             tblRegistros.setModel(instancias.getSql().getRegistrosCxcSepare("factura"));
         } else if (tipo.equals("domicilio")) {
             tblRegistros.setModel(instancias.getSql().getRegistrosDomicilios("factura"));
         } else if (tipo.equals("notadebito")) {
-            condicion = " where tipo = 'NOTADEBITO' ";
-            tblRegistros.setModel(instancias.getSql().getRegistrosCxc("facturaTerm", condicion));
+            tblRegistros.setModel(instancias.getSql().getRegistrosCxc("NOTADEBITO"));
         } else {
-            condicion = " where tipo = 'FACT' ";
-            tblRegistros.setModel(instancias.getSql().getRegistrosCxc("facturaTerm", condicion));
+            tblRegistros.setModel(instancias.getSql().getRegistrosCxc("FACT"));
         }
 
         modelo = (DefaultTableModel) tblRegistros.getModel();
@@ -3541,7 +3534,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         if (!saltarPasos) {
             metodos.msgExito(this, "Abono exitoso");
-            imprimirAbono(referencia, credito);
+            imprimirAbono(referencia);
             credito = false;
         }
 
@@ -3569,6 +3562,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         for (AbonoCuenta cuenta : cuentas) {
             if (funcionalidadAbonos.quedaSaldada(cuenta)) {
                 metodos.msgExito(this, "Valor saldado");
+                
                 //Pendiente: generar la factura del separe con la bodega de
                 //instancias.getSql().getBodegaSepare(cuenta.getIngreso())
                 //instancias.getFactura().generarFacturaExterior("separe", cuenta.getIngreso(), false, true, bodega);
@@ -3576,29 +3570,18 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Ofrece la impresión del abono y de su copia.
-     */
-    private void imprimirAbono(String referencia, boolean esCredito) {
+    private void imprimirAbono(String referencia) {
         if (metodos.msgPregunta(this, "¿Desea imprimir abono?") != 0) {
             return;
         }
 
-        if (esCredito) {
-            instancias.getReporte().verAbonoCredito(referencia, "Original", instancias.getInformacionEmpresaCompleto());
-        } else {
-            instancias.getReporte().verAbonoGeneral(referencia, "Original", instancias.getInformacionEmpresaCompleto());
-        }
+        new GeneradorReporteAbono(instancias).verAbonoGeneral(referencia, "Original", instancias.getInformacionEmpresaCompleto());
 
         if (metodos.msgPregunta(this, "¿Desea imprimir copia?") != 0) {
             return;
         }
 
-        if (esCredito) {
-            instancias.getReporte().verAbonoCredito(referencia, "Copia", instancias.getInformacionEmpresaCompleto());
-        } else {
-            instancias.getReporte().verAbonoGeneral(referencia, "Copia", instancias.getInformacionEmpresaCompleto());
-        }
+        new GeneradorReporteAbono(instancias).verAbonoGeneral(referencia, "Copia", instancias.getInformacionEmpresaCompleto());
     }
 
     public void actualizarConsecutivo() {
@@ -3646,7 +3629,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         }
 
         avisarSepare(cuentas);
-        imprimirAbono(referencia, false);
+        imprimirAbono(referencia);
 
         funcionalidadAbonos.aumentarConsecutivo("ABONOGENERAL");
         funcionalidadAbonos.aumentarConsecutivo("ABONO");
@@ -3664,16 +3647,13 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
      *
      * @return el consecutivo del abono, o null si no se pudo guardar.
      */
-    public String guardarAbonoMora(String factura, String valor) {
-
-        BigDecimal valorMora = big.getBigDecimal(valor);
+    public String guardarAbonoMora(String factura, BigDecimal valorMora) {
 
         String abono = funcionalidadAbonos.obtenerConsecutivoAbono();
         String referencia = funcionalidadAbonos.obtenerReferenciaAbono();
         ModeloContacto nodo = instancias.getSql().getDatosTercero(txtNit.getText());
 
-        AbonoCuenta cuenta = new AbonoCuenta(factura, factura, valorMora, BigDecimal.ZERO, valorMora,
-                BigDecimal.ZERO);
+        AbonoCuenta cuenta = new AbonoCuenta(factura, factura, valorMora, BigDecimal.ZERO, valorMora, BigDecimal.ZERO);
 
         if (!funcionalidadAbonos.registrarAbonoMora(abono, referencia, nodo.getIdSistema(),
                 txtComprobante.getText(), cuenta, getMediosPagoMora(valorMora))) {
@@ -3707,8 +3687,10 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         ndPrestamo nodo = instancias.getSql().getDatosPrestamo(Contrato);
 
         if (nodo.getContrato() != null) {
+            ModeloContacto datosCliente = instancias.getSql().getDatosTercero(nodo.getCliente());
+            txtNumeroDocumento.setText(datosCliente.getId());
+
             txtFactura.setText(nodo.getFactura());
-            txtId.setText(nodo.getCliente());
             txtInteres.setText(nodo.getInteres());
             txtFechaDesenvolso.setText(metodos.fecha(nodo.getFechaDesenvolso()));
             txtObservaciones.setText(nodo.getObservaciones());
@@ -3719,7 +3701,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             txtVendedor.setText(nodo2.getVendedor());
             BigDecimal saldo = big.getBigDecimal(nodo.getTotal());
             txtContrato.setText(nodo.getContrato());
-            cargarCliente(txtId.getText());
+            cargarCliente(txtNumeroDocumento.getText());
             Object[][] datos = instancias.getSql().getCuotasPrestamo(nodo.getContrato());
             int abonos = 0, cont = 0;
             for (Object[] dato : datos) {
@@ -3814,16 +3796,15 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAnular;
-    private javax.swing.JButton btnBuscTerceros;
-    private javax.swing.JLabel btnBuscTerceros1;
     private javax.swing.JButton btnBuscTerceros2;
     private javax.swing.JButton btnBuscar1;
     private javax.swing.JButton btnFacturar;
-    private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnGuardar1;
-    private javax.swing.JButton btnGuardar2;
+    private javax.swing.JButton btnGenerarCertificado;
+    private javax.swing.JButton btnGenerarEstadoCuenta;
+    private javax.swing.JButton btnGuardarAbono;
+    private javax.swing.JButton btnGuardarAbonoCredito;
     private javax.swing.JButton btnReImprimir;
-    private javax.swing.JLabel btnVolver1;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox cmbListas;
     private javax.swing.JComboBox cmbTipo;
     private javax.swing.ButtonGroup grupoAbono;
@@ -3869,7 +3850,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbNC2;
     private javax.swing.JLabel lbNit;
     private javax.swing.JLabel lbNit1;
-    private javax.swing.JLabel lbNit11;
     private javax.swing.JLabel lbNit12;
     private javax.swing.JLabel lbNit2;
     private javax.swing.JLabel lbNit24;
@@ -3926,7 +3906,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtFechaDesenvolso;
     private javax.swing.JTextField txtFuente;
     private javax.swing.JTextField txtIca;
-    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtInteres;
     private javax.swing.JTextField txtIva;
     private javax.swing.JTextField txtMes;
@@ -3936,6 +3915,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtNombre1;
     private javax.swing.JTextField txtNombreFiltro;
+    private javax.swing.JTextField txtNumeroDocumento;
     private javax.swing.JTextField txtObservaciones;
     private javax.swing.JTextField txtOtro;
     private javax.swing.JTextField txtPendiente;

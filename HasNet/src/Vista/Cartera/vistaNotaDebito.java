@@ -6,6 +6,7 @@ import Enums.TipoDocumento;
 import Enums.enumBodegas;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
+import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleProductos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
@@ -4122,7 +4123,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (instancias.isUbicacion()) {
             try {
                 if (metodos.msgPregunta(null, "¿Desea imprimir ubicación?") == 0) {
-                    instancias.getReporte().ver_ubicacion(factura2, false);
+                    new GeneradorReporteFactura(instancias).ver_Ubicacion(factura2, false);
                 }
             } catch (Exception e) {
             }

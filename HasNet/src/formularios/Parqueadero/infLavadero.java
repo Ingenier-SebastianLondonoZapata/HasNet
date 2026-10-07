@@ -1,5 +1,6 @@
 package formularios.Parqueadero;
 
+import Impresiones.ImpresionesOrdenServicio.GeneradorReporteOrdenServicio;
 import Modelo.Solicitudes.AccionesPermisos;
 import clases.Instancias;
 import clases.Parqueadero.ndLavado;
@@ -1680,7 +1681,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtDiasPlazoKeyReleased
 
     private void btnReImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReImprimirActionPerformed
-        instancias.getReporte().ver_oServicio("OSERV-" + txtoServicio.getText(), txtObservaciones.getText(), false, "", "Normal");
+        new GeneradorReporteOrdenServicio(instancias).ver_oServicio("OSERV-" + txtoServicio.getText(), txtObservaciones.getText(), false, "", "Normal");
     }//GEN-LAST:event_btnReImprimirActionPerformed
 
     private void cmbEstadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEstadosActionPerformed

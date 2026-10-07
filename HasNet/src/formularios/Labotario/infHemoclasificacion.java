@@ -1,5 +1,6 @@
 package formularios.Labotario;
 
+import Impresiones.ImpresionesLaboratorio.GeneradorReporteLaboratorio;
 import formularios.Medico.*;
 import clases.Instancias;
 import clases.Medico.ndNotaEnfermeria;
@@ -679,8 +680,8 @@ public class infHemoclasificacion extends javax.swing.JInternalFrame {
                 } catch (Exception ex) {
                     pie = "";
                 }
-                instancias.getReporte().ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemoclasificacion");
-                instancias.getReporte().ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "carnetHemoclasificacion");
+                new GeneradorReporteLaboratorio(instancias).ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemoclasificacion");
+                new GeneradorReporteLaboratorio(instancias).ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "carnetHemoclasificacion");
             }
             btnLimpiarActionPerformed(evt);
         }
@@ -755,7 +756,7 @@ public class infHemoclasificacion extends javax.swing.JInternalFrame {
         } catch (Exception ex) {
             pie = "";
         }
-        instancias.getReporte().ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemoclasificacion");
+        new GeneradorReporteLaboratorio(instancias).ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemoclasificacion");
     }
 
     public void cargar(String nit, String numero) {

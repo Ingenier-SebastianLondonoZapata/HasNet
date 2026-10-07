@@ -1,5 +1,6 @@
 package formularios.Labotario;
 
+import Impresiones.ImpresionesLaboratorio.GeneradorReporteLaboratorio;
 import formularios.Medico.*;
 import clases.Instancias;
 import clases.Medico.ndNotaEnfermeria;
@@ -763,7 +764,7 @@ public class infEmbarazo extends javax.swing.JInternalFrame {
                 } catch (Exception ex) {
                     pie = "";
                 }
-                instancias.getReporte().ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "embarazo");
+                new GeneradorReporteLaboratorio(instancias).ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "embarazo");
             }
             btnLimpiarActionPerformed(evt);
         }
@@ -877,7 +878,7 @@ public class infEmbarazo extends javax.swing.JInternalFrame {
         } catch (Exception ex) {
             pie = "";
         }
-        instancias.getReporte().ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "embarazo");
+        new GeneradorReporteLaboratorio(instancias).ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "embarazo");
     }
 
     public void cargar(String nit, String numero) {

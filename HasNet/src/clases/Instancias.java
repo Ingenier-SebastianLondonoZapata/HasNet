@@ -1,8 +1,12 @@
 package clases;
 
+import Vista.Cartera.VistaReportesCartera;
+import Vista.ReportesCarteras.VistaReporteAbonos;
 import Vista.ReportesCarteras.VistaReporteCuentasPendientes;
+import Vista.ReportesCarteras.VistaReportePagos;
 import Vista.ReportesCarteras.VistaReportePagosPedientes;
 import Vista.ReportesCarteras.VistaReporteNotasCredito;
+import Vista.ReportesCarteras.VistaReporteNotasDebito;
 import Vista.ReportesVentas.VistaReporteCotizaciones;
 import Vista.ReportesVentas.VistaReportePlanSepares;
 import Vista.ReportesVentas.VistaReporteCuentasCobro;
@@ -35,9 +39,9 @@ import Vista.Productos.VistaIngreso;
 import Vista.Tesoreria.VistaEgresos;
 import Vista.Terceros.vistaContactos;
 import Vista.Restaurante.VistaMesas;
-import Vista.Ventas.VistaDocumentos;
+import Vista.Documentos.VistaDocumentos;
 import Vista.Cartera.VistaNotaDebito;
-import Vista.Cartera.vistaNotaCredito;
+import Vista.Cartera.VistaNotaCredito;
 import Vista.Configuraciones.vistaMaestra;
 import Modelo.Maestra.modeloConfiguracion;
 import Utilidades.BaseDatos.SQL;
@@ -122,7 +126,9 @@ public class Instancias {
     private vistaMaestra maestra;
 
     //REPORTES SIN METODOS ESPECIALES 
-    private JInternalFrame repMascotas, repAbonos, repAbonosCxp, invBodegas, repClientes, repBodegas, repEmpleados;
+    private JInternalFrame repMascotas, invBodegas, repClientes, repBodegas, repEmpleados;
+    private VistaReporteAbonos repAbonos;
+    private VistaReportePagos repAbonosCxp;
 
     private infUsuarios usuarios;
     private ndUsuario usuarioLog;
@@ -373,9 +379,12 @@ public class Instancias {
     private String cita;
 
     /* INICIO CARTERA */
-    private vistaNotaCredito nc;
+    private String[] vendedores = new String[0];
+    private VistaReportesCartera reportesCartera;
+    private VistaNotaCredito nc;
     private VistaNotaDebito nd;
     private VistaReporteNotasCredito repNC;
+    private VistaReporteNotasDebito repND;
     private VistaPagos pagos;
     private VistaReportePagosPedientes repPagos;
     private VistaReporteCuentasPendientes repCartera;
@@ -2373,6 +2382,22 @@ public class Instancias {
         this.repMascotas = repMascotas;
     }
 
+    public String[] getVendedores() {
+        return vendedores;
+    }
+
+    public void setVendedores(String[] vendedores) {
+        this.vendedores = vendedores;
+    }
+
+    public VistaReportesCartera getReportesCartera() {
+        return reportesCartera;
+    }
+
+    public void setReportesCartera(VistaReportesCartera reportesCartera) {
+        this.reportesCartera = reportesCartera;
+    }
+
     public VistaReporteCuentasPendientes getRepCartera() {
         return repCartera;
     }
@@ -2389,19 +2414,19 @@ public class Instancias {
         this.usuarios = usuarios;
     }
 
-    public JInternalFrame getRepAbonosCxp() {
+    public VistaReportePagos getRepAbonosCxp() {
         return repAbonosCxp;
     }
 
-    public void setRepAbonosCxp(JInternalFrame repAbonosCxp) {
+    public void setRepAbonosCxp(VistaReportePagos repAbonosCxp) {
         this.repAbonosCxp = repAbonosCxp;
     }
 
-    public JInternalFrame getRepAbonos() {
+    public VistaReporteAbonos getRepAbonos() {
         return repAbonos;
     }
 
-    public void setRepAbonos(JInternalFrame repAbonos) {
+    public void setRepAbonos(VistaReporteAbonos repAbonos) {
         this.repAbonos = repAbonos;
     }
 
@@ -2513,7 +2538,7 @@ public class Instancias {
         return egresos;
     }
 
-    public vistaNotaCredito getNc() {
+    public VistaNotaCredito getNc() {
         return nc;
     }
 
@@ -2525,7 +2550,7 @@ public class Instancias {
         this.buscBodegas = buscBodegas;
     }
 
-    public void setNc(vistaNotaCredito nc) {
+    public void setNc(VistaNotaCredito nc) {
         this.nc = nc;
     }
 
@@ -2691,6 +2716,14 @@ public class Instancias {
 
     public String getValor() {
         return valor;
+    }
+
+    public VistaReporteNotasDebito getRepND() {
+        return repND;
+    }
+
+    public void setRepND(VistaReporteNotasDebito repND) {
+        this.repND = repND;
     }
 
     public VistaReporteNotasCredito getRepNC() {

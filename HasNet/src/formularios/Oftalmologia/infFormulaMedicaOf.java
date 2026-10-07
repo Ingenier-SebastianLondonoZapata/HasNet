@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Medico.ndConsultaClinica;
 import clases.Medico.ndFormulaMedica;
@@ -712,7 +713,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
 //            aux++;
 //            instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + con[1] + "&" + aux + "&" + con[3]);
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verFormulaMedicaOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+                new GeneradorReporteOftalmologia(instancias).verFormulaMedicaOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText(), txtNacimiento.getText());
             }
 
@@ -890,7 +891,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
     public void reimprimir(String consecutivo) {
 
 //       nuevaFormula(instancias.getSql().getDatosHistClinica(instancias.getSql().getDatosConsultaClinica(instancias.getSql().getDatosFormulaMedica(consecutivo).getHistoria()).getHistoria()));
-        instancias.getReporte().verFormulaMedicaOf(consecutivo, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+        new GeneradorReporteOftalmologia(instancias).verFormulaMedicaOf(consecutivo, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                 txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText(), txtNacimiento.getText());
     }
 

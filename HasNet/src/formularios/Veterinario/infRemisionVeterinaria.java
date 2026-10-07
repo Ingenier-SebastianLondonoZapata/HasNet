@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import clases.Medico.ndFormulaMedica;
 import clases.Veterinario.ndHistoria;
@@ -713,7 +714,7 @@ public class infRemisionVeterinaria extends javax.swing.JInternalFrame {
             metodos.msgExito(this, "Remision registrada con éxito");
 
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
+                new GeneradorReporteVeterinario(instancias).verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
                         id, txtGenero.getText(), txtEdad.getText(), "", txtObservacion.getText(), txtFecha.getText(), "");
             }
 
@@ -736,7 +737,7 @@ public class infRemisionVeterinaria extends javax.swing.JInternalFrame {
 
         nuevaFormula(instancias.getSql().getDatosHistoria(txtHistoria.getText()), proximoControl, txtHistoria.getText());
 
-        instancias.getReporte().verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
+        new GeneradorReporteVeterinario(instancias).verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
                 consecutivo, txtGenero.getText(), txtEdad.getText(), "", txtObservacion.getText(), txtFecha.getText(), "");
     }
 
@@ -924,10 +925,10 @@ public class infRemisionVeterinaria extends javax.swing.JInternalFrame {
         nuevaFormula(instancias.getSql().getDatosHistoria(txtHistoria.getText()), proximoControl, txtHistoria.getText());
 
         if (rbtMediacarta.isSelected()) {
-            instancias.getReporte().verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
+            new GeneradorReporteVeterinario(instancias).verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
                     id, txtGenero.getText(), txtEdad.getText(), "", txtObservacion.getText(), txtFecha.getText(), "");
         } else {
-            instancias.getReporte().verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
+            new GeneradorReporteVeterinario(instancias).verRemision(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
                     id, txtGenero.getText(), txtEdad.getText(), "", txtObservacion.getText(), txtFecha.getText(), "Completa");
         }
     }

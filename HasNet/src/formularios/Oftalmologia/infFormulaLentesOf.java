@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Oftalmologia.ndFormulaLentes;
 import Utilidades.BaseDatos.SQL;
@@ -464,7 +465,7 @@ public class infFormulaLentesOf extends javax.swing.JInternalFrame {
             metodos.msgExito(this, "Formula de lentes registrada con éxito");
 
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verFormulaLentes("FORMLENTES-" + lbNoFactura.getText(), instancias.getInformacionEmpresa());
+                new GeneradorReporteOftalmologia(instancias).verFormulaLentes("FORMLENTES-" + lbNoFactura.getText(), instancias.getInformacionEmpresa());
             }
 
             lbNoFactura.setText("" + instancias.getSql().getNumConsecutivo("FORMLENTES")[0]);
@@ -549,7 +550,7 @@ public class infFormulaLentesOf extends javax.swing.JInternalFrame {
     }
 
     public void reimprimir(String consecutivo) {
-        instancias.getReporte().verFormulaLentes(consecutivo, instancias.getInformacionEmpresa());
+        new GeneradorReporteOftalmologia(instancias).verFormulaLentes(consecutivo, instancias.getInformacionEmpresa());
     }
 
     public void setInstancias(Instancias instancias) {

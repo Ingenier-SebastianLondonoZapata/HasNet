@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import clases.Medico.ndFormulaMedica;
 import clases.Veterinario.ndHistoria;
@@ -745,7 +746,7 @@ public class infQuirurgica extends javax.swing.JInternalFrame {
                     tipo = "Completa";
                 }
 
-                instancias.getReporte().verFormulaQuirurgica(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
+                new GeneradorReporteVeterinario(instancias).verFormulaQuirurgica(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
                         id, txtGenero.getText(), txtEdad.getText(), txtPrescripcion.getText(), txtObservacion.getText(), txtFecha.getText(), tipo);
             }
 
@@ -797,7 +798,7 @@ public class infQuirurgica extends javax.swing.JInternalFrame {
             tipo = "Completa";
         }
 
-        instancias.getReporte().verFormulaQuirurgica(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
+        new GeneradorReporteVeterinario(instancias).verFormulaQuirurgica(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
                 consecutivo, txtGenero.getText(), txtEdad.getText(), txtPrescripcion.getText(), txtObservacion.getText(),
                 txtFecha.getText(), tipo);
     }
@@ -980,7 +981,7 @@ public class infQuirurgica extends javax.swing.JInternalFrame {
             tipo = "Completa";
         }
 
-        instancias.getReporte().verFormulaQuirurgica(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
+        new GeneradorReporteVeterinario(instancias).verFormulaQuirurgica(txtCodigo.getText(), txtNombre.getText(), txtHistoria.getText(), txtRaza.getText(),
                 id, txtGenero.getText(), txtEdad.getText(), txtPrescripcion.getText(), txtObservacion.getText(), txtFecha.getText(), tipo);
     }
 

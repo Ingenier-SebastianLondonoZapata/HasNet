@@ -9365,18 +9365,38 @@ public class SQL {
         return dtDatos;
     }
 
-    public DefaultTableModel getRegistrosCxc(String factura, String condicion) {
+    public DefaultTableModel getRegistrosCxc(String tipo) {
         String columNames[] = {
-            "Factura", "Doc.Cliente", "Nom.Cliente", "Fecha Factura", "Fecha Venc.", "Valor", "Saldo", "Edad Cart.", "Estado", "Factura Interna",
+            "Factura", "Documento Cliente", "Nombre Cliente", "Fecha Factura", "Fecha Venc.", "Valor", "Saldo", "Edad Cart.", "Estado", "Factura Interna",
             "cuotas", "Conse.Manual", "Vendedor", "Placa"
         };
         String colName[] = {
-            factura + "2", "cliente", "nombre", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "cuotas", "turno",
+            "facturaTerm2", "cliente", "nombre", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "cuotas", "turno",
             "vendedor", "placa"
         };
-        String origen = " conCxc " + condicion;
-        String sql = "select " + factura + " AS " + factura + "2, cliente, nombre, fechaFactura, fechaVencimiento, valor,saldo,edadCartera,estadoVencimiento, "
-                + "saldo,factura,terminal,cuotas, turno, vendedor, placa from conCxc " + condicion + " ORDER BY orden, ordenId";
+
+        String origen = " bdterceros bt "
+                + "LEFT JOIN bdverificadorfacturas bvf ON bt.idSistema = bvf.cliente "
+                + "LEFT JOIN repcartera rc ON rc.fact = bvf.factura "
+                + "LEFT JOIN bdcxc cx ON cx.factura2 = bvf.factura "
+                + "WHERE cx.factura <> '0' "
+                + "AND cx.tipo = '" + tipo + "' "
+                + "AND cx.estado = 'PEND' "
+                + "AND bvf.anulada = 0 "
+                + "AND (bvf.consecutivo = 'SIN-CONSECUTIVO' OR bvf.consecutivo LIKE 'CONG%' OR bvf.consecutivo LIKE 'Mesa.%')";
+        String sql = "SELECT bvf.factura AS facturaTerm2, bt.id AS cliente, bt.nombre AS nombre, "
+                + "bvf.fechaFactura AS fechaFactura, bvf.fechaVencimiento AS fechaVencimiento, cx.valor AS valor, "
+                + "IF(rc.valor IS NULL, cx.valor, cx.valor - rc.valor) AS saldo, "
+                + "(TO_DAYS(bvf.fechaVencimiento) - TO_DAYS(CAST(NOW() AS DATE))) AS edadCartera, "
+                + "IF(CAST(NOW() AS DATE) >= bvf.fechaAlerta AND CAST(NOW() AS DATE) < bvf.fechaVencimiento, 'ALERTA', "
+                + "IF(CAST(NOW() AS DATE) >= bvf.fechaVencimiento, 'VENCIDA', 'OK')) AS estadoVencimiento, "
+                + "cx.factura AS factura, bvf.terminal AS terminal, cx.cuotas AS cuotas, bvf.turno AS turno, "
+                + "bvf.vendedor AS vendedor, bvf.placa AS placa, "
+                + "IF(CAST(NOW() AS DATE) >= bvf.fechaAlerta AND CAST(NOW() AS DATE) < bvf.fechaVencimiento, 2, "
+                + "IF(CAST(NOW() AS DATE) >= bvf.fechaVencimiento, 1, 3)) AS orden, "
+                + "CAST(SUBSTR(bvf.idFactura, 6, 100) AS SIGNED) AS ordenId "
+                + "FROM" + origen
+                + " ORDER BY orden, ordenId";
         Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append(sql).toString());
 
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {

@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Impresiones.ImpresionesTraslados.GeneradorReporteTraslado;
 import Vista.Productos.VistaBuscadorProductos;
 import Vista.Productos.VistaSeleccionarPLU;
 import inventario.vista.VistaMovimientoDetalleProducto;
@@ -1123,7 +1124,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 }
 
                 if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                    instancias.getReporte().verTraslados(factura, tipo);
+                    new GeneradorReporteTraslado(instancias).verTraslados(factura, tipo);
                 }
             }
         }
@@ -1183,7 +1184,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             tipo = "traslados";
         }
 
-        instancias.getReporte().verTraslados(consecutivo, tipo);
+        new GeneradorReporteTraslado(instancias).verTraslados(consecutivo, tipo);
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void popBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popBorrarActionPerformed

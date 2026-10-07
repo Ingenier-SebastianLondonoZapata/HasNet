@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndIncapacidad;
@@ -499,7 +500,7 @@ public class infContraremision extends javax.swing.JInternalFrame {
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
                 }
-                instancias.getReporte().verContraremision(conse, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
+                new GeneradorReporteMedico(instancias).verContraremision(conse, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
             }
 
             try {
@@ -610,7 +611,7 @@ public class infContraremision extends javax.swing.JInternalFrame {
         if (rbtCarta.isSelected()) {
             tipo = "Completa";
         }
-        instancias.getReporte().verContraremision(consecutivo, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
+        new GeneradorReporteMedico(instancias).verContraremision(consecutivo, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
 
     }
 

@@ -1,5 +1,6 @@
 package Vista.Tesoreria;
 
+import Impresiones.ImpresionesCuadreCaja.GeneradorReporteCuadreCaja;
 import formularios.Ventas.*;
 import clases.Instancias;
 import clases.Ventas.ndCaja;
@@ -1090,10 +1091,10 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 tipoImpresion = "Pos";
             }
 
-            instancias.getReporte().verCuadreCaja(documento, tipoImpresion, instancias.getInformacionEmpresa());
+            new GeneradorReporteCuadreCaja(instancias).verCuadreCaja(documento, tipoImpresion, instancias.getInformacionEmpresa());
 
             if (instancias.isImprimirCuadreFiscal()) {
-                instancias.getReporte().verCuadreFiscal(documento, instancias.getInformacionEmpresa());
+                new GeneradorReporteCuadreCaja(instancias).verCuadreFiscal(documento, instancias.getInformacionEmpresa());
             }
 
             calcular = aux;
@@ -1170,18 +1171,18 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         if (instancias.getImpresion().equals("pos")) {
             tipoImpresion = "Pos";
         }
-        instancias.getReporte().verCuadreCaja(consecutivo, tipoImpresion, instancias.getInformacionEmpresa());
+        new GeneradorReporteCuadreCaja(instancias).verCuadreCaja(consecutivo, tipoImpresion, instancias.getInformacionEmpresa());
 
         if (instancias.isImprimirCuadreFiscal()) {
-            instancias.getReporte().verCuadreFiscal(consecutivo, instancias.getInformacionEmpresa());
+            new GeneradorReporteCuadreCaja(instancias).verCuadreFiscal(consecutivo, instancias.getInformacionEmpresa());
         }
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void btnReimprimir1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimir1ActionPerformed
         if (instancias.getUsuario().equals("ADMIN")) {
-            instancias.getReporte().verBase(" where fecha = '" + metodos.desdeDate(dtInicio.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
+            new GeneradorReporteCuadreCaja(instancias).verBase(" where fecha = '" + metodos.desdeDate(dtInicio.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
         } else {
-            instancias.getReporte().verBase(" where usuario ='" + Instancias.getInstancias().getUsuario() + "'  and fecha = '" + metodos.desdeDate(dtInicio.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
+            new GeneradorReporteCuadreCaja(instancias).verBase(" where usuario ='" + Instancias.getInstancias().getUsuario() + "'  and fecha = '" + metodos.desdeDate(dtInicio.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
         }
     }//GEN-LAST:event_btnReimprimir1ActionPerformed
 

@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndNotaEnfermeria;
 import Utilidades.BaseDatos.SQL;
@@ -615,7 +616,7 @@ public class infNotaMedicaVeterinaria extends javax.swing.JInternalFrame {
                 metodos.msgExito(this, "Nota registrada con éxito");
                 if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
 
-                    instancias.getReporte().verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+                    new GeneradorReporteMedico(instancias).verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                             txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText() + " Años", txtNacimiento.getText(), false);
 
                 }
@@ -703,7 +704,7 @@ public class infNotaMedicaVeterinaria extends javax.swing.JInternalFrame {
 
             //btnNuevoActionPerformed(evt);
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+                new GeneradorReporteMedico(instancias).verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText() + " Años", txtNacimiento.getText(), false);
             }
             jComboBox1.setSelectedIndex(0);
@@ -721,7 +722,7 @@ public class infNotaMedicaVeterinaria extends javax.swing.JInternalFrame {
     public void imprimir(String id) {
         if (id.equals("TODOS")) {
         } else {
-            instancias.getReporte().verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+            new GeneradorReporteMedico(instancias).verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                     txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText() + " Años", txtNacimiento.getText(), false);
         }
     }

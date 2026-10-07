@@ -1,5 +1,6 @@
 package formularios.Labotario;
 
+import Impresiones.ImpresionesLaboratorio.GeneradorReporteLaboratorio;
 import formularios.Medico.*;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
@@ -717,7 +718,7 @@ public class infAcidoUrico extends javax.swing.JInternalFrame {
                 } catch (Exception ex) {
                     pie = "";
                 }
-                instancias.getReporte().ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "acidoUrico");
+                new GeneradorReporteLaboratorio(instancias).ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "acidoUrico");
             }
             btnLimpiarActionPerformed(evt);
         }
@@ -795,7 +796,7 @@ public class infAcidoUrico extends javax.swing.JInternalFrame {
             pie = "";
         }
         
-        instancias.getReporte().ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "acidoUrico");
+        new GeneradorReporteLaboratorio(instancias).ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "acidoUrico");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

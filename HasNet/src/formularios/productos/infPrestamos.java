@@ -1,5 +1,6 @@
 package formularios.productos;
 
+import Impresiones.ImpresionesTraslados.GeneradorReporteTraslado;
 import Vista.Productos.VistaBuscadorProductos;
 import Vista.Productos.VistaSeleccionarPLU;
 import inventario.vista.VistaMovimientoDetalleProducto;
@@ -1085,7 +1086,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                             tipo = "prestamos";
                         }
 
-                        instancias.getReporte().verPrestamos(factura, tipo);
+                        new GeneradorReporteTraslado(instancias).verPrestamos(factura, tipo);
                     }
                 }
             }
@@ -1284,7 +1285,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             tipo = "prestamos";
         }
 
-        instancias.getReporte().verPrestamos(consecutivo, tipo);
+        new GeneradorReporteTraslado(instancias).verPrestamos(consecutivo, tipo);
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void popBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popBorrarActionPerformed
@@ -1464,10 +1465,10 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
         if (saltarPasosTraslados) {
             if (metodos.msgPregunta(this, "¿Desea imprimir el nuevo prestamo?") == 0) {
-                instancias.getReporte().verPrestamos(factura, tipoImpr);
+                new GeneradorReporteTraslado(instancias).verPrestamos(factura, tipoImpr);
             }
         } else {
-            instancias.getReporte().verPrestamos(factura, tipoImpr);
+            new GeneradorReporteTraslado(instancias).verPrestamos(factura, tipoImpr);
         }
 
         //CAMBIAR CONSECUTIVO FACTURA

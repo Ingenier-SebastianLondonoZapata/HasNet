@@ -1,5 +1,6 @@
 package formularios.Labotario;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import formularios.Medico.*;
 import clases.Instancias;
 import clases.Laboratorio.ndConsultaLaboratorio;
@@ -2057,7 +2058,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         }
         ModeloContacto Paciente = instancias.getSql().getDatosTercero(paciente);
 
-        instancias.getReporte().verRemision(lista.getSelectedValue().toString().split(" - ")[0], "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
+        new GeneradorReporteMedico(instancias).verRemision(lista.getSelectedValue().toString().split(" - ")[0], "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
     }//GEN-LAST:event_btnReimprimirConsultaActionPerformed
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed

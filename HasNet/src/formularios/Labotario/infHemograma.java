@@ -1,5 +1,6 @@
 package formularios.Labotario;
 
+import Impresiones.ImpresionesLaboratorio.GeneradorReporteLaboratorio;
 import formularios.Medico.*;
 import clases.Instancias;
 import clases.Medico.ndNotaEnfermeria;
@@ -927,7 +928,7 @@ public class infHemograma extends javax.swing.JInternalFrame {
                     pie = "";
                 }
 
-                instancias.getReporte().ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemograma");
+                new GeneradorReporteLaboratorio(instancias).ver_Examen(id, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemograma");
             }
             btnLimpiarActionPerformed(evt);
         }
@@ -1023,7 +1024,7 @@ public class infHemograma extends javax.swing.JInternalFrame {
         } catch (Exception ex) {
             pie = "";
         }
-        instancias.getReporte().ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemograma");
+        new GeneradorReporteLaboratorio(instancias).ver_Examen(consecutivo, instancias.getInformacionEmpresa(), legal, pie, txtEdad.getText(), "hemograma");
     }
 
     public void cargar(String nit, String numero) {

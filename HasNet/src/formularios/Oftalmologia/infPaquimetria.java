@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Oftalmologia.ndPaquimetria;
 import Utilidades.BaseDatos.SQL;
@@ -560,7 +561,7 @@ public class infPaquimetria extends javax.swing.JInternalFrame {
         ndPaquimetria paqui = instancias.getSql().getDatosPaquimetria(consecutivo);
 
         if (!paqui.getId().equals(null)) {
-            instancias.getReporte().ver_Paquimetria(consecutivo, false);
+            new GeneradorReporteOftalmologia(instancias).ver_Paquimetria(consecutivo, false);
         }
     }
 
@@ -603,7 +604,7 @@ public class infPaquimetria extends javax.swing.JInternalFrame {
                 metodos.msgExito(this, "Paquimetria guardada con exito");
             }
 
-            instancias.getReporte().ver_Paquimetria(consecutivo, false);
+            new GeneradorReporteOftalmologia(instancias).ver_Paquimetria(consecutivo, false);
 
             if (!instancias.getSql().aumentarConsecutivo("PAQUI", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PAQUI")[0]) + 1)) {
                 metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la paquimetria");

@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.Medico.ndCamposOrdenPredeterminada;
@@ -2769,7 +2770,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
         ModeloContacto Paciente = instancias.getSql().getDatosTercero(txtIdentificacion.getText());
         System.out.println(lista.getSelectedValue().toString().split(" - ")[0]);
-        instancias.getReporte().ver_HojaIngreso(lista.getSelectedValue().toString().split(" - ")[0], false);
+        new GeneradorReporteOftalmologia(instancias).ver_HojaIngreso(lista.getSelectedValue().toString().split(" - ")[0], false);
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed

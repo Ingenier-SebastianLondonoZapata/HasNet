@@ -6,30 +6,19 @@ import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
 import formularios.terceros.buscClientes;
-import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 
-public class VistaReportePagos extends javax.swing.JInternalFrame {
+public class VistaReportePagos extends javax.swing.JPanel {
 
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
     metodosGenerales metodos = new metodosGenerales();
-    private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
     Instancias instancias;
 
     public VistaReportePagos() {
 
         initComponents();
-
-        Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
-        Barra.setSize(0, 0);
-        Barra.setPreferredSize(new Dimension(0, 0));
-        setBorder(null);
-        repaint();
 
         instancias = Instancias.getInstancias();
 
@@ -82,8 +71,6 @@ public class VistaReportePagos extends javax.swing.JInternalFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jPanel4 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-
-        setTitle("Factura");
 
         pnlFormulario.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -400,8 +387,8 @@ public class VistaReportePagos extends javax.swing.JInternalFrame {
 
         scrFormulario.setViewportView(pnlFormulario);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(scrFormulario)
@@ -411,7 +398,6 @@ public class VistaReportePagos extends javax.swing.JInternalFrame {
             .addComponent(scrFormulario)
         );
 
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtClienteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyReleased
@@ -423,7 +409,7 @@ public class VistaReportePagos extends javax.swing.JInternalFrame {
     private void btnAggTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggTerminalActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(this, "Ya has ingresado esta terminal");
+                metodos.msgError(null, "Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -432,7 +418,7 @@ public class VistaReportePagos extends javax.swing.JInternalFrame {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(this, "No hay ninguna terminal seleccioanda");
+            metodos.msgError(null, "No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
@@ -514,7 +500,7 @@ public class VistaReportePagos extends javax.swing.JInternalFrame {
 
             if (chkHojaCalculo.isSelected()) {
                 tipo = "xls";
-                instancias.setRutaAguardar(metodos.obtenerRuta(this, "Reporte abonos " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
+                instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte abonos " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
             System.out.println("Consulta: " + sql);
             instancias.getReporte().ver_RepAbonosCxp(tipo, sql, encabezado);
@@ -543,7 +529,7 @@ public class VistaReportePagos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
         buscar.setOpc("factura");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);

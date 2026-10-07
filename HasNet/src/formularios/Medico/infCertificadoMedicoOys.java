@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndCertificadoMedico;
 import clases.Medico.ndHistoriaClinica;
@@ -775,7 +776,7 @@ public class infCertificadoMedicoOys extends javax.swing.JPanel {
                 return;
             }
 
-            instancias.getReporte().verCertificadoMedico(instancias.getInformacionEmpresaCompleto(), conse, txtEdad.getText(), "Oys");
+            new GeneradorReporteMedico(instancias).verCertificadoMedico(instancias.getInformacionEmpresaCompleto(), conse, txtEdad.getText(), "Oys");
             Limpiar();
         }
     }//GEN-LAST:event_btnGuardar1ActionPerformed
@@ -973,7 +974,7 @@ public class infCertificadoMedicoOys extends javax.swing.JPanel {
 
     public void reimprimir(String consecutivo) {
         ndCertificadoMedico nodo = instancias.getSql().getDatosCertificadoMedico(consecutivo, "Oys");
-        instancias.getReporte().verCertificadoMedico(instancias.getInformacionEmpresa(), consecutivo, txtEdad.getText(), "Oys");
+        new GeneradorReporteMedico(instancias).verCertificadoMedico(instancias.getInformacionEmpresa(), consecutivo, txtEdad.getText(), "Oys");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

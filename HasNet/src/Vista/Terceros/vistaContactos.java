@@ -1,5 +1,6 @@
 package Vista.Terceros;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import Modelo.Terceros.ModeloDatosVehiculo;
 import Utilidades.Limpiadores;
 import Validaciones.Terceros.squemaDatosVehiculo;
@@ -2854,9 +2855,9 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         instancias.getReporte().setImagenInforme();
 
         try {
-            instancias.getReporte().ver_informePaciente(txtIdSistema.getText());
+            new GeneradorReporteMedico(instancias).ver_informePaciente(txtIdSistema.getText());
         } catch (Exception e) {
-            instancias.getReporte().ver_informePaciente1(txtIdSistema.getText());
+            new GeneradorReporteMedico(instancias).ver_informePaciente1(txtIdSistema.getText());
         }
 
     }//GEN-LAST:event_btnImprimirActionPerformed

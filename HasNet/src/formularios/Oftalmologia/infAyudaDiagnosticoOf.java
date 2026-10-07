@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Medico.ndAyudaDiagnostica;
 import clases.Medico.ndHistoriaClinica;
@@ -613,7 +614,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
             instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + aux + "&" + con[2] + "&" + con[3]);
 
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verAyudaDiagnosticaOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+                new GeneradorReporteOftalmologia(instancias).verAyudaDiagnosticaOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText());
             }
 
@@ -644,7 +645,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
     }
 
     public void reimprimir(String consecutivo) {
-        instancias.getReporte().verAyudaDiagnosticaOf(consecutivo, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+        new GeneradorReporteOftalmologia(instancias).verAyudaDiagnosticaOf(consecutivo, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                 txtNombres.getText(), txtSexo.getText(), txtEstado.getText());
     }
 

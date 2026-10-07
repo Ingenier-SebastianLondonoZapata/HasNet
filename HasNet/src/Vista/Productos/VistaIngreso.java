@@ -5,6 +5,7 @@ import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import Enums.EstadosDetalleProducto;
+import Impresiones.ImpresionesIngresos.GeneradorReporteIngreso;
 import dao.Configuraciones.DaoResoluciones;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
@@ -485,7 +486,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                         .addGap(10, 10, 10)
                         .addComponent(lbProducto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                         .addGap(2, 2, 2)
                         .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(5, 5, 5))
@@ -890,7 +891,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 918, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(162, 162, 162)
-                .addComponent(txtVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                .addComponent(txtVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlInvisibleLayout.setVerticalGroup(
@@ -1143,7 +1144,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             tblComprobantes.getColumnModel().getColumn(6).setPreferredWidth(0);
             tblComprobantes.getColumnModel().getColumn(6).setMaxWidth(0);
             tblComprobantes.getColumnModel().getColumn(7).setMinWidth(0);
-            tblComprobantes.getColumnModel().getColumn(7).setPreferredWidth(0);
+            tblComprobantes.getColumnModel().getColumn(7).setPreferredWidth(100);
             tblComprobantes.getColumnModel().getColumn(7).setMaxWidth(0);
             tblComprobantes.getColumnModel().getColumn(8).setMinWidth(0);
             tblComprobantes.getColumnModel().getColumn(8).setPreferredWidth(0);
@@ -1226,7 +1227,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnImportarExcel)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1356,7 +1357,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1187, Short.MAX_VALUE)
+            .addGap(0, 1189, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(pnlFormulario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1425,7 +1426,12 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         String ingreso = "";
         if (tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
-            ingreso = "ING-" + instancias.getSql().getNumConsecutivo("ING")[0];
+            String consecutivoResolucion = obtenerConsecutivoResolucion();
+            if (null == consecutivoResolucion) {
+                return;
+            }
+
+            ingreso = "ING-" + consecutivoResolucion;
         } else {
             ingreso = "ORDENCOMPRA-" + instancias.getSql().getNumConsecutivo("ORDENCOMPRA")[0];
         }
@@ -1610,10 +1616,9 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         //CAMBIAR CONSECUTIVO INGRESO
         if (tipoProceso.equals("ingreso")) {
-            if (!instancias.getSql().aumentarConsecutivo("ING", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ING")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del la compra");
-            }
-            lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("ING")[0]);
+            aumentarConsecutivoResolucion();
+            actualizarTablaResoluciones();
+            actualizarConsecutivo(0);
         } else {
             if (!instancias.getSql().aumentarConsecutivo("ORDENCOMPRA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ORDENCOMPRA")[0]) + 1)) {
                 metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del la compra");
@@ -1642,7 +1647,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         if (!saltarPasos) {
 //                if (metodos.msgPregunta(null, "¿Desea imprimir?") == 0) {
-            instancias.getReporte().verIngreso(ingreso, tipoProceso, tipoImp);
+            new GeneradorReporteIngreso(instancias).verIngreso(ingreso, tipoProceso, tipoImp);
 //                }
         }
 
@@ -1732,7 +1737,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             return;
         }
 
-        instancias.getReporte().verIngreso(consecutivo, tipoProceso);
+        new GeneradorReporteIngreso(instancias).verIngreso(consecutivo, tipoProceso);
 
         if (tipoProceso.equals("ingreso")) {
             if (instancias.getConfiguraciones().isProductosDetallados()) {
@@ -2524,6 +2529,46 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
 
         lbNoFactura.setText(prefijo + consecutivo);
+    }
+
+    private String obtenerConsecutivoResolucion() {
+        for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
+            if (Boolean.TRUE.equals(tblComprobantes.getValueAt(i, 2))) {
+                
+                String idResolucion = tblComprobantes.getValueAt(i, 0).toString();
+                if (idResolucion == null || idResolucion.trim().isEmpty()) {
+                    ControladorAlertas.alert("Resolución sin id, verifique para continuar");
+                    return null;
+                }
+
+                Integer consecutivoResolucion = daoResoluciones.obtenerConsecutivoResolucion(Integer.parseInt(idResolucion));
+                if (consecutivoResolucion == 0) {
+                    ControladorAlertas.alertFail("Error al obtener el consecutivo");
+                    return null;
+                }
+                
+                return consecutivoResolucion.toString();
+            }
+        }
+
+        ControladorAlertas.alert("Seleccione una resolución para continuar");
+        return null;
+    }
+
+    private void aumentarConsecutivoResolucion() {
+        for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
+            if (Boolean.TRUE.equals(tblComprobantes.getValueAt(i, 2))) {
+                String idResolucion = tblComprobantes.getValueAt(i, 0).toString();
+                if (idResolucion == null || idResolucion.trim().isEmpty()) {
+                    ControladorAlertas.alert("Resolución sin id, verifique para continuar");
+                    return;
+                }
+
+                if (!daoResoluciones.aumentarConsecutivoResolucion(Integer.parseInt(idResolucion))) {
+                    ControladorAlertas.alertFail("Error al aumentar consecutivo");
+                }
+            }
+        }
     }
 
     public void eliminarRegistros(String codigo) {

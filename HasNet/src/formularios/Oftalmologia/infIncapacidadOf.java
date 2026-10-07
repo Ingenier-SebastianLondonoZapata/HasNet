@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndIncapacidad;
@@ -640,7 +641,7 @@ public class infIncapacidadOf extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnGuardarKeyReleased
 
     public void reimprimir(String consecutivo) {
-        instancias.getReporte().verIncapacidadOf(consecutivo, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+        new GeneradorReporteOftalmologia(instancias).verIncapacidadOf(consecutivo, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                 txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtNacimiento.getText(), txtEdad.getText());
     }
 
@@ -700,7 +701,7 @@ public class infIncapacidadOf extends javax.swing.JInternalFrame {
             instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + con[1] + "&" + con[2] + "&" + aux);
 
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verIncapacidadOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
+                new GeneradorReporteOftalmologia(instancias).verIncapacidadOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtNacimiento.getText(), txtEdad.getText());
             }
 

@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndConvenio;
 import clases.Medico.ndEpsPrecargados;
@@ -1595,7 +1596,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
 
         if (instancias.isImprimirOrdenMedica()) {
             if (metodos.msgPregunta(this, "¿Desea imprimir la orden Nro." + orden + "?") == 0) {
-                instancias.getReporte().verOrdenServicio(txtId.getText());
+                new GeneradorReporteMedico(instancias).verOrdenServicio(txtId.getText());
             }
         } else {
             metodos.msgExito(this, "Orden Nro " + orden + " exitosa");
@@ -1760,7 +1761,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
             }
 
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().verOrdenServicio(txtId.getText());
+                new GeneradorReporteMedico(instancias).verOrdenServicio(txtId.getText());
             }
 
             for (int x = 0; x < jPanel11.getComponentCount(); x++) {
@@ -1907,7 +1908,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
 
     private void btnBuscTercerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTercerosActionPerformed
         if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-            instancias.getReporte().verOrdenServicio(txtId.getText());
+            new GeneradorReporteMedico(instancias).verOrdenServicio(txtId.getText());
         }
     }//GEN-LAST:event_btnBuscTercerosActionPerformed
 

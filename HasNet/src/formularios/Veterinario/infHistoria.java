@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Celda_CheckBox;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
@@ -4263,7 +4264,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
             metodos.msgError(this, "Seleccione una consulta");
             return;
         }
-        instancias.getReporte().verRemisionVeterinaria(lista.getSelectedValue().toString().split(" - ")[0], txtEdad.getText());
+        new GeneradorReporteVeterinario(instancias).verRemisionVeterinaria(lista.getSelectedValue().toString().split(" - ")[0], txtEdad.getText());
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void txtNombrePropietarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombrePropietarioActionPerformed
@@ -4915,7 +4916,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        instancias.getReporte().ver_ImpresionVacunas(txtCodigo.getText());
+        new GeneradorReporteVeterinario(instancias).ver_ImpresionVacunas(txtCodigo.getText());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txtEspecieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEspecieActionPerformed

@@ -3,6 +3,7 @@ package Vista.Ventas;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
+import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
@@ -199,14 +200,14 @@ public class FuncionalidadVentas {
                 String grupo = grupos[i].toString();
                 String impresoraGrupo = impresoraDeGrupo(instancias, grupo);
                 String condicion = condicionFacturaPorGrupo(instancias, factura2, grupo);
-                instancias.getReporte().ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
+                new GeneradorReporteFactura(instancias).ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
                         tipo, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
                         impresoraGrupo, impoconsumo, retenciones, condicion, false);
                 pausarImpresora();
             }
         } else {
             String condicion = condicionFactura(instancias, factura2);
-            instancias.getReporte().ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
+            new GeneradorReporteFactura(instancias).ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
                     tipo, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
                     impresora, impoconsumo, retenciones, condicion, false);
         }

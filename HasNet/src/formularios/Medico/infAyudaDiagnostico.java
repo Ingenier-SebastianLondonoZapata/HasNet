@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndAyudaDiagnostica;
 import clases.Medico.ndHistoriaClinica;
@@ -603,7 +604,7 @@ public class infAyudaDiagnostico extends javax.swing.JInternalFrame {
                     tipo = "Completa";
                 }
 
-                instancias.getReporte().verAyudaDiagnostica(id, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
+                new GeneradorReporteMedico(instancias).verAyudaDiagnostica(id, instancias.getInformacionEmpresa(), instancias.getUsuario(), tipo);
             }
 
             limpiar();
@@ -798,7 +799,7 @@ public class infAyudaDiagnostico extends javax.swing.JInternalFrame {
         if (rbtCarta.isSelected()) {
             tipo = "Completa";
         }
-        instancias.getReporte().verAyudaDiagnostica(consecutivo, instancias.getInformacionEmpresa(), nodo.getUsuarioRegistro(), tipo);
+        new GeneradorReporteMedico(instancias).verAyudaDiagnostica(consecutivo, instancias.getInformacionEmpresa(), nodo.getUsuarioRegistro(), tipo);
     }
 
 

@@ -2,6 +2,7 @@ package formularios.Ventas;
 
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
+import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
 import Vista.BarraProceso.vistaBarraProceso;
 import formularios.terceros.*;
 import clases.Instancias;
@@ -852,7 +853,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                 ndFactura nodo = instancias.getSql().getDatosFactura(factura[0].toString());
                 String infoEmpresa = metodosGenerales.convertToMultiline(instancias.getInformacionEmpresaReimpresion() + "\n" + nodo.getResolucion());
 
-                instancias.getReporte().ver_Factura("", infoEmpresa, instancias.getLegal(), encabezado, instancias.getPie(), tipo,
+                new GeneradorReporteFactura(instancias).ver_Factura("", infoEmpresa, instancias.getLegal(), encabezado, instancias.getPie(), tipo,
                         factura[0].toString(), false, titulo, impresora, impoconsumo, retenciones, condicion, false);
 
                 try {

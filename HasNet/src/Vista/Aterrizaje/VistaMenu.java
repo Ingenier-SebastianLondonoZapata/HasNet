@@ -1,7 +1,7 @@
 package Vista.Aterrizaje;
 
 import Utilidades.DatosMaestra;
-import Vista.Cartera.vistaNotaCredito;
+import Vista.Cartera.VistaNotaCredito;
 import Vista.Configuraciones.vistaMaestra;
 import Vista.InicioSesion.vistaInicioSesion;
 import clases.Instancias;
@@ -21,11 +21,7 @@ import formularios.Agenda.infRepAgenda;
 import Vista.Cartera.VistaAbonos;
 import Vista.Cartera.VistaNotaDebito;
 import Vista.Cartera.VistaPagos;
-import Vista.ReportesCarteras.VistaReporteAbonos;
-import Vista.ReportesCarteras.VistaReportePagos;
-import Vista.ReportesCarteras.VistaReporteCuentasPendientes;
-import Vista.ReportesCarteras.VistaReporteNotasCredito;
-import Vista.ReportesCarteras.VistaReportePagosPedientes;
+import Vista.Cartera.VistaReportesCartera;
 
 import Vista.Tesoreria.VistaEgresos;
 import formularios.Tesoreria.infRepEgresos;
@@ -92,7 +88,7 @@ import Vista.Ventas.factura;
 import Vista.Ventas.creditos;
 import formularios.Ventas.infFacturarLotes;
 import Vista.Restaurante.VistaMesas;
-import Vista.Ventas.VistaDocumentos;
+import Vista.Documentos.VistaDocumentos;
 import formularios.Ventas.infMesa;
 import Vista.Ventas.ordenServicio;
 import Vista.Ventas.pedido;
@@ -2165,16 +2161,15 @@ public class VistaMenu extends javax.swing.JFrame {
                 color = new Color(214, 214, 214);
                 break;
             case "cartera":
-                textos[0] = "R.CARTERA CXC";
-                textos[1] = "POR COBRAR";
-                textos[2] = "R.ABONOS CXC";
-                textos[3] = "R.CARTERA CXP";
-                textos[4] = "PARA PAGAR";
-                textos[5] = "R.ABONOS CXP";
-                textos[6] = "N.CREDITO";
-                textos[7] = "R.NC";
-                textos[8] = "N. DEBITO";
-//                textos[8] = (String) null;
+                textos[0] = "POR COBRAR";
+                textos[1] = "PARA PAGAR";
+                textos[2] = "NOTA CRÉDITO";
+                textos[3] = "NOTA DÉBITO";
+                textos[4] = "REPORTES";
+                textos[5] = (String) null;
+                textos[6] = (String) null;
+                textos[7] = (String) null;
+                textos[8] = (String) null;
                 textos[9] = (String) null;
                 textos[10] = (String) null;
                 textos[11] = (String) null;
@@ -2182,15 +2177,15 @@ public class VistaMenu extends javax.swing.JFrame {
                 textos[13] = (String) null;
                 textos[14] = (String) null;
 
-                forms[0] = instancias.getRepCartera();
-                forms[1] = instancias.getAbonos();
-                forms[2] = instancias.getRepAbonos();
-                forms[3] = instancias.getRepPagos();
-                forms[4] = instancias.getPagos();
-                forms[5] = instancias.getRepAbonosCxp();
-                forms[6] = instancias.getNc();
-                forms[7] = instancias.getRepNC();
-                forms[8] = instancias.getNd();
+                forms[0] = instancias.getAbonos();
+                forms[1] = instancias.getPagos();
+                forms[2] = instancias.getNc();
+                forms[3] = instancias.getNd();
+                forms[4] = instancias.getReportesCartera();
+                forms[5] = null;
+                forms[6] = null;
+                forms[7] = null;
+                forms[8] = null;
                 forms[9] = null;
                 forms[10] = null;
                 forms[11] = null;
@@ -2347,8 +2342,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("MASCOTAS");
             }
 
-            if (formularios[0] instanceof VistaReporteCuentasPendientes) {
-                instancias.getMenu().cambiarTitulo("REPORTE CARTERA CXC");
+            if (formularios[0] instanceof VistaAbonos) {
+                instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR COBRAR");
             }
 
             if (formularios[0] instanceof vistaContactos) {
@@ -2402,8 +2397,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("MESAS");
             }
 
-            if (formularios[1] instanceof VistaAbonos) {
-                instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR COBRAR");
+            if (formularios[1] instanceof VistaPagos) {
+                instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR PAGAR");
             }
 
             if (formularios[1] instanceof infOrdenServicioMedico) {
@@ -2465,8 +2460,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("HISTORIAL PACIENTE");
             }
 
-            if (formularios[2] instanceof VistaReporteAbonos) {
-                instancias.getMenu().cambiarTitulo("REPORTE ABONOS CXC");
+            if (formularios[2] instanceof VistaNotaCredito) {
+                instancias.getMenu().cambiarTitulo("NOTAS CREDITO");
             }
 
             if (formularios[2] instanceof infRepMascotas) {
@@ -2510,8 +2505,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("GUARDERIA");
             }
 
-            if (formularios[3] instanceof VistaReportePagosPedientes) {
-                instancias.getMenu().cambiarTitulo("REPORTE DE CARTERA CXP");
+            if (formularios[3] instanceof VistaNotaDebito) {
+                instancias.getMenu().cambiarTitulo("NOTAS DEBITO");
             }
 
             if (formularios[3] instanceof infRepCuadre) {
@@ -2560,8 +2555,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("REPORTE DE GUARDERIAS");
             }
 
-            if (formularios[4] instanceof VistaPagos) {
-                instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR PAGAR");
+            if (formularios[4] instanceof VistaReportesCartera) {
+                instancias.getMenu().cambiarTitulo("REPORTES");
             }
 
             if (formularios[4] instanceof infGuarderia) {
@@ -2594,10 +2589,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
             if (formularios[5] instanceof infConvenio) {
                 instancias.getMenu().cambiarTitulo("CONVENIO");
-            }
-
-            if (formularios[5] instanceof VistaReportePagos) {
-                instancias.getMenu().cambiarTitulo("REPORTE ABONOS CXP");
             }
 
             if (formularios[5] instanceof infPeluqueria) {
@@ -2645,10 +2636,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("REPORTE DE PELUQUERIAS");
             }
 
-            if (formularios[6] instanceof vistaNotaCredito) {
-                instancias.getMenu().cambiarTitulo("NOTAS CREDITO");
-            }
-
             if (formularios[6] instanceof pedido) {
                 instancias.getMenu().cambiarTitulo("PEDIDOS");
             }
@@ -2691,10 +2678,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("MEDICAMENTOS");
             }
 
-            if (formularios[7] instanceof VistaReporteNotasCredito) {
-                instancias.getMenu().cambiarTitulo("REPORTE NOTAS CREDITO");
-            }
-
             if (formularios[7] instanceof infIngresoHospitalizacion) {
                 instancias.getMenu().cambiarTitulo("INGRESO HOSPITALIZACIÓN");
             }
@@ -2724,10 +2707,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
             if (formularios[8] instanceof infFacturarLotes) {
                 instancias.getMenu().cambiarTitulo("FACTURACIÓN AUTOMÁTICA");
-            }
-
-            if (formularios[8] instanceof VistaNotaDebito) {
-                instancias.getMenu().cambiarTitulo("NOTAS DEBITO");
             }
 
             if (formularios[8] instanceof infRepEmpleados) {
@@ -3772,7 +3751,7 @@ public class VistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            vistaNotaCredito interno15 = new vistaNotaCredito();
+            VistaNotaCredito interno15 = new VistaNotaCredito();
             dkpFormularios.add(interno15);
             instancias.setNc(interno15);
             if (instancias.getUsuarioLog().isNotasCredito()) {
@@ -3874,38 +3853,10 @@ public class VistaMenu extends javax.swing.JFrame {
 
     private void cargarModulosCartera() {
         try {
-            VistaReportePagos interno = new VistaReportePagos();
+            VistaReportesCartera interno = new VistaReportesCartera();
             dkpFormularios.add(interno);
-            instancias.setRepAbonosCxp(interno);
+            instancias.setReportesCartera(interno);
             interno.show();
-            interno.setMaximum(true);
-            interno.setSelected(true);
-
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            VistaReporteAbonos interno = new VistaReporteAbonos();
-            dkpFormularios.add(interno);
-            instancias.setRepAbonos(interno);
-            if (instancias.getUsuarioLog().isReporteAbonosCxC()) {
-                interno.show();
-            }
-            interno.setMaximum(true);
-            interno.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            VistaReporteNotasCredito interno = new VistaReporteNotasCredito();
-            dkpFormularios.add(interno);
-            instancias.setRepNC(interno);
-            if (instancias.getUsuarioLog().isReporteNotasCredito()) {
-                interno.show();
-            }
             interno.setMaximum(true);
             interno.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -3926,35 +3877,10 @@ public class VistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            VistaReporteCuentasPendientes interno = new VistaReporteCuentasPendientes();
-            dkpFormularios.add(interno);
-            instancias.setRepCartera(interno);
-            if (instancias.getUsuarioLog().isReporteCarteraCxC()) {
-                interno.show();
-            }
-            interno.setMaximum(true);
-            interno.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
             VistaPagos interno14 = new VistaPagos();
             dkpFormularios.add(interno14);
             instancias.setPagos(interno14);
             if (instancias.getUsuarioLog().isAbonosCxP()) {
-                interno14.show();
-            }
-            interno14.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            VistaReportePagosPedientes interno14 = new VistaReportePagosPedientes();
-            dkpFormularios.add(interno14);
-            instancias.setRepPagos(interno14);
-            if (instancias.getUsuarioLog().isReporteCarteraCxP()) {
                 interno14.show();
             }
             interno14.setMaximum(true);

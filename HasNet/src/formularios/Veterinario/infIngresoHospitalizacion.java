@@ -1,5 +1,6 @@
 package formularios.Veterinario;
 
+import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
@@ -789,13 +790,13 @@ public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
 
     private void btnInformeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformeActionPerformed
         if (btnGuardar.getText().equals("SALIDA")) {
-            instancias.getReporte().ver_Hospitalizacion(this.codigo);
+            new GeneradorReporteVeterinario(instancias).ver_Hospitalizacion(this.codigo);
         } else {
             String consecutivo = "INGHOSPITAL-" + metodos.msgIngresarEnter(this, "Documento a reimprimir");
             if (consecutivo.equals("INGHOSPITAL-")) {
                 return;
             }
-            instancias.getReporte().ver_Hospitalizacion(consecutivo);
+            new GeneradorReporteVeterinario(instancias).ver_Hospitalizacion(consecutivo);
         }
     }//GEN-LAST:event_btnInformeActionPerformed
 

@@ -8694,6 +8694,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             domiciliarios[i] = domiciliariosMatriz[i][0].toString();
         }
 
+        instancias.setVendedores(vendedores);
+
         instancias.getNc().setVendedores(vendedores);
         instancias.getNd().setVendedores(vendedores);
         instancias.getCuentaCobro().setVendedores(vendedores);
@@ -8703,7 +8705,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         instancias.getPedido().setVendedores(vendedores);
         instancias.getPlanSepare().setVendedores(vendedores);
         instancias.getClientes().setVendedores(vendedores);
-        instancias.getRepNC().setVendedores(vendedores);
 
         if (instancias.getConfiguraciones().isMedico()) {
             instancias.getPaciente().setVendedores(vendedores);
@@ -8714,8 +8715,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         } else {
             instancias.getOrdenServicio().setVendedores(tecnicos);
         }
-
-        instancias.getRepCartera().llenarDatos(vendedores);
 
         try {
             instancias.getMesa1().setDomiciliarios(domiciliarios);

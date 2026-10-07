@@ -2,6 +2,7 @@ package Vista.Tesoreria;
 
 import Consumidor.DocumentoSoporte.consumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
+import Impresiones.ImpresionesEgresos.GeneradorReporteEgreso;
 import dao.Configuraciones.DaoResoluciones;
 import dao.Egresos.DaoEgresos;
 import Enums.TipoDocumento;
@@ -1371,12 +1372,12 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
 
         if (!saltarPasos) {
             if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
-                instancias.getReporte().ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), true, tipo);
+                new GeneradorReporteEgreso(instancias).ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), true, tipo);
             } else {
-                instancias.getReporte().ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), false, tipo);
+                new GeneradorReporteEgreso(instancias).ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), false, tipo);
             }
         } else {
-            instancias.getReporte().ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), false, tipo);
+            new GeneradorReporteEgreso(instancias).ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), false, tipo);
         }
 
         saltarPasos = false;
@@ -1476,7 +1477,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
             tipo = "Pos";
         }
 
-        instancias.getReporte().ver_Egreso(consecutivo, instancias.getInformacionEmpresa(), convertirNumeroALetras.Convertir(nodo.getTotal()), false, tipo);
+        new GeneradorReporteEgreso(instancias).ver_Egreso(consecutivo, instancias.getInformacionEmpresa(), convertirNumeroALetras.Convertir(nodo.getTotal()), false, tipo);
     }//GEN-LAST:event_btnBuscTerceros3ActionPerformed
 
     private void btnAnularEgresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularEgresoActionPerformed

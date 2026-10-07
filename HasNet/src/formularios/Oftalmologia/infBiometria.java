@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Oftalmologia.ndBiometria;
 import Utilidades.BaseDatos.SQL;
@@ -746,7 +747,7 @@ public class infBiometria extends javax.swing.JInternalFrame {
                 metodos.msgExito(this, "Biometria guardada con exito");
             }
 
-            instancias.getReporte().ver_Biometria(txt1.getText(), txt2.getText(), txt3.getText(), txt4.getText(),
+            new GeneradorReporteOftalmologia(instancias).ver_Biometria(txt1.getText(), txt2.getText(), txt3.getText(), txt4.getText(),
                     txt5.getText(), txt6.getText(), txt7.getText(), txt8.getText(), txt9.getText(), txt10.getText(),
                     txt11.getText(), txt12.getText(), txt13.getText(), txt14.getText(), txt15.getText(), "",
                     "", "", "", "", "", "", "", "", "", "", "", "", "", "", conse, false);
@@ -765,7 +766,7 @@ public class infBiometria extends javax.swing.JInternalFrame {
 
         ndBiometria bio = instancias.getSql().getDatosBiometria(consecutivo);
 
-        instancias.getReporte().ver_Biometria(bio.getT1(), bio.getT2(), bio.getT3(), bio.getT4(), bio.getT5(), bio.getT6(),
+        new GeneradorReporteOftalmologia(instancias).ver_Biometria(bio.getT1(), bio.getT2(), bio.getT3(), bio.getT4(), bio.getT5(), bio.getT6(),
                 bio.getT7(), bio.getT8(), bio.getT9(), bio.getT10(), bio.getT11(), bio.getT12(), bio.getT13(), bio.getT14(),
                 bio.getT15(), bio.getT16(), bio.getT17(), bio.getT18(), bio.getT19(), bio.getT20(), bio.getT21(), bio.getT22(),
                 bio.getT23(), bio.getT24(), bio.getT25(), bio.getT26(), bio.getT27(), bio.getT28(), bio.getT29(),

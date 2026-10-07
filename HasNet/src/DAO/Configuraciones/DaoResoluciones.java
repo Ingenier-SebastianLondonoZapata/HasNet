@@ -5,6 +5,7 @@
  */
 package dao.Configuraciones;
 
+import Controlador.Alertas.ControladorAlertas;
 import dao.Generales.DaoGenerales;
 import Modelo.Maestra.ModeloPrefijos;
 import Modelo.Maestra.ModeloResolucion;
@@ -241,5 +242,24 @@ public class DaoResoluciones {
             System.err.println("Error al modificar resolución: " + e.getMessage());
             return false;
         }
+    }
+
+    public int obtenerConsecutivoResolucion(int idResolucion) {
+        String sql = "SELECT consecutivo FROM bdResoluciones WHERE idResolucion = ?";
+
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idResolucion);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("consecutivo");
+                }
+            }
+        } catch (SQLException e) {
+            ControladorAlertas.alertFail("Error consultando consecutivo resolución");
+            System.err.println("Error al consultar consecutivo de resolución: " + e.getMessage());
+        }
+
+        return 0;
     }
 }

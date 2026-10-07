@@ -4,28 +4,17 @@ import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
 import formularios.terceros.buscClientes;
-import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 
-public class VistaReportePagosPedientes extends javax.swing.JInternalFrame {
+public class VistaReportePagosPedientes extends javax.swing.JPanel {
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
-    private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
 
     public VistaReportePagosPedientes() {
 
         initComponents();
-
-        Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
-        Barra.setSize(0, 0);
-        Barra.setPreferredSize(new Dimension(0, 0));
-        setBorder(null);
-        repaint();
 
         instancias = Instancias.getInstancias();
 
@@ -53,8 +42,6 @@ public class VistaReportePagosPedientes extends javax.swing.JInternalFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jPanel2 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
-
-        setTitle("Factura");
 
         pnlFormulario.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -269,8 +256,8 @@ public class VistaReportePagosPedientes extends javax.swing.JInternalFrame {
 
         scrFormulario.setViewportView(pnlFormulario);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(scrFormulario)
@@ -280,11 +267,10 @@ public class VistaReportePagosPedientes extends javax.swing.JInternalFrame {
             .addComponent(scrFormulario)
         );
 
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
             String sql = "";
 
             if (cmbProveedor.getItemCount() > 0) {
@@ -299,7 +285,7 @@ public class VistaReportePagosPedientes extends javax.swing.JInternalFrame {
             String tipo = "";
             if (chkHojaCalculo.isSelected()) {
                 tipo = "xls";
-                instancias.setRutaAguardar(metodos.obtenerRuta(this, "Reporte de Pagos " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
+                instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte de Pagos " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
 
             instancias.getReporte().ver_RepPagos(sql, tipo);
@@ -341,7 +327,7 @@ public class VistaReportePagosPedientes extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
         buscar.setOpc("factura");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);

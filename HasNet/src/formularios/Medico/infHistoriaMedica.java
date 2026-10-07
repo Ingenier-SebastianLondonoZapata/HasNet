@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.Medico.ndCamposOrdenPredeterminada;
@@ -5627,7 +5628,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         if (!txtCC.getText().equals("") || !txtAbdomen1.getText().equals("") || !txtPartos1.getText().equals("") || !txtTorax.getText().equals("") || !txtCC.getText().equals("") || !txtNeurologico1.getText().equals("")) {
             instancias.getReporte().verRemision1(lista.getSelectedValue().toString().split(" - ")[0], "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
         } else {
-            instancias.getReporte().verRemision(lista.getSelectedValue().toString().split(" - ")[0], "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
+            new GeneradorReporteMedico(instancias).verRemision(lista.getSelectedValue().toString().split(" - ")[0], "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
         }
     }//GEN-LAST:event_btnReimprimirConsultaActionPerformed
 

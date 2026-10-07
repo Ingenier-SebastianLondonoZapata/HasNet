@@ -27,11 +27,15 @@ public abstract class GeneradorReporteBase {
     }
 
     protected void ejecutar(String nombreReporte, Map<String, ?> parametros) {
+        ejecutar(nombreReporte, parametros, false);
+    }
+
+    protected void ejecutar(String nombreReporte, Map<String, ?> parametros, boolean imprimir) {
         try {
             System.out.println("nombre reporte a imprimir: " + nombreReporte);
             URL in = getClass().getResource(nombreReporte + ".jasper");
             JasperReport reporte = (JasperReport) JRLoader.loadObject(in);
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancias);
+            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancias);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancias);
             barra.show();
         } catch (JRException e) {

@@ -7,30 +7,20 @@ import clases.Instancias;
 import Modelo.Terceros.ModeloContacto;
 import clases.metodosGenerales;
 import formularios.Parqueadero.buscPlacas;
-import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
+public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
 
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
-    private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
 
     public VistaReporteCuentasPendientes() {
 
         initComponents();
-        Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
-        Barra.setSize(0, 0);
-        Barra.setPreferredSize(new Dimension(0, 0));
-        setBorder(null);
-        repaint();
 
         instancias = Instancias.getInstancias();
 
@@ -69,8 +59,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
             cmbTerminal2.setVisible(false);
         }
 
-        /*        String[] aux = instancias.getMaestra().vendedores();
-         llenarDatos(aux[0],aux[1],aux[2],aux[3],aux[4]);*/
+        llenarDatos(instancias.getVendedores());
     }
 
     @SuppressWarnings("unchecked")
@@ -120,8 +109,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
         cmbVendedor1 = new javax.swing.JComboBox();
         cmbTerminal2 = new javax.swing.JComboBox();
         cmbPlaca = new javax.swing.JComboBox();
-
-        setTitle("Factura");
 
         pnlFormulario.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -571,8 +558,8 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
 
         scrFormulario.setViewportView(pnlFormulario);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -587,7 +574,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
                 .addGap(0, 0, 0))
         );
 
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
 //    public void llenarDatos(String Vendedores) {
@@ -668,7 +654,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(this, "No hay ninguna terminal seleccioanda");
+            metodos.msgError(null, "No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
@@ -730,7 +716,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
 
             if (btnExcel.isSelected()) {
                 tipo = "xls";
-                instancias.setRutaAguardar(metodos.obtenerRuta(this, "Reporte cartera por cuotas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
+                instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte cartera por cuotas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
 
 //            instancias.getReporte().ver_RepcarteraCuotas(sql, tipo);
@@ -809,7 +795,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
             String tipo = "";
             if (btnExcel.isSelected()) {
                 tipo = "xls";
-                instancias.setRutaAguardar(metodos.obtenerRuta(this, "Reporte cartera " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
+                instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte cartera " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
 
             String tipoReporte = "";
@@ -838,7 +824,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
         buscar.setOpc("factura");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
@@ -849,7 +835,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JInternalFrame {
     }
 
     public void ventanaPlacas(String nit, String condi) {
-        buscPlacas buscar = new buscPlacas(instancias.getMenu(), rootPaneCheckingEnabled, condi);
+        buscPlacas buscar = new buscPlacas(instancias.getMenu(), true, condi);
         buscar.setLocationRelativeTo(null);
         buscar.setInstancia(instancias);
         instancias.setBuscPlacas(buscar);
