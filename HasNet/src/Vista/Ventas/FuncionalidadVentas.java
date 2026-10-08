@@ -188,7 +188,7 @@ public class FuncionalidadVentas {
                 " WHERE bdFactura.factura = '" + factura2 + "' ");
     }
 
-    public void imprimirPasadaFactura(Instancias instancias, String factura2, String tipo,
+    public void imprimirPasadaFactura(Instancias instancias, String factura2, String nombreReporte,
             String observaciones, String legal, String pie, String titulo, String impresora,
             String impoconsumo, String retenciones, String etiquetaCopia,
             boolean porGrupo, Object[] grupos, int cantidadGrupos) {
@@ -201,14 +201,14 @@ public class FuncionalidadVentas {
                 String impresoraGrupo = impresoraDeGrupo(instancias, grupo);
                 String condicion = condicionFacturaPorGrupo(instancias, factura2, grupo);
                 new GeneradorReporteFactura(instancias).ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
-                        tipo, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
+                        nombreReporte, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
                         impresoraGrupo, impoconsumo, retenciones, condicion, false);
                 pausarImpresora();
             }
         } else {
             String condicion = condicionFactura(instancias, factura2);
             new GeneradorReporteFactura(instancias).ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
-                    tipo, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
+                    nombreReporte, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
                     impresora, impoconsumo, retenciones, condicion, false);
         }
     }

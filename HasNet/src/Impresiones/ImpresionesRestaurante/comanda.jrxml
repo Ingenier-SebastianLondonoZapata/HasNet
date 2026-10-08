@@ -66,15 +66,17 @@
 	</background>
 	<title>
 		<band height="144" splitType="Stretch">
-			<textField>
-				<reportElement x="21" y="96" width="59" height="13" uuid="6f35e3d2-5e6e-482e-a0ad-6565548a7c98"/>
+			<frame>
+<reportElement positionType="Float" x="21" y="96" width="200" height="13" uuid="c3089c66-1320-4feb-beb0-11582cce8639"/>
+<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="0" width="59" height="13" uuid="6f35e3d2-5e6e-482e-a0ad-6565548a7c98"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{congelada} != null && $F{congelada}.indexOf("Mesa.") > -1 ? "Mesa No." : ($F{congelada} != null && $F{congelada}.indexOf("SIN-CONSECUTIVO") > -1 ? "Factura No." : ($F{factura} != null && $F{factura}.indexOf("PEDIDO-") > -1 ? "Pedido No." : ""))]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="80" y="96" width="141" height="13" forecolor="#000000" uuid="d6c8904f-b1e2-49b2-a7a3-51b550550047">
+<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="59" y="0" width="141" height="13" forecolor="#000000" uuid="d6c8904f-b1e2-49b2-a7a3-51b550550047">
 					<printWhenExpression><![CDATA[$F{congelada} != null && $F{congelada}.indexOf("Mesa.") > -1]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Top">
@@ -82,22 +84,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{mesa}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="21" y="109" width="59" height="13" uuid="74aad601-1ed2-418e-aeb1-f1c9ce1e8bd2"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Fecha:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="80" y="109" width="141" height="13" uuid="92c3d3e1-547c-437e-b209-7eb640af7866"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{hora}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="80" y="96" width="141" height="13" uuid="9c351b86-9b28-422d-bd6b-05f75593d4e8">
+<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="59" y="0" width="141" height="13" uuid="9c351b86-9b28-422d-bd6b-05f75593d4e8">
 					<printWhenExpression><![CDATA[$F{congelada} != null && $F{congelada}.indexOf("Mesa.") == -1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -105,12 +93,30 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{factura}]]></textFieldExpression>
 			</textField>
-			<image hAlign="Center" vAlign="Middle" isUsingCache="true">
-				<reportElement mode="Opaque" x="58" y="6" width="128" height="64" backcolor="#FFFFFF" uuid="18db5866-6204-4566-82ee-72c8dac93fa3"/>
+</frame>
+<frame>
+<reportElement positionType="Float" x="21" y="109" width="200" height="13" uuid="14b8e8fc-04a3-44a6-9050-b34ab82d4fcc"/>
+<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="59" height="13" uuid="74aad601-1ed2-418e-aeb1-f1c9ce1e8bd2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="59" y="0" width="141" height="13" uuid="92c3d3e1-547c-437e-b209-7eb640af7866"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{hora}]]></textFieldExpression>
+			</textField>
+</frame>
+<image hAlign="Center" vAlign="Middle" isUsingCache="true">
+				<reportElement positionType="Float" mode="Opaque" x="58" y="6" width="128" height="64" backcolor="#FFFFFF" uuid="18db5866-6204-4566-82ee-72c8dac93fa3"/>
 				<imageExpression><![CDATA[$P{urlImagen}]]></imageExpression>
 			</image>
-			<textField isBlankWhenNull="true">
-				<reportElement x="80" y="77" width="106" height="19" uuid="82a67fca-79c2-4611-8910-4b4910b09f86">
+<textField isBlankWhenNull="true" isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="80" y="77" width="106" height="19" uuid="82a67fca-79c2-4611-8910-4b4910b09f86">
 					<printWhenExpression><![CDATA[!$F{turno}.equals( "0" )]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -118,8 +124,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA["Turno " + $F{turno}]]></textFieldExpression>
 			</textField>
-			<subreport>
-				<reportElement x="1" y="140" width="195" height="4" uuid="4ab36fec-a1cb-42a2-8d61-89769be16ae3"/>
+<subreport>
+				<reportElement positionType="Float" x="1" y="140" width="195" height="4" uuid="4ab36fec-a1cb-42a2-8d61-89769be16ae3"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="sql">
 					<subreportParameterExpression><![CDATA[$P{sql}]]></subreportParameterExpression>
@@ -127,20 +133,23 @@
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["Impresiones/ImpresionesRestaurante/productosEntrada.jasper"]]></subreportExpression>
 			</subreport>
-			<staticText>
-				<reportElement x="21" y="122" width="59" height="13" uuid="3949087c-b75c-4f38-923d-7754988968d9"/>
+<frame>
+<reportElement positionType="Float" x="21" y="122" width="200" height="13" uuid="eaf03238-90eb-4994-a550-021689f0cbd3"/>
+<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="59" height="13" uuid="3949087c-b75c-4f38-923d-7754988968d9"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Vendedor:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="80" y="122" width="141" height="13" uuid="e215b3d6-aa2d-463c-986b-94a1355cec57"/>
+<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="59" y="0" width="141" height="13" uuid="e215b3d6-aa2d-463c-986b-94a1355cec57"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{vendedor}]]></textFieldExpression>
 			</textField>
+</frame>
 		</band>
 	</title>
 	<pageHeader>
@@ -188,14 +197,14 @@
 	<summary>
 		<band height="100" splitType="Stretch">
 			<staticText>
-				<reportElement x="19" y="8" width="202" height="19" uuid="aa1d0492-c308-4720-9f50-96679a709433"/>
+				<reportElement positionType="Float" x="19" y="8" width="202" height="19" uuid="aa1d0492-c308-4720-9f50-96679a709433"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTALIZADOS]]></text>
 			</staticText>
-			<subreport>
-				<reportElement stretchType="RelativeToTallestObject" x="1" y="32" width="195" height="5" uuid="2f903f19-4ed7-4eae-baa8-4f4fc84d55fc"/>
+<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="1" y="32" width="195" height="5" uuid="2f903f19-4ed7-4eae-baa8-4f4fc84d55fc"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<subreportParameter name="sql">
 					<subreportParameterExpression><![CDATA[$P{sql}]]></subreportParameterExpression>
@@ -203,7 +212,7 @@
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["Impresiones/ImpresionesRestaurante/productosAgrupados.jasper"]]></subreportExpression>
 			</subreport>
-			<line>
+<line>
 				<reportElement positionType="FixRelativeToBottom" x="11" y="43" width="218" height="1" uuid="36e75646-d59a-48f1-b466-c8b7f8057359">
 					<printWhenExpression><![CDATA[$P{observaciones} != null && $P{observaciones}.trim().length() > 0]]></printWhenExpression>
 				</reportElement>
@@ -211,8 +220,8 @@
 					<pen lineWidth="3.0" lineStyle="Double"/>
 				</graphicElement>
 			</line>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="14" y="63" width="212" height="18" uuid="f740b2af-a2c8-4056-9148-2529a1f93014">
+<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="FixRelativeToBottom" x="14" y="63" width="212" height="18" uuid="f740b2af-a2c8-4056-9148-2529a1f93014">
 					<printWhenExpression><![CDATA[$P{observaciones} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -220,7 +229,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{observaciones}]]></textFieldExpression>
 			</textField>
-			<staticText>
+<staticText>
 				<reportElement positionType="FixRelativeToBottom" x="14" y="48" width="212" height="15" uuid="ab5b1cba-aec1-4e3b-b31c-bd2f3dcdc3c6">
 					<printWhenExpression><![CDATA[$P{observaciones} != null && $P{observaciones}.trim().length() > 0]]></printWhenExpression>
 				</reportElement>
@@ -229,8 +238,8 @@
 				</textElement>
 				<text><![CDATA[OBSERVACIONES]]></text>
 			</staticText>
-			<line>
-				<reportElement x="11" y="28" width="218" height="1" uuid="88a7fa40-4fe3-4962-8ac2-ee069efc01b6"/>
+<line>
+				<reportElement positionType="Float" x="11" y="28" width="218" height="1" uuid="88a7fa40-4fe3-4962-8ac2-ee069efc01b6"/>
 			</line>
 		</band>
 	</summary>

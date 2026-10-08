@@ -103,77 +103,86 @@
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
-			<staticText>
-				<reportElement x="22" y="14" width="94" height="14" uuid="92b56a3e-7d3b-4874-bf53-31a12b52f515"/>
+			<frame>
+<reportElement positionType="Float" x="22" y="14" width="137" height="14" uuid="2fc792e7-10de-491a-9f3e-b70423e5347b"/>
+<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="94" height="14" uuid="92b56a3e-7d3b-4874-bf53-31a12b52f515"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Century Gothic" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Factura de venta No:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="87" y="44" width="135" height="14" uuid="84b1a48c-21aa-409d-80e0-2cb2268325f9"/>
-				<textElement>
-					<font fontName="Century Gothic" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="120" y="14" width="39" height="14" forecolor="#FF0000" uuid="4bfc21bd-e42c-400c-ab96-38dc9269ca37"/>
+<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="98" y="0" width="39" height="14" forecolor="#FF0000" uuid="4bfc21bd-e42c-400c-ab96-38dc9269ca37"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Century Gothic" size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{factura}]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
-				<reportElement x="87" y="29" width="135" height="15" uuid="696d6313-6508-4191-ad23-4b337e143a72"/>
-				<textElement verticalAlignment="Middle">
+</frame>
+<frame>
+<reportElement positionType="Float" x="21" y="44" width="201" height="14" uuid="50806d90-b0f3-4278-bf32-d7a21cf4e610"/>
+<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="66" y="0" width="135" height="14" uuid="84b1a48c-21aa-409d-80e0-2cb2268325f9"/>
+				<textElement>
 					<font fontName="Century Gothic" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{fechaFactura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="21" y="44" width="66" height="14" uuid="06dfd12c-4617-4448-a0fe-00067b65be0c"/>
+<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="66" height="14" uuid="06dfd12c-4617-4448-a0fe-00067b65be0c"/>
 				<textElement>
 					<font fontName="Century Gothic" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Vendedor:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="21" y="29" width="66" height="14" uuid="02339eae-d26e-46fb-9d45-0f168f3baf0c"/>
+</frame>
+<frame>
+<reportElement positionType="Float" x="21" y="29" width="201" height="15" uuid="994fefc6-d00f-4abe-8558-b3766a2bf79e"/>
+<textField pattern="" isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="66" y="0" width="135" height="15" uuid="696d6313-6508-4191-ad23-4b337e143a72"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaFactura}]]></textFieldExpression>
+			</textField>
+<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="66" height="14" uuid="02339eae-d26e-46fb-9d45-0f168f3baf0c"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Century Gothic" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha factura:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="16" y="65" width="96" height="14" uuid="ad63428b-fbe1-4ed6-bb3a-24b6ddabb049"/>
+</frame>
+<staticText>
+				<reportElement positionType="Float" x="16" y="65" width="96" height="14" uuid="ad63428b-fbe1-4ed6-bb3a-24b6ddabb049"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Century Gothic" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Producto]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="115" y="65" width="30" height="14" uuid="263b497e-fa63-46b4-96ef-a1bcf1497ca2"/>
+<staticText>
+				<reportElement positionType="Float" x="115" y="65" width="30" height="14" uuid="263b497e-fa63-46b4-96ef-a1bcf1497ca2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Century Gothic" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cant]]></text>
 			</staticText>
-			<line>
-				<reportElement x="113" y="65" width="1" height="14" uuid="1285f0d4-ee83-4584-8ca3-51c281c7c919"/>
+<line>
+				<reportElement positionType="Float" x="113" y="65" width="1" height="14" uuid="1285f0d4-ee83-4584-8ca3-51c281c7c919"/>
 			</line>
-			<line>
-				<reportElement x="146" y="65" width="1" height="14" uuid="9a7674d8-a0ca-4804-b880-5448cbe9d081"/>
+<line>
+				<reportElement positionType="Float" x="146" y="65" width="1" height="14" uuid="9a7674d8-a0ca-4804-b880-5448cbe9d081"/>
 			</line>
-			<staticText>
-				<reportElement x="148" y="65" width="67" height="14" uuid="a1c8abe3-f12d-4c5c-b25e-34d75e6e7254"/>
+<staticText>
+				<reportElement positionType="Float" x="148" y="65" width="67" height="14" uuid="a1c8abe3-f12d-4c5c-b25e-34d75e6e7254"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Century Gothic" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ubicacion]]></text>
 			</staticText>
-			<line>
-				<reportElement x="217" y="65" width="1" height="14" uuid="20a9dea2-a8bf-4f79-ab87-e6dc153bd0ef"/>
+<line>
+				<reportElement positionType="Float" x="217" y="65" width="1" height="14" uuid="20a9dea2-a8bf-4f79-ab87-e6dc153bd0ef"/>
 			</line>
 		</band>
 	</title>
