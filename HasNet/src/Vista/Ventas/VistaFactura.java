@@ -72,6 +72,7 @@ import Modelo.Ventas.ModeloDetalleOrdenServicio;
 import Utilidades.DocumentosElectronicos;
 import dao.Ventas.DaoCotizacion;
 import dao.Ventas.DaoPedido;
+import dao.Ventas.DaoPlanSepare;
 import dao.Productos.DaoProducto;
 import formularios.Parqueadero.buscPlacas;
 import formularios.Ventas.buscProblemas;
@@ -82,12 +83,12 @@ import formularios.Ventas.infNuevaParte;
 import Vista.Productos.VistaBuscadorProductos;
 import Vista.Productos.VistaSeleccionarPLU;
 import formularios.terceros.buscClientes;
-import inventario.servicio.CargadorProducto;
-import inventario.servicio.ServicioActualizacionPonderado;
-import inventario.servicio.ServicioDiscosteo;
-import inventario.servicio.ServicioProcesadorComandas;
-import inventario.servicio.ServicioValidacionFactura;
-import inventario.vista.VistaMovimientoDetalleProducto;
+import Procesos.Inventario.Servicio.CargadorProducto;
+import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
+import Procesos.Inventario.Servicio.ServicioDiscosteo;
+import Procesos.Inventario.Servicio.ServicioProcesadorComandas;
+import Procesos.Inventario.Servicio.ServicioValidacionFactura;
+import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -145,6 +146,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private final DaoOrdenServicio daoOrdenServicio = new DaoOrdenServicio();
     private final DaoCotizacion daoCotizacion = new DaoCotizacion();
     private final DaoPedido daoPedido = new DaoPedido();
+    private final DaoPlanSepare daoPlanSepare = new DaoPlanSepare();
     private final DaoProducto daoProducto = new DaoProducto();
 
     private ConversorDocumentoAFactura conversorDocumentoAFactura;
@@ -203,7 +205,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         this.terminal = instancias.getTerminal();
         this.simbolo = instancias.getSimbolo();
 
-        this.conversorDocumentoAFactura = funcionalidadVentas.inicializarConversorDocumentos(instancias, daoOrdenServicio, daoPedido, daoCotizacion);
+        this.conversorDocumentoAFactura = funcionalidadVentas.inicializarConversorDocumentos(instancias, daoOrdenServicio, daoPedido, daoCotizacion, daoPlanSepare);
         setearOpcionesAlIniciar();
 
         if (tipo.equals(TipoDocumento.CREDITO.getValor())) {
@@ -6027,22 +6029,8 @@ public final class VistaFactura extends javax.swing.JPanel {
             actualizarTablaResoluciones();
         }
 
-        DocumentoMovimiento doc;
         boolean esCotizacion = TipoDocumento.COTIZACION.getValor().equals(tipoDocumento);
-
-        switch (tipoDocumento) {
-            case "pedido":
-                doc = daoFactura.cargarPedido(idDocumento);
-                break;
-            case "cotizacion":
-                doc = daoFactura.cargarCotizacion(idDocumento);
-                break;
-            case "orden":
-                doc = daoFactura.cargarOrdenServicio(idDocumento);
-                break;
-            default:
-                return false;
-        }
+        DocumentoMovimiento doc = daoFactura.cargarDocumentoConvertible(tipoDocumento, idDocumento);
 
         if (doc == null || doc.isEmpty()) {
             return false;
@@ -6069,22 +6057,8 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     public boolean agregarDocumentoParaUnificacion(String tipoDocumento, String idDocumento) {
-        DocumentoMovimiento doc;
         boolean esCotizacion = TipoDocumento.COTIZACION.getValor().equals(tipoDocumento);
-
-        switch (tipoDocumento) {
-            case "pedido":
-                doc = daoFactura.cargarPedido(idDocumento);
-                break;
-            case "cotizacion":
-                doc = daoFactura.cargarCotizacion(idDocumento);
-                break;
-            case "orden":
-                doc = daoFactura.cargarOrdenServicio(idDocumento);
-                break;
-            default:
-                return false;
-        }
+        DocumentoMovimiento doc = daoFactura.cargarDocumentoConvertible(tipoDocumento, idDocumento);
 
         if (doc == null || doc.isEmpty()) {
             return false;
@@ -6164,9 +6138,6 @@ public final class VistaFactura extends javax.swing.JPanel {
             return facturaDomicilio != null && !facturaDomicilio.isEmpty();
         }
 
-        // Cuando la facturación se origina desde VistaDocumentos únicamente se ejecutan las
-        // validaciones de facturación electrónica. Se validan antes de revertir el inventario
-        // del documento origen para no dejar el sistema en un estado intermedio si fallan.
         if (facturacionDesdeDocumentos && !validarFacturacionElectronicaDesdeDocumentos()) {
             return false;
         }
@@ -6188,6 +6159,13 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         this.tipoProceso = TipoDocumento.FACTURACION.getValor();
         String facturaGenerada = validacionInicialFactura(imprimir);
+        boolean facturaCreada = facturaGenerada != null && !facturaGenerada.isEmpty();
+
+        if (!facturaCreada) {
+            restaurarInventarioOriginal(tipoDocumentoOrigen);
+            return false;
+        }
+
         tituloOrigen = TipoDocumento.MESA.getValor().equals(this.tipoProceso) ? tituloOrigen : facturaGenerada;
 
         if (conversorDocumentoAFactura != null) {
@@ -6205,7 +6183,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             instancias.getMesas().setSelected(true);
         }
 
-        return facturaGenerada != null && !facturaGenerada.isEmpty();
+        return true;
     }
 
     private void guardarCredito(String factura, String factura2) {
@@ -8085,6 +8063,27 @@ public final class VistaFactura extends javax.swing.JPanel {
                 construirMovimientosDesdeLineas(lineasOriginales),
                 new ArrayList<DetalleProducto>(),
                 new InformacionAdicional(false, false, false));
+    }
+
+    private void restaurarInventarioOriginal(String tipoDocumentoOrigen) {
+        if (lineasOriginales.isEmpty() || conversorDocumentoAFactura == null
+                || conversorDocumentoAFactura.obtenerTipoAnulacion(tipoDocumentoOrigen) == null) {
+            return;
+        }
+
+        try {
+            funcionalidadVentas.procesarMovimientoInventario(
+                    TipoDocumento.fromValue(tipoDocumentoOrigen),
+                    TipoDocumento.obtenerPrefijoGeneralPorValor(tipoDocumentoOrigen) + "-" + lbNoFactura.getText(),
+                    enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla(),
+                    instancias.getUsuario(),
+                    construirMovimientosDesdeLineas(lineasOriginales),
+                    new ArrayList<DetalleProducto>(),
+                    new InformacionAdicional(false, false, false));
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("No se pudo restaurar el inventario del documento origen");
+        }
     }
 
     private TipoDocumento obtenerTipoAnulacion() {

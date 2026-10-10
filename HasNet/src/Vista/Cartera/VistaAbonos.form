@@ -1202,7 +1202,7 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="btnActualizar" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnBuscar1" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBuscarCuentaPendiente" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnFacturar" min="-2" pref="140" max="-2" attributes="0"/>
                           </Group>
@@ -1244,7 +1244,7 @@
                               <Component id="btnReImprimir" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="btnBuscar1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBuscarCuentaPendiente" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnFacturar" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnActualizar" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -1367,7 +1367,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizarActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btnBuscar1">
+            <Component class="javax.swing.JButton" name="btnBuscarCuentaPendiente">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -1388,7 +1388,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscar1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarCuentaPendienteActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnReImprimir">

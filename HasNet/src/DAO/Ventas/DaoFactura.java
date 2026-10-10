@@ -27,10 +27,6 @@ public class DaoFactura {
     private final DaoGenerales daoGenerales = new DaoGenerales();
     private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
 
-    // -------------------------------------------------------------------------
-    // Métodos de carga que retornan modelos tipados (para cargarMovimiento)
-    // -------------------------------------------------------------------------
-
     public DocumentoMovimiento cargarCotizacion(String idCotizacion) {
         Object[][] mat = getRegistrosCotizas(idCotizacion);
         if (mat.length == 0) return DocumentoMovimiento.vacio();
@@ -63,15 +59,27 @@ public class DaoFactura {
         return new DocumentoMovimiento(parsearCabeceraPedido(nodo), parsearLineasPedido(mat));
     }
 
+    public DocumentoMovimiento cargarDocumentoConvertible(String tipoDocumento, String id) {
+        if ("pedido".equals(tipoDocumento)) {
+            return cargarPedido(id);
+        }
+        if ("cotizacion".equals(tipoDocumento)) {
+            return cargarCotizacion(id);
+        }
+        if ("orden".equals(tipoDocumento)) {
+            return cargarOrdenServicio(id);
+        }
+        if ("separe".equals(tipoDocumento)) {
+            return cargarPlanSepare(id);
+        }
+        return null;
+    }
+
     public DocumentoMovimiento cargarMesa(String id) {
         Object[][] mat = getRegistrosMesa(id);
         if (mat.length == 0) return DocumentoMovimiento.vacio();
         return new DocumentoMovimiento(parsearCabeceraMesa(mat), parsearLineasMesa(mat));
     }
-
-    // -------------------------------------------------------------------------
-    // Parsers de cabecera — mapean columnas del Object[][] a CabeceraDocumento
-    // -------------------------------------------------------------------------
 
     private CabeceraDocumento parsearCabeceraCotizacion(Object[][] mat) {
         // Columnas: 0=producto,1=descripcion,2=lista,3=cantidad,4=subtotal,5=porcDesc,
@@ -121,10 +129,6 @@ public class DaoFactura {
         cab.setTotal(mat[0][20].toString());
         return cab;
     }
-
-    // -------------------------------------------------------------------------
-    // Parsers de líneas — mapean cada fila del Object[][] a LineaProducto
-    // -------------------------------------------------------------------------
 
     private List<LineaProducto> parsearLineasCotizacion(Object[][] mat) {
         List<LineaProducto> lineas = new ArrayList<LineaProducto>();

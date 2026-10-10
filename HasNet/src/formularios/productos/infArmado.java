@@ -3,7 +3,7 @@ package formularios.productos;
 import Impresiones.ImpresionesArmado.GeneradorReporteArmado;
 import Vista.Productos.VistaBuscadorProductos;
 import Modelo.Inventario.UltimoPonderado;
-import inventario.servicio.ServicioActualizacionPonderado;
+import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
 import clases.productos.ndProducto;
 import Vista.Productos.VistaInventarioInicial;

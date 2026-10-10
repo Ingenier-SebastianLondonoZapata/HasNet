@@ -1725,10 +1725,6 @@ public class VistaPagos extends javax.swing.JInternalFrame {
         jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_btnVolverActionPerformed
 
-    /**
-     * Lee un campo de valor del formulario. Un campo vacío o con un contenido
-     * no numérico vale cero.
-     */
     private BigDecimal getValorCampo(JTextField campo) {
         try {
             return big.getMoneda(campo.getText());
@@ -1737,9 +1733,6 @@ public class VistaPagos extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Medios de pago, retenciones y descuentos digitados en el formulario.
-     */
     private MediosPagoAbono getMediosPago() {
         return new MediosPagoAbono(getValorCampo(txtEfectivo), getValorCampo(txtCheque), getValorCampo(txtTargeta),
                 BigDecimal.ZERO, getValorCampo(txtIva), getValorCampo(txtIca), getValorCampo(txtFuente),
@@ -1982,38 +1975,45 @@ public class VistaPagos extends javax.swing.JInternalFrame {
     }
 
     public void calcularSaldo(JTextField textbox) {
+        BigDecimal dineroIngresado = acumularValores();
 
         if (rdAbonoFactura.isSelected()) {
-            if (big.getMoneda(textbox.getText()).compareTo(big.getMoneda(txtPendiente.getText())) == 1) {
-                ControladorAlertas.alert("No se puede superar el saldo pendiente");
-                textbox.setText(this.simbolo + " 0");
-                txtTotalAbonos.setText(txtAbonado.getText());
-                textbox.requestFocus();
-            } else if (acumularValores().compareTo(big.getMoneda(txtPendiente.getText())) == 1) {
-                ControladorAlertas.alert("No se puede superar el saldo pendiente");
-                textbox.setText(this.simbolo + " 0");
-                txtTotalAbonos.setText(txtAbonado.getText());
-                textbox.requestFocus();
-            } else {
-                BigDecimal abonoActual = acumularValores();
-                txtTotalAbonos.setText(big.setMoneda(big.getMoneda(txtAbonado.getText()).add(abonoActual)));
-                txtSaldo.setText(big.setMoneda(big.getMoneda(txtValor.getText()).subtract(big.getMoneda(txtTotalAbonos.getText()))));
-            }
+            calcularSaldoFactura(textbox, dineroIngresado);
         } else {
-            BigDecimal dineroDisponible = acumularValores();
-            BigDecimal saldoTotalCuentas = big.getMoneda(txtSaldo1.getText());
-
-            if (dineroDisponible.compareTo(saldoTotalCuentas) > 0) {
-                lbEfectivo.requestFocus();
-                ControladorAlertas.alert("No se puede superar el saldo pendiente");
-                textbox.setText(this.simbolo + " 0");
-                limpiarDistribucion();
-            } else {
-                distribuirAbonoGeneral(dineroDisponible);
-            }
-
-            txtSaldo.setText(big.setMoneda(big.getMoneda(txtSaldo1.getText()).subtract(acumularValores())));
+            calcularSaldoGeneral(textbox, dineroIngresado);
         }
+    }
+
+    private void calcularSaldoFactura(JTextField textbox, BigDecimal dineroIngresado) {
+        BigDecimal pendiente = big.getMoneda(txtPendiente.getText());
+
+        if (big.getMoneda(textbox.getText()).compareTo(pendiente) > 0 || dineroIngresado.compareTo(pendiente) > 0) {
+            ControladorAlertas.alert("No se puede superar el saldo pendiente");
+            textbox.setText(this.simbolo + " 0");
+            txtTotalAbonos.setText(txtAbonado.getText());
+            textbox.requestFocus();
+            return;
+        }
+
+        txtTotalAbonos.setText(big.setMoneda(big.getMoneda(txtAbonado.getText()).add(dineroIngresado)));
+        txtSaldo.setText(big.setMoneda(big.getMoneda(txtValor.getText()).subtract(big.getMoneda(txtTotalAbonos.getText()))));
+    }
+
+    private void calcularSaldoGeneral(JTextField textbox, BigDecimal dineroIngresado) {
+        BigDecimal saldoTotalCuentas = big.getMoneda(txtSaldo1.getText());
+
+        if (dineroIngresado.compareTo(saldoTotalCuentas) > 0) {
+            lbEfectivo.requestFocus();
+            ControladorAlertas.alert("No se puede superar el saldo pendiente");
+            textbox.setText(this.simbolo + " 0");
+            limpiarDistribucion();
+            // Se vuelve a leer: el campo acaba de quedar en cero.
+            dineroIngresado = acumularValores();
+        } else {
+            distribuirAbonoGeneral(dineroIngresado);
+        }
+
+        txtSaldo.setText(big.setMoneda(saldoTotalCuentas.subtract(dineroIngresado)));
     }
 
     public void seleccionarRadio() {

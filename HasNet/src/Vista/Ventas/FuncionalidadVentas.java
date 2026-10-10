@@ -18,7 +18,8 @@ import dao.Ventas.DaoCotizacion;
 import dao.Ventas.DaoFactura;
 import dao.Ventas.DaoOrdenServicio;
 import dao.Ventas.DaoPedido;
-import inventario.servicio.ServicioInventario;
+import dao.Ventas.DaoPlanSepare;
+import Procesos.Inventario.Servicio.ServicioInventario;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -320,8 +321,15 @@ public class FuncionalidadVentas {
     }
 
     public ConversorDocumentoAFactura inicializarConversorDocumentos(final Instancias instancias, final DaoOrdenServicio daoOrdenServicio,
-            final DaoPedido daoPedido, final DaoCotizacion daoCotizacion) {
+            final DaoPedido daoPedido, final DaoCotizacion daoCotizacion, final DaoPlanSepare daoPlanSepare) {
         return new ConversorDocumentoAFactura()
+                .registrar(TipoDocumento.PLAN_SEPARE.getValor(), TipoDocumento.ANULAR_PLAN_SEPARE,
+                        new ConversorDocumentoAFactura.ActualizadorDocumento() {
+                            @Override
+                            public void actualizar(String idDocumento, String idFacturaGenerada) {
+                                daoPlanSepare.modificarEstadoPlanSepare(EstadosTipoDocumento.FACTURADA.getNombre(), idFacturaGenerada, idDocumento);
+                            }
+                        })
                 .registrar(TipoDocumento.MESA.getValor(), TipoDocumento.ANULAR_MESA,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
@@ -335,7 +343,7 @@ public class FuncionalidadVentas {
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
                             public void actualizar(String idDocumento, String idFacturaGenerada) {
-                                instancias.getSql().eliminarComanda(idDocumento, "pedido");
+                                instancias.getSql().eliminarComanda(idDocumento, "factura");
                                 daoPedido.modificarEstadoPedido(EstadosTipoDocumento.FACTURADA.getNombre(), idFacturaGenerada, idDocumento);
                             }
                         })

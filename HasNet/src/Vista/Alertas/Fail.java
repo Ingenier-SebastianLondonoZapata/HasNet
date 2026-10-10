@@ -54,7 +54,7 @@ public class Fail extends javax.swing.JDialog {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Error !");
 
-        lbMensaje.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        lbMensaje.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
         lbMensaje.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbMensaje.setText("Message error.");
         lbMensaje.addKeyListener(new java.awt.event.KeyAdapter() {

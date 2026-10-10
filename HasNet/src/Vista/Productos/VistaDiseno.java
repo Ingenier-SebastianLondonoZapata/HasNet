@@ -5,7 +5,7 @@ import Modelo.Inventario.UltimoPonderado;
 import Modelo.Productos.LineaCosteoDiseno;
 import Utilidades.Utilidades;
 import dao.Productos.DaoDiseno;
-import inventario.servicio.ServicioActualizacionPonderado;
+import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
 import clases.productos.ndProducto;
 import clases.big;

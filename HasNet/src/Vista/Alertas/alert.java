@@ -54,7 +54,7 @@ public class alert extends javax.swing.JDialog {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText(" Alerta !");
 
-        lbMensaje.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        lbMensaje.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
         lbMensaje.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbMensaje.setText("Message alert.");
         lbMensaje.addKeyListener(new java.awt.event.KeyAdapter() {

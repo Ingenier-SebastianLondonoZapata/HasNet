@@ -1,7 +1,7 @@
 package formularios.productos;
 
 import Modelo.Inventario.UltimoPonderado;
-import inventario.servicio.ServicioActualizacionPonderado;
+import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import clases.Instancias;
 import clases.big;

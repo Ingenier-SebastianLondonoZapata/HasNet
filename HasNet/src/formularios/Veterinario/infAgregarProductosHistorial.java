@@ -1,14 +1,14 @@
 package formularios.Veterinario;
 
 import Modelo.Inventario.UltimoPonderado;
-import inventario.servicio.ServicioActualizacionPonderado;
+import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import Vista.Productos.VistaBuscadorProductos;
-import inventario.vista.VistaMovimientoDetalleProducto;
+import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import Vista.Productos.VistaSeleccionarPLU;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;

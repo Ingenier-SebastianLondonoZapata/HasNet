@@ -86,7 +86,7 @@ public class BigAlert extends javax.swing.JDialog {
         jScrollPane1.setBorder(null);
 
         lbMensaje.setColumns(20);
-        lbMensaje.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        lbMensaje.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
         lbMensaje.setLineWrap(true);
         lbMensaje.setRows(2);
         lbMensaje.setText("No ha añadido ningún producto");

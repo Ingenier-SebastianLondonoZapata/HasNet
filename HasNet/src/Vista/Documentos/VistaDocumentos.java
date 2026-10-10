@@ -33,16 +33,15 @@ import clases.metodosGenerales;
 import clases.productos.ndProducto;
 import dao.Terceros.DaoTerceros;
 import dao.Ventas.DaoReimpresiones;
-import inventario.servicio.CargadorProducto;
-import inventario.servicio.ServicioDiscosteo;
-import inventario.servicio.ServicioInventario;
-import Modelo.Maestra.ModeloResolucion;
+import Procesos.Inventario.Servicio.CargadorProducto;
+import Procesos.Inventario.Servicio.ServicioDiscosteo;
+import Procesos.Inventario.Servicio.ServicioInventario;
 import Modelo.Solicitudes.AccionesPermisos;
-import Modelo.Ventas.DocumentoSeleccionado;
-import Vista.Ventas.ServicioFacturacionMasiva;
-import dao.Configuraciones.DaoResoluciones;
+import Modelo.FacturacionMasiva.DocumentoSeleccionado;
+import Procesos.Facturacion.Vista.SelectorComprobanteFacturacion;
+import Procesos.Facturacion.Servicio.ServicioFacturacionDocumentos;
+import Procesos.Facturacion.Servicio.ServicioFacturacionMasiva;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -52,11 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -1733,7 +1730,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaDocumentos.class.getName()).log(Level.SEVERE, null, ex);
-                return;
             }
         } else if (cmbTipoDocumento.getSelectedItem().equals("PLAN SEPARE")) {
             TipoDocumento tipoMovimiento = TipoDocumento.ANULAR_PLAN_SEPARE;
@@ -1747,7 +1743,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                return;
             }
         } else if (cmbTipoDocumento.getSelectedItem().equals("PEDIDOS")) {
             TipoDocumento tipoMovimiento = TipoDocumento.ANULAR_PEDIDO;
@@ -1761,7 +1756,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                return;
             }
         }
     }
@@ -2226,7 +2220,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             return;
         }
 
-        int indexComprobante = solicitarSeleccionComprobante(seleccionados);
+        int indexComprobante = solicitarSeleccionComprobante(new ServicioFacturacionDocumentos(instancias), seleccionados);
         if (indexComprobante < 0) {
             return;
         }
@@ -2281,59 +2275,13 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
     }
 
-    private int solicitarSeleccionComprobante(List<DocumentoSeleccionado> seleccionados) {
-        DaoResoluciones daoResoluciones = new DaoResoluciones();
-        List<ModeloResolucion> resoluciones = daoResoluciones.obtenerResoluciones(
-                TipoDocumento.FACTURACION.getValor());
-
-        if (resoluciones == null || resoluciones.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "No hay comprobantes de facturación configurados.",
-                    "Sin comprobantes", JOptionPane.ERROR_MESSAGE);
-            return -1;
-        }
-
-        String[] opciones = new String[resoluciones.size()];
-        for (int i = 0; i < resoluciones.size(); i++) {
-            String desc = resoluciones.get(i).getDescripcionResolucion();
-            opciones[i] = desc != null ? desc : "Comprobante " + (i + 1);
-        }
-
-        JComboBox<String> comboComprobantes = new JComboBox<>(opciones);
-        Frame frame = (Frame) SwingUtilities.getWindowAncestor(this);
-        int resultado = JOptionPane.showConfirmDialog(frame, comboComprobantes,
-                "Seleccione el tipo de comprobante", JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
-
-        if (resultado != JOptionPane.OK_OPTION) {
-            return -1;
-        }
-
-        int indexSeleccionado = comboComprobantes.getSelectedIndex();
-
-        // El cliente por defecto (1010) no puede usarse para facturación electrónica.
-        String tipoResolucion = resoluciones.get(indexSeleccionado).getTipoResolucion();
-        if (Constantes.esFacturacionElectronica(tipoResolucion) && contieneClientePorDefecto(seleccionados)) {
-            JOptionPane.showMessageDialog(this,
-                    "No es posible generar facturación electrónica con el cliente por defecto ("
-                    + Constantes.CLIENTE_POR_DEFECTO + ").\n"
-                    + "La facturación electrónica requiere un cliente válido.",
-                    "Facturación electrónica no permitida", JOptionPane.WARNING_MESSAGE);
-            return -1;
-        }
-
-        return indexSeleccionado;
-    }
-
-    private boolean contieneClientePorDefecto(List<DocumentoSeleccionado> seleccionados) {
+    private int solicitarSeleccionComprobante(ServicioFacturacionDocumentos servicio, List<DocumentoSeleccionado> seleccionados) {
+        List<String> nits = new ArrayList<>();
         for (DocumentoSeleccionado doc : seleccionados) {
-            String nit = doc.getNitCliente() != null ? doc.getNitCliente() : "";
-            String nitBase = nit.contains("-") ? nit.split("-")[0] : nit;
-            if (Constantes.CLIENTE_POR_DEFECTO.equals(nitBase)) {
-                return true;
-            }
+            nits.add(doc.getNitCliente());
         }
-        return false;
+
+        return SelectorComprobanteFacturacion.solicitar(this, servicio, nits);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

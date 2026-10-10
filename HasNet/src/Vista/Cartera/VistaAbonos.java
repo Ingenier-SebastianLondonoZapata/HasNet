@@ -1,6 +1,9 @@
 package Vista.Cartera;
 
 import Controlador.Alertas.ControladorAlertas;
+import Modelo.FacturacionMasiva.ResultadoFacturacion;
+import Procesos.Facturacion.Vista.SelectorComprobanteFacturacion;
+import Procesos.Facturacion.Servicio.ServicioFacturacionDocumentos;
 import Impresiones.ImpresionesAbonos.GeneradorReporteAbono;
 import clases.Cartera.ndCxc;
 import clases.Instancias;
@@ -13,7 +16,6 @@ import clases.metodosGenerales;
 import Modelo.Cartera.AbonoCuenta;
 import Modelo.Cartera.MediosPagoAbono;
 import Modelo.Terceros.ModeloContacto;
-import Utilidades.Utilidades;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -35,7 +37,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     TableRowSorter modeloOrdenado;
     ndGarantia nodo1;
     Object datos[];
-    String tipo, simbolo = "";
+    String tipoProceso, simbolo = "";
     Boolean credito = false, saltarPasos = false;
 
     //Barra de titulo
@@ -181,7 +183,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRegistros = new javax.swing.JTable();
         btnActualizar = new javax.swing.JButton();
-        btnBuscar1 = new javax.swing.JButton();
+        btnBuscarCuentaPendiente = new javax.swing.JButton();
         btnReImprimir = new javax.swing.JButton();
         btnAnular = new javax.swing.JButton();
         lbNit6 = new javax.swing.JLabel();
@@ -1112,16 +1114,16 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             }
         });
 
-        btnBuscar1.setBackground(new java.awt.Color(204, 204, 204));
-        btnBuscar1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnBuscar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
-        btnBuscar1.setText("Ver más  ");
-        btnBuscar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnBuscar1.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnBuscar1.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscarCuentaPendiente.setBackground(new java.awt.Color(204, 204, 204));
+        btnBuscarCuentaPendiente.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        btnBuscarCuentaPendiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnBuscarCuentaPendiente.setText("Ver más  ");
+        btnBuscarCuentaPendiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscarCuentaPendiente.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnBuscarCuentaPendiente.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnBuscarCuentaPendiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscar1ActionPerformed(evt);
+                btnBuscarCuentaPendienteActionPerformed(evt);
             }
         });
 
@@ -1370,7 +1372,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnActualizar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBuscar1)
+                        .addComponent(btnBuscarCuentaPendiente)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1403,7 +1405,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                         .addComponent(btnAnular, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnReImprimir))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnBuscar1)
+                        .addComponent(btnBuscarCuentaPendiente)
                         .addComponent(btnFacturar)
                         .addComponent(btnActualizar)))
                 .addGap(15, 15, 15))
@@ -1984,149 +1986,9 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + opc, 8));
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
-    private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
-        String consecutivo;
-
-        if (tipo.equals("separe")) {
-            consecutivo = "SEPARE-" + txtConsecutivo.getText();
-        } else if (tipo.equals("cuentaCobro")) {
-            consecutivo = "CCOBRO-" + txtConsecutivo.getText();
-        } else if (tipo.equals("notadebito")) {
-            consecutivo = "ND-" + txtConsecutivo.getText();
-        } else {
-            consecutivo = "FACT-" + txtConsecutivo.getText();
-        }
-
-        factura = "";
-
-        boolean sw = false;
-        int i = -1;
-
-        for (i = 0; i < tblRegistros.getRowCount(); i++) {
-            if (((String) tblRegistros.getValueAt(i, 0)).equals(consecutivo)) {
-                sw = true;
-                factura = tblRegistros.getValueAt(i, 0).toString();
-                break;
-            }
-        }
-
-        if (sw) {
-            txtFactura.setText(consecutivo);
-            txtNit.setText((String) tblRegistros.getValueAt(i, 1));
-            txtNombre.setText((String) tblRegistros.getValueAt(i, 2));
-            txtNombre1.setText((String) tblRegistros.getValueAt(i, 2));
-            txtValor.setText((String) tblRegistros.getValueAt(i, 5));
-
-            //            NOTAS CREDITO
-            ModeloContacto nodoTer = instancias.getSql().getDatosTercero(txtNit.getText());
-            Object[][] nodo = instancias.getSql().getNcCliente(nodoTer.getIdSistema());
-            BigDecimal nc = new BigDecimal("0");
-
-            for (int j = 0; j < nodo.length; j++) {
-                nc = nc.add(big.getBigDecimal((String) nodo[j][0]));
-            }
-
-            NC = nc;
-
-            Object[][] abonos = instancias.getSql().getRegistrosAbonos(factura);
-            BigDecimal totalAbonos = big.getBigDecimal("0");
-
-            for (Object[] abono : abonos) {
-                totalAbonos = totalAbonos.add(big.getBigDecimal((abono[2])));
-            }
-
-            txtAbonado.setText(big.setMoneda(totalAbonos));
-            txtPendiente.setText(big.setMoneda(big.getMoneda(txtValor.getText()).subtract(totalAbonos)));
-
-            txtSaldo.setText(txtPendiente.getText());
-            txtSaldoTotal.setText(txtPendiente.getText());
-            txtTotalAbonos.setText(this.simbolo + " 0");
-
-            txtEfectivo.setText(this.simbolo + " 0");
-            txtCheque.setText(this.simbolo + " 0");
-            txtTargeta.setText(this.simbolo + " 0");
-            txtNC.setText(this.simbolo + " 0");
-            txtIca.setText(this.simbolo + " 0");
-            txtIva.setText(this.simbolo + " 0");
-            txtFuente.setText(this.simbolo + " 0");
-            txtOtro.setText(this.simbolo + " 0");
-            txtDescuentos.setText(this.simbolo + " 0");
-            txtSaldoCuentas.setText(this.simbolo + " 0");
-            txtComprobante.setText("");
-
-            calcularSaldo(txtAbonar);
-
-            if (txtTotalIntereses.getText().equals(this.simbolo + " 0")) {
-                txtAbonar.setEditable(false);
-            } else {
-                txtAbonar.setEditable(true);
-            }
-
-            if (tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10).equals("1")) {
-                cargarPrestamo("FACT-" + txtConsecutivo.getText());
-                jTabbedPane1.setSelectedIndex(2);
-            } else {
-                jTabbedPane1.setSelectedIndex(0);
-
-                if (tipo.equals("domicilio") || tipo.equals("")) {
-
-                    if (cmbTipo.getSelectedIndex() == 0) {
-                        tblCartera.setModel(instancias.getSql().getRegistrosCxcPorCliente("factura", (String) tblRegistros.getValueAt(i, 1)));
-                    } else if (cmbTipo.getSelectedIndex() == 2) {
-                        tblCartera.setModel(instancias.getSql().getRegistrosCxcDomicilioPorCliente("factura", (String) tblRegistros.getValueAt(i, 1)));
-                    }
-
-                    DefaultTableModel modeloCartera = (DefaultTableModel) tblCartera.getModel();
-                    modeloCartera.addColumn("Abonado");
-                    modeloCartera.addColumn("Restante");
-                    modeloCartera.addColumn("AbonadoAnterior");
-
-                    if (tblCartera.getColumnModel().getColumnCount() > 0) {
-                        tblCartera.getColumnModel().getColumn(0).setMinWidth(0);
-                        tblCartera.getColumnModel().getColumn(0).setPreferredWidth(0);
-                        tblCartera.getColumnModel().getColumn(0).setMaxWidth(0);
-                        tblCartera.getColumnModel().getColumn(8).setMinWidth(0);
-                        tblCartera.getColumnModel().getColumn(8).setPreferredWidth(0);
-                        tblCartera.getColumnModel().getColumn(8).setMaxWidth(0);
-                        tblCartera.getColumnModel().getColumn(12).setMinWidth(0);
-                        tblCartera.getColumnModel().getColumn(12).setPreferredWidth(0);
-                        tblCartera.getColumnModel().getColumn(12).setMaxWidth(0);
-                    }
-
-                    for (int j = 0; j < tblCartera.getRowCount(); j++) {
-                        tblCartera.setValueAt(metodos.fecha(tblCartera.getValueAt(j, 2).toString()), j, 2);
-                        tblCartera.setValueAt(metodos.fecha(tblCartera.getValueAt(j, 3).toString()), j, 3);
-                        tblCartera.setValueAt(big.setMonedaExacta(big.getBigDecimal(tblCartera.getValueAt(j, 4).toString())), j, 4);
-                        tblCartera.setValueAt(big.setMonedaExacta(big.getBigDecimal(tblCartera.getValueAt(j, 5).toString())), j, 5);
-                        tblCartera.setValueAt("", j, 10);
-                        tblCartera.setValueAt("", j, 11);
-                        tblCartera.setValueAt(big.setMonedaExacta(big.getMoneda(tblCartera.getValueAt(j, 4).toString()).
-                                subtract(big.getMoneda(tblCartera.getValueAt(j, 5).toString()))), j, 12);
-                    }
-
-                    rdAbonoFactura.setSelected(true);
-                    rdAbonoFactura.setEnabled(true);
-                    rdAbonoGeneral.setEnabled(true);
-                    jScrollPane3.setVisible(true);
-                    tblCartera.setVisible(true);
-
-                } else {
-                    DefaultTableModel c = (DefaultTableModel) tblCartera.getModel();
-                    int h = tblCartera.getRowCount();
-                    for (int m = 0; m < h; m++) {
-                        c.removeRow(0);
-                    }
-                    rdAbonoFactura.setSelected(true);
-                    rdAbonoFactura.setEnabled(false);
-                    rdAbonoGeneral.setEnabled(false);
-                    jScrollPane3.setVisible(false);
-                    tblCartera.setVisible(false);
-                }
-            }
-        } else {
-            metodos.msgAdvertencia(this, "Factura no valida");
-        }
-    }//GEN-LAST:event_btnBuscar1ActionPerformed
+    private void btnBuscarCuentaPendienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCuentaPendienteActionPerformed
+        buscarCuentaPendiente();
+    }//GEN-LAST:event_btnBuscarCuentaPendienteActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         cargarTabla();
@@ -2154,7 +2016,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
     private void tblRegistrosMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRegistrosMouseReleased
         calcularDomicilios();
-        txtConsecutivo.setText(((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0)).replaceAll("FACT-", ""));
+        txtConsecutivo.setText(consecutivoSinPrefijo(valorRegistro(tblRegistros.getSelectedRow(), 0)));
     }//GEN-LAST:event_tblRegistrosMouseReleased
 
     private void tblRegistrosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRegistrosMousePressed
@@ -2166,18 +2028,10 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblRegistrosMouseEntered
 
     private void tblRegistrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRegistrosMouseClicked
-        if (tipo.equals("separe")) {
-            txtConsecutivo.setText(((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0)).replaceAll("SEPARE-", ""));
-        } else if (tipo.equals("cuentaCobro")) {
-            txtConsecutivo.setText(((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0)).replaceAll("CCOBRO-", ""));
-        } else if (tipo.equals("notadebito")) {
-            txtConsecutivo.setText(((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0)).replaceAll("ND-", ""));
-        } else {
-            txtConsecutivo.setText(((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0)).replaceAll("FACT-", ""));
-        }
+        txtConsecutivo.setText(consecutivoSinPrefijo(valorRegistro(tblRegistros.getSelectedRow(), 0)));
 
         if (evt.getClickCount() == 2) {
-            btnBuscar1ActionPerformed(null);
+            buscarCuentaPendiente();
         }
 
         calcularDomicilios();
@@ -2990,15 +2844,9 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         for (int i = 0; i < tblRegistros.getRowCount(); i++) {
             if ((Boolean) tblRegistros.getValueAt(i, 13)) {
-                if (tipo.equals("separe")) {
-                    txtConsecutivo.setText(((String) tblRegistros.getValueAt(i, 0)).replaceAll("SEPARE-", ""));
-                } else if (tipo.equals("cuentaCobro")) {
-                    txtConsecutivo.setText(((String) tblRegistros.getValueAt(i, 0)).replaceAll("CCOBRO-", ""));
-                } else {
-                    txtConsecutivo.setText(((String) tblRegistros.getValueAt(i, 0)).replaceAll("FACT-", ""));
-                }
+                txtConsecutivo.setText(consecutivoSinPrefijo(valorRegistro(i, 0)));
 
-                btnBuscar1ActionPerformed(evt);
+                buscarCuentaPendiente();
                 txtEfectivo.setText(txtSaldoTotal.getText());
                 calcularSaldo(txtEfectivo);
                 saltarPasos = true;
@@ -3075,22 +2923,22 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         btnActualizar.setText("Actualizar");
 
         if (cmbTipo.getSelectedIndex() == 0) {
-            tipo = "";
+            tipoProceso = "";
             lbVendedor.setText("VENDEDOR");
             btnFacturar.setVisible(false);
             txtTotalizado.setVisible(false);
         } else if (cmbTipo.getSelectedIndex() == 1) {
-            tipo = "separe";
+            tipoProceso = "separe";
             btnFacturar.setVisible(false);
             txtTotalizado.setVisible(false);
             lbVendedor.setText("VENDEDOR");
         } else if (cmbTipo.getSelectedIndex() == 2) {
-            tipo = "domicilio";
+            tipoProceso = "domicilio";
             lbVendedor.setText("DOMICILIARIO");
             btnFacturar.setVisible(true);
             txtTotalizado.setVisible(true);
         } else if (cmbTipo.getSelectedIndex() == 3) {
-            tipo = "notadebito";
+            tipoProceso = "notadebito";
             lbVendedor.setText("DOMICILIARIO");
             btnFacturar.setVisible(false);
             txtTotalizado.setVisible(false);
@@ -3110,11 +2958,11 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             modelo.removeRow(0);
         }
 
-        if (tipo.equals("separe")) {
+        if (tipoProceso.equals("separe")) {
             tblRegistros.setModel(instancias.getSql().getRegistrosCxcSepare("factura"));
-        } else if (tipo.equals("domicilio")) {
+        } else if (tipoProceso.equals("domicilio")) {
             tblRegistros.setModel(instancias.getSql().getRegistrosDomicilios("factura"));
-        } else if (tipo.equals("notadebito")) {
+        } else if (tipoProceso.equals("notadebito")) {
             tblRegistros.setModel(instancias.getSql().getRegistrosCxc("NOTADEBITO"));
         } else {
             tblRegistros.setModel(instancias.getSql().getRegistrosCxc("FACT"));
@@ -3163,7 +3011,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         tblRegistros.getColumnModel().getColumn(10).setPreferredWidth(0);
         tblRegistros.getColumnModel().getColumn(10).setMaxWidth(0);
 
-        if (tipo.equals("domicilio")) {
+        if (tipoProceso.equals("domicilio")) {
             tblRegistros.getColumnModel().getColumn(11).setMinWidth(0);
             tblRegistros.getColumnModel().getColumn(11).setPreferredWidth(0);
             tblRegistros.getColumnModel().getColumn(11).setMaxWidth(0);
@@ -3192,7 +3040,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 txtPlaca.setVisible(false);
                 lbPlaca.setVisible(false);
 
-                if (tipo.equals("domicilio")) {
+                if (tipoProceso.equals("domicilio")) {
                     tblRegistros.getColumnModel().getColumn(13).setMinWidth(30);
                     tblRegistros.getColumnModel().getColumn(13).setPreferredWidth(30);
                     tblRegistros.getColumnModel().getColumn(13).setMaxWidth(30);
@@ -3211,7 +3059,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             tblRegistros.setValueAt(big.setMoneda(big.getBigDecimal((String) tblRegistros.getValueAt(i, 6))), i, 6);
             tblRegistros.setValueAt(big.setMoneda(big.getBigDecimal((String) tblRegistros.getValueAt(i, 5))), i, 5);
 
-//            if (tipo.equals("separe")) {
+//            if (tipoProceso.equals("separe")) {
 //                tblRegistros.setValueAt(((String) tblRegistros.getValueAt(i, 0)).replace("SEPARE-", ""), i, 0);
 //            } else {
 //                tblRegistros.setValueAt(((String) tblRegistros.getValueAt(i, 0)).replace("FACT-", ""), i, 0);
@@ -3223,15 +3071,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         datos = instancias.getSql().getDatosMaestra();
     }
 
-//    public void calcularSaldo() {
-//        BigDecimal abonoActual = big.getMoneda(txtEfectivo.getText()).add(big.getMoneda(txtCheque.getText())).add(big.getMoneda(txtTargeta.getText())).add(big.getMoneda(txtNC.getText())).add(big.getMoneda(txtIva.getText())).add(big.getMoneda(txtIca.getText())).add(big.getMoneda(txtOtro.getText())).add(big.getMoneda(txtFuente.getText()));
-//        txtTotalAbonos.setText(big.setMoneda(big.getMoneda(txtAbonado.getText()).add(abonoActual)));
-//        txtSaldo.setText(big.setMoneda(big.getMoneda(txtValor.getText()).subtract(big.getMoneda(txtTotalAbonos.getText()))));
-//    }
-    /**
-     * Lee un campo de valor del formulario. Un campo vacío o con un contenido
-     * no numérico vale cero.
-     */
     private BigDecimal getValorCampo(JTextField campo) {
         try {
             return big.getMoneda(campo.getText());
@@ -3240,9 +3079,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Medios de pago, retenciones y descuentos digitados en el formulario.
-     */
     private MediosPagoAbono getMediosPago() {
         return new MediosPagoAbono(getValorCampo(txtEfectivo), getValorCampo(txtCheque), getValorCampo(txtTargeta),
                 getValorCampo(txtNC), getValorCampo(txtIva), getValorCampo(txtIca), getValorCampo(txtFuente),
@@ -3254,10 +3090,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         return seleccion instanceof Boolean && (Boolean) seleccion;
     }
 
-    /**
-     * Lee una celda de tblCartera como valor monetario. Las celdas vacías o con
-     * un contenido no numérico se interpretan como cero.
-     */
     private BigDecimal getValorCelda(int fila, int columna) {
         Object valor = tblCartera.getValueAt(fila, columna);
 
@@ -3281,25 +3113,14 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         return false;
     }
 
-    /**
-     * La distribución solo es posible cuando ya se cargaron las facturas del
-     * cliente junto con las columnas Abonado/Restante.
-     */
     private boolean carteraCargada() {
         return tblCartera.getColumnCount() > COL_ABONADO_ANTERIOR;
     }
 
-    /**
-     * Indica si a la fila se le asignó dinero en la distribución del abono
-     * general.
-     */
     private boolean tieneAbono(int fila) {
         return getValorCelda(fila, COL_ABONADO).compareTo(BigDecimal.ZERO) > 0;
     }
 
-    /**
-     * Borra el resultado de la distribución (columnas Abonado y Restante).
-     */
     private void limpiarDistribucion() {
         if (!carteraCargada()) {
             return;
@@ -3327,21 +3148,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         txtSaldoCuentas.setText(big.setMoneda(total));
     }
 
-    /**
-     * Reparte el dinero disponible entre las facturas de tblCartera y deja el
-     * resultado en las columnas Abonado y Restante.
-     *
-     * El orden de prioridad es: primero las facturas marcadas en la columna de
-     * selección y, si sobra dinero, las facturas no marcadas. A ninguna factura
-     * se le asigna más de su saldo pendiente.
-     *
-     * Esta es la única fuente de verdad de la distribución: tanto la
-     * previsualización (calcularSaldo) como el guardado (guardarGeneral) la
-     * usan, de modo que lo que muestra la tabla es exactamente lo que se
-     * guarda.
-     *
-     * @return el dinero que no alcanzó a aplicarse a ninguna factura.
-     */
     private BigDecimal distribuirAbonoGeneral(BigDecimal dineroDisponible) {
         limpiarDistribucion();
 
@@ -3356,10 +3162,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         return disponible;
     }
 
-    /**
-     * Abona el dinero disponible a las facturas cuyo estado de selección
-     * coincide con el solicitado, en el orden en que aparecen en la tabla.
-     */
     private BigDecimal repartirDinero(BigDecimal dineroDisponible, boolean seleccionadas) {
         BigDecimal disponible = dineroDisponible;
 
@@ -3385,12 +3187,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         return disponible;
     }
 
-    /**
-     * Arma las facturas a las que la distribución les asignó dinero.
-     *
-     * El abono general mueve las cuentas con la factura visible (columna 1), no
-     * con la factura interna (columna 0).
-     */
     private List<AbonoCuenta> getCuentasConAbono() {
         List<AbonoCuenta> cuentas = new ArrayList<>();
 
@@ -3416,43 +3212,45 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     }
 
     public void calcularSaldo(JTextField textbox) {
+        BigDecimal dineroIngresado = acumularValores();
+
         if (rdAbonoFactura.isSelected()) {
-
-            if (big.getMoneda(textbox.getText()).compareTo(big.getMoneda(txtPendiente.getText())) == 1) {
-                metodos.msgError(this, "La suma excede el valor del saldo");
-                textbox.setText(this.simbolo + " 0");
-//            textbox.setText(big.setMoneda(big.getMoneda(textbox.getText())));
-                txtTotalAbonos.setText(txtAbonado.getText());
-                textbox.requestFocus();
-                return;
-            } else if (acumularValores().compareTo(big.getMoneda(txtPendiente.getText())) == 1) {
-                metodos.msgError(this, "La suma excede el valor del saldo");
-                textbox.setText(this.simbolo + " 0");
-
-//            textbox.setText(big.setMoneda(big.getMoneda(textbox.getText())));
-                txtTotalAbonos.setText(txtAbonado.getText());
-                textbox.requestFocus();
-                return;
-            } else {
-                BigDecimal abonoActual = acumularValores();
-                txtTotalAbonos.setText(big.setMoneda(big.getMoneda(txtAbonado.getText()).add(abonoActual)));
-                txtSaldo.setText(big.setMoneda(big.getMoneda(txtValor.getText()).subtract(big.getMoneda(txtTotalAbonos.getText()))));
-            }
+            calcularSaldoFactura(textbox, dineroIngresado);
         } else {
-            BigDecimal dineroDisponible = acumularValores();
-            BigDecimal saldoTotalCuentas = big.getMoneda(txtSaldoTotal.getText());
-
-            if (dineroDisponible.compareTo(saldoTotalCuentas) > 0) {
-                lbEfectivo.requestFocus();
-                metodos.msgError(this, "La suma excede el valor del saldo");
-                textbox.setText(this.simbolo + " 0");
-                limpiarDistribucion();
-            } else {
-                distribuirAbonoGeneral(dineroDisponible);
-            }
-
-            txtSaldo.setText(big.setMoneda(big.getMoneda(txtSaldoTotal.getText()).subtract(acumularValores())));
+            calcularSaldoGeneral(textbox, dineroIngresado);
         }
+    }
+
+    private void calcularSaldoFactura(JTextField textbox, BigDecimal dineroIngresado) {
+        BigDecimal pendiente = big.getMoneda(txtPendiente.getText());
+
+        if (big.getMoneda(textbox.getText()).compareTo(pendiente) > 0 || dineroIngresado.compareTo(pendiente) > 0) {
+            ControladorAlertas.alert("La suma excede el valor del saldo");
+            textbox.setText(this.simbolo + " 0");
+            txtTotalAbonos.setText(txtAbonado.getText());
+            textbox.requestFocus();
+            return;
+        }
+
+        txtTotalAbonos.setText(big.setMoneda(big.getMoneda(txtAbonado.getText()).add(dineroIngresado)));
+        txtSaldo.setText(big.setMonedaExacta(big.getMoneda(txtValor.getText()).subtract(big.getMoneda(txtTotalAbonos.getText()))));
+    }
+
+    private void calcularSaldoGeneral(JTextField textbox, BigDecimal dineroIngresado) {
+        BigDecimal saldoTotalCuentas = big.getMoneda(txtSaldoTotal.getText());
+
+        if (dineroIngresado.compareTo(saldoTotalCuentas) > 0) {
+            lbEfectivo.requestFocus();
+            ControladorAlertas.alert("La suma excede el valor del saldo");
+            textbox.setText(this.simbolo + " 0");
+            limpiarDistribucion();
+            // Se vuelve a leer: el campo acaba de quedar en cero.
+            dineroIngresado = acumularValores();
+        } else {
+            distribuirAbonoGeneral(dineroIngresado);
+        }
+
+        txtSaldo.setText(big.setMonedaExacta(saldoTotalCuentas.subtract(dineroIngresado)));
     }
 
     public void cargarCliente(String Id) {
@@ -3521,16 +3319,22 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         cuentas.add(new AbonoCuenta(factura, txtFactura.getText(), big.getMoneda(txtValor.getText()),
                 abonadoAnterior, valorAbono, big.getMoneda(txtSaldo.getText())));
 
+        List<AbonoCuenta> separesSaldados = obtenerSeparesSaldados(cuentas);
+        if (!separesSaldados.isEmpty() && !facturarSeparesQueSeSaldan(cuentas, separesSaldados)) {
+            return "";
+        }
+
         String abono = funcionalidadAbonos.obtenerConsecutivoAbono();
         String referencia = funcionalidadAbonos.obtenerReferenciaAbono();
         ModeloContacto nodo = instancias.getSql().getDatosTercero(txtNit.getText());
 
         if (!funcionalidadAbonos.registrarAbono(abono, referencia, nodo.getIdSistema(), txtComprobante.getText(),
                 cuentas, getMediosPago())) {
+            avisarAbonoFallidoConSeparesFacturados(separesSaldados);
             return "";
         }
 
-        avisarSepare(cuentas);
+        avisarSeparesSaldados(separesSaldados);
 
         if (!saltarPasos) {
             metodos.msgExito(this, "Abono exitoso");
@@ -3551,23 +3355,79 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         return abono;
     }
 
-    /**
-     * Avisa cuando una cuenta de plan separe queda saldada.
-     */
-    private void avisarSepare(List<AbonoCuenta> cuentas) {
-        if (!"separe".equals(tipo)) {
+    private List<AbonoCuenta> obtenerSeparesSaldados(List<AbonoCuenta> cuentas) {
+        List<AbonoCuenta> saldadas = new ArrayList<>();
+
+        if ("separe".equals(tipoProceso)) {
+            for (AbonoCuenta cuenta : cuentas) {
+                if (funcionalidadAbonos.quedaSaldada(cuenta)) {
+                    saldadas.add(cuenta);
+                }
+            }
+        }
+
+        return saldadas;
+    }
+
+    private boolean facturarSeparesQueSeSaldan(List<AbonoCuenta> cuentas, List<AbonoCuenta> separesSaldados) {
+        ServicioFacturacionDocumentos servicio = new ServicioFacturacionDocumentos(instancias);
+
+        for (AbonoCuenta cuenta : separesSaldados) {
+            String error = servicio.validarSepareAntesDeSaldar(cuenta.getIngreso());
+            if (error != null) {
+                ControladorAlertas.bigAlert("No se puede generar la factura de " + cuenta.getIngreso()
+                        + ": " + error + " El abono no fue guardado.");
+                return false;
+            }
+        }
+
+        List<String> nits = new ArrayList<>();
+        nits.add(txtNit.getText());
+
+        int comprobante = SelectorComprobanteFacturacion.solicitar(this, servicio, nits);
+        if (comprobante < 0) {
+            ControladorAlertas.bigAlert("El abono salda el plan separe y requiere generar la factura. "
+                    + "Seleccione el tipo de comprobante para continuar; el abono no fue guardado.");
+            return false;
+        }
+
+        boolean imprimir = metodos.msgPregunta(this, "¿Desea imprimir la factura?") == 0;
+
+        StringBuilder generadas = new StringBuilder();
+        for (AbonoCuenta cuenta : separesSaldados) {
+            ResultadoFacturacion resultado = servicio.facturarSepareQueSeSalda(cuenta.getIngreso(), comprobante, imprimir);
+
+            if (!resultado.isFacturaGenerada()) {
+                String yaGeneradas = generadas.length() == 0 ? ""
+                        : "\nFacturas ya generadas: " + generadas;
+                ControladorAlertas.bigAlert(resultado.getMensajeErrores() + "\nEl abono no fue guardado." + yaGeneradas);
+                return false;
+            }
+
+            generadas.append(generadas.length() == 0 ? "" : ", ").append(cuenta.getIngreso());
+        }
+
+        return true;
+    }
+
+    private void avisarSeparesSaldados(List<AbonoCuenta> separesSaldados) {
+        if (!separesSaldados.isEmpty()) {
+            metodos.msgExito(this, "Valor saldado");
+        }
+    }
+
+    private void avisarAbonoFallidoConSeparesFacturados(List<AbonoCuenta> separesSaldados) {
+        if (separesSaldados.isEmpty()) {
             return;
         }
 
-        for (AbonoCuenta cuenta : cuentas) {
-            if (funcionalidadAbonos.quedaSaldada(cuenta)) {
-                metodos.msgExito(this, "Valor saldado");
-                
-                //Pendiente: generar la factura del separe con la bodega de
-                //instancias.getSql().getBodegaSepare(cuenta.getIngreso())
-                //instancias.getFactura().generarFacturaExterior("separe", cuenta.getIngreso(), false, true, bodega);
-            }
+        StringBuilder ids = new StringBuilder();
+        for (AbonoCuenta cuenta : separesSaldados) {
+            ids.append(ids.length() == 0 ? "" : ", ").append(cuenta.getIngreso());
         }
+
+        ControladorAlertas.bigAlert("El abono no se pudo guardar, pero ya se generó la factura de: " + ids
+                + ". Revise el estado de la cuenta antes de volver a abonar.");
     }
 
     private void imprimirAbono(String referencia) {
@@ -3591,14 +3451,14 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     public String guardarGeneral() {
 
         if (!haySeleccion()) {
-            metodos.msgError(this, "Seleccione una factura para pagar");
+            ControladorAlertas.alert("Seleccione una factura para pagar");
             return null;
         }
 
         BigDecimal dineroDisponible = acumularValores();
 
         if (dineroDisponible.compareTo(BigDecimal.ZERO) <= 0) {
-            metodos.msgError(this, "No ha añadido ningun valor al abono");
+            ControladorAlertas.alert("No ha añadido ningún valor al abono");
             return "";
         }
 
@@ -3619,16 +3479,22 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             return "";
         }
 
+        List<AbonoCuenta> separesSaldados = obtenerSeparesSaldados(cuentas);
+        if (!separesSaldados.isEmpty() && !facturarSeparesQueSeSaldan(cuentas, separesSaldados)) {
+            return "";
+        }
+
         String abono = funcionalidadAbonos.obtenerConsecutivoAbono();
         String referencia = funcionalidadAbonos.obtenerReferenciaAbono();
         ModeloContacto nodo = instancias.getSql().getDatosTercero(txtNit.getText());
 
         if (!funcionalidadAbonos.registrarAbono(abono, referencia, nodo.getIdSistema(), txtComprobante.getText(),
                 cuentas, getMediosPago())) {
+            avisarAbonoFallidoConSeparesFacturados(separesSaldados);
             return "";
         }
 
-        avisarSepare(cuentas);
+        avisarSeparesSaldados(separesSaldados);
         imprimirAbono(referencia);
 
         funcionalidadAbonos.aumentarConsecutivo("ABONOGENERAL");
@@ -3641,12 +3507,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         return "";
     }
 
-    /**
-     * Abona el interes de mora sobre la factura que se genero para cobrarlo. El
-     * valor llega completo, asi que la factura queda saldada.
-     *
-     * @return el consecutivo del abono, o null si no se pudo guardar.
-     */
     public String guardarAbonoMora(String factura, BigDecimal valorMora) {
 
         String abono = funcionalidadAbonos.obtenerConsecutivoAbono();
@@ -3666,10 +3526,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         return abono;
     }
 
-    /**
-     * En el abono de mora el medio de pago se escoge con los radios y cubre el
-     * valor completo.
-     */
     private MediosPagoAbono getMediosPagoMora(BigDecimal valor) {
         BigDecimal efectivo = jRadioButton2.isSelected() ? valor : BigDecimal.ZERO;
         BigDecimal cheque = jRadioButton3.isSelected() ? valor : BigDecimal.ZERO;
@@ -3793,11 +3649,182 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             calcularSaldo(txtAbonar);
         }
     }
+
+    private void buscarCuentaPendiente() {
+        String consecutivo = prefijoDocumento() + txtConsecutivo.getText();
+        factura = "";
+
+        int fila = buscarFilaDocumento(consecutivo);
+        if (fila < 0) {
+            metodos.msgAdvertencia(this, "Factura no valida");
+            return;
+        }
+
+        factura = valorRegistro(fila, 0);
+
+        txtFactura.setText(consecutivo);
+        txtNit.setText(valorRegistro(fila, 1));
+        txtNombre.setText(valorRegistro(fila, 2));
+        txtNombre1.setText(valorRegistro(fila, 2));
+        txtValor.setText(valorRegistro(fila, 5));
+
+        NC = sumarNotasCredito(txtNit.getText());
+        cargarSaldosDocumento();
+        reiniciarMediosPago();
+
+        calcularSaldo(txtAbonar);
+        txtAbonar.setEditable(!txtTotalIntereses.getText().equals(this.simbolo + " 0"));
+
+        if ("1".equals(valorRegistro(fila, 10))) {
+            cargarPrestamo("FACT-" + txtConsecutivo.getText());
+            jTabbedPane1.setSelectedIndex(2);
+        } else {
+            jTabbedPane1.setSelectedIndex(0);
+            mostrarCarteraDelCliente(fila);
+        }
+    }
+
+    private String prefijoDocumento() {
+        switch (tipoProceso) {
+            case "separe":
+                return "SEPARE-";
+            case "cuentaCobro":
+                return "CCOBRO-";
+            case "notadebito":
+                return "ND-";
+            default:
+                return "FACT-";
+        }
+    }
+
+    private String consecutivoSinPrefijo(String idDocumento) {
+        String prefijo = prefijoDocumento();
+        return idDocumento.startsWith(prefijo) ? idDocumento.substring(prefijo.length()) : idDocumento;
+    }
+
+    private int buscarFilaDocumento(String consecutivo) {
+        for (int i = 0; i < tblRegistros.getRowCount(); i++) {
+            if (consecutivo.equals(valorRegistro(i, 0))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private String valorRegistro(int fila, int columna) {
+        Object valor = tblRegistros.getValueAt(fila, columna);
+        return valor == null ? "" : valor.toString();
+    }
+
+    private BigDecimal sumarNotasCredito(String nit) {
+        ModeloContacto tercero = instancias.getSql().getDatosTercero(nit);
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Object[] nota : instancias.getSql().getNcCliente(tercero.getIdSistema())) {
+            total = total.add(big.getBigDecimal(nota[0].toString()));
+        }
+
+        return total;
+    }
+
+    private void cargarSaldosDocumento() {
+        BigDecimal totalAbonos = BigDecimal.ZERO;
+
+        for (Object[] abono : instancias.getSql().getRegistrosAbonos(factura)) {
+            totalAbonos = totalAbonos.add(big.getBigDecimal(abono[2]));
+        }
+
+        txtAbonado.setText(big.setMoneda(totalAbonos));
+
+        BigDecimal saldoPendiente = big.getMoneda(txtValor.getText()).subtract(totalAbonos);
+        txtPendiente.setText(big.setMonedaExacta(saldoPendiente));
+        txtSaldo.setText(big.setMonedaExacta(saldoPendiente));
+        txtSaldoTotal.setText(big.setMonedaExacta(saldoPendiente));
+    }
+
+    private void reiniciarMediosPago() {
+        String cero = this.simbolo + " 0";
+
+        txtTotalAbonos.setText(cero);
+        txtEfectivo.setText(cero);
+        txtCheque.setText(cero);
+        txtTargeta.setText(cero);
+        txtNC.setText(cero);
+        txtIca.setText(cero);
+        txtIva.setText(cero);
+        txtFuente.setText(cero);
+        txtOtro.setText(cero);
+        txtDescuentos.setText(cero);
+        txtSaldoCuentas.setText(cero);
+        txtComprobante.setText("");
+    }
+
+    private void mostrarCarteraDelCliente(int fila) {
+        if (!tipoProceso.equals("domicilio") && !tipoProceso.equals("")) {
+            ocultarCarteraDelCliente();
+            return;
+        }
+
+        String nit = valorRegistro(fila, 1);
+        if (cmbTipo.getSelectedIndex() == 0) {
+            tblCartera.setModel(instancias.getSql().getRegistrosCxcPorCliente("factura", nit));
+        } else if (cmbTipo.getSelectedIndex() == 2) {
+            tblCartera.setModel(instancias.getSql().getRegistrosCxcDomicilioPorCliente("factura", nit));
+        }
+
+        DefaultTableModel modeloCartera = (DefaultTableModel) tblCartera.getModel();
+        modeloCartera.addColumn("Abonado");
+        modeloCartera.addColumn("Restante");
+        modeloCartera.addColumn("AbonadoAnterior");
+
+        if (tblCartera.getColumnModel().getColumnCount() > 0) {
+            ocultarColumnaCartera(0);
+            ocultarColumnaCartera(8);
+            ocultarColumnaCartera(12);
+        }
+
+        for (int j = 0; j < tblCartera.getRowCount(); j++) {
+            tblCartera.setValueAt(metodos.fecha(tblCartera.getValueAt(j, 2).toString()), j, 2);
+            tblCartera.setValueAt(metodos.fecha(tblCartera.getValueAt(j, 3).toString()), j, 3);
+            tblCartera.setValueAt(big.setMonedaExacta(big.getBigDecimal(tblCartera.getValueAt(j, 4).toString())), j, 4);
+            tblCartera.setValueAt(big.setMonedaExacta(big.getBigDecimal(tblCartera.getValueAt(j, 5).toString())), j, 5);
+            tblCartera.setValueAt("", j, 10);
+            tblCartera.setValueAt("", j, 11);
+            tblCartera.setValueAt(big.setMonedaExacta(big.getMoneda(tblCartera.getValueAt(j, 4).toString()).
+                    subtract(big.getMoneda(tblCartera.getValueAt(j, 5).toString()))), j, 12);
+        }
+
+        rdAbonoFactura.setSelected(true);
+        rdAbonoFactura.setEnabled(true);
+        rdAbonoGeneral.setEnabled(true);
+        jScrollPane3.setVisible(true);
+        tblCartera.setVisible(true);
+    }
+
+    private void ocultarColumnaCartera(int columna) {
+        tblCartera.getColumnModel().getColumn(columna).setMinWidth(0);
+        tblCartera.getColumnModel().getColumn(columna).setPreferredWidth(0);
+        tblCartera.getColumnModel().getColumn(columna).setMaxWidth(0);
+    }
+
+    private void ocultarCarteraDelCliente() {
+        DefaultTableModel modeloCartera = (DefaultTableModel) tblCartera.getModel();
+        while (modeloCartera.getRowCount() > 0) {
+            modeloCartera.removeRow(0);
+        }
+
+        rdAbonoFactura.setSelected(true);
+        rdAbonoFactura.setEnabled(false);
+        rdAbonoGeneral.setEnabled(false);
+        jScrollPane3.setVisible(false);
+        tblCartera.setVisible(false);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAnular;
     private javax.swing.JButton btnBuscTerceros2;
-    private javax.swing.JButton btnBuscar1;
+    private javax.swing.JButton btnBuscarCuentaPendiente;
     private javax.swing.JButton btnFacturar;
     private javax.swing.JButton btnGenerarCertificado;
     private javax.swing.JButton btnGenerarEstadoCuenta;

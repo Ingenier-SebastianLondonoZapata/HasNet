@@ -21,7 +21,7 @@ import Validaciones.FacturacionElectronica.squemaFacturacionElectronica;
 import clases.Cartera.ndNc;
 import clases.Instancias;
 import Modelo.Terceros.ModeloContacto;
-import inventario.servicio.ServicioInventario;
+import Procesos.Inventario.Servicio.ServicioInventario;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
 import clases.Ventas.ndFactura;
