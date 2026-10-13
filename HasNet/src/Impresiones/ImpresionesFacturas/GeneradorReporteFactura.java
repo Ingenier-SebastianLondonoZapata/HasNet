@@ -18,9 +18,7 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
     public void ver_Factura(String observaciones, String info, String legal, String tipo, String pie, String nombreReporte,
             String facturaTerm, boolean imprimir, String titulo, String impresora, String verImpo, String verReten,
             String condicion, Boolean notaDebito) {
-        
-        System.out.println("condicion: " + condicion);
-        
+                
         Map<String, Object> parametros = new HashMap<>();
         
         String consecutivo = notaDebito ? facturaTerm.replace("ND-", "") : facturaTerm.replace("FACT-", "");

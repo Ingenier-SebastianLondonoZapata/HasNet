@@ -21,7 +21,7 @@ import Utilidades.Constantes;
 import Validaciones.Facturacion.squemaFacturacion;
 import Validaciones.FacturacionElectronica.squemaFacturacionElectronica;
 import Vista.Ventas.VistaDevuelta;
-import Vista.Ventas.VistaMetodoPagos;
+import Vista.Ventas.VistaInformacionAdicional;
 import clases.Ventas.ndFactura;
 import clases.big;
 import clases.metodosGenerales;
@@ -3814,11 +3814,11 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         return facturar(null, imprimir, "");
     }
 
-    private String facturar(VistaMetodoPagos devuelta, boolean imprimir, String desde) {
+    private String facturar(VistaInformacionAdicional devuelta, boolean imprimir, String desde) {
 
         //SI ES MESA O ESTA ACTIVO SALTAR PASOS DE FACTURA, NO MOSTRAR EL MODULO DE DEVUELTA
         if (saltarPasosFactura) {
-            devuelta = new VistaMetodoPagos(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
+            devuelta = new VistaInformacionAdicional(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
                     instancias, txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
         }
 
@@ -3829,7 +3829,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (devuelta == null) {
             //VALIDAMOS SI LA FACTURA ES A CONTADO
             if (txtFechaFactura.getText().equals(txtVencimiento.getText())) {
-                devuelta = new VistaMetodoPagos(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
+                devuelta = new VistaInformacionAdicional(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
                         instancias, txtIdSistema.getText(), big.getMoneda(txtSubTotal.getText()));
                 devuelta.show();
             } else {
