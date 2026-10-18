@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.productos.ndProceso;
 import Utilidades.BaseDatos.SQL;
@@ -337,16 +339,16 @@ public class infProcesos extends javax.swing.JInternalFrame {
         faltantes += metodos.comboVacio(cmbUnidad);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             //try {
             ndProceso nodo = instancias.getSql().getDatosProceso(txtCodigo.getText().replace("'", "//"));
 
             if (nodo.getCodigo() != null) {
-                metodos.msgError(this, "El proceso ya existe");
+                ControladorAlertas.alertFail("El proceso ya existe");
                 txtCodigo.requestFocus();
                 return;
             }
@@ -356,16 +358,16 @@ public class infProcesos extends javax.swing.JInternalFrame {
             nodo = metodos.llenarProceso(vector);
 
             if (!instancias.getSql().agregarProceso(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar el proceso");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el proceso");
                 return;
             }
 
-            metodos.msgExito(this, "Proceso registrado con éxito");
+            ControladorAlertas.alertSuccess("Proceso registrado con éxito");
 
             btnNuevoActionPerformed(evt);
 
             /*} catch (Exception e) {
-             metodos.msgError(this, "Hubo un problema al guardar el producto");
+             ControladorAlertas.alertFail("Hubo un problema al guardar el producto");
              }*/
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -399,11 +401,11 @@ public class infProcesos extends javax.swing.JInternalFrame {
         faltantes += metodos.comboVacio(cmbUnidad);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             try {
 
@@ -412,15 +414,15 @@ public class infProcesos extends javax.swing.JInternalFrame {
                 ndProceso nodo = metodos.llenarProceso(vector);
 
                 if (!instancias.getSql().modificarProceso(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al modificar el proceso");
+                    ControladorAlertas.alertFail("Hubo un problema al modificar el proceso");
                 }
 
-                metodos.msgExito(this, "Proceso modificado con éxito");
+                ControladorAlertas.alertSuccess("Proceso modificado con éxito");
 
                 btnNuevoActionPerformed(evt);
 
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al modificar el proceso");
+                ControladorAlertas.alertFail("Hubo un problema al modificar el proceso");
             }
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
@@ -432,7 +434,7 @@ public class infProcesos extends javax.swing.JInternalFrame {
     public void cargarCliente(String cod) {
 
         if (cod.equals("")) {
-            metodos.msgAdvertencia(this, "Debe ingresar el codigo");
+            ControladorAlertas.alert("Debe ingresar el codigo");
         } else {
 
             ndProceso nodo = instancias.getSql().getDatosProceso(cod.replace("'", "//"));
@@ -449,7 +451,7 @@ public class infProcesos extends javax.swing.JInternalFrame {
                 return;
             }
 
-            metodos.msgError(this, "El producto no existe");
+            ControladorAlertas.alertFail("El producto no existe");
         }
     }
 

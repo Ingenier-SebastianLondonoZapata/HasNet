@@ -1,6 +1,8 @@
 package Vista.ReportesCarteras;
 
-import dao.InicioSesion.DaoInicioSesion;
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -482,7 +484,7 @@ public class VistaReporteNotasCredito extends javax.swing.JPanel {
         if (!cmbVendedor.getSelectedItem().equals("")) {
             for (int i = 0; i < cmbVendedor1.getItemCount(); i++) {
                 if (cmbVendedor1.getItemAt(i).equals(cmbVendedor.getSelectedItem())) {
-                    metodos.msgError(null, "Este vendedor ya ha sido agregado");
+                    ControladorAlertas.alertFail("Este vendedor ya ha sido agregado");
                     return;
                 }
             }
@@ -496,11 +498,11 @@ public class VistaReporteNotasCredito extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -517,7 +519,7 @@ public class VistaReporteNotasCredito extends javax.swing.JPanel {
     private void btnAggTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggTerminalActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -526,7 +528,7 @@ public class VistaReporteNotasCredito extends javax.swing.JPanel {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ninguna terminal seleccioanda");
+            ControladorAlertas.alertFail("No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());

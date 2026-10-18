@@ -1,11 +1,13 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndAyudaDiagnostica;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndTablaDiagnostica;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
@@ -541,7 +543,7 @@ public class infAyudaDiagnostico extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblDiagostico.getRowCount() < 1) {
-            metodos.msgError(this, "Falta agregar los conceptos");
+            ControladorAlertas.alertFail("Falta agregar los conceptos");
             return;
         }
 
@@ -549,16 +551,16 @@ public class infAyudaDiagnostico extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "ADIAG-" + instancias.getSql().getNumConsecutivo("ADIAG")[0];
             ndAyudaDiagnostica nodo = instancias.getSql().getDatosAyudaDiagnostica(id);
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La ayuda diagnostica ya existe");
+                ControladorAlertas.alertFail("La ayuda diagnostica ya existe");
                 txtId.requestFocus();
                 return;
             }
@@ -569,7 +571,7 @@ public class infAyudaDiagnostico extends javax.swing.JInternalFrame {
             nodo = metodos.llenarAyudaDiagnostica(vector);
 
             if (!instancias.getSql().agregarAyudaDiagnostica(nodo)) {
-                metodos.msgError(this, "Error al guardar la ayuda diagnostica");
+                ControladorAlertas.alertFail("Error al guardar la ayuda diagnostica");
                 return;
             }
 
@@ -579,26 +581,26 @@ public class infAyudaDiagnostico extends javax.swing.JInternalFrame {
                 ndTablaDiagnostica nodo2 = metodos.llenarTablaDiagnostica(vector2);
 
                 if (!instancias.getSql().agregarTablaDiagnosticaMedica(nodo2)) {
-                    metodos.msgError(this, "Error al guardar la tabla diagnostica");
+                    ControladorAlertas.alertFail("Error al guardar la tabla diagnostica");
                     return;
                 }
             }
 
             //CAMBIAR CONSECUTIVO AYUDA DISGNOSTICA
             if (!instancias.getSql().aumentarConsecutivo("ADIAG", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ADIAG")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la ayuda diagnostica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la ayuda diagnostica");
             }
 
             txtId.setText("ADIAG-" + instancias.getSql().getNumConsecutivo("ADIAG")[0]);
 
-            metodos.msgExito(this, "Ayuda registrado con éxito");
+            ControladorAlertas.alertSuccess("Ayuda registrado con éxito");
             ndHistoriaClinica historia = instancias.getSql().getDatosHistClinica(historiaClinica);
             String con[] = historia.getConsecutivos().split("&");
             int aux = Integer.parseInt(con[1]);
             aux++;
 
             instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + aux + "&" + con[2] + "&" + con[3]);
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String tipo = "";
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
@@ -648,7 +650,7 @@ public class infAyudaDiagnostico extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un item");
+            ControladorAlertas.alert("Seleccione un item");
         }
 
         /*

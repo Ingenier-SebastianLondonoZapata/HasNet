@@ -1,5 +1,13 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Procesos.Inventario.Dao.DaoInventario;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesTraslados.GeneradorReporteTraslado;
 import Vista.Productos.VistaBuscadorProductos;
 import Vista.Productos.VistaSeleccionarPLU;
@@ -9,7 +17,7 @@ import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProdTraslBodega;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import clases.productos.ndTrasladoBodega;
 import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
@@ -35,6 +43,8 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Productos.ReceptorProductoSalida {
+    private final DaoInventario daoInventario = new DaoInventario();
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
     
@@ -758,7 +768,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                 tblProductos.setValueAt(j, tblProductos.getSelectedRow(), i);
             }
 
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             valor = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
             cantidad = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 3)).replace(".", ","));
@@ -778,13 +788,13 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                     tblProductos.setValueAt(cantidad, fila, 10);
                     break;
                 case "2":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad2())), fila, 10);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(2))), fila, 10);
                     break;
                 case "3":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad3())), fila, 10);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(3))), fila, 10);
                     break;
                 case "4":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad4())), fila, 10);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(4))), fila, 10);
                     break;
             }
 
@@ -826,7 +836,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
     private void txtNitBOKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNitBOKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (txtNitBD.getText().equals(txtNitBO.getText()) && !txtNitBD.getText().equals("")) {
-                metodos.msgError(this, "La bodega de origen no puede ser igual a la bodega de destino");
+                ControladorAlertas.alertFail("La bodega de origen no puede ser igual a la bodega de destino");
                 return;
             }
 
@@ -858,12 +868,12 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 
             if (txtNombreBO.getText().equals("")) {
-                metodos.msgError(this, "Debe cargar primero la bodega de origen");
+                ControladorAlertas.alertFail("Debe cargar primero la bodega de origen");
                 return;
             }
 
             if (txtNitBD.getText().equals(txtNitBO.getText()) && !txtNitBD.getText().equals("")) {
-                metodos.msgError(this, "La bodega de origen no puede ser igual a la bodega de destino");
+                ControladorAlertas.alertFail("La bodega de origen no puede ser igual a la bodega de destino");
                 return;
             }
 
@@ -898,34 +908,34 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         if (btnGuardar.getText().equals("GUARDAR")) {
 
             if (tblProductos.getRowCount() == 0) {
-                metodos.msgError(this, "No ha añadido ningun producto");
+                ControladorAlertas.alertFail("No ha añadido ningun producto");
             } else {
                 Object[] campos = {txtNombreBD, txtNombreBO};
                 String faltantes = metodos.camposVacios(campos);
 
                 if (!faltantes.equals("")) {
-                    metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                    ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                     return;
                 }
 
                 try {
                     if (Integer.parseInt(txtDiasPlazo.getText()) <= 0) {
-                        metodos.msgAdvertencia(this, "El prestamo no tiene dias de plazo");
+                        ControladorAlertas.alert("El prestamo no tiene dias de plazo");
                     }
                 } catch (Exception e) {
-                    metodos.msgAdvertencia(this, "El prestamo no tiene dias de plazo");
+                    ControladorAlertas.alert("El prestamo no tiene dias de plazo");
                 }
 
                 int xyz = tblProductos.getRowCount();
                 if (xyz > 0) {
                     for (int i = 0; i < xyz; i++) {
                         if (tblProductos.getValueAt(i, 3).equals("0")) {
-                            metodos.msgError(this, "Las cantidades deben de ser mayor a 0");
+                            ControladorAlertas.alertFail("Las cantidades deben de ser mayor a 0");
                             return;
                         }
 
                         if (tblProductos.getValueAt(i, 2).equals(this.simbolo + " 0")) {
-                            metodos.msgError(this, "Los valores deben de ser mayor a " + this.simbolo + " 0");
+                            ControladorAlertas.alertFail("Los valores deben de ser mayor a " + this.simbolo + " 0");
                             return;
                         }
 
@@ -938,7 +948,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
                 //numFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, 
                 //Efectivo, Nc, Cheque, Targeta, Comprobante, Cotizacion, Anula, Anulada, Credito, //total, descuentos, iva, subtotal, cxc, usuario;
-                if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+                if (ControladorAlertas.option("¿Desea continuar?")) {
 
                     String factura = "TRASB-" + instancias.getSql().getNumConsecutivo("TRASB")[0];
 
@@ -962,7 +972,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                     ndTrasladoBodega nodo = metodos.llenarTrasladoBodega(vector);
 
                     if (!instancias.getSql().agregarTrasladoBodega(nodo)) {
-                        metodos.msgError(this, "Hubo un problema al guardar el prestamo");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar el prestamo");
                         return;
                     }
 
@@ -980,11 +990,11 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                         ndProdTraslBodega nodoTras = metodos.llenarProdTralBodega(vectVenta);
 
                         if (!instancias.getSql().agregarTrasladoBodega(nodoTras)) {
-                            metodos.msgError(this, "Hubo un problema al guardar el prestamo");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar el prestamo");
                         }
 
                         /* SACAMOS LA MERCANCIA DE LA BODEGA DE ORIGEN */
-                        ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                        ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
                         String tipoMovimiento = "";
                         if (txtNombreBO.getText().equals("BODEGA PRINCIPAL")) {
@@ -997,15 +1007,15 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                         double fisicoInventario;
 
                         try {
-                            cantidad = Double.parseDouble(producto.getTrasladoBod().replace(",", "."));
+                            cantidad = producto.getTrasladoBod().doubleValue();
                         } catch (Exception e) {
                             cantidad = 0;
                         }
 
                         try {
-                            fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                            fisicoInventario = producto.getFisicoInventario().doubleValue();
                         } catch (Exception e) {
-                            fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                            fisicoInventario = producto.getInventario().doubleValue();
                         }
 
                         double cant2 = Double.parseDouble(tblProductos.getValueAt(i, 10).toString().replace(",", "."));
@@ -1022,8 +1032,8 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                         String total1 = String.valueOf(df.format(total)).replace(".", ",");
                         String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-                        instancias.getSql().modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
-                        instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                        daoInventario.modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                        daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
 
                         // DESCONTAR DEL INVENTARIO DETALLADO //
                         if (instancias.getConfiguraciones().isProductosDetallados()) {
@@ -1070,14 +1080,14 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
                     //CAMBIAR CONSECUTIVO FACTURA
                     if (!instancias.getSql().aumentarConsecutivo("TRASB", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TRASB")[0]) + 1)) {
-                        metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del traslado");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del traslado");
                     }
 
                     txtTraslado.setText((String) instancias.getSql().getNumConsecutivo("TRASB")[0]);
-                    metodos.msgExito(this, "Prestamo exitoso");
+                    ControladorAlertas.alertSuccess("Prestamo exitoso");
                     btnLimpiarActionPerformed(evt);
 
-                    if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+                    if (ControladorAlertas.option("¿Desea imprimir?")) {
 
                         String tipo = instancias.getImpresion();
                         if (tipo.equals("pos")) {
@@ -1152,22 +1162,22 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdTrasladosBodegas", "Where id='" + consecutivo + "' ");
         if (anulado) {
-            metodos.msgError(null, "El documento ya está anulado");
+            ControladorAlertas.alertFail("El documento ya está anulado");
             return;
         }
 
         String estadoDoc = instancias.getSql().getEstado("bdTrasladosBodegas", "Where id ='" + consecutivo + "' ");
         if (estadoDoc.equals("FINALIZADO")) {
-            metodos.msgAdvertenciaAjustado(null, "El documento ya está finalizado");
+            ControladorAlertas.alert("El documento ya está finalizado");
             return;
         }
 
         desdeTraslados(consecutivo);
 
-        if (metodos.msgPregunta(this, "¿Anular este prestamo?") == 0) {
+        if (ControladorAlertas.option("¿Anular este prestamo?")) {
 
             if (!instancias.getSql().anularDocumento(consecutivo, "bdTrasladosBodegas")) {
-                metodos.msgError(this, "Error al anular el prestamos");
+                ControladorAlertas.alertFail("Error al anular el prestamos");
             } else {
                 instancias.getSql().anulacionPrestamo(consecutivo);
             }
@@ -1192,20 +1202,20 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                     tipoMovimiento = "Suma";
                 }
 
-                ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
                 double cantidad;
                 double fisicoInventario;
 
                 try {
-                    cantidad = Double.parseDouble(producto.getTrasladoBod().replace(",", "."));
+                    cantidad = producto.getTrasladoBod().doubleValue();
                 } catch (Exception e) {
                     cantidad = 0;
                 }
 
                 try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                    fisicoInventario = producto.getFisicoInventario().doubleValue();
                 } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                    fisicoInventario = producto.getInventario().doubleValue();
                 }
 
                 double cant2 = Double.parseDouble(tblProductos.getValueAt(i, 10).toString().replace(",", "."));
@@ -1222,8 +1232,8 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                 String total1 = String.valueOf(df.format(total)).replace(".", ",");
                 String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-                instancias.getSql().modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                daoInventario.modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
 
                 // DESCONTAR DEL INVENTARIO DETALLADO //
                 if (!cod.equals("")) {
@@ -1260,7 +1270,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                 }
                 // FIN DE DESCONTAR DEL INVENTARIO SEPARADO // 
             }
-            metodos.msgExito(this, "Prestamo anulado con éxito");
+            ControladorAlertas.alertSuccess("Prestamo anulado con éxito");
         }
         btnLimpiarActionPerformed(evt);
     }//GEN-LAST:event_btnAnularActionPerformed
@@ -1274,7 +1284,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdTrasladosBodegas", "Where id='" + consecutivo + "' ");
         if (anulado) {
-            metodos.msgError(null, "El documento esta anulado");
+            ControladorAlertas.alertFail("El documento esta anulado");
             return;
         }
 
@@ -1299,7 +1309,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
             cargarTotales();
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1351,23 +1361,23 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                 instancias.getSql().devolucionTraslado("TRASB-" + txtTraslado.getText(), cod, tblProductos.getValueAt(i, 3).toString(), "facturados");
             }
 
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
             double cantidad, fisicoInventario, totalInv;
 
             try {
-                cantidad = Double.parseDouble(producto.getTrasladoBod().replace(",", "."));
+                cantidad = producto.getTrasladoBod().doubleValue();
             } catch (Exception e) {
                 cantidad = 0;
             }
 
             try {
-                totalInv = Double.parseDouble(producto.getInventario().replace(",", "."));
+                totalInv = producto.getInventario().doubleValue();
             } catch (Exception e) {
                 totalInv = 0;
             }
 
             try {
-                fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                fisicoInventario = producto.getFisicoInventario().doubleValue();
             } catch (Exception e) {
                 fisicoInventario = 0;
             }
@@ -1391,14 +1401,14 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                 totalInv1 = totalInv + cant2;
                 String totalFisico1 = String.valueOf(df.format(totalFisico)).replace(".", ",");
                 String totalInv2 = String.valueOf(df.format(totalInv1)).replace(".", ",");
-                instancias.getSql().modificarInventario("fisicoInventario", totalFisico1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
-                instancias.getSql().modificarInventario("inventario", totalInv2, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                daoInventario.modificarInventario("fisicoInventario", totalFisico1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+                daoInventario.modificarInventario("inventario", totalInv2, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
             } else {
                 total = cantidad - cant2;
             }
 
             String total1 = String.valueOf(df.format(total)).replace(".", ",");
-            instancias.getSql().modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+            daoInventario.modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
 
         }
 
@@ -1417,7 +1427,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         //instancias.getFactura().desdeTrasladosBodegas(datos2, nit, txtDiasPlazoFact.getText());
 
         if (saltarPasosTraslados) {
-            metodos.msgExito(this, "Prestamo liquidado exitosamente");
+            ControladorAlertas.alertSuccess("Prestamo liquidado exitosamente");
         }
 
         btnLimpiarActionPerformed(null);
@@ -1437,7 +1447,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         ndTrasladoBodega nodo = metodos.llenarTrasladoBodega(vector);
 
         if (!instancias.getSql().agregarTrasladoBodega(nodo)) {
-            metodos.msgError(this, "Hubo un problema al guardar el prestamo");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el prestamo");
             return;
         }
 
@@ -1452,7 +1462,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
             ndProdTraslBodega nodoTras = metodos.llenarProdTralBodega(vectVenta);
             if (!instancias.getSql().agregarTrasladoBodega(nodoTras)) {
-                metodos.msgError(this, "Hubo un problema al guardar el traslado");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el traslado");
             }
         }
 
@@ -1464,7 +1474,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         }
 
         if (saltarPasosTraslados) {
-            if (metodos.msgPregunta(this, "¿Desea imprimir el nuevo prestamo?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir el nuevo prestamo?")) {
                 new GeneradorReporteTraslado(instancias).verPrestamos(factura, tipoImpr);
             }
         } else {
@@ -1473,10 +1483,10 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
         //CAMBIAR CONSECUTIVO FACTURA
         if (!instancias.getSql().aumentarConsecutivo("TRASB", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TRASB")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del traslado");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del traslado");
         }
 
-//                if (metodos.msgPregunta(this, "¿Desea imprimir el nuevo traslado?") == 0) {
+//                if (ControladorAlertas.option("¿Desea imprimir el nuevo traslado?")) {
 //                    instancias.getReporte().verTrasladoBodega(factura);
 //                }
         String tipo = "Devuelto";
@@ -1495,20 +1505,20 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                 instancias.getSql().devolucionTraslado("TRASB-" + txtTraslado.getText(), cod, tblProductos.getValueAt(i, 3).toString(), "devueltos");
             }
 
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
             double cantidad;
             double fisicoInventario;
 
             try {
-                cantidad = Double.parseDouble(producto.getTrasladoBod().replace(",", "."));
+                cantidad = producto.getTrasladoBod().doubleValue();
             } catch (Exception e) {
                 cantidad = 0;
             }
 
             try {
-                fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                fisicoInventario = producto.getFisicoInventario().doubleValue();
             } catch (Exception e) {
-                fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                fisicoInventario = producto.getInventario().doubleValue();
             }
 
             double cant2 = Double.parseDouble(tblProductos.getValueAt(i, 3).toString().replace(",", "."));
@@ -1532,8 +1542,8 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             String total1 = String.valueOf(df.format(total)).replace(".", ",");
             String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-            instancias.getSql().modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
-            instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+            daoInventario.modificarInventario("trasladoBod", total1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
+            daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), "bdProductos");
 
             // DESCONTAR DEL INVENTARIO DETALLADO //
             if (!cod.equals("")) {
@@ -1571,7 +1581,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
         }
 
         if (saltarPasosTraslados) {
-            metodos.msgExito(this, "Prestamo liquidado exitosamente");
+            ControladorAlertas.alertSuccess("Prestamo liquidado exitosamente");
         }
         btnLimpiarActionPerformed(null);
         saltarPasosTraslados = true;
@@ -1663,7 +1673,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
     private void btnBusProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusProdActionPerformed
         if (txtNombreBO.getText().equals("")) {
-            metodos.msgError(this, "Seleccione bodega de origen");
+            ControladorAlertas.alertFail("Seleccione bodega de origen");
             return;
         }
 
@@ -1731,7 +1741,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             btnReimprimir.setEnabled(false);
             btnAnular.setEnabled(false);
         } else {
-            metodos.msgError(this, "El traslado no existe");
+            ControladorAlertas.alertFail("El traslado no existe");
         }
     }
 
@@ -1739,7 +1749,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             String temp, String fechaVence) {
 
         if (txtNombreBO.getText().equals("")) {
-            metodos.msgError(this, "Seleccione bodega de origen");
+            ControladorAlertas.alertFail("Seleccione bodega de origen");
             return;
         }
 
@@ -1753,28 +1763,23 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             if (!idPro.equals("")) {
                 if (idPro.equals(idProd)) {
                     if (!imei.equals("")) {
-                        metodos.msgError(this, "El imei '" + imei + "' ya esta cargado.");
+                        ControladorAlertas.alertFail("El imei '" + imei + "' ya esta cargado.");
                         return;
                     } else {
-                        metodos.msgError(this, "Este producto con el lote '" + lote + "' ya se cargó.");
+                        ControladorAlertas.alertFail("Este producto con el lote '" + lote + "' ya se cargó.");
                         return;
                     }
                 }
             }
         }
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }
@@ -1782,7 +1787,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 
         if (!codigoProd.equals("")) {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbNombre.requestFocus();
                 return;
             }
@@ -1790,25 +1795,25 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             if (this.plu) {
                 this.plu = false;
                 int cant = 0;
-                if (nodo.isPlu2()) {
+                if (nodo.isPluLista(2)) {
                     cant++;
                 }
-                if (nodo.isPlu3()) {
+                if (nodo.isPluLista(3)) {
                     cant++;
                 }
-                if (nodo.isPlu4()) {
+                if (nodo.isPluLista(4)) {
                     cant++;
                 }
-                if (nodo.getPlu5()) {
+                if (nodo.isPluLista(5)) {
                     cant++;
                 }
-                if (nodo.getPlu6()) {
+                if (nodo.isPluLista(6)) {
                     cant++;
                 }
-                if (nodo.getPlu7()) {
+                if (nodo.isPluLista(7)) {
                     cant++;
                 }
-                if (nodo.getPlu8()) {
+                if (nodo.isPluLista(8)) {
                     cant++;
                 }
                 if (cant > 0) {
@@ -1825,39 +1830,39 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
             String lista = nodo.getL1();
             switch (plu) {
                 case 2:
-                    cant2 = nodo.getCantidad2();
-                    desc = nodo.getDescripcion2();
-                    lista = nodo.getL2();
+                    cant2 = nodo.getCantidadLista(2).toPlainString();
+                    desc = nodo.getDescripcionLista(2);
+                    lista = nodo.getPrecioLista(2).toPlainString();
                     break;
                 case 3:
-                    cant2 = nodo.getCantidad3();
-                    desc = nodo.getDescripcion3();
-                    lista = nodo.getL3();
+                    cant2 = nodo.getCantidadLista(3).toPlainString();
+                    desc = nodo.getDescripcionLista(3);
+                    lista = nodo.getPrecioLista(3).toPlainString();
                     break;
                 case 4:
-                    cant2 = nodo.getCantidad4();
-                    desc = nodo.getDescripcion4();
-                    lista = nodo.getL4();
+                    cant2 = nodo.getCantidadLista(4).toPlainString();
+                    desc = nodo.getDescripcionLista(4);
+                    lista = nodo.getPrecioLista(4).toPlainString();
                     break;
                 case 5:
-                    cant2 = nodo.getCantidad5();
-                    desc = nodo.getDescripcion5();
-                    lista = nodo.getL5();
+                    cant2 = nodo.getCantidadLista(5).toPlainString();
+                    desc = nodo.getDescripcionLista(5);
+                    lista = nodo.getPrecioLista(5).toPlainString();
                     break;
                 case 6:
-                    cant2 = nodo.getCantidad6();
-                    desc = nodo.getDescripcion6();
-                    lista = nodo.getL6();
+                    cant2 = nodo.getCantidadLista(6).toPlainString();
+                    desc = nodo.getDescripcionLista(6);
+                    lista = nodo.getPrecioLista(6).toPlainString();
                     break;
                 case 7:
-                    cant2 = nodo.getCantidad7();
-                    desc = nodo.getDescripcion7();
-                    lista = nodo.getL7();
+                    cant2 = nodo.getCantidadLista(7).toPlainString();
+                    desc = nodo.getDescripcionLista(7);
+                    lista = nodo.getPrecioLista(7).toPlainString();
                     break;
                 case 8:
-                    cant2 = nodo.getCantidad8();
-                    desc = nodo.getDescripcion8();
-                    lista = nodo.getL8();
+                    cant2 = nodo.getCantidadLista(8).toPlainString();
+                    desc = nodo.getDescripcionLista(8);
+                    lista = nodo.getPrecioLista(8).toPlainString();
                     break;
             }
 
@@ -1885,7 +1890,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
                     Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                String cant = nodo.getFisicoInventario().replace(".", ",");
+                String cant = Utilidades.Utilidades.formatearCantidad(nodo.getFisicoInventario());
 
                 Double res = 0.0;
               /*  if (txtNombreBO.getText().equals("BODEGA PRINCIPAL")) {
@@ -1987,7 +1992,7 @@ public class infPrestamos extends javax.swing.JInternalFrame implements Vista.Pr
 //        }
 //
 //        if (base.equals("")) {
-//            metodos.msgError(this, "Debe seleccionar la bodega de origen");
+//            ControladorAlertas.alertFail("Debe seleccionar la bodega de origen");
 //            return;
 //        }
         String tipo = "";

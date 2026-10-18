@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndNotaEnfermeria;
@@ -586,35 +588,35 @@ public class infNotaMedicaVeterinaria extends javax.swing.JInternalFrame {
         Object[] campos2 = {txtInfo};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             try {
                 String id = "NOTAP-" + instancias.getSql().getNumConsecutivo("NOTAP")[0];
                 ndNotaEnfermeria nodo = instancias.getSql().getDatosNotasEnfermeria(txtId.getText());
                 if (nodo.getId() != null) {
-                    metodos.msgError(this, "Esta nota ya existe");
+                    ControladorAlertas.alertFail("Esta nota ya existe");
                     txtId.requestFocus();
                     return;
                 }
                 Object[] vector = {id, txtIdentificacion.getText(), metodosGenerales.fecha(), txtInfo.getText()};
                 nodo = metodos.llenarNotaEnfermeria(vector);
                 if (!instancias.getSql().agregarNotasEnfermeria(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la nota");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la nota");
                     return;
                 }
                 txtId.setText("NOTAP-" + instancias.getSql().getNumConsecutivo("NOTAP")[0]);
                 if (!instancias.getSql().aumentarConsecutivo("NOTAP", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("NOTAP")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la nota");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la nota");
                     return;
                 }
 
-                metodos.msgExito(this, "Nota registrada con éxito");
-                if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+                ControladorAlertas.alertSuccess("Nota registrada con éxito");
+                if (ControladorAlertas.option("¿Desea imprimir?")) {
 
                     new GeneradorReporteMedico(instancias).verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                             txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText() + " Años", txtNacimiento.getText(), false);
@@ -623,7 +625,7 @@ public class infNotaMedicaVeterinaria extends javax.swing.JInternalFrame {
                 actualizarCMB(txtIdentificacion.getText());
                 btnNuevoActionPerformed(evt);
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al guardar la nota");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la nota");
             }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -685,10 +687,10 @@ public class infNotaMedicaVeterinaria extends javax.swing.JInternalFrame {
         Object[] campos = {txtId};
         String faltantes = metodos.camposVacios(campos);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
 //            try {
             String id = "NOTAP-" + jComboBox1.getSelectedItem().toString().substring(0, 1);
@@ -697,19 +699,19 @@ public class infNotaMedicaVeterinaria extends javax.swing.JInternalFrame {
             Object[] vector = {id, txtIdentificacion.getText(), metodosGenerales.fecha(), txtInfo.getText()};
             ndNotaEnfermeria nodo = metodos.llenarNotaEnfermeria(vector);
             if (!instancias.getSql().modificarNotasEnfermeria(nodo)) {
-                metodos.msgError(this, "Hubo un problema al modificar la nota de proceso");
+                ControladorAlertas.alertFail("Hubo un problema al modificar la nota de proceso");
                 return;
             }
-            metodos.msgExito(this, "Nota de proceso modificada con éxito");
+            ControladorAlertas.alertSuccess("Nota de proceso modificada con éxito");
 
             //btnNuevoActionPerformed(evt);
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteMedico(instancias).verNotaEnfermeria(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText() + " Años", txtNacimiento.getText(), false);
             }
             jComboBox1.setSelectedIndex(0);
 //            } catch (Exception e) {
-//                metodos.msgError(this, "Hubo un problema al modificar la nota de proceso");
+//                ControladorAlertas.alertFail("Hubo un problema al modificar la nota de proceso");
 //            }
         }
     }//GEN-LAST:event_btnModificarActionPerformed

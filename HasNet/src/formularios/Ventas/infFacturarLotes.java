@@ -1,5 +1,7 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
@@ -620,10 +622,10 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
-        metodos.msgAdvertenciaAjustado(this, "ESTE PROCESO ES IRREVERSIBLE");
+        ControladorAlertas.alert("ESTE PROCESO ES IRREVERSIBLE");
 
         if (txtDiasPlazo.getText().equals("")) {
-            metodos.msgAdvertenciaAjustado(this, "No ha ingresado los días de plazo");
+            ControladorAlertas.alert("No ha ingresado los días de plazo");
             return;
         }
 
@@ -635,7 +637,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
         }
 
         if (cantidad <= 0) {
-            metodos.msgAdvertenciaAjustado(this, "Debe seleccionar almenos 1 registro");
+            ControladorAlertas.alert("Debe seleccionar almenos 1 registro");
             return;
         }
 
@@ -663,7 +665,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
             aumentosFact.setVisible(true);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             for (int i = 0; i < tblClientes.getRowCount(); i++) {
 
                 if (tblClientes.getValueAt(i, 7).equals(true)) {
@@ -688,14 +690,14 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                     String fecha = metodosGenerales.anho() + "-" + mes + "-01";
 
                     if (!instancias.getSql().modificarFechaUltimoPago(tblClientes.getValueAt(i, 0).toString(), fecha, String.valueOf(cantFacturados))) {
-                        metodos.msgError(this, "Error al agregar la fecha de pago");
+                        ControladorAlertas.alertFail("Error al agregar la fecha de pago");
                         return;
                     }
 
 /*                    Object[] lote = {numLote, "", factura, metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), tblClientes.getValueAt(i, 0).toString()};
 
                     if (!instancias.getSql().agregarLote(lote)) {
-                        metodos.msgError(this, "Error al guardar la información del lote");
+                        ControladorAlertas.alertFail("Error al guardar la información del lote");
                         return;
                     }
 */
@@ -710,10 +712,10 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
             }
 
             if (!instancias.getSql().aumentarConsecutivo("LOTECCOB", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("LOTECCOB")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del abono");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del abono");
             }
 
-            metodos.msgExito(this, "Facturas generadas con exito");
+            ControladorAlertas.alertSuccess("Facturas generadas con exito");
             btnLimpiarActionPerformed(evt);
         }
     }//GEN-LAST:event_btnFacturarActionPerformed
@@ -765,11 +767,11 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdFactura", "Where cxc='" + consecutivo + "' ");
 
         if (anulado) {
-            metodos.msgAdvertenciaAjustado(this, "Este lote se encuentra anulado");
+            ControladorAlertas.alert("Este lote se encuentra anulado");
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Esta seguro de anular este lote?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro de anular este lote?")) {
 
             instancias.getSql().anularLote(consecutivo);
 
@@ -779,7 +781,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                 instancias.getSql().anularFacturaVerificadorFacturas(factura[0].toString());
             }
 
-            metodos.msgExito(this, "Lote anulado con éxito");
+            ControladorAlertas.alertSuccess("Lote anulado con éxito");
         }
     }//GEN-LAST:event_btnAnularActionPerformed
 
@@ -797,11 +799,11 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdFactura", "Where cxc ='" + consecutivo + "' ");
 
         if (anulado) {
-            metodos.msgAdvertenciaAjustado(this, "Este lote se encuentra anulado");
+            ControladorAlertas.alert("Este lote se encuentra anulado");
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea reimprimir este lote?") == 0) {
+        if (ControladorAlertas.option("¿Desea reimprimir este lote?")) {
 
             System.out.println("tranqiioñlo: " + consecutivo);
             Object[][] facturas = instancias.getSql().facturasLote(consecutivo);
@@ -917,10 +919,10 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
             if (yaEsta(cmbClientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbClientes.addItem(txtCliente.getText());
                 cmbClientes.setSelectedItem(txtCliente.getText());
@@ -1216,7 +1218,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
         }
 
         if (cmbMes.getSelectedIndex() == 0) {
-            metodos.msgAdvertenciaAjustado(this, "No ha seleccionado mes a facturar");
+            ControladorAlertas.alert("No ha seleccionado mes a facturar");
             return "";
         }
 

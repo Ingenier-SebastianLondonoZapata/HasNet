@@ -1,5 +1,7 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
@@ -241,7 +243,7 @@ public class buscPlacas extends javax.swing.JDialog {
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         ModeloContacto nodo = null;
         if (nit.equals("TERC-00000001") || nit.equals("")) {
-            metodos.msgError(null, "Debe cargar un cliente");
+            ControladorAlertas.alertFail("Debe cargar un cliente");
             return;
         } else {
             nodo = instancias.getSql().getDatosTercero(nit);

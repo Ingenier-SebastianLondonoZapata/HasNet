@@ -1,14 +1,12 @@
 package Procesos.Inventario.Estrategia;
 
+import Enums.Tablas;
 import Enums.EstadosDetalleProducto;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Utilidades.BaseDatos.SentenciaSql;
-import Utilidades.BaseDatos.ValidadorTabla;
-import Utilidades.Inventario.UtilidadInventario;
-import Utilidades.Utilidades;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,62 +15,63 @@ import java.util.List;
 public class ProcesadorFacturacion extends AbstractProcesadorMovimiento {
 
     @Override
-    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional) {
-        ndProducto producto = movimiento.getProducto();
+    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String idBodega, InformacionAdicional informacionAdicional) {
+        ModeloProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
         boolean manejaInventario = Boolean.TRUE.equals(producto.getManejaInventario());
 
         String columnaAcumulada = movimiento.esArmado() ? "armado" : "ventas";
         BigDecimal valorAcumulado = movimiento.esArmado()
-                ? Utilidades.convertirBigDecimal(producto.getArmado()).add(cantidad)
-                : Utilidades.convertirBigDecimal(producto.getVentas()).add(cantidad);
+                ? producto.getArmado().add(cantidad)
+                : producto.getVentas().add(cantidad);
 
         List<Object> parametros = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE ").append(ValidadorTabla.validar(tablaUtilizada)).append(" SET ")
+        sql.append("UPDATE ").append(Tablas.INVENTARIO.getNombre()).append(" SET ")
                 .append(columnaAcumulada).append(" = ?");
-        parametros.add(UtilidadInventario.formatear(valorAcumulado));
+        parametros.add(valorAcumulado);
 
         if (movimiento.esArmado()) {
-            producto.setArmado(UtilidadInventario.formatear(valorAcumulado));
+            producto.setArmado(valorAcumulado);
         } else {
-            producto.setVentas(UtilidadInventario.formatear(valorAcumulado));
+            producto.setVentas(valorAcumulado);
         }
 
         if (manejaInventario) {
-            BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).subtract(cantidad);
-            BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).subtract(cantidad);
+            BigDecimal inventario = producto.getInventario().subtract(cantidad);
+            BigDecimal fisicoInventario = producto.getFisicoInventario().subtract(cantidad);
             sql.append(", inventario = ?, fisicoInventario = ?");
-            parametros.add(UtilidadInventario.formatear(inventario));
-            parametros.add(UtilidadInventario.formatear(fisicoInventario));
-            producto.setInventario(UtilidadInventario.formatear(inventario));
-            producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
+            parametros.add(inventario);
+            parametros.add(fisicoInventario);
+            producto.setInventario(inventario);
+            producto.setFisicoInventario(fisicoInventario);
         }
 
         if (informacionAdicional.isVieneDesdePedido()) {
-            BigDecimal pedidos = Utilidades.convertirBigDecimal(producto.getPedidos()).subtract(cantidad);
+            BigDecimal pedidos = producto.getPedidos().subtract(cantidad);
             sql.append(", pedidos = ?");
-            parametros.add(UtilidadInventario.formatear(pedidos));
-            producto.setPedidos(UtilidadInventario.formatear(pedidos));
+            parametros.add(pedidos);
+            producto.setPedidos(pedidos);
         }
 
         if (informacionAdicional.isVieneDesdePlanSepare()) {
-            BigDecimal planSepare = Utilidades.convertirBigDecimal(producto.getPlanSepare()).subtract(cantidad);
+            BigDecimal planSepare = producto.getPlanSepare().subtract(cantidad);
             sql.append(", planSepare = ?");
-            parametros.add(UtilidadInventario.formatear(planSepare));
-            producto.setPlanSepare(UtilidadInventario.formatear(planSepare));
+            parametros.add(planSepare);
+            producto.setPlanSepare(planSepare);
         }
 
         if (informacionAdicional.isVieneDesdeOrdenServicio()) {
-            BigDecimal ordenServicio = Utilidades.convertirBigDecimal(producto.getOrdenServicio()).subtract(cantidad);
+            BigDecimal ordenServicio = producto.getOrdenServicio().subtract(cantidad);
             sql.append(", ordenServicio = ?");
-            parametros.add(UtilidadInventario.formatear(ordenServicio));
-            producto.setOrdenServicio(UtilidadInventario.formatear(ordenServicio));
+            parametros.add(ordenServicio);
+            producto.setOrdenServicio(ordenServicio);
         }
 
-        sql.append(" WHERE idSistema = ?");
+        sql.append(" WHERE idSistema = ? AND idBodega = ?");
         parametros.add(producto.getIdSistema());
+        parametros.add(idBodega);
 
         return new SentenciaSql(sql.toString(), parametros.toArray());
     }

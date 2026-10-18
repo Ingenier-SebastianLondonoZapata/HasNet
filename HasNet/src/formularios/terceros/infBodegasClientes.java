@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
@@ -862,29 +864,29 @@ public class infBodegasClientes extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (txtRazon.getText().equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, no ha cargado un cliente");
+            ControladorAlertas.alert("No puede continuar, no ha cargado un cliente");
             txtTelefono.requestFocus();
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             Object[] vector = {txtCodigo.getText(), txtNombre.getText(), txtDireccionBod.getText(), txtTelBod.getText(), instancias.getUsuario(), txtCiudadBodega.getText(),
                 "", "", "", "", ""};
 
             ndBodega nodo = metodos.llenarBodega(vector);
             if (!instancias.getSql().agregarBodega(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la bodega");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la bodega");
                 return;
             }
 
             txtCodigo.getText();
-            metodos.msgExito(this, "Bodega registrado con éxito");
+            ControladorAlertas.alertSuccess("Bodega registrado con éxito");
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -913,24 +915,24 @@ public class infBodegasClientes extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             Object[] vector = {txtCodigo.getText(), txtNombre.getText(), txtDireccionBod.getText(), txtTelBod.getText(), instancias.getUsuario(), txtCiudadBodega.getText(),
                 "", "", "", "", ""};
 
             ndBodega nodo = metodos.llenarBodega(vector);
 
             if (!instancias.getSql().modificarBodega(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la bodega");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la bodega");
                 return;
             }
 
-            metodos.msgExito(this, "Bodega modificado con éxito");
+            ControladorAlertas.alertSuccess("Bodega modificado con éxito");
             btnNuevoActionPerformed(evt);
 
             btnModificar.setEnabled(false);

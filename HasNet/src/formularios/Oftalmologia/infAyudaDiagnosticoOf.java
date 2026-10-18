@@ -1,12 +1,18 @@
 package formularios.Oftalmologia;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Medico.ndAyudaDiagnostica;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndTablaDiagnostica;
 import clases.Oftalmologia.ndAyudaDiagnosticaOf;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
@@ -19,6 +25,7 @@ import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
 public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -553,7 +560,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblDiagostico.getRowCount() < 1) {
-            metodos.msgError(this, "Falta agregar los conceptos");
+            ControladorAlertas.alertFail("Falta agregar los conceptos");
             return;
         }
 
@@ -562,18 +569,18 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
         Object[] campos2 = {txtHistoria, txtFecha};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             //try {
             String id = "ADIAGOF-" + instancias.getSql().getNumConsecutivo("ADIAGOF")[0];
             ndAyudaDiagnosticaOf nodo = instancias.getSql().getDatosAyudaDiagnosticaOf(id);
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La ayuda diagnostica ya existe");
+                ControladorAlertas.alertFail("La ayuda diagnostica ya existe");
                 txtId.requestFocus();
                 return;
             }
@@ -582,7 +589,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
 
             nodo = metodos.llenarAyudaDiagnosticaOf(vector);
             if (!instancias.getSql().agregarAyudaDiagnosticaOf(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la ayuda diagnostica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la ayuda diagnostica");
                 return;
             }
 
@@ -593,19 +600,19 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
                 ndTablaDiagnostica nodo2 = metodos.llenarTablaDiagnostica(vector2);
 
                 if (!instancias.getSql().agregarTablaDiagnosticaOf(nodo2)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la tabla diagnostica");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la tabla diagnostica");
                     return;
                 }
             }
 
             //CAMBIAR CONSECUTIVO AYUDA DISGNOSTICA
             if (!instancias.getSql().aumentarConsecutivo("ADIAGOF", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ADIAGOF")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la ayuda diagnostica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la ayuda diagnostica");
             }
 
             txtId.setText("ADIAGOF-" + instancias.getSql().getNumConsecutivo("ADIAGOF")[0]);
 
-            metodos.msgExito(this, "Ayuda diagnostica registrado con éxito");
+            ControladorAlertas.alertSuccess("Ayuda diagnostica registrado con éxito");
             ndHistoriaClinica historia = instancias.getSql().getDatosHistClinica(txtHistoria.getText());
             String con[] = historia.getConsecutivos().split("&");
             int aux = Integer.parseInt(con[1]);
@@ -613,7 +620,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
 
             instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + aux + "&" + con[2] + "&" + con[3]);
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteOftalmologia(instancias).verAyudaDiagnosticaOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText());
             }
@@ -628,7 +635,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
 
 //                btnNuevoActionPerformed(evt);
 //            } catch (Exception e) {
-//                metodos.msgError(this, "Hubo un problema al guardar el AyudaDiagnostica");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar el AyudaDiagnostica");
 //            }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -688,7 +695,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
     private void txtIdentificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdentificacionKeyReleased
 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(txtIdentificacion.getText().replace("'", "//"), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtIdentificacion.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             if (nodo.getCodigo() == null) {
                 txtFecha.requestFocus();
@@ -787,7 +794,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un item");
+            ControladorAlertas.alert("Seleccione un item");
         }
 
         /*

@@ -1,5 +1,7 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import Modelo.Terceros.ModeloContacto;
@@ -391,15 +393,15 @@ public class infRepHistorial extends javax.swing.JInternalFrame {
 
     private void btnAggProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProdActionPerformed
         if (txtPlaca.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero una placa");
+            ControladorAlertas.alertFail("Cargue primero una placa");
         } else {
 
             if (yaEsta(cmbProveedor, txtPlaca.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo esta placa");
+                ControladorAlertas.alert("Ya cargo esta placa");
             } else {
 
                 if (txtPlaca.getText().length() < 5) {
-                    metodos.msgAdvertenciaAjustado(this, "Placa inválida");
+                    ControladorAlertas.alert("Placa inválida");
                     return;
                 }
 
@@ -416,10 +418,10 @@ public class infRepHistorial extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertenciaAjustado(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -434,7 +436,7 @@ public class infRepHistorial extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemClienteActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbCientes.getItemCount() > 0) {
@@ -490,7 +492,7 @@ public class infRepHistorial extends javax.swing.JInternalFrame {
             if (nit.length() == 0) {
                 ventanaPlacas("", "");
             } else if (nit.length() < 5) {
-                metodos.msgAdvertenciaAjustado(this, "Placa inválida");
+                ControladorAlertas.alert("Placa inválida");
             } else {
                 btnAggProdActionPerformed(null);
             }

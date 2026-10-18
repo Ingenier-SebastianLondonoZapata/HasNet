@@ -1,5 +1,7 @@
 package configuracion;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -370,7 +372,7 @@ public class dlgAlertaPermiso extends javax.swing.JDialog {
         txtId.setText("");
         btnAceptar.setEnabled(false);
         btnRechazar.setEnabled(false);
-        metodos.msgExito(null, "Solicitud rechazada con exito.");
+        ControladorAlertas.alertSuccess("Solicitud rechazada con exito.");
         instancias.getMenu().actualizarPermisos(0, true, false);
         this.dispose();
     }//GEN-LAST:event_btnRechazarActionPerformed
@@ -384,7 +386,7 @@ public class dlgAlertaPermiso extends javax.swing.JDialog {
         txtId.setText("");
         btnAceptar.setEnabled(false);
         btnRechazar.setEnabled(false);
-        metodos.msgExito(null, "Solicitud aceptada con exito.");
+        ControladorAlertas.alertSuccess("Solicitud aceptada con exito.");
         instancias.getMenu().actualizarPermisos(0, true, false);
         this.dispose();
     }//GEN-LAST:event_btnAceptarActionPerformed

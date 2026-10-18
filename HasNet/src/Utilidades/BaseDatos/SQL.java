@@ -1,11 +1,8 @@
 package Utilidades.BaseDatos;
 
-import Modelo.Ventas.ModeloComanda;
 import Modelo.Egresos.ModeloDetalleEgreso;
 import Modelo.Terceros.ModeloContacto;
 import Modelo.Maestra.modeloConfiguracion;
-import Modelo.Maestra.ModeloResolucion;
-import dao.Ventas.DaoComanda;
 import clases.Cartera.*;
 import clases.Egresos.*;
 import clases.Instancias;
@@ -29,7 +26,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,12 +35,12 @@ import javax.swing.table.DefaultTableModel;
 public class SQL {
 
     private static String nombreBaseDatosUtilizada;
-    private metodosGenerales metodos = new metodosGenerales();
+    private final metodosGenerales metodos = new metodosGenerales();
     private static MySql_connection mysql;
 
     public void obtenerConexion(String nombreBaseDatos, Boolean esDesdeMultiempresas) {
-        this.nombreBaseDatosUtilizada = nombreBaseDatos;
-        this.mysql = MySql_connection.getMySql_connection(this.nombreBaseDatosUtilizada, esDesdeMultiempresas);
+        nombreBaseDatosUtilizada = nombreBaseDatos;
+        mysql = MySql_connection.getMySql_connection(this.nombreBaseDatosUtilizada, esDesdeMultiempresas);
     }
 
     public String getBaseDatos() {
@@ -1231,14 +1227,6 @@ public class SQL {
         String instruccion_sql = "insert into bdRelacionados(idProducto, prod, nombre, relacion, nombreProd, cant)"
                 + " values(?,?,?,?,?,?);";
         ok = Agregar_Registro(new Object[]{idProd, prod, nombre, relacion, nombreProd, cant}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarCodigosRelacionados(String idProd, String cod) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdCodigosRelacionados(idProducto, codigo)"
-                + " values(?,?);";
-        ok = Agregar_Registro(new Object[]{idProd, cod}, null, instruccion_sql);
         return ok;
     }
 
@@ -4588,22 +4576,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getDatosProductosGrupo(String grupo, Boolean conImpuestos) {
-
-        String pvp = "L1";
-        if (!conImpuestos) {
-            pvp = "pvp";
-        }
-
-        String colName[] = {
-            "Codigo", "Descripcion", "Grupo", pvp, "idSistema"
-        };
-        String origen = " productos1 ";
-        Object dtDatos[][] = getDatos(colName, origen, "select Codigo, Descripcion, Grupo, " + pvp + ", idSistema from productos1 "
-                + "where Grupo = '" + grupo + "' and activo = false ; ", " where Grupo = '" + grupo + "' and activo = false ");
-        return dtDatos;
-    }
-
     public Object[][] getDatosProductosDiscosteo(String cod) {
         String colName[] = {
             "producto", "cantidad", "codigo", "descripcion", "Grupo"
@@ -4620,18 +4592,6 @@ public class SQL {
         String origen = " productosDiscosteo1 ";
         Object dtDatos[][] = getDatos(colName, origen, "select producto, cantidad, codigo, descripcion, Grupo from productosDiscosteo1 where codigo = '" + cod + "'; ",
                 " where codigo = '" + cod + "'");
-        return dtDatos;
-    }
-
-    public Object[][] getDatosProductosUnificados(String id) {
-        String colName[] = {
-            "productoUnificado", "Descripcion", "referencia", "L1", "fisico", "ubicacion1", "Codigo"
-        };
-        String origen = " conProductosUnificados ";
-//        System.out.println("select productoUnificado, Descripcion,referencia,L1,fisico,ubicacion1 from conProductosUnificados where productoPadre = '" + id + "'");
-        Object dtDatos[][] = getDatos(colName, origen, "select productoUnificado, Descripcion, referencia,"
-                + "L1,fisico,ubicacion1, Codigo from conProductosUnificados where productoPadre = '" + id + "'; ", " where productoPadre = '" + id + "'");
-
         return dtDatos;
     }
 
@@ -6181,73 +6141,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarProducto(ndProducto nodo, String tabla) {
-        boolean ok = false;
-        String instruccion_sql = "insert into " + tabla + " (idSistema, codigo, codigoBarras, Descripcion, Grupo, Sub_grupo, Proveedor, Usuario, unidad, "
-                + "referencia, ubicacion1,descripcion2,ubicacion2,cantidad2,descripcion3,ubicacion3,cantidad3,descripcion4,ubicacion4,cantidad4, "
-                + "descripcion5,ubicacion5,cantidad5, descripcion6,ubicacion6,cantidad6, descripcion7,ubicacion7, cantidad7, descripcion8,ubicacion8,"
-                + "cantidad8, plu2,plu3,plu4,plu5, plu6, plu7, plu8, terminal, claseBuscador, manejaInventario, porcentaje, compras, ventas, nc, "
-                + "ajusteEntrada, ajusteSalida, planSepare, pedidos, anulacion, inventarioInicial, ajusteInventario, fisicoInventario, armado, costeo,"
-                + "ordenServicio, congelada, trasladoBod, trasladoInternoEntrada, trasladoInternoSalida, impoconsumo, descripcionIngles, cubicaje, peso,"
-                + "codContable, codArancel, tipoProducto, cantMedida, marca, tipoProd, enTransito, codigo2, codigo3, codigo4, codigo5, codigo6, codigo7,"
-                + "codigo8, lenteMarco, adesivo, color, empaque, composicion, rmb, indVentas, descripcionLarga, notaDebito, IVA, L1, L2, L3, L4, L5, L6, L7, L8, minimo, "
-                + "costo, minima, maxima, IVAC, ponderado, impoconsumoVenta, impoconsumoCompra)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
-                + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosProducto(nodo), metodos.pasarValoresProducto(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarProducto(ndProducto nodo, String tabla) {
-        boolean ok = false;
-        String instruccion_sql = "update " + tabla + " set codigo=?, codigoBarras=?, Descripcion=?, Grupo=?, Sub_grupo=?, Proveedor=?, Usuario=?, unidad=?, referencia=?, "
-                + "ubicacion1=?, descripcion2=?, ubicacion2=?, cantidad2=?, "
-                + "descripcion3=?, ubicacion3=?, cantidad3=?, descripcion4=?, ubicacion4=?, cantidad4=?, "
-                + "descripcion5=?, ubicacion5=?, cantidad5=?, descripcion6=?, ubicacion6=?, cantidad6=?, "
-                + "descripcion7=?, ubicacion7=?, cantidad7=?, descripcion8=?, ubicacion8=?, cantidad8=?, "
-                + "plu2=?, plu3=?, plu4=?, plu5=?, plu6=?, plu7=?, plu8=?, terminal=?, claseBuscador=?, manejaInventario=?, porcentaje=?, compras=?, ventas=?, nc=?, "
-                + "ajusteEntrada=?, ajusteSalida=?, planSepare=?, pedidos=?, anulacion=?, inventarioInicial=?, ajusteInventario=?, fisicoInventario=?, "
-                + "armado=?, costeo=?, ordenServicio=?, congelada=?, trasladoBod=?, trasladoInternoEntrada=?, trasladoInternoSalida=?, impoconsumo=?, "
-                + "descripcionIngles=?, cubicaje=?, peso=?, codContable=?, codArancel=?, tipoProducto=?, cantMedida=?, marca=?, tipoProd=?, enTransito=?, "
-                + "codigo2=?, codigo3=?, codigo4=?, codigo5=?, codigo6=?, codigo7=?, codigo8=?, lenteMarco=?, adesivo=?, color=?, empaque=?, composicion=?, rmb=?, indVentas=?, "
-                + "descripcionLarga=?, notaDebito=?, IVA=?, L1=?, L2=?, L3=?, L4=?, L5=?, L6=?, L7=?, L8=?, minimo=?, costo=?, minima=?, maxima=?, IVAC=?, ponderado=?, impoconsumoVenta=?, "
-                + "impoconsumoCompra=? where idSistema ='" + nodo.getIdSistema() + "' ;";
-        ok = Actualizar_Registro(metodos.pasarDatosProducto(nodo), metodos.pasarValoresProducto(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public ndProducto getDatosProducto(String cod, String tabla) {
-        String instruccion_sql = "select idSistema, codigo, codigoBarras, Descripcion, Grupo, Sub_grupo, Proveedor, IVA, L1, L2, L3, L4, L5, L6, L7, L8, Usuario, minimo, unidad, "
-                + "referencia,costo,minima, maxima,ubicacion1,descripcion2,ubicacion2,cantidad2,descripcion3,ubicacion3,cantidad3, descripcion4, ubicacion4,"
-                + "cantidad4, descripcion5, ubicacion5, cantidad5, descripcion6, ubicacion6, cantidad6, descripcion7, ubicacion7, cantidad7, descripcion8, "
-                + "ubicacion8, cantidad8, plu2, plu3, plu4, plu5, plu6, plu7, plu8, IVAC, ponderado, terminal, inventario, claseBuscador, manejaInventario, "
-                + "porcentaje, compras, ventas, nc, ajusteEntrada, ajusteSalida, planSepare, pedidos, anulacion, inventarioInicial, ajusteInventario, fisicoInventario, "
-                + "armado, costeo, ordenServicio, congelada, trasladoBod, trasladoInternoEntrada, trasladoInternoSalida, impoconsumo, descripcionIngles, cubicaje, peso, codContable, "
-                + "codArancel, tipoProducto, cantMedida, marca, tipoProd, enTransito, codigo2, codigo3, codigo4, codigo5, codigo6, codigo7, codigo8, lenteMarco, "
-                + "adesivo, color, empaque, composicion, rmb, indVentas, impoconsumoVenta, impoconsumoCompra, descripcionLarga, notaDebito from " + tabla + " where Codigo = '" + cod + "' OR codigoBarras = '" + cod + "' "
-                + " OR idSistema = '" + cod + "' OR codigo2 = '" + cod + "' OR codigo3 = '" + cod + "' OR codigo4 = '" + cod + "' "
-                + " OR codigo5 = '" + cod + "' OR codigo6 = '" + cod + "' OR codigo7 = '" + cod + "' OR codigo8 = '" + cod + "' ;";
-//                + "from " + tabla + " where Codigo = '" + cod + "' OR (codigoBarras = '" + cod + "' and codigoBarras <> '') OR idSistema = '" + cod + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"idSistema", "codigo", "codigoBarras", "Descripcion", "Grupo", "Sub_grupo", "Proveedor", "IVA", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "Usuario", "minimo",
-            "unidad", "referencia", "costo", "minima", "maxima", "ubicacion1", "descripcion2", "ubicacion2", "cantidad2", "descripcion3", "ubicacion3",
-            "cantidad3", "descripcion4", "ubicacion4", "cantidad4", "descripcion5", "ubicacion5", "cantidad5", "descripcion6", "ubicacion6", "cantidad6",
-            "descripcion7", "ubicacion7", "cantidad7", "descripcion8", "ubicacion8", "cantidad8", "plu2", "plu3", "plu4", "plu5", "plu6", "plu7", "plu8",
-            "IVAC", "ponderado", "terminal", "inventario", "claseBuscador", "manejaInventario", "porcentaje", "compras", "ventas", "nc", "ajusteEntrada",
-            "ajusteSalida", "planSepare", "pedidos", "anulacion", "inventarioInicial", "ajusteInventario", "fisicoInventario", "armado", "costeo", "ordenServicio", "congelada",
-            "trasladoBod", "trasladoInternoEntrada", "trasladoInternoSalida", "impoconsumo", "descripcionIngles", "cubicaje", "peso", "codContable", "codArancel", "tipoProducto",
-            "cantMedida", "marca", "tipoProd", "enTransito", "codigo2", "codigo3", "codigo4", "codigo5", "codigo6", "codigo7", "codigo8", "lenteMarco", "adesivo",
-            "color", "empaque", "composicion", "rmb", "indVentas", "impoconsumoVenta", "impoconsumoCompra", "descripcionLarga", "notaDebito"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false,
-            false, false, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        ndProducto nodo = metodos.llenarProducto(data);
-        return nodo;
-    }
-
     public boolean agregarProceso(ndProceso nodo) {
         boolean ok = false;
         String instruccion_sql = "insert into bdProceso(codigo, nombre, und, observaciones)"
@@ -6727,13 +6620,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean modificarInventario(String nombre, String total, String id, String base) {
-        boolean ok = false;
-        String instruccion_sql = "update " + base + " set " + nombre + " =? where idSistema = '" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", total}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean modificarRedNc(String id, String doc) {
         boolean ok = false;
         String instruccion_sql = "update bdNc set cuadre=? where id='" + id + "' ;";
@@ -7170,13 +7056,6 @@ public class SQL {
 
         String instruccion_sql = "update bdDetalleProductos set estado=?, cantidadDisponible=? where Id = " + id + " ;";
         ok = Actualizar_Registro(new Object[]{"", estado}, new Object[]{cantidad}, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarLista(String codigo, String lista, String num) {
-        boolean ok = false;
-        String instruccion_sql = "update bdProductos set L" + lista + "=?" + " where Codigo = '" + codigo + "' ;";
-        ok = Actualizar_Registro(null, new Object[]{num}, instruccion_sql);
         return ok;
     }
 
@@ -7760,19 +7639,6 @@ public class SQL {
         return data;
     }
 
-    public Object[] getInvProducto(String cod) {
-
-        String instruccion_sql = "select Codigo, inventario"
-                + " from bdProductos where Codigo = '" + cod + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"Codigo", "inventario"};
-        boolean[] cadena = {true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        return data;
-    }
-
     public ndGrupo getDatosGrupo2(String cod) {
 
         String instruccion_sql = "select codigo, nombre, imagen"
@@ -8063,18 +7929,6 @@ public class SQL {
         ndBodega nodo = metodos.llenarBodega(data);
 
         return nodo;
-    }
-
-    public Object[] getInvProd(String id) {
-
-        String instruccion_sql = "select fisicoInventario from bdProductos where Codigo = '" + id + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"fisicoInventario"};
-        boolean[] cadena = {true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        return data;
     }
 
     public Object[] getHistProd(String id) {
@@ -8400,17 +8254,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getCodigosRelacionados(String prod, String condi) {
-        String colName[] = {
-            "idProducto", "codigo"
-        };
-        String origen = " bdCodigosRelacionados";
-        Object dtDatos[][] = getDatos(colName, origen, "select idProducto, codigo from "
-                + " bdCodigosRelacionados " + condi + " = '" + prod + "' ", condi + " = '" + prod + "' ");
-
-        return dtDatos;
-    }
-
     public DefaultTableModel getDatosFacturaPrefijoTabla(String factura) {
         String columNames[] = {
             "Terminal", "Cliente", "Nombre", "Total", "Fecha Factura"
@@ -8620,7 +8463,7 @@ public class SQL {
 
     public DefaultTableModel getRegistrosSubGrupos(String condicion) {
         String columNames[] = {
-            "Codigo", "Descripción"
+            "Codigo", "Nombre del subgrupo"
         };
         String colName[] = {
             "codigo", "nombre"

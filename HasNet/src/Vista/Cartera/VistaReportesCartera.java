@@ -1,5 +1,7 @@
 package Vista.Cartera;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import Vista.ReportesCarteras.VistaReporteAbonos;
@@ -187,7 +189,7 @@ public class VistaReportesCartera extends javax.swing.JInternalFrame {
     private boolean tienePermiso(boolean permiso) {
         if (!permiso) {
             cmbTiposReportes.setSelectedIndex(0);
-            metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+            ControladorAlertas.alert("No tiene permisos para esta función");
         }
         return permiso;
     }

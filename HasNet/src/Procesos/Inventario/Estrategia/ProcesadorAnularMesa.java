@@ -1,15 +1,13 @@
 package Procesos.Inventario.Estrategia;
 
+import Enums.Tablas;
 import Enums.EstadosDetalleProducto;
 import Enums.TipoProducto;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Utilidades.BaseDatos.SentenciaSql;
-import Utilidades.BaseDatos.ValidadorTabla;
-import Utilidades.Inventario.UtilidadInventario;
-import Utilidades.Utilidades;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,8 +16,8 @@ import java.util.List;
 public class ProcesadorAnularMesa extends AbstractProcesadorMovimiento {
 
     @Override
-    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional) {
-        ndProducto producto = movimiento.getProducto();
+    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String idBodega, InformacionAdicional informacionAdicional) {
+        ModeloProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
         boolean esProductoNormal = TipoProducto.GENERICO.getValue().equals(producto.getUsuario());
@@ -27,31 +25,32 @@ public class ProcesadorAnularMesa extends AbstractProcesadorMovimiento {
 
         List<Object> parametros = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE ").append(ValidadorTabla.validar(tablaUtilizada)).append(" SET ");
+        sql.append("UPDATE ").append(Tablas.INVENTARIO.getNombre()).append(" SET ");
 
         if (esProductoNormal) {
-            BigDecimal congelada = Utilidades.convertirBigDecimal(producto.getCongelada()).subtract(cantidad);
+            BigDecimal congelada = producto.getCongelada().subtract(cantidad);
             sql.append("congelada = ?");
-            parametros.add(UtilidadInventario.formatear(congelada));
-            producto.setCongelada(UtilidadInventario.formatear(congelada));
+            parametros.add(congelada);
+            producto.setCongelada(congelada);
         }
 
         if (manejaInventario) {
-            BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
+            BigDecimal fisicoInventario = producto.getFisicoInventario().add(cantidad);
             if (!parametros.isEmpty()) {
                 sql.append(", ");
             }
             sql.append("fisicoInventario = ?");
-            parametros.add(UtilidadInventario.formatear(fisicoInventario));
-            producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
+            parametros.add(fisicoInventario);
+            producto.setFisicoInventario(fisicoInventario);
         }
 
         if (parametros.isEmpty()) {
             return null;
         }
 
-        sql.append(" WHERE idSistema = ?");
+        sql.append(" WHERE idSistema = ? AND idBodega = ?");
         parametros.add(producto.getIdSistema());
+        parametros.add(idBodega);
 
         return new SentenciaSql(sql.toString(), parametros.toArray());
     }

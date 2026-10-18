@@ -2,7 +2,7 @@ package Vista.Configuraciones;
 
 import Modelo.Maestra.modeloConfiguracion;
 import Controlador.Alertas.ControladorAlertas;
-import dao.Configuraciones.DaoResoluciones;
+import Dao.Configuraciones.DaoResoluciones;
 import Modelo.Maestra.ModeloPrefijos;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -504,11 +504,11 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
         modeloConfiguracion modelo = llenarModeloSuperMaestra();
 
         if (!instancias.getSql().modificarConfiguracion(modelo)) {
-            metodos.msgError(null, "Hubo un problema al guardar los cambios de configuracion");
+            ControladorAlertas.alertFail("Hubo un problema al guardar los cambios de configuracion");
             return;
         }
 
-        metodos.msgExito(null, "Cambios guardados con éxito");
+        ControladorAlertas.alertSuccess("Cambios guardados con éxito");
         instancias.getMenu().setInstancias(instancias);
         this.dispose();
     }//GEN-LAST:event_btnGuardarSuperMaestraActionPerformed

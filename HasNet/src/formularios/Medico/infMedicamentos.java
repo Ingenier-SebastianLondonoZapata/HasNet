@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.Medico.ndMedicamentos;
 import clases.metodosGenerales;
@@ -293,11 +295,11 @@ public class infMedicamentos extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
 //            try {
             Object[] vector = {"", txtNombre.getText(), txtRecomendacion.getText(), instancias.getUsuario()};
@@ -305,15 +307,15 @@ public class infMedicamentos extends javax.swing.JInternalFrame {
             ndMedicamentos nodo = metodos.llenarMedicamentos(vector);
 
             if (!instancias.getSql().agregarMedicamento(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar el medicamento");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el medicamento");
                 return;
             }
             txtNombre.getText();
-            metodos.msgExito(this, "Medicamento registrado con éxito");
+            ControladorAlertas.alertSuccess("Medicamento registrado con éxito");
 
             btnNuevoActionPerformed(evt);
 //            } catch (Exception e) {
-//                metodos.msgError(this, "Hubo un problema al guardar la medicamento");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar la medicamento");
 //            }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -328,22 +330,22 @@ public class infMedicamentos extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             Object[] vector = {txtCodigo.getText(), txtNombre.getText(), txtRecomendacion.getText(), instancias.getUsuario(),};
 
             ndMedicamentos nodo = metodos.llenarMedicamentos(vector);
 
             if (!instancias.getSql().modificarMedicamento(nodo)) {
-                metodos.msgError(this, "Hubo un problema al modificar el medicamento");
+                ControladorAlertas.alertFail("Hubo un problema al modificar el medicamento");
                 return;
             }
 
-            metodos.msgExito(this, "Medicamento modificado con éxito");
+            ControladorAlertas.alertSuccess("Medicamento modificado con éxito");
 
             btnNuevoActionPerformed(evt);
         }

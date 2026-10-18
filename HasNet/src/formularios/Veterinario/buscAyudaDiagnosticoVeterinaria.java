@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.KeyEvent;
@@ -222,13 +224,13 @@ public class buscAyudaDiagnosticoVeterinaria extends javax.swing.JDialog {
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         String aux = instancias.getSql().getDatosAyudaDiagnostico(txtId.getText());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Desea agregar la ayuda?") == 0) {
+            if (ControladorAlertas.option("¿Desea agregar la ayuda?")) {
                 if (!instancias.getSql().agregarAyudaDiagnostico(txtId.getText().toUpperCase())) {
-                    metodos.msgError(null, "Error al guardar la ayuda");
+                    ControladorAlertas.alertFail("Error al guardar la ayuda");
                     return;
                 }
 
-                metodos.msgExito(null, "Ayuda ingresada con exito");
+                ControladorAlertas.alertSuccess("Ayuda ingresada con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
@@ -627,16 +629,16 @@ public class infIncapacidad extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             String id = "INC-" + instancias.getSql().getNumConsecutivo("INC")[0];
             ndIncapacidad nodo = instancias.getSql().getDatosIncapacidad(id);
 
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La incapacidad ya existe");
+                ControladorAlertas.alertFail("La incapacidad ya existe");
                 txtId.requestFocus();
                 return;
             }
@@ -651,20 +653,20 @@ public class infIncapacidad extends javax.swing.JInternalFrame {
             nodo = metodos.llenarIncapacidad(vector);
 
             if (!instancias.getSql().agregarIncapacidad(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la Incapacidad");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la Incapacidad");
                 return;
             }
 
             //CAMBIAR CONSECUTIVO INCAPACIDAD
             if (!instancias.getSql().aumentarConsecutivo("INC", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("INC")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la incapacidad");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la incapacidad");
             }
 
             txtId.setText("INC-" + instancias.getSql().getNumConsecutivo("INC")[0]);
 
             limpiar();
 
-            metodos.msgExito(this, "Incapacidad registrado con éxito");
+            ControladorAlertas.alertSuccess("Incapacidad registrado con éxito");
 
             ndHistoriaClinica historia = instancias.getSql().getDatosHistClinica(historiaClinica);
             String con[] = historia.getConsecutivos().split("&");
@@ -672,7 +674,7 @@ public class infIncapacidad extends javax.swing.JInternalFrame {
             aux++;
             instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + con[1] + "&" + con[2] + "&" + aux);
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String tipo = "";
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";

@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -247,12 +249,12 @@ public class buscOcupaciones extends javax.swing.JDialog {
 
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         System.out.println("descripcion " + txtDescripcion.getText());
-        if (metodos.msgPregunta(null, "¿Agregar la ocupación?") == 0) {
+        if (ControladorAlertas.option("¿Agregar la ocupación?")) {
             if (!instancias.getSql().agregarOcupacion(txtDescripcion.getText())) {
-                metodos.msgError(null, "Error al ingresar la ocupación");
+                ControladorAlertas.alertFail("Error al ingresar la ocupación");
                 return;
             }
-            metodos.msgExito(null, "Ocupación ingresada con exito");
+            ControladorAlertas.alertSuccess("Ocupación ingresada con exito");
             cargarOcupaciones();
             noEncontrado(txtDescripcion.getText());
             btnEsteActionPerformed(evt);

@@ -1,5 +1,7 @@
 package configuracion;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Vista.BarraProceso.vistaBarraProceso;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -172,8 +174,8 @@ public class msgSalir extends javax.swing.JDialog {
                 adentro = true;
             }
         } catch (Exception e) {
-            metodos.msgError(null, "No se reconoce la base de datos");
-            metodos.msgError(null, "El programá se cerrará");
+            ControladorAlertas.alertFail("No se reconoce la base de datos");
+            ControladorAlertas.alertFail("El programá se cerrará");
             System.exit(0);
         }
 
@@ -184,7 +186,7 @@ public class msgSalir extends javax.swing.JDialog {
 
         if (preguntar) {
 
-            if (metodos.msgPregunta(null, "¿Generar copia de base de datos?") == 0) {
+            if (ControladorAlertas.option("¿Generar copia de base de datos?")) {
 
                 int num = Integer.parseInt(instancias.getSql().getNumConsecutivo("MULTI")[0].toString());
                 if (num > 1) {

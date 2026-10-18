@@ -1,5 +1,7 @@
 package configuracion;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.metodosGenerales;
 import java.awt.event.KeyEvent;
 
@@ -132,7 +134,7 @@ public class msgIngresar1 extends javax.swing.JDialog {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         if (txtTexto.getText().equals("")) {
-            metodos.msgError(null, "Debe ingresar el consecutivo");
+            ControladorAlertas.alertFail("Debe ingresar el consecutivo");
             return;
         }
 

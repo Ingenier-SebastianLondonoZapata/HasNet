@@ -1,11 +1,17 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import formularios.Medico.*;
 import clases.Instancias;
 import clases.Medico.ndEpsPrecargados;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -14,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 
 public class infRips extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -635,21 +642,21 @@ public class infRips extends javax.swing.JInternalFrame {
         String idPrestardorServicio = datosPrestador[0][3].toString();
 
         if (razonSocialPrestadorServicios.length() > 60) {
-            metodos.msgError(this, "Por favor verifique el nombre del prestador de servicio para poder continuar.");
+            ControladorAlertas.alertFail("Por favor verifique el nombre del prestador de servicio para poder continuar.");
             return;
         }
 
         if (codPrestadorServicios.length() < 10 || codPrestadorServicios.length() > 10) {
-            metodos.msgError(this, "Por favor verifique el codigo del prestador de servicio para poder continuar.");
+            ControladorAlertas.alertFail("Por favor verifique el codigo del prestador de servicio para poder continuar.");
             return;
         }
 
         if (tipoPrestadorServicio.equals("") || tipoPrestadorServicio.length() != 2) {
-            metodos.msgError(this, "Por favor verifique el tipo del prestador de servicio para poder continuar.");
+            ControladorAlertas.alertFail("Por favor verifique el tipo del prestador de servicio para poder continuar.");
             return;
         }
         if (idPrestardorServicio.equals("")) {
-            metodos.msgError(this, "Por favor id del prestador de servicio para poder continuar.");
+            ControladorAlertas.alertFail("Por favor id del prestador de servicio para poder continuar.");
             return;
         }
 
@@ -690,7 +697,7 @@ public class infRips extends javax.swing.JInternalFrame {
                 //Si el nombre de la entidad administradora (eps) es mayor a 30 caracteres.
                 int idEntidadAdministradora = datos[i][8].toString().length();
                 if (idEntidadAdministradora > 6 && mensajeId == 0) {
-                    metodos.msgError(this, "Tiene un ERROR en el id " + datos[i][8] + " nombre: " + datos[i][9] + ", debe tener 6 caracteres, ARCHIVO AF");
+                    ControladorAlertas.alertFail("Tiene un ERROR en el id " + datos[i][8] + " nombre: " + datos[i][9] + ", debe tener 6 caracteres, ARCHIVO AF");
                     mensajeId++;
                 }
                 int longNombreEntidadAdministradora = datos[i][9].toString().length();
@@ -738,13 +745,13 @@ public class infRips extends javax.swing.JInternalFrame {
                 int mensajeIdEntidad = 0;
                 for (int i = 0; i < cantUs; i++) {
                     if (datos3[i][0].toString().length() != 2 && mensajeId == 0) {
-                        metodos.msgError(this, "Tiene un ERROR en el TIPO ID, del id: " + datos[i][1] + ", debe tener 2 caracteres, ARCHIVO US");
+                        ControladorAlertas.alertFail("Tiene un ERROR en el TIPO ID, del id: " + datos[i][1] + ", debe tener 2 caracteres, ARCHIVO US");
                         mensajeId++;
                     }
 
                     int idEntidadAdministradora = datos3[i][2].toString().length();
                     if (idEntidadAdministradora > 6 && mensajeIdEntidad == 0) {
-                        metodos.msgError(this, "Tiene un ERROR en el codigo entidad " + datos3[i][2] + ", debe tener 6 caracteres, ARCHIVO US");
+                        ControladorAlertas.alertFail("Tiene un ERROR en el codigo entidad " + datos3[i][2] + ", debe tener 6 caracteres, ARCHIVO US");
                         mensajeIdEntidad++;
                     }
 
@@ -786,7 +793,7 @@ public class infRips extends javax.swing.JInternalFrame {
             int mensajeId = 0;
             for (int i = 0; i < cantAd; i++) {
                 if ((datos[i][2].toString().length() != 2 || datos[i][2].toString().equals("")) && mensajeId == 0) {
-                    metodos.msgError(this, "Tiene un ERROR en el concepto " + datos[i][2] + ", ES DE OBLIGACIÓN REVISARLO, ARCHIVO AD");
+                    ControladorAlertas.alertFail("Tiene un ERROR en el concepto " + datos[i][2] + ", ES DE OBLIGACIÓN REVISARLO, ARCHIVO AD");
                     mensajeId++;
 
                 }
@@ -827,7 +834,7 @@ public class infRips extends javax.swing.JInternalFrame {
             for (int i = 0; i < datos.length; i++) {
                 datos[i][4] = metodos.fecha(datos[i][4].toString());
                 if (datos[i][2].toString().length() != 2 && mensajeId == 0) {
-                    metodos.msgError(this, "Tiene un ERROR en el tipo id, del id: " + datos[i][3] + ", debe tener 2 caracteres, ARCHIVO AC");
+                    ControladorAlertas.alertFail("Tiene un ERROR en el tipo id, del id: " + datos[i][3] + ", debe tener 2 caracteres, ARCHIVO AC");
                     mensajeId++;
                 }
             }
@@ -860,8 +867,7 @@ public class infRips extends javax.swing.JInternalFrame {
             metodosGenerales.generarArchivoPlano("rips/CT" + mes + "" + anho + ".txt", datos.replace("null", ""));
         }
 
-        metodos.msgExito(this,
-                "Rips Generados con exito");
+        ControladorAlertas.alertSuccess("Rips Generados con exito");
 
     }//GEN-LAST:event_jButton1ActionPerformed
     private String condicion() {
@@ -965,12 +971,12 @@ public class infRips extends javax.swing.JInternalFrame {
 
     private void txtId1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtId1KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(txtId1.getText(), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtId1.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getCodigo() != null) {
                 for (int i = 0; i < jTable1.getRowCount(); i++) {
                     if (jTable1.getValueAt(i, 0).equals(nodo.getCodigo())) {
                         txtId1.setText("");
-                        metodos.msgError(this, "Este procedimiento ya esta cargado");
+                        ControladorAlertas.alertFail("Este procedimiento ya esta cargado");
                         return;
                     }
                 }
@@ -1014,7 +1020,7 @@ public class infRips extends javax.swing.JInternalFrame {
                     subtotal = big.getBigDecimal(nodo.getL1()).multiply(big.getBigDecimal(cantidad));
                     ((DefaultTableModel) jTable1.getModel()).addRow(new Object[]{nodo.getCodigo(), nodo.getDescripcion(), cantidad, big.setMoneda(subtotal), big.setMoneda(copago), big.setMoneda(subtotal.subtract(copago))});
                 } else {
-                    metodos.msgError(this, "No se a encontrado ninguna orden en este rango de fecha asociado al procedimiento " + nodo.getCodigo());
+                    ControladorAlertas.alertFail("No se a encontrado ninguna orden en este rango de fecha asociado al procedimiento " + nodo.getCodigo());
                 }
                 txtId1.setText("");
             } else {
@@ -1037,7 +1043,7 @@ public class infRips extends javax.swing.JInternalFrame {
                     int f = jTable2.getSelectedRow();
                     String codigo = jTable2.getValueAt(f, 4).toString();
                     int fPro = codigoTabla(codigo);
-                    ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
                     BigDecimal copago = big.getBigDecimal(jTable2.getValueAt(f, 11).toString());
                     BigDecimal valorUnidad = big.getBigDecimal(nodo.getL1());
 
@@ -1053,7 +1059,7 @@ public class infRips extends javax.swing.JInternalFrame {
                     int f = jTable2.getSelectedRow();
                     String codigo = jTable2.getValueAt(f, 4).toString();
                     int fPro = codigoTabla(codigo);
-                    ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
                     BigDecimal copago = big.getBigDecimal(jTable2.getValueAt(f, 11).toString());
                     BigDecimal valorUnidad = big.getBigDecimal(nodo.getL1());
 
@@ -1153,7 +1159,7 @@ public class infRips extends javax.swing.JInternalFrame {
             }
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 

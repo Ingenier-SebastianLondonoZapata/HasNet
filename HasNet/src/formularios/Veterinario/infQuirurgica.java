@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import clases.Medico.ndFormulaMedica;
@@ -719,28 +721,28 @@ public class infQuirurgica extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "" + instancias.getSql().getNumConsecutivo("QUIR")[0];
 
             if (!instancias.getSql().agregarQuirurgica(id, instancias.getHistoria().getConsulta(), metodosGenerales.fecha(),
                     instancias.getUsuario(), txtPrescripcion.getText(), txtObservacion.getText())) {
-                metodos.msgError(this, "Hubo un problema al guardar la historia quirurgica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la historia quirurgica");
                 return;
             }
 
             //CAMBIAR CONSECUTIVO FORMULA MEDICA
             instancias.getSql().aumentarConsecutivo("QUIR", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("QUIR")[0]) + 1);
 
-            metodos.msgExito(this, "Quirurgica registrada con éxito");
+            ControladorAlertas.alertSuccess("Quirurgica registrada con éxito");
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String tipo = "";
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
@@ -819,7 +821,7 @@ public class infQuirurgica extends javax.swing.JInternalFrame {
 //            modelo.removeRow(fila);
 //
 //        } else {
-//            metodos.msgAdvertencia(this, "Seleccione un item");
+//            ControladorAlertas.alert("Seleccione un item");
 //        }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -954,7 +956,7 @@ public class infQuirurgica extends javax.swing.JInternalFrame {
 //        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 //            if (txtId.getText().equals("")) {
 //                if (txtNombre.getText().equals("")) {
-//                    metodos.msgError(null, "Debe seleccionar un tercero primero");
+//                    ControladorAlertas.alertFail("Debe seleccionar un tercero primero");
 //                    return;
 //                } else {
 //                    infBuscadorCliente buscador = new infBuscadorCliente();

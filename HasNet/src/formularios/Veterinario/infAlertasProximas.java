@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
@@ -226,29 +228,29 @@ public class infAlertasProximas extends javax.swing.JInternalFrame {
         }
 
         if (entro) {
-            if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
                 for (int i = 0; i < tblRegistros.getRowCount(); i++) {
                     if (tblRegistros.getValueAt(i, 8).equals(true)) {
                         String id = tblRegistros.getValueAt(i, 9).toString();
 
                         if (cmbTipo.getSelectedIndex() == 1) {
                             if (!instancias.getSql().modificarGestionVacunacion(id, true, metodos.fechaConsulta(metodosGenerales.fechaHora()))) {
-                                metodos.msgError(null, "Error al modificar la alerta: " + id);
+                                ControladorAlertas.alertFail("Error al modificar la alerta: " + id);
                                 return;
                             }
                         } else {
                             if (!instancias.getSql().modificarGestionPeluqueria(id, true, metodos.fechaConsulta(metodosGenerales.fechaHora()))) {
-                                metodos.msgError(null, "Error al modificar la alerta: " + id);
+                                ControladorAlertas.alertFail("Error al modificar la alerta: " + id);
                                 return;
                             }
                         }
                     }
                 }
-                metodos.msgExito(this, "Modificado con exito");
+                ControladorAlertas.alertSuccess("Modificado con exito");
                 cargarTabla();
             }
         } else {
-            metodos.msgError(this, "No ha seleccionado ninguno");
+            ControladorAlertas.alertFail("No ha seleccionado ninguno");
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 

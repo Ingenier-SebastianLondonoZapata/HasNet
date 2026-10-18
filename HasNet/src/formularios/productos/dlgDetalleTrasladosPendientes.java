@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.productos.*;
 import formularios.Parqueadero.*;
 import clases.Instancias;
@@ -427,7 +429,7 @@ public class dlgDetalleTrasladosPendientes extends javax.swing.JDialog {
         }
 
         if (contador <= 0) {
-            metodos.msgError(null, "Debe seleccionar almenos un producto para facturar");
+            ControladorAlertas.alertFail("Debe seleccionar almenos un producto para facturar");
             return;
         }
 

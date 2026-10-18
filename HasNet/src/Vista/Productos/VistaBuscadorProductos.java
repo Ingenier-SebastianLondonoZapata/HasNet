@@ -1,39 +1,44 @@
 package Vista.Productos;
 
+import Dao.Productos.DaoProducto;
+
+import Procesos.Inventario.Dao.DaoInventario;
+import Utilidades.Utilidades;
+import Vista.Ventas.VistaFactura;
 import clases.IconCellRenderer;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import com.mxrck.autocompleter.TextAutoCompleter;
-import Vista.Ventas.VistaFactura;
 import formularios.productos.buscGrupos;
 import formularios.productos.buscProductos2;
 import formularios.productos.nuevoProducto;
 import formularios.productos.verLogo;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Vector;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Vector;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 
 public final class VistaBuscadorProductos extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     DefaultTableModel modelo;
     TableRowSorter modeloOrdenado;
     Instancias instancias;
-    
+
     private String TIPO_BUSQUEDA;
-    
+
     private String opc;
     private VistaFactura factura;
     private VistaIngreso ingreso;
@@ -185,14 +190,15 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             pvp2 = base + ".L1";
         }
 
-        String from = " (" + base + " LEFT JOIN bdultimoponderado ON ((bdultimoponderado.producto = " + base + ".idSistema))) " + consulta;
+        String from = " (" + base + " LEFT JOIN bdultimoponderado ON ((bdultimoponderado.producto = " + base + ".idSistema))"
+                + DaoInventario.unirInventario(base) + ") " + consulta;
 
         String sentenciaSQL1 = " SELECT " + base + ".Codigo AS Codigo, " + base + ".Descripcion AS Descripcion, "
-                + "" + base + ".referencia AS referencia, " + pvp1 + ", " + base + ".fisicoInventario AS inventario, " + base + ".ubicacion1 AS ubicacion1, false as sel, "
+                + "" + base + ".referencia AS referencia, " + pvp1 + ", " + DaoInventario.FISICO_COMO_TEXTO + " AS inventario, " + base + ".ubicacion1 AS ubicacion1, false as sel, "
                 + "'' AS campoVacio, " + base + ".grupo AS Grupo, bdultimoponderado.ultimoCosto AS ultimoCosto, " + base + ".idSistema AS idSistema, '' AS campoVacio1, "
-                + "" + base + ".Usuario AS Usuario, " + base + ".manejaInventario AS manejaInventario, " + base + ".plu2 AS plu2, " + base + ".indVentas AS indVentas, "
+                + "" + base + ".Usuario AS Usuario, " + base + ".manejaInventario AS manejaInventario, " + "EXISTS(SELECT 1 FROM bdProductosListas l WHERE l.idSistema = " + base + ".idSistema AND l.plu = 1) AS plu2, " + base + ".indVentas AS indVentas, "
                 + "" + base + ".descripcionLarga AS descripcionLarga FROM " + from + "GROUP BY " + base + ".Codigo, " + base + ".Descripcion, " + base + ".referencia, " + pvp2 + ", "
-                + "" + base + ".fisicoInventario, " + base + ".ubicacion1, campoVacio, Grupo, ultimoCosto, idSistema, campoVacio1, Usuario, manejaInventario, plu2, "
+                + "bdinventario.fisicoInventario, " + base + ".ubicacion1, campoVacio, Grupo, ultimoCosto, idSistema, campoVacio1, Usuario, manejaInventario, plu2, "
                 + "indVentas, descripcionLarga ORDER BY Descripcion ";
 
         DefaultTableModel modelo = instancias.getSql().getRegistrosProductos(instancias.isPvpConIva(), sentenciaSQL1, from);
@@ -273,12 +279,8 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         icono1 = new ImageIcon(fot1.getImage().getScaledInstance(40, 20, Image.SCALE_DEFAULT));
 
         for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-
-            if (tblRegistros.getValueAt(i, 4) != null) {
-                if (tblRegistros.getValueAt(i, 4).equals(",00")) {
-                    tblRegistros.setValueAt("0", i, 4);
-                }
-            }
+            String cantidad = tblRegistros.getValueAt(i, 4).toString();
+            tblRegistros.setValueAt(Utilidades.formatearCantidadVista(cantidad), i, 4);
 
             if (tblRegistros.getValueAt(i, 12) != null) {
                 if (tblRegistros.getValueAt(i, 12).equals("FACTURA")) {
@@ -727,6 +729,10 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                         this.dispose();
                         instancias.getProductos().cargarProductos(cantidad);
                         break;
+                    case "inventarioInicial":
+                        this.dispose();
+                        instancias.getInventarioInicial().cargarProductos(cantidad);
+                        break;
                     case "NotaDebito":
                         this.dispose();
                         instancias.getNd().cargarProductos1(cantidad);
@@ -924,7 +930,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     private void btnEste2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste2ActionPerformed
         buscProductos2 buscar = new buscProductos2(null, rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        Object[][] datos = instancias.getSql().getDatosProductosUnificados(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10).toString());
+        Object[][] datos = daoProducto.obtenerProductosUnificados(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10).toString());
         buscar.setInstancia(instancias, datos);
         buscar.setBuscador(this);
         buscar.show();

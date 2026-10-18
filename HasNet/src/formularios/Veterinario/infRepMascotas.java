@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.terceros.buscClientes;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
@@ -345,7 +347,7 @@ public class infRepMascotas extends javax.swing.JInternalFrame {
 
     private void btnAggProd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProd1ActionPerformed
         if (yaEsta(cmbEspecie1, cmbEspecie.getSelectedItem().toString())) {
-            metodos.msgError(null, "Ya cargo esta especie");
+            ControladorAlertas.alertFail("Ya cargo esta especie");
         } else {
             cmbEspecie1.addItem(cmbEspecie.getSelectedItem());
             cmbEspecie1.setSelectedItem(cmbEspecie.getSelectedItem());
@@ -358,11 +360,11 @@ public class infRepMascotas extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbClientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbClientes.addItem(txtCliente.getText());
                 cmbClientes.setSelectedItem(txtCliente.getText());
@@ -385,7 +387,7 @@ public class infRepMascotas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemProdActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
             int x = 0;
 

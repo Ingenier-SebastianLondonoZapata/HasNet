@@ -1,10 +1,16 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.productos.buscGrupos;
 import Vista.Productos.VistaBuscadorProductos;
@@ -15,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
 public class infIndicadoresVentas extends javax.swing.JPanel {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -540,7 +547,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     }//GEN-LAST:event_rdPorVendedorActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
 
             while (tblResultados.getRowCount() > 0) {
                 modelo.removeRow(0);
@@ -1033,7 +1040,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnGuardarKeyReleased
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
 
             if (rdGeneral.isSelected()) {
                 String sql = "";
@@ -1151,7 +1158,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
 
     private void btnRemGrupoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemGrupoActionPerformed
         if (cmbGrupo.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ningún grupo seleccioando");
+            ControladorAlertas.alertFail("No hay ningún grupo seleccioando");
             return;
         }
         cmbGrupo.removeItem(cmbGrupo.getSelectedItem());
@@ -1170,7 +1177,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
 
         } else {
             if (yaEsta(cmbGrupo, txtCodGrupo.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este grupo");
+                ControladorAlertas.alert("Ya cargo este grupo");
             } else {
                 cmbGrupo.addItem(txtCodGrupo.getText());
                 cmbGrupo.setSelectedItem(txtCodGrupo.getText());
@@ -1195,7 +1202,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
 
     private void btnRemGrupo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemGrupo1ActionPerformed
         if (cmbFiltro1.getItemCount() == 0) {
-            metodos.msgError(null, "No ha cargado nada");
+            ControladorAlertas.alertFail("No ha cargado nada");
             return;
         }
         cmbFiltro1.removeItem(cmbFiltro1.getSelectedItem());
@@ -1204,7 +1211,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     private void btnAggFiltro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggFiltro1ActionPerformed
         if (rdGeneral.isSelected() || rdPorMes.isSelected()) {
             if (yaEsta1(cmbFiltro1, cmbFiltro.getSelectedItem().toString())) {
-                metodos.msgAdvertencia(null, "Ya se cargo este mes");
+                ControladorAlertas.alert("Ya se cargo este mes");
             } else {
                 int num = cmbFiltro.getSelectedIndex() + 1;
                 cmbFiltro1.addItem(num);
@@ -1212,7 +1219,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
             }
         } else {
             if (yaEsta(cmbFiltro1, cmbFiltro.getSelectedItem().toString())) {
-                metodos.msgAdvertencia(null, "Ya se cargo este registro");
+                ControladorAlertas.alert("Ya se cargo este registro");
             } else {
                 cmbFiltro1.addItem(cmbFiltro.getSelectedItem());
                 cmbFiltro1.setSelectedItem(cmbFiltro.getSelectedItem());
@@ -1348,7 +1355,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     public void cargarGrupo(String codigo) {
 
         if (yaEsta(cmbGrupo, codigo)) {
-            metodos.msgAdvertencia(null, "Ya cargo este grupo");
+            ControladorAlertas.alert("Ya cargo este grupo");
             txtCodGrupo.setText("");
             return;
         }
@@ -1367,10 +1374,10 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     public void cargarProducto(String nit) {
 
         if (!nit.equals("")) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(nit, "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(nit, enumBodegas.ID_BODEGA_PRINCIPAL);
 
             if (yaEsta(cmbGrupo, nodo.getIdSistema())) {
-                metodos.msgAdvertencia(null, "Ya cargo este producto");
+                ControladorAlertas.alert("Ya cargo este producto");
                 txtCodGrupo.setText("");
                 return;
             }

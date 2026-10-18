@@ -19,7 +19,7 @@ public final class AlertList extends javax.swing.JDialog {
         initComponents();
 
         this.setLocationRelativeTo(null);
-        lbMensaje.setText(message);
+        AjustadorTextoAlerta.ajustar(lbMensaje, message, 560, 58);
         tblDetalles.getColumnModel().getColumn(0).setCellRenderer(new CortarLineaTabla());
 
         if (!conRespuesta) {
@@ -38,10 +38,9 @@ public final class AlertList extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         btnAceptar = new javax.swing.JButton();
         btnDevolver = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lbMensaje = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblDetalles = new javax.swing.JTable();
+        lbMensaje = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -99,30 +98,6 @@ public final class AlertList extends javax.swing.JDialog {
                 .addGap(15, 15, 15))
         );
 
-        jScrollPane1.setBorder(null);
-
-        lbMensaje.setColumns(20);
-        lbMensaje.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        lbMensaje.setLineWrap(true);
-        lbMensaje.setRows(1);
-        lbMensaje.setText("Mensaje de la alerta");
-        lbMensaje.setWrapStyleWord(true);
-        lbMensaje.setBorder(null);
-        lbMensaje.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        lbMensaje.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        lbMensaje.setEnabled(false);
-        lbMensaje.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lbMensajeMouseClicked(evt);
-            }
-        });
-        lbMensaje.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                lbMensajeKeyReleased(evt);
-            }
-        });
-        jScrollPane1.setViewportView(lbMensaje);
-
         tblDetalles.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         tblDetalles.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -143,6 +118,15 @@ public final class AlertList extends javax.swing.JDialog {
         tblDetalles.setRowHeight(29);
         jScrollPane2.setViewportView(tblDetalles);
 
+        lbMensaje.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
+        lbMensaje.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbMensaje.setText("Message alert.");
+        lbMensaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                lbMensajeKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -152,17 +136,17 @@ public final class AlertList extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
@@ -194,22 +178,14 @@ public final class AlertList extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jPanel1KeyReleased
 
-    private void lbMensajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbMensajeMouseClicked
-        if (!btnDevolver.isVisible()) {
-            this.dispose();
-        }
-    }//GEN-LAST:event_lbMensajeMouseClicked
-
-    private void lbMensajeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbMensajeKeyReleased
-        if (!btnDevolver.isVisible()) {
-            this.dispose();
-        }
-    }//GEN-LAST:event_lbMensajeKeyReleased
-
     private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
         respuesta = false;
         this.dispose();
     }//GEN-LAST:event_btnDevolverActionPerformed
+
+    private void lbMensajeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbMensajeKeyReleased
+        this.dispose();
+    }//GEN-LAST:event_lbMensajeKeyReleased
 
     public void cargarListadoDetalles(List<Object> listado) {
         DefaultTableModel modelo = (DefaultTableModel) tblDetalles.getModel();
@@ -235,13 +211,13 @@ public final class AlertList extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BigAlert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlertList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BigAlert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlertList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BigAlert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlertList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BigAlert.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlertList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -307,9 +283,8 @@ public final class AlertList extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea lbMensaje;
+    private javax.swing.JLabel lbMensaje;
     private javax.swing.JTable tblDetalles;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,5 +1,7 @@
 package formularios;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -4756,17 +4758,17 @@ public class infUsuarios extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             grupo.setSelectedIndex(0);
             return;
         } else if (!txtContra.getText().equals(txtContra2.getText())) {
-            metodos.msgAdvertencia(null, "Las contraseñas no coinciden");
+            ControladorAlertas.alert("Las contraseñas no coinciden");
             txtContra.requestFocus();
             grupo.setSelectedIndex(0);
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             Object[] vector = {txtNombre.getText(), txtUsuario.getText(), txtContra.getText(),
                 siFacturas.isSelected(), siCongeladas.isSelected(), siCotizaciones.isSelected(), siPlanSepares.isSelected(), siCreditos.isSelected(),
@@ -4792,7 +4794,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
             ndUsuario nodo = metodos.llenarUsuario(vector);
 
             if (!instancias.getSql().modificarUsuario(nodo)) {
-                metodos.msgError(null, "Error al modificar el usuario");
+                ControladorAlertas.alertFail("Error al modificar el usuario");
                 return;
             }
 
@@ -4805,7 +4807,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
 
             }
 
-            metodos.msgExito(null, "Usuario modificado con éxito");
+            ControladorAlertas.alertSuccess("Usuario modificado con éxito");
 
             btnNuevoActionPerformed(evt);
         }
@@ -4816,22 +4818,22 @@ public class infUsuarios extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             grupo.setSelectedIndex(0);
             return;
         } else if (!txtContra.getText().equals(txtContra2.getText())) {
-            metodos.msgAdvertencia(null, "Las contraseñas no coinciden");
+            ControladorAlertas.alert("Las contraseñas no coinciden");
             txtContra.requestFocus();
             grupo.setSelectedIndex(0);
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             ndUsuario nodo = instancias.getSql().getDatosUsuario(txtUsuario.getText());
 
             if (nodo.getUsuario() != null) {
-                metodos.msgError(null, "El usuario ya existe");
+                ControladorAlertas.alertFail("El usuario ya existe");
                 txtUsuario.requestFocus();
                 return;
             }
@@ -4859,7 +4861,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
             nodo = metodos.llenarUsuario(vector);
 
             if (!instancias.getSql().agregarUsuario(nodo)) {
-                metodos.msgError(null, "Hubo un problema al guardar el usuario");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el usuario");
                 return;
             }
             if (!origen.equals("")) {
@@ -4872,7 +4874,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
 
             }
 
-            metodos.msgExito(null, "Usuario registrado con éxito");
+            ControladorAlertas.alertSuccess("Usuario registrado con éxito");
 
             btnNuevoActionPerformed(evt);
         }
@@ -5136,7 +5138,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                 this.repaint();
 
             } catch (Exception ex) {
-                metodos.msgError(this, "Hubo un error al cargar el archivo");
+                ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             }
 
         }
@@ -5645,7 +5647,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
     public void cargarUsuario(String usuario) {
 
         if (usuario.equals("")) {
-            metodos.msgAdvertencia(null, "Debe ingresar el usuario");
+            ControladorAlertas.alert("Debe ingresar el usuario");
         } else {
 
             ndUsuario nodo = instancias.getSql().getDatosUsuario(usuario);
@@ -5764,7 +5766,7 @@ public class infUsuarios extends javax.swing.JInternalFrame {
                 return;
             }
 
-            metodos.msgAdvertenciaAjustado(null, "El usuario no existe");
+            ControladorAlertas.alert("El usuario no existe");
         }
     }
 

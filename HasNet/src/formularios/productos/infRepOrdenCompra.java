@@ -1,12 +1,18 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Vista.Productos.VistaBuscadorProductos;
-import dao.InicioSesion.DaoInicioSesion;
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
@@ -15,6 +21,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 
 public class infRepOrdenCompra extends javax.swing.JPanel {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
     metodosGenerales metodos = new metodosGenerales();
@@ -563,11 +570,11 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtGrupo.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un grupo");
+            ControladorAlertas.alertFail("Cargue primero un grupo");
         } else {
 
             if (yaEsta(cmbCientes, txtGrupo.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este grupo");
+                ControladorAlertas.alert("Ya cargo este grupo");
             } else {
                 cmbCientes.addItem(txtGrupo.getText());
                 cmbCientes.setSelectedItem(txtGrupo.getText());
@@ -583,10 +590,10 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
 
     private void btnAggProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProvActionPerformed
         if (txtProveedor.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un proveedor");
+            ControladorAlertas.alertFail("Cargue primero un proveedor");
         } else {
             if (yaEsta(cmbProveedor, txtProveedor.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este proveedor");
+                ControladorAlertas.alert("Ya cargo este proveedor");
             } else {
                 cmbProveedor.addItem(txtProveedor.getText());
                 cmbProveedor.setSelectedItem(txtProveedor.getText());
@@ -601,17 +608,12 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
 
     private void btnAggProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProdActionPerformed
         if (txtCodigo.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un producto");
+            ControladorAlertas.alertFail("Cargue primero un producto");
         } else {
-            ndProducto nodo = null;
+            ModeloProducto nodo = null;
 
             String CodigoProd = "", codigo = txtCodigo.getText();
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -622,7 +624,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
             } else {
                 txtCodigo.setText(nodo.getIdSistema());
                 if (yaEsta(cmbProducto, txtCodigo.getText())) {
-                    metodos.msgAdvertencia(null, "Ya cargo este producto");
+                    ControladorAlertas.alert("Ya cargo este producto");
                 } else {
                     cmbProducto.addItem(txtCodigo.getText());
                     cmbProducto.setSelectedItem(txtCodigo.getText());
@@ -640,7 +642,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
     private void btnAggTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggTerminalActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -649,7 +651,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ninguna terminal seleccioanda");
+            ControladorAlertas.alertFail("No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
@@ -657,7 +659,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (instancias.getUsuario().equals("ADMIN")) {
@@ -759,7 +761,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
             return;
         }
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(nit, "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(nit, enumBodegas.ID_BODEGA_PRINCIPAL);
 
         if (nodo.getCodigo() != null) {
             txtCodigo.setText(nodo.getIdSistema());

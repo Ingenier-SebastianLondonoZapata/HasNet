@@ -1,5 +1,11 @@
 package formularios.Oftalmologia;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Medico.ndConsultaClinica;
@@ -8,7 +14,7 @@ import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndMedicamentos;
 import clases.Medico.ndTablaFormula;
 import clases.Oftalmologia.ndTablaFormulaOf;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndFormulaVeterinaria;
 import clases.big;
@@ -25,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -643,7 +650,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblFormula.getRowCount() < 1) {
-            metodos.msgError(this, "Falta agregar la prescripcion y la posologia");
+            ControladorAlertas.alertFail("Falta agregar la prescripcion y la posologia");
             return;
         }
 
@@ -652,18 +659,18 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
         Object[] campos2 = {txtHistoria, txtFecha};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "FORMOF-" + instancias.getSql().getNumConsecutivo("FORMOF")[0];
             ndFormulaVeterinaria nodo = instancias.getSql().getDatosFormulaMedicaVeterinaria(id);
 
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La Formula Medica ya existe");
+                ControladorAlertas.alertFail("La Formula Medica ya existe");
                 txtId.requestFocus();
                 return;
             }
@@ -672,7 +679,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
 
             nodo = metodos.llenarFormulaVeterinaria(vector);
             if (!instancias.getSql().agregarFormulaMedicaOf(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la Formula Medica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la Formula Medica");
                 return;
             }
 
@@ -686,7 +693,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
                 ndTablaFormulaOf nodo2 = metodos.llenarTablaFormulaOf(vector2);
                 aux2 = aux2 + "Prescripcion: " + tblFormula.getValueAt(i, 0).toString() + "\tPosologia: " + tblFormula.getValueAt(i, 1).toString() + "\tMedida:" + tblFormula.getValueAt(i, 3).toString() + "\n";
                 if (!instancias.getSql().agregarTablaFormulaOf(nodo2)) {
-                    metodos.msgError(this, "Hubo un problema al guardar el TablaFormula");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar el TablaFormula");
                     return;
                 }
             }
@@ -694,14 +701,14 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
 
             //CAMBIAR CONSECUTIVO FORMULA MEDICA
             if (!instancias.getSql().aumentarConsecutivo("FORMOF", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORMOF")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la formula medica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la formula medica");
             }
 
             txtId.setText("FORMOF-" + instancias.getSql().getNumConsecutivo("FORMOF")[0]);
 
             limpiar();
 
-            metodos.msgExito(this, "Formula medica registrado con éxito");
+            ControladorAlertas.alertSuccess("Formula medica registrado con éxito");
 
 //            System.out.println("historia " + txtHistoria.getText());
 //            ndHistoriaClinica historia = instancias.getSql().getDatosHistClinica1(txtHistoria.getText());
@@ -712,7 +719,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
 //            int aux = Integer.parseInt(con[2]);
 //            aux++;
 //            instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + con[1] + "&" + aux + "&" + con[3]);
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteOftalmologia(instancias).verFormulaMedicaOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtEdad.getText(), txtNacimiento.getText());
             }
@@ -725,7 +732,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
 
 //                btnNuevoActionPerformed(evt);             
 //            } catch (Exception e) {
-//                metodos.msgError(this, "Hubo un problema al guardar el FormulaMedica");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar el FormulaMedica");
 //            }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -780,7 +787,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
     private void txtIdentificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdentificacionKeyReleased
 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(txtIdentificacion.getText().replace("'", "//"), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtIdentificacion.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             if (nodo.getCodigo() == null) {
                 txtFecha.requestFocus();
@@ -855,7 +862,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
             String medida;
 
             if (cmbMedida.getSelectedItem() == "Seleccione...") {
-                metodos.msgError(this, "Seleccione una medida del medicamento");
+                ControladorAlertas.alertFail("Seleccione una medida del medicamento");
                 return;
             }
 
@@ -917,7 +924,7 @@ public class infFormulaMedicaOf extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un item");
+            ControladorAlertas.alert("Seleccione un item");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 

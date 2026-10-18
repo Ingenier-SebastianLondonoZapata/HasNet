@@ -1,11 +1,19 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Procesos.Inventario.Dao.DaoInventario;
+
+import Dao.Productos.DaoProducto;
+
 import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
@@ -15,6 +23,8 @@ import java.math.RoundingMode;
 import javax.swing.JComboBox;
 
 public class infInventario extends javax.swing.JPanel {
+    private final DaoInventario daoInventario = new DaoInventario();
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -760,11 +770,11 @@ public class infInventario extends javax.swing.JPanel {
 
     private void btnAggProd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProd1ActionPerformed
         if (txtGrupo.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un grupo");
+            ControladorAlertas.alertFail("Cargue primero un grupo");
         } else {
 
             if (yaEsta(cmbProducto1, txtGrupo.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este producto");
+                ControladorAlertas.alert("Ya cargo este producto");
             } else {
                 cmbProducto1.addItem(txtGrupo.getText());
                 cmbProducto1.setSelectedItem(txtGrupo.getText());
@@ -780,11 +790,11 @@ public class infInventario extends javax.swing.JPanel {
 
     private void btnAggProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProvActionPerformed
         if (txtProveedor.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un proveedor");
+            ControladorAlertas.alertFail("Cargue primero un proveedor");
         } else {
 
             if (yaEsta(cmbProveedor, txtProveedor.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este proveedor");
+                ControladorAlertas.alert("Ya cargo este proveedor");
             } else {
                 cmbProveedor.addItem(txtProveedor.getText());
                 cmbProveedor.setSelectedItem(txtProveedor.getText());
@@ -800,16 +810,11 @@ public class infInventario extends javax.swing.JPanel {
 
     private void btnAggProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProdActionPerformed
         if (txtCodigo.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un producto");
+            ControladorAlertas.alertFail("Cargue primero un producto");
         } else {
-            ndProducto nodo = null;
+            ModeloProducto nodo = null;
             String CodigoProd = "", codigo = txtCodigo.getText();
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -820,7 +825,7 @@ public class infInventario extends javax.swing.JPanel {
             } else {
                 txtCodigo.setText(nodo.getIdSistema());
                 if (yaEsta(cmbProducto, txtCodigo.getText())) {
-                    metodos.msgAdvertencia(null, "Ya cargo este producto");
+                    ControladorAlertas.alert("Ya cargo este producto");
                 } else {
                     cmbProducto.addItem(txtCodigo.getText());
                     cmbProducto.setSelectedItem(txtCodigo.getText());
@@ -836,11 +841,11 @@ public class infInventario extends javax.swing.JPanel {
 
     private void btnAggColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggColorActionPerformed
         if (txtColor.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un color");
+            ControladorAlertas.alertFail("Cargue primero un color");
         } else {
 
             if (yaEsta(cmbColor, txtColor.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este imeil");
+                ControladorAlertas.alert("Ya cargo este imeil");
             } else {
                 cmbColor.addItem(txtColor.getText());
                 cmbColor.setSelectedItem(txtColor.getText());
@@ -864,11 +869,11 @@ public class infInventario extends javax.swing.JPanel {
 
     private void btnAggImeilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggImeilActionPerformed
         if (txtImeil.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un imeil");
+            ControladorAlertas.alertFail("Cargue primero un imeil");
         } else {
 
             if (yaEsta(cmbImeil, txtImeil.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este imeil");
+                ControladorAlertas.alert("Ya cargo este imeil");
             } else {
                 cmbImeil.addItem(txtImeil.getText());
                 cmbImeil.setSelectedItem(txtImeil.getText());
@@ -885,7 +890,7 @@ public class infInventario extends javax.swing.JPanel {
     private void btnDetalladoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetalladoActionPerformed
         String tipo = "";
 
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
 
             String sql = "where ";
 
@@ -970,34 +975,21 @@ public class infInventario extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 //        String sql = "fechaFactura <= #" + metodosGenerales.fecha() + "# ";
-//        if (metodos.msgPregunta(null, "¿Desea imprimir reporte de venta por producto de clientes?") == 0) {
+//        if (ControladorAlertas.option("¿Desea imprimir reporte de venta por producto de clientes?")) {
 //            instancias.getReporte().ver_RepClienteVentaProd(consecutivo, instancias.getInformacionEmpresa(), false, sql);
 //        }
 
         String tipo = "";
         if (!jCheckBox1.isSelected() && !jCheckBox2.isSelected() && !jCheckBox3.isSelected() && !jCheckBox4.isSelected()) {
-            metodos.msgError(null, "Debe seleccionar almenos un estado");
+            ControladorAlertas.alertFail("Debe seleccionar almenos un estado");
             return;
         }
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
 
-            String sql = "", base = "";
-            if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                String bodega = instancias.getSql().getBaseBodega(cmbBodegas.getSelectedItem().toString());
-                if (bodega.equals("bdProductos")) {
-                    base = "inventario ";
-                } else if (bodega.equals("bdProductosBodega1")) {
-                    base = "inventario1 ";
-                } else if (bodega.equals("bdProductosBodega2")) {
-                    base = "inventario2 ";
-                } else if (bodega.equals("bdProductosBodega3")) {
-                    base = "inventario3 ";
-                } else if (bodega.equals("bdProductosBodega4")) {
-                    base = "inventario4 ";
-                }
-            } else {
-                base = "inventario ";
-            }
+            String sql = "";
+            boolean inventarioPorBodega = instancias.getConfiguraciones().isInventarioBodegas();
+            String idBodega = inventarioPorBodega ? enumBodegas.obtenerIdBodega(instancias.getSql().getBaseBodega(cmbBodegas.getSelectedItem().toString())) : null;
+            String base = DaoInventario.consultaReporteInventario(idBodega);
 
             //instancias.getSql().modificarFechaHistorico(metodos.desdeDate(dtFinal.getCurrent()));
             sql = sql + "where (manejaInventario = true) AND";
@@ -1007,7 +999,7 @@ public class infInventario extends javax.swing.JPanel {
                 String final1 = txtEntre1.getText();
 
                 if (inicio.equals("") || final1.equals("")) {
-                    metodos.msgError(null, "Debe ingresar el rango de inventario");
+                    ControladorAlertas.alertFail("Debe ingresar el rango de inventario");
                     return;
                 }
                 sql = sql + " (inv >= " + inicio + " AND inv <= " + final1 + " ) AND ";
@@ -1093,28 +1085,15 @@ public class infInventario extends javax.swing.JPanel {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         String tipo = "";
         if (!jCheckBox1.isSelected() && !jCheckBox2.isSelected() && !jCheckBox3.isSelected() && !jCheckBox4.isSelected()) {
-            metodos.msgError(null, "Debe seleccionar almenos un estado");
+            ControladorAlertas.alertFail("Debe seleccionar almenos un estado");
             return;
         }
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
 
-            String sql = "", base = "";
-            if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                String bodega = instancias.getSql().getBaseBodega(cmbBodegas.getSelectedItem().toString());
-                if (bodega.equals("bdProductos")) {
-                    base = "inventario ";
-                } else if (bodega.equals("bdProductosBodega1")) {
-                    base = "inventario1 ";
-                } else if (bodega.equals("bdProductosBodega2")) {
-                    base = "inventario2 ";
-                } else if (bodega.equals("bdProductosBodega3")) {
-                    base = "inventario3 ";
-                } else if (bodega.equals("bdProductosBodega4")) {
-                    base = "inventario4 ";
-                }
-            } else {
-                base = "inventario ";
-            }
+            String sql = "";
+            boolean inventarioPorBodega = instancias.getConfiguraciones().isInventarioBodegas();
+            String idBodega = inventarioPorBodega ? enumBodegas.obtenerIdBodega(instancias.getSql().getBaseBodega(cmbBodegas.getSelectedItem().toString())) : null;
+            String base = DaoInventario.consultaReporteInventario(idBodega);
 
             //instancias.getSql().modificarFechaHistorico(metodos.desdeDate(dtFinal.getCurrent()));
             sql = sql + "where (manejaInventario = true) AND";
@@ -1124,7 +1103,7 @@ public class infInventario extends javax.swing.JPanel {
                 String final1 = txtEntre1.getText();
 
                 if (inicio.equals("") || final1.equals("")) {
-                    metodos.msgError(null, "Debe ingresar el rango de inventario");
+                    ControladorAlertas.alertFail("Debe ingresar el rango de inventario");
                     return;
                 }
                 sql = sql + " (inv >= " + inicio + " AND inv <= " + final1 + " ) AND ";
@@ -1239,18 +1218,13 @@ public class infInventario extends javax.swing.JPanel {
     }
 
     public void cargarProducto(String codigo) {
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }
@@ -1313,7 +1287,7 @@ public class infInventario extends javax.swing.JPanel {
 
         for (Object[] producto : productos) {
             Object[][] datos = instancias.getSql().getCostosProducto(producto[0].toString());
-            BigDecimal cantidad = big.getBigDecimal(instancias.getSql().getInvProd(producto[0].toString())[0]);
+            BigDecimal cantidad = daoInventario.obtenerFisicoInventario(producto[0].toString());
             BigDecimal aCostear = BigDecimal.ZERO;
             BigDecimal costo = BigDecimal.ZERO;
 

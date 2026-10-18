@@ -1,5 +1,7 @@
 package formularios.Agenda;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.IconCellRenderer;
 import clases.Instancias;
 
@@ -786,7 +788,7 @@ public class infAgendaConsulta extends javax.swing.JInternalFrame {
         if (evt.getClickCount() > 1) {
 
             if (lbTitulo.getText().equals("AGENDA")) {
-                metodos.msgError(this, "Seleccione un medico");
+                ControladorAlertas.alertFail("Seleccione un medico");
                 return;
             }
 
@@ -864,7 +866,7 @@ public class infAgendaConsulta extends javax.swing.JInternalFrame {
         if (horasBloqueo.length > 0) {
             for (int i = 0; i < horasBloqueo.length; i++) {
                 if (metodos.fecha(horasBloqueo[i][0].toString()).equals(metodos.desdeDate2(dtFecha.getCalendar()))) {
-                    metodos.msgAdvertencia(this, "Este día esta bloqueado!");
+                    ControladorAlertas.alert("Este día esta bloqueado!");
                     mensaje = horasBloqueo[i][2].toString();
                     entro = true;
                 }

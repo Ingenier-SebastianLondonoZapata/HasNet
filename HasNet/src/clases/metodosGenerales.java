@@ -63,7 +63,6 @@ import clases.productos.ndIngresoEx;
 import clases.productos.ndInventarioInicial;
 import clases.productos.ndProceso;
 import clases.productos.ndProdTraslBodega;
-import clases.productos.ndProducto;
 import clases.productos.ndProductoAjustes;
 import clases.productos.ndTraslado;
 import clases.productos.ndTrasladoBodega;
@@ -72,13 +71,8 @@ import clases.terceros.ndBodega;
 import clases.terceros.ndEmpleado;
 import Modelo.Terceros.ModeloContacto;
 import com.toedter.calendar.JDateChooser;
-import configuracion.msgAtencion;
-import configuracion.msgAtencion1;
-import configuracion.msgError;
-import configuracion.msgExito;
 import configuracion.msgIngresar;
 import configuracion.msgIngresar1;
-import configuracion.msgPregunta;
 import datechooser.beans.DateChooserCombo;
 import formularios.Agenda.ndAgenda;
 import formularios.Disk;
@@ -130,8 +124,6 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableModel;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -140,7 +132,7 @@ public class metodosGenerales {
 // ---------------------------------------------------ESTRUCTURAS-----------------------------------------------------------------------------------------------
     public static void generarArchivoPlano(String ruta, String info) {
         File archivo = new File(ruta);
-        BufferedWriter bw = null;
+        BufferedWriter bw;
         try {
             if (archivo.exists()) {
                 bw = new BufferedWriter(new FileWriter(archivo));
@@ -2385,160 +2377,6 @@ public class metodosGenerales {
         return nodo;
     }
 
-    public ndProducto llenarProducto(Object[] vector) {
-
-        ndProducto nodo = new ndProducto();
-
-        nodo.setIdSistema((String) vector[0]);
-        nodo.setCodigo((String) vector[1]);
-        nodo.setCodigoBarras((String) vector[2]);
-        nodo.setDescripcion((String) vector[3]);
-        nodo.setGrupo((String) vector[4]);
-        nodo.setSubgrupo((String) vector[5]);
-        nodo.setProveedor((String) vector[6]);
-        nodo.setIva(String.valueOf(vector[7]));
-        nodo.setL1(String.valueOf(vector[8]));
-        nodo.setL2(String.valueOf(vector[9]));
-        nodo.setL3(String.valueOf(vector[10]));
-        nodo.setL4(String.valueOf(vector[11]));
-        nodo.setL5(String.valueOf(vector[12]));
-        nodo.setL6(String.valueOf(vector[13]));
-        nodo.setL7(String.valueOf(vector[14]));
-        nodo.setL8(String.valueOf(vector[15]));
-        nodo.setUsuario((String) vector[16]);
-        nodo.setMinimo(String.valueOf(vector[17]));
-        nodo.setUnd(String.valueOf(vector[18]));
-        nodo.setReferencia(String.valueOf(vector[19]));
-        nodo.setCosto(String.valueOf(vector[20]));
-        nodo.setMinima(String.valueOf(vector[21]));
-        nodo.setMaxima(String.valueOf(vector[22]));
-        nodo.setUbicacion1((String) vector[23]);
-        nodo.setDescripcion2((String) vector[24]);
-        nodo.setUbicacion2((String) vector[25]);
-        nodo.setCantidad2((String) vector[26]);
-        nodo.setDescripcion3((String) vector[27]);
-        nodo.setUbicacion3((String) vector[28]);
-        nodo.setCantidad3((String) vector[29]);
-        nodo.setDescripcion4((String) vector[30]);
-        nodo.setUbicacion4((String) vector[31]);
-        nodo.setCantidad4((String) vector[32]);
-        nodo.setDescripcion5((String) vector[33]);
-        nodo.setUbicacion5((String) vector[34]);
-        nodo.setCantidad5((String) vector[35]);
-        nodo.setDescripcion6((String) vector[36]);
-        nodo.setUbicacion6((String) vector[37]);
-        nodo.setCantidad6((String) vector[38]);
-        nodo.setDescripcion7((String) vector[39]);
-        nodo.setUbicacion7((String) vector[40]);
-        nodo.setCantidad7((String) vector[41]);
-        nodo.setDescripcion8((String) vector[42]);
-        nodo.setUbicacion8((String) vector[43]);
-        nodo.setCantidad8((String) vector[44]);
-        try {
-            nodo.setPlu2((boolean) vector[45]);
-        } catch (Exception e) {
-            nodo.setPlu2(false);
-        }
-        try {
-            nodo.setPlu3((boolean) vector[46]);
-        } catch (Exception e) {
-            nodo.setPlu3(false);
-        }
-        try {
-            nodo.setPlu4((boolean) vector[47]);
-        } catch (Exception e) {
-            nodo.setPlu4(false);
-        }
-        try {
-            nodo.setPlu5((boolean) vector[48]);
-        } catch (Exception e) {
-            nodo.setPlu5(false);
-        }
-        try {
-            nodo.setPlu6((boolean) vector[49]);
-        } catch (Exception e) {
-            nodo.setPlu6(false);
-        }
-        try {
-            nodo.setPlu7((boolean) vector[50]);
-        } catch (Exception e) {
-            nodo.setPlu7(false);
-        }
-        try {
-            nodo.setPlu8((boolean) vector[51]);
-        } catch (Exception e) {
-            nodo.setPlu8(false);
-        }
-
-        nodo.setIvaC(String.valueOf(vector[52]));
-        nodo.setPonderado(String.valueOf(vector[53]));
-        nodo.setTerminal(String.valueOf(vector[54]));
-        nodo.setInventario(String.valueOf(vector[55]));
-        nodo.setClaseBuscador((String) (vector[56]));
-        try {
-            nodo.setManejaInventario((boolean) vector[57]);
-        } catch (Exception e) {
-            nodo.setManejaInventario(false);
-        }
-
-        nodo.setPorcentaje((String) (vector[58]));
-        nodo.setCompras((String) vector[59]);
-        nodo.setVentas((String) vector[60]);
-        nodo.setNc((String) vector[61]);
-        nodo.setAjusteEntrada((String) vector[62]);
-        nodo.setAjusteSalida((String) vector[63]);
-        nodo.setPlanSepare((String) vector[64]);
-        nodo.setPedidos((String) vector[65]);
-        nodo.setAnulada((String) vector[66]);
-        nodo.setInventarioInicial((String) vector[67]);
-        nodo.setAjusteInventario((String) vector[68]);
-        nodo.setFisicoInventario((String) vector[69]);
-        nodo.setArmado((String) vector[70]);
-        nodo.setCosteo((String) vector[71]);
-        nodo.setOrdenServicio((String) vector[72]);
-        nodo.setCongelada((String) vector[73]);
-        nodo.setTrasladoBod((String) vector[74]);
-        nodo.setTrasladoInternoEntrada((String) vector[75]);
-        nodo.setTrasladoInternoSalida((String) vector[76]);
-
-        try {
-            nodo.setImpoconsumo((boolean) vector[77]);
-        } catch (Exception e) {
-            nodo.setImpoconsumo(false);
-        }
-
-        nodo.setDescripcionIngles((String) vector[78]);
-        nodo.setCubicaje(((String) vector[79]));
-        nodo.setPeso((String) vector[80]);
-        nodo.setCodContable((String) vector[81]);
-        nodo.setCodArancel((String) vector[82]);
-        nodo.setTipoProducto((String) vector[83]);
-        nodo.setCantMedida((String) vector[84]);
-        nodo.setMarca((String) vector[85]);
-        nodo.setTipoProd((String) vector[86]);
-        nodo.setEnTransito((String) vector[87]);
-        nodo.setCodigo2((String) vector[88]);
-        nodo.setCodigo3((String) vector[89]);
-        nodo.setCodigo4((String) vector[90]);
-        nodo.setCodigo5((String) vector[91]);
-        nodo.setCodigo6((String) vector[92]);
-        nodo.setCodigo7((String) vector[93]);
-        nodo.setCodigo8((String) vector[94]);
-        nodo.setLenteMarco((String) vector[95]);
-        nodo.setAdesivo((String) vector[96]);
-        nodo.setColor((String) vector[97]);
-        nodo.setEmpaque((String) vector[98]);
-        nodo.setComposicion((String) vector[99]);
-        nodo.setRmb((String) vector[100]);
-        nodo.setIndVentas((String) vector[101]);
-        nodo.setImpoconsumoVenta((String) vector[102]);
-        nodo.setImpoconsumoCompra((String) vector[103]);
-        nodo.setDescripcionLarga((String) vector[104]);
-        nodo.setNotaDebito((String) vector[105]);
-
-        return nodo;
-    }
-
     public ndProceso llenarProceso(Object[] vector) {
 
         ndProceso nodo = new ndProceso();
@@ -3943,30 +3781,6 @@ public class metodosGenerales {
         return vector;
     }
 
-    public Object[] pasarDatosProducto(ndProducto nodo) {
-        Object[] vector = {nodo.getIdSistema(), nodo.getCodigo(), nodo.getCodigoBarras(), nodo.getDescripcion(), nodo.getGrupo(), nodo.getSubgrupo(), nodo.getProveedor(),
-            nodo.getUsuario(), nodo.getUnd(), nodo.getReferencia(), nodo.getUbicacion1(), nodo.getDescripcion2(), nodo.getUbicacion2(), nodo.getCantidad2(), nodo.getDescripcion3(),
-            nodo.getUbicacion3(), nodo.getCantidad3(), nodo.getDescripcion4(), nodo.getUbicacion4(), nodo.getCantidad4(), nodo.getDescripcion5(), nodo.getUbicacion5(),
-            nodo.getCantidad5(), nodo.getDescripcion6(), nodo.getUbicacion6(), nodo.getCantidad6(), nodo.getDescripcion7(), nodo.getUbicacion7(), nodo.getCantidad7(),
-            nodo.getDescripcion8(), nodo.getUbicacion8(), nodo.getCantidad8(), nodo.isPlu2(), nodo.isPlu3(), nodo.isPlu4(), nodo.getPlu5(), nodo.getPlu6(), nodo.getPlu7(),
-            nodo.getPlu8(), nodo.getTerminal(), nodo.getClaseBuscador(), nodo.getManejaInventario(), nodo.getPorcentaje(), nodo.getCompras(), nodo.getVentas(), nodo.getNc(),
-            nodo.getAjusteEntrada(), nodo.getAjusteSalida(), nodo.getPlanSepare(), nodo.getPedidos(), nodo.getAnulada(), nodo.getInventarioInicial(), nodo.getAjusteInventario(),
-            nodo.getFisicoInventario(), nodo.getArmado(), nodo.getCosteo(), nodo.getOrdenServicio(), nodo.getCongelada(), nodo.getTrasladoBod(), nodo.getTrasladoInternoEntrada(),
-            nodo.getTrasladoInternoSalida(), nodo.getImpoconsumo(), nodo.getDescripcionIngles(), nodo.getCubicaje(), nodo.getPeso(), nodo.getCodContable(), nodo.getCodArancel(),
-            nodo.getTipoProducto(), nodo.getCantMedida(), nodo.getMarca(), nodo.getTipoProd(), nodo.getEnTransito(), nodo.getCodigo2(), nodo.getCodigo3(),
-            nodo.getCodigo4(), nodo.getCodigo5(), nodo.getCodigo6(), nodo.getCodigo7(), nodo.getCodigo8(), nodo.getLenteMarco(), nodo.getAdesivo(), nodo.getColor(),
-            nodo.getEmpaque(), nodo.getComposicion(), nodo.getRmb(), nodo.getIndVentas(), nodo.getDescripcionLarga(), nodo.getNotaDebito()};
-        return vector;
-    }
-
-    public Object[] pasarValoresProducto(ndProducto nodo) {
-
-        Object[] vector = {nodo.getIva(), nodo.getL1(), nodo.getL2(), nodo.getL3(), nodo.getL4(), nodo.getL5(), nodo.getL6(), nodo.getL7(), nodo.getL8(), nodo.getMinimo(),
-            nodo.getCosto(), nodo.getMinima(), nodo.getMaxima(), nodo.getIvaC(), nodo.getPonderado(), nodo.getImpoconsumoVenta(), nodo.getImpoconsumoCompra()};
-
-        return vector;
-    }
-
     public Object[] pasarDatosProceso(ndProceso nodo) {
 
         String[] vector = {nodo.getCodigo(), nodo.getNombre(), nodo.getUnd(), nodo.getObservaciones()};
@@ -4233,70 +4047,6 @@ public class metodosGenerales {
     }
 
 // ---------------------------------------------------MENSAJES-----------------------------------------------------------------------------------------------
-// ---------------------------------------------------MENSAJES-----------------------------------------------------------------------------------------------
-    public void msgExito(JInternalFrame ventana, String mensaje) {
-        try {
-            if (Instancias.getInstancias().getMenu().getSeVeElMenu()) {
-                Instancias.getInstancias().getMenu().activarMensaje("Exito", mensaje);
-            } else {
-                msgExito ventanaError = new msgExito(null, true, mensaje);
-                ventanaError.setVisible(true);
-            }
-        } catch (Exception e) {
-            msgExito ventanaError = new msgExito(null, true, mensaje);
-            ventanaError.setVisible(true);
-        }
-    }
-
-    public void msgError(JInternalFrame ventana, String mensaje) {
-        try {
-            if (Instancias.getInstancias().getMenu().getSeVeElMenu()) {
-                Instancias.getInstancias().getMenu().activarMensaje("Error", mensaje);
-            } else {
-                msgError ventanaError = new msgError(null, true, mensaje);
-                ventanaError.setVisible(true);
-            }
-        } catch (Exception e) {
-            msgError ventanaError = new msgError(null, true, mensaje);
-            ventanaError.setVisible(true);
-        }
-    }
-
-    public void msgAdvertencia(JInternalFrame ventana, String mensaje) {
-        try {
-            if (Instancias.getInstancias().getMenu().getSeVeElMenu()) {
-                Instancias.getInstancias().getMenu().activarMensaje("Atencion", mensaje);
-            } else {
-                msgAtencion ventanaAtencion = new msgAtencion(null, true, mensaje);
-                ventanaAtencion.setVisible(true);
-            }
-        } catch (Exception e) {
-            msgAtencion ventanaAtencion = new msgAtencion(null, true, mensaje);
-            ventanaAtencion.setVisible(true);
-        }
-    }
-
-    public void msgAdvertenciaAjustado(JInternalFrame ventana, String mensaje) {
-        try {
-            if (Instancias.getInstancias().getMenu().getSeVeElMenu()) {
-                Instancias.getInstancias().getMenu().activarMensaje("Atencion", mensaje);
-            } else {
-                msgAtencion1 ventanaAtencion = new msgAtencion1(null, true, mensaje);
-                ventanaAtencion.setVisible(true);
-            }
-        } catch (Exception e) {
-            msgAtencion ventanaAtencion = new msgAtencion(null, true, mensaje);
-            ventanaAtencion.setVisible(true);
-        }
-    }
-
-    public Integer msgPregunta(JInternalFrame ventana, String mensaje) {
-        msgPregunta ventanaPregunta = new msgPregunta(null, true, mensaje);
-        ventanaPregunta.setVisible(true);
-        int tipo = ventanaPregunta.seleccionar();
-        return tipo;
-    }
-
     public String msgIngresar(JInternalFrame ventana, String mensaje) {
         msgIngresar ventanaIngresar = new msgIngresar(null, true, mensaje);
         ventanaIngresar.setVisible(true);
@@ -5361,46 +5111,6 @@ public class metodosGenerales {
             }
         }
         return true;
-    }
-
-    public void ajuste(TableModelEvent e, Integer opc) {
-
-        //solo si se edita la tabla
-        if (e.getType() == TableModelEvent.UPDATE) {
-
-            //se obtiene el modelo
-            TableModel modelo = ((TableModel) (e.getSource()));
-            int fila = e.getFirstRow();
-            int columna = e.getColumn();
-            try {
-                Object dato = modelo.getValueAt(fila, columna);
-                if (columna == 3) {
-                    dato = modelo.getValueAt(fila, columna);
-                    if (dato.toString().contains(".")) {
-                        this.msgError(null, "Ingreso un dato erroneo");
-                        return;
-                    }
-                }
-                switch (opc) {
-                    case 1:
-                        if (columna == 5 && dato.equals("")) {
-                            this.msgError(null, "Ingreso un dato erroneo");
-                            return;
-                        }
-                        break;
-                    case 2:
-                        if (columna == 3 && dato.equals("")) {
-                            this.msgError(null, "Ingreso un dato erroneo");
-                            return;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } catch (Exception ex) {
-            }
-            return;
-        }
     }
 
     public static String codificarSerial() {

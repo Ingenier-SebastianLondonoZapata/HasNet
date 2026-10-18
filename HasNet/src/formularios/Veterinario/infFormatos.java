@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
@@ -487,7 +489,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
 
         if (nodo.getId() != null) {
             if (nodo.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 return;
             }
 
@@ -549,7 +551,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
         new GeneradorReporteVeterinario(instancias).ver_Formato(datos[86].toString(), "informacionAnestesia");
         Object[] vector = {"Anestesia", txtIdSistema.getText(), metodos.fechaConsulta(metodosGenerales.fechaHora())};
         if (!instancias.getSql().agregarFormatosVeterinario(vector)) {
-            metodos.msgError(this, "Hubo un problema al guardar el formato de anestesia");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el formato de anestesia");
             return;
         }
     }//GEN-LAST:event_btnAnestesiaActionPerformed
@@ -558,7 +560,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
         new GeneradorReporteVeterinario(instancias).ver_Formato(datos[86].toString(), "Consentimiento");
         Object[] vector = {"Consentimiento", txtIdSistema.getText(), metodos.fechaConsulta(metodosGenerales.fechaHora())};
         if (!instancias.getSql().agregarFormatosVeterinario(vector)) {
-            metodos.msgError(this, "Hubo un problema al guardar el formato de anestesia");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el formato de anestesia");
             return;
         }
     }//GEN-LAST:event_btnConsentimientoActionPerformed
@@ -567,7 +569,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
         new GeneradorReporteVeterinario(instancias).ver_Formato(datos[86].toString(), "eutanasia");
         Object[] vector = {"Eutanasia", txtIdSistema.getText(), metodos.fechaConsulta(metodosGenerales.fechaHora())};
         if (!instancias.getSql().agregarFormatosVeterinario(vector)) {
-            metodos.msgError(this, "Hubo un problema al guardar el formato de anestesia");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el formato de anestesia");
             return;
         }
     }//GEN-LAST:event_btnEutanasiaActionPerformed
@@ -576,7 +578,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
         new GeneradorReporteVeterinario(instancias).ver_Formato(datos[86].toString(), "negativaServicio");
         Object[] vector = {"Negativa", txtIdSistema.getText(), metodos.fechaConsulta(metodosGenerales.fechaHora())};
         if (!instancias.getSql().agregarFormatosVeterinario(vector)) {
-            metodos.msgError(this, "Hubo un problema al guardar el formato de anestesia");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el formato de anestesia");
             return;
         }
     }//GEN-LAST:event_btnNegativaActionPerformed
@@ -585,7 +587,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
         new GeneradorReporteVeterinario(instancias).ver_Formato(datos[86].toString(), "hospitalaria");
         Object[] vector = {"Visitas", txtIdSistema.getText(), metodos.fechaConsulta(metodosGenerales.fechaHora())};
         if (!instancias.getSql().agregarFormatosVeterinario(vector)) {
-            metodos.msgError(this, "Hubo un problema al guardar el formato de anestesia");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el formato de anestesia");
             return;
         }
     }//GEN-LAST:event_btnVisitasActionPerformed

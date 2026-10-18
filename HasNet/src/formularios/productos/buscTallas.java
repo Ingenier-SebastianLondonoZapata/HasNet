@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -232,27 +234,27 @@ public class buscTallas extends javax.swing.JDialog {
 
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgError(null, "Ingrese la talla");
+            ControladorAlertas.alertFail("Ingrese la talla");
             return;
         }
 
         String aux = instancias.getSql().getDatosTalla(txtId.getText().toUpperCase());
 
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Agregar la talla como " + txtId.getText().toUpperCase() + "? ") == 0) {
+            if (ControladorAlertas.option("¿Agregar la talla como " + txtId.getText().toUpperCase() + "? ")) {
 
                 if (!instancias.getSql().agregarTalla(txtId.getText().toUpperCase())) {
-                    metodos.msgError(null, "Hubo un error al ingresar la talla");
+                    ControladorAlertas.alertFail("Hubo un error al ingresar la talla");
                     return;
                 }
 
-                metodos.msgExito(null, "Talla ingresado con exito");
+                ControladorAlertas.alertSuccess("Talla ingresado con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);
             }
         } else {
-            metodos.msgError(null, "La talla ya existe");
+            ControladorAlertas.alertFail("La talla ya existe");
         }
     }//GEN-LAST:event_btnEste1ActionPerformed
 

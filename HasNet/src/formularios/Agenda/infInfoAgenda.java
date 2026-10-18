@@ -1,11 +1,17 @@
 package formularios.Agenda;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Modelo.Terceros.ModeloContacto;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import formularios.Agenda.ndAgenda;
 import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
@@ -26,6 +32,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infInfoAgenda extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -955,18 +962,18 @@ public class infInfoAgenda extends javax.swing.JDialog {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
         Object[][] agendas = instancias.getSql().getRegistrosAgendasHora(metodos.fechaConsulta(metodos.fecha(fecha)), atiende, txthora.getText());
 
         if (agendas.length > 0) {
-            metodos.msgError(null, "Ya hay una cita registrada a esta hora");
+            ControladorAlertas.alertFail("Ya hay una cita registrada a esta hora");
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String cita = instancias.getSql().getNumConsecutivo("AGENDA")[0].toString();
             Object[] vector = {cita, txtIdSistema.getText(), fecha, txthora.getText(), txtIdProd.getText(), atiende, "Registrada",
@@ -975,15 +982,15 @@ public class infInfoAgenda extends javax.swing.JDialog {
             ndAgenda nodo = metodos.llenarAgenda(vector);
 
             if (!instancias.getSql().agregarAgenda(nodo)) {
-                metodos.msgError(null, "Hubo un problema al guardar la Agenda");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la Agenda");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("AGENDA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("AGENDA")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo de la agenda");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la agenda");
                 return;
             }
-            metodos.msgExito(null, "Cita Registrada Exitosamente");
+            ControladorAlertas.alertSuccess("Cita Registrada Exitosamente");
         }
 
         instancias.getAgendaConsulta().cargarAgendas(instancias.getMedico());
@@ -998,7 +1005,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
 //        if (txtEstado.getText().equals("Confirmada") || txtEstado.getText().equals("Atendido")) {
         if (txtEstado.getText().equals("Atendido")) {
-            metodos.msgError(null, "Esta cita ya se encuentra atendida");
+            ControladorAlertas.alertFail("Esta cita ya se encuentra atendida");
         } else {
             confirmarFacturarAgenda();
         }
@@ -1006,7 +1013,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         if (txtEstado.getText().equals("Confirmada") || txtEstado.getText().equals("Atendido")) {
-            metodos.msgError(null, "Esta cita se encuentra confirmada y no se puede modificar");
+            ControladorAlertas.alertFail("Esta cita se encuentra confirmada y no se puede modificar");
         } else {
             int op = 0;
             if (dtNuevaCita.isVisible()) {
@@ -1020,11 +1027,11 @@ public class infInfoAgenda extends javax.swing.JDialog {
                 String faltantes = metodos.camposVacios(campos);
 
                 if (!faltantes.equals("")) {
-                    metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                    ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                     return;
                 }
 
-                if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+                if (ControladorAlertas.option("¿Desea continuar?")) {
 
                     String fechaNueva = metodos.desdeDate(dtNuevaCita.getCurrent());
                     String idCita = txtCita.getText();
@@ -1043,18 +1050,18 @@ public class infInfoAgenda extends javax.swing.JDialog {
                     };
 
                     if (!instancias.getSql().AgregarConsultaAntigua(vectorAntiguo)) {
-                        metodos.msgError(null, "Hubo un problema al guardar la Agenda Antigüa");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la Agenda Antigüa");
                         return;
                     }
 
                     if (!instancias.getSql().modificarAgenda(nodo)) {
-                        metodos.msgError(null, "Hubo un problema al guardar la Agenda");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la Agenda");
                         return;
                     }
 
-                    metodos.msgExito(null, "Cita Actualizada Exitosamente");
+                    ControladorAlertas.alertSuccess("Cita Actualizada Exitosamente");
 
-//                    if (metodos.msgPregunta(null, "¿Desea imprimir?") == 0) {
+//                    if (ControladorAlertas.option("¿Desea imprimir?")) {
 ////                        instancias.getReporte().verCita(txtCita.getText(), instancias.getInformacionEmpresa());
 //                    }
                     instancias.getAgendaConsulta().cargarAgendas(instancias.getMedico());
@@ -1095,14 +1102,14 @@ public class infInfoAgenda extends javax.swing.JDialog {
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         if (txtEstado.getText().equals("Confirmada") || txtEstado.getText().equals("Atendido")) {
-            metodos.msgError(null, "Esta cita se encuentra confirmada y no se puede cancelar");
-        } else if (metodos.msgPregunta(null, "¿Esta seguro de cancelar esta cita?") == 0) {
+            ControladorAlertas.alertFail("Esta cita se encuentra confirmada y no se puede cancelar");
+        } else if (ControladorAlertas.option("¿Esta seguro de cancelar esta cita?")) {
 
             if (!instancias.getSql().modificarCita(txtCita.getText(), "Cancelada")) {
-                metodos.msgError(null, "Error la cita no pudo ser cancelada");
+                ControladorAlertas.alertFail("Error la cita no pudo ser cancelada");
                 return;
             }
-            metodos.msgExito(null, "Cita Cancelada");
+            ControladorAlertas.alertSuccess("Cita Cancelada");
 
             instancias.getAgendaConsulta().cargarAgendas(instancias.getMedico());
             instancias.getAgendaConsulta().cargarAgendas();
@@ -1148,16 +1155,16 @@ public class infInfoAgenda extends javax.swing.JDialog {
 
     private void btnFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarActionPerformed
         if (txtEstado.getText().equals("Atendido")) {
-            metodos.msgError(null, "Esta cita ya se encuentra Finalizada");
+            ControladorAlertas.alertFail("Esta cita ya se encuentra Finalizada");
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             if (!instancias.getSql().modificarCita(txtCita.getText(), "Atendido")) {
-                metodos.msgError(null, "No fue posible modificar el estado de la Cita");
+                ControladorAlertas.alertFail("No fue posible modificar el estado de la Cita");
                 return;
             }
-            metodos.msgExito(null, "Cita Finalizada");
+            ControladorAlertas.alertSuccess("Cita Finalizada");
             instancias.getAgendaConsulta().cargarAgendas(instancias.getMedico());
             instancias.getAgendaConsulta().cargarAgendas();
             this.dispose();
@@ -1178,7 +1185,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
                         confirmarPasarAOrden1();
                     }
                 } else {
-                    metodos.msgError(null, "La cita debe estar confirmada");
+                    ControladorAlertas.alertFail("La cita debe estar confirmada");
                 }
 
             } else if (normal) {
@@ -1200,7 +1207,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
             normal = false;
         } else {
             if (txtEstado.getText().equals("Atendido")) {
-                metodos.msgError(null, "Esta cita ya se encuentra confirmada");
+                ControladorAlertas.alertFail("Esta cita ya se encuentra confirmada");
             } else {
                 confirmarPasarAOrden();
             }
@@ -1209,16 +1216,16 @@ public class infInfoAgenda extends javax.swing.JDialog {
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         if (txtEstado.getText().equals("Confirmada") || txtEstado.getText().equals("Atendido")) {
-            metodos.msgError(null, "Esta cita ya se encuentra confirmada");
+            ControladorAlertas.alertFail("Esta cita ya se encuentra confirmada");
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             if (!instancias.getSql().modificarCita(txtCita.getText(), "Confirmada")) {
-                metodos.msgError(null, "No fue posible modificar el estado de la Cita");
+                ControladorAlertas.alertFail("No fue posible modificar el estado de la Cita");
                 return;
             }
-            metodos.msgExito(null, "Cita Confirmada");
+            ControladorAlertas.alertSuccess("Cita Confirmada");
             instancias.getAgendaConsulta().cargarAgendas(instancias.getMedico());
             instancias.getAgendaConsulta().cargarAgendas();
             this.dispose();
@@ -1234,7 +1241,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
     private void txthoraFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txthoraFocusLost
         if (!revisarHora()) {
             if (!txthora.getText().equals("")) {
-                metodos.msgError(null, "Por favor ingrese una hora valida: '00:00'.");
+                ControladorAlertas.alertFail("Por favor ingrese una hora valida: '00:00'.");
                 txthora.requestFocus();
             }
         }
@@ -1242,13 +1249,13 @@ public class infInfoAgenda extends javax.swing.JDialog {
 
     private void btnInasistenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInasistenciaActionPerformed
         if (txtEstado.getText().equals("Confirmada") || txtEstado.getText().equals("Atendido")) {
-            metodos.msgError(null, "Esta cita ya se encuentra confirmada");
-        } else if (metodos.msgPregunta(null, "¿Dar por inasistencia esta cita?") == 0) {
+            ControladorAlertas.alertFail("Esta cita ya se encuentra confirmada");
+        } else if (ControladorAlertas.option("¿Dar por inasistencia esta cita?")) {
             if (!instancias.getSql().modificarCita(txtCita.getText(), "No vino")) {
-                metodos.msgError(null, "Error al inactivar la cita");
+                ControladorAlertas.alertFail("Error al inactivar la cita");
                 return;
             }
-            metodos.msgExito(null, "Cita inactivada");
+            ControladorAlertas.alertSuccess("Cita inactivada");
             instancias.getAgendaConsulta().cargarAgendas(instancias.getMedico());
             instancias.getAgendaConsulta().cargarAgendas();
             this.dispose();
@@ -1420,7 +1427,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
         ModeloContacto nodo = instancias.getSql().getDatosTercero(nit);
         if (nodo.getId() != null) {
             if (nodo.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 lbltipodoc.requestFocus();
                 return;
             }
@@ -1587,7 +1594,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
         this.repaint();
 
         try {
-            ndProducto producto = instancias.getSql().getDatosProducto(nodoAgenda.getMotivo(), "bdProductos");
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(nodoAgenda.getMotivo(), enumBodegas.ID_BODEGA_PRINCIPAL);
             if (!producto.getCodigo().equalsIgnoreCase("")) {
                 cargarProducto(nodoAgenda.getMotivo());
             }
@@ -1662,18 +1669,13 @@ public class infInfoAgenda extends javax.swing.JDialog {
 
     public void cargarProducto(String codigo) {
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -1725,7 +1727,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
             }
         } else {
             instancias.getFactura().cargarClienteYProducto("1010", new String[][]{new String[]{txtIdMotivo.getText(), "1"}});
-            if (metodos.msgPregunta(null, "¿Desea registrar este cliente?") == 0) {
+            if (ControladorAlertas.option("¿Desea registrar este cliente?")) {
                 try {
                     instancias.getClientes().setSelected(true);
                 } catch (Exception e) {
@@ -1748,7 +1750,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
         Object[][] nuevoPaciente = instancias.getSql().getNuevoTercero(txtIdSistema.getText());
         if (nuevoPaciente.length > 0) {
 
-            if (metodos.msgPregunta(null, "¿Desea completar la información?") == 0) {
+            if (ControladorAlertas.option("¿Desea completar la información?")) {
                 try {
                     instancias.getPaciente().setSelected(true);
                     instancias.getPaciente().nuevoCliente(txtIdSistema.getText());

@@ -1,7 +1,7 @@
 package Vista.Configuraciones;
 
 import Controlador.Alertas.ControladorAlertas;
-import dao.Configuraciones.DaoResoluciones;
+import Dao.Configuraciones.DaoResoluciones;
 import Modelo.Maestra.ModeloPrefijos;
 import Modelo.Maestra.ModeloResolucion;
 import Utilidades.CalendarioEnTabla;
@@ -336,7 +336,7 @@ public class vistaResoluciones extends javax.swing.JDialog {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnGuardarPrefijosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPrefijosActionPerformed
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             ModeloPrefijos datosPrefijos = new ModeloPrefijos(txtPrefijoAbono.getText(), txtPrefijoEgreso.getText(), txtPrefijoND.getText(), txtPrefijoNC.getText(), "TERM-1");
             if (!daoResoluciones.modificarPrefijos(datosPrefijos)) {
                 ControladorAlertas.alertFail("Error al guardar los cambios");

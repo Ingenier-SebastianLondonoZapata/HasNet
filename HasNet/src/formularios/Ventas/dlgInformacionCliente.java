@@ -1,5 +1,7 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -538,9 +540,9 @@ public class dlgInformacionCliente extends javax.swing.JDialog {
     private void txtNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!txtNit.getText().equals("1010")) {
-                if (metodos.msgPregunta(null, "¿Desea modificar el nombre?") == 0) {
+                if (ControladorAlertas.option("¿Desea modificar el nombre?")) {
                     instancias.getSql().modificarCampoTercero(idSistema, txtNombre.getText(), "nombre");
-                    metodos.msgExito(null, "Nombre modificado con exito!");
+                    ControladorAlertas.alertSuccess("Nombre modificado con exito!");
                     cerrarPanel();
                 }
             }
@@ -550,9 +552,9 @@ public class dlgInformacionCliente extends javax.swing.JDialog {
     private void txtTelefonoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!txtNit.getText().equals("1010")) {
-                if (metodos.msgPregunta(null, "¿Desea modificar el teléfono?") == 0) {
+                if (ControladorAlertas.option("¿Desea modificar el teléfono?")) {
                     instancias.getSql().modificarCampoTercero(idSistema, txtTelefono.getText(), "telefono");
-                    metodos.msgExito(null, "Teléfono modificado con exito!");
+                    ControladorAlertas.alertSuccess("Teléfono modificado con exito!");
                     cerrarPanel();
                 }
             }
@@ -562,9 +564,9 @@ public class dlgInformacionCliente extends javax.swing.JDialog {
     private void txtDireccionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!txtNit.getText().equals("1010")) {
-                if (metodos.msgPregunta(null, "¿Desea modificar la dirección?") == 0) {
+                if (ControladorAlertas.option("¿Desea modificar la dirección?")) {
                     instancias.getSql().modificarCampoTercero(idSistema, txtDireccion.getText(), "direccion");
-                    metodos.msgExito(null, "Dirección modificado con exito!");
+                    ControladorAlertas.alertSuccess("Dirección modificado con exito!");
                     cerrarPanel();
                 }
             }

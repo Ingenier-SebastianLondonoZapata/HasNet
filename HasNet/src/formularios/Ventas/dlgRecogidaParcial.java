@@ -147,14 +147,14 @@ public class dlgRecogidaParcial extends javax.swing.JDialog {
                     instancias.getSql().agregarRecogidaParcial(new Object[]{instancias.getTerminal(), instancias.getUsuario(),
                         metodos.fechaConsulta(metodosGenerales.fecha()), true},
                             new Object[]{big.getMoneda(txtTotal.getText())});
-                    metodos.msgExito(null, "Recogida Parcial registrada con exito");
+                    ControladorAlertas.alertSuccess("Recogida Parcial registrada con exito");
                     instancias.getCaja().desdeRecogida(txtTotal.getText());
                     break;
                 case "cajaBase":
                     instancias.getSql().agregarBaseCuadreDeCaja(new Object[]{instancias.getTerminal(), instancias.getUsuario(),
                         metodos.fechaConsulta(metodosGenerales.fecha()), true, "", "", "", "", "", "", "", "", "", "", ""},
                             new Object[]{big.getMoneda(txtTotal.getText())});
-                    metodos.msgExito(null, "Base registrada con exito");
+                    ControladorAlertas.alertSuccess("Base registrada con exito");
                     instancias.getCaja().actualizar();
                     break;
             }

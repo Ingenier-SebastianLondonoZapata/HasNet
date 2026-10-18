@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.iFactura;
 import clases.metodosGenerales;
@@ -360,11 +362,11 @@ public class infRepEmpleados extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtNomClient.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un proveedor");
+            ControladorAlertas.alertFail("Cargue primero un proveedor");
         } else {
 
             if (yaEsta(cmbProveedores, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este proveedor");
+                ControladorAlertas.alert("Ya cargo este proveedor");
             } else {
                 cmbProveedores.addItem(txtCliente.getText());
                 cmbProveedores.setSelectedItem(txtCliente.getText());
@@ -385,7 +387,7 @@ public class infRepEmpleados extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnImpresaItemStateChanged
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String sql;
             if ((chActivos.isSelected() && chInactivos.isSelected()) || (!chActivos.isSelected() && !chInactivos.isSelected())) {

@@ -4,8 +4,7 @@ import Procesos.Inventario.Dao.DaoPonderado;
 import Modelo.Inventario.UltimoPonderado;
 import Enums.HistoricoPonderados;
 import Modelo.Inventario.PonderadoPendiente;
-import Utilidades.Utilidades;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
@@ -18,9 +17,9 @@ public class ServicioActualizacionPonderado {
         return daoPonderado.obtenerUltimoPonderado(producto);
     }
 
-    public PonderadoPendiente calcular(ndProducto producto, BigDecimal cantidadIngresada, BigDecimal valorProducto) throws SQLException {
+    public PonderadoPendiente calcular(ModeloProducto producto, BigDecimal cantidadIngresada, BigDecimal valorProducto) throws SQLException {
         UltimoPonderado ultimo = daoPonderado.obtenerUltimoPonderado(producto.getIdSistema());
-        BigDecimal inventarioAnterior = Utilidades.convertirBigDecimal(producto.getInventario());
+        BigDecimal inventarioAnterior = producto.getInventario();
         BigDecimal ponderadoAnterior = ultimo.getNuevoPonderado();
         BigDecimal inventarioNuevo = inventarioAnterior.add(cantidadIngresada);
         BigDecimal ultimoCosto = valorProducto;
@@ -40,7 +39,7 @@ public class ServicioActualizacionPonderado {
         return resultado;
     }
 
-    public void crearPonderadoInicial(ndProducto producto, BigDecimal costoInicial, String usuario) throws SQLException {
+    public void crearPonderadoInicial(ModeloProducto producto, BigDecimal costoInicial, String usuario) throws SQLException {
         PonderadoPendiente calculo = new PonderadoPendiente(
                 producto.getIdSistema(),
                 BigDecimal.ZERO,

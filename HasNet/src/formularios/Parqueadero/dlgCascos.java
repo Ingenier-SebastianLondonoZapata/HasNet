@@ -1,5 +1,7 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.cambiarColorTabla;
@@ -238,7 +240,7 @@ public class dlgCascos extends javax.swing.JDialog {
         String cascos = txtCascos.getText();
 
         if (cascos.equals("")) {
-            metodos.msgAdvertencia(null, "No ha seleccionado ningún lugar para guardar el casco");
+            ControladorAlertas.alert("No ha seleccionado ningún lugar para guardar el casco");
             return;
         }
 
@@ -248,7 +250,7 @@ public class dlgCascos extends javax.swing.JDialog {
             instancias.getSql().asignarCasco(espacio.toString(), placa1, "");
         }
 
-        metodos.msgExito(null, "Cascos guardados con exito.");
+        ControladorAlertas.alertSuccess("Cascos guardados con exito.");
         instancias.setProcesoCompletoCascos(true);
         this.dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -257,7 +259,7 @@ public class dlgCascos extends javax.swing.JDialog {
         String id = tblCascos.getValueAt(tblCascos.getSelectedRow(), tblCascos.getSelectedColumn()).toString();
 
         if (id.length() >= 5 && !id.contains("Seleccionado")) {
-            metodos.msgAdvertenciaAjustado(null, "Este espacio esta ocupado.");
+            ControladorAlertas.alert("Este espacio esta ocupado.");
         } else {
             String[] validador = id.split(", ");
             if (validador.length > 1) {

@@ -1,9 +1,13 @@
 package formularios.productos;
 
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
 import clases.big;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +29,7 @@ import jbarcodebean.JBarcodeBean;
 import net.sourceforge.jbarcodebean.model.Interleaved25;
 
 public class dlgConsultarCodigos extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     String simbolo = "";
     private Instancias instancias;
@@ -294,18 +299,13 @@ public class dlgConsultarCodigos extends javax.swing.JDialog {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String codigo = txtCodigo.getText();
 
-            ndProducto nodo = null;
+            ModeloProducto nodo = null;
 
             String codigoProd = "";
             if (codigo.equals("")) {
                 codigoProd = "";
             } else {
-                Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-                if (listado.length > 0) {
-                    codigo = listado[0][0].toString();
-                }
-
-                nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+                nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
                 if (nodo.getIdSistema() != null) {
                     codigoProd = nodo.getIdSistema();
                 }

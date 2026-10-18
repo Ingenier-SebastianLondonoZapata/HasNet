@@ -15,6 +15,51 @@ import java.util.List;
 
 public class DaoDetalleProducto extends AbstractDao {
 
+    public boolean existeImeiOSerialEnInventario(String imeiOSerial) throws SQLException {
+        String sql = "SELECT 1 FROM " + Tablas.DETALLE_PRODUCTO.getNombre() + " WHERE imei = ? AND (estado = 'DISPONIBLE' OR estado = 'PRESTADO') LIMIT 1";
+
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setString(1, imeiOSerial);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    public boolean existeColor(String nombre) throws SQLException {
+        return existeNombre(Tablas.COLORES, nombre);
+    }
+
+    public void crearColor(String nombre) throws SQLException {
+        insertarNombre(Tablas.COLORES, nombre);
+    }
+
+    public boolean existeTalla(String nombre) throws SQLException {
+        return existeNombre(Tablas.TALLA, nombre);
+    }
+
+    public void crearTalla(String nombre) throws SQLException {
+        insertarNombre(Tablas.TALLA, nombre);
+    }
+
+    private boolean existeNombre(Tablas tabla, String nombre) throws SQLException {
+        try (PreparedStatement ps = getConnection().prepareStatement("SELECT 1 FROM " + tabla.getNombre() + " WHERE nombre = ? LIMIT 1")) {
+            ps.setString(1, nombre);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    private void insertarNombre(Tablas tabla, String nombre) throws SQLException {
+        try (PreparedStatement ps = getConnection().prepareStatement("INSERT INTO " + tabla.getNombre() + " (nombre) VALUES (?)")) {
+            ps.setString(1, nombre);
+            ps.executeUpdate();
+        }
+    }
+
     public void actualizarConsecutivo(Connection conn, int cantidadRegistros) throws SQLException {
         String sql = "UPDATE " + Tablas.CONSECUTIVOS.getNombre() + " SET numero = numero + ? WHERE Id = 'DETALLEPROD'";
 

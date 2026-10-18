@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndEpsPrecargados;
@@ -483,11 +485,11 @@ public class infRepOrdenesMedicas extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un Paciente");
+            ControladorAlertas.alertFail("Cargue primero un Paciente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este Paciente");
+                ControladorAlertas.alert("Ya cargo este Paciente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -503,11 +505,11 @@ public class infRepOrdenesMedicas extends javax.swing.JPanel {
 
     private void btnAggProd3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProd3ActionPerformed
         if (txtProveedor.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un convenio");
+            ControladorAlertas.alertFail("Cargue primero un convenio");
         } else {
 
             if (yaEsta(cmbProveedor, txtProveedor.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este convenio");
+                ControladorAlertas.alert("Ya cargo este convenio");
             } else {
                 cmbProveedor.addItem(txtProveedor.getText());
                 cmbProveedor.setSelectedItem(txtProveedor.getText());
@@ -523,11 +525,11 @@ public class infRepOrdenesMedicas extends javax.swing.JPanel {
 
     private void btnAggProd4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProd4ActionPerformed
         if (cmbMedico.getSelectedIndex() == 0) {
-            metodos.msgError(null, "Cargue primero un medico");
+            ControladorAlertas.alertFail("Cargue primero un medico");
         } else {
 
             if (yaEsta(cmbMedico2, cmbMedico.getSelectedItem().toString())) {
-                metodos.msgAdvertencia(null, "Ya cargo este medico");
+                ControladorAlertas.alert("Ya cargo este medico");
             } else {
                 cmbMedico2.addItem(cmbMedico.getSelectedItem().toString());
                 cmbMedico2.setSelectedItem(cmbMedico.getSelectedItem().toString());
@@ -543,11 +545,11 @@ public class infRepOrdenesMedicas extends javax.swing.JPanel {
 
     private void btnAggProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProdActionPerformed
         if (txtCodigo.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un procedimiento");
+            ControladorAlertas.alertFail("Cargue primero un procedimiento");
         } else {
 
             if (yaEsta(cmbProducto, txtCodigo.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este procedimiento");
+                ControladorAlertas.alert("Ya cargo este procedimiento");
             } else {
                 cmbProducto.addItem(txtCodigo.getText());
                 cmbProducto.setSelectedItem(txtCodigo.getText());
@@ -568,7 +570,7 @@ public class infRepOrdenesMedicas extends javax.swing.JPanel {
     }//GEN-LAST:event_txtProveedorKeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbCientes.getItemCount() > 0) {

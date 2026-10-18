@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Celda_CheckBox;
 import clases.ImagePreviewPanel;
@@ -3166,12 +3168,12 @@ public class infHistoria extends javax.swing.JInternalFrame {
     }
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             historia.setMotivo(txtMotivoAnt.getText());
             historia.setEvolucion(txtEvolucionAnt.getText());
             historia.setTratamientos(txtTratamientos.getText());
             instancias.getSql().modificarHistoria(historia);
-            metodos.msgExito(this, "Historia modificada con éxito");
+            ControladorAlertas.alertSuccess("Historia modificada con éxito");
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -3328,7 +3330,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCcKeyTyped
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             int i = 0;
             if (lista.getSelectedIndex() == 0) {
                 String consulta = instancias.getSql().getNumConsecutivo("CONSULTA")[0].toString();
@@ -3358,17 +3360,17 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
                 ndConsulta nodConsulta = metodos.llenarConsulta(vector);
                 if (!instancias.getSql().agregarConsulta(nodConsulta)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la consulta");
                     return;
                 }
 
                 if (!instancias.getSql().aumentarConsecutivo("CONSULTA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CONSULTA")[0]) + 1)) {
-                    metodos.msgError(this, "Error al aumentar consecutivo");
+                    ControladorAlertas.alertFail("Error al aumentar consecutivo");
                 }
 
                 if (metodos.desdeDate(dtControl.getCurrent()).equals(metodos.fecha4(metodosGenerales.fecha()))) {
                     if (!instancias.getSql().modificarGestionControl(consulta, true)) {
-                        metodos.msgError(null, "Error al modificar el estado de la alerta");
+                        ControladorAlertas.alertFail("Error al modificar el estado de la alerta");
                         return;
                     }
                 }
@@ -3377,7 +3379,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
 
             if (i > 0) {
-                metodos.msgExito(this, "Historia guardada con exito");
+                ControladorAlertas.alertSuccess("Historia guardada con exito");
                 seguimientoEditable(true);
                 consultaEditable(true);
                 setMascota(txtCodigo.getText());
@@ -3760,7 +3762,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_dtProxima1OnSelectionChange
 
     private void btnGuardar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar2ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             boolean gestion;
 
             if (metodos.desdeDate(dtNueva1.getCurrent()).equals(metodos.desdeDate(dtProxima1.getCurrent())) || metodos.desdeDate(dtProxima1.getCurrent()).equals(metodos.fecha4(metodosGenerales.fecha()))) {
@@ -3770,10 +3772,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbPuppy.getSelectedIndex() == 1) {
                 if (txtLote1.getText().equals("") || txtMarca1.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre1.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre1.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva1.getCurrent()), txtCodigo.getText(), "1", txtMarca1.getText(),
                             txtLote1.getText(), metodos.desdeDate(dtProxima1.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbPuppy, "1");
                         dtNueva1.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3786,7 +3788,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva1.getCurrent()), txtCodigo.getText(), "1", txtMarca1.getText(),
                         txtLote1.getText(), metodos.desdeDate(dtProxima1.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbPuppy, "1");
                     dtNueva1.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3803,10 +3805,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico2.getSelectedIndex() == 1) {
                 if (txtLote2.getText().equals("") || txtMarca2.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre2.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre2.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva2.getCurrent()), txtCodigo.getText(), "2", txtMarca2.getText(),
                             txtLote2.getText(), metodos.desdeDate(dtProxima2.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico2, "2");
                         dtNueva2.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3819,7 +3821,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva2.getCurrent()), txtCodigo.getText(), "2", txtMarca2.getText(),
                         txtLote2.getText(), metodos.desdeDate(dtProxima2.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico2, "2");
                     dtNueva2.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3836,10 +3838,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico3.getSelectedIndex() == 1) {
                 if (txtLote3.getText().equals("") || txtMarca3.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre3.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre3.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva3.getCurrent()), txtCodigo.getText(), "3", txtMarca3.getText(),
                             txtLote3.getText(), metodos.desdeDate(dtProxima3.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico3, "3");
                         dtNueva3.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3852,7 +3854,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva3.getCurrent()), txtCodigo.getText(), "3", txtMarca3.getText(),
                         txtLote3.getText(), metodos.desdeDate(dtProxima3.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico3, "3");
                     dtNueva3.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3869,10 +3871,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico4.getSelectedIndex() == 1) {
                 if (txtLote4.getText().equals("") || txtMarca4.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre4.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre4.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva4.getCurrent()), txtCodigo.getText(), "4", txtMarca4.getText(),
                             txtLote4.getText(), metodos.desdeDate(dtProxima4.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico4, "4");
                         dtNueva4.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3885,7 +3887,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva4.getCurrent()), txtCodigo.getText(), "4", txtMarca4.getText(),
                         txtLote4.getText(), metodos.desdeDate(dtProxima4.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico4, "4");
                     dtNueva4.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3902,10 +3904,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico5.getSelectedIndex() == 1) {
                 if (txtLote5.getText().equals("") || txtMarca5.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre5.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre5.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva5.getCurrent()), txtCodigo.getText(), "5", txtMarca5.getText(),
                             txtLote5.getText(), metodos.desdeDate(dtProxima5.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico5, "5");
                         dtNueva5.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3918,7 +3920,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva5.getCurrent()), txtCodigo.getText(), "5", txtMarca5.getText(),
                         txtLote5.getText(), metodos.desdeDate(dtProxima5.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico5, "5");
                     dtNueva5.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3935,10 +3937,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico6.getSelectedIndex() == 1) {
                 if (txtLote6.getText().equals("") || txtMarca6.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre6.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre6.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva6.getCurrent()), txtCodigo.getText(), "6", txtMarca6.getText(),
                             txtLote6.getText(), metodos.desdeDate(dtProxima6.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico6, "6");
                         dtNueva6.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3951,7 +3953,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva6.getCurrent()), txtCodigo.getText(), "6", txtMarca6.getText(),
                         txtLote6.getText(), metodos.desdeDate(dtProxima6.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico6, "6");
                     dtNueva6.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3968,10 +3970,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico7.getSelectedIndex() == 1) {
                 if (txtLote7.getText().equals("") || txtMarca7.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre7.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre7.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva7.getCurrent()), txtCodigo.getText(), "7", txtMarca7.getText(),
                             txtLote7.getText(), metodos.desdeDate(dtProxima7.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico7, "7");
                         dtNueva7.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -3984,7 +3986,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva7.getCurrent()), txtCodigo.getText(), "7", txtMarca7.getText(),
                         txtLote7.getText(), metodos.desdeDate(dtProxima7.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico7, "7");
                     dtNueva7.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4001,10 +4003,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico8.getSelectedIndex() == 1) {
                 if (txtLote8.getText().equals("") || txtMarca8.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre8.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre8.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva8.getCurrent()), txtCodigo.getText(), "8", txtMarca8.getText(),
                             txtLote8.getText(), metodos.desdeDate(dtProxima8.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico8, "8");
                         dtNueva8.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4017,7 +4019,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva8.getCurrent()), txtCodigo.getText(), "8", txtMarca8.getText(),
                         txtLote8.getText(), metodos.desdeDate(dtProxima8.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico8, "8");
                     dtNueva8.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4034,10 +4036,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico9.getSelectedIndex() == 1) {
                 if (txtLote9.getText().equals("") || txtMarca9.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre9.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre9.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva9.getCurrent()), txtCodigo.getText(), "9", txtMarca9.getText(),
                             txtLote9.getText(), metodos.desdeDate(dtProxima9.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico9, "9");
                         dtNueva9.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4050,7 +4052,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva9.getCurrent()), txtCodigo.getText(), "9", txtMarca9.getText(),
                         txtLote9.getText(), metodos.desdeDate(dtProxima9.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico9, "9");
                     dtNueva9.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4067,10 +4069,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico10.getSelectedIndex() == 1) {
                 if (txtLote10.getText().equals("") || txtMarca10.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre10.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre10.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva10.getCurrent()), txtCodigo.getText(), "10", txtMarca10.getText(),
                             txtLote10.getText(), metodos.desdeDate(dtProxima10.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico10, "10");
                         dtNueva10.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4083,7 +4085,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva10.getCurrent()), txtCodigo.getText(), "10", txtMarca10.getText(),
                         txtLote10.getText(), metodos.desdeDate(dtProxima10.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico10, "10");
                     dtNueva10.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4100,10 +4102,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico11.getSelectedIndex() == 1) {
                 if (txtLote11.getText().equals("") || txtMarca11.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre11.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre11.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva11.getCurrent()), txtCodigo.getText(), "11", txtMarca11.getText(),
                             txtLote11.getText(), metodos.desdeDate(dtProxima11.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico11, "11");
                         dtNueva11.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4116,7 +4118,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva11.getCurrent()), txtCodigo.getText(), "11", txtMarca11.getText(),
                         txtLote11.getText(), metodos.desdeDate(dtProxima11.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico11, "11");
                     dtNueva11.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4133,10 +4135,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico12.getSelectedIndex() == 1) {
                 if (txtLote12.getText().equals("") || txtMarca12.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre12.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre12.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva12.getCurrent()), txtCodigo.getText(), "12", txtMarca12.getText(),
                             txtLote12.getText(), metodos.desdeDate(dtProxima12.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico12, "12");
                         dtNueva12.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4149,7 +4151,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva12.getCurrent()), txtCodigo.getText(), "12", txtMarca12.getText(),
                         txtLote12.getText(), metodos.desdeDate(dtProxima12.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico12, "12");
                     dtNueva12.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4166,10 +4168,10 @@ public class infHistoria extends javax.swing.JInternalFrame {
             }
             if (cmbHistorico13.getSelectedIndex() == 1) {
                 if (txtLote13.getText().equals("") || txtMarca13.getText().equals("")) {
-                    if (metodos.msgPregunta(this, "No ha ingresado el lote o marca en " + lbNombre13.getText() + "¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("No ha ingresado el lote o marca en " + lbNombre13.getText() + "¿Desea continuar?")) {
                         if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva13.getCurrent()), txtCodigo.getText(), "13", txtMarca13.getText(),
                             txtLote13.getText(), metodos.desdeDate(dtProxima13.getCurrent()), gestion})) {
-                            metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                         }
                         vacunas(cmbHistorico13, "13");
                         dtNueva13.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4182,7 +4184,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 } else {
                     if (!instancias.getSql().agregarVacuna(new Object[]{metodos.desdeDate(dtNueva13.getCurrent()), txtCodigo.getText(), "13", txtMarca13.getText(),
                         txtLote13.getText(), metodos.desdeDate(dtProxima13.getCurrent()), gestion})) {
-                        metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     }
                     vacunas(cmbHistorico13, "13");
                     dtNueva13.setSelectedDate(metodos.haciaDate(metodos.fecha2(metodosGenerales.fecha())));
@@ -4192,7 +4194,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 }
             }
 
-            metodos.msgExito(this, "Vacunas registradas con exito");
+            ControladorAlertas.alertSuccess("Vacunas registradas con exito");
 
             botonAlerta(cmbPuppy, alerta1);
             botonAlerta(cmbHistorico2, alerta2);
@@ -4261,7 +4263,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
     private void btnReimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Seleccione una consulta");
+            ControladorAlertas.alertFail("Seleccione una consulta");
             return;
         }
         new GeneradorReporteVeterinario(instancias).verRemisionVeterinaria(lista.getSelectedValue().toString().split(" - ")[0], txtEdad.getText());
@@ -4351,7 +4353,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -4360,7 +4362,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -4409,7 +4411,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //            }
 //            File ruta = new File(Paths.get(System.getProperty("user.dir") + "\\imagenes\\veterinaria\\examenes\\IMG-" + codigo + ".jpg").toString());
 //            if (!ruta.delete()) {
-//                metodos.msgError(null, "Hubo un error al eliminar la imagen");
+//                ControladorAlertas.alertFail("Hubo un error al eliminar la imagen");
 //            }
 //            if (cant > 0) {
 //                actual = 0;
@@ -4419,7 +4421,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //                repaint();
 //            }
         } else {
-            metodos.msgAdvertencia(this, "Seleccione una fila");
+            ControladorAlertas.alert("Seleccione una fila");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -4444,7 +4446,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //            }
 //            File ruta = new File(Paths.get(System.getProperty("user.dir") + "\\imagenes\\veterinaria\\examenes\\IMG-" + codigo + ".jpg").toString());
 //            if (!ruta.delete()) {
-//                metodos.msgError(null, "Hubo un error al eliminar la imagen");
+//                ControladorAlertas.alertFail("Hubo un error al eliminar la imagen");
 //            }
 //            if (cant > 0) {
 //                actual = 0;
@@ -4454,7 +4456,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //                repaint();
 //            }
         } else {
-            metodos.msgAdvertencia(this, "Seleccione una fila");
+            ControladorAlertas.alert("Seleccione una fila");
         }
     }//GEN-LAST:event_popBorrar1ActionPerformed
 
@@ -4682,7 +4684,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -4729,11 +4731,11 @@ public class infHistoria extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cmbHistorico13ItemStateChanged
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             String[] consulta = lista.getSelectedValue().toString().split(" - ");
             instancias.getSql().modificarDiagnostico(txtPlanDiagnostico.getText(), consulta[0]);
 
-            metodos.msgExito(this, "Diagnostico definitivo modificado con exito");
+            ControladorAlertas.alertSuccess("Diagnostico definitivo modificado con exito");
         }
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -4765,12 +4767,12 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         String id = "";
         if (txtDescripcionExamenConsulta.getText().equals("")) {
-            metodos.msgError(this, "No ha ingresado ninguna descripción del anexo");
+            ControladorAlertas.alertFail("No ha ingresado ninguna descripción del anexo");
             return;
         }
 
         if (txtNombreAnexoConsulta.getText().contains(",") || txtNombreAnexoConsulta.getText().contains(";")) {
-            metodos.msgError(this, "El nombre del archivo no puede contener comas ',' ni ';' ");
+            ControladorAlertas.alertFail("El nombre del archivo no puede contener comas ',' ni ';' ");
             return;
         }
 
@@ -4789,12 +4791,12 @@ public class infHistoria extends javax.swing.JInternalFrame {
         try {
             Files.copy(FROM2, TO, options);
         } catch (Exception ex) {
-            metodos.msgError(this, "Hubo un error al cargar el archivo");
+            ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             return;
         }
 
         if (!instancias.getSql().aumentarConsecutivo("DOCIMPORTADO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DOCIMPORTADO")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar el codigo de la imagen");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el codigo de la imagen");
         }
 
         DefaultTableModel modeloTabla = (DefaultTableModel) tblExamenes.getModel();
@@ -4862,12 +4864,12 @@ public class infHistoria extends javax.swing.JInternalFrame {
         String id = "";
 
         if (txtDescripcionExamenConsulta1.getText().equals("")) {
-            metodos.msgError(this, "No ha ingresado ninguna descripción del anexo");
+            ControladorAlertas.alertFail("No ha ingresado ninguna descripción del anexo");
             return;
         }
 
         if (txtNombreAnexoConsulta1.getText().contains(",") || txtNombreAnexoConsulta1.getText().contains(";")) {
-            metodos.msgError(this, "El nombre del archivo no puede contener comas ',' ni ';' ");
+            ControladorAlertas.alertFail("El nombre del archivo no puede contener comas ',' ni ';' ");
             return;
         }
 
@@ -4886,12 +4888,12 @@ public class infHistoria extends javax.swing.JInternalFrame {
         try {
             Files.copy(FROM2, TO, options);
         } catch (Exception ex) {
-            metodos.msgError(this, "Hubo un error al cargar el archivo");
+            ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             return;
         }
 
         if (!instancias.getSql().aumentarConsecutivo("DOCIMPORTADO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DOCIMPORTADO")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar el codigo de la imagen");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el codigo de la imagen");
         }
 
         DefaultTableModel modeloTabla = (DefaultTableModel) tblEvoluciones.getModel();
@@ -4909,7 +4911,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getQuirurgica().nuevaFormula(historia, dtControl.getText(), txtHistoria.getText());
@@ -4992,7 +4994,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cmbFechaActionPerformed
 
     private void btnGuardar3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar3ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             int i = 0;
             if ((!txtEvolucionSeg.getText().equals("") || !txtObservacionesSeg.getText().equals("")) && cmbFecha.getSelectedIndex() == 0 && lista.getSelectedIndex() != 0) {
                 Object[][] fechas = instancias.getSql().getConsultas(historia.getId());
@@ -5018,14 +5020,14 @@ public class infHistoria extends javax.swing.JInternalFrame {
                 ndSeguimiento nodoSeguimiento = metodos.llenarSeguimiento(vector2);
 
                 if (!instancias.getSql().agregarSeguimiento(nodoSeguimiento)) {
-                    metodos.msgError(this, "Hubo un problema al guardar el seguimiento");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar el seguimiento");
                     return;
                 }
                 i++;
             }
 
             if (i > 0) {
-                metodos.msgExito(this, "Control guardado con exito");
+                ControladorAlertas.alertSuccess("Control guardado con exito");
                 seguimientoEditable(true);
                 consultaEditable(true);
                 setMascota(txtCodigo.getText());
@@ -5504,7 +5506,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //        if (cmbFecha.getSelectedIndex() != 0) {
 //
 //            if (tblExamens.getValueAt(num, 1) == null || tblExamens.getValueAt(num, 1).toString().equals("")) {
-//                metodos.msgError(this, "No hay examen");
+//                ControladorAlertas.alertFail("No hay examen");
 //            } else {
 //                visor1 completa = new visor1(tblExamens.getValueAt(num, 1).toString());
 //                completa.show();
@@ -5528,7 +5530,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //            id = Arrays.toString(sql.getNumConsecutivo("IMG"));
 //
 //            if (!sql.aumentarConsecutivo("IMG", Integer.parseInt((String) sql.getNumConsecutivo("IMG")[0]) + 1)) {
-//                metodos.msgError(this, "Hubo un problema al guardar el codigo de la imagen");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar el codigo de la imagen");
 //            }
 //
 //            tblExamens.setValueAt(id, num, 1);
@@ -5558,7 +5560,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //                this.repaint();
 //
 //            } catch (Exception ex) {
-//                metodos.msgError(this, "Hubo un error al cargar el archivo");
+//                ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
 //            }
 //
 //        }
@@ -5633,7 +5635,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 //    public void grabarVacuna(DateChooserCombo campo, Object datos[]) {
 //        if (!campo.getText().equalsIgnoreCase("")) {
 //            if (!instancias.getSql().agregarVacuna(datos)) {
-//                metodos.msgError(this, "Hubo un problema al guardar el concepto");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar el concepto");
 //                return;
 //            }
 //        }
@@ -5644,11 +5646,11 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         if (campo.getSelectedIndex() == 1) {
             if (texto1.equals("") || texto2.equals("")) {
-                metodos.msgError(this, "No ha ingresado Lote o Marca en " + nombreVacuna);
+                ControladorAlertas.alertFail("No ha ingresado Lote o Marca en " + nombreVacuna);
                 retorno = false;
             } else {
                 if (!instancias.getSql().agregarVacuna(datos)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la vacuna");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la vacuna");
                     retorno = false;
                 }
             }

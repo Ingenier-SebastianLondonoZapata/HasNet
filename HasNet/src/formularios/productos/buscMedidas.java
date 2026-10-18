@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -234,27 +236,27 @@ public class buscMedidas extends javax.swing.JDialog {
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgError(null, "Debe ingresar una medida");
+            ControladorAlertas.alertFail("Debe ingresar una medida");
             return;
         }
         
         String aux = instancias.getSql().getDatosMedidas(txtId.getText());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Agregar medida?") == 0) {
+            if (ControladorAlertas.option("¿Agregar medida?")) {
                 
                 Boolean detalle = false;
-                if (metodos.msgPregunta(null, "¿La medida es solo una unidad?") == 0) {
+                if (ControladorAlertas.option("¿La medida es solo una unidad?")) {
                     detalle = false;
                 } else {
                     detalle = true;
                 }
                 
                 if (!instancias.getSql().agregarMedida(txtId.getText(), detalle)) {
-                    metodos.msgError(null, "Hubo un error al ingresar la medida");
+                    ControladorAlertas.alertFail("Hubo un error al ingresar la medida");
                     return;
                 }
                 
-                metodos.msgExito(null, "Medida ingresada con exito");
+                ControladorAlertas.alertSuccess("Medida ingresada con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

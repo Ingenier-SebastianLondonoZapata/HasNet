@@ -12,13 +12,13 @@ import Utilidades.DatosMaestra;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
-import dao.Configuraciones.DaoResoluciones;
-import dao.Ventas.DaoCotizacion;
-import dao.Ventas.DaoFactura;
-import dao.Ventas.DaoOrdenServicio;
-import dao.Ventas.DaoPedido;
-import dao.Ventas.DaoPlanSepare;
+import Modelo.Productos.ModeloProducto;
+import Dao.Configuraciones.DaoResoluciones;
+import Dao.Ventas.DaoCotizacion;
+import Dao.Ventas.DaoFactura;
+import Dao.Ventas.DaoOrdenServicio;
+import Dao.Ventas.DaoPedido;
+import Dao.Ventas.DaoPlanSepare;
 import Procesos.Inventario.Servicio.ServicioInventario;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -56,13 +56,13 @@ public class FuncionalidadVentas {
     }
 
     public void procesarMovimientoInventario(TipoDocumento tipoMovimiento, String idMovimiento,
-            String tablaUtilizada, String usuario, List<MovimientoInventario> productos,
+            String idBodega, String usuario, List<MovimientoInventario> productos,
             List<DetalleProducto> detalles, InformacionAdicional informacionAdicional) {
 
         try {
             ServicioInventario servicioInventario = new ServicioInventario(
                     productos, detalles, tipoMovimiento, idMovimiento,
-                    tablaUtilizada, usuario, informacionAdicional);
+                    idBodega, usuario, informacionAdicional);
             servicioInventario.procesarMovimiento();
         } catch (SQLException ex) {
             Logger.getLogger(FuncionalidadVentas.class.getName()).log(Level.SEVERE, null, ex);
@@ -293,31 +293,16 @@ public class FuncionalidadVentas {
         return "";
     }
 
-    public BigDecimal revisarPrecioProducto(String listaPrecio, BigDecimal valorUnitario, ndProducto datosProducto) {
+    public BigDecimal revisarPrecioProducto(String listaPrecio, BigDecimal valorUnitario, ModeloProducto datosProducto) {
         return obtenerPrecioLista(listaPrecio, datosProducto);
     }
 
-    public BigDecimal obtenerPrecioLista(String lista, ndProducto datosProducto) {
-        switch (lista) {
-            case "L1":
-                return big.getBigDecimal(datosProducto.getL1());
-            case "L2":
-                return big.getBigDecimal(datosProducto.getL2());
-            case "L3":
-                return big.getBigDecimal(datosProducto.getL3());
-            case "L4":
-                return big.getBigDecimal(datosProducto.getL4());
-            case "L5":
-                return big.getBigDecimal(datosProducto.getL5());
-            case "L6":
-                return big.getBigDecimal(datosProducto.getL6());
-            case "L7":
-                return big.getBigDecimal(datosProducto.getL7());
-            case "L8":
-                return big.getBigDecimal(datosProducto.getL8());
-            default:
-                return BigDecimal.ZERO;
+    public BigDecimal obtenerPrecioLista(String lista, ModeloProducto datosProducto) {
+        if (lista == null || !lista.trim().matches("(?i)L\\d+")) {
+            return BigDecimal.ZERO;
         }
+
+        return datosProducto.getPrecioLista(lista.trim());
     }
 
     public ConversorDocumentoAFactura inicializarConversorDocumentos(final Instancias instancias, final DaoOrdenServicio daoOrdenServicio,

@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndEpsPrecargados;
@@ -366,11 +368,11 @@ public class infRepFormulas extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un Paciente");
+            ControladorAlertas.alertFail("Cargue primero un Paciente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este Paciente");
+                ControladorAlertas.alert("Ya cargo este Paciente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -386,11 +388,11 @@ public class infRepFormulas extends javax.swing.JPanel {
 
     private void btnAggMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggMedicamentoActionPerformed
         if (txtMedicamento.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un convenio");
+            ControladorAlertas.alertFail("Cargue primero un convenio");
         } else {
 
             if (yaEsta(cmbMedicamento, txtMedicamento.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este convenio");
+                ControladorAlertas.alert("Ya cargo este convenio");
             } else {
                 cmbMedicamento.addItem(txtMedicamento.getText());
                 cmbMedicamento.setSelectedItem(txtMedicamento.getText());
@@ -411,7 +413,7 @@ public class infRepFormulas extends javax.swing.JPanel {
     }//GEN-LAST:event_txtMedicamentoKeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbCientes.getItemCount() > 0) {

@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Modelo.Terceros.ModeloContacto;
 import clases.metodosGenerales;
@@ -462,7 +464,7 @@ public class infRepClientes extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String tipo = "";
             if (btnExcel.isSelected()) {
@@ -486,11 +488,11 @@ public class infRepClientes extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtNomClient.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -517,7 +519,7 @@ public class infRepClientes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chInactivosItemStateChanged
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             String sql = "";
 
             if (!sql.equals("") && cmbCientes.getItemCount() > 0) {
@@ -551,11 +553,11 @@ public class infRepClientes extends javax.swing.JInternalFrame {
 
     private void btnAggCliente3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggCliente3ActionPerformed
         if (txtCliente3.getText().equals("")) {
-            metodos.msgError(null, "Ingrese el nombre de la ciudad");
+            ControladorAlertas.alertFail("Ingrese el nombre de la ciudad");
         } else {
 
             if (yaEsta(cmbCientes3, txtCliente3.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo esta ciudad");
+                ControladorAlertas.alert("Ya cargo esta ciudad");
             } else {
                 cmbCientes3.addItem(txtCliente3.getText());
                 cmbCientes3.setSelectedItem(txtCliente3.getText());

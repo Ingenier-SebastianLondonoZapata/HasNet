@@ -1,5 +1,7 @@
 package formularios.Oftalmologia;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
@@ -652,19 +654,19 @@ public class infIncapacidadOf extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "INCOF-" + instancias.getSql().getNumConsecutivo("INCOF")[0];
             ndIncapacidadOf nodo = instancias.getSql().getDatosIncapacidadOf(id);
 
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La Incapacidad ya existe");
+                ControladorAlertas.alertFail("La Incapacidad ya existe");
                 txtId.requestFocus();
                 return;
             }
@@ -679,20 +681,20 @@ public class infIncapacidadOf extends javax.swing.JInternalFrame {
             nodo = metodos.llenarIncapacidadOf(vector);
 
             if (!instancias.getSql().agregarIncapacidadOf(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la Incapacidad");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la Incapacidad");
                 return;
             }
 
             //CAMBIAR CONSECUTIVO INCAPACIDAD
             if (!instancias.getSql().aumentarConsecutivo("INCOF", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("INCOF")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la incapacidad");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la incapacidad");
             }
 
             txtId.setText("INCOF-" + instancias.getSql().getNumConsecutivo("INCOF")[0]);
 
             limpiar();
 
-            metodos.msgExito(this, "Incapacidad registrado con éxito");
+            ControladorAlertas.alertSuccess("Incapacidad registrado con éxito");
 
             ndHistoriaClinica historia = instancias.getSql().getDatosHistClinica(txtHistoria.getText());
             String con[] = historia.getConsecutivos().split("&");
@@ -700,7 +702,7 @@ public class infIncapacidadOf extends javax.swing.JInternalFrame {
             aux++;
             instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + con[1] + "&" + con[2] + "&" + aux);
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteOftalmologia(instancias).verIncapacidadOf(id, instancias.getInformacionEmpresa(), txtIdentificacion.getText(), txtTipoDocu.getText(),
                         txtNombres.getText(), txtSexo.getText(), txtEstado.getText(), txtNacimiento.getText(), txtEdad.getText());
             }

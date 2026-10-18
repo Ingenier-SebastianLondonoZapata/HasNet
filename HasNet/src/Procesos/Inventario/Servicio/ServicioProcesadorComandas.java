@@ -1,14 +1,19 @@
 package Procesos.Inventario.Servicio;
 
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Modelo.Ventas.OpcionPreparacion;
 import Utilidades.Ventas.ParserPreparacion;
 import Utilidades.Utilidades;
 import Modelo.Ventas.ModeloComanda;
 import clases.Instancias;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 
 public class ServicioProcesadorComandas {
+    private final DaoProducto daoProducto = new DaoProducto();
     
     private final CargadorProducto cargadorProducto;
     
@@ -17,7 +22,7 @@ public class ServicioProcesadorComandas {
     }
     
     public ModeloComanda construirComanda(String codigoProducto, String nombreProducto, String preparacion,
-            String tablaUtilizada, BigDecimal cantidad, String congelada,
+            String idBodega, BigDecimal cantidad, String congelada,
             String factura, int turno, String pedido, String consecutivo, Instancias instancias) {
         
         if (preparacion == null || preparacion.isEmpty()) {
@@ -28,9 +33,9 @@ public class ServicioProcesadorComandas {
         String aderezos = extraerComponente(preparacion, 0);
         String observaciones = extraerComponente(preparacion, 2);
         
-        String opcionesFormateo = procesarOpciones(opciones, tablaUtilizada);
+        String opcionesFormateo = procesarOpciones(opciones, idBodega);
         String ingredientesFormateo = procesarIngredientes(opciones, instancias);
-        String aderzosFormateo = procesarAderezos(aderezos, tablaUtilizada);
+        String aderzosFormateo = procesarAderezos(aderezos, idBodega);
         
         return new ModeloComanda(congelada, factura, codigoProducto, nombreProducto,
                 opcionesFormateo, ingredientesFormateo, "", aderzosFormateo,
@@ -52,7 +57,7 @@ public class ServicioProcesadorComandas {
         }
     }
     
-    private String procesarOpciones(String opciones, String tablaUtilizada) {
+    private String procesarOpciones(String opciones, String idBodega) {
         if (opciones.isEmpty()) {
             return "";
         }
@@ -71,7 +76,7 @@ public class ServicioProcesadorComandas {
                 String estado = opcion.getEstado().trim();
                 
                 if (estado.equals("true")) {
-                    ndProducto producto = cargadorProducto.cargar(opcion.getCodigo(), tablaUtilizada);
+                    ModeloProducto producto = cargadorProducto.cargar(opcion.getCodigo(), idBodega);
                     if (producto != null) {
                         opciones1.append(construirLineaOpcion(opcion, producto)).append(", ");
                     }
@@ -88,7 +93,7 @@ public class ServicioProcesadorComandas {
         return opciones1.toString();
     }
     
-    private String construirLineaOpcion(OpcionPreparacion opcion, ndProducto producto) {
+    private String construirLineaOpcion(OpcionPreparacion opcion, ModeloProducto producto) {
         if (producto.getGrupo() != null && producto.getGrupo().equals("GRP-02")) {
             return Utilidades.formatearCantidadVista(opcion.getCantidad()) + "-" + producto.getDescripcion();
         }
@@ -111,7 +116,7 @@ public class ServicioProcesadorComandas {
             
             if (!esAdicion && (principal == null || principal.isEmpty() || principal.equals(" "))) {
                 if (estado.equals("false")) {
-                    ndProducto datosProducto = instancias.getSql().getDatosProducto(opcion.getCodigo(), "bdProductos");
+                    ModeloProducto datosProducto = daoProducto.obtenerDatosProducto(opcion.getCodigo(), enumBodegas.ID_BODEGA_PRINCIPAL);
                     ingredientes.append(datosProducto.getDescripcion()).append(", ");
                 }
             }
@@ -126,7 +131,7 @@ public class ServicioProcesadorComandas {
         return ingredientes.toString();
     }
     
-    private String procesarAderezos(String aderezos, String tablaUtilizada) {
+    private String procesarAderezos(String aderezos, String idBodega) {
         if (aderezos.isEmpty()) {
             return "";
         }
@@ -135,7 +140,7 @@ public class ServicioProcesadorComandas {
         String[] codigosAderzos = aderezos.split(", ");
         
         for (String codigo : codigosAderzos) {
-            ndProducto producto = cargadorProducto.cargar(codigo.trim(), tablaUtilizada);
+            ModeloProducto producto = cargadorProducto.cargar(codigo.trim(), idBodega);
             if (producto != null) {
                 aderzosFormateo.append(producto.getDescripcion()).append(", ");
             }

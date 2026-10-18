@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -230,14 +232,14 @@ public class buscCargos extends javax.swing.JDialog {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 
             if (tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 2).equals("1")) {
-                metodos.msgError(null, "No se puede modificar este cargo");
+                ControladorAlertas.alertFail("No se puede modificar este cargo");
                 this.dispose();
                 instancias.getEmpleados().ventanaCargos("");
             } else {
-                if (metodos.msgPregunta(null, "¿Desea modificar el cargo?") == 0) {
+                if (ControladorAlertas.option("¿Desea modificar el cargo?")) {
                     instancias.getSql().modificarCargo(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 1).toString().toUpperCase(),
                             tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0).toString());
-                    metodos.msgExito(null, "Cargo modificado correctamente");
+                    ControladorAlertas.alertSuccess("Cargo modificado correctamente");
                 }
             }
 //            if (tblRegistros.getRowCount() > 1) {
@@ -256,26 +258,26 @@ public class buscCargos extends javax.swing.JDialog {
 
     private void btnEste2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste2ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgError(null, "Debe ingresar el cargo");
+            ControladorAlertas.alertFail("Debe ingresar el cargo");
             return;
         }
 
         String aux = instancias.getSql().getDatosCargos(txtId.getText().toUpperCase());
 
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Desea agregar el cargo?") == 0) {
+            if (ControladorAlertas.option("¿Desea agregar el cargo?")) {
                 if (!instancias.getSql().agregarCargo(txtId.getText().toUpperCase(), false)) {
-                    metodos.msgError(null, "Hubo un error al guardar");
+                    ControladorAlertas.alertFail("Hubo un error al guardar");
                     return;
                 }
 
-                metodos.msgExito(null, "Cargo ingresado con exito");
+                ControladorAlertas.alertSuccess("Cargo ingresado con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText().toUpperCase());
                 btnEsteActionPerformed(evt);
             }
         } else {
-            metodos.msgError(null, "El cargo ya existe");
+            ControladorAlertas.alertFail("El cargo ya existe");
         }
     }//GEN-LAST:event_btnEste2ActionPerformed
 

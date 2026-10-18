@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndMascota;
@@ -354,10 +356,10 @@ public class infRepAlertasProximas extends javax.swing.JDialog {
 
     private void btnAggCliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggCliente1ActionPerformed
         if (txtCodMascota.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un Paciente");
+            ControladorAlertas.alertFail("Cargue primero un Paciente");
         } else {
             if (yaEsta(cmbMascota, txtCodMascota.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este Paciente");
+                ControladorAlertas.alert("Ya cargo este Paciente");
             } else {
                 cmbMascota.addItem(txtCodMascota.getText());
                 cmbMascota.setSelectedItem(txtCodMascota.getText());
@@ -371,7 +373,7 @@ public class infRepAlertasProximas extends javax.swing.JDialog {
     }//GEN-LAST:event_btnRemClienteActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbMascota.getItemCount() > 0) {

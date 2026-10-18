@@ -1,5 +1,7 @@
 package Vista.ReportesVentas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
@@ -343,7 +345,7 @@ public class VistaReporteHistorialCreditos extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbCientes.getItemCount() > 0) {
@@ -413,11 +415,11 @@ public class VistaReporteHistorialCreditos extends javax.swing.JPanel {
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
 
         if (txtNomClient.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -434,7 +436,7 @@ public class VistaReporteHistorialCreditos extends javax.swing.JPanel {
 
     private void btnAggCliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggCliente1ActionPerformed
         if (yaEsta(cmbCientes1, cmbVendedor.getSelectedItem().toString())) {
-            metodos.msgAdvertencia(null, "Ya cargo este vendedor");
+            ControladorAlertas.alert("Ya cargo este vendedor");
         } else {
             cmbCientes1.addItem(cmbVendedor.getSelectedItem());
             cmbCientes1.setSelectedItem(cmbVendedor.getSelectedItem());

@@ -1,8 +1,8 @@
 package Procesos.Inventario.Servicio;
 
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 
 public interface CargadorProducto {
 
-    ndProducto cargar(String codigo, String tablaUtilizada);
+    ModeloProducto cargar(String codigo, String idBodega);
 }

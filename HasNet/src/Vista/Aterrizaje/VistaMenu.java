@@ -1,5 +1,7 @@
 package Vista.Aterrizaje;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Utilidades.DatosMaestra;
 import Vista.Cartera.VistaNotaCredito;
 import Vista.Configuraciones.vistaMaestra;
@@ -155,7 +157,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.KeyStroke;
-import dao.Configuraciones.DaoMaestra;
+import Dao.Configuraciones.DaoMaestra;
 
 public class VistaMenu extends javax.swing.JFrame {
 
@@ -2335,7 +2337,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[0].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[0] instanceof infMascotas) {
@@ -2386,7 +2388,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[1].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[1] instanceof infParqueadero) {
@@ -2433,7 +2435,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[2].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[2] instanceof infLavadero) {
@@ -2481,7 +2483,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[3].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
             formularios[3].setSelected(true);
 
@@ -2530,7 +2532,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[4].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             formularios[4].setSelected(true);
@@ -2580,7 +2582,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[5].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[5] instanceof infRepLavadero) {
@@ -2617,7 +2619,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[6].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[6] instanceof infArmado) {
@@ -2658,7 +2660,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[7].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[7] instanceof VistaAjusteInventario) {
@@ -2696,7 +2698,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[8].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             formularios[8].setSelected(true);
@@ -2734,7 +2736,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[9].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             formularios[9].setSelected(true);
@@ -2764,7 +2766,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[10].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[10] instanceof infAlertasProximas) {
@@ -2785,7 +2787,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[11].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             if (formularios[11] instanceof VistaReportesVentas) {
@@ -2805,7 +2807,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[12].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
             formularios[12].setSelected(true);
@@ -2834,7 +2836,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[13].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
             formularios[13].setSelected(true);
             accionarMenu();
@@ -2850,7 +2852,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[14].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
             formularios[14].setSelected(true);
             accionarMenu();
@@ -2870,7 +2872,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[15].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
             formularios[15].setSelected(true);
             accionarMenu();
@@ -2885,7 +2887,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[16].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
             formularios[16].setSelected(true);
             accionarMenu();
@@ -2900,7 +2902,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         try {
             if (!formularios[17].isVisible()) {
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
             formularios[17].setSelected(true);
             accionarMenu();
@@ -2911,7 +2913,7 @@ public class VistaMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_lbItem18ActionPerformed
 
     private void btnCambiarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarUsuarioActionPerformed
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             this.dispose();
             vistaInicioSesion vistaInicioSesion = new vistaInicioSesion(false);
             vistaInicioSesion.setLocationRelativeTo(null);
@@ -2993,7 +2995,7 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMaestra().setSelected(true);
                 instancias.getMenu().cambiarTitulo("CONFIGURACIÓNES");
             } else {
-                metodos.msgAdvertencia(null, "Función solo disponible para el usuario administrador.");
+                ControladorAlertas.alert("Función solo disponible para el usuario administrador.");
             }
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -3103,7 +3105,7 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMaestra().setSelected(true);
                 instancias.getMenu().cambiarTitulo("CONFIGURACIÓNES");
             } else {
-                metodos.msgAdvertencia(null, "Función solo disponible para el usuario administrador.");
+                ControladorAlertas.alert("Función solo disponible para el usuario administrador.");
 
             }
         } catch (PropertyVetoException ex) {
@@ -3242,7 +3244,7 @@ public class VistaMenu extends javax.swing.JFrame {
     private void obtenerRecordatorios() {
         Object[][] datosRecor = instancias.getSql().getAlertasRecordatorios("PENDIENTE", metodos.fechaConsulta(metodosGenerales.fecha()));
         if (datosRecor.length > 0) {
-            metodos.msgAdvertencia(null, "Tiene recordatorios para hoy");
+            ControladorAlertas.alert("Tiene recordatorios para hoy");
             alertaRecordatorio alerta = new alertaRecordatorio();
             alerta.start();
         }
@@ -3307,7 +3309,7 @@ public class VistaMenu extends javax.swing.JFrame {
             alertas.start();
 
             if (activarAlerta) {
-                metodos.msgAdvertencia(null, "Tiene peluquerias o vacunas pendientes para el día de hoy!");
+                ControladorAlertas.alert("Tiene peluquerias o vacunas pendientes para el día de hoy!");
             }
         } else {
             btnMedicamentos.setVisible(false);

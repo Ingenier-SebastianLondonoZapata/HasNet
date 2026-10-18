@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.Medico.ndMedicamentos;
 import clases.metodosGenerales;
@@ -295,23 +297,23 @@ public class buscMedicamentos extends javax.swing.JDialog {
 
     private void btnEste2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste2ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgAdvertenciaAjustado(null, "Ingrese el nombre del medicamento");
+            ControladorAlertas.alert("Ingrese el nombre del medicamento");
             return;
         }
 
         String aux = instancias.getSql().getDatosMedicamentosNombre(txtId.getText());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Desea agregar medicamento?") == 0) {
+            if (ControladorAlertas.option("¿Desea agregar medicamento?")) {
                 Object[] vector = {"", txtId.getText().toUpperCase(), "", instancias.getUsuario()};
 
                 ndMedicamentos nodo = metodos.llenarMedicamentos(vector);
 
                 if (!instancias.getSql().agregarMedicamento(nodo)) {
-                    metodos.msgError(null, "Error al guardar el medicamento");
+                    ControladorAlertas.alertFail("Error al guardar el medicamento");
                     return;
                 }
 
-                metodos.msgExito(null, "Medicamento ingresado con exito");
+                ControladorAlertas.alertSuccess("Medicamento ingresado con exito");
                 cargarMedicamentos();
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

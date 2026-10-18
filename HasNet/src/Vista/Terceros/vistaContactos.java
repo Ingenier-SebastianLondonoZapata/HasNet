@@ -1,5 +1,7 @@
 package Vista.Terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import Modelo.Terceros.ModeloDatosVehiculo;
 import Utilidades.Limpiadores;
@@ -2171,7 +2173,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             
             if (txtCupo.getText().equals("")) {
                 txtCupo.setText("0");
@@ -2194,7 +2196,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                 try {
                     fechaNacimiento = metodos.desdeDate(dtFechaNacimiento.getCalendar());
                 } catch (Exception e) {
-                    metodos.msgAdvertenciaAjustado(this, "Debe ingresar la fecha de nacimiento");
+                    ControladorAlertas.alert("Debe ingresar la fecha de nacimiento");
                     return;
                 }
             } else {
@@ -2243,7 +2245,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             consultaDatosContacto = metodos.llenarTercero(vector);
 
             if (!instancias.getSql().agregarTercero(consultaDatosContacto)) {
-                metodos.msgError(this, "Hubo un error al guardar");
+                ControladorAlertas.alertFail("Hubo un error al guardar");
                 return;
             }
 
@@ -2252,7 +2254,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                         tblAutos.getValueAt(i, 1).toString(), tblAutos.getValueAt(i, 2).toString(), tblAutos.getValueAt(i, 3).toString(),
                         tblAutos.getValueAt(i, 4).toString(), tblAutos.getValueAt(i, 5).toString(), tblAutos.getValueAt(i, 6).toString(),
                         tblAutos.getValueAt(i, 7).toString())) {
-                    metodos.msgError(this, "Hubo un error al guardar las placas");
+                    ControladorAlertas.alertFail("Hubo un error al guardar las placas");
                     return;
                 }
             }
@@ -2266,17 +2268,17 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                 ndHistoriaClinica nodoDos = metodos.llenarHistClinica(vector2);
 
                 if (!instancias.getSql().agregarHistClinica(nodoDos)) {
-                    metodos.msgError(this, "Error al guardar historia clinica");
+                    ControladorAlertas.alertFail("Error al guardar historia clinica");
                     return;
                 } else {
-                    metodos.msgExito(this, "Historia Clinica No." + historia.replace("HSTC-", ""));
+                    ControladorAlertas.alertSuccess("Historia Clinica No." + historia.replace("HSTC-", ""));
                 }
             } else {
-                metodos.msgExito(this, "Cliente creado con éxito");
+                ControladorAlertas.alertSuccess("Cliente creado con éxito");
             }
 
             if (!instancias.getSql().aumentarConsecutivo("TERCERO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TERCERO")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del tercero");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del tercero");
             }
 
             String cliente = txtIdentificacion.getText();
@@ -2328,7 +2330,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             String faltantes = metodos.camposVacios(campos);
 
             if (!faltantes.equals("")) {
-                metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                 return;
             }
         } else {
@@ -2338,7 +2340,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                 Object[] campos = {txtNombreCompleto, txtTelefono, cmbTipoIdentificacion, txtIdentificacion, txtEmail, cmbDepartamento, cmbCiudad};
                 faltantes = metodos.camposVacios(campos);
                 if (cmbCodigoPostal.getSelectedIndex() == 0) {
-                    metodos.msgAdvertencia(this, "El codigo postal es obligatorio");
+                    ControladorAlertas.alert("El codigo postal es obligatorio");
                     return;
                 }
             } else {
@@ -2347,7 +2349,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             }
 
             if (!faltantes.equals("")) {
-                metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                 return;
             }
         }
@@ -2355,13 +2357,13 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         ModeloContacto nodo = instancias.getSql().getDatosTercero(txtIdentificacion.getText() + "-" + txtDigito.getText());
         if (nodo.getId() != null) {
             if (!txtIdSistema.getText().equals(nodo.getIdSistema())) {
-                metodos.msgError(this, "El documento ya existe");
+                ControladorAlertas.alertFail("El documento ya existe");
                 txtIdentificacion.requestFocus();
                 return;
             }
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
 //            try {
             if (txtCupo.getText().equals("")) {
@@ -2417,7 +2419,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
 
             nodo = metodos.llenarTercero(vector);
             if (!instancias.getSql().modificarTercero(nodo)) {
-                metodos.msgError(this, "Hubo un problema al modificar el Tercero");
+                ControladorAlertas.alertFail("Hubo un problema al modificar el Tercero");
                 return;
             }
 
@@ -2471,33 +2473,33 @@ public class vistaContactos extends javax.swing.JInternalFrame {
 
                 if (!instancias.getSql().agregarPlacas(txtIdSistema.getText(), tblAutos.getValueAt(i, 0).toString(),
                         valor1, valor2, valor3, valor4, valor5, valor6, valor7)) {
-                    metodos.msgError(this, "Hubo un error al guardar las placas");
+                    ControladorAlertas.alertFail("Hubo un error al guardar las placas");
                     return;
                 }
             }
 
-            metodos.msgExito(this, "Tercero modificado con éxito");
+            ControladorAlertas.alertSuccess("Tercero modificado con éxito");
 
             btnNuevoActionPerformed(evt);
 //            } catch (Exception e) {
-//                metodos.msgError(this, "Hubo un problema al modiicar el Tercero");
+//                ControladorAlertas.alertFail("Hubo un problema al modiicar el Tercero");
 //            }
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         if (btnEliminar.getText().equalsIgnoreCase("ACTIVAR")) {
-            if (metodos.msgPregunta(this, "¿Activar este registro?") == 0) {
+            if (ControladorAlertas.option("¿Activar este registro?")) {
                 instancias.getSql().activarCliente(txtIdentificacion.getText());
-                metodos.msgExito(this, "Cliente activado con éxito");
+                ControladorAlertas.alertSuccess("Cliente activado con éxito");
                 btnNuevoActionPerformed(evt);
                 return;
             }
         }
 
-        if (metodos.msgPregunta(this, "¿Inactivar este registro?") == 0) {
+        if (ControladorAlertas.option("¿Inactivar este registro?")) {
             instancias.getSql().eliminarCliente(txtIdentificacion.getText());
-            metodos.msgAdvertencia(this, "Cliente inactivado, este registro podrá ser activado posteriormente");
+            ControladorAlertas.alert("Cliente inactivado, este registro podrá ser activado posteriormente");
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
@@ -2797,7 +2799,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                 this.repaint();
 
             } catch (Exception ex) {
-                metodos.msgError(this, "Hubo un error al cargar el archivo");
+                ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             }
 
         }
@@ -2842,7 +2844,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
             tblAutos.removeEditor();
         } else {
-            metodos.msgAdvertencia(null, "Seleccione una placa");
+            ControladorAlertas.alert("Seleccione una placa");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 

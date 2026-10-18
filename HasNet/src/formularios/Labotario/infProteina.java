@@ -1,5 +1,7 @@
 package formularios.Labotario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesLaboratorio.GeneradorReporteLaboratorio;
 import formularios.Medico.*;
 import clases.Instancias;
@@ -711,28 +713,28 @@ public class infProteina extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "PROTEINA-" + instancias.getSql().getNumConsecutivo("PROTEINA")[0];
 
             if (!instancias.getSql().agregarProteina(id, txtIdentificacion.getText(), txtNumeroOrden.getText(), txtRemitido.getText(), metodosGenerales.fecha(),
                     txtResultados.getText(), txtTecnica.getText(), txtObservaciones.getText())) {
-                metodos.msgError(this, "Hubo un problema al guardar");
+                ControladorAlertas.alertFail("Hubo un problema al guardar");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("PROTEINA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PROTEINA")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
                 return;
             }
 
-            metodos.msgExito(this, "Examen registrado con éxito");
+            ControladorAlertas.alertSuccess("Examen registrado con éxito");
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String legal = "", pie;
                 try {
                     legal = instancias.getLegal();

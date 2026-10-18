@@ -1,5 +1,7 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -666,7 +668,7 @@ public class infMensualidad extends javax.swing.JInternalFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         for (int i = 0; i < jTable1.getRowCount(); i++) {
             if (jTable1.getValueAt(i, 1).equals(txtPlaca.getText())) {
-                metodos.msgAdvertencia(this, "No puede continuar, esta placa ya tiene una mensualidad vigente");
+                ControladorAlertas.alert("No puede continuar, esta placa ya tiene una mensualidad vigente");
                 return;
             }
         }
@@ -675,7 +677,7 @@ public class infMensualidad extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
@@ -698,7 +700,7 @@ public class infMensualidad extends javax.swing.JInternalFrame {
             txtMeses.getText(), txtCod.getText(), txtServicio.getText(), factura};
 
         if (!instancias.getSql().agregarMensualidad(info)) {
-            metodos.msgError(this, "Hubo un error al guardar el registro");
+            ControladorAlertas.alertFail("Hubo un error al guardar el registro");
             return;
         }
 
@@ -745,7 +747,7 @@ public class infMensualidad extends javax.swing.JInternalFrame {
 
         instancias.getFactura().desdeMensualidad(productos, txtCliente.getText(), diasPlazo, txtPlaca.getText());
 
-        metodos.msgExito(this, "Mensualidad registrada con exito");
+        ControladorAlertas.alertSuccess("Mensualidad registrada con exito");
         btnLimpiarActionPerformed(evt);
         cargarTabla();
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -831,7 +833,7 @@ public class infMensualidad extends javax.swing.JInternalFrame {
                 txtValorMes.setText(big.setMoneda(big.getMoneda(maestra[0][11].toString())));
                 txtMeses.requestFocus();
             } else {
-                metodos.msgError(this, "El servicio no existe");
+                ControladorAlertas.alertFail("El servicio no existe");
                 txtServicio.setText("");
                 txtValorMes.setText(big.setMoneda(big.getBigDecimal(0)));
                 txtCod.setText("");

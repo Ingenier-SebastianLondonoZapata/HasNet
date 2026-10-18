@@ -1,5 +1,7 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -108,7 +110,7 @@ public class dlgPedirContrasena extends javax.swing.JDialog {
             }
 
         } else {
-            metodos.msgError(null, "Contraseña incorrecta");
+            ControladorAlertas.alertFail("Contraseña incorrecta");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

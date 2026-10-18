@@ -1,5 +1,7 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.terceros.buscClientes;
 import clases.Instancias;
 import Modelo.Terceros.ModeloContacto;
@@ -356,10 +358,10 @@ public class infRepMensualidades extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -374,7 +376,7 @@ public class infRepMensualidades extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemClienteActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where ";
 
             if (cmbCientes.getItemCount() > 0) {

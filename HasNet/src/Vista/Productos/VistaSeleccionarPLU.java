@@ -1,11 +1,14 @@
 package Vista.Productos;
 
+import Dao.Productos.DaoProducto;
+
 import Utilidades.Utilidades;
 import clases.Instancias;
 import clases.big;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloListaPrecio;
+import Modelo.Productos.ModeloProducto;
 import Vista.Cartera.VistaNotaDebito;
 import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
@@ -13,12 +16,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class VistaSeleccionarPLU extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private Instancias instancias;
     private String codigo;
@@ -208,129 +213,37 @@ public class VistaSeleccionarPLU extends javax.swing.JDialog {
         this.instancias = instancias;
         this.codigo = cod;
 
-        ndProducto producto = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigo, baseUtilizada);
 
-        String inv = producto.getFisicoInventario();
-        inv = inv.replace(".", ",");
+        String inv = Utilidades.formatearCantidad(producto.getFisicoInventario());
 
-        int cant = 1;
-        if (producto.isPlu2()) {
-            cant++;
-        }
-        if (producto.isPlu3()) {
-            cant++;
-        }
-        if (producto.isPlu4()) {
-            cant++;
-        }
-        if (producto.getPlu5()) {
-            cant++;
-        }
-        if (producto.getPlu6()) {
-            cant++;
-        }
-        if (producto.getPlu7()) {
-            cant++;
-        }
-        if (producto.getPlu8()) {
-            cant++;
-        }
+        List<ModeloListaPrecio> plus = producto.getListasPlu();
 
-        Object[][] data = new Object[cant][8];
+        Object[][] data = new Object[plus.size() + 1][8];
         Object[] columnNames = {"PLU", "Descripción", "Referencia", "Ubicación", "Cant", "Inv", "Ingresar", "plu"};
-        cant = 0;
+        int cant = 0;
         data[cant][0] = producto.getCodigo() + "-1";
         data[cant][1] = producto.getDescripcion();
         data[cant][3] = producto.getUbicacion1();
         data[cant][4] = 1;
         data[cant][5] = inv;
         data[cant][6] = 0;
-        data[cant][7] = 1;
+        data[cant][7] = ModeloListaPrecio.LISTA_PRINCIPAL;
         cant++;
 
-        if (producto.isPlu2()) {
-            data[cant][0] = producto.getCodigo2();
-            data[cant][1] = producto.getDescripcion2();
-            data[cant][3] = producto.getUbicacion2();
-            data[cant][4] = producto.getCantidad2();
-            data[cant][5] = big.getMoneda(inv).divide(big.getBigDecimal(producto.getCantidad2()), 2, RoundingMode.HALF_DOWN);
+        for (ModeloListaPrecio lista : plus) {
+            data[cant][0] = lista.getCodigo();
+            data[cant][1] = lista.getDescripcion();
+            data[cant][3] = lista.getUbicacion();
+            data[cant][4] = lista.getCantidad().stripTrailingZeros().toPlainString();
+            data[cant][5] = big.getMoneda(inv).divide(lista.getCantidad(), 2, RoundingMode.HALF_DOWN);
             data[cant][6] = 0;
-            data[cant][7] = 2;
+            data[cant][7] = lista.getNumeroLista();
             cant++;
         }
 
-        if (producto.isPlu3()) {
-            data[cant][0] = producto.getCodigo3();
-            data[cant][1] = producto.getDescripcion3();
-            data[cant][3] = producto.getUbicacion3();
-            data[cant][4] = producto.getCantidad3();
-            data[cant][5] = big.getMoneda(inv).divide(big.getBigDecimal(producto.getCantidad3()), 2, RoundingMode.HALF_DOWN);
-            data[cant][6] = 0;
-            data[cant][7] = 3;
-            cant++;
-        }
-
-        if (producto.isPlu4()) {
-            data[cant][0] = producto.getCodigo4();
-            data[cant][1] = producto.getDescripcion4();
-            data[cant][3] = producto.getUbicacion4();
-            data[cant][4] = producto.getCantidad4();
-            data[cant][5] = big.getMoneda(inv).divide(big.getBigDecimal(producto.getCantidad4()), 2, RoundingMode.HALF_DOWN);
-            data[cant][6] = 0;
-            data[cant][7] = 4;
-            cant++;
-        }
-
-        if (producto.getPlu5()) {
-            data[cant][0] = producto.getCodigo5();
-            data[cant][1] = producto.getDescripcion5();
-            data[cant][3] = producto.getUbicacion5();
-            data[cant][4] = producto.getCantidad5();
-            data[cant][5] = big.getMoneda(inv).divide(big.getBigDecimal(producto.getCantidad5()), 2, RoundingMode.HALF_DOWN);
-            data[cant][6] = 0;
-            data[cant][7] = 5;
-            cant++;
-        }
-
-        if (producto.getPlu6()) {
-            data[cant][0] = producto.getCodigo6();
-            data[cant][1] = producto.getDescripcion6();
-            data[cant][3] = producto.getUbicacion6();
-            data[cant][4] = producto.getCantidad6();
-            data[cant][5] = big.getMoneda(inv).divide(big.getBigDecimal(producto.getCantidad6()), 2, RoundingMode.HALF_DOWN);
-            data[cant][6] = 0;
-            data[cant][7] = 6;
-            cant++;
-        }
-
-        if (producto.getPlu7()) {
-            data[cant][0] = producto.getCodigo7();
-            data[cant][1] = producto.getDescripcion7();
-            data[cant][3] = producto.getUbicacion7();
-            data[cant][4] = producto.getCantidad7();
-            data[cant][5] = big.getMoneda(inv).divide(big.getBigDecimal(producto.getCantidad7()), 2, RoundingMode.HALF_DOWN);
-            data[cant][6] = 0;
-            data[cant][7] = 7;
-            cant++;
-        }
-
-        if (producto.getPlu8()) {
-            data[cant][0] = producto.getCodigo8();
-            data[cant][1] = producto.getDescripcion8();
-            data[cant][3] = producto.getUbicacion8();
-            data[cant][4] = producto.getCantidad8();
-            data[cant][5] = big.getMoneda(inv).divide(big.getBigDecimal(producto.getCantidad8()), 2, RoundingMode.HALF_DOWN);
-            data[cant][6] = 0;
-            data[cant][7] = 8;
-            cant++;
-        }
-
-        for (int i = 0; i < 4; i++) {
-            try {
-                data[i][2] = producto.getReferencia();
-            } catch (Exception e) {
-                break;
-            }
+        for (Object[] fila : data) {
+            fila[2] = producto.getReferencia();
         }
 
         tblRegistros.setModel(new DefaultTableModel(data, columnNames) {

@@ -1,12 +1,18 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Modelo.Inventario.UltimoPonderado;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -23,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class dlgDetalleCompra extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -332,7 +339,7 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
 //        if (tblProductos.getSelectedColumn() == 3) {
-//            ndProducto nodo = sql.getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), "bdProductos");
+//            ModeloProducto nodo = sql.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 //
 //            String tipo = "";
 //            try {
@@ -397,34 +404,15 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
                         tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(fila, 12).toString())), fila, 12);
                     }
 
-                    ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), "bdProductos");
-                    if (metodos.msgPregunta(null, "¿Desea cambiar el PVP?") == 0) {
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                    if (ControladorAlertas.option("¿Desea cambiar el PVP?")) {
                         nodo.setL1(big.getBigDecimal(big.getMoneda(tblProductos.getValueAt(tblProductos.getSelectedRow(), 12).toString())).toString());
 
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductos")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
+                        if (!daoProducto.modificarProducto(nodo)) {
+                            ControladorAlertas.alertFail("Hubo un problema al modificar el producto");
                             return;
                         }
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega1")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega2")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega3")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega4")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-                        metodos.msgExito(null, "Valor actualizado con éxito");
+                        ControladorAlertas.alertSuccess("Valor actualizado con éxito");
 
                         BigDecimal utilidad = big.getMoneda(tblProductos.getValueAt(fila, 12).toString()).subtract(big.getMoneda(tblProductos.getValueAt(fila, 15).toString()));
                         tblProductos.setValueAt(big.setMoneda(utilidad), fila, 17);
@@ -447,7 +435,7 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
                         tblProductos.setValueAt(big.getMoneda(tblProductos.getValueAt(fila, 16).toString()), fila, 16);
                     }
 
-                    if (metodos.msgPregunta(null, "¿Desea cambiar el valor de la lista de este producto?") == 0) {
+                    if (ControladorAlertas.option("¿Desea cambiar el valor de la lista de este producto?")) {
                         BigDecimal valor = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
                         BigDecimal aumento = big.getBigDecimal(String.valueOf(tblProductos.getValueAt(fila, 16)));
                         BigDecimal iva, total;
@@ -456,33 +444,13 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
                         iva = (iva.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
                         total = valor.multiply(iva);
                         total = total.multiply(aumento.divide(big.getBigDecimal("100")).add(big.getBigDecimal("1")));
-                        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos");
+                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
                         nodo.setL1(big.getMoneda(big.setMonedaExacta(total)).toString());
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductos")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
+                        if (!daoProducto.modificarProducto(nodo)) {
+                            ControladorAlertas.alertFail("Hubo un problema al modificar el producto");
                             return;
                         }
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega1")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega2")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega3")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-
-                        if (!instancias.getSql().modificarProducto(nodo, "bdProductosBodega4")) {
-                            metodos.msgError(null, "Hubo un problema al modificar el producto");
-                            return;
-                        }
-
-                        metodos.msgExito(null, "Valor actualizado con éxito");
+                        ControladorAlertas.alertSuccess("Valor actualizado con éxito");
 
                         tblProductos.setValueAt(big.setMonedaExacta(total), fila, 12);
                         BigDecimal utilidad = big.getMoneda(tblProductos.getValueAt(fila, 12).toString()).subtract(big.getMoneda(tblProductos.getValueAt(fila, 15).toString()));
@@ -628,35 +596,35 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
                 break;
             case "2":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad2())), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(2))), fila, 14);
                 break;
             case "3":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad3())), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(3))), fila, 14);
                 break;
             case "4":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad4())), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(4))), fila, 14);
                 break;
             case "5":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad5())), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(5))), fila, 14);
                 break;
             case "6":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad6())), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(6))), fila, 14);
                 break;
             case "7":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad7())), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(7))), fila, 14);
                 break;
             case "8":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad8())), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(8))), fila, 14);
                 break;
         }
 
-        ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos");
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
         BigDecimal ponderadoViejo = BigDecimal.ZERO;
         try {
@@ -667,7 +635,7 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
         }
 
         //CALCULAMOS LO QUE HABIA VIEJO
-        BigDecimal inv = big.getBigDecimal(producto.getInventario().replace(",", "."));
+        BigDecimal inv = producto.getInventario();
 
         BigDecimal totalViejo;
         if (inv.compareTo(BigDecimal.ZERO) >= 0) {

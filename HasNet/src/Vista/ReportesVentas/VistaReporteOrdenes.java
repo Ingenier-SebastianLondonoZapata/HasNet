@@ -1,10 +1,16 @@
 package Vista.ReportesVentas;
 
-import dao.InicioSesion.DaoInicioSesion;
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.Parqueadero.buscPlacas;
 import Vista.Productos.VistaBuscadorProductos;
@@ -14,6 +20,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 
 public class VistaReporteOrdenes extends javax.swing.JPanel {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
     metodosGenerales metodos = new metodosGenerales();
@@ -578,11 +585,11 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -598,18 +605,13 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
 
     private void btnAggProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProdActionPerformed
         if (txtCodigo.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un producto");
+            ControladorAlertas.alertFail("Cargue primero un producto");
         } else {
 
-            ndProducto nodo = null;
+            ModeloProducto nodo = null;
 
             String CodigoProd = "", codigo = txtCodigo.getText();
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -620,7 +622,7 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
             } else {
                 txtCodigo.setText(nodo.getIdSistema());
                 if (yaEsta(cmbProducto, txtCodigo.getText())) {
-                    metodos.msgAdvertencia(null, "Ya cargo este producto");
+                    ControladorAlertas.alert("Ya cargo este producto");
                 } else {
                     cmbProducto.addItem(txtCodigo.getText());
                     cmbProducto.setSelectedItem(txtCodigo.getText());
@@ -638,7 +640,7 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
     private void btnAggProd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProd1ActionPerformed
         for (int i = 0; i < cmbTerminal3.getItemCount(); i++) {
             if (cmbTerminal3.getItemAt(i).equals(cmbTerminal1.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -647,14 +649,14 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
 
     private void btnRemProd2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemProd2ActionPerformed
         if (cmbTerminal3.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ningun estado seleccionado");
+            ControladorAlertas.alertFail("No hay ningun estado seleccionado");
             return;
         }
         cmbTerminal3.removeItem(cmbTerminal3.getSelectedItem());
     }//GEN-LAST:event_btnRemProd2ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (instancias.getUsuario().equals("ADMIN")) {
@@ -742,7 +744,7 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
     private void btnAggTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggTerminalActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -751,7 +753,7 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ninguna terminal seleccionada");
+            ControladorAlertas.alertFail("No hay ninguna terminal seleccionada");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
@@ -771,7 +773,7 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
         for (int i = 0; i < cmbPlaca.getItemCount(); i++) {
 
             if (txtPlaca.getText().equals(cmbPlaca.getItemAt(i))) {
-                metodos.msgError(null, "Ya has ingresado esta placa");
+                ControladorAlertas.alertFail("Ya has ingresado esta placa");
                 return;
             }
         }
@@ -782,14 +784,14 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
 
     private void btnRemProd5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemProd5ActionPerformed
         if (cmbPlaca.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ninguna placa seleccionada");
+            ControladorAlertas.alertFail("No hay ninguna placa seleccionada");
             return;
         }
         cmbPlaca.removeItem(cmbPlaca.getSelectedItem());
     }//GEN-LAST:event_btnRemProd5ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (instancias.getUsuario().equals("ADMIN")) {
@@ -912,18 +914,13 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
     }
 
     public void cargarProducto(String codigo) {
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

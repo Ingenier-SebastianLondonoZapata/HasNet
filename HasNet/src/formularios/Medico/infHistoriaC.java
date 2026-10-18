@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
@@ -898,7 +900,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
 
     private void lblNuevaAyudaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNuevaAyudaMouseClicked
         if (consecutivo.equals("")) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -907,7 +909,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
 
     private void lblNuevaFormulaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNuevaFormulaMouseClicked
         if (consecutivo.equals("")) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -916,7 +918,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
 
     private void lblNuevaIncapacidadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNuevaIncapacidadMouseClicked
         if (consecutivo.equals("") || cup.equals("") || proc.equals("")) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -937,12 +939,12 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
                 } catch (Exception e) {
                 }
                 if (!instancias.getSql().modificarCita(cita, "Confirmada")) {
-                    metodos.msgError(null, "No fue posible modificar el estado de la Cita");
+                    ControladorAlertas.alertFail("No fue posible modificar el estado de la Cita");
                 }
             } else {
 
                 if (txtOrden.getText().equals("")) {
-                    metodos.msgAdvertencia(this, "Debe tener una orden asociada, de lo contrario no podrá guardar una nueva consulta clinica");
+                    ControladorAlertas.alert("Debe tener una orden asociada, de lo contrario no podrá guardar una nueva consulta clinica");
                     vacio = true;
                 }
 
@@ -950,12 +952,12 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
                     ndOrdenServicio nodo = instancias.getSql().getDatosOrdenServicio(txtOrden.getText());
 
                     if (nodo.getPaciente() == null) {
-                        metodos.msgError(this, "Esta orden no existe");
+                        ControladorAlertas.alertFail("Esta orden no existe");
                         return;
                     }
 
                     if (!nodo.getPaciente().equals(paciente.getIdSistema())) {
-                        metodos.msgError(this, "La orden no percenece al paciente");
+                        ControladorAlertas.alertFail("La orden no percenece al paciente");
                         return;
                     }
 
@@ -1007,7 +1009,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
             if (Paciente.getId() != null) {
                 new GeneradorReporteMedico(instancias).verHistoria(historia.getId(), "" + metodosGenerales.calcularEdad2(metodos.fecha(Paciente.getNacimiento())));
             } else {
-                metodos.msgError(this, "El paciente con identificación " + txtId.getText() + " no existe");
+                ControladorAlertas.alertFail("El paciente con identificación " + txtId.getText() + " no existe");
             }
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
@@ -1048,7 +1050,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
             ventanaTerceros(paciente);
         } else {
             if (Paciente.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 lbNit.requestFocus();
                 return;
             }

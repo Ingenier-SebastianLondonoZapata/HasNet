@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.Agenda.*;
 import clases.IconCellRenderer;
 import clases.Instancias;
@@ -772,7 +774,7 @@ public class infPeluqueria extends javax.swing.JInternalFrame {
         if (evt.getClickCount() > 1) {
 
             if (lbTitulo.getText().equals("AGENDA")) {
-                metodos.msgError(this, "Seleccione un peluquero");
+                ControladorAlertas.alertFail("Seleccione un peluquero");
                 return;
             }
 
@@ -809,7 +811,7 @@ public class infPeluqueria extends javax.swing.JInternalFrame {
                 instancias.setInfoPeluqueria(buscar);
                 buscar.show();
             } catch (Exception e) {
-                metodos.msgError(this, "Seleccione la fecha");
+                ControladorAlertas.alertFail("Seleccione la fecha");
                 return;
             }
         }
@@ -854,7 +856,7 @@ public class infPeluqueria extends javax.swing.JInternalFrame {
         if (horasBloqueo.length > 0) {
             for (int i = 0; i < horasBloqueo.length; i++) {
                 if (metodos.fecha(horasBloqueo[i][0].toString()).equals(metodos.desdeDate2(dtFecha.getCalendar()))) {
-                    metodos.msgAdvertencia(this, "Este día esta bloqueado!");
+                    ControladorAlertas.alert("Este día esta bloqueado!");
                     mensaje = horasBloqueo[i][2].toString();
                     entro = true;
                 }

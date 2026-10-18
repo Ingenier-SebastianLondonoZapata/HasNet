@@ -6,11 +6,10 @@
 package Controlador.Alertas;
 
 import Vista.Alertas.AlertList;
-import Vista.Alertas.BigAlert;
 import Vista.Alertas.Fail;
 import Vista.Alertas.Option;
 import Vista.Alertas.Success;
-import Vista.Alertas.alert;
+import Vista.Alertas.Alert;
 import java.util.List;
 
 /**
@@ -58,13 +57,8 @@ public class ControladorAlertas extends javax.swing.JPanel {
     }
 
     public static void alert(String message) {
-        alert messageAlert = new alert(null, true, message);
+        Alert messageAlert = new Alert(null, true, message);
         messageAlert.setVisible(true);
-    }
-
-    public static void bigAlert(String message) {
-        BigAlert messageBigAlert = new BigAlert(null, true, message);
-        messageBigAlert.setVisible(true);
     }
 
     public static boolean alertaGrandeListado(String message, List<Object> listadoDetalles, boolean conRespuesta) {

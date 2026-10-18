@@ -1,5 +1,7 @@
 package configuracion;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Modelo.Maestra.modeloConfiguracion;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -367,12 +369,12 @@ public class dlgFechasPagos extends javax.swing.JDialog {
             for (int i = 0; i < tblFechas.getRowCount(); i++) {
 
                 if (!instancias.getSql().agregarFechasBloqueo(tblFechas.getValueAt(i, 1).toString())) {
-                    metodos.msgError(null, "Hubo un error al ingresar la fecha");
+                    ControladorAlertas.alertFail("Hubo un error al ingresar la fecha");
                     return;
                 }
 
             }
-            metodos.msgExito(null, "Guardado con exito");
+            ControladorAlertas.alertSuccess("Guardado con exito");
             try {
                 Thread.sleep(300);
             } catch (Exception e) {
@@ -382,10 +384,10 @@ public class dlgFechasPagos extends javax.swing.JDialog {
         } else {
 
             if (!instancias.getSql().modificarFechasBloqueo(txtIdFechaPago.getText(), rdFechaHabilitada.isSelected())) {
-                metodos.msgError(null, "No se habilito la fecha");
+                ControladorAlertas.alertFail("No se habilito la fecha");
                 return;
             }
-            metodos.msgExito(null, "Registro modificado");
+            ControladorAlertas.alertSuccess("Registro modificado");
             try {
                 Thread.sleep(300);
             } catch (Exception e) {
@@ -403,15 +405,15 @@ public class dlgFechasPagos extends javax.swing.JDialog {
             int fila = tblFechas.getSelectedRow();
             String codigo = (String) tblFechas.getValueAt(fila, 0);
             if (!instancias.getSql().eliminarFechaBloqueo(codigo)) {
-                metodos.msgError(null, "Hubo un error al eliminar la fecha");
+                ControladorAlertas.alertFail("Hubo un error al eliminar la fecha");
                 return;
             } else {
-                metodos.msgExito(null, "Fecha Eliminada");
+                ControladorAlertas.alertSuccess("Fecha Eliminada");
             }
             DefaultTableModel modelo = (DefaultTableModel) tblFechas.getModel();
             modelo.removeRow(fila);
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -465,14 +467,14 @@ public class dlgFechasPagos extends javax.swing.JDialog {
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
         if (!instancias.getSql().modificarConfiguraciones(txtIdentificadorNit.getText(), txtIdentificadorNombre.getText())) {
-            metodos.msgError(null, "Error al guardar los datos");
+            ControladorAlertas.alertFail("Error al guardar los datos");
             return;
         } else {
             try {
                 if (txtIdentificadorNit.isEnabled()) {
                     //agregarCliente(txtCodigoFinal.getText(), txtIdentificadorNit.getText(), txtIdentificadorNombre.getText());
 //                    if (!instancias.getSql1().agregarRegistro(, , )) {
-//                        metodos.msgError(null, "Error al registrar cliente");
+//                        ControladorAlertas.alertFail("Error al registrar cliente");
 //                        return;
 //                    }
                 }
@@ -485,10 +487,10 @@ public class dlgFechasPagos extends javax.swing.JDialog {
                     Logger.getLogger(dlgFechasPagos.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                metodos.msgExito(null, "Datos guardados con exito");
+                ControladorAlertas.alertSuccess("Datos guardados con exito");
                 this.dispose();
             } catch (Exception e) {
-                metodos.msgError(null, "Necesita tener acceso a internet");
+                ControladorAlertas.alertFail("Necesita tener acceso a internet");
             }
         }
     }//GEN-LAST:event_btnGuardar1ActionPerformed
@@ -585,7 +587,7 @@ public class dlgFechasPagos extends javax.swing.JDialog {
 
 //    public void calcularCuotasCredito() {
 //        if (metodos.fecha(metodos.desdeDate(dtFecha.getCurrent())).equals(metodosGenerales.fecha())) {
-//            metodos.msgError(null, "Seleccione la fecha de pago");
+//            ControladorAlertas.alertFail("Seleccione la fecha de pago");
 //            return;
 //        }
 //        for (int i = 0; i < tblFechas.getRowCount(); i++) {
@@ -593,7 +595,7 @@ public class dlgFechasPagos extends javax.swing.JDialog {
 //            String fechaDos = metodos.desdeDate(dtFecha.getCurrent());
 //            String fecha3 = metodos.fecha(fechaDos);
 //            if (fecha.equals(fecha3)) {
-//                metodos.msgError(null, "Esta fecha ya esta registrada");
+//                ControladorAlertas.alertFail("Esta fecha ya esta registrada");
 //                return;
 //            }
 //        }

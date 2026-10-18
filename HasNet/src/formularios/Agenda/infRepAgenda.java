@@ -1,5 +1,7 @@
 package formularios.Agenda;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.terceros.buscClientes;
 import clases.Instancias;
 import Modelo.Terceros.ModeloContacto;
@@ -483,11 +485,11 @@ public class infRepAgenda extends javax.swing.JInternalFrame {
 
     private void btnAggPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggPacienteActionPerformed
         if (txtPaciente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un Paciente");
+            ControladorAlertas.alertFail("Cargue primero un Paciente");
         } else {
 
             if (yaEsta(cmbPaciente, txtPaciente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este Paciente");
+                ControladorAlertas.alert("Ya cargo este Paciente");
             } else {
                 cmbPaciente.addItem(txtPaciente.getText());
                 cmbPaciente.setSelectedItem(txtPaciente.getText());
@@ -503,11 +505,11 @@ public class infRepAgenda extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtNomClient.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un Paciente");
+            ControladorAlertas.alertFail("Cargue primero un Paciente");
         } else {
 
             if (yaEsta(cmbMedico, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este Paciente");
+                ControladorAlertas.alert("Ya cargo este Paciente");
             } else {
                 cmbMedico.addItem(txtNomClient.getText());
                 cmbMedico.setSelectedItem(txtNomClient.getText());
@@ -545,7 +547,7 @@ public class infRepAgenda extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtPacienteKeyReleased
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbMedico.getItemCount() > 0) {
@@ -716,7 +718,7 @@ public class infRepAgenda extends javax.swing.JInternalFrame {
 
         if (nodo.getId() != null) {
             if (nodo.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 lbNit10.requestFocus();
                 return;
             } else {

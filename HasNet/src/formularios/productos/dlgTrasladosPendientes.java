@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.cambiarColorTabla;
@@ -295,9 +297,9 @@ public class dlgTrasladosPendientes extends javax.swing.JDialog {
         }
 
         if (tblPrestamos.getSelectedColumn() == 5) {
-            if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
                 instancias.getPrestamos().facturarTraslados1(tblPrestamos.getValueAt(tblPrestamos.getSelectedRow(), 0).toString());
-                metodos.msgExito(null, "Traslado liquidado correctamente.");
+                ControladorAlertas.alertSuccess("Traslado liquidado correctamente.");
                 this.dispose();
                 return;
             }
@@ -325,9 +327,9 @@ public class dlgTrasladosPendientes extends javax.swing.JDialog {
                     mensaje = "Sin plazo. ";
                 }
 
-                if (metodos.msgPregunta(null, mensaje + "¿Desea continuar?") == 0) {
+                if (ControladorAlertas.option(mensaje + "¿Desea continuar?")) {
                     instancias.getPrestamos().facturarTraslados(tblPrestamos.getValueAt(tblPrestamos.getSelectedRow(), 0).toString(), "" + diasPlazo);
-                    metodos.msgExito(null, "Traslado liquidado correctamente.");
+                    ControladorAlertas.alertSuccess("Traslado liquidado correctamente.");
                     this.dispose();
                 }
             }

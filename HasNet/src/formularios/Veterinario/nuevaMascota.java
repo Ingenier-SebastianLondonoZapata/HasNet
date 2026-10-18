@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.Veterinario.ndHistoria;
 import clases.Veterinario.ndMascota;
@@ -394,17 +396,17 @@ public class nuevaMascota extends javax.swing.JDialog {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             //REGISTRAR UNA NUEVA MASCOTA;
             ndMascota nodoMascota = instancias.getSql().getDatosMascota(txtCodigo.getText());
 
             if (nodoMascota.getCliente() != null) {
-                metodos.msgError(null, "La mascota ya existe");
+                ControladorAlertas.alertFail("La mascota ya existe");
                 txtCodigo.requestFocus();
                 return;
             }
@@ -416,7 +418,7 @@ public class nuevaMascota extends javax.swing.JDialog {
             nodoMascota = metodos.llenarMascota(vectorMascota);
 
             if (!instancias.getSql().agregarMascota(nodoMascota)) {
-                metodos.msgError(null, "Error al guardar la mascota");
+                ControladorAlertas.alertFail("Error al guardar la mascota");
                 return;
             }
 
@@ -426,15 +428,15 @@ public class nuevaMascota extends javax.swing.JDialog {
             ndHistoria nodoHist = metodos.llenarHistoria(vectorHist);
 
             if (!instancias.getSql().agregarHistoria(nodoHist)) {
-                metodos.msgError(null, "Error al abrir la historia");
+                ControladorAlertas.alertFail("Error al abrir la historia");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("HIST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("HIST")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo de las historias clinicas");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de las historias clinicas");
             }
 
-            metodos.msgExito(null, "Mascota registrado con éxito");
+            ControladorAlertas.alertSuccess("Mascota registrado con éxito");
 
             System.out.println(opc);
             switch (opc) {
@@ -462,7 +464,7 @@ public class nuevaMascota extends javax.swing.JDialog {
             }
 
 //            } catch (Exception e) {
-//                metodos.msgError(null, "Hubo un problema al guardar el Tercero");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar el Tercero");
 //            }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed

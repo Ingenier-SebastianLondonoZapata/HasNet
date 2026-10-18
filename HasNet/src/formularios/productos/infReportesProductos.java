@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.Dimension;
@@ -152,7 +154,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -168,7 +170,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -184,7 +186,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -200,7 +202,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -216,7 +218,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -232,7 +234,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -248,7 +250,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -264,7 +266,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -280,7 +282,7 @@ public class infReportesProductos extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTipoReporte.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
     }

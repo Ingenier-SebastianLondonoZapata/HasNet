@@ -1,9 +1,15 @@
 package Vista.Restaurante;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Utilidades.Utilidades;
 import clases.Instancias;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.event.ActionEvent;
@@ -16,12 +22,13 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class VistaProductosCambio extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private Instancias instancias;
     metodosGenerales metodos = new metodosGenerales();
     String factura;
     String prodPrimero1;
-    ndProducto nodo;
+    ModeloProducto nodo;
     int fila1 = 0;
     DefaultTableModel modelo;
 
@@ -44,7 +51,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
         prodPrimero1 = prodPrimero;
         instancias = Instancias.getInstancias();
 
-        nodo = instancias.getSql().getDatosProducto(codPrincipal, "bdProductos");
+        nodo = daoProducto.obtenerDatosProducto(codPrincipal, enumBodegas.ID_BODEGA_PRINCIPAL);
         lbProducto.setText(nodo.getDescripcion());
 
         cargarTabla();
@@ -299,7 +306,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
                     tblListado.getValueAt(tblListado.getSelectedRow(), 1).toString(), cantidad);
         } else {
             if (tblListado.getRowCount() <= 0) {
-                metodos.msgError(null, "No ha cargado ningun producto relacionado");
+                ControladorAlertas.alertFail("No ha cargado ningun producto relacionado");
                 return;
             }
 
@@ -307,7 +314,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
                 try {
                     Double cant = Double.parseDouble(tblListado.getValueAt(i, 2).toString().replace(",", "."));
                 } catch (Exception e) {
-                    metodos.msgError(null, "Ingrese cantidad válida de " + tblListado.getValueAt(i, 1));
+                    ControladorAlertas.alertFail("Ingrese cantidad válida de " + tblListado.getValueAt(i, 1));
                     return;
                 }
             }
@@ -318,16 +325,16 @@ public class VistaProductosCambio extends javax.swing.JDialog {
                     if (!instancias.getSql().agregarProductosRelacionados(nodo.getIdSistema(), prodPrimero1, txtNombre.getText(),
                             tblListado.getValueAt(i, 0).toString(), tblListado.getValueAt(i, 1).toString(),
                             tblListado.getValueAt(i, 2).toString().replace(",", "."))) {
-                        metodos.msgError(null, "Hubo un error al guardar los productos relacionados");
+                        ControladorAlertas.alertFail("Hubo un error al guardar los productos relacionados");
                         return;
                     }
                 }
             } catch (Exception e) {
-                metodos.msgError(null, "Para relacionar un cambio, el diseño ya debe estar guardado");
+                ControladorAlertas.alertFail("Para relacionar un cambio, el diseño ya debe estar guardado");
                 return;
             }
 
-            metodos.msgExito(null, "Productos guardados con exito!");
+            ControladorAlertas.alertSuccess("Productos guardados con exito!");
         }
 
         this.dispose();
@@ -351,7 +358,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
             DefaultTableModel modelo = (DefaultTableModel) tblListado.getModel();
             modelo.removeRow(fila);
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -365,7 +372,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
 
         for (int j = 0; j < tblListado.getRowCount(); j++) {
             if (codigo.equalsIgnoreCase((String) tblListado.getValueAt(j, 0))) {
-                metodos.msgAdvertencia(null, "El producto ya esta cargado");
+                ControladorAlertas.alert("El producto ya esta cargado");
                 tblListado.setColumnSelectionInterval(3, 3);
                 tblListado.setRowSelectionInterval(j, j);
                 tblListado.editCellAt(j, 3);
@@ -375,18 +382,13 @@ public class VistaProductosCambio extends javax.swing.JDialog {
             }
         }
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -412,7 +414,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
     }
 
     public void cargarTabla() {
-        ndProducto nodo1 = instancias.getSql().getDatosProducto(prodPrimero1, "bdProductos");
+        ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(prodPrimero1, enumBodegas.ID_BODEGA_PRINCIPAL);
 
         txtNombre.setText(nodo.getDescripcion());
 
@@ -422,7 +424,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
 
             try {
                 if (fila1 > 0) {
-                    ndProducto nodo = instancias.getSql().getDatosProducto(listado[0][1].toString(), "bdProductos");
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(listado[0][1].toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
                     modelo.addRow(new Object[]{listado[0][1], nodo.getDescripcion()});
                 }
             } catch (Exception e) {

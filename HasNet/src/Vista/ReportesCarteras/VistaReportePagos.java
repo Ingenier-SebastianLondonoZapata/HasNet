@@ -1,6 +1,8 @@
 package Vista.ReportesCarteras;
 
-import dao.InicioSesion.DaoInicioSesion;
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -409,7 +411,7 @@ public class VistaReportePagos extends javax.swing.JPanel {
     private void btnAggTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggTerminalActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -418,7 +420,7 @@ public class VistaReportePagos extends javax.swing.JPanel {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ninguna terminal seleccioanda");
+            ControladorAlertas.alertFail("No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
@@ -426,11 +428,11 @@ public class VistaReportePagos extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -445,7 +447,7 @@ public class VistaReportePagos extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRemClienteActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (instancias.getUsuario().equals("ADMIN")) {

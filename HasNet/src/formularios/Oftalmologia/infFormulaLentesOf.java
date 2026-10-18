@@ -1,5 +1,7 @@
 package formularios.Oftalmologia;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Oftalmologia.ndFormulaLentes;
@@ -430,20 +432,20 @@ public class infFormulaLentesOf extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "FORMLENTES-" + instancias.getSql().getNumConsecutivo("FORMLENTES")[0];
 
             ndFormulaLentes nodo = instancias.getSql().getDatosFormulaLentes(id);
 
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La formula de lentes ya existe");
+                ControladorAlertas.alertFail("La formula de lentes ya existe");
                 lbFacturaNo.requestFocus();
                 return;
             }
@@ -454,17 +456,17 @@ public class infFormulaLentesOf extends javax.swing.JInternalFrame {
             nodo = metodos.llenarFormulaLentes(vector);
 
             if (!instancias.getSql().agregarFormulaLentes(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la formula de lentes");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la formula de lentes");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("FORMLENTES", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORMLENTES")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la formula de lentes");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la formula de lentes");
             }
 
-            metodos.msgExito(this, "Formula de lentes registrada con éxito");
+            ControladorAlertas.alertSuccess("Formula de lentes registrada con éxito");
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteOftalmologia(instancias).verFormulaLentes("FORMLENTES-" + lbNoFactura.getText(), instancias.getInformacionEmpresa());
             }
 

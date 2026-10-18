@@ -1,18 +1,25 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
 import clases.Medico.ndCamposOrdenPredeterminada;
 import clases.Medico.ndOrdenServicio;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.event.KeyEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class infPredeterminarCampos extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     DefaultTableModel modelo;
     TableRowSorter modeloOrdenado;
@@ -574,18 +581,18 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
         Object[] campos2 = {txtaCobrar,};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(null, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             //
             try {
 
                 String valor = "0";
                 try {
-                    ndProducto prod = instancias.getSql().getDatosProducto(txtaCobrar.getText(), "bdProductos");
+                    ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
                     System.out.println(valor);
                     valor = prod.getL1();
                 } catch (Exception e) {
@@ -614,21 +621,21 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
 
                 if (registrar) {
                     if (!instancias.getSql().agregarCamposOrdenPredeterminada(nodo)) {
-                        metodos.msgError(null, "Hubo un problema al guardar la Orden Predeterminada");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la Orden Predeterminada");
                         return;
                     }
 
                 } else {
                     if (!instancias.getSql().modificarCamposOrdenPredeterminada(nodo)) {
-                        metodos.msgError(null, "Hubo un problema al modificar la Orden Predeterminada");
+                        ControladorAlertas.alertFail("Hubo un problema al modificar la Orden Predeterminada");
                         return;
                     }
 
                 }
-                metodos.msgExito(null, "Orden Predeterminada modificada con éxito");
+                ControladorAlertas.alertSuccess("Orden Predeterminada modificada con éxito");
                 this.dispose();
             } catch (Exception e) {
-                metodos.msgError(null, "Hubo un problema al guardar el OrdenServicio");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el OrdenServicio");
             }
         }
     }//GEN-LAST:event_btnGuardar1ActionPerformed
@@ -897,7 +904,7 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
 
     public void cargarProducto(String codigo, int sw) {
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
 
         if (nodo.getCodigo() != null) {
             txtValor.setText(big.setMoneda(big.getBigDecimal(nodo.getL1())));

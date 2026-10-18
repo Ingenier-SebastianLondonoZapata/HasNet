@@ -1,14 +1,20 @@
 package Vista.Configuraciones;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Utilidades.DatosMaestra;
 import clases.Instancias;
-import dao.Configuraciones.DaoMaestra;
+import Dao.Configuraciones.DaoMaestra;
 import clases.Medico.ndCamposOrdenPredeterminada;
 import clases.big;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import clases.ndMaestra;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import configuracion.dlgFinSoporte;
 import formularios.dlgPedirSuperContrasena;
 import Vista.Productos.VistaBuscadorProductos;
@@ -28,6 +34,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class vistaMaestra extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias = Instancias.getInstancias();
@@ -5770,10 +5777,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
         boolean registrar = false;
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             if (!txtContra.getText().equals(txtContra2.getText())) {
-                metodos.msgAdvertencia(null, "Las contraseñas no coinciden");
+                ControladorAlertas.alert("Las contraseñas no coinciden");
                 txtContra.requestFocus();
                 return;
             }
@@ -5781,7 +5788,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             if (instancias.getConfiguraciones().isMedico()) {
                 if (rdNoGenerarOrden.isSelected()) {
                     if (txtaCobrar1.getText().equals("")) {
-                        metodos.msgError(null, "Falta servicio a cobrar");
+                        ControladorAlertas.alertFail("Falta servicio a cobrar");
                         return;
                     }
                 }
@@ -5789,7 +5796,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 //                if (rdNoGenerarOrden.isSelected()) {
 //                    ndCamposOrdenPredeterminada nodo = instancias.getSql().getDatosCamposOrdenPredeterminada("1");
 //                    if (nodo.getId() == null) {
-//                        metodos.msgError(null, "No ha predeterminado los campos de la orden");
+//                        ControladorAlertas.alertFail("No ha predeterminado los campos de la orden");
 //                        return;
 //                    }
 //                }
@@ -5872,7 +5879,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             ndMaestra nodo = metodos.llenarMaestra(vector);
 
             if (!instancias.getSql().modificarMaestra(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar los cambios");
+                ControladorAlertas.alertFail("Hubo un problema al guardar los cambios");
                 return;
             }
 
@@ -5921,7 +5928,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 String valor = "0";
                 try {
-                    ndProducto prod = instancias.getSql().getDatosProducto(txtaCobrar.getText(), "bdProductos");
+                    ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
                     valor = prod.getL1();
                 } catch (Exception e) {
 
@@ -5949,12 +5956,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 if (registrar) {
                     if (!instancias.getSql().agregarCamposOrdenPredeterminada(nodoMed)) {
-                        metodos.msgError(null, "Hubo un problema al guardar la Orden Predeterminada");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar la Orden Predeterminada");
                         return;
                     }
                 } else {
                     if (!instancias.getSql().modificarCamposOrdenPredeterminada(nodoMed)) {
-                        metodos.msgError(null, "Hubo un problema al modificar la Orden Predeterminada");
+                        ControladorAlertas.alertFail("Hubo un problema al modificar la Orden Predeterminada");
                         return;
                     }
 
@@ -5978,7 +5985,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     }
 
                     if (cobro.compareTo(BigDecimal.ZERO) <= 0) {
-                        metodos.msgAdvertenciaAjustado(this, "El casco debe ser mayor a " + this.simbolo + " 0");
+                        ControladorAlertas.alert("El casco debe ser mayor a " + this.simbolo + " 0");
                         return;
                     }
                 }
@@ -6020,7 +6027,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                             big.getMoneda(tblConfig.getValueAt(i, 7).toString()), tblConfig.getValueAt(i, 8).toString(), big.getMoneda(tblConfig.getValueAt(i, 9).toString()),
                             tblConfig.getValueAt(i, 10).toString(), big.getMoneda(tblConfig.getValueAt(i, 11).toString()), false, false,
                             tblConfig.getValueAt(i, 14).toString(), tblConfig.getValueAt(i, 15).toString())) {
-                        metodos.msgError(this, "Hubo un problema al guardar los cambios");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar los cambios");
                         return;
                     }
                 }
@@ -6031,12 +6038,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 if (!idMaestra.equals("")) {
                     if (!instancias.getSql().modificarMaestraParqueadero(egreso, "", "", "", "", cupo, diasPlazo, cobrarCasco, cobro, modificarPrecio)) {
-                        metodos.msgError(this, "Error al guardar la configuración");
+                        ControladorAlertas.alertFail("Error al guardar la configuración");
                         return;
                     }
                 } else {
                     if (!instancias.getSql().insertarMaestraParqueadero(egreso, "", "", "", "", cupo, diasPlazo, cobrarCasco, cobro, modificarPrecio)) {
-                        metodos.msgError(this, "Error al guardar la configuración");
+                        ControladorAlertas.alertFail("Error al guardar la configuración");
                         return;
                     }
                 }
@@ -6099,7 +6106,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 }
             }
 
-            metodos.msgExito(this, "Cambios guardados con éxito");
+            ControladorAlertas.alertSuccess("Cambios guardados con éxito");
 
             tabPanel.setSelectedIndex(0);
 
@@ -6190,9 +6197,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             String destino = System.getProperty("user.dir") + "\\imagenes\\conf\\logoEmpresa.png";
 //            metodosGenerales.copiarArchivo(origen, destino);
             metodos.montarLogo(origen, destino);
-            metodos.msgExito(this, "Imagen cargada con exito");
+            ControladorAlertas.alertSuccess("Imagen cargada con exito");
         } catch (Exception e) {
-            metodos.msgError(this, "Error al guardar el logo");
+            ControladorAlertas.alertFail("Error al guardar el logo");
             try {
                 String origen = System.getProperty("user.dir") + "\\imagenes\\conf\\logoEmpresa2.png";
                 String destino = System.getProperty("user.dir") + "\\imagenes\\conf\\logoEmpresa.png";
@@ -6349,15 +6356,15 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         try {
             columna = tblImpresoras1.getSelectedColumn();
         } catch (Exception e) {
-            metodos.msgError(this, "Seleccione una impresora");
+            ControladorAlertas.alertFail("Seleccione una impresora");
             return;
         }
 
         if (columna == 0) {
-            metodos.msgError(this, "Esta columna no se puede eliminar");
+            ControladorAlertas.alertFail("Esta columna no se puede eliminar");
             return;
         } else if (columna == 1) {
-            metodos.msgError(this, "Esta impresora no se puede eliminar");
+            ControladorAlertas.alertFail("Esta impresora no se puede eliminar");
             return;
         }
 
@@ -6387,13 +6394,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             for (int i = 1; i < tblImpresoras1.getColumnCount(); i++) {
                 String nombre = tblImpresoras1.getValueAt(0, i).toString();
                 if (impresora.equals(nombre)) {
-                    metodos.msgError(this, "Esta impresora ya esta cargada!");
+                    ControladorAlertas.alertFail("Esta impresora ya esta cargada!");
                     return;
                 }
             }
 
             if (pos == 0) {
-                metodos.msgError(this, "Espacio insuficiente.");
+                ControladorAlertas.alertFail("Espacio insuficiente.");
                 return;
             } else {
                 tblImpresoras1.setValueAt(tblImpresoras.getValueAt(tblImpresoras.getSelectedRow(), 0), 0, pos);
@@ -6415,12 +6422,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         try {
             fila = tblImpresoras1.getSelectedRow();
         } catch (Exception e) {
-            metodos.msgError(this, "Seleccione un grupo.");
+            ControladorAlertas.alertFail("Seleccione un grupo.");
             return;
         }
 
         if (tblImpresoras1.getValueAt(0, tblImpresoras1.getSelectedColumn()).equals("") || tblImpresoras1.getValueAt(0, tblImpresoras1.getSelectedColumn()) == null) {
-            metodos.msgError(this, "Impresora no válida.");
+            ControladorAlertas.alertFail("Impresora no válida.");
             return;
         }
 
@@ -6485,7 +6492,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         instancias.getSql().aumentarTurno(txtTurno.getText());
-        metodos.msgExito(this, "¡Turno actualizado correctamente!");
+        ControladorAlertas.alertSuccess("¡Turno actualizado correctamente!");
         instancias.getFactura().actualizarVistaConsecutivo();
         instancias.getPedido().actualizarVistaConsecutivo();
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -6522,18 +6529,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     private void btnGuardar5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar5ActionPerformed
         if (txtFranquisia.getText().equals("")) {
-            metodos.msgError(this, "Ingrese la franquisia");
+            ControladorAlertas.alertFail("Ingrese la franquisia");
             return;
         }
 
         if (txtComision.getText().equals("")) {
-            metodos.msgError(this, "Ingrese la comisión");
+            ControladorAlertas.alertFail("Ingrese la comisión");
             return;
         }
 
         for (int i = 0; i < tblTarjetas.getRowCount(); i++) {
             if (tblTarjetas.getValueAt(i, 0).toString().equalsIgnoreCase(txtFranquisia.getText())) {
-                metodos.msgError(this, "La franquisia ya existe");
+                ControladorAlertas.alertFail("La franquisia ya existe");
                 return;
             }
         }
@@ -6541,7 +6548,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         DefaultTableModel modelo = (DefaultTableModel) tblTarjetas.getModel();
         modelo.addRow(new Object[]{txtFranquisia.getText(), txtComision.getText()});
 
-        metodos.msgExito(this, "Tarjeta cargada con exito!");
+        ControladorAlertas.alertSuccess("Tarjeta cargada con exito!");
 
         txtFranquisia.setText("");
         txtComision.setText("");
@@ -6556,7 +6563,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
             tblTarjetas.removeEditor();
         } else {
-            metodos.msgAdvertencia(null, "Seleccione una franquisia");
+            ControladorAlertas.alert("Seleccione una franquisia");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -6584,7 +6591,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
             tblDiasBloqueo.removeEditor();
         } else {
-            metodos.msgAdvertencia(null, "Seleccione una fecha");
+            ControladorAlertas.alert("Seleccione una fecha");
         }
     }//GEN-LAST:event_popBorrar1ActionPerformed
 
@@ -6710,7 +6717,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (cmbDoctores.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Escoja un usuario");
+            ControladorAlertas.alertFail("Escoja un usuario");
             return;
         }
 
@@ -6775,22 +6782,22 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         try {
             columnas = Integer.parseInt(txtColumnas.getText());
         } catch (Exception e) {
-            metodos.msgError(null, "Ingrese el número de columnas");
+            ControladorAlertas.alertFail("Ingrese el número de columnas");
             return;
         }
         if (columnas < 1 || columnas > 26) {
-            metodos.msgError(null, "Las columnas deben estar entre 1 y 26.");
+            ControladorAlertas.alertFail("Las columnas deben estar entre 1 y 26.");
             return;
         }
 
         try {
             filas = Integer.parseInt(txtFilas.getText());
         } catch (Exception e) {
-            metodos.msgError(null, "Ingrese el número de filas.");
+            ControladorAlertas.alertFail("Ingrese el número de filas.");
             return;
         }
         if (filas < 1) {
-            metodos.msgError(null, "Ingrese al menos 1 fila.");
+            ControladorAlertas.alertFail("Ingrese al menos 1 fila.");
             return;
         }
 
@@ -7020,7 +7027,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     private void tblMesasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMesasMouseClicked
         if (evt.getClickCount() > 1) {
-            if (metodos.msgPregunta(null, "¿Desea quitar mesero?") == 0) {
+            if (ControladorAlertas.option("¿Desea quitar mesero?")) {
                 instancias.getSql().cambiarEstadoMesa(tblMesas.getValueAt(tblMesas.getSelectedRow(), 0).toString(), "DISPONIBLE");
                 btnActualizarMesasActionPerformed(null);
             }
@@ -7127,18 +7134,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 try {
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 3).toString()) < 0) {
-                        metodos.msgError(null, "Solo se permiten números positivos.");
+                        ControladorAlertas.alertFail("Solo se permiten números positivos.");
                         tblConfig.setValueAt("10", fila, 3);
                         return;
                     }
 
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 3).toString()) > 30) {
-                        metodos.msgError(null, "Solo se permiten entre los primeros 30 minutos.");
+                        ControladorAlertas.alertFail("Solo se permiten entre los primeros 30 minutos.");
                         tblConfig.setValueAt("10", fila, 3);
                         return;
                     }
                 } catch (Exception e) {
-                    metodos.msgError(null, "Solo se permiten números.");
+                    ControladorAlertas.alertFail("Solo se permiten números.");
                     tblConfig.setValueAt("10", fila, 3);
                     return;
                 }
@@ -7153,18 +7160,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 try {
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 4).toString()) < 0) {
-                        metodos.msgError(null, "Solo se permiten números positivos.");
+                        ControladorAlertas.alertFail("Solo se permiten números positivos.");
                         tblConfig.setValueAt("10", fila, 4);
                         return;
                     }
 
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 4).toString()) > 30) {
-                        metodos.msgError(null, "Solo se permiten entre los primeros 30 minutos.");
+                        ControladorAlertas.alertFail("Solo se permiten entre los primeros 30 minutos.");
                         tblConfig.setValueAt("10", fila, 4);
                         return;
                     }
                 } catch (Exception e) {
-                    metodos.msgError(null, "Solo se permiten números.");
+                    ControladorAlertas.alertFail("Solo se permiten números.");
                     tblConfig.setValueAt("10", fila, 4);
                     return;
                 }
@@ -7193,18 +7200,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 try {
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 6).toString()) < 0) {
-                        metodos.msgError(null, "Solo se permiten números positivos.");
+                        ControladorAlertas.alertFail("Solo se permiten números positivos.");
                         tblConfig.setValueAt("8", fila, 6);
                         return;
                     }
 
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 6).toString()) > 23) {
-                        metodos.msgError(null, "Son 23 horas como máximo.");
+                        ControladorAlertas.alertFail("Son 23 horas como máximo.");
                         tblConfig.setValueAt("8", fila, 6);
                         return;
                     }
                 } catch (Exception e) {
-                    metodos.msgError(null, "Solo se permiten números.");
+                    ControladorAlertas.alertFail("Solo se permiten números.");
                     tblConfig.setValueAt("8", fila, 6);
                     return;
                 }
@@ -7233,18 +7240,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 try {
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 8).toString()) < 0) {
-                        metodos.msgError(null, "Solo se permiten números positivos.");
+                        ControladorAlertas.alertFail("Solo se permiten números positivos.");
                         tblConfig.setValueAt("8", fila, 8);
                         return;
                     }
 
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 8).toString()) > 23) {
-                        metodos.msgError(null, "Son 23 horas como máximo.");
+                        ControladorAlertas.alertFail("Son 23 horas como máximo.");
                         tblConfig.setValueAt("8", fila, 8);
                         return;
                     }
                 } catch (Exception e) {
-                    metodos.msgError(null, "Solo se permiten números.");
+                    ControladorAlertas.alertFail("Solo se permiten números.");
                     tblConfig.setValueAt("8", fila, 8);
                     return;
                 }
@@ -7273,18 +7280,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 try {
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 10).toString()) < 0) {
-                        metodos.msgError(null, "Solo se permiten números positivos.");
+                        ControladorAlertas.alertFail("Solo se permiten números positivos.");
                         tblConfig.setValueAt("24", fila, 10);
                         return;
                     }
 
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 10).toString()) > 24) {
-                        metodos.msgError(null, "Son 24 horas como máximo.");
+                        ControladorAlertas.alertFail("Son 24 horas como máximo.");
                         tblConfig.setValueAt("24", fila, 10);
                         return;
                     }
                 } catch (Exception e) {
-                    metodos.msgError(null, "Solo se permiten números.");
+                    ControladorAlertas.alertFail("Solo se permiten números.");
                     tblConfig.setValueAt("24", fila, 10);
                     return;
                 }
@@ -7313,12 +7320,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 try {
                     if (Integer.parseInt(tblConfig.getValueAt(fila, 14).toString()) < 0) {
-                        metodos.msgError(null, "Solo se permiten números positivos.");
+                        ControladorAlertas.alertFail("Solo se permiten números positivos.");
                         tblConfig.setValueAt("20", fila, 14);
                         return;
                     }
                 } catch (Exception e) {
-                    metodos.msgError(null, "Solo se permiten números.");
+                    ControladorAlertas.alertFail("Solo se permiten números.");
                     tblConfig.setValueAt("20", fila, 14);
                     return;
                 }
@@ -7381,22 +7388,22 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCostoKeyTyped
 
     private void btnGuardar6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar6ActionPerformed
-        metodos.msgAdvertencia(this, "Se va a perder todos los registros del estante de cascos");
+        ControladorAlertas.alert("Se va a perder todos los registros del estante de cascos");
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             int columnas, filas;
             try {
                 columnas = Integer.parseInt(txtColumnas1.getText());
             } catch (Exception e) {
-                metodos.msgError(null, "Numero de columnas invalido.");
+                ControladorAlertas.alertFail("Numero de columnas invalido.");
                 return;
             }
 
             try {
                 filas = Integer.parseInt(txtFilas1.getText());
             } catch (Exception e) {
-                metodos.msgError(null, "Numero de filas invalido.");
+                ControladorAlertas.alertFail("Numero de filas invalido.");
                 return;
             }
 
@@ -7404,18 +7411,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             for (int i = 0; i < Integer.parseInt(txtFilas1.getText()); i++) {
                 for (int j = 0; j < Integer.parseInt(txtColumnas1.getText()); j++) {
                     if (!instancias.getSql().agregarCasco(tblCascos.getValueAt(j, i).toString())) {
-                        metodos.msgError(this, "Error al guardar los espacios de los cascos");
+                        ControladorAlertas.alertFail("Error al guardar los espacios de los cascos");
                         return;
                     }
                 }
             }
 
             if (!instancias.getSql().modificarMaestraParqueadero(String.valueOf(filas), String.valueOf(columnas))) {
-                metodos.msgError(this, "Error al guardar la configuración");
+                ControladorAlertas.alertFail("Error al guardar la configuración");
                 return;
             }
 
-            metodos.msgExito(this, "Cambios guardados con éxito");
+            ControladorAlertas.alertSuccess("Cambios guardados con éxito");
         }
     }//GEN-LAST:event_btnGuardar6ActionPerformed
 
@@ -7428,19 +7435,19 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
             tblConfig.removeEditor();
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un servicio");
+            ControladorAlertas.alert("Seleccione un servicio");
         }
     }//GEN-LAST:event_popBorrar2ActionPerformed
 
     private void btnAggResponsabilidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggResponsabilidadesActionPerformed
         if (cmbResponsabilidades.getSelectedIndex() == 0) {
-            metodos.msgAdvertenciaAjustado(null, "Seleccione una responsabilidad");
+            ControladorAlertas.alert("Seleccione una responsabilidad");
             return;
         }
 
         for (int i = 0; i < cmbMisResponsabilidades.getItemCount(); i++) {
             if (cmbMisResponsabilidades.getItemAt(i).equals(cmbResponsabilidades.getSelectedItem())) {
-                metodos.msgAdvertenciaAjustado(null, "Ya cargó esta responsabilidad");
+                ControladorAlertas.alert("Ya cargó esta responsabilidad");
                 break;
             }
         }
@@ -7495,18 +7502,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_rdNoPvpIvaItemStateChanged
 
     public void cargarProducto(String codigo) {
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -7525,18 +7527,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     public void cargarProducto1(String codigo) {
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -7545,14 +7542,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         if (!CodigoProd.equals("")) {
             for (int i = 0; i < tblConfig.getRowCount(); i++) {
                 if (nodo.getIdSistema().equals(tblConfig.getValueAt(i, 0))) {
-                    metodos.msgAdvertenciaAjustado(null, "Este servicio ya esta cargado");
+                    ControladorAlertas.alert("Este servicio ya esta cargado");
                     txtCodProducto.setText("");
                     return;
                 }
             }
 
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 btnGuardar1.requestFocus();
                 return;
             }
@@ -7599,7 +7596,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         try {
             filas = Integer.parseInt(txtFilas1.getText());
         } catch (Exception e) {
-            metodos.msgAdvertenciaAjustado(null, "Ingrese la cantidad de filas");
+            ControladorAlertas.alert("Ingrese la cantidad de filas");
             return;
         }
 
@@ -7619,12 +7616,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         try {
             columnas = Integer.parseInt(txtColumnas1.getText());
         } catch (Exception e) {
-            metodos.msgAdvertenciaAjustado(null, "Ingrese la cantidad de columnas");
+            ControladorAlertas.alert("Ingrese la cantidad de columnas");
             return;
         }
 
         if (columnas > 26) {
-            metodos.msgError(null, "Son 26 columnas como máximo.");
+            ControladorAlertas.alertFail("Son 26 columnas como máximo.");
             txtColumnas1.setText("");
             return;
         }

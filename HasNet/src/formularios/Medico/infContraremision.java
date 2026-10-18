@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
@@ -440,11 +442,11 @@ public class infContraremision extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String conse = "CONTRAREMISION-" + instancias.getSql().getNumConsecutivo("CONTRAREMISION")[0];
             String hallazgos = txtHallazgos.getText();
@@ -482,20 +484,20 @@ public class infContraremision extends javax.swing.JInternalFrame {
                 tratamientos, recomendaciones, diag1, diag2, nombre1, nombre2, medico, cedulaMedico, ""};
 
             if (!instancias.getSql().AgregarContraremision(vector)) {
-                metodos.msgError(this, "Hubo un problema al guardar la contraremisión");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la contraremisión");
                 return;
             }
 
             //CAMBIAR CONSECUTIVO INCAPACIDAD
             if (!instancias.getSql().aumentarConsecutivo("CONTRAREMISION", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CONTRAREMISION")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la remisión");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la remisión");
             }
 
             limpiar();
 
-            metodos.msgExito(this, "Contraremisión registrado con éxito");
+            ControladorAlertas.alertSuccess("Contraremisión registrado con éxito");
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String tipo = "";
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";

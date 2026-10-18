@@ -1,5 +1,7 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.IconCellRenderer;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -260,7 +262,7 @@ public class infNuevaParte extends javax.swing.JFrame {
 
     private void tblRegistrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRegistrosMouseClicked
         if (tblRegistros.getSelectedColumn() == 2) {
-            if (metodos.msgPregunta(null, "¿Eliminar parte del vehiculo?") == 0) {
+            if (ControladorAlertas.option("¿Eliminar parte del vehiculo?")) {
                 instancias.getSql().eliminar_registro("bdArticulos", " Id = "
                         + tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
                 cargarArticulos(cmbTipo.getSelectedItem().toString());
@@ -281,16 +283,16 @@ public class infNuevaParte extends javax.swing.JFrame {
 
         for (int i = 0; i < tblRegistros.getRowCount(); i++) {
             if (nombre.equals(tblRegistros.getValueAt(i, 1))) {
-                metodos.msgError(null, "Este articulo ya existe.");
+                ControladorAlertas.alertFail("Este articulo ya existe.");
                 txtNombre.setText("");
                 return;
             }
         }
 
         if (!instancias.getSql().agregarArticulo(nombre, cmbTipo.getSelectedItem().toString())) {
-            metodos.msgError(null, "Hubo un error al guardar la nueva parte del vehiculo.");
+            ControladorAlertas.alertFail("Hubo un error al guardar la nueva parte del vehiculo.");
         } else {
-            metodos.msgExito(null, "Parte del vehiculo registrada con exito.");
+            ControladorAlertas.alertSuccess("Parte del vehiculo registrada con exito.");
         }
 
         txtNombre.setText("");

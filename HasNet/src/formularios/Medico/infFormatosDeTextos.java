@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
@@ -290,7 +292,7 @@ public class infFormatosDeTextos extends javax.swing.JInternalFrame {
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
         if (!guardar) {
             if (txtDescripcion.getText().equals("")) {
-                metodos.msgError(this, "Ingrese una descripción");
+                ControladorAlertas.alertFail("Ingrese una descripción");
                 txtDescripcion.requestFocusInWindow();
                 return;
             }
@@ -299,26 +301,26 @@ public class infFormatosDeTextos extends javax.swing.JInternalFrame {
             for (int i = 0; i < tblIncluye.getRowCount(); i++) {
                 campo = (String) tblIncluye.getValueAt(i, 0);
                 if (txtNombre.getText().equalsIgnoreCase(campo)) {
-                    metodos.msgError(this, "Ya existe una plantilla con este nombre");
+                    ControladorAlertas.alertFail("Ya existe una plantilla con este nombre");
                     return;
                 }
             }
 
             if (!instancias.getSql().agregarPlantillaDeTexto(new Object[]{txtNombre.getText(), txtDescripcion.getText(), true})) {
-                metodos.msgError(this, "Hubo un problema al guardar el incluye del producto");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el incluye del producto");
                 return;
             }
 
-            metodos.msgExito(this, "Plantilla registrada con exito");
+            ControladorAlertas.alertSuccess("Plantilla registrada con exito");
 
             cargarTabla();
         } else {
 
             if (!instancias.getSql().modificarPlantillaDeTexto(txtIdIncluye.getText(), txtNombre.getText(), txtDescripcion.getText(), checkActivo.isSelected())) {
-                metodos.msgError(this, "Hubo un problema al modificar el incluye del producto");
+                ControladorAlertas.alertFail("Hubo un problema al modificar el incluye del producto");
                 return;
             }
-            metodos.msgExito(this, "Plantilla modificada correctamente");
+            ControladorAlertas.alertSuccess("Plantilla modificada correctamente");
             txtDescripcion.setText("");
             txtNombre.setText("");
             checkActivo.setSelected(false);

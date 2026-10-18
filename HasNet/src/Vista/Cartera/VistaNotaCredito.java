@@ -1,5 +1,9 @@
 package Vista.Cartera;
 
+import Procesos.Inventario.Dao.DaoInventario;
+
+import Dao.Productos.DaoProducto;
+
 import Consumidor.FacturacionElectronica.consumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
@@ -28,7 +32,7 @@ import clases.Ventas.ndFactura;
 import clases.Ventas.ndNotasCredito;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Vista.Solicitudes.VistaSolicitarPermisos;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -49,6 +53,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class VistaNotaCredito extends javax.swing.JInternalFrame {
+    private final DaoInventario daoInventario = new DaoInventario();
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private ControladorAlertas alertas = new ControladorAlertas();
     private squemaFacturacion squemaFacturacion = new squemaFacturacion();
@@ -1178,7 +1184,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
                     if (num > num1) {
                         tblProductos.setValueAt("1", tblProductos.getSelectedRow(), 3);
                         tblProductosKeyReleased(evt);
-                        metodos.msgError(this, "Cantidad mayor a la de la venta");
+                        ControladorAlertas.alertFail("Cantidad mayor a la de la venta");
                         return;
                     }
                 }
@@ -1269,13 +1275,13 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
                     tblProductos.setValueAt(cantidad, fila, 12);
                     break;
                 case "2":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad2())), fila, 12);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(2))), fila, 12);
                     break;
                 case "3":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad3())), fila, 12);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(3))), fila, 12);
                     break;
                 case "4":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad4())), fila, 12);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(4))), fila, 12);
                     break;
             }
             cargarTotales();
@@ -1326,7 +1332,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
 
         if (esFacturacionElectronica()) {
             if (CUFE_FACTURA_ELECTRONICA.isEmpty()) {
-                alertas.bigAlert("No se puede generar nota crédito electrónica a una factura sin cufe");
+                alertas.alert("No se puede generar nota crédito electrónica a una factura sin cufe");
                 return;
             }
 
@@ -1355,7 +1361,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             permisos.setVisible(true);
             return;
         } else {
-            if (metodos.msgPregunta(this, "¿Desea continuar?") != 0) {
+            if (!ControladorAlertas.option("¿Desea continuar?")) {
                 return;
             }
         }
@@ -1425,7 +1431,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
 
             cargarTotales();
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1434,50 +1440,50 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
 
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdNc", "Where id ='" + consecutivo + "' ");
         if (anulado) {
-            metodos.msgError(null, "El documento esta anulado");
+            ControladorAlertas.alertFail("El documento esta anulado");
             return;
         }
 
         if (!instancias.getSql().estaSinUtilizar(consecutivo)) {
-            metodos.msgError(this, "La nota credito ya ha sido usada");
+            ControladorAlertas.alertFail("La nota credito ya ha sido usada");
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Anular esta nota credito?") == 0) {
+        if (ControladorAlertas.option("¿Anular esta nota credito?")) {
 
             if (!instancias.getSql().anularDocumento(consecutivo, "bdNc")) {
-                metodos.msgError(this, "Hubo un problema al anular la nota credito");
+                ControladorAlertas.alertFail("Hubo un problema al anular la nota credito");
             }
 
             if (!instancias.getSql().descontarNc(consecutivo, "0")) {
-                metodos.msgError(this, "Hubo un problema al anular la nota credito");
+                ControladorAlertas.alertFail("Hubo un problema al anular la nota credito");
             }
 
             Object[][] notasCredito = instancias.getSql().getNotasCredito(consecutivo);
 
             for (int i = 0; i < notasCredito.length; i++) {
 
-                ndProducto producto = instancias.getSql().getDatosProducto(notasCredito[i][1].toString(), "bdProductos");
+                ModeloProducto producto = daoProducto.obtenerDatosProducto(notasCredito[i][1].toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
                 double cantidad;
                 double inventario;
                 double fisicoInventario;
 
                 try {
-                    cantidad = Double.parseDouble(producto.getNc().replace(",", "."));
+                    cantidad = producto.getNotaCredito().doubleValue();
                 } catch (Exception e) {
                     cantidad = 0;
                 }
 
                 try {
-                    inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                    inventario = producto.getInventario().doubleValue();
                 } catch (Exception e) {
                     inventario = 0;
                 }
 
                 try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                    fisicoInventario = producto.getFisicoInventario().doubleValue();
                 } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getInventario());
+                    fisicoInventario = producto.getInventario().doubleValue();
                 }
 
                 if ("EFECTIVO".equals(producto.getCodigo())) {
@@ -1491,13 +1497,13 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
                     String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
                     String total1 = String.valueOf(df.format(total)).replace(".", ",");
 
-                    instancias.getSql().modificarInventario("nc", total1, notasCredito[i][1].toString(), "bdProductos");
-                    instancias.getSql().modificarInventario("inventario", inventario1, notasCredito[i][1].toString(), "bdProductos");
-                    instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, notasCredito[i][1].toString(), "bdProductos");
+                    daoInventario.modificarInventario("nc", total1, notasCredito[i][1].toString(), "bdProductos");
+                    daoInventario.modificarInventario("inventario", inventario1, notasCredito[i][1].toString(), "bdProductos");
+                    daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, notasCredito[i][1].toString(), "bdProductos");
                 }
             }
 
-            metodos.msgExito(this, "Nota credito anulada con éxito");
+            ControladorAlertas.alertSuccess("Nota credito anulada con éxito");
         }
     }//GEN-LAST:event_btnAnularActionPerformed
 
@@ -1508,12 +1514,12 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdNc", "Where id ='" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgAdvertenciaAjustado(this, "La nota credito no existe");
+            ControladorAlertas.alert("La nota credito no existe");
             return;
         }
 
         if (anulado) {
-            metodos.msgError(null, "Este documento se encuentra anulado");
+            ControladorAlertas.alertFail("Este documento se encuentra anulado");
             return;
         }
 
@@ -1624,12 +1630,12 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         ndFactura nodo = instancias.getSql().getDatosFactura(factura);
 
         if (nodo.getIdFactura() == null) {
-            metodos.msgAdvertenciaAjustado(this, "Esta factura no existe");
+            ControladorAlertas.alert("Esta factura no existe");
             return;
         }
 
         if (nodo.isAnulada()) {
-            metodos.msgError(this, "Esta factura se encuentra anulada");
+            ControladorAlertas.alertFail("Esta factura se encuentra anulada");
             return;
         }
 
@@ -1665,7 +1671,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
                     BigDecimal valor2 = big.getBigDecimal(valor);
                     txtTotalNc.setText(big.setMoneda((valor2)));
                 } else {
-                    metodos.msgAdvertenciaAjustado(this, "Limite de notas creditos");
+                    ControladorAlertas.alert("Limite de notas creditos");
                     return;
                 }
             }
@@ -2266,24 +2272,24 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
 
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
             if (txtNit.getText().equals("1010")) {
-                metodos.msgAdvertencia(this, "No se puede realizar la NC a este cliente");
+                ControladorAlertas.alert("No se puede realizar la NC a este cliente");
                 return;
             }
 
             if (txtObservaciones.getText().equals("")) {
-                metodos.msgAdvertencia(null, "Debe ingresar la observación de la nota credito");
+                ControladorAlertas.alert("Debe ingresar la observación de la nota credito");
                 return;
             }
         }
 
         if (txtNombre.getText().equals("")) {
-            metodos.msgError(this, "Cargue una factura");
+            ControladorAlertas.alertFail("Cargue una factura");
             txtFactura.requestFocus();
             return;
         }
 
         if (tblProductos.getRowCount() == 0 && txtValorEfectivo.getText().equals(this.simbolo + " 0")) {
-            metodos.msgError(this, "No hay producto ni valor en efectivo");
+            ControladorAlertas.alertFail("No hay producto ni valor en efectivo");
             txtValorEfectivo.requestFocus();
             return;
         }
@@ -2295,9 +2301,9 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             Object[][] nc = instancias.getSql().getDatosNc("FACT-" + txtFactura.getText());
 
             if (nc.length > 0) {
-                metodos.msgAdvertenciaAjustado(this, "Esta factura ya tiene nota creditos");
+                ControladorAlertas.alert("Esta factura ya tiene nota creditos");
             } else {
-                metodos.msgAdvertenciaAjustado(this, "Valor mayor al de la factura");
+                ControladorAlertas.alert("Valor mayor al de la factura");
             }
 
             return;
@@ -2344,12 +2350,12 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             ndNotasCredito nodoVent = metodos.llenarNotasCredito(vectVenta);
 
             if (!instancias.getSql().agregarNotasCredito(nodoVent)) {
-                metodos.msgError(this, "Error guardar la nota credito");
+                ControladorAlertas.alertFail("Error guardar la nota credito");
             }
         }
 
         if (!txtValorTotal.getText().equals(this.simbolo + " 0")) {
-            ndProducto nodo = instancias.getSql().getDatosProducto("EFECTIVO", "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto("EFECTIVO", enumBodegas.ID_BODEGA_PRINCIPAL);
             Object vectVenta[] = {
                 nodoCaja.getFactura() + " NC", nodo.getIdSistema(),
                 big.getMoneda(txtValorEfectivo.getText()).multiply(big.getBigDecimal("-1")), "-" + 1, big.getMoneda("0"),
@@ -2363,7 +2369,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             ndNotasCredito nodoVent = metodos.llenarNotasCredito(vectVenta);
 
             if (!instancias.getSql().agregarNotasCredito(nodoVent)) {
-                metodos.msgError(this, "Error al guardar efectivo NC");
+                ControladorAlertas.alertFail("Error al guardar efectivo NC");
             }
         }
 
@@ -2375,14 +2381,14 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         ndNc nodo = metodos.llenarNc(vector);
 
         if (!instancias.getSql().agregarNc(nodo)) {
-            metodos.msgError(this, "Error al guardar la NC");
+            ControladorAlertas.alertFail("Error al guardar la NC");
             return;
         }
 
         TipoDocumento tipoMovimiento = TipoDocumento.NOTA_CREDITO;
-        String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-        List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-        ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
+        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+        List<MovimientoInventario> productos = generarListadoProductos(idBodega);
+        ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", idBodega, instancias.getUsuario(), null);
 
         try {
             servicioInventario.procesarMovimiento();
@@ -2391,17 +2397,17 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         }
 
         if (!instancias.getSql().aumentarConsecutivo("NC", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("NC")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la nota credito");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la nota credito");
         }
 
         //System.out.println("entonces ");
         lbNoNC.setText(dsPrefijo + (String) instancias.getSql().getNumConsecutivo("NC")[0]);
-        metodos.msgExito(this, "Nota credito exitosa");
+        ControladorAlertas.alertSuccess("Nota credito exitosa");
         String observaciones = txtObservaciones.getText();
 
         btnLimpiarActionPerformed(null);
 
-        if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+        if (ControladorAlertas.option("¿Desea imprimir?")) {
             String infoEmpresa = metodosGenerales.convertToMultiline(instancias.getInformacionEmpresaReimpresion() + "" + nodo.getResolucion());
             new GeneradorReporteNotaCredito(instancias).ver_Nc(factura, observaciones, infoEmpresa);
         }
@@ -2409,12 +2415,12 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         txtFactura.setText("");
     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+    private List<MovimientoInventario> generarListadoProductos(String idBodega) {
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), tablaUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), idBodega);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 12).toString());
             String idDetalleProducto = obtenerValorTabla(i, 16);
             MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, idDetalleProducto);

@@ -1,5 +1,7 @@
 package clases.recordatorios;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import formularios.recordatorios.infRecordatorios;
@@ -41,7 +43,7 @@ public class alertaRecordatorio extends Thread {
 //                    System.out.println("datos 2 " + metodosGenerales.hora());
                     if (datos[i][2].equals(metodosGenerales.hora())) {
 //                        System.out.println("HORAS IGUALES");
-                        if (metodos.msgPregunta(null, "TIENE UN RECORDATORIO PARA ESTA HORA ¿Desea revisarlo?") == 0) {
+                        if (ControladorAlertas.option("TIENE UN RECORDATORIO PARA ESTA HORA ¿Desea revisarlo?")) {
                             menu.llamarRecordatorio();
                             infRecordatorios inf = new infRecordatorios();
                             inf.llamarRecordatorios();
@@ -57,7 +59,7 @@ public class alertaRecordatorio extends Thread {
 //                System.out.println("hora 2 " + Integer.parseInt(datos[i][2].toString().split(":")[0]));
                     if (datos[i][3].equals("hora")) {
                         if (minutosCont == 10 || minutosCont == 20 || minutosCont == 30 || minutosCont == 40 || minutosCont == 50 || minutosCont == 0) {
-                            if (metodos.msgPregunta(null, "TIENE UN RECORDATORIO ATRASADO ¿Desea revisarlo?") == 0) {
+                            if (ControladorAlertas.option("TIENE UN RECORDATORIO ATRASADO ¿Desea revisarlo?")) {
                                 menu.llamarRecordatorio();
                                 infRecordatorios inf = new infRecordatorios();
                                 inf.llamarRecordatorios();
@@ -72,7 +74,7 @@ public class alertaRecordatorio extends Thread {
             for (int i = 0; i < datos.length; i++) {
                 if (datos[i][3].equals("dias")) {
                     if (horasCont == 3 || horasCont == 6 || horasCont == 9) {
-                        metodos.msgAdvertencia(null, "Tiene recordatorios para hoy");
+                        ControladorAlertas.alert("Tiene recordatorios para hoy");
                     }
                 }
             }

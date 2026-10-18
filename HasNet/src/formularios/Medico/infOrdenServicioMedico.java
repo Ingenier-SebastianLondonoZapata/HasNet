@@ -1,5 +1,11 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndConvenio;
@@ -9,7 +15,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.Ventas.ndFactura;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Vista.Tesoreria.VistaEgresos;
 import Vista.Productos.VistaBuscadorProductos;
@@ -32,6 +38,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -1395,7 +1402,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
     private void txtaCobrarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtaCobrarKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (txtConsecutivo.getText().equals("")) {
-                metodos.msgError(this, "Ingrese primero un paciente");
+                ControladorAlertas.alertFail("Ingrese primero un paciente");
                 txtPaciente.requestFocus();
                 return;
             }
@@ -1456,8 +1463,8 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         if (!txtAutorizacion.getText().equals("")) {
             ndOrdenServicio nodo2 = instancias.getSql().getDatosOrdenServicioAutorizacion(txtAutorizacion.getText());
             if (nodo2.getId() != null) {
-                metodos.msgAdvertencia(this, "El Número de autorización ya existe en la orden " + nodo2.getId());
-                if (metodos.msgPregunta(this, "¿Desea continuar?") != 0) {
+                ControladorAlertas.alert("El Número de autorización ya existe en la orden " + nodo2.getId());
+                if (!ControladorAlertas.option("¿Desea continuar?")) {
                     txtAutorizacion.requestFocus();
                     return;
                 }
@@ -1466,7 +1473,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         }
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
@@ -1476,14 +1483,14 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
             Object[] campos2 = {txtPoliza, txtAutorizacion, txtCopago};
             String faltantes2 = metodos.camposVacios(campos2);
             if (!faltantes2.equals("")) {
-                metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+                ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
 
-                if (metodos.msgPregunta(this, "¿Desea continuar?") != 0) {
+                if (!ControladorAlertas.option("¿Desea continuar?")) {
                     return;
                 }
             } else {
                 if (!continuar) {
-                    if (metodos.msgPregunta(this, "¿Desea continuar?") != 0) {
+                    if (!ControladorAlertas.option("¿Desea continuar?")) {
                         return;
                     }
                 }
@@ -1495,7 +1502,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         String consecutivo = "";
 //        String valor = "0";
 //        try {
-//            ndProducto prod = instancias.getSql().getDatosProducto(txtaCobrar.getText());
+//            ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText());
 //            System.out.println(valor);
 //            valor = prod.getL1();
 //        } catch (Exception e) {
@@ -1505,11 +1512,11 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         ndOrdenServicio nodo = instancias.getSql().getDatosOrdenServicio(txtId.getText());
 
         if (nodo.getId() != null) {
-            metodos.msgError(this, "La orden ya existe");
+            ControladorAlertas.alertFail("La orden ya existe");
             txtId.requestFocus();
 
             if (!instancias.getSql().aumentarConsecutivo("ORDEN", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ORDEN")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la orden");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la orden");
             }
 
             return;
@@ -1582,24 +1589,24 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         nodo = metodos.llenarOrdenServicio(vector);
 
         if (!instancias.getSql().agregarOrdenServicio(nodo)) {
-            metodos.msgError(this, "Error al guardar la orden");
+            ControladorAlertas.alertFail("Error al guardar la orden");
             return;
         }
         //actualizar consecutivo en eps
         if (!instancias.getSql().aumentarConsecutivoEps(consecutivo.substring(0, 5), Integer.parseInt((String) instancias.getSql().getNumConsecutivoEps(consecutivo.substring(0, 5))[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la orden");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la orden");
         }
         /*if (!instancias.getSql().modificarConsecutivoEps(txtEps.getText(), "" + consecutivo)) {
-         metodos.msgError(this, "Hubo un problema al actualizar el consecutivo de la eps");
+         ControladorAlertas.alertFail("Hubo un problema al actualizar el consecutivo de la eps");
          return;
          }*/
 
         if (instancias.isImprimirOrdenMedica()) {
-            if (metodos.msgPregunta(this, "¿Desea imprimir la orden Nro." + orden + "?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir la orden Nro." + orden + "?")) {
                 new GeneradorReporteMedico(instancias).verOrdenServicio(txtId.getText());
             }
         } else {
-            metodos.msgExito(this, "Orden Nro " + orden + " exitosa");
+            ControladorAlertas.alertSuccess("Orden Nro " + orden + " exitosa");
         }
 
         for (int x = 0; x < jPanel11.getComponentCount(); x++) {
@@ -1617,7 +1624,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         txtCantidad1.setText("1");
 
         if (!instancias.getSql().aumentarConsecutivo("ORDEN", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ORDEN")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la orden");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la orden");
         }
 
         //AGENDA...
@@ -1631,7 +1638,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         }
         if (!cita.equalsIgnoreCase("")) {
             if (!instancias.getSql().modificarCita(cita, "Confirmada")) {
-                metodos.msgError(null, "No fue posible modificar el estado de la Cita");
+                ControladorAlertas.alertFail("No fue posible modificar el estado de la Cita");
             }
             try {
                 instancias.getAgendaConsulta().setSelected(true);
@@ -1642,7 +1649,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
 
         btnLimpiarActionPerformed(evt);
 //        } catch (Exception e) {
-//            metodos.msgError(this, "Hubo un problema al guardar el OrdenServicio");
+//            ControladorAlertas.alertFail("Hubo un problema al guardar el OrdenServicio");
 //        }
 
     }//GEN-LAST:event_btnGuardar1ActionPerformed
@@ -1657,17 +1664,17 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         Object[] campos2 = {txtPoliza, txtaCobrar, txtAutorizacion};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             //try {
 //            String valor = "0";
 //            try {
-//                ndProducto prod = instancias.getSql().getDatosProducto(txtaCobrar.getText());
+//                ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText());
 //                valor = prod.getL1();
 //            } catch (Exception e) {
 //                valor = "0";
@@ -1728,20 +1735,20 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
 
                     if (!instancias.getSql().modificarFacturaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), factura.getFactura(),
                             "Modificación de la orden medica", true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                        metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                        ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
                         return;
                     }
 
                     if (!instancias.getSql().anularFacturaVerificadorFacturas(factura.getFactura())) {
-                        metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                        ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
                         return;
                     }
 
                     if (!instancias.getSql().aumentarConsecutivo("ANULA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ANULA")[0]) + 1)) {
-                        metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la anulación");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la anulación");
                     }
 
-                    metodos.msgExito(this, "Factura anulada con éxito");
+                    ControladorAlertas.alertSuccess("Factura anulada con éxito");
                 }
 
                 //ESTE CODIGO HACE LA FACTURA NO TIENE EPS, SI TIENE EPS DEBE TENER UN COPAGO SINO NO LA REALIZA YA QUE
@@ -1754,13 +1761,13 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
             }
 
             if (!instancias.getSql().modificarOrdenServicio(nodo)) {
-                metodos.msgError(this, "Error al modificar la orden");
+                ControladorAlertas.alertFail("Error al modificar la orden");
                 return;
             } else {
-                metodos.msgExito(this, "Orden modificado con éxito");
+                ControladorAlertas.alertSuccess("Orden modificado con éxito");
             }
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteMedico(instancias).verOrdenServicio(txtId.getText());
             }
 
@@ -1779,7 +1786,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
 
             btnLimpiarActionPerformed(evt);
 //            } catch (Exception e) {
-//                metodos.msgError(this, "Hubo un problema al modificar el OrdenServicio");
+//                ControladorAlertas.alertFail("Hubo un problema al modificar el OrdenServicio");
 //            }
         }
     }//GEN-LAST:event_btnActualizar1ActionPerformed
@@ -1907,7 +1914,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnBuscTercerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTercerosActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+        if (ControladorAlertas.option("¿Desea imprimir?")) {
             new GeneradorReporteMedico(instancias).verOrdenServicio(txtId.getText());
         }
     }//GEN-LAST:event_btnBuscTercerosActionPerformed
@@ -2095,10 +2102,10 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
         String consecutivo = txtId.getText();
 
-        if (metodos.msgPregunta(this, "¿Esta seguro de anular esta orden?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro de anular esta orden?")) {
 
             if (!instancias.getSql().inactivarOrden(consecutivo)) {
-                metodos.msgError(this, "Hubo un problema al anular el ingreso");
+                ControladorAlertas.alertFail("Hubo un problema al anular el ingreso");
                 return;
             }
 
@@ -2109,21 +2116,21 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
 
                 if (!instancias.getSql().modificarFacturaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), factura.getFactura(),
                         "Modificación de la orden medica", true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                    metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                    ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
                     return;
                 }
 
                 if (!instancias.getSql().anularFacturaVerificadorFacturas(factura.getFactura())) {
-                    metodos.msgError(this, "Error al agregar la fecha de la anulación");
+                    ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
                     return;
                 }
 
                 if (!instancias.getSql().aumentarConsecutivo("ANULA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ANULA")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la anulación");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la anulación");
                 }
             }
 
-            metodos.msgExito(this, "Orden y factura anulada con éxito");
+            ControladorAlertas.alertSuccess("Orden y factura anulada con éxito");
             btnLimpiarActionPerformed(null);
         }
     }//GEN-LAST:event_btnAnularActionPerformed
@@ -2192,7 +2199,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
             String estadoInac = instancias.getSql().getEstadoOrdenServicio(nodo.getOrden());
 
             if (estadoInac.equals("true")) {
-                metodos.msgAdvertenciaAjustado(this, "La orden esta anulada");
+                ControladorAlertas.alert("La orden esta anulada");
                 btnLimpiarActionPerformed(null);
                 return;
             }
@@ -2268,18 +2275,13 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
 
     public void cargarProducto(String codigo, int sw) {
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -2337,13 +2339,13 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         if (nodo.getId() != null) {
 
             if (nodo.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 lbPaciente.requestFocus();
                 return;
             }
 
             if (nodo.getEps() == null) {
-                metodos.msgAdvertencia(this, "El paciente debe tener una EPS relacionada");
+                ControladorAlertas.alert("El paciente debe tener una EPS relacionada");
                 return;
             } else {
                 if (!nodo.getEps().equals("0001")) {

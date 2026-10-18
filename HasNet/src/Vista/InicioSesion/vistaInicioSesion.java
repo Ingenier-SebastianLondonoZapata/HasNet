@@ -261,7 +261,7 @@ public class vistaInicioSesion extends javax.swing.JFrame {
                 }
             }
         } else {
-            alertas.bigAlert("Tenemos problemas al consultar la información de la empresa, si el problema persiste comunicarse directamente con el proveedor.");
+            alertas.alert("Tenemos problemas al consultar la información de la empresa, si el problema persiste comunicarse directamente con el proveedor.");
             System.exit(0);
         }
     }

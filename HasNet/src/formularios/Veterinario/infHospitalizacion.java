@@ -1,5 +1,11 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndHistoria;
@@ -9,7 +15,7 @@ import clases.Veterinario.ndTablaMedicamentos;
 import clases.big;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.Dimension;
@@ -20,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class infHospitalizacion extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -1097,7 +1104,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
             if (cmbConsultas.getSelectedIndex() != 0) {
                 instancias.getSql().asignarConsulta(idHospitalizacion, cmbConsultas.getSelectedItem().toString().split(" - ")[0]);
             } else {
-                metodos.msgAdvertenciaAjustado(this, "Sin historia relacionada");
+                ControladorAlertas.alert("Sin historia relacionada");
             }
 
             instancias.getIngresoHospitalizacion();
@@ -1122,7 +1129,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
             if (cmbConsultas.getSelectedIndex() != 0) {
                 instancias.getSql().asignarConsulta(idHospitalizacion, cmbConsultas.getSelectedItem().toString().split(" - ")[0]);
             } else {
-                metodos.msgAdvertenciaAjustado(this, "Sin historia relacionada");
+                ControladorAlertas.alert("Sin historia relacionada");
             }
 
             instancias.getIngresoHospitalizacion();
@@ -1140,11 +1147,11 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 //                DefaultTableModel modelo = (DefaultTableModel) tblFormula.getModel();
 //                modelo.removeRow(fila);
 //            } else {
-//                metodos.msgError(null, "No se puede borrar este medicamento.");
+//                ControladorAlertas.alertFail("No se puede borrar este medicamento.");
 //                return;
 //            }
 //        } else {
-//            metodos.msgAdvertencia(null, "Seleccione un medicamento");
+//            ControladorAlertas.alert("Seleccione un medicamento");
 //        }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1204,12 +1211,12 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
     private void btnGuardar3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar3ActionPerformed
         if (txtNotaMedica.getText().equals("")) {
-            metodos.msgAdvertencia(null, "No ha ingresado ninguna información");
+            ControladorAlertas.alert("No ha ingresado ninguna información");
             return;
         }
 
         if (listaNotasMedicas.getSelectedValue().toString().equalsIgnoreCase("HOY - NUEVO")) {
-            if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
 
                 String id = "NOTAP-" + instancias.getSql().getNumConsecutivo("NOTAP")[0];
 
@@ -1221,16 +1228,16 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
                 ndConstanteHospitalizacion nodo1 = metodos.llenarConstantesHopitalizacion(vector1);
 
                 if (!instancias.getSql().agregarConstanteHospitalizacion(nodo1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la mascota");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la mascota");
                     return;
                 }
 
                 if (!instancias.getSql().aumentarConsecutivo("NOTAP", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("NOTAP")[0]) + 1)) {
-                    metodos.msgError(null, "Hubo un problema al guardar en el consecutivo de la nota");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la nota");
                     return;
                 }
 
-                metodos.msgExito(null, "Nota registrada con éxito");
+                ControladorAlertas.alertSuccess("Nota registrada con éxito");
 
                 actualizarDiagnosticos(idHospitalizacion);
                 actualizarNotasMedicas(idHospitalizacion);
@@ -1247,11 +1254,11 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
         }
 
         if (ser <= 0) {
-            metodos.msgError(null, "Debe cargar un producto nuevo");
+            ControladorAlertas.alertFail("Debe cargar un producto nuevo");
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
                 if (tblProductos.getValueAt(i, 5).equals("Activo")) {
@@ -1260,7 +1267,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
                         metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora()};
 
                     if (!instancias.getSql().agregarProductosProcesos(vector)) {
-                        metodos.msgError(null, "Hubo un problema al guardar los productos de la peluqueria");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar los productos de la peluqueria");
                         return;
                     }
                 }
@@ -1270,7 +1277,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
                 tblProductos.setValueAt("Desactivado", i, 5);
             }
 
-            metodos.msgExito(null, "¡Productos asignados exitosamente!");
+            ControladorAlertas.alertSuccess("¡Productos asignados exitosamente!");
         }
     }//GEN-LAST:event_btnGuardar1ActionPerformed
 
@@ -1297,7 +1304,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (tblProductos.getSelectedColumn() == 3 && tblProductos.getValueAt(tblProductos.getSelectedRow(), 5).equals("Desactivado")) {
-            metodos.msgError(this, "No se le puede cambiar la cantidad a este producto");
+            ControladorAlertas.alertFail("No se le puede cambiar la cantidad a este producto");
             return;
         }
     }//GEN-LAST:event_tblProductosMouseClicked
@@ -1314,11 +1321,11 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
                 DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
                 modelo.removeRow(fila);
             } else {
-                metodos.msgError(null, "No se puede borrar este producto.");
+                ControladorAlertas.alertFail("No se puede borrar este producto.");
                 return;
             }
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrar1ActionPerformed
 
@@ -1374,7 +1381,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
                 for (int i = 0; i < tblMedicamentosPro.getColumnCount(); i++) {
                     String id = tblMedicamentosPro.getColumnName(i);
                     if (idMed.equals(id)) {
-                        metodos.msgError(this, "Ya ingresaste este medicamento");
+                        ControladorAlertas.alertFail("Ya ingresaste este medicamento");
                         txtMedicamento1.setText("");
                         txtMedicamento1.requestFocus();
                         return;
@@ -1394,7 +1401,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBusProd1ActionPerformed
 
     private void btnGuardar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar2ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             Object[][] estadosMedicamentos = instancias.getSql().getEstadoMedicamentos(idHospitalizacion);
             instancias.getSql().eliminar_registro("bdMedicamentosProcesos", " idHospitalizacion = '" + idHospitalizacion + "' ");
@@ -1423,17 +1430,17 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
                         ndTablaMedicamentos nodoMedicamentos = metodos.llenarTablaMedicamentos(vector2);
 
                         if (!instancias.getSql().agregarTablaMedicamentos(nodoMedicamentos)) {
-                            metodos.msgError(this, "Hubo un problema al guardar la tabla de medicamentos");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la tabla de medicamentos");
                             return;
                         }
 
                         if (!instancias.getSql().agregarTablaMedicamentosAlertas(nodoMedicamentos)) {
-                            metodos.msgError(this, "Hubo un problema al guardar la tabla de medicamentos");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la tabla de medicamentos");
                             return;
                         }
 
                         if (!instancias.getSql().asignarMascotaHosp(idHospitalizacion, txtNombre.getText(), txtNombreCliente.getText())) {
-                            metodos.msgError(this, "Hubo un problema al guardar la tabla de medicamentos");
+                            ControladorAlertas.alertFail("Hubo un problema al guardar la tabla de medicamentos");
                             return;
                         }
                     }
@@ -1447,13 +1454,13 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
                 if (estado.equals("Realizado")) {
                     if (!instancias.getSql().cambiarEstadoMedicamento(idHospitalizacion, cod, hora)) {
-                        metodos.msgError(this, "Error al actualizar estados");
+                        ControladorAlertas.alertFail("Error al actualizar estados");
                         return;
                     }
                 }
             }
 
-            metodos.msgExito(this, "Tabla actualizada con éxito");
+            ControladorAlertas.alertSuccess("Tabla actualizada con éxito");
 
             String hora = metodosGenerales.hora().split(":")[0];
             String minuto = metodosGenerales.hora().split(":")[1];
@@ -1636,7 +1643,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
             cant = Integer.parseInt(txtCant.getText());
         } catch (Exception e) {
             if (!txtCant.getText().equals("")) {
-                metodos.msgError(this, "Solo números enteros");
+                ControladorAlertas.alertFail("Solo números enteros");
                 return;
             }
         }
@@ -1645,14 +1652,14 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
             cada = Integer.parseInt(txtCada.getText());
         } catch (Exception e) {
             if (!txtCada.getText().equals("")) {
-                metodos.msgError(this, "Solo números enteros");
+                ControladorAlertas.alertFail("Solo números enteros");
                 return;
             }
         }
 
         total = cant * cada;
         if (total > 24) {
-            metodos.msgError(this, "No se puede pasar las 24 horas del dia");
+            ControladorAlertas.alertFail("No se puede pasar las 24 horas del dia");
             txtCant.setText("");
             txtCada.setText("");
         }
@@ -1678,18 +1685,13 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
             cantidad = cantidad.replace(".", ",");
         }
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -1697,7 +1699,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         if (!CodigoProd.equals("")) {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbCodigo.requestFocus();
                 return;
             }
@@ -1806,7 +1808,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
                     metodosGenerales.hora()};
 
                 if (!instancias.getSql().agregarProductosProcesos(vector)) {
-                    metodos.msgError(null, "Hubo un problema al guardar los productos de la hospitalizacion");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar los productos de la hospitalizacion");
                     return;
                 }
             }

@@ -6,7 +6,7 @@ import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import Enums.EstadosDetalleProducto;
 import Impresiones.ImpresionesIngresos.GeneradorReporteIngreso;
-import dao.Configuraciones.DaoResoluciones;
+import Dao.Configuraciones.DaoResoluciones;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
 import Enums.enumBodegas;
@@ -18,7 +18,6 @@ import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
 import Modelo.Maestra.ModeloResolucion;
-import Modelo.Productos.ResultadoBusquedaProducto;
 import Modelo.Productos.ResultadoPluProducto;
 import Utilidades.Constantes;
 import Validaciones.Compras.squemaCompras;
@@ -31,7 +30,7 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndCompra;
 import clases.productos.ndIngreso;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Procesos.Inventario.Dao.DaoDetalleProducto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
@@ -42,7 +41,7 @@ import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
 import Utilidades.DocumentosElectronicos;
 import Utilidades.Numeros;
 import Utilidades.Utilidades;
-import dao.Productos.DaoProducto;
+import Dao.Productos.DaoProducto;
 import formularios.Tesoreria.dlgTipoEgreso;
 import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgTipoDescuento;
@@ -1410,7 +1409,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 return;
             }
 
-            if (metodos.msgPregunta(null, "¿Desea continuar?") != 0) {
+            if (!ControladorAlertas.option("¿Desea continuar?")) {
                 return;
             }
         }
@@ -1500,35 +1499,35 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 noPuedaGuardar = instancias.getSql().eliminarCompra(ingreso);
             }
 
-            metodos.msgError(null, "Hubo un problema al guardar la compra");
+            ControladorAlertas.alertFail("Hubo un problema al guardar la compra");
             return;
         }
 
         //PROCESO GUARDAR COMPRA
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 24).toString(), "bdProductos");
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 24).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
             String cant2 = "1";
             switch (tblProductos.getValueAt(i, 13).toString()) {
                 case "2":
-                    cant2 = producto.getCantidad2();
+                    cant2 = producto.getCantidadLista(2).toPlainString();
                     break;
                 case "3":
-                    cant2 = producto.getCantidad3();
+                    cant2 = producto.getCantidadLista(3).toPlainString();
                     break;
                 case "4":
-                    cant2 = producto.getCantidad4();
+                    cant2 = producto.getCantidadLista(4).toPlainString();
                     break;
                 case "5":
-                    cant2 = producto.getCantidad5();
+                    cant2 = producto.getCantidadLista(5).toPlainString();
                     break;
                 case "6":
-                    cant2 = producto.getCantidad6();
+                    cant2 = producto.getCantidadLista(6).toPlainString();
                     break;
                 case "7":
-                    cant2 = producto.getCantidad7();
+                    cant2 = producto.getCantidadLista(7).toPlainString();
                     break;
                 case "8":
-                    cant2 = producto.getCantidad8();
+                    cant2 = producto.getCantidadLista(8).toPlainString();
                     break;
             }
 
@@ -1561,7 +1560,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                     noPuedaGuardar = instancias.getSql().eliminarCompra(ingreso);
                 }
 
-                metodos.msgError(null, "Error al guardar la compra");
+                ControladorAlertas.alertFail("Error al guardar la compra");
                 return;
             }
         }
@@ -1574,10 +1573,10 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         if (tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
             TipoDocumento tipoMovimiento = TipoDocumento.COMPRA;
-            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            List<MovimientoInventario> productos = generarListadoProductos(idBodega);
             List<DetalleProducto> detallesProductos = generarDetallesProductos(EstadosDetalleProducto.DISPONIBLE.getNombre());
-            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, tablaUtilizada, instancias.getUsuario(), null);
+            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, idBodega, instancias.getUsuario(), null);
 
             try {
                 servicioInventario.procesarMovimiento();
@@ -1587,10 +1586,10 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             }
         } else {
             TipoDocumento tipoMovimiento = TipoDocumento.ORDEN_COMPRA;
-            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            List<MovimientoInventario> productos = generarListadoProductos(idBodega);
             List<DetalleProducto> detallesProductos = generarDetallesProductos(EstadosDetalleProducto.EN_TRANSITO.getNombre());
-            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, tablaUtilizada, instancias.getUsuario(), null);
+            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, idBodega, instancias.getUsuario(), null);
 
             try {
                 servicioInventario.procesarMovimiento();
@@ -1609,7 +1608,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 ndCxp nodoCxp = metodos.llenarCxp(vectCxp);
 
                 if (!instancias.getSql().agregarCxp(nodoCxp)) {
-                    metodos.msgError(null, "Hubo un problema al guardar la factura en cartera");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la factura en cartera");
                 }
             }
         }
@@ -1621,7 +1620,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             actualizarConsecutivo(0);
         } else {
             if (!instancias.getSql().aumentarConsecutivo("ORDENCOMPRA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ORDENCOMPRA")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del la compra");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del la compra");
             }
             lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("ORDENCOMPRA")[0]);
         }
@@ -1630,13 +1629,13 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             if (tipoProceso.equals("ingreso")) {
                 if (cmbTipo.getSelectedItem().equals("DOC. EQUIVALENTE")) {
                     if (!instancias.getSql().aumentarConsecutivo("DOCEQUIVALENTE", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DOCEQUIVALENTE")[0]) + 1)) {
-                        metodos.msgError(null, "Error al guardar el consecutivo de documento equivalente");
+                        ControladorAlertas.alertFail("Error al guardar el consecutivo de documento equivalente");
                     }
                 }
 
-                metodos.msgExito(null, "Compra Exitosa");
+                ControladorAlertas.alertSuccess("Compra Exitosa");
             } else {
-                metodos.msgExito(null, "Orden de compra exitosa");
+                ControladorAlertas.alertSuccess("Orden de compra exitosa");
             }
         }
 
@@ -1646,7 +1645,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
 
         if (!saltarPasos) {
-//                if (metodos.msgPregunta(null, "¿Desea imprimir?") == 0) {
+//                if (ControladorAlertas.option("¿Desea imprimir?")) {
             new GeneradorReporteIngreso(instancias).verIngreso(ingreso, tipoProceso, tipoImp);
 //                }
         }
@@ -1659,7 +1658,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         if (preguntaLimpiar) {
             String mensaje = tipoProceso.equals("ingreso") ? "¿Limpiar la compra?" : "¿Limpiar la orden de compra?";
-            if (metodos.msgPregunta(null, mensaje) != 0) {
+            if (!ControladorAlertas.option(mensaje)) {
                 return;
             }
         }
@@ -1728,12 +1727,12 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdIngreso", "Where id='" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgError(null, "El documento no existe");
+            ControladorAlertas.alertFail("El documento no existe");
             return;
         }
 
         if (anulado) {
-            metodos.msgAdvertenciaAjustado(null, "El documento se encuentra anulado");
+            ControladorAlertas.alert("El documento se encuentra anulado");
             return;
         }
 
@@ -1755,16 +1754,16 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdIngreso", "Where id='" + consecutivo + "' ");
         if (anulado) {
-            metodos.msgAdvertenciaAjustado(null, "El documento se encuentra anulado");
+            ControladorAlertas.alert("El documento se encuentra anulado");
             return;
         }
 
         if (tipoProceso.equals(TipoDocumento.ORDEN_COMPRA.getValor())) {
-            if (metodos.msgPregunta(null, "¿Anular esta orden de compra?") == 0) {
+            if (ControladorAlertas.option("¿Anular esta orden de compra?")) {
                 anularOrdenCompra(consecutivo);
             }
         } else {
-            if (metodos.msgPregunta(null, "¿Anular esta compra?") == 0) {
+            if (ControladorAlertas.option("¿Anular esta compra?")) {
                 anularCompra(consecutivo);
             }
         }
@@ -1946,7 +1945,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         int opcion = cmbCargar.getSelectedIndex();
         if (opcion > 1) {
-            metodos.msgError(null, "Debe seleccionar una opción");
+            ControladorAlertas.alertFail("Debe seleccionar una opción");
             return;
         }
 
@@ -1959,7 +1958,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         Object[][] productosOrdenCompra = instancias.getSql().getProductosCargarCompra(consecutivo);
         if (productosOrdenCompra.length == 0) {
-            metodos.msgError(null, opcion == 0 ? "El ingreso no existe" : "La orden de compra no existe");
+            ControladorAlertas.alertFail(opcion == 0 ? "El ingreso no existe" : "La orden de compra no existe");
             txtCargarCompra.setText("");
             return;
         }
@@ -2043,7 +2042,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         switch (tblProductos.getSelectedColumn()) {
             case 3:
-                ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).toString(), "bdProductos");
+                ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
                 String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
                 String estadoDetalleProducto = tipoProceso.equals(TipoDocumento.COMPRA.getValor())
@@ -2114,7 +2113,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                     }
                 }
             } catch (IOException | BiffException ex) {
-                metodos.msgError(null, "El archivo de excel es de una versión no compatible");
+                ControladorAlertas.alertFail("El archivo de excel es de una versión no compatible");
                 return;
             }
         }
@@ -2162,7 +2161,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void btnBuscTerceros3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros3ActionPerformed
         if (tblProductos.getRowCount() <= 0) {
-            metodos.msgError(null, "No ha ingresado ningún producto");
+            ControladorAlertas.alertFail("No ha ingresado ningún producto");
             return;
         }
 
@@ -2214,7 +2213,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void txtPorcentajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseClicked
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
             if (instancias.getDescuento().equals("peso")) {
-                alertas.bigAlert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
+                alertas.alert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
                         + "Debes asignar el descuento directamente al producto específico.");
                 txtCodigoProducto.requestFocus();
                 return;
@@ -2286,7 +2285,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void anularCompra(String consecutivo) {
         if (instancias.getSql().getRegistrosPagos(consecutivo).length > 0) {
-            metodos.msgError(null, "Tiene abonos, no se puede anular");
+            ControladorAlertas.alertFail("Tiene abonos, no se puede anular");
             btnLimpiarActionPerformed(null);
             return;
         }
@@ -2324,27 +2323,27 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         if (!egreso.isEmpty()) {
             boolean egresoAnulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where id='" + egreso + "' ");
             if (egresoAnulado) {
-                metodos.msgAdvertencia(null, "Este egreso ya se encuentra anulado");
+                ControladorAlertas.alert("Este egreso ya se encuentra anulado");
                 return;
             }
 
             if (!instancias.getSql().anularDocumento(egreso, "bdEgreso")) {
-                metodos.msgError(null, "Hubo un problema al anular el egreso");
+                ControladorAlertas.alertFail("Hubo un problema al anular el egreso");
                 return;
             }
         }
 
         if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
-            metodos.msgError(null, "Hubo un problema al anular la compra");
+            ControladorAlertas.alertFail("Hubo un problema al anular la compra");
             return;
         }
 
         if (!instancias.getSql().modificarRegistroCxp(consecutivo, "ANULADA")) {
-            metodos.msgError(null, "Hubo un problema al anular la Cxp");
+            ControladorAlertas.alertFail("Hubo un problema al anular la Cxp");
             return;
         }
 
-        metodos.msgExito(null, egreso.isEmpty() ? "Compra anulada con éxito" : "Compra y egreso anulados con éxito");
+        ControladorAlertas.alertSuccess(egreso.isEmpty() ? "Compra anulada con éxito" : "Compra y egreso anulados con éxito");
 
         preguntaLimpiar = false;
         btnLimpiarActionPerformed(null);
@@ -2358,30 +2357,30 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
 
         if (!instancias.getSql().anularDocumento(consecutivo, "bdIngreso")) {
-            metodos.msgError(null, "Hubo un problema al anular la orden de compra");
+            ControladorAlertas.alertFail("Hubo un problema al anular la orden de compra");
             return;
         }
 
         devolverCantidadesDocumento(consecutivo, TipoDocumento.ANULAR_ORDEN_COMPRA);
-        metodos.msgExito(null, "Orden de compra anulada con éxito");
+        ControladorAlertas.alertSuccess("Orden de compra anulada con éxito");
 
         preguntaLimpiar = false;
         btnLimpiarActionPerformed(null);
     }
 
     private void devolverCantidadesDocumento(String idDocumento, TipoDocumento tipoAnulacion) {
-        String tablaRevertir = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
+        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
         Object[][] productos = instancias.getSql().getProductosCargarCompra(idDocumento);
         List<MovimientoInventario> productosARevertir = new ArrayList<>();
         for (Object[] reg : productos) {
-            ndProducto prodRevertir = instancias.getSql().getDatosProducto(reg[0].toString(), tablaRevertir);
+            ModeloProducto prodRevertir = daoProducto.obtenerDatosProducto(reg[0].toString(), idBodega);
             BigDecimal cantRevertir = Utilidades.convertirBigDecimal(reg[1].toString());
             productosARevertir.add(new MovimientoInventario(prodRevertir, cantRevertir, BigDecimal.ZERO, ""));
         }
 
         ServicioInventario servicioRevertir = new ServicioInventario(
                 productosARevertir, new ArrayList<DetalleProducto>(), tipoAnulacion,
-                idDocumento, tablaRevertir, instancias.getUsuario(), null);
+                idDocumento, idBodega, instancias.getUsuario(), null);
         try {
             servicioRevertir.procesarMovimiento();
         } catch (SQLException ex) {
@@ -2405,12 +2404,12 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         return value != null ? value.toString() : "";
     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+    private List<MovimientoInventario> generarListadoProductos(String idBodega) {
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 24).toString(), tablaUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 24).toString(), idBodega);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 14).toString());
 
             BigDecimal valorProducto;
@@ -2588,8 +2587,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     public void cargarProductoDesdeDetalleProducto(String codigo, BigDecimal cantidad, BigDecimal valorPonderadoDigitado) {
         cargarProducto(codigo, cantidad, 1, "DetalleProducto");
 
-        ResultadoBusquedaProducto resultado = daoProducto.buscarPorCodigo(codigo);
-        ndProducto producto = resultado.getProducto();
+        ModeloProducto producto = daoProducto.buscarPorCodigo(codigo);
         BigDecimal utilidad = big.getBigDecimal(producto.getL1()).subtract(valorPonderadoDigitado);
 
         tblProductos.setValueAt(big.setNumero(utilidad), tblProductos.getRowCount() - 1, 17);
@@ -2598,18 +2596,13 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     }
 
     public void cargarProductoDesdeExcel(String codigo, String valorUnit, String cantidad, String descuento, String iva, String impo) {
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -2618,7 +2611,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         if (!codigoProd.equals("")) {
 
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbProducto.requestFocus();
                 return;
             }
@@ -2634,12 +2627,12 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             BigDecimal ponderado = BigDecimal.ZERO;
             BigDecimal ultimoCosto = BigDecimal.ZERO;
             try {
-                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(codigo);
+                UltimoPonderado ultimoPonderado = servicioActualizacionPonderado.obtenerUltimoPonderado(nodo.getIdSistema());
                 ponderado = ultimoPonderado.getNuevoPonderado();
                 ultimoCosto = ultimoPonderado.getUltimoCosto();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
+                alertas.alert("No se pudo consultar el último ponderado del producto");
             }
 
             BigDecimal valorUnitario = BigDecimal.ZERO;
@@ -2671,7 +2664,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(valorUnitario.multiply(big.getMoneda(cant2))), cantidad,
                 big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(ivaCompra), big.setNumero(impoconsumo),
                 "0", nodo.getUnd(), big.setMoneda(ultimoCosto), big.setMoneda(big.getBigDecimal(lista)), "1", (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))),
-                big.setMoneda(ponderado), 0, big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
+                big.setMoneda(ponderado), 0, big.setMoneda(utilidad), "", "BD-Principal", false, this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
 
             try {
                 tblProductos.setColumnSelectionInterval(1, 1);
@@ -2716,7 +2709,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void cargarProductoDetal(String codigo, String cantidad, BigDecimal precio) {
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
 
         if (nodo.getCodigo() != null) {
 
@@ -2732,17 +2725,17 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 ultimoCosto = ultimoPonderado.getUltimoCosto();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
+                alertas.alert("No se pudo consultar el último ponderado del producto");
             }
 
             BigDecimal utilidad;
             utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
             modeloProductos.addRow(new Object[]{nodo.getCodigo(), nodo.getDescripcion(), big.setMoneda(precio),
-                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIva())),
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoVenta())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
                 big.setMoneda(big.getBigDecimal(nodo.getL1())), plu, (big.getBigDecimal("1").multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0,
-                big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
+                big.setMoneda(utilidad), "", "BD-Principal", false, this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema()});
 
             tblProductos.setColumnSelectionInterval(1, 1);
             tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
@@ -2760,9 +2753,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void cargarProducto(String codigo, BigDecimal cantidad, int pluProducto, String formaCargo) {
 
-        ResultadoBusquedaProducto resultado = daoProducto.buscarPorCodigo(codigo);
-        codigo = resultado.getCodigoResuelto();
-        ndProducto nodo = resultado.getProducto();
+        ModeloProducto nodo = daoProducto.buscarPorCodigo(codigo);
 
         if (nodo.getCodigo() == null || nodo.getCodigo().isEmpty()) {
             ventanaProductos(codigo);
@@ -2770,7 +2761,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
 
         if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-            metodos.msgError(null, "Este producto esta inactivo");
+            ControladorAlertas.alertFail("Este producto esta inactivo");
             lbProducto.requestFocus();
             return;
         }
@@ -2812,7 +2803,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 ultimoCosto = ultimoPonderado.getUltimoCosto();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                ControladorAlertas.bigAlert("No se pudo consultar el último ponderado del producto");
+                ControladorAlertas.alert("No se pudo consultar el último ponderado del producto");
             }
 
             BigDecimal utilidad;
@@ -2822,13 +2813,13 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 codigoLista,
                 descripcion,
                 big.setMoneda(ponderado.multiply(cantidadPlu)),
-                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIva())),
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoVenta())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
                 big.setMoneda(listaPrecio),
                 pluProducto,
                 cantidadPlu.multiply(cantidad),
                 big.setMoneda(ponderado), 0,
-                big.setMoneda(utilidad), "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
+                big.setMoneda(utilidad), "", "BD-Principal", false, this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
 
             txtCodigoProducto.setText("");
 
@@ -2840,7 +2831,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
     }
 
-    private boolean combinarConFilaExistente(ndProducto nodo, int pluProducto, BigDecimal cantidad) {
+    private boolean combinarConFilaExistente(ModeloProducto nodo, int pluProducto, BigDecimal cantidad) {
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             String idProductoTabla = tblProductos.getValueAt(i, 24).toString();
             boolean mismoProducto = nodo.getIdSistema().equals(idProductoTabla);
@@ -2901,7 +2892,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void cargarProductoPreCompra(String codigo, String cantidad, int plu, String valor, String tipoDescuento) {
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
 
         if (nodo.getIdSistema() != null) {
             String cant2 = "1";
@@ -2909,39 +2900,39 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             String lista = nodo.getL1();
             switch (plu) {
                 case 2:
-                    cant2 = nodo.getCantidad2();
-                    desc = nodo.getDescripcion2();
-                    lista = nodo.getL2();
+                    cant2 = nodo.getCantidadLista(2).toPlainString();
+                    desc = nodo.getDescripcionLista(2);
+                    lista = nodo.getPrecioLista(2).toPlainString();
                     break;
                 case 3:
-                    cant2 = nodo.getCantidad3();
-                    desc = nodo.getDescripcion3();
-                    lista = nodo.getL3();
+                    cant2 = nodo.getCantidadLista(3).toPlainString();
+                    desc = nodo.getDescripcionLista(3);
+                    lista = nodo.getPrecioLista(3).toPlainString();
                     break;
                 case 4:
-                    cant2 = nodo.getCantidad4();
-                    desc = nodo.getDescripcion4();
-                    lista = nodo.getL4();
+                    cant2 = nodo.getCantidadLista(4).toPlainString();
+                    desc = nodo.getDescripcionLista(4);
+                    lista = nodo.getPrecioLista(4).toPlainString();
                     break;
                 case 5:
-                    cant2 = nodo.getCantidad5();
-                    desc = nodo.getDescripcion5();
-                    lista = nodo.getL5();
+                    cant2 = nodo.getCantidadLista(5).toPlainString();
+                    desc = nodo.getDescripcionLista(5);
+                    lista = nodo.getPrecioLista(5).toPlainString();
                     break;
                 case 6:
-                    cant2 = nodo.getCantidad6();
-                    desc = nodo.getDescripcion6();
-                    lista = nodo.getL6();
+                    cant2 = nodo.getCantidadLista(6).toPlainString();
+                    desc = nodo.getDescripcionLista(6);
+                    lista = nodo.getPrecioLista(6).toPlainString();
                     break;
                 case 7:
-                    cant2 = nodo.getCantidad7();
-                    desc = nodo.getDescripcion7();
-                    lista = nodo.getL7();
+                    cant2 = nodo.getCantidadLista(7).toPlainString();
+                    desc = nodo.getDescripcionLista(7);
+                    lista = nodo.getPrecioLista(7).toPlainString();
                     break;
                 case 8:
-                    cant2 = nodo.getCantidad8();
-                    desc = nodo.getDescripcion8();
-                    lista = nodo.getL8();
+                    cant2 = nodo.getCantidadLista(8).toPlainString();
+                    desc = nodo.getDescripcionLista(8);
+                    lista = nodo.getPrecioLista(8).toPlainString();
                     break;
             }
             if (cantidad.contains(".")) {
@@ -2954,7 +2945,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 ultimoCosto = ultimoPonderado.getUltimoCosto();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                alertas.bigAlert("No se pudo consultar el último ponderado del producto");
+                alertas.alert("No se pudo consultar el último ponderado del producto");
             }
 
             BigDecimal ponderado = big.getBigDecimal(valor + "");
@@ -2962,10 +2953,10 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             utilidad = big.getBigDecimal(nodo.getL1()).subtract(ponderado);
 
             modeloProductos.addRow(new Object[]{nodo.getCodigo(), desc, big.setMoneda(ponderado),
-                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIvaC())),
-                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoCompra())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
+                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIva())),
+                big.setNumero(big.getBigDecimal(nodo.getImpoconsumoVenta())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
                 big.setMoneda(big.getBigDecimal(lista)), plu, (big.getBigDecimal(cant2).multiply(big.getMoneda(cantidad))), big.setMoneda(ponderado), 0, big.setMoneda(utilidad),
-                "", "BD-Principal", nodo.getImpoconsumo(), this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), tipoDescuento});
+                "", "BD-Principal", false, this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), tipoDescuento});
 
             tblProductos.setColumnSelectionInterval(1, 1);
             tblProductos.setRowSelectionInterval(tblProductos.getRowCount() - 1, tblProductos.getRowCount() - 1);
@@ -3045,7 +3036,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             ndCompra nodoComp = metodos.llenarCompra(vectCompra);
 
             if (!instancias.getSql().agregarPrecompra(nodoComp)) {
-                metodos.msgError(null, "Hubo un problema al guardar la precompra");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la precompra");
             }
         }
     }
@@ -3060,7 +3051,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
 
         if (!daoDetalleProducto.guardarListaDetallesPrecargados(TipoDocumento.COMPRA.getValor(), detalles)) {
-            metodos.msgError(null, "Hubo un problema al guardar la precompra detallada");
+            ControladorAlertas.alertFail("Hubo un problema al guardar la precompra detallada");
         }
     }
 
@@ -3535,7 +3526,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void actualizarCantidadPLU(int fila, BigDecimal cantidad) {
         String codigoProducto = tblProductos.getValueAt(fila, 24).toString();
 
-        ndProducto producto = instancias.getSql().getDatosProducto(codigoProducto, "bdProductos");
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigoProducto, enumBodegas.ID_BODEGA_PRINCIPAL);
         int numeroPLU = Integer.parseInt(Utilidades.formatearCantidad(tblProductos.getValueAt(fila, 13).toString()));
 
         ResultadoPluProducto resultadoPluProducto = daoProducto.obtenerDatosPluProducto(producto, numeroPLU);

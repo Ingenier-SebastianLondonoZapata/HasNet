@@ -1,5 +1,11 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesOrdenServicio.GeneradorReporteOrdenServicio;
 import Modelo.Solicitudes.AccionesPermisos;
 import clases.Instancias;
@@ -7,7 +13,7 @@ import clases.Parqueadero.ndLavado;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Vista.Solicitudes.VistaSolicitarPermisos;
 import formularios.Tesoreria.dlgTipoEgreso;
@@ -27,6 +33,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 public class infLavadero extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -1147,7 +1154,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             String faltantes = metodos.camposVacios(campos);
 
             if (!faltantes.equals("")) {
-                metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                 return;
             }
 
@@ -1160,21 +1167,21 @@ public class infLavadero extends javax.swing.JInternalFrame {
                 }
 
                 if (empleado.equals("")) {
-                    metodos.msgAdvertencia(this, "No se puede guardar sin haberle asignado un empleado a cada uno de los servicios.");
+                    ControladorAlertas.alert("No se puede guardar sin haberle asignado un empleado a cada uno de los servicios.");
                     return;
                 }
             }
 
             Object[][] lavados = instancias.getSql().getLavadoPendiente(txtIdSistema.getText());
             if (lavados.length > 0) {
-                metodos.msgAdvertencia(this, "Este cliente tiene un servicio sin terminar");
-                if (metodos.msgPregunta(this, "¿Desea continuar?") == 1) {
+                ControladorAlertas.alert("Este cliente tiene un servicio sin terminar");
+                if (!ControladorAlertas.option("¿Desea continuar?")) {
                     return;
                 }
             }
 
             if (tblServicios.getRowCount() <= 0) {
-                metodos.msgError(this, "Debe ingresar almenos un producto o servicio");
+                ControladorAlertas.alertFail("Debe ingresar almenos un producto o servicio");
                 return;
             }
 
@@ -1199,7 +1206,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             ndLavado nodo = metodos.llenarLavado(vector);
 
             if (!instancias.getSql().agregarLavado(nodo)) {
-                metodos.msgError(this, "Error al guardar el lavado.");
+                ControladorAlertas.alertFail("Error al guardar el lavado.");
                 return;
             }
 
@@ -1215,16 +1222,16 @@ public class infLavadero extends javax.swing.JInternalFrame {
                     big.getMoneda(tblServicios.getValueAt(i, 2).toString()), "PENDIENTE", id};
 
                 if (!instancias.getSql().agregarProductosLavado(info)) {
-                    metodos.msgError(this, "Error al guardar el detalle");
+                    ControladorAlertas.alertFail("Error al guardar el detalle");
                     return;
                 }
             }
 
             if (!instancias.getSql().aumentarConsecutivo("LAV", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("LAV")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del traslado");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del traslado");
             }
 
-            metodos.msgExito(this, "Lavado registrado con éxito");
+            ControladorAlertas.alertSuccess("Lavado registrado con éxito");
             btnLimpiarActionPerformed(null);
 
         } else if (btnGuardar.getText().equals("MODIFICAR")) {
@@ -1233,12 +1240,12 @@ public class infLavadero extends javax.swing.JInternalFrame {
             String faltantes = metodos.camposVacios(campos);
 
             if (tblServicios.getRowCount() <= 0) {
-                metodos.msgError(this, "Debe ingresar almenos un producto o servicio");
+                ControladorAlertas.alertFail("Debe ingresar almenos un producto o servicio");
                 return;
             }
 
             if (!faltantes.equals("")) {
-                metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                 return;
             }
 
@@ -1253,7 +1260,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             ndLavado nodo = metodos.llenarLavado(vector);
 
             if (!instancias.getSql().agregarLavado(nodo)) {
-                metodos.msgError(this, "Hubo un problema al modificar el registro");
+                ControladorAlertas.alertFail("Hubo un problema al modificar el registro");
                 return;
             }
 
@@ -1281,7 +1288,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
                         big.getMoneda(tblServicios.getValueAt(i, 2).toString()), "PENDIENTE", id};
 
                     if (!instancias.getSql().agregarProductosLavado(info)) {
-                        metodos.msgError(this, "Hubo un error al modificar el registro");
+                        ControladorAlertas.alertFail("Hubo un error al modificar el registro");
                         return;
                     }
                 }
@@ -1299,7 +1306,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
 //            instancias.getOrdenServicio().actualizarOrdenServicio(productos, txtoServicio.getText());
 
-//            metodos.msgExito(this, "Lavado modificado con éxito");
+//            ControladorAlertas.alertSuccess("Lavado modificado con éxito");
             btnLimpiarActionPerformed(null);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -1387,7 +1394,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 //            tblProductos.removeEditor();
             cargarTotales();
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1431,7 +1438,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         System.out.println("df" + datos[0][2].toString());
         if (datos[0][2].toString().equals("0")) {
-            if (metodos.msgPregunta(this, "¿Desea generar egreso?") == 0) {
+            if (ControladorAlertas.option("¿Desea generar egreso?")) {
                 egreso = "SI";
                 tipo = new dlgTipoEgreso(null, true).seleccionar();
             } else {
@@ -1442,7 +1449,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             tipo = new dlgTipoEgreso(null, true).seleccionar();
         }
 
-//        if (metodos.msgPregunta(this, "¿Desea generar egreso?") == 0) {
+//        if (ControladorAlertas.option("¿Desea generar egreso?")) {
 //            tipo = new dlgTipoEgreso(null, true).seleccionar();
 //        }
         for (int i = 0; i < tblLiquidaciones.getRowCount(); i++) {
@@ -1485,7 +1492,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
                     "LIQUIDACIÓN PERSONAL DE LAVADO", "LIQUIDACIÓN A (" + txtEmpleado1.getText() + ") " + txtRazon1.getText() + " POR PRESTAR LOS SERVICIOS DE LAVADO", "", tipo);
         }
 
-        metodos.msgExito(this, "Pago realizado exitosamente");
+        ControladorAlertas.alertSuccess("Pago realizado exitosamente");
 
         DefaultTableModel modelo1 = (DefaultTableModel) tblLiquidaciones.getModel();
 
@@ -1499,7 +1506,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
 //        instancias.getReporte().verPagos(instancias.getSql().getNumConsecutivo("PAGOS")[0].toString());
         if (!instancias.getSql().aumentarConsecutivo("PAGOS", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PAGOS")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del traslado");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del traslado");
         }
 
         cargarTabla();
@@ -1519,7 +1526,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             }
             jLabel1.setText("Total a pagar: " + big.setMoneda(total));
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrar1ActionPerformed
 
@@ -1550,7 +1557,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
         for (int i = 0; i < tblServicios.getRowCount(); i++) {
             if (tblServicios.getValueAt(i, 3).equals("")) {
-                metodos.msgError(this, "No se puede facturar sin haberle asignado un empleado a cada uno de los servicios.");
+                ControladorAlertas.alertFail("No se puede facturar sin haberle asignado un empleado a cada uno de los servicios.");
                 return;
             }
         }
@@ -1559,14 +1566,14 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         if (rbtCredito.isSelected()) {
             if (txtDiasPlazo.getText().equals("")) {
-                metodos.msgError(this, "Ingrese los dias de plazo");
+                ControladorAlertas.alertFail("Ingrese los dias de plazo");
                 return;
             }
         }
 
         diasPlazo = txtDiasPlazo.getText();
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             Object[][] productos = new Object[tblServicios.getRowCount()][4];
 
@@ -1713,7 +1720,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
         if (txtEmpleado1.getText().equals("")) {
-            metodos.msgError(this, "Ingrese el empleado a consultar");
+            ControladorAlertas.alertFail("Ingrese el empleado a consultar");
             return;
         }
 
@@ -1733,7 +1740,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             permisos.setVisible(true);
             return;*/
         } else {
-            if (metodos.msgPregunta(this, "¿Desea anular el lavado?") != 0) {
+            if (!ControladorAlertas.option("¿Desea anular el lavado?")) {
                 return;
             } else {
                 String nota = "";
@@ -1752,7 +1759,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 //                instancias.getOrdenServicio().anularOrdenServicio(nota, txtoServicio.getText(), "bdProductos");
                 btnLimpiarActionPerformed(evt);
 
-                metodos.msgExito(this, "Lavado anulado con exito");
+                ControladorAlertas.alertSuccess("Lavado anulado con exito");
             }
         }
     }//GEN-LAST:event_btnAnularActionPerformed
@@ -1790,12 +1797,12 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         try {
             if (!lavadero[0][6].toString().equals("PENDIENTE")) {
-                metodos.msgError(this, "El lavado ya se facturó");
+                ControladorAlertas.alertFail("El lavado ya se facturó");
                 btnLimpiarActionPerformed(null);
                 return;
             }
         } catch (Exception e) {
-            metodos.msgError(this, "El lavado no existe");
+            ControladorAlertas.alertFail("El lavado no existe");
             btnLimpiarActionPerformed(null);
             return;
         }
@@ -1854,7 +1861,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             txtPlaca.setEnabled(false);
             txtId.setEnabled(false);
         } else {
-            metodos.msgError(this, "El lavado no existe");
+            ControladorAlertas.alertFail("El lavado no existe");
         }
     }
 
@@ -1887,18 +1894,13 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
     public void cargarProducto(String codigo) {
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -2020,7 +2022,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         for (int i = 0; i < tblLiquidaciones.getRowCount(); i++) {
 
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             BigDecimal porcentaje;
 
@@ -2114,7 +2116,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         for (int i = 0; i < tblLiquidaciones.getRowCount(); i++) {
             tblLiquidaciones.setValueAt(metodos.fecha(tblLiquidaciones.getValueAt(i, 1).toString()), i, 1);
 
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             BigDecimal porcentaje;
             if (nodo.getPorcentaje() != null) {

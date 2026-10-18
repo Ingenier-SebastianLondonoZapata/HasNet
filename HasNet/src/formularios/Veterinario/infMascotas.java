@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.Veterinario.ndHistoria;
@@ -895,7 +897,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
                 lbFoto.setToolTipText(id);
 
                 if (!instancias.getSql().aumentarConsecutivo("IMG", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("IMG")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar el codigo de la imagen");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar el codigo de la imagen");
                 }
             } else {
                 id = lbFoto.getToolTipText();
@@ -1022,7 +1024,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         if (!rdGato.isSelected() && !rdAve.isSelected() && !rdPerro.isSelected()) {
-            metodos.msgAdvertenciaAjustado(this, "Debe seleccionar la especie");
+            ControladorAlertas.alert("Debe seleccionar la especie");
             return;
         }
 
@@ -1030,11 +1032,11 @@ public class infMascotas extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String especie = "";
 
@@ -1056,7 +1058,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
             instancias.getSql().modificarMascota(nodo);
 
-            metodos.msgExito(this, "Mascota modificada con éxito");
+            ControladorAlertas.alertSuccess("Mascota modificada con éxito");
 
             btnNuevoActionPerformed(evt);
             txtTemperamento.setText("");
@@ -1068,7 +1070,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (!rdGato.isSelected() && !rdAve.isSelected() && !rdPerro.isSelected()) {
-            metodos.msgAdvertenciaAjustado(this, "Debe seleccionar la especie");
+            ControladorAlertas.alert("Debe seleccionar la especie");
             return;
         }
 
@@ -1079,24 +1081,24 @@ public class infMascotas extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (txtRazon1.getText().equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, no ha ingresado el cliente ");
+            ControladorAlertas.alert("No puede continuar, no ha ingresado el cliente ");
             return;
         }
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             try {
                 ndMascota nodo = instancias.getSql().getDatosMascota(txtCodigo.getText());
 
                 if (nodo.getCliente() != null) {
-                    metodos.msgError(this, "La mascota ya existe");
+                    ControladorAlertas.alertFail("La mascota ya existe");
                     txtCodigo.requestFocus();
                     return;
                 }
@@ -1118,7 +1120,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
                 nodo = metodos.llenarMascota(vector);
 
                 if (!instancias.getSql().agregarMascota(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la mascota");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la mascota");
                     return;
                 }
 
@@ -1128,15 +1130,15 @@ public class infMascotas extends javax.swing.JInternalFrame {
                 ndHistoria nodoHist = metodos.llenarHistoria(vectorHist);
 
                 if (!instancias.getSql().agregarHistoria(nodoHist)) {
-                    metodos.msgError(this, "Hubo un problema al abrir la historia clinica");
+                    ControladorAlertas.alertFail("Hubo un problema al abrir la historia clinica");
                     return;
                 }
 
                 if (!instancias.getSql().aumentarConsecutivo("HIST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("HIST")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de las historias clinicas");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de las historias clinicas");
                 }
 
-                metodos.msgExito(this, "Mascota registrado con éxito");
+                ControladorAlertas.alertSuccess("Mascota registrado con éxito");
                 btnActualizar.setEnabled(true);
                 btnGuardar.setEnabled(false);
                 btnHistoria.setEnabled(true);
@@ -1144,7 +1146,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
 //                btnNuevoActionPerformed(evt);
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al guardar la mascota");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la mascota");
             }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -1207,10 +1209,10 @@ public class infMascotas extends javax.swing.JInternalFrame {
                 instancias.getHistoria().setSelected(true);
                 instancias.getMenu().cambiarTitulo("HISTORIA DE " + txtNombre.getText().toUpperCase());
             } else {
-                metodos.msgError(this, "Cargue primero una mascota");
+                ControladorAlertas.alertFail("Cargue primero una mascota");
             }
 //            } else {
-//                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+//                ControladorAlertas.alert("No tiene permisos para esta función");
 //            }
         } catch (PropertyVetoException ex) {
             Logger.getLogger(infMascotas.class.getName()).log(Level.SEVERE, null, ex);
@@ -1315,7 +1317,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
         }
 
         if (tipo.equals("")) {
-            metodos.msgAdvertencia(this, "Seleccione el tipo de mascota");
+            ControladorAlertas.alert("Seleccione el tipo de mascota");
             return;
         }
 
@@ -1355,7 +1357,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
         if (!campo.getText().equalsIgnoreCase("")) {
             if (!instancias.getSql().agregarVacuna(datos)) {
-                metodos.msgError(this, "Hubo un problema al guardar el concepto");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el concepto");
                 return;
             }
         }

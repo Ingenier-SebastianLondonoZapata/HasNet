@@ -1,12 +1,18 @@
 package Vista.Tesoreria;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesCuadreCaja.GeneradorReporteCuadreCaja;
 import formularios.Ventas.*;
 import clases.Instancias;
 import clases.Ventas.ndCaja;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -16,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class VistaCuadreCaja extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     Instancias instancias;
     metodosGenerales metodos = new metodosGenerales();
@@ -926,26 +933,26 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
         BigDecimal totalFacturas = big.getMoneda(tblIngresos.getValueAt(3, 1).toString());
         if (totalFacturas.compareTo(BigDecimal.ZERO) == 0) {
-            metodos.msgAdvertencia(this, "No se puede guardar sin facturas");
+            ControladorAlertas.alert("No se puede guardar sin facturas");
             return;
         }
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes);
         }
 
         Object[][] congeladas = instancias.getSql().getDatosCongelada();
         if (congeladas.length > 0) {
             if (instancias.getConfiguraciones().isRestaurante()) {
-                metodos.msgAdvertenciaAjustado(this, "¡Hay mesas sin finalizar!");
+                ControladorAlertas.alert("¡Hay mesas sin finalizar!");
                 return;
             } else {
-                metodos.msgAdvertenciaAjustado(this, "¡Hay congeladas sin finalizar!");
+                ControladorAlertas.alert("¡Hay congeladas sin finalizar!");
                 return;
             }
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             if (!instancias.getUsuario().equals("ADMIN")) {
                 calcular = true;
@@ -1003,7 +1010,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             ndCaja nodo = metodos.llenarCaja(vector);
 
             if (!instancias.getSql().agregarCuadreCaja(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar el cuadre");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el cuadre");
                 return;
             }
 
@@ -1020,14 +1027,14 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                     actualizo = instancias.getSql().modificarCuadreAbonos((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
                 } else if (tipo.equals("NC")) {
                     if (!instancias.getSql().modificarRedNc((String) modelo.getValueAt(i, 0), documento)) {
-                        metodos.msgError(this, "Hubo un problema al cambiar el estado del cuadre NC.");
+                        ControladorAlertas.alertFail("Hubo un problema al cambiar el estado del cuadre NC.");
                     }
 
                     actualizo = instancias.getSql().modificarCuadreNotasCredito((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
                 }
 
                 if (!actualizo) {
-                    metodos.msgError(this, "Error al actualizar estado de la factura");
+                    ControladorAlertas.alertFail("Error al actualizar estado de la factura");
                 }
             }
 
@@ -1052,35 +1059,35 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             }
 
             if (!instancias.getSql().modificarEstadoEgreso(metodos.desdeDate(dtInicio.getCurrent()), "REALIZADO", documento)) {
-                metodos.msgError(this, "Error al modificar la recogida.");
+                ControladorAlertas.alertFail("Error al modificar la recogida.");
             }
 
             if (!instancias.getSql().desactivarRecogidaParcial()) {
-                metodos.msgError(this, "Error al desactivar la recogida.");
+                ControladorAlertas.alertFail("Error al desactivar la recogida.");
             }
 
             if (instancias.getUsuario().equals("ADMIN")) {
                 if (!instancias.getSql().desactivarBasesDeCaja(metodos.desdeDate(dtInicio.getCurrent()))) {
-                    metodos.msgError(this, "Error al modificar la recogida");
+                    ControladorAlertas.alertFail("Error al modificar la recogida");
                 }
                 if (!instancias.getSql().asignarCuadreABase(documento, metodos.desdeDate(dtInicio.getCurrent()))) {
-                    metodos.msgError(this, "Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
+                    ControladorAlertas.alertFail("Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
                 }
             } else {
                 if (!instancias.getSql().desactivarBasesDeCaja(metodos.desdeDate(dtInicio.getCurrent()), "")) {
-                    metodos.msgError(this, "Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
+                    ControladorAlertas.alertFail("Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
                 }
 
                 if (!instancias.getSql().asignarCuadreABase(documento, metodos.desdeDate(dtInicio.getCurrent()), "")) {
-                    metodos.msgError(this, "Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
+                    ControladorAlertas.alertFail("Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
                 }
             }
 
             if (!instancias.getSql().aumentarConsecutivo("CUADRE", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CUADRE")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del cuadre");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del cuadre");
             }
 
-            metodos.msgExito(this, "Cuadre exitoso");
+            ControladorAlertas.alertSuccess("Cuadre exitoso");
 
             lbConsecutivo.setText((String) instancias.getSql().getNumConsecutivo("CUADRE")[0]);
 
@@ -1156,7 +1163,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
     private void cmbUsuariosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbUsuariosFocusGained
         if (!instancias.getUsuario().equals("ADMIN")) {
             dtInicio.requestFocus();
-            metodos.msgError(this, "No tiene permisos para abrir esta lista");
+            ControladorAlertas.alertFail("No tiene permisos para abrir esta lista");
         }
     }//GEN-LAST:event_cmbUsuariosFocusGained
 
@@ -1322,7 +1329,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
             tblSalidas.setValueAt(big.setMoneda(totalGastosRegistrados), 4, 1);
 
-            ndProducto nodo = instancias.getSql().getDatosProducto("DOMI", "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto("DOMI", enumBodegas.ID_BODEGA_PRINCIPAL);
             domicilios = instancias.getSql().getItemDomicilio(nodo.getIdSistema(), fecha);
 
             BigDecimal sumPropinas = big.getBigDecimal("0"), sumFacturas = big.getBigDecimal("0"), sumDomicilios = big.getBigDecimal("0"), sumAbonos = big.getBigDecimal("0"),

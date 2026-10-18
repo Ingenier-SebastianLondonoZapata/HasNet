@@ -1,5 +1,7 @@
 package Vista.Restaurante;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Vista.Restaurante.PanelMesas;
 import Modelo.Ventas.ModeloMesa;
 import Utilidades.DatosMaestra;
@@ -286,7 +288,7 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
         if (esRestaurante) {
             String estadoMesa = instancias.getSql().getEstadoMesa(mesaActualizada.getNombre());
             if ("OCUPADO".equals(estadoMesa)) {
-                metodos.msgAdvertenciaAjustado(this, "Esta mesa esta ocupada");
+                ControladorAlertas.alert("Esta mesa esta ocupada");
                 return;
             }
         }

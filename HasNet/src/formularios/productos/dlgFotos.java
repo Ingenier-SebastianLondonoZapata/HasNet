@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.productos.*;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -275,7 +277,7 @@ public final class dlgFotos extends javax.swing.JDialog {
                 try {
                     metodos.montarImagenTerceros(FROM.toString(), TO.toString());
                 } catch (Exception e) {
-                    metodos.msgAdvertencia(null, "El producto con codigo " + files[i].getName().substring(0, files[i].getName().length() - 4) + " ya tenia una imagén");
+                    ControladorAlertas.alert("El producto con codigo " + files[i].getName().substring(0, files[i].getName().length() - 4) + " ya tenia una imagén");
                     metodos.montarImagenTerceros(FROM.toString(), TO.toString());
                 }
             }

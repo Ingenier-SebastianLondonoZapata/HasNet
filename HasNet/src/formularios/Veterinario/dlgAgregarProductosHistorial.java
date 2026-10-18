@@ -1,12 +1,18 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Modelo.Inventario.UltimoPonderado;
 import clases.Instancias;
 import clases.Veterinario.ndMascota;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProdTraslBodega;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
@@ -27,6 +33,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -743,7 +750,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 tblProductos.setValueAt(j, tblProductos.getSelectedRow(), i);
             }
 
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             valor = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
             cantidad = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 3)).replace(".", ","));
@@ -763,13 +770,13 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                     tblProductos.setValueAt(cantidad, fila, 10);
                     break;
                 case "2":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad2())), fila, 10);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(2))), fila, 10);
                     break;
                 case "3":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad3())), fila, 10);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(3))), fila, 10);
                     break;
                 case "4":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad4())), fila, 10);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(4))), fila, 10);
                     break;
             }
 
@@ -850,7 +857,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 tblViejo.setValueAt(j, tblViejo.getSelectedRow(), i);
             }
 
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblViejo.getValueAt(fila, 0).toString(), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblViejo.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             valor = big.getMoneda(String.valueOf(tblViejo.getValueAt(fila, 2)));
             cantidad = big.getMoneda(String.valueOf(tblViejo.getValueAt(fila, 3)).replace(".", ","));
@@ -870,13 +877,13 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                     tblViejo.setValueAt(cantidad, fila, 10);
                     break;
                 case "2":
-                    tblViejo.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad2())), fila, 10);
+                    tblViejo.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(2))), fila, 10);
                     break;
                 case "3":
-                    tblViejo.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad3())), fila, 10);
+                    tblViejo.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(3))), fila, 10);
                     break;
                 case "4":
-                    tblViejo.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad4())), fila, 10);
+                    tblViejo.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(4))), fila, 10);
                     break;
             }
 
@@ -894,19 +901,19 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (tblProductos.getRowCount() == 0) {
-            metodos.msgError(null, "No ha añadido ningun producto");
+            ControladorAlertas.alertFail("No ha añadido ningun producto");
         } else {
 
             int xyz = tblProductos.getRowCount();
             if (xyz > 0) {
                 for (int i = 0; i < xyz; i++) {
                     if (tblProductos.getValueAt(i, 3).equals("0")) {
-                        metodos.msgError(null, "Las cantidades de los productos deben de ser mayor a 0");
+                        ControladorAlertas.alertFail("Las cantidades de los productos deben de ser mayor a 0");
                         return;
                     }
 
                     if (tblProductos.getValueAt(i, 2).equals(this.simbolo + " 0")) {
-                        metodos.msgError(null, "Los valores de los productos deben de ser mayor a " + this.simbolo + " 0");
+                        ControladorAlertas.alertFail("Los valores de los productos deben de ser mayor a " + this.simbolo + " 0");
                         return;
                     }
 
@@ -917,7 +924,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 }
             }
 
-            if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
 
                 //PROCESO GUARDAR VENTA
                 for (int i = 0; i < tblProductos.getRowCount(); i++) {
@@ -934,11 +941,11 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                     ndProdTraslBodega nodoTras = metodos.llenarProdTralBodega(vectVenta);
 
                     if (!instancias.getSql().agregarProductosAdicionales(nodoTras)) {
-                        metodos.msgError(null, "Hubo un problema al guardar el prestamo");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar el prestamo");
                     }
                 }
 
-                metodos.msgExito(null, "Productos guardados exitoso");
+                ControladorAlertas.alertSuccess("Productos guardados exitoso");
                 this.dispose();
             }
         }
@@ -1025,7 +1032,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             tblProductos.removeEditor();
             cargarTotales();
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1053,28 +1060,23 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             if (!idPro.equals("")) {
                 if (idPro.equals(idProd)) {
                     if (!imei.equals("")) {
-                        metodos.msgError(null, "El imei '" + imei + "' ya esta cargado.");
+                        ControladorAlertas.alertFail("El imei '" + imei + "' ya esta cargado.");
                         return;
                     } else {
-                        metodos.msgError(null, "Este producto con el lote '" + lote + "' ya se cargó.");
+                        ControladorAlertas.alertFail("Este producto con el lote '" + lote + "' ya se cargó.");
                         return;
                     }
                 }
             }
         }
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }
@@ -1082,7 +1084,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
 
         if (!codigoProd.equals("")) {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbNit.requestFocus();
                 return;
             }
@@ -1090,25 +1092,25 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             if (this.plu) {
                 this.plu = false;
                 int cant = 0;
-                if (nodo.isPlu2()) {
+                if (nodo.isPluLista(2)) {
                     cant++;
                 }
-                if (nodo.isPlu3()) {
+                if (nodo.isPluLista(3)) {
                     cant++;
                 }
-                if (nodo.isPlu4()) {
+                if (nodo.isPluLista(4)) {
                     cant++;
                 }
-                if (nodo.getPlu5()) {
+                if (nodo.isPluLista(5)) {
                     cant++;
                 }
-                if (nodo.getPlu6()) {
+                if (nodo.isPluLista(6)) {
                     cant++;
                 }
-                if (nodo.getPlu7()) {
+                if (nodo.isPluLista(7)) {
                     cant++;
                 }
-                if (nodo.getPlu8()) {
+                if (nodo.isPluLista(8)) {
                     cant++;
                 }
                 if (cant > 0) {
@@ -1125,39 +1127,39 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             String lista = nodo.getL1();
             switch (plu) {
                 case 2:
-                    cant2 = nodo.getCantidad2();
-                    desc = nodo.getDescripcion2();
-                    lista = nodo.getL2();
+                    cant2 = nodo.getCantidadLista(2).toPlainString();
+                    desc = nodo.getDescripcionLista(2);
+                    lista = nodo.getPrecioLista(2).toPlainString();
                     break;
                 case 3:
-                    cant2 = nodo.getCantidad3();
-                    desc = nodo.getDescripcion3();
-                    lista = nodo.getL3();
+                    cant2 = nodo.getCantidadLista(3).toPlainString();
+                    desc = nodo.getDescripcionLista(3);
+                    lista = nodo.getPrecioLista(3).toPlainString();
                     break;
                 case 4:
-                    cant2 = nodo.getCantidad4();
-                    desc = nodo.getDescripcion4();
-                    lista = nodo.getL4();
+                    cant2 = nodo.getCantidadLista(4).toPlainString();
+                    desc = nodo.getDescripcionLista(4);
+                    lista = nodo.getPrecioLista(4).toPlainString();
                     break;
                 case 5:
-                    cant2 = nodo.getCantidad5();
-                    desc = nodo.getDescripcion5();
-                    lista = nodo.getL5();
+                    cant2 = nodo.getCantidadLista(5).toPlainString();
+                    desc = nodo.getDescripcionLista(5);
+                    lista = nodo.getPrecioLista(5).toPlainString();
                     break;
                 case 6:
-                    cant2 = nodo.getCantidad6();
-                    desc = nodo.getDescripcion6();
-                    lista = nodo.getL6();
+                    cant2 = nodo.getCantidadLista(6).toPlainString();
+                    desc = nodo.getDescripcionLista(6);
+                    lista = nodo.getPrecioLista(6).toPlainString();
                     break;
                 case 7:
-                    cant2 = nodo.getCantidad7();
-                    desc = nodo.getDescripcion7();
-                    lista = nodo.getL7();
+                    cant2 = nodo.getCantidadLista(7).toPlainString();
+                    desc = nodo.getDescripcionLista(7);
+                    lista = nodo.getPrecioLista(7).toPlainString();
                     break;
                 case 8:
-                    cant2 = nodo.getCantidad8();
-                    desc = nodo.getDescripcion8();
-                    lista = nodo.getL8();
+                    cant2 = nodo.getCantidadLista(8).toPlainString();
+                    desc = nodo.getDescripcionLista(8);
+                    lista = nodo.getPrecioLista(8).toPlainString();
                     break;
             }
 
@@ -1230,28 +1232,23 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             if (!idPro.equals("")) {
                 if (idPro.equals(idProd)) {
                     if (!imei.equals("")) {
-                        metodos.msgError(null, "El imei '" + imei + "' ya esta cargado.");
+                        ControladorAlertas.alertFail("El imei '" + imei + "' ya esta cargado.");
                         return;
                     } else {
-                        metodos.msgError(null, "Este producto con el lote '" + lote + "' ya se cargó.");
+                        ControladorAlertas.alertFail("Este producto con el lote '" + lote + "' ya se cargó.");
                         return;
                     }
                 }
             }
         }
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }
@@ -1259,7 +1256,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
 
         if (!codigoProd.equals("")) {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbNit.requestFocus();
                 return;
             }
@@ -1267,25 +1264,25 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             if (this.plu) {
                 this.plu = false;
                 int cant = 0;
-                if (nodo.isPlu2()) {
+                if (nodo.isPluLista(2)) {
                     cant++;
                 }
-                if (nodo.isPlu3()) {
+                if (nodo.isPluLista(3)) {
                     cant++;
                 }
-                if (nodo.isPlu4()) {
+                if (nodo.isPluLista(4)) {
                     cant++;
                 }
-                if (nodo.getPlu5()) {
+                if (nodo.isPluLista(5)) {
                     cant++;
                 }
-                if (nodo.getPlu6()) {
+                if (nodo.isPluLista(6)) {
                     cant++;
                 }
-                if (nodo.getPlu7()) {
+                if (nodo.isPluLista(7)) {
                     cant++;
                 }
-                if (nodo.getPlu8()) {
+                if (nodo.isPluLista(8)) {
                     cant++;
                 }
                 if (cant > 0) {
@@ -1302,39 +1299,39 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
             String lista = nodo.getL1();
             switch (plu) {
                 case 2:
-                    cant2 = nodo.getCantidad2();
-                    desc = nodo.getDescripcion2();
-                    lista = nodo.getL2();
+                    cant2 = nodo.getCantidadLista(2).toPlainString();
+                    desc = nodo.getDescripcionLista(2);
+                    lista = nodo.getPrecioLista(2).toPlainString();
                     break;
                 case 3:
-                    cant2 = nodo.getCantidad3();
-                    desc = nodo.getDescripcion3();
-                    lista = nodo.getL3();
+                    cant2 = nodo.getCantidadLista(3).toPlainString();
+                    desc = nodo.getDescripcionLista(3);
+                    lista = nodo.getPrecioLista(3).toPlainString();
                     break;
                 case 4:
-                    cant2 = nodo.getCantidad4();
-                    desc = nodo.getDescripcion4();
-                    lista = nodo.getL4();
+                    cant2 = nodo.getCantidadLista(4).toPlainString();
+                    desc = nodo.getDescripcionLista(4);
+                    lista = nodo.getPrecioLista(4).toPlainString();
                     break;
                 case 5:
-                    cant2 = nodo.getCantidad5();
-                    desc = nodo.getDescripcion5();
-                    lista = nodo.getL5();
+                    cant2 = nodo.getCantidadLista(5).toPlainString();
+                    desc = nodo.getDescripcionLista(5);
+                    lista = nodo.getPrecioLista(5).toPlainString();
                     break;
                 case 6:
-                    cant2 = nodo.getCantidad6();
-                    desc = nodo.getDescripcion6();
-                    lista = nodo.getL6();
+                    cant2 = nodo.getCantidadLista(6).toPlainString();
+                    desc = nodo.getDescripcionLista(6);
+                    lista = nodo.getPrecioLista(6).toPlainString();
                     break;
                 case 7:
-                    cant2 = nodo.getCantidad7();
-                    desc = nodo.getDescripcion7();
-                    lista = nodo.getL7();
+                    cant2 = nodo.getCantidadLista(7).toPlainString();
+                    desc = nodo.getDescripcionLista(7);
+                    lista = nodo.getPrecioLista(7).toPlainString();
                     break;
                 case 8:
-                    cant2 = nodo.getCantidad8();
-                    desc = nodo.getDescripcion8();
-                    lista = nodo.getL8();
+                    cant2 = nodo.getCantidadLista(8).toPlainString();
+                    desc = nodo.getDescripcionLista(8);
+                    lista = nodo.getPrecioLista(8).toPlainString();
                     break;
             }
 

@@ -1,13 +1,20 @@
 package Vista.Productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Modelo.Productos.ModeloListaPrecio;
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Enums.TipoProducto;
 import Modelo.Inventario.UltimoPonderado;
 import Modelo.Productos.LineaCosteoDiseno;
 import Utilidades.Utilidades;
-import dao.Productos.DaoDiseno;
+import Dao.Productos.DaoDiseno;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import clases.big;
 import clases.metodosGenerales;
 import formularios.productos.buscMedidas;
@@ -30,6 +37,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class VistaDiseno extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -878,7 +886,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         try {
             comparacion = big.getBigDecimal(big.getMoneda((String) tblProductos.getValueAt(fila, 2))).compareTo(BigDecimal.ZERO);
         } catch (Exception e) {
-            metodos.msgAdvertencia(this, "La cantidad debe ser mayor a 0");
+            ControladorAlertas.alert("La cantidad debe ser mayor a 0");
             return;
         }
 
@@ -907,12 +915,12 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             try {
                 cod = tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString();
             } catch (Exception e) {
-                metodos.msgError(this, "Seleccione un producto de la tabla");
+                ControladorAlertas.alertFail("Seleccione un producto de la tabla");
                 return;
             }
 
             if (!(Boolean) tblProductos.getValueAt(tblProductos.getSelectedRow(), 5)) {
-                metodos.msgError(this, "Debe activar la opción de cambio");
+                ControladorAlertas.alertFail("Debe activar la opción de cambio");
                 return;
             }
 
@@ -944,31 +952,31 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
         calcularFilas();
 
         if (tblProductos.getRowCount() < 1) {
-            metodos.msgAdvertencia(this, "No puede continuar, debe de agregar almenos un producto en la tabla");
+            ControladorAlertas.alert("No puede continuar, debe de agregar almenos un producto en la tabla");
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
         String consecutivo = "";
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
-            ndProducto nodo1 = instancias.getSql().getDatosProducto(txtCodigo.getText(), "bdProductos");
+            ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(txtCodigo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo1.getIdSistema() != null) {
-                metodos.msgAdvertenciaAjustado(this, "¡El codigo ya existe!");
+                ControladorAlertas.alert("¡El codigo ya existe!");
                 txtCodigo.requestFocus();
                 return;
             }
 
             if (txtCodigo.isEditable()) {
-                ndProducto nodo = null;
+                ModeloProducto nodo = null;
 
                 if (txtL4.getText().equals("")) {
                     txtL4.setText("0");
@@ -1015,39 +1023,43 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                     grupo = null;
                 }
 
-                Object[] vector = {"PROD-" + consecutivo, txtCodigo.getText().replace("'", "//"), "", txtDescripcion.getText(), grupo,
-                    null, null, txtIva.getText(), big.getMoneda(txtL1.getText()), big.getMoneda(txtL2.getText()), big.getMoneda(txtL3.getText()),
-                    big.getMoneda(txtL4.getText()), big.getMoneda("0"), big.getMoneda("0"), big.getMoneda("0"), big.getMoneda("0"),
-                    tipo, txtPuntoMinimo.getText(), txtMedida.getText(), "", 0, txtMinima.getText(), txtMaximo.getText(), "", txtDescripcion.getText(), "", "",
-                    txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "", txtDescripcion.getText(),
-                    "", "", txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "",
-                    false, false, false, false, false, false, false, 0, 0, instancias.getTerminal(), "0", "", manejaInv, "",
-                    "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", false, "", "", "", "",
-                    "", "", "", "", "", "0", txtCodigo.getText().replace("'", "//") + "-2", txtCodigo.getText().replace("'", "//") + "-3",
-                    txtCodigo.getText().replace("'", "//") + "-4", txtCodigo.getText().replace("'", "//") + "-5", txtCodigo.getText().replace("'", "//") + "-6",
-                    txtCodigo.getText().replace("'", "//") + "-7", txtCodigo.getText().replace("'", "//") + "-8", "", "", "", "", "", "", "1",
-                    txtImpoconsumo.getText(), txtImpoconsumo.getText(), txtDescripcion.getText(), "0"};
+                nodo = new ModeloProducto();
+                nodo.setIdSistema("PROD-" + consecutivo);
+                nodo.setCodigo(txtCodigo.getText().replace("'", "//"));
+                nodo.setCodigoBarras("");
+                nodo.setDescripcion(txtDescripcion.getText());
+                nodo.setDescripcionLarga(txtDescripcion.getText());
+                nodo.setGrupo(grupo);
+                nodo.setIva(txtIva.getText());
+                nodo.setImpoconsumoVenta(txtImpoconsumo.getText());
+                nodo.setUsuario(tipo);
+                nodo.setMinimo(txtPuntoMinimo.getText());
+                nodo.setUnd(txtMedida.getText());
+                nodo.setReferencia("");
+                nodo.setCosto("0");
+                nodo.setMinima(txtMinima.getText());
+                nodo.setMaxima(txtMaximo.getText());
+                nodo.setUbicacion1("");
+                nodo.setPonderado("0");
+                nodo.setTerminal(instancias.getTerminal());
+                nodo.setClaseBuscador("");
+                nodo.setManejaInventario(manejaInv);
+                nodo.setPorcentaje("");
+                nodo.setIndVentas("1");
+                nodo.inicializarTextosOpcionales();
 
-                nodo = metodos.llenarProducto(vector);
+                BigDecimal precioLista1 = big.getMoneda(txtL1.getText());
+                nodo.setL1(precioLista1.toString());
+                BigDecimal[] preciosListas = {big.getMoneda(txtL2.getText()), big.getMoneda(txtL3.getText()), big.getMoneda(txtL4.getText())};
+                for (int numeroLista = 2; numeroLista <= 4; numeroLista++) {
+                    BigDecimal precio = preciosListas[numeroLista - 2];
+                    if (precio.signum() > 0 && precio.compareTo(precioLista1) != 0) {
+                        nodo.setLista(ModeloListaPrecio.conPrecio(numeroLista, precio));
+                    }
+                }
 
-                if (!instancias.getSql().agregarProducto(nodo, "bdProductos")) {
-                    metodos.msgError(this, "Error al guardar el producto");
-                    return;
-                }
-                if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega1")) {
-                    metodos.msgError(this, "Error al guardar el producto1");
-                    return;
-                }
-                if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega2")) {
-                    metodos.msgError(this, "Error al guardar el producto2");
-                    return;
-                }
-                if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega3")) {
-                    metodos.msgError(this, "Error al guardar el producto3");
-                    return;
-                }
-                if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega4")) {
-                    metodos.msgError(this, "Error al guardar el producto4");
+                if (!daoProducto.agregarProducto(nodo)) {
+                    ControladorAlertas.alertFail("Error al guardar el producto");
                     return;
                 }
             }
@@ -1057,19 +1069,19 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
             if (!instancias.getSql().agregarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), "PROD-" + consecutivo,
                     BigDecimal.ZERO, "0", "0", BigDecimal.ZERO, "0", instancias.getUsuario(), BigDecimal.ZERO, "")) {
-                metodos.msgError(this, "Error al guardar en el consecutivo del producto");
+                ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
             }
 
             if (!instancias.getSql().agregarUltimoPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), "PROD-" + consecutivo,
                     BigDecimal.ZERO, "0", "0", BigDecimal.ZERO, "0", instancias.getUsuario(), BigDecimal.ZERO, "")) {
-                metodos.msgError(this, "Error al guardar en el consecutivo del producto");
+                ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
             }
 
             if (!instancias.getSql().aumentarConsecutivo("PROD", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PROD")[0]) + 1)) {
-                metodos.msgError(this, "Error al guardar en el consecutivo del producto");
+                ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
             }
 
-            metodos.msgExito(this, "Diseño registrado con éxito");
+            ControladorAlertas.alertSuccess("Diseño registrado con éxito");
 
             if (!chkManejarInventario.isSelected()) {
                 String codigo = txtCodigo.getText();
@@ -1093,7 +1105,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
             calcularCostoDiseno();
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1187,7 +1199,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             return;
         }
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
         boolean existe = nodo != null && nodo.getIdSistema() != null && !nodo.getIdSistema().equals("");
 
         if (!existe) {
@@ -1245,14 +1257,14 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             }
 
             if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
-                metodos.msgAdvertencia(this, "La cantidad debe ser mayor a 0");
+                ControladorAlertas.alert("La cantidad debe ser mayor a 0");
                 return;
             }
         }
 
         calcularFilas();
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             tblProductos.removeEditor();
 
             Boolean manejaInv = false;
@@ -1265,14 +1277,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                 tipo = "COSTEO";
             }
 
-            ndProducto nodo = instancias.getSql().getDatosProducto(txtCodigo.getText(), "bdProductos");
-            ndProducto nodo1 = null, nodo2 = null, nodo3 = null, nodo4 = null;
-            if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                nodo1 = instancias.getSql().getDatosProducto(txtCodigo.getText(), "bdProductosBodega1");
-                nodo2 = instancias.getSql().getDatosProducto(txtCodigo.getText(), "bdProductosBodega2");
-                nodo3 = instancias.getSql().getDatosProducto(txtCodigo.getText(), "bdProductosBodega3");
-                nodo4 = instancias.getSql().getDatosProducto(txtCodigo.getText(), "bdProductosBodega4");
-            }
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             String grupo = "";
             try {
@@ -1290,104 +1295,17 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             nodo.setUnd(txtMedida.getText());
             nodo.setDescripcion(txtDescripcion.getText());
             nodo.setL1(big.getMoneda(txtL1.getText()).toString());
-            nodo.setL2(big.getMoneda(txtL2.getText()).toString());
-            nodo.setL3(big.getMoneda(txtL3.getText()).toString());
-            nodo.setL4(big.getMoneda(txtL4.getText()).toString());
+            nodo.setLista(ModeloListaPrecio.conPrecio(2, big.getMoneda(txtL2.getText())));
+            nodo.setLista(ModeloListaPrecio.conPrecio(3, big.getMoneda(txtL3.getText())));
+            nodo.setLista(ModeloListaPrecio.conPrecio(4, big.getMoneda(txtL4.getText())));
             nodo.setManejaInventario(manejaInv);
             nodo.setMinima(txtMinima.getText());
             nodo.setMaxima(txtMaximo.getText());
-            nodo.setImpoconsumoCompra(txtImpoconsumo.getText());
             nodo.setImpoconsumoVenta(txtImpoconsumo.getText());
             nodo.setIva(txtIva.getText());
-            nodo.setIvaC(txtIva.getText());
 
-            if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                nodo1.setGrupo(grupo);
-                nodo1.setUsuario(tipo);
-                nodo1.setTipoProd("FIJAS");
-                nodo1.setUnd(txtMedida.getText());
-                nodo1.setDescripcion(txtDescripcion.getText());
-                nodo1.setL1(big.getMoneda(txtL1.getText()).toString());
-                nodo1.setL2(big.getMoneda(txtL2.getText()).toString());
-                nodo1.setL3(big.getMoneda(txtL3.getText()).toString());
-                nodo1.setL4(big.getMoneda(txtL4.getText()).toString());
-                nodo1.setManejaInventario(manejaInv);
-                nodo1.setMinima(txtMinima.getText());
-                nodo1.setMaxima(txtMaximo.getText());
-                nodo1.setImpoconsumoCompra(txtImpoconsumo.getText());
-                nodo1.setImpoconsumoVenta(txtImpoconsumo.getText());
-                nodo1.setIva(txtIva.getText());
-                nodo1.setIvaC(txtIva.getText());
-
-                nodo2.setGrupo(grupo);
-                nodo2.setUsuario(tipo);
-                nodo2.setTipoProd("FIJAS");
-                nodo2.setUnd(txtMedida.getText());
-                nodo2.setDescripcion(txtDescripcion.getText());
-                nodo2.setL1(big.getMoneda(txtL1.getText()).toString());
-                nodo2.setL2(big.getMoneda(txtL2.getText()).toString());
-                nodo2.setL3(big.getMoneda(txtL3.getText()).toString());
-                nodo2.setL4(big.getMoneda(txtL4.getText()).toString());
-                nodo2.setManejaInventario(manejaInv);
-                nodo2.setMinima(txtMinima.getText());
-                nodo2.setMaxima(txtMaximo.getText());
-                nodo2.setImpoconsumoCompra(txtImpoconsumo.getText());
-                nodo2.setImpoconsumoVenta(txtImpoconsumo.getText());
-                nodo2.setIva(txtIva.getText());
-                nodo2.setIvaC(txtIva.getText());
-
-                nodo3.setGrupo(grupo);
-                nodo3.setUsuario(tipo);
-                nodo3.setTipoProd("FIJAS");
-                nodo3.setUnd(txtMedida.getText());
-                nodo3.setDescripcion(txtDescripcion.getText());
-                nodo3.setL1(big.getMoneda(txtL1.getText()).toString());
-                nodo3.setL2(big.getMoneda(txtL2.getText()).toString());
-                nodo3.setL3(big.getMoneda(txtL3.getText()).toString());
-                nodo3.setL4(big.getMoneda(txtL4.getText()).toString());
-                nodo3.setManejaInventario(manejaInv);
-                nodo3.setMinima(txtMinima.getText());
-                nodo3.setMaxima(txtMaximo.getText());
-                nodo3.setImpoconsumoCompra(txtImpoconsumo.getText());
-                nodo3.setImpoconsumoVenta(txtImpoconsumo.getText());
-                nodo3.setIva(txtIva.getText());
-                nodo3.setIvaC(txtIva.getText());
-
-                nodo4.setGrupo(grupo);
-                nodo4.setUsuario(tipo);
-                nodo4.setTipoProd("FIJAS");
-                nodo4.setUnd(txtMedida.getText());
-                nodo4.setDescripcion(txtDescripcion.getText());
-                nodo4.setL1(big.getMoneda(txtL1.getText()).toString());
-                nodo4.setL2(big.getMoneda(txtL2.getText()).toString());
-                nodo4.setL3(big.getMoneda(txtL3.getText()).toString());
-                nodo4.setL4(big.getMoneda(txtL4.getText()).toString());
-                nodo4.setManejaInventario(manejaInv);
-                nodo4.setMinima(txtMinima.getText());
-                nodo4.setMaxima(txtMaximo.getText());
-                nodo4.setImpoconsumoCompra(txtImpoconsumo.getText());
-                nodo4.setImpoconsumoVenta(txtImpoconsumo.getText());
-                nodo4.setIva(txtIva.getText());
-                nodo4.setIvaC(txtIva.getText());
-            }
-
-            if (!instancias.getSql().modificarProducto(nodo, "bdProductos")) {
-                metodos.msgError(this, "Hubo un problema al modificar el diseño");
-            }
-
-            if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                if (!instancias.getSql().modificarProducto(nodo1, "bdProductosBodega1")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
-                }
-                if (!instancias.getSql().modificarProducto(nodo2, "bdProductosBodega2")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
-                }
-                if (!instancias.getSql().modificarProducto(nodo3, "bdProductosBodega3")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
-                }
-                if (!instancias.getSql().modificarProducto(nodo4, "bdProductosBodega4")) {
-                    metodos.msgError(this, "Hubo un problema al modificar el diseño");
-                }
+            if (!daoProducto.modificarProducto(nodo)) {
+                ControladorAlertas.alertFail("Hubo un problema al modificar el diseño");
             }
 
             boolean noPuedaGuardar = false;
@@ -1398,7 +1316,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             //PROCESO GUARDAR COSTEO DEL DISEÑO
             guardarLineasCosteo(nodo.getIdSistema(), tipo);
 
-            metodos.msgExito(this, "Diseño modificado con éxito");
+            ControladorAlertas.alertSuccess("Diseño modificado con éxito");
 
             if (!chkManejarInventario.isSelected()) {
                 instancias.getArmado().cargarProductoPrincipal(txtCodigo.getText());
@@ -1596,7 +1514,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         for (int j = 0; j < tblProductos.getRowCount(); j++) {
             if (codigo.equalsIgnoreCase((String) tblProductos.getValueAt(j, 0))) {
-                metodos.msgAdvertencia(this, "El producto ya esta cargado");
+                ControladorAlertas.alert("El producto ya esta cargado");
                 tblProductos.setColumnSelectionInterval(3, 3);
                 tblProductos.setRowSelectionInterval(j, j);
                 tblProductos.editCellAt(j, 3);
@@ -1606,18 +1524,14 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             }
         }
 
-        ndProducto nodo = null;
 
+
+        ModeloProducto nodo = null;
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -1628,13 +1542,13 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             if (this.plu) {
                 this.plu = false;
                 int cant = 0;
-                if (nodo.isPlu2()) {
+                if (nodo.isPluLista(2)) {
                     cant++;
                 }
-                if (nodo.isPlu3()) {
+                if (nodo.isPluLista(3)) {
                     cant++;
                 }
-                if (nodo.isPlu4()) {
+                if (nodo.isPluLista(4)) {
                     cant++;
                 }
                 if (cant > 0) {
@@ -1647,26 +1561,26 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             }
 
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(this, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
             } else {
                 String cant2 = "1";
                 String desc = nodo.getDescripcion();
                 String lista = nodo.getL1();
                 switch (plu) {
                     case 2:
-                        cant2 = nodo.getCantidad2();
-                        desc = nodo.getDescripcion2();
-                        lista = nodo.getL2();
+                        cant2 = nodo.getCantidadLista(2).toPlainString();
+                        desc = nodo.getDescripcionLista(2);
+                        lista = nodo.getPrecioLista(2).toPlainString();
                         break;
                     case 3:
-                        cant2 = nodo.getCantidad3();
-                        desc = nodo.getDescripcion3();
-                        lista = nodo.getL3();
+                        cant2 = nodo.getCantidadLista(3).toPlainString();
+                        desc = nodo.getDescripcionLista(3);
+                        lista = nodo.getPrecioLista(3).toPlainString();
                         break;
                     case 4:
-                        cant2 = nodo.getCantidad4();
-                        desc = nodo.getDescripcion4();
-                        lista = nodo.getL4();
+                        cant2 = nodo.getCantidadLista(4).toPlainString();
+                        desc = nodo.getDescripcionLista(4);
+                        lista = nodo.getPrecioLista(4).toPlainString();
                         break;
                 }
 
@@ -1725,7 +1639,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     public void cargarProductoDiseno(String codigoProducto) {
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigoProducto.replace("'", "//"), "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigoProducto.replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
 
         if (nodo.getCodigo() == null) {
             ventanaProductos2();
@@ -1747,9 +1661,9 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         txtImpoconsumo.setText(nodo.getImpoconsumoVenta());
         txtIva.setText(nodo.getIva());
         txtL1.setText(big.setMoneda(big.getBigDecimal(nodo.getL1())));
-        txtL2.setText(big.setMoneda(big.getBigDecimal(nodo.getL2())));
-        txtL3.setText(big.setMoneda(big.getBigDecimal(nodo.getL3())));
-        txtL4.setText(big.setMoneda(big.getBigDecimal(nodo.getL4())));
+        txtL2.setText(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(2))));
+        txtL3.setText(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(3))));
+        txtL4.setText(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(4))));
         txtPuntoMinimo.setText(nodo.getMinimo());
         txtMedida.setText(nodo.getUnd());
         txtDescripcion.requestFocus();
@@ -1804,14 +1718,14 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     private BigDecimal factorConversion(String codigo, int nivel) {
-        ndProducto producto = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
         switch (nivel) {
             case 2:
-                return big.getMoneda(producto.getCantidad2());
+                return big.getMoneda(producto.getCantidadLista(2).toPlainString());
             case 3:
-                return big.getMoneda(producto.getCantidad3());
+                return big.getMoneda(producto.getCantidadLista(3).toPlainString());
             default:
-                return big.getMoneda(producto.getCantidad4());
+                return big.getMoneda(producto.getCantidadLista(4).toPlainString());
         }
     }
 
@@ -1920,7 +1834,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         try {
             new DaoDiseno().guardarLineasCosteo(lineas);
         } catch (SQLException ex) {
-            metodos.msgError(this, "Hubo un problema al guardar el costeo del producto");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el costeo del producto");
             Logger.getLogger(VistaDiseno.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

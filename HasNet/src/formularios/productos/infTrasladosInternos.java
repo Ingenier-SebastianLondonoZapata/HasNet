@@ -1,5 +1,13 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Procesos.Inventario.Dao.DaoInventario;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesTraslados.GeneradorReporteTraslado;
 import Vista.Productos.VistaBuscadorProductos;
 import Vista.Productos.VistaSeleccionarPLU;
@@ -9,7 +17,7 @@ import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndProdTraslBodega;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import clases.productos.ndTrasladoBodega;
 import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
@@ -34,6 +42,8 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infTrasladosInternos extends javax.swing.JInternalFrame implements Vista.Productos.ReceptorProductoSalida {
+    private final DaoInventario daoInventario = new DaoInventario();
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -733,13 +743,13 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     tblProductos.setValueAt(cantidad, fila, 8);
                     break;
                 case "2":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad2())), fila, 8);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(2))), fila, 8);
                     break;
                 case "3":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad3())), fila, 8);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(3))), fila, 8);
                     break;
                 case "4":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), "bdProductos").getCantidad4())), fila, 8);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(4))), fila, 8);
                     break;
             }
 
@@ -773,7 +783,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 
             if (txtNitBD.getText().equals(txtNitBO.getText()) && !txtNitBD.getText().equals("")) {
-                metodos.msgError(this, "La bodega de origen no puede ser igual a la bodega de destino");
+                ControladorAlertas.alertFail("La bodega de origen no puede ser igual a la bodega de destino");
                 return;
             }
 
@@ -781,7 +791,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
             if (nodo.getCodigo() != null) {
                 txtNombreBO.setText(nodo.getNombre());
-                txtBaseOrigen.setText(nodo.getBase());
+                txtBaseOrigen.setText(nodo.getCodigo());
                 txtNitBD.requestFocus();
                 return;
             }
@@ -796,7 +806,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 3) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), txtBaseOrigen.getText());
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), txtBaseOrigen.getText());
             String tipo = "";
             if (nodo.getTipoProducto() != null) {
                 if (nodo.getTipoProducto().equals("IMEI")) {
@@ -819,7 +829,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             }
 
             if (!tipo.equals("")) {
-                metodos.msgAdvertenciaAjustado(this, "La cantidad no se puede modificar");
+                ControladorAlertas.alert("La cantidad no se puede modificar");
                 return;
             }
         }
@@ -827,7 +837,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
     private void tblProductosMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseReleased
         if (evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 3) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), txtBaseOrigen.getText());
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), txtBaseOrigen.getText());
             String tipo = "";
             if (nodo.getTipoProducto() != null) {
                 if (nodo.getTipoProducto().equals("IMEI")) {
@@ -850,7 +860,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             }
 
             if (!tipo.equals("")) {
-                metodos.msgAdvertenciaAjustado(this, "La cantidad no se puede modificar");
+                ControladorAlertas.alert("La cantidad no se puede modificar");
                 return;
             }
         }
@@ -860,7 +870,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 
             if (txtNitBD.getText().equals(txtNitBO.getText()) && !txtNitBD.getText().equals("")) {
-                metodos.msgAdvertenciaAjustado(this, "No pueden ser las mismas bodegas");
+                ControladorAlertas.alert("No pueden ser las mismas bodegas");
                 return;
             }
 
@@ -868,7 +878,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
             if (nodo.getCodigo() != null) {
                 txtNombreBD.setText(nodo.getNombre());
-                txtBaseDestino.setText(nodo.getBase());
+                txtBaseDestino.setText(nodo.getCodigo());
                 txtCodProducto.requestFocus();
                 return;
             }
@@ -895,13 +905,13 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblProductos.getRowCount() == 0) {
-            metodos.msgError(this, "No ha añadido ningun producto");
+            ControladorAlertas.alertFail("No ha añadido ningun producto");
         } else {
             Object[] campos = {txtNombreBD, txtNombreBO};
             String faltantes = metodos.camposVacios(campos);
 
             if (!faltantes.equals("")) {
-                metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                 return;
             }
 
@@ -909,12 +919,12 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             if (xyz > 0) {
                 for (int i = 0; i < xyz; i++) {
                     if (tblProductos.getValueAt(i, 3).equals("0")) {
-                        metodos.msgError(this, "La cantidad debe ser mayor a 0");
+                        ControladorAlertas.alertFail("La cantidad debe ser mayor a 0");
                         return;
                     }
 
                     if (tblProductos.getValueAt(i, 2).equals(this.simbolo + " 0")) {
-                        metodos.msgError(this, "Los valores deben ser mayor a " + this.simbolo + " 0");
+                        ControladorAlertas.alertFail("Los valores deben ser mayor a " + this.simbolo + " 0");
                         return;
                     }
 
@@ -925,7 +935,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 }
             }
 
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
 
                 String factura = "TRASINT-" + instancias.getSql().getNumConsecutivo("TRASINT")[0];
 
@@ -937,7 +947,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 ndTrasladoBodega nodo = metodos.llenarTrasladoBodega(vector);
 
                 if (!instancias.getSql().agregarTrasladoInterno(nodo)) {
-                    metodos.msgError(this, "Error al guardar el traslado");
+                    ControladorAlertas.alertFail("Error al guardar el traslado");
                     return;
                 }
 
@@ -953,31 +963,31 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     ndProdTraslBodega nodoTras = metodos.llenarProdTralBodega(vectVenta);
 
                     if (!instancias.getSql().agregarTrasladoInterno(nodoTras)) {
-                        metodos.msgError(this, "Hubo un problema al guardar el traslado");
+                        ControladorAlertas.alertFail("Hubo un problema al guardar el traslado");
                     }
 
                     /* SACAMOS LA MERCANCIA DE LA BODEGA DE ORIGEN */
-                    ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                    ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
                     double cantidad;
                     double inventario;
                     double fisicoInventario;
 
                     try {
-                        cantidad = Double.parseDouble(producto.getTrasladoInternoSalida().replace(",", "."));
+                        cantidad = producto.getTrasladoInternoSalida().doubleValue();
                     } catch (Exception e) {
                         cantidad = 0;
                     }
 
                     try {
-                        inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                        inventario = producto.getInventario().doubleValue();
                     } catch (Exception e) {
                         inventario = 0;
                     }
 
                     try {
-                        fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                        fisicoInventario = producto.getFisicoInventario().doubleValue();
                     } catch (Exception e) {
-                        fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                        fisicoInventario = producto.getInventario().doubleValue();
                     }
 
                     double cant2;
@@ -995,32 +1005,32 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
                     String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-                    instancias.getSql().modificarInventario("trasladoInternoSalida", total1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
-                    instancias.getSql().modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
-                    instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                    daoInventario.modificarInventario("trasladoInternoSalida", total1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                    daoInventario.modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                    daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
 
                     /* INGRESAMOS LA MERCANCIA A LA BODEGA DE DESTINO */
-                    ndProducto producto2 = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                    ModeloProducto producto2 = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
                     double cantidad2;
                     double inventario2;
                     double fisicoInventario2;
 
                     try {
-                        cantidad2 = Double.parseDouble(producto2.getTrasladoInternoEntrada().replace(",", "."));
+                        cantidad2 = producto2.getTrasladoInternoEntrada().doubleValue();
                     } catch (Exception e) {
                         cantidad2 = 0;
                     }
 
                     try {
-                        inventario2 = Double.parseDouble(producto2.getInventario().replace(",", "."));
+                        inventario2 = producto2.getInventario().doubleValue();
                     } catch (Exception e) {
                         inventario2 = 0;
                     }
 
                     try {
-                        fisicoInventario2 = Double.parseDouble(producto2.getFisicoInventario().replace(",", "."));
+                        fisicoInventario2 = producto2.getFisicoInventario().doubleValue();
                     } catch (Exception e) {
-                        fisicoInventario2 = Double.parseDouble(producto2.getInventario().replace(",", "."));
+                        fisicoInventario2 = producto2.getInventario().doubleValue();
                     }
 
                     double cant3 = Double.parseDouble(tblProductos.getValueAt(i, 8).toString().replace(",", "."));
@@ -1032,9 +1042,9 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     String inventario3 = String.valueOf(df.format(inventario2)).replace(".", ",");
                     String fisicoInventario3 = String.valueOf(df.format(fisicoInventario2)).replace(".", ",");
 
-                    instancias.getSql().modificarInventario("trasladoInternoEntrada", total3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
-                    instancias.getSql().modificarInventario("inventario", inventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
-                    instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                    daoInventario.modificarInventario("trasladoInternoEntrada", total3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                    daoInventario.modificarInventario("inventario", inventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                    daoInventario.modificarInventario("fisicoInventario", fisicoInventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
 
                     if (instancias.getConfiguraciones().isProductosDetallados()) {
                         String cod = "";
@@ -1052,11 +1062,11 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                              String.valueOf(df.format(cant2)).replace(".", ","), prod[0][3].toString(), prod[0][4].toString(), prod[0][5].toString(),
                              prod[0][6].toString(), "DISPONIBLE", factura, metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(),
                              instancias.getUsuario(), prod[0][7].toString(), prod[0][9].toString(), txtNitBD.getText())) {
-                             metodos.msgError(null, "Hubo un problema al guardar el detalle del producto");
+                             ControladorAlertas.alertFail("Hubo un problema al guardar el detalle del producto");
                              return;
                              }*/
                             if (!instancias.getSql().aumentarConsecutivo("DETALLEPROD", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DETALLEPROD")[0]) + 1)) {
-                                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del detalle del producto");
+                                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del detalle del producto");
                             }
                         }
                     }
@@ -1108,11 +1118,11 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
                 //CAMBIAR CONSECUTIVO FACTURA
                 if (!instancias.getSql().aumentarConsecutivo("TRASINT", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TRASINT")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del traslado");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del traslado");
                 }
 
                 txtTraslado.setText((String) instancias.getSql().getNumConsecutivo("TRASINT")[0]);
-                metodos.msgExito(this, "Traslado exitoso");
+                ControladorAlertas.alertSuccess("Traslado exitoso");
 
                 btnLimpiarActionPerformed(evt);
 
@@ -1123,7 +1133,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     tipo = "traslados";
                 }
 
-                if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+                if (ControladorAlertas.option("¿Desea imprimir?")) {
                     new GeneradorReporteTraslado(instancias).verTraslados(factura, tipo);
                 }
             }
@@ -1173,7 +1183,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdTrasladosInternos", "Where id='" + consecutivo + "' ");
         if (anulado) {
-            metodos.msgError(null, "Este documento se encuentra anulado");
+            ControladorAlertas.alertFail("Este documento se encuentra anulado");
             return;
         }
 
@@ -1197,7 +1207,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
             cargarTotales();
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1268,38 +1278,38 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdTrasladosInternos", "Where Id='" + consecutivo + "' ");
         if (anulado) {
-            metodos.msgError(null, "Este documento se encuentra anulado");
+            ControladorAlertas.alertFail("Este documento se encuentra anulado");
             return;
         }
 
         desdeTraslados(consecutivo);
 
-        if (metodos.msgPregunta(this, "¿Anular este traslado?") == 0) {
+        if (ControladorAlertas.option("¿Anular este traslado?")) {
 
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
 
                 /* SACAMOS LA MERCANCIA DE LA BODEGA DE ORIGEN */
-                ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
                 double cantidad;
                 double inventario;
                 double fisicoInventario;
 
                 try {
-                    cantidad = Double.parseDouble(producto.getTrasladoInternoSalida().replace(",", "."));
+                    cantidad = producto.getTrasladoInternoSalida().doubleValue();
                 } catch (Exception e) {
                     cantidad = 0;
                 }
 
                 try {
-                    inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                    inventario = producto.getInventario().doubleValue();
                 } catch (Exception e) {
                     inventario = 0;
                 }
 
                 try {
-                    fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                    fisicoInventario = producto.getFisicoInventario().doubleValue();
                 } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                    fisicoInventario = producto.getInventario().doubleValue();
                 }
 
                 double cant2 = Double.parseDouble(tblProductos.getValueAt(i, 8).toString().replace(",", "."));
@@ -1312,33 +1322,33 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
                 String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-                instancias.getSql().modificarInventario("trasladoInternoSalida", total1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
-                instancias.getSql().modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                daoInventario.modificarInventario("trasladoInternoSalida", total1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                daoInventario.modificarInventario("inventario", inventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
+                daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
                 /* FIN DE SACAR LA MERCANCIA */
 
                 /* INGRESAMOS LA MERCANCIA A LA BODEGA DE DESTINO */
-                ndProducto producto2 = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                ModeloProducto producto2 = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
                 double cantidad2;
                 double inventario2;
                 double fisicoInventario2;
 
                 try {
-                    cantidad2 = Double.parseDouble(producto2.getTrasladoInternoEntrada().replace(",", "."));
+                    cantidad2 = producto2.getTrasladoInternoEntrada().doubleValue();
                 } catch (Exception e) {
                     cantidad2 = 0;
                 }
 
                 try {
-                    inventario2 = Double.parseDouble(producto2.getInventario().replace(",", "."));
+                    inventario2 = producto2.getInventario().doubleValue();
                 } catch (Exception e) {
                     inventario2 = 0;
                 }
 
                 try {
-                    fisicoInventario2 = Double.parseDouble(producto2.getFisicoInventario().replace(",", "."));
+                    fisicoInventario2 = producto2.getFisicoInventario().doubleValue();
                 } catch (Exception e) {
-                    fisicoInventario2 = Double.parseDouble(producto2.getInventario().replace(",", "."));
+                    fisicoInventario2 = producto2.getInventario().doubleValue();
                 }
 
                 double cant3 = Double.parseDouble(tblProductos.getValueAt(i, 8).toString().replace(",", "."));
@@ -1351,9 +1361,9 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 String inventario3 = String.valueOf(df.format(inventario2)).replace(".", ",");
                 String fisicoInventario3 = String.valueOf(df.format(fisicoInventario2)).replace(".", ",");
 
-                instancias.getSql().modificarInventario("trasladoInternoEntrada", total3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
-                instancias.getSql().modificarInventario("inventario", inventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                daoInventario.modificarInventario("trasladoInternoEntrada", total3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                daoInventario.modificarInventario("inventario", inventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
+                daoInventario.modificarInventario("fisicoInventario", fisicoInventario3, tblProductos.getValueAt(i, 0).toString(), txtBaseDestino.getText());
                 /* FIN DE SACAR LA MERCANCIA */
 
                 if (instancias.getConfiguraciones().isProductosDetallados()) {
@@ -1402,10 +1412,10 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             }
 
             if (!instancias.getSql().anularDocumento(consecutivo, "bdTrasladosInternos")) {
-                metodos.msgError(this, "Error al anular el traslado");
+                ControladorAlertas.alertFail("Error al anular el traslado");
             }
 
-            metodos.msgExito(this, "Traslado anulado con éxito");
+            ControladorAlertas.alertSuccess("Traslado anulado con éxito");
         }
         btnLimpiarActionPerformed(evt);
     }//GEN-LAST:event_btnAnularActionPerformed
@@ -1440,14 +1450,14 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             if (nodo.getCodigo() != null) {
                 txtNitBO.setText(prodTraslados[0][1].toString());
                 txtNombreBO.setText(nodo.getNombre());
-                txtBaseOrigen.setText(nodo.getBase());
+                txtBaseOrigen.setText(nodo.getCodigo());
             }
 
             ndBodega nodo1 = instancias.getSql().getDatosBodega(prodTraslados[0][2].toString());
             if (nodo1.getCodigo() != null) {
                 txtNombreBD.setText(nodo1.getNombre());
                 txtNitBD.setText(prodTraslados[0][2].toString());
-                txtBaseDestino.setText(nodo1.getBase());
+                txtBaseDestino.setText(nodo1.getCodigo());
             }
 
             DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
@@ -1479,7 +1489,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             btnReimprimir.setEnabled(false);
             btnAnular.setEnabled(false);
         } else {
-            metodos.msgError(this, "El traslado no existe");
+            ControladorAlertas.alertFail("El traslado no existe");
         }
     }
 
@@ -1487,7 +1497,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             String temp, String fechaVence) {
 
         if (txtBaseOrigen.getText().equals("")) {
-            metodos.msgError(this, "Debe seleccionar la bodega de origen");
+            ControladorAlertas.alertFail("Debe seleccionar la bodega de origen");
             return;
         }
 
@@ -1501,10 +1511,10 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             if (!idPro.equals("")) {
                 if (idPro.equals(idProd)) {
                     if (!imei.equals("")) {
-                        metodos.msgError(this, "El imei '" + imei + "' ya esta cargado.");
+                        ControladorAlertas.alertFail("El imei '" + imei + "' ya esta cargado.");
                         return;
                     } else {
-                        metodos.msgError(this, "Este producto con el lote '" + lote + "' ya se cargó.");
+                        ControladorAlertas.alertFail("Este producto con el lote '" + lote + "' ya se cargó.");
                         return;
                     }
                 }
@@ -1513,7 +1523,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
 //        for (int j = 0; j < tblProductos.getRowCount(); j++) {
 //            if (codigo.equalsIgnoreCase((String) tblProductos.getValueAt(j, 0))) {
-//                metodos.msgAdvertencia(this, "El producto ya esta cargado");
+//                ControladorAlertas.alert("El producto ya esta cargado");
 //                tblProductos.setColumnSelectionInterval(3, 3);
 //                tblProductos.setRowSelectionInterval(j, j);
 //                tblProductos.editCellAt(j, 3);
@@ -1522,18 +1532,13 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 //                return;
 //            }
 //        }
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, txtBaseOrigen.getText());
+            nodo = daoProducto.obtenerDatosProducto(codigo, txtBaseOrigen.getText());
             if (nodo.getCodigo() != null) {
                 CodigoProd = nodo.getCodigo();
             }
@@ -1541,7 +1546,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
         if (!CodigoProd.equals("")) {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbNombre.requestFocus();
                 return;
             }
@@ -1549,25 +1554,25 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             if (this.plu) {
                 this.plu = false;
                 int cant = 0;
-                if (nodo.isPlu2()) {
+                if (nodo.isPluLista(2)) {
                     cant++;
                 }
-                if (nodo.isPlu3()) {
+                if (nodo.isPluLista(3)) {
                     cant++;
                 }
-                if (nodo.isPlu4()) {
+                if (nodo.isPluLista(4)) {
                     cant++;
                 }
-                if (nodo.getPlu5()) {
+                if (nodo.isPluLista(5)) {
                     cant++;
                 }
-                if (nodo.getPlu6()) {
+                if (nodo.isPluLista(6)) {
                     cant++;
                 }
-                if (nodo.getPlu7()) {
+                if (nodo.isPluLista(7)) {
                     cant++;
                 }
-                if (nodo.getPlu8()) {
+                if (nodo.isPluLista(8)) {
                     cant++;
                 }
                 if (cant > 0) {
@@ -1584,39 +1589,39 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             String lista = nodo.getL1();
             switch (plu) {
                 case 2:
-                    cant2 = nodo.getCantidad2();
-                    desc = nodo.getDescripcion2();
-                    lista = nodo.getL2();
+                    cant2 = nodo.getCantidadLista(2).toPlainString();
+                    desc = nodo.getDescripcionLista(2);
+                    lista = nodo.getPrecioLista(2).toPlainString();
                     break;
                 case 3:
-                    cant2 = nodo.getCantidad3();
-                    desc = nodo.getDescripcion3();
-                    lista = nodo.getL3();
+                    cant2 = nodo.getCantidadLista(3).toPlainString();
+                    desc = nodo.getDescripcionLista(3);
+                    lista = nodo.getPrecioLista(3).toPlainString();
                     break;
                 case 4:
-                    cant2 = nodo.getCantidad4();
-                    desc = nodo.getDescripcion4();
-                    lista = nodo.getL4();
+                    cant2 = nodo.getCantidadLista(4).toPlainString();
+                    desc = nodo.getDescripcionLista(4);
+                    lista = nodo.getPrecioLista(4).toPlainString();
                     break;
                 case 5:
-                    cant2 = nodo.getCantidad5();
-                    desc = nodo.getDescripcion5();
-                    lista = nodo.getL5();
+                    cant2 = nodo.getCantidadLista(5).toPlainString();
+                    desc = nodo.getDescripcionLista(5);
+                    lista = nodo.getPrecioLista(5).toPlainString();
                     break;
                 case 6:
-                    cant2 = nodo.getCantidad6();
-                    desc = nodo.getDescripcion6();
-                    lista = nodo.getL6();
+                    cant2 = nodo.getCantidadLista(6).toPlainString();
+                    desc = nodo.getDescripcionLista(6);
+                    lista = nodo.getPrecioLista(6).toPlainString();
                     break;
                 case 7:
-                    cant2 = nodo.getCantidad7();
-                    desc = nodo.getDescripcion7();
-                    lista = nodo.getL7();
+                    cant2 = nodo.getCantidadLista(7).toPlainString();
+                    desc = nodo.getDescripcionLista(7);
+                    lista = nodo.getPrecioLista(7).toPlainString();
                     break;
                 case 8:
-                    cant2 = nodo.getCantidad8();
-                    desc = nodo.getDescripcion8();
-                    lista = nodo.getL8();
+                    cant2 = nodo.getCantidadLista(8).toPlainString();
+                    desc = nodo.getDescripcionLista(8);
+                    lista = nodo.getPrecioLista(8).toPlainString();
                     break;
             }
 
@@ -1638,7 +1643,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                String cant = nodo.getFisicoInventario().replace(".", ",");
+                String cant = Utilidades.Utilidades.formatearCantidad(nodo.getFisicoInventario());
                 Double res = 0.0;
 
                 /*try {
@@ -1713,7 +1718,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
     public void ventanaProductos(String codigo) {
 
         if (txtNombreBO.getText().equals("")) {
-            metodos.msgAdvertenciaAjustado(this, "Seleccionar una bodega");
+            ControladorAlertas.alert("Seleccionar una bodega");
             return;
         }
 

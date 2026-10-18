@@ -1,5 +1,9 @@
 package formularios.creditos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.Productos.DaoListaPrecio;
+
 import clases.Instancias;
 import clases.Medico.ndEps;
 import Utilidades.BaseDatos.SQL;
@@ -18,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class infEmpresas extends javax.swing.JInternalFrame {
+    private final DaoListaPrecio daoListaPrecio = new DaoListaPrecio();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -361,7 +366,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
                 ModeloContacto nodoDos = instancias.getSql().getDatosTercero(txtId.getText());
 
                 if (nodoDos.getId() == null) {
-                    metodos.msgAdvertencia(this, "El Cliente no existe");
+                    ControladorAlertas.alert("El Cliente no existe");
                 } else {
                     txtRazon.setText(nodoDos.getNombre());
                 }
@@ -387,21 +392,21 @@ public class infEmpresas extends javax.swing.JInternalFrame {
         }
 
         if (txtRazon.getText().equals("")) {
-            metodos.msgAdvertencia(this, "Cargue un cliente valido");
+            ControladorAlertas.alert("Cargue un cliente valido");
             ventanaTerceros("");
             return;
         } else if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             try {
                 ndEps nodo = instancias.getSql().getDatosEps(txtId.getText());
                 if (nodo.getId() != null) {
-                    metodos.msgError(this, "La empresa ya existe");
+                    ControladorAlertas.alertFail("La empresa ya existe");
                     txtId.requestFocus();
                     return;
                 }
@@ -411,20 +416,20 @@ public class infEmpresas extends javax.swing.JInternalFrame {
 
                 nodo = metodos.llenarEps(vector);
                 if (!instancias.getSql().agregarEps(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar La empresa");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar La empresa");
                     return;
                 }
 
                 //CAMBIAR CONSECUTIVO INGRESO
                 if (!sql.aumentarConsecutivo("CONVENIO", Integer.parseInt((String) sql.getNumConsecutivo("CONVENIO")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del ingreso");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del ingreso");
                 }
 
-                metodos.msgExito(this, "Empresa registrado con éxito");
+                ControladorAlertas.alertSuccess("Empresa registrado con éxito");
 
                 btnNuevoActionPerformed(evt);
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al guardar La empresa");
+                ControladorAlertas.alertFail("Hubo un problema al guardar La empresa");
             }
         }
     }//GEN-LAST:event_btnGuardar1ActionPerformed
@@ -439,12 +444,12 @@ public class infEmpresas extends javax.swing.JInternalFrame {
         Object[] campos2 = {""};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             try {
 
@@ -453,7 +458,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
 
                 ndEps nodo = metodos.llenarEps(vector);
                 if (!instancias.getSql().modificarEps(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al modificar La empresa");
+                    ControladorAlertas.alertFail("Hubo un problema al modificar La empresa");
                     return;
                 }
 
@@ -469,16 +474,16 @@ public class infEmpresas extends javax.swing.JInternalFrame {
                         modelo.setValueAt("0", i, 3);
                     }
 
-                    if (!instancias.getSql().modificarLista(modelo.getValueAt(i, 0).toString(), txtDato2.getText(), big.getMoneda(modelo.getValueAt(i, 3).toString()).toString())) {
-                        metodos.msgError(this, "Hubo un error al modificar el porcentaje de " + modelo.getValueAt(i, 1).toString());
+                    if (!daoListaPrecio.modificarPrecioLista(modelo.getValueAt(i, 0).toString(), txtDato2.getText(), big.getMoneda(modelo.getValueAt(i, 3).toString()).toString())) {
+                        ControladorAlertas.alertFail("Hubo un error al modificar el porcentaje de " + modelo.getValueAt(i, 1).toString());
                     }
                 }
 
-                metodos.msgExito(this, "Eempresa modificado con éxito");
+                ControladorAlertas.alertSuccess("Eempresa modificado con éxito");
 
                 btnNuevoActionPerformed(evt);
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al modificar La empresa");
+                ControladorAlertas.alertFail("Hubo un problema al modificar La empresa");
             }
         }
     }//GEN-LAST:event_btnActualizar1ActionPerformed
@@ -568,7 +573,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
             btnGuardar1.setEnabled(false);
             txtId.setEditable(false);
 
-            int x = metodos.msgPregunta(this, "Cargar los porcentajes de convenio igual a porcentajes originales\nNota: Recomendable primera vez");
+            boolean x = ControladorAlertas.option("Cargar los porcentajes de convenio igual a porcentajes originales\nNota: Recomendable primera vez");
 
             tblProductos.setModel(instancias.getSql().getPorcentajesConvenio(nodo.getDato2()));
             modelo = (DefaultTableModel) tblProductos.getModel();
@@ -583,7 +588,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
                     modelo.setValueAt("0", i, 2);
                 }
 
-                if (x == 0) {
+                if (x) {
                     modelo.setValueAt(modelo.getValueAt(i, 2), i, 3);
                 } else {
                     try {
@@ -598,7 +603,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
             return;
         }
 
-        metodos.msgError(this, "La empresa no existe");
+        ControladorAlertas.alertFail("La empresa no existe");
     }
 
     public void ventanaTerceros(String nit) {

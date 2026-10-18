@@ -5,6 +5,8 @@
  */
 package clases;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import configuracion.dlgAlertaPermiso;
 
 public class solicitudesPermisos extends Thread {
@@ -34,7 +36,7 @@ public class solicitudesPermisos extends Thread {
             if (pendientes.length > 0) {
                 if (cantActual == 0 && inicio == 1) {
                     inicio = 0;
-//                    metodos.msgAdvertencia(null, "Tiene permisos pendientes");
+//                    ControladorAlertas.alert("Tiene permisos pendientes");
                 } else {
                     if (pendientes.length == cantActual) {
                         System.out.println("Nada nuevo");

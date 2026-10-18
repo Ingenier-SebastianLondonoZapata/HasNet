@@ -1,5 +1,7 @@
 package clases;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.IniciarImpresion;
 import Impresiones.IniciarReporte;
 import Vista.BarraProceso.vistaBarraProceso;
@@ -1372,7 +1374,7 @@ public class iFactura {
         } catch (JRException E) {
             System.out.println(E);
             if (tipo.equals("")) {
-                metodos.msgError(null, "Hubo un problema al generar el reporte, seleccione un rango de menor tamaño de fecha o genere este como hoja de calculo.");
+                ControladorAlertas.alertFail("Hubo un problema al generar el reporte, seleccione un rango de menor tamaño de fecha o genere este como hoja de calculo.");
                 return;
             }
         }
@@ -2055,7 +2057,7 @@ public class iFactura {
         } catch (JRException E) {
             System.out.println(E);
             if (tipo.equals("")) {
-                metodos.msgError(null, "Hubo un problema al generar el reporte, seleccione un rango de menor tamaño de fecha o genere este como hoja de calculo.");
+                ControladorAlertas.alertFail("Hubo un problema al generar el reporte, seleccione un rango de menor tamaño de fecha o genere este como hoja de calculo.");
             }
         }
     }

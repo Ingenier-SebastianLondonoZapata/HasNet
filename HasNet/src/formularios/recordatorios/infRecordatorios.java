@@ -1,5 +1,7 @@
 package formularios.recordatorios;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
@@ -728,10 +730,10 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             //
 //            try {
             if (btnGuardar.getText().equals("GUARDAR")) {
@@ -750,14 +752,14 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
                 ndRecordatorio nodo = metodos.llenarRecordatorio(vector);
 
                 if (!instancias.getSql().agregarRecordatorio(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la Agenda");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la Agenda");
                     return;
                 }
 
-                metodos.msgExito(this, "Recordatorio registrado con exito");
+                ControladorAlertas.alertSuccess("Recordatorio registrado con exito");
 
                 if (!instancias.getSql().aumentarConsecutivo("RECORDATORIO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("RECORDATORIO")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la cita");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la cita");
                 }
             } else {
                 String tipoAlerta;
@@ -776,10 +778,10 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
                 nodo = metodos.llenarRecordatorio(vector);
 
                 if (!instancias.getSql().modificarRecordatorio(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la Agenda");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la Agenda");
                     return;
                 }
-                metodos.msgExito(this, "Recordatorio modificado con exito");
+                ControladorAlertas.alertSuccess("Recordatorio modificado con exito");
             }
 
             btnLimpiarActionPerformed(null);
@@ -876,7 +878,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
 //            else {
 //                if (tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 4).equals("Confirmada")) {
 //                } else {
-//                    if (metodos.msgPregunta(this, "¿Desar Confirmar la Cita?") == 0) {
+//                    if (ControladorAlertas.option("¿Desar Confirmar la Cita?")) {
 //                        confirmarOrden();
 //                    }
 //                }
@@ -951,12 +953,12 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
         if (tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 8).equals("FINALIZADO") || tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 8).equals("CANCELADO")) {
-            metodos.msgError(this, "Esta cita ya se ecuentra finalizada");
+            ControladorAlertas.alertFail("Esta cita ya se ecuentra finalizada");
         } else {
             instancias.getSql().cambiarEstadoRecordatorio("CANCELADO", txtCita.getText());
             btnLimpiarActionPerformed(null);
             cargarTabla("PENDIENTE");
-            metodos.msgExito(this, "Recordatorio Cancelado");
+            ControladorAlertas.alertSuccess("Recordatorio Cancelado");
 //            metodos.alertaRecordatorios();
         }
     }//GEN-LAST:event_btnCancelarActionPerformed
@@ -992,12 +994,12 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
     private void btnConfirmarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarCitaActionPerformed
 
         if (tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 8).equals("FINALIZADO") || tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 8).equals("CANCELADO")) {
-            metodos.msgError(this, "Esta cita ya se ecuentra finalizada");
+            ControladorAlertas.alertFail("Esta cita ya se ecuentra finalizada");
         } else {
             instancias.getSql().cambiarEstadoRecordatorio("FINALIZADO", txtCita.getText());
             btnLimpiarActionPerformed(null);
             cargarTabla("PENDIENTE");
-            metodos.msgExito(this, "Recordatorio finalizado");
+            ControladorAlertas.alertSuccess("Recordatorio finalizado");
         }
 
 

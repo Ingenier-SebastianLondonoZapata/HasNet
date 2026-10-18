@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.Color;
@@ -289,12 +291,12 @@ public class buscAyudaDiagnostico extends javax.swing.JDialog {
     private void btnEste2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste2ActionPerformed
         String aux = instancias.getSql().getDatosAyudaDiagnostico(txtId.getText());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Agregar la ayuda diagnostica?") == 0) {
+            if (ControladorAlertas.option("¿Agregar la ayuda diagnostica?")) {
                 if (!instancias.getSql().agregarAyudaDiagnostico(txtId.getText())) {
-                    metodos.msgError(null, "Error al agregar la ayuda diagnostica");
+                    ControladorAlertas.alertFail("Error al agregar la ayuda diagnostica");
                     return;
                 }
-                metodos.msgExito(null, "Ayuda agregada con exito");
+                ControladorAlertas.alertSuccess("Ayuda agregada con exito");
                 cargarAyudas();
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.KeyEvent;
@@ -224,12 +226,12 @@ public class buscTemperamento extends javax.swing.JDialog {
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         String aux = instancias.getSql().getDatosRazas(txtId.getText());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Agregar el temperamento?") == 0) {
+            if (ControladorAlertas.option("¿Agregar el temperamento?")) {
                 if (!instancias.getSql().agregarTemperamento(txtId.getText().toUpperCase())) {
-                    metodos.msgError(null, "Error al guardar");
+                    ControladorAlertas.alertFail("Error al guardar");
                     return;
                 }
-                metodos.msgExito(null, "Temperamento ingresado con exito");
+                ControladorAlertas.alertSuccess("Temperamento ingresado con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

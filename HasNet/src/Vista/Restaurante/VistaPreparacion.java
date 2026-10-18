@@ -1,10 +1,16 @@
 package Vista.Restaurante;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
 import clases.cambiarColorTabla;
 import clases.convertirNumeroALetras;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Vista.Productos.VistaBuscadorProductos;
 import Modelo.Ventas.OpcionPreparacion;
 import Utilidades.Utilidades;
@@ -20,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class VistaPreparacion extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private final Instancias instancias;
@@ -677,18 +684,13 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
 
     public void cargarProducto(String codigo, String cantidad) {
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getCodigo() != null) {
                 CodigoProd = nodo.getCodigo();
             }
@@ -697,7 +699,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         if (!CodigoProd.equals("")) {
 
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbAdiciones.requestFocus();
                 return;
             }
@@ -738,7 +740,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         codigoPrincipal = prod;
         mesaCongelada1 = mesaCongelada;
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(prod, "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(prod, enumBodegas.ID_BODEGA_PRINCIPAL);
         if (nodo.getCodigo() != null) {
             lbTitulo.setText(nodo.getDescripcion());
         }
@@ -773,13 +775,13 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             int fila = filaDeProductoPrincipal(opcion.getPrincipal());
 
             if (fila >= 0) {
-                ndProducto nodo = instancias.getSql().getDatosProducto(opcion.getCodigo(), "bdProductos");
+                ModeloProducto nodo = daoProducto.obtenerDatosProducto(opcion.getCodigo(), enumBodegas.ID_BODEGA_PRINCIPAL);
                 tblProductosPrincipales.setValueAt(opcion.getCodigo(), fila, 1);
                 tblProductosPrincipales.setValueAt(nodo.getDescripcion(), fila, 2);
                 tblProductosPrincipales.setValueAt(Utilidades.formatearCantidadVista(opcion.getCantidad()), fila, 3);
                 marcarEstado(fila, opcion.activa());
             } else if (opcion.getPrincipal().contains("ADICION")) {
-                ndProducto nodo = instancias.getSql().getDatosProducto(opcion.getCodigo(), "bdProductos");
+                ModeloProducto nodo = daoProducto.obtenerDatosProducto(opcion.getCodigo(), enumBodegas.ID_BODEGA_PRINCIPAL);
                 tablaPrincipal.addRow(new Object[]{"ADICION", opcion.getCodigo(), nodo.getDescripcion(),
                     Utilidades.formatearCantidadVista(opcion.getCantidad()), true, "   QUITAR"});
             }
@@ -824,7 +826,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             conImpuestos = true;
         }
 
-        Object[][] listado1 = instancias.getSql().getDatosProductosGrupo("GRP-03", conImpuestos);
+        Object[][] listado1 = daoProducto.obtenerProductosPorGrupo("GRP-03", conImpuestos);
         DefaultTableModel model1 = (DefaultTableModel) tblAderezo.getModel();
         while (tblAderezo.getRowCount() > 0) {
             model1.removeRow(0);

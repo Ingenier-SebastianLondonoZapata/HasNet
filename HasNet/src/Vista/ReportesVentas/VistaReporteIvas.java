@@ -1,5 +1,7 @@
 package Vista.ReportesVentas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
@@ -554,7 +556,7 @@ public class VistaReporteIvas extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             instancias.getSql().eliminarTodo("bdGenerarIvas");
 
             String ini = metodos.desdeDate2(dtInicio.getCurrent()), fin = metodos.desdeDate(dtFinal.getCurrent());

@@ -1,5 +1,7 @@
 package formularios.Labotario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesLaboratorio.GeneradorReporteLaboratorio;
 import formularios.Medico.*;
 import clases.Instancias;
@@ -639,7 +641,7 @@ public class infHemoclasificacion extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (cmbResultado.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Seleccione el RH");
+            ControladorAlertas.alertFail("Seleccione el RH");
             return;
         }
 
@@ -647,28 +649,28 @@ public class infHemoclasificacion extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "HEMOCLASIFICACION-" + instancias.getSql().getNumConsecutivo("HEMOCLASIFICACION")[0];
 
             if (!instancias.getSql().agregarHemoclasificacion(id, txtIdentificacion.getText(), txtNumeroOrden.getText(), "", metodosGenerales.fecha(),
                     cmbResultado.getSelectedItem().toString(), txtTecnica.getText(), txtObservaciones.getText(), txtGrupo.getText())) {
-                metodos.msgError(this, "Hubo un problema al guardar");
+                ControladorAlertas.alertFail("Hubo un problema al guardar");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("HEMOCLASIFICACION", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("HEMOCLASIFICACION")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
                 return;
             }
 
-            metodos.msgExito(this, "Examen registrado con éxito");
+            ControladorAlertas.alertSuccess("Examen registrado con éxito");
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String legal = "", pie;
                 try {
                     legal = instancias.getLegal();

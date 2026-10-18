@@ -1,5 +1,11 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
@@ -9,7 +15,7 @@ import clases.Veterinario.ndMascota;
 import Modelo.Terceros.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -22,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -47,14 +54,14 @@ public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
 
         cargarRegistros();
 
-        ndProducto nodo = instancias.getSql().getDatosProducto("HSP1", "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto("HSP1", enumBodegas.ID_BODEGA_PRINCIPAL);
         try {
             txtValorHora.setText(big.setMoneda(big.getBigDecimal(nodo.getL1())));
         } catch (Exception e) {
             txtValorHora.setText(big.setMoneda(big.getBigDecimal("1000")));
         }
 
-        ndProducto nodo1 = instancias.getSql().getDatosProducto("HSP2", "bdProductos");
+        ModeloProducto nodo1 = daoProducto.obtenerDatosProducto("HSP2", enumBodegas.ID_BODEGA_PRINCIPAL);
         try {
             txtValorDia.setText(big.setMoneda(big.getBigDecimal(nodo1.getL1())));
         } catch (Exception e) {
@@ -665,11 +672,11 @@ public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             if (btnGuardar.getText().equalsIgnoreCase("GUARDAR")) {
                 Guardar();
             } else {
@@ -773,7 +780,7 @@ public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
                 instancias.getHospitalizacion().setSelected(true);
                 instancias.getMenu().cambiarTitulo("HOSPITALIZACIÓN DE " + txtMascota.getText().toUpperCase());
             } else {
-                metodos.msgError(this, "Cargue primero una mascota");
+                ControladorAlertas.alertFail("Cargue primero una mascota");
             }
         } catch (PropertyVetoException ex) {
             Logger.getLogger(infMascotas.class.getName()).log(Level.SEVERE, null, ex);
@@ -1109,7 +1116,7 @@ public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
 
         if (!instancias.getSql().agregarHospitalizacion(IdHospitalizacion, txtCodigoMascota.getText(), metodos.fechaConsulta(metodosGenerales.fechaHora()),
                 instancias.getUsuario())) {
-            metodos.msgError(this, "Error al guardar hospitalización");
+            ControladorAlertas.alertFail("Error al guardar hospitalización");
             return;
         }
 
@@ -1120,21 +1127,21 @@ public class infIngresoHospitalizacion extends javax.swing.JInternalFrame {
 
         ndIngresoHospitalizacion nodo = metodos.llenarIngresoHospitalizacion(vector);
         if (!instancias.getSql().agregarIngresoHospital(nodo)) {
-            metodos.msgError(this, "Hubo un error al guardar este registro");
+            ControladorAlertas.alertFail("Hubo un error al guardar este registro");
             return;
         }
         modelo.addRow(new Object[]{txtCodigoMascota.getText(), txtNombre.getText(), txtfEntrada.getText(), txthEntrada.getText()});
 
 //        instancias.getReporte().verTirilla1(instancias.getInformacionEmpresa(), instancias.getLegal(), id, "Original");
         if (!instancias.getSql().aumentarConsecutivo("INGHOSPITAL", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("INGHOSPITAL")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
         }
 
         if (!instancias.getSql().aumentarConsecutivo("HOSPITALIZACION", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("HOSPITALIZACION")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de los controles de hospitalización");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de los controles de hospitalización");
         }
 
-        metodos.msgExito(this, "Ingreso registrado con éxito");
+        ControladorAlertas.alertSuccess("Ingreso registrado con éxito");
         txtCodigoMascota.requestFocus();
         this.codigo = null;
         btnNuevoActionPerformed(null);

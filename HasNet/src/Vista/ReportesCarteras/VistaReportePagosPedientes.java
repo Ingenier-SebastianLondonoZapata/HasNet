@@ -1,5 +1,7 @@
 package Vista.ReportesCarteras;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
@@ -270,7 +272,7 @@ public class VistaReportePagosPedientes extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             String sql = "";
 
             if (cmbProveedor.getItemCount() > 0) {
@@ -298,10 +300,10 @@ public class VistaReportePagosPedientes extends javax.swing.JPanel {
 
     private void btnAggProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProveedorActionPerformed
         if (txtProveedor.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un Proveedor");
+            ControladorAlertas.alertFail("Cargue primero un Proveedor");
         } else {
             if (yaEsta(cmbProveedor, txtProveedor.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este Proveedor");
+                ControladorAlertas.alert("Ya cargo este Proveedor");
             } else {
                 cmbProveedor.addItem(txtProveedor.getText());
                 cmbProveedor.setSelectedItem(txtProveedor.getText());

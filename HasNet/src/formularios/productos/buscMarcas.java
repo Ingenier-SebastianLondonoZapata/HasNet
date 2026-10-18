@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -234,18 +236,18 @@ public class buscMarcas extends javax.swing.JDialog {
 
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgError(null, "Debe ingresar una marca");
+            ControladorAlertas.alertFail("Debe ingresar una marca");
             return;
         }
 
         String aux = instancias.getSql().getDatosMarcas(txtId.getText().toUpperCase());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Agregar marca?") == 0) {
+            if (ControladorAlertas.option("¿Agregar marca?")) {
                 if (!instancias.getSql().agregarMarca(txtId.getText().toUpperCase())) {
-                    metodos.msgError(null, "Hubo un error al ingresar la marca");
+                    ControladorAlertas.alertFail("Hubo un error al ingresar la marca");
                     return;
                 }
-                metodos.msgExito(null, "Marca ingresada con exito");
+                ControladorAlertas.alertSuccess("Marca ingresada con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

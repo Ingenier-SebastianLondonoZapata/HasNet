@@ -1403,7 +1403,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
             rdAbonoFactura.setEnabled(true);
             rdAbonoGeneral.setEnabled(true);
         } else {
-            metodos.msgAdvertencia(this, "Factura no valida");
+            ControladorAlertas.alert("Factura no valida");
         }
     }//GEN-LAST:event_btnVerMasActionPerformed
 
@@ -1631,12 +1631,12 @@ public class VistaPagos extends javax.swing.JInternalFrame {
         try {
             anulado = instancias.getSql().getEstadoPago("Where recibo = '" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgError(this, "El pago no existe");
+            ControladorAlertas.alertFail("El pago no existe");
             return;
         }
 
         if (anulado.equals("ANULADO")) {
-            metodos.msgAdvertencia(this, "El documento esta anulado");
+            ControladorAlertas.alert("El documento esta anulado");
             return;
         }
 
@@ -1654,7 +1654,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
             mensaje = "¿Desea anular el pago?";
         }
 
-        if (metodos.msgPregunta(this, mensaje) == 0) {
+        if (ControladorAlertas.option(mensaje)) {
 
             id = instancias.getSql().getIdCxp("Where recibo ='" + consecutivo + "' ");
             estadoCuenta = instancias.getSql().getEstadoPago("Where ingreso = '" + id + "' and tipo <> 'PAGO' ");
@@ -1667,13 +1667,13 @@ public class VistaPagos extends javax.swing.JInternalFrame {
 
             try {
                 if (!instancias.getSql().anularDocumento(egreso, "bdEgreso")) {
-                    metodos.msgError(this, "Hubo un problema al anular el egreso");
+                    ControladorAlertas.alertFail("Hubo un problema al anular el egreso");
                     return;
                 }
             } catch (Exception e) {
             }
 
-            metodos.msgExito(this, "Pago anulado con éxito");
+            ControladorAlertas.alertSuccess("Pago anulado con éxito");
             cargarTablaCxp();
         }
     }//GEN-LAST:event_btnAnularActionPerformed
@@ -1745,7 +1745,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
     }
 
     private void finalizarPago(String mensaje) {
-        metodos.msgExito(this, mensaje);
+        ControladorAlertas.alertSuccess(mensaje);
         jTabbedPane1.setSelectedIndex(1);
         btnActualizarActionPerformed(null);
     }

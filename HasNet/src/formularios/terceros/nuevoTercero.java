@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -436,16 +438,16 @@ public class nuevoTercero extends javax.swing.JDialog {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             ModeloContacto nodo = instancias.getSql().getDatosTercero(txtNit.getText());
 
             if (nodo.getId() != null) {
-                metodos.msgError(null, "El Tercero ya existe");
+                ControladorAlertas.alertFail("El Tercero ya existe");
                 txtNit.requestFocus();
                 return;
             }
@@ -463,7 +465,7 @@ public class nuevoTercero extends javax.swing.JDialog {
             };
 
             if (!instancias.getSql().AgregarNuevoTercero(vector)) {
-                metodos.msgError(null, "Error al guardar el Tercero");
+                ControladorAlertas.alertFail("Error al guardar el Tercero");
                 return;
             }
 
@@ -479,14 +481,14 @@ public class nuevoTercero extends javax.swing.JDialog {
 
             nodo = metodos.llenarTercero(vector1);
             if (!instancias.getSql().agregarTercero(nodo)) {
-                metodos.msgError(null, "Hubo un problema al guardar el Tercero");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el Tercero");
                 return;
             }
 
-            metodos.msgExito(null, "Tercero registrado con éxito");
+            ControladorAlertas.alertSuccess("Tercero registrado con éxito");
 
             if (!instancias.getSql().aumentarConsecutivo("TERCERO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TERCERO")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del tercero");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del tercero");
             }
 
             System.out.println(opc);

@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
@@ -252,25 +254,25 @@ public class buscMedicamentosVeterinario extends javax.swing.JDialog {
 
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgError(null, "Ingrese el nombre del medicamento");
+            ControladorAlertas.alertFail("Ingrese el nombre del medicamento");
             return;
         }
 
         String aux = instancias.getSql().getDatosMedicamentosVeterinario(txtId.getText().toUpperCase());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Desea agregar el medicamento?") == 0) {
+            if (ControladorAlertas.option("¿Desea agregar el medicamento?")) {
 
                 if (!instancias.getSql().agregarMedicamentoVeterinario(txtId.getText().toUpperCase())) {
-                    metodos.msgError(null, "Error al guardar el medicamento");
+                    ControladorAlertas.alertFail("Error al guardar el medicamento");
                     return;
                 }
-                metodos.msgExito(null, "Medicamento ingresado con exito");
+                ControladorAlertas.alertSuccess("Medicamento ingresado con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);
             }
         } else {
-            metodos.msgError(null, "El medicamento ya existe");
+            ControladorAlertas.alertFail("El medicamento ya existe");
             return;
         }
     }//GEN-LAST:event_btnEste1ActionPerformed

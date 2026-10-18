@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import clases.Medico.ndAyudaDiagnostica;
@@ -721,7 +723,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblDiagostico.getRowCount() < 1) {
-            metodos.msgError(this, "Falta agregar los conceptos");
+            ControladorAlertas.alertFail("Falta agregar los conceptos");
             return;
         }
 
@@ -730,17 +732,17 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
         Object[] campos2 = {txtHistoria, txtFecha};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "ADIAGVET-" + instancias.getSql().getNumConsecutivo("ADIAGVET")[0];
             ndAyudaDiagnostica nodo = instancias.getSql().getDatosAyudaDiagnosticaVeterinaria(id);
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La ayuda ya existe");
+                ControladorAlertas.alertFail("La ayuda ya existe");
                 txtId.requestFocus();
                 return;
             }
@@ -750,7 +752,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
 
             nodo = metodos.llenarAyudaDiagnostica(vector);
             if (!instancias.getSql().agregarAyudaDiagnosticaVeterinaria(nodo)) {
-                metodos.msgError(this, "Error al guardar la ayuda");
+                ControladorAlertas.alertFail("Error al guardar la ayuda");
                 return;
             }
 
@@ -759,22 +761,22 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
 
                 ndTablaDiagnostica nodo2 = metodos.llenarTablaDiagnostica(vector2);
                 if (!instancias.getSql().agregarTablaDiagnosticaVeterinaria(nodo2)) {
-                    metodos.msgError(this, "Error al guardar detalle ayuda");
+                    ControladorAlertas.alertFail("Error al guardar detalle ayuda");
                     return;
                 }
             }
 
             //CAMBIAR CONSECUTIVO AYUDA DISGNOSTICA
             if (!instancias.getSql().aumentarConsecutivo("ADIAGVET", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ADIAGVET")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la ayuda diagnostica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la ayuda diagnostica");
             }
 
             txtId.setText("" + instancias.getSql().getNumConsecutivo("ADIAGVET")[0]);
 
-            metodos.msgExito(this, "Ayuda registrado con éxito");
+            ControladorAlertas.alertSuccess("Ayuda registrado con éxito");
             ndHistoria historia = instancias.getSql().getDatosHistoria(txtHistoria.getText());
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteVeterinario(instancias).verAyudaDiagnosticaVeterinaria(id, txtNombre.getText(), txtGenero.getText(),
                         txtRaza.getText(), txtEdad.getText(), txtCodigo.getText(), txtReproductivo.getText(),
                         txtCedula.getText(), txtNombrePropietario.getText(), txtTelefono.getText(), txtDireccion.getText(), txtHistoria.getText());
@@ -830,7 +832,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un item");
+            ControladorAlertas.alert("Seleccione un item");
         }
 
         /*
@@ -851,7 +853,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void btnBuscTerceros3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros3ActionPerformed
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             new GeneradorReporteVeterinario(instancias).verNegativa(txtNombre.getText(), txtGenero.getText(),
                     txtRaza.getText(), txtEdad.getText(), txtCodigo.getText(), txtReproductivo.getText(),
                     txtCedula.getText(), txtNombrePropietario.getText(), txtTelefono.getText(), txtDireccion.getText(), txtHistoria.getText());
@@ -978,7 +980,7 @@ public class infAyudaDiagnosticoVeterinaria extends javax.swing.JInternalFrame {
         //        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
         //            if (txtId.getText().equals("")) {
         //                if (txtNombre.getText().equals("")) {
-        //                    metodos.msgError(null, "Debe seleccionar un tercero primero");
+        //                    ControladorAlertas.alertFail("Debe seleccionar un tercero primero");
         //                    return;
         //                } else {
         //                    infBuscadorCliente buscador = new infBuscadorCliente();

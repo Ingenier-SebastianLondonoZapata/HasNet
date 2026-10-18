@@ -1,5 +1,7 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.productos.*;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -233,18 +235,18 @@ public class buscTipoVehiculo extends javax.swing.JDialog {
 
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgError(null, "Debe ingresar el tipo");
+            ControladorAlertas.alertFail("Debe ingresar el tipo");
             return;
         }
 
         String aux = instancias.getSql().getDatosTipoVehiculo(txtId.getText().toUpperCase());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Agregar como " + txtId.getText().toUpperCase() + "? ") == 0) {
+            if (ControladorAlertas.option("¿Agregar como " + txtId.getText().toUpperCase() + "? ")) {
                 if (!instancias.getSql().agregarTipoVehiculo(txtId.getText().toUpperCase())) {
-                    metodos.msgError(null, "Hubo un error al ingresar el tipo de vehiculo");
+                    ControladorAlertas.alertFail("Hubo un error al ingresar el tipo de vehiculo");
                     return;
                 }
-                metodos.msgExito(null, "Tipo ingresado con exito");
+                ControladorAlertas.alertSuccess("Tipo ingresado con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

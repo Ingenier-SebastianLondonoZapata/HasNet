@@ -1,5 +1,7 @@
 package Vista.Solicitudes;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import Enums.TipoDocumento;
@@ -378,7 +380,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
 
     private void btnSolicitarPermisoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarPermisoActionPerformed
         if (txtNota.getText().equalsIgnoreCase("") || txtNota.getText().equalsIgnoreCase(" ")) {
-            metodos.msgError(null, "Debe ingresar la nota");
+            ControladorAlertas.alertFail("Debe ingresar la nota");
             txtNota.requestFocus();
             return;
         }
@@ -391,7 +393,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
         String consecutivo = instancias.getSql().getNumConsecutivo("PERMISO")[0].toString();
         if (!instancias.getSql().agregarPermiso("PERMISO-" + consecutivo, txtTipo.getText(), txtValor.getText(),
                 txtNota.getText(), metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), "PENDIENTE", instancias.getUsuario())) {
-            metodos.msgError(null, "Hubo un error al ingresar el permiso");
+            ControladorAlertas.alertFail("Hubo un error al ingresar el permiso");
             return;
         }
 
@@ -436,7 +438,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
 
     private void btnSolicitarPermisoContrasenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarPermisoContrasenhaActionPerformed
         if (txtNota.getText().equalsIgnoreCase("") || txtNota.getText().equalsIgnoreCase(" ")) {
-            metodos.msgError(null, "Debe ingresar la nota");
+            ControladorAlertas.alertFail("Debe ingresar la nota");
             txtNota.requestFocus();
             return;
         }
@@ -445,7 +447,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
             String consecutivo = instancias.getSql().getNumConsecutivo("PERMISO")[0].toString();
             if (!instancias.getSql().agregarPermiso("PERMISO-" + consecutivo, txtTipo.getText(), txtValor.getText(),
                     txtNota.getText(), metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), "AUTO-CONFIRMADO", instancias.getUsuario())) {
-                metodos.msgError(null, "Hubo un error al ingresar la medida");
+                ControladorAlertas.alertFail("Hubo un error al ingresar la medida");
                 return;
             }
 
@@ -454,7 +456,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
             procesarAceptada(consecutivo);
             this.dispose();
         } else {
-            metodos.msgError(null, "Contraseña incorrecta");
+            ControladorAlertas.alertFail("Contraseña incorrecta");
             jPasswordField1.setText("");
             jPasswordField1.requestFocus();
         }
@@ -468,13 +470,13 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
 
         if ("ACEPTADA".equals(estado)) {
             procesarAceptada(consecutivo);
-            metodos.msgExito(null, "SOLICITUD ACEPTADA");
+            ControladorAlertas.alertSuccess("SOLICITUD ACEPTADA");
             return;
         }
 
         if ("RECHAZADA".equals(estado)) {
             procesarRechazada();
-            metodos.msgError(null, "SOLICITUD RECHAZADA");
+            ControladorAlertas.alertFail("SOLICITUD RECHAZADA");
         }
     }
 

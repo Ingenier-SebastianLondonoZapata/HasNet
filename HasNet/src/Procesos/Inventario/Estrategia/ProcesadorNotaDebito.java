@@ -1,13 +1,11 @@
 package Procesos.Inventario.Estrategia;
 
+import Enums.Tablas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Utilidades.BaseDatos.SentenciaSql;
-import Utilidades.BaseDatos.ValidadorTabla;
-import Utilidades.Inventario.UtilidadInventario;
-import Utilidades.Utilidades;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -15,25 +13,25 @@ import java.util.List;
 public class ProcesadorNotaDebito extends AbstractProcesadorMovimiento {
 
     @Override
-    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional) {
-        ndProducto producto = movimiento.getProducto();
+    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String idBodega, InformacionAdicional informacionAdicional) {
+        ModeloProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal notaDebito = Utilidades.convertirBigDecimal(producto.getNotaDebito()).add(cantidad);
-        producto.setNotaDebito(UtilidadInventario.formatear(notaDebito));
+        BigDecimal notaDebito = producto.getNotaDebito().add(cantidad);
+        producto.setNotaDebito(notaDebito);
 
         if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
-            String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET notaDebito = ? WHERE idSistema = ?";
-            return new SentenciaSql(sql, UtilidadInventario.formatear(notaDebito), producto.getIdSistema());
+            String sql = "UPDATE " + Tablas.INVENTARIO.getNombre() + " SET notaDebito = ? WHERE idSistema = ? AND idBodega = ?";
+            return new SentenciaSql(sql, notaDebito, producto.getIdSistema(), idBodega);
         }
 
-        String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
+        String sql = "UPDATE " + Tablas.INVENTARIO.getNombre() + " SET "
                 + "notaDebito = ? "
-                + "WHERE idSistema = ?";
+                + "WHERE idSistema = ? AND idBodega = ?";
 
         return new SentenciaSql(sql,
-                UtilidadInventario.formatear(notaDebito),
-                producto.getIdSistema());
+                notaDebito,
+                producto.getIdSistema(), idBodega);
     }
 
     @Override

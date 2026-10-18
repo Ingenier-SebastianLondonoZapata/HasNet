@@ -1,5 +1,11 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
@@ -14,7 +20,7 @@ import clases.Medico.ndSeguimientoClinica;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.Genericos.buscPlantillaDeTextos;
 import formularios.Veterinario.visor;
@@ -45,6 +51,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infHistoriaMedica extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -4826,32 +4833,32 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnGuardarConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarConsultaActionPerformed
         if (cmbTipoDiagnostico.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Seleccionar tipo de diagnostico");
+            ControladorAlertas.alertFail("Seleccionar tipo de diagnostico");
             return;
         }
 
         if (cmbTipoDiagnostico.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Seleccionar tipo de diagnostico");
+            ControladorAlertas.alertFail("Seleccionar tipo de diagnostico");
             return;
         }
 
         int i = 0;
         if (instancias.isGeneraOrdenMedica()) {
             if (orden == null && i == 0) {
-                metodos.msgAdvertenciaAjustado(this, "No se relaciona con ninguna orden");
+                ControladorAlertas.alert("No se relaciona con ninguna orden");
                 return;
             }
         }
 
         nodoTercero = instancias.getSql().getDatosTercero(this.paciente);
         if (null == nodoTercero.getEps() || "".equals(nodoTercero.getEps())) {
-            metodos.msgAdvertenciaAjustado(this, "El paciente no tiene EPS");
+            ControladorAlertas.alert("El paciente no tiene EPS");
             return;
         }
 
         if (!instancias.isGeneraOrdenMedica()) {
             if (null == nodoCampos.getServicio() || "".equals(nodoCampos.getServicio())) {
-                metodos.msgAdvertenciaAjustado(this, "No tiene un servicio establecido");
+                ControladorAlertas.alert("No tiene un servicio establecido");
                 return;
             }
         }
@@ -4863,11 +4870,11 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
             String numeroConse = instancias.getSql().getNumConsecutivoEps(consecutivo)[0].toString();
             consecutivo = consecutivo + "-" + numeroConse;
         } catch (Exception e) {
-            metodos.msgError(this, "La EPS no tiene consecutivo");
+            ControladorAlertas.alertFail("La EPS no tiene consecutivo");
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             if (lista.getSelectedIndex() == 0) {
 
@@ -4928,16 +4935,16 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
                 nodo2.setCup(txtCup.getText());
 
                 if (!instancias.getSql().modificarOrdenServicio(nodo2)) {
-                    metodos.msgError(this, "Hubo un problema al modificar la orden");
+                    ControladorAlertas.alertFail("Hubo un problema al modificar la orden");
                     return;
                 }
 
                 if (!instancias.getSql().agregarConsultaClinica(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la Consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la Consulta");
                     return;
                 }
                 if (!instancias.getSql().aumentarConsecutivo("CONSULTA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CONSULTA")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la consulta");
                 }
 
                 i++;
@@ -4948,7 +4955,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
             }
 
             if (i > 0) {
-                metodos.msgExito(this, "Historia guardada con exito");
+                ControladorAlertas.alertSuccess("Historia guardada con exito");
 
                 seguimientoEditable(true);
                 consultaEditable(true);
@@ -5056,10 +5063,10 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
         System.out.println("Genero Cie " + genero);
         if (genero.equals("H") && !(txtGenero.getText().equals("Masculino") || txtGenero.getText().equals("masculino") || txtGenero.getText().equals("MASCULINO"))) {
-            metodos.msgError(this, "Este Cie es de genero masculino");
+            ControladorAlertas.alertFail("Este Cie es de genero masculino");
             return false;
         } else if (genero.equals("M") && !(txtGenero.getText().equals("Femenino") || txtGenero.getText().equals("femenino") || txtGenero.getText().equals("FEMENINO"))) {
-            metodos.msgError(this, "Este Cie es de genero femenino");
+            ControladorAlertas.alertFail("Este Cie es de genero femenino");
             return false;
         }
 
@@ -5172,10 +5179,10 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
             return true;
         } else {
             if (!cumpleMaximo) {
-                metodos.msgError(this, "Sobrepasa la edad maxima permitida.");
+                ControladorAlertas.alertFail("Sobrepasa la edad maxima permitida.");
                 return false;
             } else {
-                metodos.msgError(this, "No cumple con la edad minima requerida.");
+                ControladorAlertas.alertFail("No cumple con la edad minima requerida.");
                 return false;
             }
         }
@@ -5369,7 +5376,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnAyudaDiagnosticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAyudaDiagnosticaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Debe asociar una consulta");
+            ControladorAlertas.alertFail("Debe asociar una consulta");
             return;
         }
 
@@ -5379,7 +5386,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnFormulaMedicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFormulaMedicaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Debe asociar una consulta");
+            ControladorAlertas.alertFail("Debe asociar una consulta");
             return;
         }
 
@@ -5418,7 +5425,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnIncapacidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIncapacidadActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Debe asociar una consulta");
+            ControladorAlertas.alertFail("Debe asociar una consulta");
             return;
         }
 
@@ -5620,7 +5627,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnReimprimirConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirConsultaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Seleccione una consulta");
+            ControladorAlertas.alertFail("Seleccione una consulta");
             return;
         }
         ModeloContacto Paciente = instancias.getSql().getDatosTercero(paciente);
@@ -5836,7 +5843,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
     private void btnAgregarExamenEvolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarExamenEvolucionActionPerformed
         String id = "";
         if (txtDescripcionExamenEvolucion.getText().equals("")) {
-            metodos.msgError(this, "No ha ingresado ninguna descripción del anexo");
+            ControladorAlertas.alertFail("No ha ingresado ninguna descripción del anexo");
             return;
         }
 
@@ -5858,12 +5865,12 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         try {
             Files.copy(FROM2, TO, options);
         } catch (Exception ex) {
-            metodos.msgError(this, "Hubo un error al cargar el archivo");
+            ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             return;
         }
 
         if (!instancias.getSql().aumentarConsecutivo("DOCIMPORTADO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DOCIMPORTADO")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar el codigo de la imagen");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el codigo de la imagen");
         }
 
         DefaultTableModel modeloTabla = (DefaultTableModel) tblExamenesEvolucion.getModel();
@@ -5905,11 +5912,11 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
                 DefaultTableModel modelo = (DefaultTableModel) tblExamenesEvolucion.getModel();
                 modelo.removeRow(fila);
             } else {
-                metodos.msgError(this, "Hubo un problema al borrar el archivo adjunto");
+                ControladorAlertas.alertFail("Hubo un problema al borrar el archivo adjunto");
             }
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione una fila");
+            ControladorAlertas.alert("Seleccione una fila");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -5953,7 +5960,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         String id = "";
         if (txtDescripcionExamenConsulta.getText().equals("")) {
-            metodos.msgError(this, "No ha ingresado ninguna descripción");
+            ControladorAlertas.alertFail("No ha ingresado ninguna descripción");
             return;
         }
 
@@ -5972,12 +5979,12 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         try {
             Files.copy(FROM2, TO, options);
         } catch (Exception ex) {
-            metodos.msgError(this, "Error al cargar el archivo");
+            ControladorAlertas.alertFail("Error al cargar el archivo");
             return;
         }
 
         if (!instancias.getSql().aumentarConsecutivo("DOCIMPORTADO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("DOCIMPORTADO")[0]) + 1)) {
-            metodos.msgError(this, "Error al guardar el codigo de la imagen");
+            ControladorAlertas.alertFail("Error al guardar el codigo de la imagen");
         }
 
         DefaultTableModel modeloTabla = (DefaultTableModel) tblExamenes.getModel();
@@ -6001,10 +6008,10 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
                 DefaultTableModel modelo = (DefaultTableModel) tblExamenes.getModel();
                 modelo.removeRow(fila);
             } else {
-                metodos.msgError(this, "Hubo un problema al borrar el archivo adjunto");
+                ControladorAlertas.alertFail("Hubo un problema al borrar el archivo adjunto");
             }
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrar1ActionPerformed
 
@@ -6124,7 +6131,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 //            int i = 0;
         if ((!txtEvolucionSeg.getText().equals("") || !txtObservacionesSeg.getText().equals("")) && cmbFecha.getSelectedIndex() == 0) {
 
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
                 Object[][] fechas = instancias.getSql().getConsultasClinica(historia.getId());
                 String consulta = fechas[fechas.length - 1][0].toString();
 
@@ -6154,10 +6161,10 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
                 ndSeguimientoClinica nodoSeguimiento = metodos.llenarSeguimientoClinica(vector2);
 
                 if (!instancias.getSql().agregarSeguimientoClinica(nodoSeguimiento)) {
-                    metodos.msgError(this, "Hubo un problema al guardar el seguimiento");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar el seguimiento");
                     return;
                 }
-                metodos.msgExito(this, "Evolución guardada con exito");
+                ControladorAlertas.alertSuccess("Evolución guardada con exito");
 
                 Object[][] fechasCombo = instancias.getSql().getSeguimientosClinica(lista.getSelectedValue().toString().split(" - ")[0]);
                 Object[] datos = new Object[fechasCombo.length + 1];
@@ -6177,7 +6184,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 //            String consecutivo = "";
 //
 //            if (i > 0) {
-//                metodos.msgExito(this, "Evolución guardada con exito");
+//                ControladorAlertas.alertSuccess("Evolución guardada con exito");
 //                seguimientoEditable(true);
 //                consultaEditable(true);
 //                instancias.getHistoriaC().actualizar(consecutivo, txtCup.getText(), txtProcedimiento.getText());
@@ -6605,21 +6612,21 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnGuardarArchivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarArchivosActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
                 for (int i = 0; i < tblExamenes.getRowCount(); i++) {
                     if (tblExamenes.getValueAt(i, 3).equals(false)) {
                         if (!instancias.getSql().agregarArchivosAdjuntos(historia.getId(), metodos.fechaConsulta(metodosGenerales.fecha()),
                                 tblExamenes.getValueAt(i, 0).toString(), tblExamenes.getValueAt(i, 1).toString(), tblExamenes.getValueAt(i, 2).toString())) {
-                            metodos.msgError(this, "Hubo un error al guardar los archivos.");
+                            ControladorAlertas.alertFail("Hubo un error al guardar los archivos.");
                             return;
                         }
                     }
                 }
-                metodos.msgExito(this, "Archivos guardados con exito");
+                ControladorAlertas.alertSuccess("Archivos guardados con exito");
                 btnGuardarArchivos.setBackground(new java.awt.Color(255, 102, 102));
             }
         } else {
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
                 String examen = "";
                 for (int j = 0; j < tblExamenes.getRowCount(); j++) {
                     examen = examen + "" + String.valueOf(tblExamenes.getValueAt(j, 0)) + "<&" + String.valueOf(tblExamenes.getValueAt(j, 1)) + "<&" + String.valueOf(tblExamenes.getValueAt(j, 2)) + "<>";
@@ -6629,10 +6636,10 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
                 }
 
                 if (!instancias.getSql().modificarExamenesConsultaMedica(lista.getSelectedValue().toString().split(" - ")[0], examen)) {
-                    metodos.msgError(this, "Hubo un problema al cargar los archivos.");
+                    ControladorAlertas.alertFail("Hubo un problema al cargar los archivos.");
                     return;
                 }
-                metodos.msgExito(this, "Archivos guardados con exito");
+                ControladorAlertas.alertSuccess("Archivos guardados con exito");
                 btnGuardarArchivos.setBackground(new java.awt.Color(255, 102, 102));
             }
         }
@@ -6950,7 +6957,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnRemisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemisionActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Debe asociar una consulta");
+            ControladorAlertas.alertFail("Debe asociar una consulta");
             return;
         }
 
@@ -7002,7 +7009,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
     private void btnContraremisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContraremisionActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Debe asociar una consulta");
+            ControladorAlertas.alertFail("Debe asociar una consulta");
             return;
         }
 
@@ -7465,7 +7472,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         if (cmbFecha.getSelectedIndex() != 0) {
 
             if (tblExamenesEvolucion.getValueAt(num, 1) == null || tblExamenesEvolucion.getValueAt(num, 1).toString().equals("")) {
-                metodos.msgError(this, "No hay examen");
+                ControladorAlertas.alertFail("No hay examen");
             } else {
                 visor completa = new visor(tblExamenesEvolucion.getValueAt(num, 1).toString());
                 completa.show();
@@ -7488,7 +7495,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
             id = Arrays.toString(instancias.getSql().getNumConsecutivo("IMG"));
 
             if (!instancias.getSql().aumentarConsecutivo("IMG", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("IMG")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar el codigo de la imagen");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el codigo de la imagen");
             }
 
             tblExamenesEvolucion.setValueAt(id, num, 1);
@@ -7505,7 +7512,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
             try {
                 Files.copy(FROM, TO, options);
             } catch (Exception ex) {
-                metodos.msgError(this, "Hubo un error al cargar el archivo");
+                ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             }
 
         }
@@ -7631,7 +7638,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         String factura = "";
 
         try {
-            ndProducto prod = instancias.getSql().getDatosProducto(nodoCampos.getServicio(), "bdProductos");
+            ModeloProducto prod = daoProducto.obtenerDatosProducto(nodoCampos.getServicio(), enumBodegas.ID_BODEGA_PRINCIPAL);
             valor = prod.getL1();
         } catch (Exception e) {
         }
@@ -7653,19 +7660,19 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         ndOrdenServicio nodoOrden = metodos.llenarOrdenServicio(vector);
 
         if (!instancias.getSql().agregarOrdenServicio(nodoOrden)) {
-            metodos.msgError(this, "Error al guardar la orden");
+            ControladorAlertas.alertFail("Error al guardar la orden");
             return;
         }
 
         if (!instancias.getSql().aumentarConsecutivoEps(consecutivo.substring(0, 5), Integer.parseInt((String) instancias.getSql().getNumConsecutivoEps(consecutivo.substring(0, 5))[0]) + 1)) {
-            metodos.msgError(this, "Error al aumentar consecutivo EPS");
+            ControladorAlertas.alertFail("Error al aumentar consecutivo EPS");
         }
-//            if (metodos.msgPregunta(this, "¿Desea imprimir Orden?") == 0) {
+//            if (ControladorAlertas.option("¿Desea imprimir Orden?")) {
 //                instancias.getReporte().verOrdenServicio(orden);
 //            }
 
         if (!instancias.getSql().aumentarConsecutivo("ORDEN", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ORDEN")[0]) + 1)) {
-            metodos.msgError(this, "Error al aumentar consecutivo de la orden");
+            ControladorAlertas.alertFail("Error al aumentar consecutivo de la orden");
         }
     }
 

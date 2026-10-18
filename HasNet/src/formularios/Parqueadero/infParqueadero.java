@@ -1,10 +1,14 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.IconCellRenderer;
 import clases.Instancias;
 import clases.Parqueadero.ndParqueadero;
 import Utilidades.BaseDatos.SQL;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
@@ -23,6 +27,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class infParqueadero extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -374,13 +379,13 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 
             if (cupo <= 0) {
                 if (datos1[0][7].equals("1")) {
-                    if (metodos.msgPregunta(this, "¿No hay cupo para este servicio. ¿Desea continuar?") == 0) {
+                    if (ControladorAlertas.option("¿No hay cupo para este servicio. ¿Desea continuar?")) {
                         dlgParqueo parqueo = new dlgParqueo(null, true, tblServicios.getValueAt(tblServicios.getSelectedRow(), 2).toString(), tblServicios.getValueAt(tblServicios.getSelectedRow(), 0).toString(), "");
                         parqueo.setLocationRelativeTo(null);
                         parqueo.setVisible(true);
                     }
                 } else {
-                    metodos.msgError(this, "No hay cupo para este servicio.");
+                    ControladorAlertas.alertFail("No hay cupo para este servicio.");
                 }
             } else {
                 dlgParqueo parqueo = new dlgParqueo(null, true, tblServicios.getValueAt(tblServicios.getSelectedRow(), 2).toString(),
@@ -402,7 +407,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
                 modificarParqueadero();
             }
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popModificarActionPerformed
 
@@ -416,7 +421,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //                eliminarParqueadero();
             }
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popAnularActionPerformed
 
@@ -462,10 +467,10 @@ public class infParqueadero extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (tblParqueo.getSelectedColumn() == 5) {
                 if (!instancias.getSql().cambiarObservacionParqueadero(tblParqueo.getValueAt(tblParqueo.getSelectedRow(), 0).toString(), tblParqueo.getValueAt(tblParqueo.getSelectedRow(), 5).toString())) {
-                    metodos.msgError(this, "No fue posible guardar la observación");
+                    ControladorAlertas.alertFail("No fue posible guardar la observación");
                     tblParqueo.setValueAt("", tblParqueo.getSelectedRow(), 5);
                 } else {
-                    metodos.msgExito(this, "Observación guardada exitosamente.");
+                    ControladorAlertas.alertSuccess("Observación guardada exitosamente.");
                     txtPlaca.setText("");
                     actualizarTablas();
                     txtPlaca.requestFocus();
@@ -492,7 +497,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //        nodoParqueadero.setObservacion("CANCELADA... " + nodoParqueadero.getObservacion());
 //
 //        if (!instancias.getSql().modificarParqueaderoAutos(nodoParqueadero)) {
-//            metodos.msgError(this, "No fue posible Eliminar el parqueo");
+//            ControladorAlertas.alertFail("No fue posible Eliminar el parqueo");
 //            return;
 //        }
 //
@@ -631,7 +636,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //    }
 //    public void cargarProducto(String codigo) {
 //        txtCodProducto.setText(codigo);
-//        ndProducto producto = instancias.getSql().getDatosProducto(codigo);
+//        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigo);
 //        txtProducto.setText(producto.getDescripcion());
 //        txtValorHoraDia.setText(big.setMoneda(big.getBigDecimal(producto.getL1())));
 //        txtValorHoraNoche.setText(big.setMoneda(big.getBigDecimal(producto.getL2())));
@@ -668,7 +673,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //                txtfEntrada.setText(metodos.fecha(nodoParqueadero.getfIngreso()));
 //                txtCodProducto.setText(nodoParqueadero.getProducto());
 //
-//                ndProducto producto = instancias.getSql().getDatosProducto1(nodoParqueadero.getProducto());
+//                ModeloProducto producto = instancias.getSql().getDatosProducto1(nodoParqueadero.getProducto());
 //
 //                txtProducto.setText(producto.getDescripcion());
 //                txtValorHoraDia.setText(big.setMoneda(big.getBigDecimal(producto.getL5())));
@@ -1033,7 +1038,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //        if (txtfSalida.getText().equalsIgnoreCase("")) {
 //
 //            if (!sql.agregarParqueaderoAutos(nodo)) {
-//                metodos.msgError(this, "Hubo un error al guardar este registro");
+//                ControladorAlertas.alertFail("Hubo un error al guardar este registro");
 //                return;
 //            }
 //
@@ -1042,7 +1047,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //            instancias.getReporte().verTirilla1(instancias.getInformacionEmpresa(), instancias.getLegal(), id, "Original");
 //
 //            if (!instancias.getSql().aumentarConsecutivo("PRQ", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PRQ")[0]) + 1)) {
-//                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
 //            }
 //        }
 //        txtPlaca.requestFocus();
@@ -1053,7 +1058,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //    public void Salida() {
 //
 //        if (rbtCredito.isSelected() && txtNombre.getText().equals("VENTAS DE CONTADO")) {
-//            metodos.msgError(this, "No puede realizar ventas a credito a este cliente");
+//            ControladorAlertas.alertFail("No puede realizar ventas a credito a este cliente");
 //            rbtContado.setSelected(true);
 //            return;
 //        }
@@ -1061,7 +1066,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //        String ID = "";
 //
 //        if (!txtfEntrada.getText().equalsIgnoreCase("")) {
-//            if (metodos.msgPregunta(this, "¿Desea continuar") == 0) {
+//            if (ControladorAlertas.option("¿Desea continuar")) {
 //
 //                String id = this.codigo;
 //                ID = id;
@@ -1076,7 +1081,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //
 //                if (rbtCredito.isSelected()) {
 //                    if (txtDiasPlazo.getText().equals("")) {
-//                        metodos.msgError(this, "Ingrese los dias de plazo");
+//                        ControladorAlertas.alertFail("Ingrese los dias de plazo");
 //                        return;
 //                    }
 //                }
@@ -1097,7 +1102,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //                ndParqueadero nodo = metodos.llenarParqueaderoAutos(vector);
 //
 //                if (!instancias.getSql().modificarParqueaderoAutos(nodo)) {
-//                    metodos.msgError(this, "No fue posible Modificar el parqueo para marcar la salida");
+//                    ControladorAlertas.alertFail("No fue posible Modificar el parqueo para marcar la salida");
 //                    sql.anularDocumento(factura, "bdCaja");
 //                    return;
 //                }
@@ -1120,7 +1125,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //                        break;
 //                    }
 //                }
-////                if (metodos.msgPregunta(this, "¿Desea imprimir tirilla?") == 0) {
+////                if (ControladorAlertas.option("¿Desea imprimir tirilla?")) {
 ////                }
 //            }
 //
@@ -1137,7 +1142,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //        String id = this.codigo;
 //        for (int i = 0; i < tblAutos.getRowCount(); i++) {
 //            if (tblAutos.getValueAt(i, 0).equals(txtPlaca.getText())) {
-//                metodos.msgError(this, "Esta placa ya se encuentra registrada");
+//                ControladorAlertas.alertFail("Esta placa ya se encuentra registrada");
 //                return;
 //            }
 //        }
@@ -1152,10 +1157,10 @@ public class infParqueadero extends javax.swing.JInternalFrame {
 //        ndParqueadero nodo = metodos.llenarParqueaderoAutos(vector);
 //
 //        if (!instancias.getSql().modificarParqueaderoAutos(nodo)) {
-//            metodos.msgError(this, "No fue posible Modificar el parqueo");
+//            ControladorAlertas.alertFail("No fue posible Modificar el parqueo");
 //            return;
 //        }
-//        metodos.msgExito(this, "Modificado con exito");
+//        ControladorAlertas.alertSuccess("Modificado con exito");
 //
 //        txtPlaca.requestFocus();
 //        this.codigo = null;

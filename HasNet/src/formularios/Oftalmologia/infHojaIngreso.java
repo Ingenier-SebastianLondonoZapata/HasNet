@@ -1,5 +1,11 @@
 package formularios.Oftalmologia;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
@@ -13,7 +19,7 @@ import clases.Oftalmologia.ndSeguimientoClinicaOf;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import formularios.Agenda.infInfoAgenda;
 import formularios.Medico.buscAntecedentes;
@@ -43,6 +49,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class infHojaIngreso extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -2487,7 +2494,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
                         btnPaquimetria.setEnabled(true);
                         txtProcedimiento4.setEnabled(false);
 
-                        ndProducto producto = instancias.getSql().getDatosProducto(txtCodServicioo.getText(), "bdProductos");
+                        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
                         txtCodProducto.setText(producto.getDescripcion());
 
                         if (txtRefraccionOD.getText().equals("")) {
@@ -2577,7 +2584,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
                         txtCup2.setText(nodo.getCup2());
                         txtCup3.setText(nodo.getCup3());
                         txtCup4.setText(nodo.getCup4());
-                        ndProducto producto = instancias.getSql().getDatosProducto(txtCodServicioo.getText(), "bdProductos");
+                        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
                         txtCodProducto.setText(producto.getDescripcion());
 
                         int i = 0;
@@ -2764,7 +2771,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
     private void btnReimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Seleccione una consulta");
+            ControladorAlertas.alertFail("Seleccione una consulta");
             return;
         }
 
@@ -2789,10 +2796,10 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
 //                ndHojaIngreso nodo = metodos.llenarHojaIngreso(vector);
             if (!instancias.getSql().modificarHojaIngreso(nodoConsultaPublic)) {
-                metodos.msgError(this, "Hubo un problema al guardar la consulta");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la consulta");
                 return;
             } else {
-                metodos.msgExito(this, "Cambios guardados con exito");
+                ControladorAlertas.alertSuccess("Cambios guardados con exito");
             }
         } else if (lista.getSelectedIndex() != 0) {
 
@@ -2826,11 +2833,11 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
             txtEvolucionSeg.setEnabled(true);
 
             if (!faltantes.equals("")) {
-                metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                 return;
             }
 
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
 
                 if (!instancias.isGeneraOrdenMedica()) {
                     guardarOrden();
@@ -2858,11 +2865,11 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
 //                ndHojaIngreso nodo = metodos.llenarHojaIngreso(vector);
                 if (!instancias.getSql().modificarHojaIngreso(nodoConsultaPublic)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la consulta");
                     return;
                 }
 
-                metodos.msgExito(this, "Historia guardada con exito");
+                ControladorAlertas.alertSuccess("Historia guardada con exito");
 
                 if (facturarOrden) {
                     facturar(txtCodServicioo.getText());
@@ -2881,7 +2888,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
                 if (!cita.equalsIgnoreCase("")) {
                     if (!instancias.getSql().modificarCita(cita, "Atendido")) {
-                        metodos.msgError(null, "No fue posible modificar el estado de la Cita");
+                        ControladorAlertas.alertFail("No fue posible modificar el estado de la Cita");
                     }
                 }
 
@@ -2897,15 +2904,15 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
             String faltantes2 = metodos.camposVacios(campos2);
 
             if (!faltantes.equals("")) {
-                metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
                 return;
             }
 
             if (!faltantes2.equals("")) {
-                metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+                ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
             }
 
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
                 int i = 0;
 //                String consecutivo = "";
 //                if (lista.getSelectedIndex() == 0) {
@@ -2951,7 +2958,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
                 ndHojaIngreso nodo = metodos.llenarHojaIngreso(vector);
 
                 if (!instancias.getSql().agregarHojaIngreso(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la consulta");
                     return;
                 }
 
@@ -2963,13 +2970,13 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
                 try {
                     cita = instancias.getSql().getAgendasDelDia(cliente, metodos.fechaConsulta(metodosGenerales.fecha()));
                     if (!instancias.getSql().modificarCita(cita, "Confirmada")) {
-                        metodos.msgError(null, "No fue posible modificar el estado de la Cita");
+                        ControladorAlertas.alertFail("No fue posible modificar el estado de la Cita");
                     }
                 } catch (Exception e) {
                 }
 
                 if (i > 0) {
-                    metodos.msgExito(this, "Historia guardada con exito");
+                    ControladorAlertas.alertSuccess("Historia guardada con exito");
                 }
 
 //                System.out.println("jaja " + productoFacturarOrden);
@@ -2982,7 +2989,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
 //                instancias.getReporte().ver_HojaIngreso(consecutivo, false);
                 if (!instancias.getSql().aumentarConsecutivo("CONSULTAOF", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CONSULTAOF")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la consulta");
                     return;
                 }
                 btnLimpiarActionPerformed(evt);
@@ -3152,7 +3159,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -3166,7 +3173,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -3178,7 +3185,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -3344,12 +3351,12 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         try {
             Files.copy(FROM2, TO, options);
         } catch (Exception ex) {
-            metodos.msgError(this, "Hubo un error al cargar el archivo");
+            ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             return;
         }
 
         if (!instancias.getSql().aumentarConsecutivo("IMG", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("IMG")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar el codigo de la imagen");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el codigo de la imagen");
         }
         if (lbCodFoto.getText().equals("")) {
             lbCodFoto.setText(id);
@@ -3375,11 +3382,11 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             int i = 0;
 
@@ -3400,14 +3407,14 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
             ndSeguimientoClinicaOf nodoSeguimiento = metodos.llenarSeguimientoClinicaOf(vector2);
 
             if (!instancias.getSql().agregarSeguimientoClinicaOf(nodoSeguimiento)) {
-                metodos.msgError(this, "Hubo un problema al guardar el seguimiento");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el seguimiento");
                 return;
             }
 
             i++;
 
             if (i > 0) {
-                metodos.msgExito(this, "Evoluciòn guardada con exito");
+                ControladorAlertas.alertSuccess("Evoluciòn guardada con exito");
             }
             txtEvolucionSeg.setText("");
             lbCodFoto.setText("");
@@ -3458,7 +3465,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
     private void txtCodProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodProductoKeyReleased
 //        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-//            ndProducto producto = sql.getDatosProducto(txtCodServicioo.getText());
+//            ModeloProducto producto = sql.obtenerDatosProducto(txtCodServicioo.getText());
 ////            if (producto.getCodigo() == null) {
 ////                txtCodProducto.setText(producto.getDescripcion());
 ////            } else {
@@ -3470,7 +3477,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCodProductoKeyReleased
 
     private void txtCodServiciooKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodServiciooKeyReleased
-        ndProducto producto = instancias.getSql().getDatosProducto(txtCodServicioo.getText(), "bdProductos");
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
         txtCodProducto.setText(producto.getDescripcion());
     }//GEN-LAST:event_txtCodServiciooKeyReleased
 
@@ -3595,7 +3602,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
 
@@ -3698,7 +3705,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
         if (nodo.getId() != null) {
             if (nodo.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 return;
             }
 
@@ -4153,7 +4160,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         ndCamposOrdenPredeterminada nodo = instancias.getSql().getDatosCamposOrdenPredeterminada("1");
 
         try {
-            ndProducto prod = instancias.getSql().getDatosProducto(nodo.getServicio(), "bdProductos");
+            ModeloProducto prod = daoProducto.obtenerDatosProducto(nodo.getServicio(), enumBodegas.ID_BODEGA_PRINCIPAL);
             System.out.println(valor);
             valor = prod.getL1();
         } catch (Exception e) {
@@ -4196,25 +4203,25 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         ndOrdenServicio nodoOrden = metodos.llenarOrdenServicio(vector);
 
         if (!instancias.getSql().agregarOrdenServicioOftalmologia(nodoOrden)) {
-            metodos.msgError(this, "Hubo un problema al guardar la orden de servicio");
+            ControladorAlertas.alertFail("Hubo un problema al guardar la orden de servicio");
             return;
         }
 
         if (!instancias.getSql().aumentarConsecutivo("ORDENOF", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ORDENOF")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la orden");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la orden");
             return;
         }
 
         try {
             if (!instancias.getSql().aumentarConsecutivoEps(consecutivo.substring(0, 5), Integer.parseInt((String) instancias.getSql().getNumConsecutivoEps(consecutivo.substring(0, 5))[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la EPS");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la EPS");
                 return;
             }
         } catch (Exception e) {
         }
 
 //        if (!instancias.getSql().aumentarConsecutivo("HSTC", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("HSTC")[0]) + 1)) {
-//            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la historia");
+//            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la historia");
 //            return;
 //        }
 //        System.out.println(instancias.getValor() + "valor");
@@ -4259,7 +4266,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         }
 
         txtCodServicioo.setText(producto);
-        ndProducto producto1 = instancias.getSql().getDatosProducto(producto, "bdProductos");
+        ModeloProducto producto1 = daoProducto.obtenerDatosProducto(producto, enumBodegas.ID_BODEGA_PRINCIPAL);
         txtCodProducto.setText(producto1.getDescripcion());
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

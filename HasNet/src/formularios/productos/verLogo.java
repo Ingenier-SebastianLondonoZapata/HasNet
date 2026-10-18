@@ -1,7 +1,11 @@
 package formularios.productos;
 
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.awt.Image;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -13,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 public final class verLogo extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     Instancias instancias;
 
@@ -22,7 +27,7 @@ public final class verLogo extends javax.swing.JDialog {
 
         setTitle("Vista previa");
         instancias = Instancias.getInstancias();
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
 
         lbTitulo.setText(nodo.getDescripcion());
 

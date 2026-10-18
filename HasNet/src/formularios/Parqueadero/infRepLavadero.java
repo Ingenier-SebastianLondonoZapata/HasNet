@@ -1,7 +1,13 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Utilidades.BaseDatos.SQL;
 import Modelo.Terceros.ModeloContacto;
 import clases.metodosGenerales;
@@ -15,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
 public class infRepLavadero extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -486,10 +493,10 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
 
     private void btnAggProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProvActionPerformed
         if (txtProveedor.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un proveedor");
+            ControladorAlertas.alertFail("Cargue primero un proveedor");
         } else {
             if (yaEsta(cmbProveedor, txtProveedor.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este proveedor");
+                ControladorAlertas.alert("Ya cargo este proveedor");
             } else {
                 cmbProveedor.addItem(txtProveedor.getText());
                 cmbProveedor.setSelectedItem(txtProveedor.getText());
@@ -504,11 +511,11 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -523,11 +530,11 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
 
     private void btnAggProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProdActionPerformed
         if (txtCodigo.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un producto");
+            ControladorAlertas.alertFail("Cargue primero un producto");
         } else {
 
             if (yaEsta(cmbProducto, txtCodigo.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este producto");
+                ControladorAlertas.alert("Ya cargo este producto");
             } else {
                 cmbProducto.addItem(txtCodigo.getText());
                 cmbProducto.setSelectedItem(txtCodigo.getText());
@@ -542,7 +549,7 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemProdActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbCientes.getItemCount() > 0) {
@@ -640,16 +647,11 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
     public void cargarProducto(String codigo) {
         String CodigoProd = "";
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

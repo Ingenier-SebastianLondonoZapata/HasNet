@@ -1,5 +1,7 @@
 package Vista.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import formularios.Ventas.infIndicadoresVentas;
@@ -152,7 +154,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -168,7 +170,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
         if (cmbTiposReportes.getSelectedIndex() == 3) {
@@ -183,7 +185,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -199,7 +201,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
         }
@@ -216,7 +218,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -232,7 +234,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -248,7 +250,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -264,7 +266,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 cmbTiposReportes.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -280,7 +282,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
             jPanel1.setVisible(true);
 //            } else {
 //                jComboBox1.setSelectedIndex(0);
-//                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+//                ControladorAlertas.alert("No tiene permisos para esta función");
 //            }
         }
 
@@ -296,7 +298,7 @@ public class VistaReportesVentas extends javax.swing.JInternalFrame {
             jPanel1.setVisible(true);
 //            } else {
 //                jComboBox1.setSelectedIndex(0);
-//                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+//                ControladorAlertas.alert("No tiene permisos para esta función");
 //            }
         }
 

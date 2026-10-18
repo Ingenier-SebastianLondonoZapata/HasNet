@@ -1,5 +1,11 @@
 package Procesos.Inventario.Vista;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Enums.DetalleTipoProducto;
 import Enums.TipoDocumento;
 import Modelo.Inventario.DetalleProducto;
@@ -13,7 +19,7 @@ import clases.Instancias;
 import Utilidades.Utilidades;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import formularios.productos.buscColores;
 import formularios.productos.buscTallas;
 import java.awt.Color;
@@ -31,6 +37,7 @@ import javax.swing.JDialog;
 import javax.swing.table.TableColumn;
 
 public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     Instancias instancias;
     metodosGenerales metodos = new metodosGenerales();
@@ -41,7 +48,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     BigDecimal valorUnitarioDigitado;
     TableRowSorter modeloOrdenado;
 
-    public VistaMovimientoDetalleProducto(java.awt.Frame parent, boolean modal, ndProducto producto, List<DetalleProducto> detallesProductos,
+    public VistaMovimientoDetalleProducto(java.awt.Frame parent, boolean modal, ModeloProducto producto, List<DetalleProducto> detallesProductos,
             String tipoMovimiento, String tipoDocumento, BigDecimal valorUnitario) {
         super(parent, modal);
         initComponents();
@@ -846,7 +853,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
         tblDetalle.removeEditor();
         tblDetalle.clearSelection();
-        ndProducto productoOficial = instancias.getSql().getDatosProducto(prodOficial, "bdProductos");
+        ModeloProducto productoOficial = daoProducto.obtenerDatosProducto(prodOficial, enumBodegas.ID_BODEGA_PRINCIPAL);
 
         if (tipoMovimiento.equals("Entrada")) {
             if (!validarEntrada()) {
@@ -865,7 +872,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
     private boolean validarEntrada() {
         if (tblDetalle.getRowCount() == 0) {
-            metodos.msgAdvertenciaAjustado(null, "Debe ingresar almenos un registro");
+            ControladorAlertas.alert("Debe ingresar almenos un registro");
             txtImei.requestFocus();
             return false;
         }
@@ -879,7 +886,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
                 }
                 if (id != null && !id.equals("")) {
                     String etiqueta = esTipo(tipoProducto, DetalleTipoProducto.IMEI) ? "imei" : "serial";
-                    metodos.msgError(null, "El " + etiqueta + " '" + obtenerValorTabla(i, 0) + "' ya existe !");
+                    ControladorAlertas.alertFail("El " + etiqueta + " '" + obtenerValorTabla(i, 0) + "' ya existe !");
                     return false;
                 }
             } else {
@@ -889,13 +896,13 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
                     cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3));
                 } catch (Exception e) {
                     seleccionarCeldaError(i, 1);
-                    metodos.msgError(null, "Cantidad invalida");
+                    ControladorAlertas.alertFail("Cantidad invalida");
                     return false;
                 }
 
                 if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
                     seleccionarCeldaError(i, 1);
-                    metodos.msgError(null, "Cantidad debe ser mayor a 0");
+                    ControladorAlertas.alertFail("Cantidad debe ser mayor a 0");
                     return false;
                 }
             }
@@ -917,20 +924,20 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
                     cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
                 } catch (Exception e) {
                     seleccionarCeldaError(i, 1);
-                    metodos.msgAdvertenciaAjustado(null, "La cantidad es inválida");
+                    ControladorAlertas.alert("La cantidad es inválida");
                     return false;
                 }
 
                 if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
                     seleccionarCeldaError(i, 1);
-                    metodos.msgAdvertenciaAjustado(null, "La cantidad debe ser mayor a 0");
+                    ControladorAlertas.alert("La cantidad debe ser mayor a 0");
                     return false;
                 }
 
                 BigDecimal stock = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 3).replace(".", "").replace(",", "."));
                 if (stock.compareTo(cantidad) < 0) {
                     seleccionarCeldaError(i, 1);
-                    metodos.msgAdvertenciaAjustado(null, "¡Cantidades insuficientes!");
+                    ControladorAlertas.alert("¡Cantidades insuficientes!");
                     return false;
                 }
             }
@@ -945,7 +952,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         tblDetalle.transferFocus();
     }
 
-    private void procesarEntrada(ndProducto productoOficial) {
+    private void procesarEntrada(ModeloProducto productoOficial) {
         if (this.tipoDocumento.equals(TipoDocumento.COMPRA.getValor()) || this.tipoDocumento.equals(TipoDocumento.ORDEN_COMPRA.getValor())) {
             VistaIngreso vista = this.tipoDocumento.equals(TipoDocumento.COMPRA.getValor())
                     ? instancias.getIngresos()
@@ -988,26 +995,26 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         return cantidadTotal;
     }
 
-    private void cargarDetalleEnVista(VistaAjusteInventario vista, ndProducto productoOficial) {
+    private void cargarDetalleEnVista(VistaAjusteInventario vista, ModeloProducto productoOficial) {
         vista.eliminarRegistros(productoOficial.getIdSistema());
         BigDecimal cantidadTotal = cargarFilasDetalle(productoOficial.getIdSistema(), productoOficial.getDescripcion(), vista);
         vista.cargarProducto(productoOficial.getIdSistema(), cantidadTotal, 1, "Check-seguridad", "", "", "", "", "", "");
     }
 
-    private void cargarDetalleEnVista(VistaIngreso vista, ndProducto productoOficial) {
+    private void cargarDetalleEnVista(VistaIngreso vista, ModeloProducto productoOficial) {
         vista.eliminarRegistros(productoOficial.getIdSistema());
         BigDecimal cantidadTotal = cargarFilasDetalle(productoOficial.getIdSistema(), productoOficial.getDescripcion(), vista);
         vista.cargarProductoDesdeDetalleProducto(productoOficial.getIdSistema(), cantidadTotal, this.valorUnitarioDigitado);
     }
 
-    private void cargarDetalleInventarioInicial(ndProducto productoOficial) {
+    private void cargarDetalleInventarioInicial(ModeloProducto productoOficial) {
         VistaInventarioInicial invInicial = instancias.getInventarioInicial();
-        invInicial.eliminarRegistros();
+        invInicial.eliminarRegistros(productoOficial.getIdSistema());
         BigDecimal cantidadTotal = cargarFilasDetalle(productoOficial.getIdSistema(), productoOficial.getDescripcion(), invInicial);
-        invInicial.cargarProducto1(Utilidades.formatearCantidadVista(cantidadTotal));
+        invInicial.actualizarCantidadProducto(productoOficial.getIdSistema(), cantidadTotal);
     }
 
-    private void procesarSalida(ndProducto productoOficial) {
+    private void procesarSalida(ModeloProducto productoOficial) {
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
             if (!(Boolean) tblDetalle.getValueAt(i, 4)) {
                 continue;
@@ -1016,7 +1023,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         }
     }
 
-    private void despacharFilaSalida(int i, ndProducto productoOficial) {
+    private void despacharFilaSalida(int i, ModeloProducto productoOficial) {
         BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
         String cod = obtenerValorTabla(i, 6);
         String imei = obtenerValorTabla(i, 0);
@@ -1091,24 +1098,24 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
         if (color.equals("")) {
             if (esTipo(tipoProducto, DetalleTipoProducto.IMEI) || esTipo(tipoProducto, DetalleTipoProducto.SERIAL_COLOR)) {
-                metodos.msgAdvertenciaAjustado(null, "¡ Ingrese el color !");
+                ControladorAlertas.alert("¡ Ingrese el color !");
                 return;
             }
         }
 
         if (imei.equals("")) {
             if (esTipo(tipoProducto, DetalleTipoProducto.IMEI)) {
-                metodos.msgAdvertenciaAjustado(null, "¡ Ingrese el imei !");
+                ControladorAlertas.alert("¡ Ingrese el imei !");
                 return;
             } else {
-                metodos.msgAdvertenciaAjustado(null, "¡ Ingrese el serial !");
+                ControladorAlertas.alert("¡ Ingrese el serial !");
                 return;
             }
         }
 
         if (esTipo(tipoProducto, DetalleTipoProducto.IMEI)) {
             if (imei.length() != 15) {
-                metodos.msgAdvertenciaAjustado(null, "Imei errado, verifique el número");
+                ControladorAlertas.alert("Imei errado, verifique el número");
                 return;
             }
         }
@@ -1116,10 +1123,10 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         for (int i = 0; i < tblDetalle.getRowCount(); i++) {
             if (imei.equals(obtenerValorTabla(i, 0))) {
                 if (esTipo(tipoProducto, DetalleTipoProducto.IMEI)) {
-                    metodos.msgAdvertenciaAjustado(null, "Este imei ya esta cargado");
+                    ControladorAlertas.alert("Este imei ya esta cargado");
                     return;
                 } else {
-                    metodos.msgAdvertenciaAjustado(null, "Este serial ya esta cargado");
+                    ControladorAlertas.alert("Este serial ya esta cargado");
                     return;
                 }
             }
@@ -1145,7 +1152,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
             tblDetalle.removeEditor();
         } else {
-            metodos.msgAdvertencia(null, "Seleccione un registro");
+            ControladorAlertas.alert("Seleccione un registro");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1210,13 +1217,13 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     private void btnCargarColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarColorActionPerformed
         BigDecimal cantidad = Utilidades.convertirBigDecimal(txtCant.getText());
         if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
-            metodos.msgAdvertenciaAjustado(null, "Ingrese la cantidad");
+            ControladorAlertas.alert("Ingrese la cantidad");
             return;
         }
 
         if (esTipo(tipoProducto, DetalleTipoProducto.TALLA)) {
             if (txtTalla.getText().equals("")) {
-                metodos.msgAdvertenciaAjustado(null, "¡Ingrese una talla!");
+                ControladorAlertas.alert("¡Ingrese una talla!");
                 return;
             } else {
                 for (int i = 0; i < tblDetalle.getRowCount(); i++) {
@@ -1236,7 +1243,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
         if (esTipo(tipoProducto, DetalleTipoProducto.COLOR)) {
             if (txtColor1.getText().equals("")) {
-                metodos.msgAdvertenciaAjustado(null, "¡Ingrese un color!");
+                ControladorAlertas.alert("¡Ingrese un color!");
                 return;
             } else {
                 for (int i = 0; i < tblDetalle.getRowCount(); i++) {
@@ -1256,12 +1263,12 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
         if (esTipo(tipoProducto, DetalleTipoProducto.COLOR_TALLA)) {
             if (txtTalla.getText().equals("")) {
-                metodos.msgAdvertenciaAjustado(null, "¡Ingrese una talla!");
+                ControladorAlertas.alert("¡Ingrese una talla!");
                 return;
             }
 
             if (txtColor1.getText().equals("")) {
-                metodos.msgAdvertenciaAjustado(null, "¡Ingrese un color!");
+                ControladorAlertas.alert("¡Ingrese un color!");
                 return;
             }
 
@@ -1327,7 +1334,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         DefaultTableModel modelo = (DefaultTableModel) tblDetalle.getModel();
         BigDecimal cantidad = Utilidades.convertirBigDecimal(txtCant1.getText());
         if (cantidad.compareTo(BigDecimal.ZERO) <= 0) {
-            metodos.msgAdvertenciaAjustado(null, "¡Ingrese la cantidad!");
+            ControladorAlertas.alert("¡Ingrese la cantidad!");
             return;
         }
 
@@ -1338,7 +1345,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         try {
             fechaVencimiento = metodos.desdeDate(dtFVence.getCalendar());
         } catch (Exception e) {
-            metodos.msgAdvertenciaAjustado(null, "Falta fecha de vencimiento");
+            ControladorAlertas.alert("Falta fecha de vencimiento");
             return;
         }
 

@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
@@ -572,7 +574,7 @@ public class infRemision extends javax.swing.JInternalFrame {
         }
 
         if (!seleccionado) {
-            metodos.msgError(this, "Seleccione el tipo de remisión");
+            ControladorAlertas.alertFail("Seleccione el tipo de remisión");
             return;
         }
 
@@ -580,11 +582,11 @@ public class infRemision extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String conse = "REMISION-" + instancias.getSql().getNumConsecutivo("REMISION")[0];
             String especialidad = txtEspecialidad.getText();
@@ -629,19 +631,19 @@ public class infRemision extends javax.swing.JInternalFrame {
             ndRemision nodo = metodos.llenarRemision(vector);
 
             if (!instancias.getSql().agregarRemision(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la remisión");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la remisión");
                 return;
             }
 
             //CAMBIAR CONSECUTIVO INCAPACIDAD
             if (!instancias.getSql().aumentarConsecutivo("REMISION", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("REMISION")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la remisión");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la remisión");
             }
 
             limpiar();
 
-            metodos.msgExito(this, "Remisión registrado con éxito");
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            ControladorAlertas.alertSuccess("Remisión registrado con éxito");
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String tipo1 = "";
                 if (rbtCarta.isSelected()) {
                     tipo1 = "Completa";

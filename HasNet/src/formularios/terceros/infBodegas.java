@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
@@ -538,13 +540,13 @@ public class infBodegas extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
         
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
         
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             
             ndBodega bodega = instancias.getSql().getDatosBodega(txtCodigo.getText());
             
@@ -560,11 +562,11 @@ public class infBodegas extends javax.swing.JInternalFrame {
             ndBodega nodo = metodos.llenarBodega(vector);
             
             if (!instancias.getSql().modificarBodega(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la bodega");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la bodega");
                 return;
             }
             
-            metodos.msgExito(this, "Bodega modificado con éxito");
+            ControladorAlertas.alertSuccess("Bodega modificado con éxito");
             btnNuevoActionPerformed(evt);
             
             btnModificar.setEnabled(false);
@@ -593,12 +595,12 @@ public class infBodegas extends javax.swing.JInternalFrame {
 //        try {
 //            columnas = Integer.parseInt(txtColumnas.getText());
 //        } catch (Exception e) {
-//            metodos.msgError(null, "Ingrese un numero de columnas correcto.");
+//            ControladorAlertas.alertFail("Ingrese un numero de columnas correcto.");
 //            return;
 //        }
 //        
 //        if (columnas > 26) {
-//            metodos.msgError(null, "Son 26 columnas como máximo.");
+//            ControladorAlertas.alertFail("Son 26 columnas como máximo.");
 //            txtColumnas.setText("");
 //            return;
 //        }
@@ -639,7 +641,7 @@ public class infBodegas extends javax.swing.JInternalFrame {
 //        try {
 //            filas = Integer.parseInt(txtFilas.getText());
 //        } catch (Exception e) {
-//            metodos.msgError(null, "Ingrese un numero de filas correcto.");
+//            ControladorAlertas.alertFail("Ingrese un numero de filas correcto.");
 //            return;
 //        }
 //        

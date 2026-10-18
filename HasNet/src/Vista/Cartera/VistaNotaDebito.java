@@ -1,5 +1,7 @@
 package Vista.Cartera;
 
+import Dao.Productos.DaoProducto;
+
 import Consumidor.FacturacionElectronica.consumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
@@ -25,7 +27,7 @@ import Vista.Ventas.VistaInformacionAdicional;
 import clases.Ventas.ndFactura;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Modelo.Ventas.FilaProductoTabla;
 import Modelo.Ventas.OpcionPreparacion;
@@ -72,6 +74,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 public class VistaNotaDebito extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
@@ -1601,7 +1604,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
             cargarTotales();
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1713,9 +1716,9 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     private void cmbListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbListasActionPerformed
         if (tblInventario.getSelectedRow() != -1) {
 
-            String baseUtilizada = obtenerBase();
+            String idBodega = obtenerIdBodega();
 
-            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), baseUtilizada);
+            ModeloProducto codigo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), idBodega);
             String valor = "";
 
             switch ((String) tblInventario.getValueAt(tblInventario.getSelectedRow(), 0)) {
@@ -1723,25 +1726,25 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL1()));
                     break;
                 case "L2":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL2()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(2)));
                     break;
                 case "L3":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL3()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(3)));
                     break;
                 case "L4":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL4()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(4)));
                     break;
                 case "L5":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL5()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(5)));
                     break;
                 case "L6":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL6()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(6)));
                     break;
                 case "L7":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL7()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(7)));
                     break;
                 case "L8":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL8()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(8)));
                     break;
             }
 
@@ -1784,7 +1787,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCarteraKeyTyped
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        if (metodos.msgPregunta(null, "¿Desea limpiar la nota debito?") == 0) {
+        if (ControladorAlertas.option("¿Desea limpiar la nota debito?")) {
             limpiar(true);
         }
     }//GEN-LAST:event_btnLimpiarActionPerformed
@@ -1860,10 +1863,10 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCantProductosMouseClicked
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
-        String baseUtilizada = obtenerBase();
+        String idBodega = obtenerIdBodega();
         String dato = "";
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), idBodega);
 
         String tipo = "", productoEn = "";
         if (nodo.getTipoProd() != null) {
@@ -1895,12 +1898,12 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             }
 
             if (!productoEn.equals("")) {
-                metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
+                ControladorAlertas.alert("La cantidad no se puede modificar");
                 return;
             }
 
             if (!tipo.equals("")) {
-                metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
+                ControladorAlertas.alert("La cantidad no se puede modificar");
                 return;
             }
 
@@ -1930,7 +1933,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (tblProductos.getSelectedColumn() == 22) {
             int fila = tblProductos.getSelectedRow();
             if (tblProductos.getValueAt(fila, 16).equals("REALIZADO")) {
-                metodos.msgAdvertencia(null, "No puede Borrar este producto");
+                ControladorAlertas.alert("No puede Borrar este producto");
                 return;
             }
 
@@ -1944,7 +1947,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             return;
         }
 
-        String baseUtilizada = obtenerBase();
+        String idBodega = obtenerIdBodega();
 
         int fila = tblProductos.getSelectedRow(), i = 2, j = 0;
 
@@ -1977,12 +1980,12 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             if (instancias.isLector()) {
                 if (tblProductos.getSelectedColumn() == 1) {
                     if (!(Boolean) datos[51]) {
-                        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
                         tblProductos.setValueAt(nodo.getDescripcion(), fila, 1);
                     }
                 } else if (tblProductos.getSelectedColumn() == 2) {
                     if (!(Boolean) datos[61]) {
-                        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
                         tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL1())), fila, 2);
                     }
 
@@ -2020,7 +2023,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
                 } else if (tblProductos.getSelectedColumn() == 1) {
 
-                    ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
 
                     if (!(Boolean) datos[51]) {
                         tblProductos.setValueAt(nodo.getDescripcion(), fila, 1);
@@ -2040,22 +2043,22 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     }
 
                     if (!(Boolean) datos[51]) {
-                        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
                         tblProductos.setValueAt(nodo.getDescripcion(), fila, 1);
                     }
 
                     if (!(Boolean) datos[61]) {
-                        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
 
                         String lista = tblInventario.getValueAt(tblProductos.getSelectedRow(), 0).toString();
                         if (lista.equals("L1")) {
                             tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL1())), tblProductos.getSelectedRow(), 2);
                         } else if (lista.equals("L2")) {
-                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL2())), tblProductos.getSelectedRow(), 2);
+                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(2))), tblProductos.getSelectedRow(), 2);
                         } else if (lista.equals("L3")) {
-                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL3())), tblProductos.getSelectedRow(), 2);
+                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(3))), tblProductos.getSelectedRow(), 2);
                         } else if (lista.equals("L4")) {
-                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL4())), tblProductos.getSelectedRow(), 2);
+                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(4))), tblProductos.getSelectedRow(), 2);
                         }
                     }
 
@@ -2065,22 +2068,22 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 } else if (tblProductos.getSelectedColumn() == 3) {
 
                     if (!(Boolean) datos[61]) {
-                        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
 
                         String lista = tblInventario.getValueAt(tblProductos.getSelectedRow(), 0).toString();
                         if (lista.equals("L1")) {
                             tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL1())), tblProductos.getSelectedRow(), 2);
                         } else if (lista.equals("L2")) {
-                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL2())), tblProductos.getSelectedRow(), 2);
+                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(2))), tblProductos.getSelectedRow(), 2);
                         } else if (lista.equals("L3")) {
-                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL3())), tblProductos.getSelectedRow(), 2);
+                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(3))), tblProductos.getSelectedRow(), 2);
                         } else if (lista.equals("L4")) {
-                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL4())), tblProductos.getSelectedRow(), 2);
+                            tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(4))), tblProductos.getSelectedRow(), 2);
                         }
                     }
 
                     String cant = tblProductos.getValueAt(tblProductos.getSelectedRow(), 3).toString();
-                    ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
 
                     String tipo = "";
                     if (nodo.getTipoProducto() != null) {
@@ -2149,7 +2152,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     tblProductos.setValueAt(resta, fila, 20);
 
                     if (resta.compareTo(BigDecimal.ZERO) < 0) {
-                        metodos.msgAdvertencia(this, "No tiene ninguna utilidad!");
+                        ControladorAlertas.alert("No tiene ninguna utilidad!");
                         tblProductos.setValueAt(big.setMoneda(big.getBigDecimal("0")), fila, 19);
                     }
 
@@ -2302,7 +2305,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         tblProductos.setValueAt(resta, fila, 20);
 
                         if (resta.compareTo(BigDecimal.ZERO) < 0) {
-                            metodos.msgAdvertencia(this, "No tiene ninguna utilidad!");
+                            ControladorAlertas.alert("No tiene ninguna utilidad!");
                         }
                     } catch (Exception e) {
                         tblProductos.setValueAt(big.setMoneda(big.getBigDecimal("0")), fila, 19);
@@ -2452,7 +2455,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (txtBodega.isEnabled()) {
             if (!txtBodega.getText().equals("")) {
                 if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar nota debito?") != 0) {
+                    if (!ControladorAlertas.option("¿Limpiar nota debito?")) {
                         txtCodProducto.requestFocus();
                         return;
                     } else {
@@ -2476,7 +2479,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (txtBodega.isEnabled()) {
             if (!txtBodega.getText().equals("")) {
                 if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar nota debito?") != 0) {
+                    if (!ControladorAlertas.option("¿Limpiar nota debito?")) {
                         txtCodProducto.requestFocus();
                         return;
                     } else {
@@ -2496,7 +2499,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (txtBodega.isEnabled()) {
             if (!txtBodega.getText().equals("")) {
                 if (tblProductos.getRowCount() > 0) {
-                    if (metodos.msgPregunta(null, "¿Limpiar nota debito?") != 0) {
+                    if (!ControladorAlertas.option("¿Limpiar nota debito?")) {
                         txtCodProducto.requestFocus();
                         return;
                     } else {
@@ -2620,7 +2623,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             ndFactura datosFactura = instancias.getSql().getDatosFactura("FACT-" + txtRelacion.getText());
             if (datosFactura.getFactura() == null) {
-                metodos.msgAdvertenciaAjustado(this, "La factura no existe");
+                ControladorAlertas.alert("La factura no existe");
             } else {
                 txtFactRelacion.setText("Válida");
             }
@@ -2643,8 +2646,8 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
     private void calcularTabla(int fila, boolean mostrarAlerta) {
 
-        String baseUtilizada = obtenerBase();
-        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+        String idBodega = obtenerIdBodega();
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
 
         BigDecimal valor = BigDecimal.ZERO, cantidad = BigDecimal.ZERO, descuento, subtotal, total, porcentaje2,
                 compra, utilidadMax, utilidadMin, copago, valorDescuento;
@@ -2668,16 +2671,16 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL1())), fila, 2);
                     }
                 } else if (lista.equals("L2")) {
-                    if (valor.compareTo(big.getBigDecimal(nodo.getL2())) != 0) {
-                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL2())), fila, 2);
+                    if (valor.compareTo(big.getBigDecimal(nodo.getPrecioLista(2))) != 0) {
+                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(2))), fila, 2);
                     }
                 } else if (lista.equals("L3")) {
-                    if (valor.compareTo(big.getBigDecimal(nodo.getL3())) != 0) {
-                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL3())), fila, 2);
+                    if (valor.compareTo(big.getBigDecimal(nodo.getPrecioLista(3))) != 0) {
+                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(3))), fila, 2);
                     }
                 } else if (lista.equals("L4")) {
-                    if (valor.compareTo(big.getBigDecimal(nodo.getL4())) != 0) {
-                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL4())), fila, 2);
+                    if (valor.compareTo(big.getBigDecimal(nodo.getPrecioLista(4))) != 0) {
+                        tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(4))), fila, 2);
                     }
                 }
             }
@@ -2690,16 +2693,16 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL1())), fila, 2);
                 }
             } else if (lista.equals("L2")) {
-                if (valor.compareTo(big.getBigDecimal(nodo.getL2())) != 0) {
-                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL2())), fila, 2);
+                if (valor.compareTo(big.getBigDecimal(nodo.getPrecioLista(2))) != 0) {
+                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(2))), fila, 2);
                 }
             } else if (lista.equals("L3")) {
-                if (valor.compareTo(big.getBigDecimal(nodo.getL3())) != 0) {
-                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL3())), fila, 2);
+                if (valor.compareTo(big.getBigDecimal(nodo.getPrecioLista(3))) != 0) {
+                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(3))), fila, 2);
                 }
             } else if (lista.equals("L4")) {
-                if (valor.compareTo(big.getBigDecimal(nodo.getL4())) != 0) {
-                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getL4())), fila, 2);
+                if (valor.compareTo(big.getBigDecimal(nodo.getPrecioLista(4))) != 0) {
+                    tblProductos.setValueAt(big.setMoneda(big.getBigDecimal(nodo.getPrecioLista(4))), fila, 2);
                 }
             }
         }
@@ -2799,25 +2802,25 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 tblProductos.setValueAt(cantidad, fila, 13);
                 break;
             case "2":
-                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad2())), fila, 13);
+                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(2))), fila, 13);
                 break;
             case "3":
-                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad3())), fila, 13);
+                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(3))), fila, 13);
                 break;
             case "4":
-                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad4())), fila, 13);
+                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(4))), fila, 13);
                 break;
             case "5":
-                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad5())), fila, 13);
+                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(5))), fila, 13);
                 break;
             case "6":
-                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad6())), fila, 13);
+                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(6))), fila, 13);
                 break;
             case "7":
-                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad7())), fila, 13);
+                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(7))), fila, 13);
                 break;
             case "8":
-                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidad8())), fila, 13);
+                tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(nodo.getCantidadLista(8))), fila, 13);
                 break;
         }
 
@@ -2829,7 +2832,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             costo = ultimoPonderado.getNuevoPonderado();
         } catch (SQLException ex) {
             Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-            alertas.bigAlert("No se pudo consultar el último ponderado del producto");
+            alertas.alert("No se pudo consultar el último ponderado del producto");
         }
 
         BigDecimal utilidad, valorUnidad;
@@ -2839,11 +2842,8 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         utilidad = utilidad.multiply(big.getBigDecimal(tblProductos.getValueAt(fila, 3).toString().replace(",", ".")));
         tblProductos.setValueAt(big.setMoneda(utilidad), fila, 14);
 
-        if (nodo.getIva().equals("0") || nodo.getIva().equals(".00")) {
-            compra = costo.multiply(big.getBigDecimal(nodo.getIvaC())).divide(new BigDecimal("100")).add(big.getBigDecimal(costo));
-        } else {
-            compra = costo;
-        }
+        // El IVA es uno solo (compra y venta): el costo base es el costo del producto
+        compra = costo;
 
         utilidadMin = (compra.multiply(big.getBigDecimal(nodo.getMinima())).divide(new BigDecimal("100"))).add(compra).setScale(0, BigDecimal.ROUND_HALF_DOWN);
         utilidadMax = (compra.multiply(big.getBigDecimal(nodo.getMaxima())).divide(new BigDecimal("100"))).add(compra).setScale(0, BigDecimal.ROUND_HALF_DOWN);
@@ -2912,7 +2912,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
     private void calcularDiasPlazo(java.awt.event.KeyEvent evt) {
         if (txtNombre.getText().equals("")) {
-            metodos.msgAdvertenciaAjustado(null, "Debe ingresar un cliente");
+            ControladorAlertas.alert("Debe ingresar un cliente");
             txtDiasPlazo.setText("0");
             txtNit.requestFocus();
         }
@@ -3010,10 +3010,10 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
     public void cargarProductos1(Object[][] productos) {
         String cantEstablecida = txtCant.getText();
-        String baseUtilizada = obtenerBase();
+        String idBodega = obtenerIdBodega();
 
         for (int i = 0; i < productos.length; i++) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(productos[i][0].toString(), baseUtilizada);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(productos[i][0].toString(), idBodega);
 
             String codigo = productos[i][0].toString();
             String cantidad = productos[i][1].toString();
@@ -3054,38 +3054,33 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, Boolean agrupar, String talla, String color,
             String temp, String fechaVence, String detalleMensualidad) {
 
-        String baseUtilizada = obtenerBase();
-        ndProducto nodo = null;
+        String idBodega = obtenerIdBodega();
+        ModeloProducto nodo = null;
 
         String CodigoProd = "";
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+            nodo = daoProducto.obtenerDatosProducto(codigo, idBodega);
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
         }
 
         if (!CodigoProd.equals("")) {
-            if (codigo.equals(nodo.getCodigo2())) {
+            if (codigo.equals(nodo.getCodigoLista(2))) {
                 plu = 2;
-            } else if (codigo.equals(nodo.getCodigo3())) {
+            } else if (codigo.equals(nodo.getCodigoLista(3))) {
                 plu = 3;
-            } else if (codigo.equals(nodo.getCodigo4())) {
+            } else if (codigo.equals(nodo.getCodigoLista(4))) {
                 plu = 4;
-            } else if (codigo.equals(nodo.getCodigo5())) {
+            } else if (codigo.equals(nodo.getCodigoLista(5))) {
                 plu = 5;
-            } else if (codigo.equals(nodo.getCodigo6())) {
+            } else if (codigo.equals(nodo.getCodigoLista(6))) {
                 plu = 6;
-            } else if (codigo.equals(nodo.getCodigo7())) {
+            } else if (codigo.equals(nodo.getCodigoLista(7))) {
                 plu = 7;
-            } else if (codigo.equals(nodo.getCodigo8())) {
+            } else if (codigo.equals(nodo.getCodigoLista(8))) {
                 plu = 8;
             }
 
@@ -3095,10 +3090,10 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     if (!idPro.equals("")) {
                         if (idPro.equals(idProd)) {
                             if (!imei.equals("")) {
-                                metodos.msgError(this, "El imei '" + imei + "' ya esta cargado.");
+                                ControladorAlertas.alertFail("El imei '" + imei + "' ya esta cargado.");
                                 return;
                             } else {
-                                metodos.msgError(this, "Este producto con el lote '" + lote + "' ya se cargó.");
+                                ControladorAlertas.alertFail("Este producto con el lote '" + lote + "' ya se cargó.");
                                 return;
 
                             }
@@ -3178,7 +3173,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             }
 
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(null, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
                 lbProducto.requestFocus();
                 return;
             }
@@ -3209,30 +3204,30 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
                     int cant = 0;
 
-                    if (nodo.isPlu2()) {
+                    if (nodo.isPluLista(2)) {
                         cant++;
                     }
-                    if (nodo.isPlu3()) {
+                    if (nodo.isPluLista(3)) {
                         cant++;
                     }
-                    if (nodo.isPlu4()) {
+                    if (nodo.isPluLista(4)) {
                         cant++;
                     }
-                    if (nodo.getPlu5()) {
+                    if (nodo.isPluLista(5)) {
                         cant++;
                     }
-                    if (nodo.getPlu6()) {
+                    if (nodo.isPluLista(6)) {
                         cant++;
                     }
-                    if (nodo.getPlu7()) {
+                    if (nodo.isPluLista(7)) {
                         cant++;
                     }
-                    if (nodo.getPlu8()) {
+                    if (nodo.isPluLista(8)) {
                         cant++;
                     }
 
                     if (cant > 0) {
-                        VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, obtenerBase());
+                        VistaSeleccionarPLU pluu = new VistaSeleccionarPLU(null, true, obtenerIdBodega());
                         pluu.setNotaDebito(this);
                         pluu.setInstancias(instancias, nodo.getIdSistema());
                         pluu.setOpc("NotaDebito");
@@ -3249,8 +3244,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 aux = valor.divide(iva, 2);
                 aux = valor.subtract(aux);
 
-                String cant = nodo.getFisicoInventario();
-                cant = cant.replace(".", ",");
+                String cant = Utilidades.formatearCantidad(nodo.getFisicoInventario());
 
                 aux = aux.divide(new BigDecimal("100"));
                 //
@@ -3259,52 +3253,52 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 String lista = nodo.getL1(), lista1 = "L1";
                 switch (plu) {
                     case 2:
-                        cant2 = nodo.getCantidad2();
-                        desc = nodo.getDescripcion2();
-                        lista = nodo.getL2();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad2()), 2, RoundingMode.HALF_DOWN);
+                        cant2 = nodo.getCantidadLista(2).toPlainString();
+                        desc = nodo.getDescripcionLista(2);
+                        lista = nodo.getPrecioLista(2).toPlainString();
+                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidadLista(2)), 2, RoundingMode.HALF_DOWN);
                         lista1 = "L2";
                         break;
                     case 3:
-                        cant2 = nodo.getCantidad3();
-                        desc = nodo.getDescripcion3();
-                        lista = nodo.getL3();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad3()), 2, RoundingMode.HALF_DOWN);
+                        cant2 = nodo.getCantidadLista(3).toPlainString();
+                        desc = nodo.getDescripcionLista(3);
+                        lista = nodo.getPrecioLista(3).toPlainString();
+                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidadLista(3)), 2, RoundingMode.HALF_DOWN);
                         lista1 = "L3";
                         break;
                     case 4:
-                        cant2 = nodo.getCantidad4();
-                        desc = nodo.getDescripcion4();
-                        lista = nodo.getL4();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad4()), 2, RoundingMode.HALF_DOWN);
+                        cant2 = nodo.getCantidadLista(4).toPlainString();
+                        desc = nodo.getDescripcionLista(4);
+                        lista = nodo.getPrecioLista(4).toPlainString();
+                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidadLista(4)), 2, RoundingMode.HALF_DOWN);
                         lista1 = "L4";
                         break;
                     case 5:
-                        cant2 = nodo.getCantidad5();
-                        desc = nodo.getDescripcion5();
-                        lista = nodo.getL5();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad5()), 2, RoundingMode.HALF_DOWN);
+                        cant2 = nodo.getCantidadLista(5).toPlainString();
+                        desc = nodo.getDescripcionLista(5);
+                        lista = nodo.getPrecioLista(5).toPlainString();
+                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidadLista(5)), 2, RoundingMode.HALF_DOWN);
                         lista1 = "L5";
                         break;
                     case 6:
-                        cant2 = nodo.getCantidad6();
-                        desc = nodo.getDescripcion6();
-                        lista = nodo.getL6();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad6()), 2, RoundingMode.HALF_DOWN);
+                        cant2 = nodo.getCantidadLista(6).toPlainString();
+                        desc = nodo.getDescripcionLista(6);
+                        lista = nodo.getPrecioLista(6).toPlainString();
+                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidadLista(6)), 2, RoundingMode.HALF_DOWN);
                         lista1 = "L6";
                         break;
                     case 7:
-                        cant2 = nodo.getCantidad7();
-                        desc = nodo.getDescripcion7();
-                        lista = nodo.getL7();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad7()), 2, RoundingMode.HALF_DOWN);
+                        cant2 = nodo.getCantidadLista(7).toPlainString();
+                        desc = nodo.getDescripcionLista(7);
+                        lista = nodo.getPrecioLista(7).toPlainString();
+                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidadLista(7)), 2, RoundingMode.HALF_DOWN);
                         lista1 = "L7";
                         break;
                     case 8:
-                        cant2 = nodo.getCantidad8();
-                        desc = nodo.getDescripcion8();
-                        lista = nodo.getL8();
-                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidad8()), 2, RoundingMode.HALF_DOWN);
+                        cant2 = nodo.getCantidadLista(8).toPlainString();
+                        desc = nodo.getDescripcionLista(8);
+                        lista = nodo.getPrecioLista(8).toPlainString();
+                        cant = "" + big.getMoneda(cant).divide(big.getBigDecimal(nodo.getCantidadLista(8)), 2, RoundingMode.HALF_DOWN);
                         lista1 = "L8";
                         break;
                 }
@@ -3438,7 +3432,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             ventanaProductos(codigo);
         } else {
-            metodos.msgError(this, "El codigo no existe");
+            ControladorAlertas.alertFail("El codigo no existe");
             txtCodProducto.setText("");
             lbProducto.requestFocus();
         }
@@ -3447,7 +3441,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     public void eliminarFila() {
         int fila = tblProductos.getSelectedRow();
         if (tblProductos.getValueAt(fila, 16).equals("REALIZADO")) {
-            metodos.msgAdvertencia(null, "No puede Borrar este producto");
+            ControladorAlertas.alert("No puede Borrar este producto");
             return;
         }
 
@@ -3462,30 +3456,18 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         cargarTotales();
     }
 
-    public String obtenerBase() {
-        String baseUtilizada = txtBodega.getText();
+    public String obtenerIdBodega() {
         if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (baseUtilizada.equals("123-22")) {
-                baseUtilizada = "bdProductos";
-            } else if (baseUtilizada.equals("BODEGA-1")) {
-                baseUtilizada = "bdProductosBodega1";
-            } else if (baseUtilizada.equals("BODEGA-2")) {
-                baseUtilizada = "bdProductosBodega2";
-            } else if (baseUtilizada.equals("BODEGA-3")) {
-                baseUtilizada = "bdProductosBodega3";
-            } else if (baseUtilizada.equals("BODEGA-4")) {
-                baseUtilizada = "bdProductosBodega4";
-            }
-        } else {
-            baseUtilizada = "bdProductos";
+            return txtBodega.getText();
         }
-        return baseUtilizada;
+
+        return enumBodegas.ID_BODEGA_PRINCIPAL;
     }
 
     public void cambiarListaCliente() {
         if (tblInventario.getSelectedRow() != -1) {
-            String baseUtilizada = obtenerBase();
-            ndProducto codigo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), baseUtilizada);
+            String idBodega = obtenerIdBodega();
+            ModeloProducto codigo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblInventario.getSelectedRow(), 32).toString(), idBodega);
             String valor = "";
 
             switch ((String) tblInventario.getValueAt(tblInventario.getSelectedRow(), 0)) {
@@ -3493,25 +3475,25 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL1()));
                     break;
                 case "L2":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL2()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(2)));
                     break;
                 case "L3":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL3()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(3)));
                     break;
                 case "L4":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL4()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(4)));
                     break;
                 case "L5":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL5()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(5)));
                     break;
                 case "L6":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL6()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(6)));
                     break;
                 case "L7":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL7()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(7)));
                     break;
                 case "L8":
-                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getL8()));
+                    valor = big.setMonedaExacta(big.getBigDecimal(codigo.getPrecioLista(8)));
                     break;
             }
 
@@ -3547,7 +3529,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         porcentaje2 = porcentaje2.multiply(big.getBigDecimal("100"));
                     } else {
                         if (mostrarAlerta) {
-                            metodos.msgAdvertencia(null, "Este producto no puede generar descuento.");
+                            ControladorAlertas.alert("Este producto no puede generar descuento.");
                         }
                         porcentaje2 = big.getBigDecimal("0");
                         descuento = big.getMoneda("0");
@@ -3564,7 +3546,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         porcentaje2 = big.getBigDecimal(descuento.multiply(big.getBigDecimal("100")).divide(subtotal, 2, RoundingMode.HALF_DOWN));
                     } else {
                         if (mostrarAlerta) {
-                            metodos.msgAdvertencia(null, "Este producto no puede generar descuento.");
+                            ControladorAlertas.alert("Este producto no puede generar descuento.");
                         }
                         porcentaje2 = big.getBigDecimal("0");
                         descuento = big.getMoneda("0");
@@ -3584,7 +3566,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         if (nodo.getIdSistema() != null) {
 
             if (nodo.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 lbNit.requestFocus();
                 return;
             }
@@ -3742,12 +3724,12 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             }
         }
 
-        String baseUtilizada = obtenerBase();
+        String idBodega = obtenerIdBodega();
         Boolean facturarSinInventario = (Boolean) datos[79];
 
         ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura
                 ? null
-                : validarInventarioProductos(baseUtilizada);
+                : validarInventarioProductos(idBodega);
 
         if (!squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoFacturacion,
                 TipoDocumento.NOTA_DEBITO.getValor(), resultadoValidacion, facturarSinInventario, this.saltarPasosFactura)) {
@@ -3766,7 +3748,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
         if (!saltarPasosFactura) {
             if (instancias.getConfiguraciones().isRestaurante()) {
-                agregarAdicionesATabla(baseUtilizada);
+                agregarAdicionesATabla(idBodega);
             }
 
             if (instancias.getRegimen().equals("")) {
@@ -3777,7 +3759,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                             try {
                                 num = Integer.parseInt(metodos.msgIngresarEnter(null, "Ingrese # de bolsas"));
                             } catch (Exception e) {
-                                metodos.msgError(this, "Número no válido");
+                                ControladorAlertas.alertFail("Número no válido");
                                 return "";
                             }
                             if (num > 0) {
@@ -3807,7 +3789,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         }
 
         if (contador > 0) {
-            metodos.msgAdvertencia(this, "¡Hay algunos productos que no tienen utilidad!");
+            ControladorAlertas.alert("¡Hay algunos productos que no tienen utilidad!");
         }
         //FIN DE VALIDACION DE PAGO A TERCEROS
 
@@ -3823,7 +3805,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         }
 
         //OBTENEMOS LA BASE DE LA BODEGA QUE SE ESTA UTILIZANDO
-        String baseUtilizada = obtenerBase();
+        String idBodega = obtenerIdBodega();
 
         //MODULO DE DEVUELTA
         if (devuelta == null) {
@@ -3889,7 +3871,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         }
 
         String factura = "", factura2 = "";
-        dao.Ventas.DaoFactura daoFacturaLocal = new dao.Ventas.DaoFactura();
+        Dao.Ventas.DaoFactura daoFacturaLocal = new Dao.Ventas.DaoFactura();
         factura = "ND-" + prefijo + daoFacturaLocal.getNextConsecutivo("ND");
         factura2 = factura;
 
@@ -4000,7 +3982,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     bodega = "123-22";
                 }
 
-                if (instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada).getUsuario().equalsIgnoreCase("FACTURA")) {
+                if (daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 32).toString(), idBodega).getUsuario().equalsIgnoreCase("FACTURA")) {
                     //instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
                       //      preparacion, bodega);
                 }
@@ -4016,7 +3998,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     ponderado = ultimoPonderado.getNuevoPonderado();
                 } catch (SQLException ex) {
                     Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                    alertas.bigAlert("No se pudo consultar el último ponderado del producto");
+                    alertas.alert("No se pudo consultar el último ponderado del producto");
                 }
 
                 String tipoFacturacion = Constantes.FACTURACION_NORMAL;
@@ -4062,16 +4044,15 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         noPuedaGuardar = instancias.getSql().eliminarFactura(factura);
                     }
 
-                    metodos.msgError(null, "Error al guardar la factura");
+                    ControladorAlertas.alertFail("Error al guardar la factura");
                     return null;
                 }
             }
         }
 
         TipoDocumento tipoMovimiento = TipoDocumento.NOTA_DEBITO;
-        String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-        List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-        ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", tablaUtilizada, instancias.getUsuario(), null);
+        List<MovimientoInventario> productos = generarListadoProductos(idBodega);
+        ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", idBodega, instancias.getUsuario(), null);
 
         try {
             servicioInventario.procesarMovimiento();
@@ -4091,12 +4072,12 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             ndCxc nodoCxc = metodos.llenarCxc(vectCxc);
 
             if (!instancias.getSql().agregarCxc(nodoCxc)) {
-                metodos.msgError(null, "Error al guardar la ND en cartera");
+                ControladorAlertas.alertFail("Error al guardar la ND en cartera");
             }
         }
 
         if (!instancias.getSql().aumentarConsecutivo("ND", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ND")[0]) + 1)) {
-            metodos.msgError(this, "Error al aumentar consecutivo de ND");
+            ControladorAlertas.alertFail("Error al aumentar consecutivo de ND");
         }
 
         lbNoFactura.setText(obtenerPrefijoNotaDebito() + instancias.getSql().getNumConsecutivo("ND")[0].toString());
@@ -4104,7 +4085,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
         if (!saltarPasosFactura) {
             lbObservaciones.requestFocus();
-            metodos.msgExito(null, "Nota debito Exitosa");
+            ControladorAlertas.alertSuccess("Nota debito Exitosa");
         }
 
         if (txtDiasPlazo.getText()
@@ -4122,7 +4103,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 //        }
         if (instancias.isUbicacion()) {
             try {
-                if (metodos.msgPregunta(null, "¿Desea imprimir ubicación?") == 0) {
+                if (ControladorAlertas.option("¿Desea imprimir ubicación?")) {
                     new GeneradorReporteFactura(instancias).ver_Ubicacion(factura2, false);
                 }
             } catch (Exception e) {
@@ -4137,13 +4118,13 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         return factura2;
     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+    private List<MovimientoInventario> generarListadoProductos(String idBodega) {
 
         String SIN_ID_PRODUCTO_DETALLE = "";
         List<MovimientoInventario> movimientos = new ArrayList<>();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), tablaUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 32).toString(), idBodega);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString());
             MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, SIN_ID_PRODUCTO_DETALLE);
             movimientos.add(inventario);
@@ -4152,15 +4133,15 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         return movimientos;
     }
 
-    private ResultadoValidacionInventario validarInventarioProductos(String baseUtilizada) {
+    private ResultadoValidacionInventario validarInventarioProductos(String idBodega) {
         List<FilaProductoTabla> filas = extraerFilasDeTabla();
         ServicioValidacionFactura servicio = new ServicioValidacionFactura(new CargadorProducto() {
             @Override
-            public ndProducto cargar(String codigo, String tabla) {
-                return instancias.getSql().getDatosProducto(codigo, tabla);
+            public ModeloProducto cargar(String codigo, String idBodega) {
+                return daoProducto.obtenerDatosProducto(codigo, idBodega);
             }
         });
-        return servicio.validar(filas, baseUtilizada);
+        return servicio.validar(filas, idBodega);
     }
 
     private List<FilaProductoTabla> extraerFilasDeTabla() {
@@ -4175,9 +4156,9 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         return filas;
     }
 
-    private void agregarAdicionesATabla(String baseUtilizada) {
+    private void agregarAdicionesATabla(String idBodega) {
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 32).toString(), idBodega);
             if (!"FACTURA".equals(nodo.getUsuario())) continue;
 
             String opciones = "";
@@ -4190,7 +4171,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
             for (OpcionPreparacion opcion : ParserPreparacion.opcionesDeSegmento(opciones)) {
                 if (!opcion.activa()) continue;
-                ndProducto nodo1 = instancias.getSql().getDatosProducto(opcion.getCodigo(), baseUtilizada);
+                ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(opcion.getCodigo(), idBodega);
                 if (nodo1.getGrupo() != null && "GRP-02".equals(nodo1.getGrupo())) {
                     cargarProducto(opcion.getCodigo(), Utilidades.formatearCantidad(opcion.getCantidad()), 1, "", "", "", false, "", "", "", "", "");
                     tblProductos.setValueAt("PRODUCTO-AGREGADO", tblProductos.getRowCount() - 1, 31);

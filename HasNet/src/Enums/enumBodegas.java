@@ -35,6 +35,8 @@ public class enumBodegas {
         }
     }
 
+    public static final String ID_BODEGA_PRINCIPAL = TipoBodega.BODEGA_PRINCIPAL.getValue();
+
     public static String obtenerBodega(String bodega) {
         for (TipoBodega tipo : TipoBodega.values()) {
             if (tipo.getValue().equals(bodega)) {
@@ -42,6 +44,23 @@ public class enumBodegas {
             }
         }
         return "";
+    }
+
+    public static String obtenerIdBodega(String codigoOTabla) {
+        for (TipoBodega tipo : TipoBodega.values()) {
+            if (tipo.getValue().equals(codigoOTabla) || tipo.getNombreTabla().equalsIgnoreCase(codigoOTabla)) {
+                return tipo.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Código de la bodega a usar: el de la bodega indicada si la empresa lleva inventario por bodega y existe; si no, la principal.
+     */
+    public static String resolverIdBodega(String bodega, boolean esInventarioPorBodega) {
+        String idBodega = esInventarioPorBodega ? obtenerIdBodega(bodega) : null;
+        return idBodega != null ? idBodega : ID_BODEGA_PRINCIPAL;
     }
 
     public static String obtenerNombreTablaBodega(String bodega, boolean esInventarioPorBodega) {

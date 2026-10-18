@@ -4,8 +4,7 @@ import Enums.TipoProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Ventas.FilaProductoTabla;
 import Modelo.Ventas.ResultadoValidacionInventario;
-import Utilidades.Utilidades;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,11 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Valida si hay inventario suficiente para procesar un documento de venta. No
- * conoce componentes Swing — recibe datos puros y devuelve resultados puros. La
- * validación de márgenes de utilidad es responsabilidad de squemaFacturacion.
- */
 public class ServicioValidacionFactura {
 
     private static final String ID_BOLSA = "PROD-000000032";
@@ -29,28 +23,23 @@ public class ServicioValidacionFactura {
         this.cargadorProducto = cargadorProducto;
     }
 
-    /**
-     * Acumula las cantidades necesarias por ID de producto (directos y
-     * discosteo) y valida contra stock en un único paso, evitando duplicados y
-     * sumando correctamente cuando el mismo insumo aparece en varios contextos.
-     */
-    public ResultadoValidacionInventario validar(List<FilaProductoTabla> filas, String baseUtilizada) {
+    public ResultadoValidacionInventario validar(List<FilaProductoTabla> filas, String idBodega) {
         boolean tieneBolsa = false;
 
         ServicioDiscosteo servicioDiscosteo = new ServicioDiscosteo(cargadorProducto);
 
-        Map<String, BigDecimal> cantidadAcumulada = new LinkedHashMap<String, BigDecimal>();
-        Map<String, ndProducto> productosPorId = new LinkedHashMap<String, ndProducto>();
+        Map<String, BigDecimal> cantidadAcumulada = new LinkedHashMap<>();
+        Map<String, ModeloProducto> productosPorId = new LinkedHashMap<>();
 
         for (FilaProductoTabla fila : filas) {
-            ndProducto producto = cargadorProducto.cargar(fila.getIdProducto(), baseUtilizada);
+            ModeloProducto producto = cargadorProducto.cargar(fila.getIdProducto(), idBodega);
 
             if (ID_BOLSA.equals(fila.getIdProducto())) {
                 tieneBolsa = true;
             }
 
             if (TipoProducto.PRODUCTO_DISENADO.getValue().equals(producto.getUsuario())) {
-                acumularComponentesDiscosteo(producto, fila, baseUtilizada, servicioDiscosteo,
+                acumularComponentesDiscosteo(producto, fila, idBodega, servicioDiscosteo,
                         cantidadAcumulada, productosPorId);
             } else if (producto.getManejaInventario()) {
                 acumularProductoNormal(producto, fila, cantidadAcumulada, productosPorId);
@@ -60,28 +49,28 @@ public class ServicioValidacionFactura {
         return new ResultadoValidacionInventario(validarAcumulados(cantidadAcumulada, productosPorId), tieneBolsa);
     }
 
-    private void acumularProductoNormal(ndProducto producto, FilaProductoTabla fila,
-            Map<String, BigDecimal> cantidadAcumulada, Map<String, ndProducto> productosPorId) {
+    private void acumularProductoNormal(ModeloProducto producto, FilaProductoTabla fila,
+            Map<String, BigDecimal> cantidadAcumulada, Map<String, ModeloProducto> productosPorId) {
         String id = producto.getIdSistema();
         BigDecimal acumulado = cantidadAcumulada.containsKey(id) ? cantidadAcumulada.get(id) : BigDecimal.ZERO;
         cantidadAcumulada.put(id, acumulado.add(fila.getCantidad()));
         productosPorId.put(id, producto);
     }
 
-    private void acumularComponentesDiscosteo(ndProducto producto, FilaProductoTabla fila, String baseUtilizada, ServicioDiscosteo servicioDiscosteo,
-            Map<String, BigDecimal> cantidadAcumulada, Map<String, ndProducto> productosPorId) {
+    private void acumularComponentesDiscosteo(ModeloProducto producto, FilaProductoTabla fila, String idBodega, ServicioDiscosteo servicioDiscosteo,
+            Map<String, BigDecimal> cantidadAcumulada, Map<String, ModeloProducto> productosPorId) {
 
         List<MovimientoInventario> componentes;
 
         try {
-            componentes = servicioDiscosteo.explotar(producto, fila.getPreparacion(), baseUtilizada, fila.getCantidad());
+            componentes = servicioDiscosteo.explotar(producto, fila.getPreparacion(), idBodega, fila.getCantidad());
         } catch (SQLException e) {
             System.err.println(ERROR_EXPLOTAR + producto.getIdSistema() + ": " + e.getMessage());
             return;
         }
 
         for (MovimientoInventario componente : componentes) {
-            ndProducto insumo = componente.getProducto();
+            ModeloProducto insumo = componente.getProducto();
             if (insumo == null) {
                 continue;
             }
@@ -93,14 +82,14 @@ public class ServicioValidacionFactura {
         }
     }
 
-    private List<Object[]> validarAcumulados(Map<String, BigDecimal> cantidadAcumulada, Map<String, ndProducto> productosPorId) {
+    private List<Object[]> validarAcumulados(Map<String, BigDecimal> cantidadAcumulada, Map<String, ModeloProducto> productosPorId) {
 
         List<Object[]> sinInventario = new ArrayList<>();
 
         for (Map.Entry<String, BigDecimal> entry : cantidadAcumulada.entrySet()) {
-            ndProducto producto = productosPorId.get(entry.getKey());
+            ModeloProducto producto = productosPorId.get(entry.getKey());
             BigDecimal necesario = entry.getValue();
-            BigDecimal disponible = Utilidades.convertirBigDecimal(producto.getFisicoInventario());
+            BigDecimal disponible = producto.getFisicoInventario();
 
             if (disponible.subtract(necesario).compareTo(BigDecimal.ZERO) < 0) {
                 sinInventario.add(new Object[]{

@@ -1,5 +1,7 @@
 package formularios;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Vista.Configuraciones.vistaSuperMaestra;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -29,7 +31,7 @@ public class dlgPedirSuperContrasena extends javax.swing.JDialog {
 
             this.dispose();
         } else {
-            metodos.msgError(null, "Contraseña incorrecta");
+            ControladorAlertas.alertFail("Contraseña incorrecta");
 
         }
         this.dispose();

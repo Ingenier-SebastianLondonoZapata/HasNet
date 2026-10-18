@@ -1,5 +1,7 @@
 package formularios.Oftalmologia;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Oftalmologia.ndPaquimetria;
@@ -573,15 +575,15 @@ public class infPaquimetria extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
         if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             int i = 0;
 
@@ -594,20 +596,20 @@ public class infPaquimetria extends javax.swing.JInternalFrame {
             ndPaquimetria nodo = metodos.llenarPaquimetria(vector);
 
             if (!instancias.getSql().agregarPaquimetria(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la paquimetria");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la paquimetria");
                 return;
             }
 
             i++;
 
             if (i > 0) {
-                metodos.msgExito(this, "Paquimetria guardada con exito");
+                ControladorAlertas.alertSuccess("Paquimetria guardada con exito");
             }
 
             new GeneradorReporteOftalmologia(instancias).ver_Paquimetria(consecutivo, false);
 
             if (!instancias.getSql().aumentarConsecutivo("PAQUI", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PAQUI")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la paquimetria");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la paquimetria");
                 return;
             }
 
@@ -665,7 +667,7 @@ public class infPaquimetria extends javax.swing.JInternalFrame {
         ModeloContacto nodo = instancias.getSql().getDatosTercero(codigo);
         if (nodo.getId() != null) {
             if (nodo.isActivo()) {
-                metodos.msgError(this, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 return;
             }
 

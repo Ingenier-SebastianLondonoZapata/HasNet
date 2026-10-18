@@ -1,6 +1,8 @@
 package Vista.ReportesCarteras;
 
-import dao.InicioSesion.DaoInicioSesion;
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -514,10 +516,10 @@ public class VistaReporteAbonos extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
             if (yaEsta(cmbClientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbClientes.addItem(txtCliente.getText());
                 cmbClientes.setSelectedItem(txtCliente.getText());
@@ -533,7 +535,7 @@ public class VistaReporteAbonos extends javax.swing.JPanel {
     private void btnAggProd3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProd3ActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -542,7 +544,7 @@ public class VistaReporteAbonos extends javax.swing.JPanel {
 
     private void btnRemProd3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemProd3ActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ninguna terminal seleccioanda");
+            ControladorAlertas.alertFail("No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
@@ -550,11 +552,11 @@ public class VistaReporteAbonos extends javax.swing.JPanel {
 
     private void btnAggPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggPlacaActionPerformed
         if (txtPlaca.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero una placa");
+            ControladorAlertas.alertFail("Cargue primero una placa");
         } else {
 
             if (yaEsta(cmbPlaca, txtPlaca.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo esta placa");
+                ControladorAlertas.alert("Ya cargo esta placa");
             } else {
                 cmbPlaca.addItem(txtPlaca.getText());
                 cmbPlaca.setSelectedItem(txtPlaca.getText());
@@ -568,7 +570,7 @@ public class VistaReporteAbonos extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRemPlacaActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
 
             String sql = "";
             if (rdCreditos.isSelected()) {

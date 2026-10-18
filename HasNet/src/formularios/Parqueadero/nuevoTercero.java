@@ -1,5 +1,7 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import formularios.Ventas.buscTipoVehiculo;
@@ -260,24 +262,24 @@ public class nuevoTercero extends javax.swing.JDialog {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
         Object[][] placas = instancias.getSql().getPlacas();
         for (int i = 0; i < placas.length; i++) {
             if (txtPlaca.getText().equals(placas[i][1])) {
-                metodos.msgError(null, "Esta placa ya esta registrada");
+                ControladorAlertas.alertFail("Esta placa ya esta registrada");
                 return;
             }
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             if (!instancias.getSql().agregarPlacas(txtIdSistema.getText(), txtPlaca.getText(), txtTipoVehiculo.getText(),
                     txtModelo.getText(), txtMarca.getText(), txtColor.getText(), "", "", "")) {
-                metodos.msgError(null, "Hubo un error al guardar las placas");
+                ControladorAlertas.alertFail("Hubo un error al guardar las placas");
             } else {
-                metodos.msgExito(null, "Placa registrada con exito");
+                ControladorAlertas.alertSuccess("Placa registrada con exito");
                 this.dispose();
             }
         }

@@ -1,5 +1,7 @@
 package Vista.Documentos;
 
+import Dao.Productos.DaoProducto;
+
 import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
@@ -30,9 +32,9 @@ import clases.Ventas.ndPedido;
 import clases.Ventas.ndPlanSepare;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
-import dao.Terceros.DaoTerceros;
-import dao.Ventas.DaoReimpresiones;
+import Modelo.Productos.ModeloProducto;
+import Dao.Terceros.DaoTerceros;
+import Dao.Ventas.DaoReimpresiones;
 import Procesos.Inventario.Servicio.CargadorProducto;
 import Procesos.Inventario.Servicio.ServicioDiscosteo;
 import Procesos.Inventario.Servicio.ServicioInventario;
@@ -58,6 +60,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class VistaDocumentos extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private final DaoReimpresiones daoReimpresiones = new DaoReimpresiones();
     private final DaoTerceros daoTerceros = new DaoTerceros();
@@ -1583,7 +1586,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             permisos.setLocationRelativeTo(null);
             permisos.setVisible(true);
         } else {
-            if (metodos.msgPregunta(this, "¿Desea continuar?") != 0) {
+            if (!ControladorAlertas.option("¿Desea continuar?")) {
                 return;
             } else {
                 String nota = metodos.msgIngresar(null, "NOTA: ");
@@ -1704,12 +1707,12 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }
 
     private void actualizarInventarioMovimiento() {
-        String baseUtilizada = enumBodegas.obtenerNombreTablaBodega(BODEGA_SELECCIONADA, instancias.getConfiguraciones().isInventarioBodegas());
+        String idBodega = enumBodegas.resolverIdBodega(BODEGA_SELECCIONADA, instancias.getConfiguraciones().isInventarioBodegas());
 
         if (cmbTipoDocumento.getSelectedItem().equals("FACTURA")) {
             // Anula los documentos de costeo de los discosteos (efecto ajeno al inventario)
             for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                ndProducto producto = instancias.getSql().getDatosProducto(obtenerValorTabla(i, 14), baseUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(obtenerValorTabla(i, 14), idBodega);
                 String tipoProducto = producto.getUsuario() == null ? "ADMIN" : producto.getUsuario();
 
                 if (!tipoProducto.equals("ADMIN")) {
@@ -1724,35 +1727,33 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             String numeroAnulacion = "Anulación-" + (String) instancias.getSql().getNumConsecutivo("ANULA")[0];
 
             try {
-                List<MovimientoInventario> productos = generarListadoProductos(baseUtilizada);
+                List<MovimientoInventario> productos = generarListadoProductos(idBodega);
                 ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(),
-                        tipoMovimiento, numeroAnulacion, baseUtilizada, instancias.getUsuario(), null);
+                        tipoMovimiento, numeroAnulacion, idBodega, instancias.getUsuario(), null);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaDocumentos.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (cmbTipoDocumento.getSelectedItem().equals("PLAN SEPARE")) {
             TipoDocumento tipoMovimiento = TipoDocumento.ANULAR_PLAN_SEPARE;
-            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
             String numeroAnulacion = "Anulación-" + (String) instancias.getSql().getNumConsecutivo("ANULA")[0];
 
             try {
-                List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+                List<MovimientoInventario> productos = generarListadoProductos(idBodega);
                 ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento,
-                        numeroAnulacion, tablaUtilizada, instancias.getUsuario(), null);
+                        numeroAnulacion, idBodega, instancias.getUsuario(), null);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (cmbTipoDocumento.getSelectedItem().equals("PEDIDOS")) {
             TipoDocumento tipoMovimiento = TipoDocumento.ANULAR_PEDIDO;
-            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
             String numeroAnulacion = "Anulación-" + (String) instancias.getSql().getNumConsecutivo("ANULA")[0];
 
             try {
-                List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
+                List<MovimientoInventario> productos = generarListadoProductos(idBodega);
                 ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento,
-                        numeroAnulacion, tablaUtilizada, instancias.getUsuario(), null);
+                        numeroAnulacion, idBodega, instancias.getUsuario(), null);
                 servicioInventario.procesarMovimiento();
             } catch (SQLException ex) {
                 Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
@@ -1765,36 +1766,36 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         actualizarEstadosDocumento(nota);
         actualizarInventarioMovimiento();
 
-        metodos.msgExito(this, "Registro anulado con éxito");
+        ControladorAlertas.alertSuccess("Registro anulado con éxito");
         tapPanel.setSelectedIndex(0);
         actualizarTablaDocumentos();
 
         if (!instancias.getSql().aumentarConsecutivo("ANULA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ANULA")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la anulación");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la anulación");
         }
 
     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) throws SQLException {
+    private List<MovimientoInventario> generarListadoProductos(String idBodega) throws SQLException {
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
 
         ServicioDiscosteo servicioDiscosteo = new ServicioDiscosteo(new CargadorProducto() {
             @Override
-            public ndProducto cargar(String codigo, String tabla) {
-                return instancias.getSql().getDatosProducto(codigo, tabla);
+            public ModeloProducto cargar(String codigo, String idBodega) {
+                return daoProducto.obtenerDatosProducto(codigo, idBodega);
             }
         });
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto producto = instancias.getSql().getDatosProducto(obtenerValorTabla(i, 14), tablaUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(obtenerValorTabla(i, 14), idBodega);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 13));
             String idDetalleProducto = obtenerValorTabla(i, 9);
 
             movimientos.add(new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, idDetalleProducto));
 
             String preparacion = obtenerValorTabla(i, 10);
-            movimientos.addAll(servicioDiscosteo.explotarSiEsDiscosteo(producto, preparacion, tablaUtilizada, cantidad));
+            movimientos.addAll(servicioDiscosteo.explotarSiEsDiscosteo(producto, preparacion, idBodega, cantidad));
         }
 
         return movimientos;
@@ -2127,7 +2128,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         if (bodegaDocumento == null && bodegaDocumento.isEmpty()) {
             BODEGA_SELECCIONADA = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
         } else {
-            BODEGA_SELECCIONADA = enumBodegas.obtenerNombreTablaBodega(bodegaDocumento, instancias.getConfiguraciones().isInventarioBodegas());
+            BODEGA_SELECCIONADA = enumBodegas.resolverIdBodega(bodegaDocumento, instancias.getConfiguraciones().isInventarioBodegas());
         }
 
         String obs = datosDocumento.getObservaciones();

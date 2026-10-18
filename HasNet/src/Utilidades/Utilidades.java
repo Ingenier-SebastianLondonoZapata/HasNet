@@ -26,6 +26,8 @@ public class Utilidades {
         }
     }
 
+    private static final java.util.regex.Pattern PUNTO_MILES = java.util.regex.Pattern.compile("-?\\d{1,3}(\\.\\d{3})+");
+
     public static BigDecimal convertirBigDecimal(String valor) {
         if (valor == null || valor.trim().isEmpty()) {
             return BigDecimal.ZERO;
@@ -35,6 +37,8 @@ public class Utilidades {
             String limpio = valor.trim();
             if (limpio.contains(",")) {
                 limpio = limpio.replace(".", "").replace(",", ".");
+            } else if (PUNTO_MILES.matcher(limpio).matches() && !limpio.matches("-?0\\.\\d{3}")) {
+                limpio = limpio.replace(".", "");
             }
             return new BigDecimal(limpio);
         } catch (NumberFormatException e) {

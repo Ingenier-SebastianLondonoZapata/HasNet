@@ -1,5 +1,7 @@
 package formularios.Labotario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import formularios.Medico.*;
 import clases.Instancias;
@@ -1630,11 +1632,11 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnGuardarConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarConsultaActionPerformed
         if (cmbTipoDiagnostico.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Debe seleccionar un tipo de diagnostico");
+            ControladorAlertas.alertFail("Debe seleccionar un tipo de diagnostico");
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?. No podra realizar cambios posteriormente") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?. No podra realizar cambios posteriormente")) {
 
             int i = 0;
 
@@ -1683,16 +1685,16 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
                 nodo2.setCup(consulta);
 
                 if (!instancias.getSql().modificarOrdenServicioLaboratorio(nodo2)) {
-                    metodos.msgError(this, "Hubo un problema al modificar la orden");
+                    ControladorAlertas.alertFail("Hubo un problema al modificar la orden");
                     return;
                 }
 
                 if (!instancias.getSql().agregarConsultaLaboratorio(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar la Consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar la Consulta");
                     return;
                 }
                 if (!instancias.getSql().aumentarConsecutivo("CONSULTALAB", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CONSULTALAB")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la consulta");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la consulta");
                 }
 
                 i++;
@@ -1703,7 +1705,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
             }
 
             if (i > 0) {
-                metodos.msgExito(this, "Historia guardada con exito");
+                ControladorAlertas.alertSuccess("Historia guardada con exito");
                 consultaEditable(true);
                 setPaciente(txtId.getText());
                 orden = null;
@@ -1825,10 +1827,10 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
         System.out.println("Genero Cie " + genero);
         if (genero.equals("H") && !(txtGenero.getText().equals("Masculino") || txtGenero.getText().equals("masculino") || txtGenero.getText().equals("MASCULINO"))) {
-            metodos.msgError(this, "Este Cie es de genero masculino");
+            ControladorAlertas.alertFail("Este Cie es de genero masculino");
             return false;
         } else if (genero.equals("M") && !(txtGenero.getText().equals("Femenino") || txtGenero.getText().equals("femenino") || txtGenero.getText().equals("FEMENINO"))) {
-            metodos.msgError(this, "Este Cie es de genero femenino");
+            ControladorAlertas.alertFail("Este Cie es de genero femenino");
             return false;
         }
 
@@ -1944,10 +1946,10 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
             return true;
         } else {
             if (!cumpleMaximo) {
-                metodos.msgError(this, "Sobrepasa la edad maxima permitida.");
+                ControladorAlertas.alertFail("Sobrepasa la edad maxima permitida.");
                 return false;
             } else {
-                metodos.msgError(this, "No cumple con la edad minima requerida.");
+                ControladorAlertas.alertFail("No cumple con la edad minima requerida.");
                 return false;
             }
         }
@@ -2053,7 +2055,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnReimprimirConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirConsultaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgError(this, "Seleccione una consulta");
+            ControladorAlertas.alertFail("Seleccione una consulta");
             return;
         }
         ModeloContacto Paciente = instancias.getSql().getDatosTercero(paciente);
@@ -2443,7 +2445,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnAcidoUricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcidoUricoActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getAcidoUrico().cargar(txtId.getText(), lista.getSelectedValue().toString().split(" - ")[0]);
@@ -2452,7 +2454,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnAntiestreptolisinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAntiestreptolisinaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2461,7 +2463,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnCannabinoidesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCannabinoidesActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2470,7 +2472,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnCocainaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCocainaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2479,7 +2481,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnCoprologicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCoprologicoActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2488,7 +2490,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnCoprogramaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCoprogramaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2497,7 +2499,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnColesterolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColesterolActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2506,7 +2508,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnSerologiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSerologiaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2515,7 +2517,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnCitoquimicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCitoquimicoActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2524,7 +2526,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnDirectoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDirectoActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2533,7 +2535,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnGlicemiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGlicemiaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2542,7 +2544,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnHemogramaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHemogramaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2551,7 +2553,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnHemoclasificacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHemoclasificacionActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2560,7 +2562,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnTiemposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTiemposActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2569,7 +2571,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnCreatininaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreatininaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2578,7 +2580,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnFactorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFactorActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2587,7 +2589,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnHemoglobinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHemoglobinaActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgAdvertencia(this, "Debe cargar un paciente");
+            ControladorAlertas.alert("Debe cargar un paciente");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2596,7 +2598,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnSangreOcultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSangreOcultaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2605,7 +2607,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnKohActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKohActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgAdvertencia(this, "Debe cargar un paciente");
+            ControladorAlertas.alert("Debe cargar un paciente");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2614,7 +2616,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnPruebaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPruebaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2623,7 +2625,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnProteinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProteinaActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -2632,7 +2634,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
 
     private void btnPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerfilActionPerformed
         if (lista.getSelectedIndex() == 0) {
-            metodos.msgAdvertencia(this, "Debe de generar una consulta asociada");
+            ControladorAlertas.alert("Debe de generar una consulta asociada");
             return;
         }
         instancias.getMenu().ocultarMenu("preparacion");
@@ -3269,20 +3271,20 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         ndOrdenServicio nodoOrden = metodos.llenarOrdenServicio(vector);
 
         if (!instancias.getSql().agregarOrdenServicioLaboratorio(nodoOrden)) {
-            metodos.msgError(this, "Hubo un problema al guardar la Orden de servicio");
+            ControladorAlertas.alertFail("Hubo un problema al guardar la Orden de servicio");
             return;
         }
 
         try {
             if (!instancias.getSql().aumentarConsecutivoEps(consecutivo.substring(0, 5), Integer.parseInt((String) instancias.getSql().getNumConsecutivoEps(consecutivo.substring(0, 5))[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la EPS");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la EPS");
             }
         } catch (Exception e) {
-            metodos.msgAdvertencia(this, "El paciente no tiene ninguna EPS, debe tener una asociada.");
+            ControladorAlertas.alert("El paciente no tiene ninguna EPS, debe tener una asociada.");
         }
 
         if (!instancias.getSql().aumentarConsecutivo("ORDENLAB", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ORDENLAB")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la orden");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la orden");
         }
     }
 

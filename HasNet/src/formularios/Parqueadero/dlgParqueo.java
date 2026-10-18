@@ -1,5 +1,7 @@
 package formularios.Parqueadero;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.Parqueadero.ndParqueadero;
 import Utilidades.BaseDatos.SQL;
@@ -499,20 +501,20 @@ public class dlgParqueo extends javax.swing.JDialog {
 
     private void btnCascosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCascosActionPerformed
         if (txtPlaca.getText().equals("")) {
-            metodos.msgAdvertenciaAjustado(null, "No puede continuar, falta la placa");
+            ControladorAlertas.alert("No puede continuar, falta la placa");
             return;
         }
 
         if (txtPlaca.getText().length() < 5) {
             lbServicio1.requestFocus();
-            metodos.msgAdvertencia(null, "Placa no válida, verifiquela e intente de nuevo");
+            ControladorAlertas.alert("Placa no válida, verifiquela e intente de nuevo");
             return;
         }
 
         Object[][] parq = instancias.getSql().getRegistrosParqueaderoAutos(txtPlaca.getText());
         if (parq.length > 0) {
             if (pnlPago.isVisible() == false) {
-                metodos.msgAdvertencia(null, "La misma placa ya se encuentra dentro del parqueadero.");
+                ControladorAlertas.alert("La misma placa ya se encuentra dentro del parqueadero.");
                 return;
             }
         }
@@ -562,13 +564,13 @@ public class dlgParqueo extends javax.swing.JDialog {
 
     public void validacionEntrada() {
         if (txtPlaca.getText().equals("")) {
-            metodos.msgAdvertenciaAjustado(null, "No puede continuar, falta la placa");
+            ControladorAlertas.alert("No puede continuar, falta la placa");
             return;
         }
 
         if (txtPlaca.getText().length() < 5) {
             lbServicio1.requestFocus();
-            metodos.msgAdvertencia(null, "Placa no válida, verifiquela e intente de nuevo");
+            ControladorAlertas.alert("Placa no válida, verifiquela e intente de nuevo");
             return;
         }
 
@@ -577,7 +579,7 @@ public class dlgParqueo extends javax.swing.JDialog {
         if (parq.length > 0) {
 
             if (pnlPago.isVisible() == false) {
-                metodos.msgAdvertencia(null, "La misma placa ya se encuentra dentro del parqueadero.");
+                ControladorAlertas.alert("La misma placa ya se encuentra dentro del parqueadero.");
                 return;
             }
 
@@ -596,12 +598,12 @@ public class dlgParqueo extends javax.swing.JDialog {
                 System.out.println("dias plazo " + diasPlazo);
 
                 if (!diasPlazo.equals("") && nodo2.getId().equals("1010")) {
-                    metodos.msgError(null, "No puede realizar ventas a credito a este cliente, porque no esta registrado.");
+                    ControladorAlertas.alertFail("No puede realizar ventas a credito a este cliente, porque no esta registrado.");
                     txtDiasPlazo.setText("");
                     return;
                 }
 
-                if (metodos.msgPregunta(null, "¿Desea continuar") == 0) {
+                if (ControladorAlertas.option("¿Desea continuar")) {
                     /* OBTENEMOS EL PROXIMO CONSECUTIVO PARA RELACIONARLO AL PARQUEO Y PODER REALIZAR LA CONSULTA */
                     String numFactura = "";
                     //instancias.getFactura().desdeParqueadero(nodo2.getId(),
@@ -609,7 +611,7 @@ public class dlgParqueo extends javax.swing.JDialog {
 
                     if (!instancias.getSql().finalizarParqueadero(idParqueadero, metodos.fechaConsulta(txtFechaSalida.getText()), txtHoraSalida.getText(),
                             String.valueOf(horasTotales), numFactura)) {
-                        metodos.msgError(null, "Error al realizar la salida.");
+                        ControladorAlertas.alertFail("Error al realizar la salida.");
                         return;
                     }
 
@@ -620,10 +622,10 @@ public class dlgParqueo extends javax.swing.JDialog {
             } else {
                 if (!instancias.getSql().finalizarParqueadero(idParqueadero, txtFechaSalida.getText(), txtHoraSalida.getText(),
                         String.valueOf(horasTotales), "")) {
-                    metodos.msgError(null, "No fue posible realizar la salida de este vehiculo.");
+                    ControladorAlertas.alertFail("No fue posible realizar la salida de este vehiculo.");
                     return;
                 } else {
-                    metodos.msgExito(null, "Parqueo finalizado con exito.");
+                    ControladorAlertas.alertSuccess("Parqueo finalizado con exito.");
                 }
 
                 instancias.getParqueadero().actualizarTablas();
@@ -639,14 +641,14 @@ public class dlgParqueo extends javax.swing.JDialog {
             ndParqueadero nodo = metodos.llenarParqueaderoAutos(vector);
 
             if (!instancias.getSql().agregarParqueaderoAutos(nodo)) {
-                metodos.msgError(null, "Hubo un error al guardar este registro");
+                ControladorAlertas.alertFail("Hubo un error al guardar este registro");
                 return;
             } else {
                 if (!instancias.getSql().aumentarConsecutivo("PRQ", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PRQ")[0]) + 1)) {
-                    metodos.msgError(null, "Hubo un problema al guardar en el consecutivo");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
                 }
 
-                metodos.msgExito(null, "Parqueo registrado con exito");
+                ControladorAlertas.alertSuccess("Parqueo registrado con exito");
                 instancias.getParqueadero().actualizarTablas();
                 this.dispose();
             }

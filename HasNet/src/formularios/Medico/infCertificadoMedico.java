@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndCertificadoMedico;
@@ -1383,20 +1385,20 @@ public class infCertificadoMedico extends javax.swing.JPanel {
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String conse = "CERTIFICADOMED-" + instancias.getSql().getNumConsecutivo("CERTIFICADOMED")[0];
             ndCertificadoMedico nodo = instancias.getSql().getDatosCertificadoMedico(conse, "");
 
             if (nodo.getId() != null) {
                 if (!instancias.getSql().aumentarConsecutivo("CERTIFICADOMED", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CERTIFICADOMED")[0]) + 1)) {
-                    metodos.msgError(null, "Hubo un problema al aumentar el consecutivo del certificado");
+                    ControladorAlertas.alertFail("Hubo un problema al aumentar el consecutivo del certificado");
                 }
 
                 conse = "CERTIFICADOMED-" + instancias.getSql().getNumConsecutivo("CERTIFICADOMED")[0];
                 while (instancias.getSql().getDatosRemision(conse).getId() != null) {
                     if (!instancias.getSql().aumentarConsecutivo("CERTIFICADOMED", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CERTIFICADOMED")[0]) + 1)) {
-                        metodos.msgError(null, "Hubo un problema al aumentar el consecutivo del certificado");
+                        ControladorAlertas.alertFail("Hubo un problema al aumentar el consecutivo del certificado");
                     }
                     conse = "CERTIFICADOMED-" + instancias.getSql().getNumConsecutivo("CERTIFICADOMED")[0];
                 }
@@ -1413,14 +1415,14 @@ public class infCertificadoMedico extends javax.swing.JPanel {
             nodo = metodos.llenarCertificadoMedico(vector);
 
             if (!instancias.getSql().agregarCertificadoMedico(nodo, "")) {
-                metodos.msgError(null, "Error al guardar la consulta");
+                ControladorAlertas.alertFail("Error al guardar la consulta");
                 return;
             } else {
-                metodos.msgExito(null, "Certificado generado con exito!");
+                ControladorAlertas.alertSuccess("Certificado generado con exito!");
             }
 
             if (!instancias.getSql().aumentarConsecutivo("CERTIFICADOMED", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CERTIFICADOMED")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del certificado");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del certificado");
                 return;
             }
 
@@ -1565,7 +1567,7 @@ public class infCertificadoMedico extends javax.swing.JPanel {
                 txtimc.setText("");
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
-            metodos.msgError(null, "Esta función solo sirve con ENTER");
+            ControladorAlertas.alertFail("Esta función solo sirve con ENTER");
         }
     }//GEN-LAST:event_txtEstaturaKeyReleased
 

@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -244,12 +246,12 @@ public class buscRazas extends javax.swing.JDialog {
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         String aux = instancias.getSql().getDatosRazas(txtId.getText());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Desea agregar la raza?") == 0) {
+            if (ControladorAlertas.option("¿Desea agregar la raza?")) {
                 if (!instancias.getSql().agregarRaza(txtId.getText().toUpperCase(), tipo)) {
-                    metodos.msgError(null, "Error al ingresar la raza");
+                    ControladorAlertas.alertFail("Error al ingresar la raza");
                     return;
                 }
-                metodos.msgExito(null, "Raza ingresada con exito");
+                ControladorAlertas.alertSuccess("Raza ingresada con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.terceros.buscClientes;
 import clases.Instancias;
 import clases.Veterinario.ndMascota;
@@ -357,11 +359,11 @@ public class infRepHospitalizacion extends javax.swing.JInternalFrame {
 
     private void btnAggMascotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggMascotaActionPerformed
         if (txtMascotas.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero una mascota");
+            ControladorAlertas.alertFail("Cargue primero una mascota");
         } else {
 
             if (yaEsta(cmbMascotas, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo esta mascota");
+                ControladorAlertas.alert("Ya cargo esta mascota");
             } else {
                 cmbMascotas.addItem(txtMascotas.getText());
                 cmbMascotas.setSelectedItem(txtMascotas.getText());
@@ -377,11 +379,11 @@ public class infRepHospitalizacion extends javax.swing.JInternalFrame {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
 
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -396,7 +398,7 @@ public class infRepHospitalizacion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemClienteActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
             int x = 0;
 

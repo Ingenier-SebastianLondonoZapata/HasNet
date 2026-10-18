@@ -1,11 +1,18 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+import Procesos.Inventario.Dao.DaoInventario;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesArmado.GeneradorReporteArmado;
 import Vista.Productos.VistaBuscadorProductos;
 import Modelo.Inventario.UltimoPonderado;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import clases.Instancias;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Vista.Productos.VistaInventarioInicial;
 import clases.big;
 import clases.metodosGenerales;
@@ -26,6 +33,8 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infArmado extends javax.swing.JInternalFrame {
+    private final DaoInventario daoInventario = new DaoInventario();
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -627,7 +636,7 @@ public class infArmado extends javax.swing.JInternalFrame {
                 res = big.getBigDecimal(big.getMoneda((String) tblProductos.getValueAt(fila, i))).compareTo(big.getBigDecimal("0"));
             } catch (Exception e) {
                 tblProductos.setValueAt("", fila, 4);
-                metodos.msgError(this, "Un diseño fijo debe llevar las cantidades");
+                ControladorAlertas.alertFail("Un diseño fijo debe llevar las cantidades");
                 return;
             }
 
@@ -641,7 +650,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             } catch (Exception e) {
             }
 
-            String baseUtilizada = obtenerBase();
+            String idBodega = obtenerIdBodega();
 
             if (cantidad.compareTo(BigDecimal.ZERO) == 0) {
                 tblProductos.setValueAt("", fila, 2);
@@ -652,13 +661,13 @@ public class infArmado extends javax.swing.JInternalFrame {
                         tblProductos.setValueAt(big.setNumero(cantidad), fila, 4);
                         break;
                     case "2":
-                        tblProductos.setValueAt((cantidad.multiply(big.getMoneda(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), baseUtilizada).getCantidad2()))).toString().replace(".", ","), fila, 4);
+                        tblProductos.setValueAt((cantidad.multiply(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), idBodega).getCantidadLista(2))).toString().replace(".", ","), fila, 4);
                         break;
                     case "3":
-                        tblProductos.setValueAt((cantidad.multiply(big.getMoneda(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), baseUtilizada).getCantidad3()))).toString().replace(".", ","), fila, 4);
+                        tblProductos.setValueAt((cantidad.multiply(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), idBodega).getCantidadLista(3))).toString().replace(".", ","), fila, 4);
                         break;
                     case "4":
-                        tblProductos.setValueAt((cantidad.multiply(big.getMoneda(instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 0).toString(), baseUtilizada).getCantidad4()))).toString().replace(".", ","), fila, 4);
+                        tblProductos.setValueAt((cantidad.multiply(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), idBodega).getCantidadLista(4))).toString().replace(".", ","), fila, 4);
                         break;
                 }
                 tblProductos.setValueAt(big.setNumero(cantidad), fila, 2);
@@ -671,8 +680,8 @@ public class infArmado extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String codigo = txtCodProducto.getText();
 
-            String baseUtilizada = obtenerBase();
-            cargarProducto(codigo.replace("'", "//"), baseUtilizada);
+            String idBodega = obtenerIdBodega();
+            cargarProducto(codigo.replace("'", "//"), idBodega);
         }
     }//GEN-LAST:event_txtCodProductoKeyReleased
 
@@ -696,7 +705,7 @@ public class infArmado extends javax.swing.JInternalFrame {
         if (xyz > 0) {
             for (int i = 0; i < xyz; i++) {
                 if (tblProductos.getValueAt(i, 2).equals("0") || tblProductos.getValueAt(i, 2).equals("")) {
-                    metodos.msgError(this, "Todos los productos deben de tener cantidad");
+                    ControladorAlertas.alertFail("Todos los productos deben de tener cantidad");
                     return;
                 }
 
@@ -708,10 +717,10 @@ public class infArmado extends javax.swing.JInternalFrame {
         }
 
         if (tblProductos.getRowCount() == 0) {
-            metodos.msgError(this, "No ha añadido ningun producto");
+            ControladorAlertas.alertFail("No ha añadido ningun producto");
         } else {
 
-            if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+            if (ControladorAlertas.option("¿Desea continuar?")) {
             } else {
                 return;
             }
@@ -726,7 +735,7 @@ public class infArmado extends javax.swing.JInternalFrame {
 
             if (!instancias.getSql().agregarCosteo(doc, metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), String.valueOf(cant),
                     txtIdSistema.getText(), "COSTEO", big.getMoneda(txtValor3.getText()), txtBodega.getText())) {
-                metodos.msgError(this, "Error al guardar el costeo");
+                ControladorAlertas.alertFail("Error al guardar el costeo");
                 return;
             }
 
@@ -734,34 +743,34 @@ public class infArmado extends javax.swing.JInternalFrame {
                 if (!instancias.getSql().agregarCosteoProd(doc, tblProductos.getValueAt(i, 0).toString(),
                         big.getMoneda(tblProductos.getValueAt(i, 4).toString()).toString(),
                         big.getMoneda(tblProductos.getValueAt(i, 4).toString()).multiply(big.getBigDecimal(cant)).toString())) {
-                    metodos.msgError(this, "Error al guardar detalle costeo");
+                    ControladorAlertas.alertFail("Error al guardar detalle costeo");
                     return;
                 }
             }
 
-            String baseUtilizada = obtenerBase();
+            String idBodega = obtenerIdBodega();
 
-            ndProducto producto = instancias.getSql().getDatosProducto(txtCodigo.getText(), baseUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodigo.getText(), idBodega);
             double cantidad;
             double fisicoInventario;
             double inventario;
 
             try {
-                cantidad = Double.parseDouble(producto.getCosteo().replace(",", "."));
+                cantidad = producto.getCosteo().doubleValue();
             } catch (Exception e) {
                 cantidad = 0;
             }
 
             try {
-                fisicoInventario = Double.parseDouble(producto.getFisicoInventario().replace(",", "."));
+                fisicoInventario = producto.getFisicoInventario().doubleValue();
             } catch (Exception e) {
-                fisicoInventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                fisicoInventario = producto.getInventario().doubleValue();
             }
 
             try {
-                inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                inventario = producto.getInventario().doubleValue();
             } catch (Exception e) {
-                inventario = Double.parseDouble(producto.getInventario().replace(",", "."));
+                inventario = producto.getInventario().doubleValue();
             }
 
             fisicoInventario = fisicoInventario + Double.parseDouble(spCantidad.getValue().toString().replace(",", "."));
@@ -772,12 +781,12 @@ public class infArmado extends javax.swing.JInternalFrame {
             String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
             String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
 
-            instancias.getSql().modificarInventario("costeo", total1, codigoPrincipal, baseUtilizada);
-            instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, codigoPrincipal, baseUtilizada);
-            instancias.getSql().modificarInventario("inventario", inventario1, codigoPrincipal, baseUtilizada);
+            daoInventario.modificarInventario("costeo", total1, codigoPrincipal, idBodega);
+            daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, codigoPrincipal, idBodega);
+            daoInventario.modificarInventario("inventario", inventario1, codigoPrincipal, idBodega);
 
             if (!instancias.getSql().aumentarConsecutivo("CST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CST")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
             }
 
             String tipo = instancias.getImpresion();
@@ -787,11 +796,11 @@ public class infArmado extends javax.swing.JInternalFrame {
                 tipo = "";
             }
 
-            if (metodos.msgPregunta(null, "¿Desea imprimir el armado?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir el armado?")) {
                 new GeneradorReporteArmado(instancias).ver_Armado(doc, tipo);
             }
 
-            metodos.msgExito(this, "Armado guardado con exito");
+            ControladorAlertas.alertSuccess("Armado guardado con exito");
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -807,7 +816,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             costo();
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -824,8 +833,8 @@ public class infArmado extends javax.swing.JInternalFrame {
                 return;
             }
 
-            String baseUtilizada = obtenerBase();
-            ndProducto nodo = instancias.getSql().getDatosProducto(txtCodigo.getText().replace("'", "//"), baseUtilizada);
+            String idBodega = obtenerIdBodega();
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText().replace("'", "//"), idBodega);
             if (nodo.getIdSistema() == null) {
                 btnBusProd.setEnabled(false);
                 txtCodProducto.setEnabled(false);
@@ -908,7 +917,7 @@ public class infArmado extends javax.swing.JInternalFrame {
     private void txtBodegaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseClicked
         if (!txtBodega.getText().equals("")) {
             if (tblProductos.getRowCount() > 0) {
-                if (metodos.msgPregunta(null, "¿Limpiar armado?") != 0) {
+                if (!ControladorAlertas.option("¿Limpiar armado?")) {
                     txtCodigo.requestFocus();
                     return;
                 } else {
@@ -925,7 +934,7 @@ public class infArmado extends javax.swing.JInternalFrame {
     private void txtBodegaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMousePressed
         if (!txtBodega.getText().equals("")) {
             if (tblProductos.getRowCount() > 0) {
-                if (metodos.msgPregunta(null, "¿Limpiar armado?") != 0) {
+                if (!ControladorAlertas.option("¿Limpiar armado?")) {
                     txtCodigo.requestFocus();
                     return;
                 } else {
@@ -938,7 +947,7 @@ public class infArmado extends javax.swing.JInternalFrame {
     private void txtBodegaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseReleased
         if (!txtBodega.getText().equals("")) {
             if (tblProductos.getRowCount() > 0) {
-                if (metodos.msgPregunta(null, "¿Limpiar armado?") != 0) {
+                if (!ControladorAlertas.option("¿Limpiar armado?")) {
                     txtCodigo.requestFocus();
                     return;
                 } else {
@@ -989,12 +998,12 @@ public class infArmado extends javax.swing.JInternalFrame {
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdCosteo", "Where Id='" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgError(null, "El documento no existe");
+            ControladorAlertas.alertFail("El documento no existe");
             return;
         }
 
         if (anulado) {
-            metodos.msgAdvertenciaAjustado(null, "El documento se encuentra anulado");
+            ControladorAlertas.alert("El documento se encuentra anulado");
             return;
         }
 
@@ -1018,66 +1027,55 @@ public class infArmado extends javax.swing.JInternalFrame {
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdCosteo", "Where Id='" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgError(null, "El documento no existe");
+            ControladorAlertas.alertFail("El documento no existe");
             return;
         }
 
         if (anulado) {
-            metodos.msgAdvertenciaAjustado(null, "El documento se encuentra anulado");
+            ControladorAlertas.alert("El documento se encuentra anulado");
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea anular el armado?") == 0) {
+        if (ControladorAlertas.option("¿Desea anular el armado?")) {
             Object[][] productos = instancias.getSql().getArmado(consecutivo);
 
-            String baseUtilizada = "";
+            String idBodega = "";
             try {
-                baseUtilizada = instancias.getSql().getBodegaMovimiento(consecutivo, "bdCosteo");
+                idBodega = instancias.getSql().getBodegaMovimiento(consecutivo, "bdCosteo");
             } catch (Exception e) {
             }
 
-            if ("".equals(baseUtilizada)) {
-                baseUtilizada = "123-22";
+            if ("".equals(idBodega)) {
+                idBodega = "123-22";
             }
 
-            if (baseUtilizada.equals("123-22")) {
-                baseUtilizada = "bdProductos";
-            } else if (baseUtilizada.equals("BODEGA-1")) {
-                baseUtilizada = "bdProductosBodega1";
-            } else if (baseUtilizada.equals("BODEGA-2")) {
-                baseUtilizada = "bdProductosBodega2";
-            } else if (baseUtilizada.equals("BODEGA-3")) {
-                baseUtilizada = "bdProductosBodega3";
-            } else if (baseUtilizada.equals("BODEGA-4")) {
-                baseUtilizada = "bdProductosBodega4";
-            }
 
             for (int k = 0; k < productos.length; k++) {
                 String codigo = productos[k][0].toString();
                 String cant = productos[k][1].toString();
 
-                ndProducto insumo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+                ModeloProducto insumo = daoProducto.obtenerDatosProducto(codigo, idBodega);
 
                 double cantidad;
                 double inventario;
                 double fisicoInventario;
 
                 try {
-                    cantidad = Double.parseDouble(insumo.getAnulada().replace(",", "."));
+                    cantidad = insumo.getAnulada().doubleValue();
                 } catch (Exception e) {
                     cantidad = 0;
                 }
 
                 try {
-                    inventario = Double.parseDouble(insumo.getInventario().replace(",", "."));
+                    inventario = insumo.getInventario().doubleValue();
                 } catch (Exception e) {
                     inventario = 0;
                 }
 
                 try {
-                    fisicoInventario = Double.parseDouble(insumo.getFisicoInventario().replace(",", "."));
+                    fisicoInventario = insumo.getFisicoInventario().doubleValue();
                 } catch (Exception e) {
-                    fisicoInventario = Double.parseDouble(insumo.getInventario().replace(",", "."));
+                    fisicoInventario = insumo.getInventario().doubleValue();
                 }
 
                 double cantidadTabla;
@@ -1095,34 +1093,34 @@ public class infArmado extends javax.swing.JInternalFrame {
                 String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
                 String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-                instancias.getSql().modificarInventario("anulacion", total1, codigo, baseUtilizada);
-                instancias.getSql().modificarInventario("inventario", inventario1, codigo, baseUtilizada);
-                instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, codigo, baseUtilizada);
+                daoInventario.modificarInventario("anulacion", total1, codigo, idBodega);
+                daoInventario.modificarInventario("inventario", inventario1, codigo, idBodega);
+                daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, codigo, idBodega);
             }
 
             Object[][] productoFinal = instancias.getSql().getArmado1(consecutivo);
-            ndProducto insumo = instancias.getSql().getDatosProducto(productoFinal[0][0].toString(), baseUtilizada);
+            ModeloProducto insumo = daoProducto.obtenerDatosProducto(productoFinal[0][0].toString(), idBodega);
 
             double armado;
             double inventario;
             double fisicoInventario;
 
             try {
-                armado = Double.parseDouble(insumo.getCosteo().replace(",", "."));
+                armado = insumo.getCosteo().doubleValue();
             } catch (Exception e) {
                 armado = 0;
             }
 
             try {
-                inventario = Double.parseDouble(insumo.getInventario().replace(",", "."));
+                inventario = insumo.getInventario().doubleValue();
             } catch (Exception e) {
                 inventario = 0;
             }
 
             try {
-                fisicoInventario = Double.parseDouble(insumo.getFisicoInventario().replace(",", "."));
+                fisicoInventario = insumo.getFisicoInventario().doubleValue();
             } catch (Exception e) {
-                fisicoInventario = Double.parseDouble(insumo.getInventario().replace(",", "."));
+                fisicoInventario = insumo.getInventario().doubleValue();
             }
 
             int cantArmada = 0;
@@ -1140,37 +1138,25 @@ public class infArmado extends javax.swing.JInternalFrame {
             String inventario1 = String.valueOf(df.format(inventario)).replace(".", ",");
             String fisicoInventario1 = String.valueOf(df.format(fisicoInventario)).replace(".", ",");
 
-            instancias.getSql().modificarInventario("costeo", total1, productoFinal[0][0].toString(), baseUtilizada);
-            instancias.getSql().modificarInventario("inventario", inventario1, productoFinal[0][0].toString(), baseUtilizada);
-            instancias.getSql().modificarInventario("fisicoInventario", fisicoInventario1, productoFinal[0][0].toString(), baseUtilizada);
+            daoInventario.modificarInventario("costeo", total1, productoFinal[0][0].toString(), idBodega);
+            daoInventario.modificarInventario("inventario", inventario1, productoFinal[0][0].toString(), idBodega);
+            daoInventario.modificarInventario("fisicoInventario", fisicoInventario1, productoFinal[0][0].toString(), idBodega);
             if (!instancias.getSql().anularDocumento(consecutivo, "bdCosteo")) {
-                metodos.msgError(null, "Error al anular el armado");
+                ControladorAlertas.alertFail("Error al anular el armado");
                 return;
             }
 
-            metodos.msgExito(null, "Armado anulado con éxito");
+            ControladorAlertas.alertSuccess("Armado anulado con éxito");
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnAnularActionPerformed
 
-    public String obtenerBase() {
-        String baseUtilizada = txtBodega.getText();
+    public String obtenerIdBodega() {
         if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            if (baseUtilizada.equals("123-22")) {
-                baseUtilizada = "bdProductos";
-            } else if (baseUtilizada.equals("BODEGA-1")) {
-                baseUtilizada = "bdProductosBodega1";
-            } else if (baseUtilizada.equals("BODEGA-2")) {
-                baseUtilizada = "bdProductosBodega2";
-            } else if (baseUtilizada.equals("BODEGA-3")) {
-                baseUtilizada = "bdProductosBodega3";
-            } else if (baseUtilizada.equals("BODEGA-4")) {
-                baseUtilizada = "bdProductosBodega4";
-            }
-        } else {
-            baseUtilizada = "bdProductos";
+            return txtBodega.getText();
         }
-        return baseUtilizada;
+
+        return enumBodegas.ID_BODEGA_PRINCIPAL;
     }
 
     public void ventanaBodegas(String nit) {
@@ -1187,7 +1173,7 @@ public class infArmado extends javax.swing.JInternalFrame {
         String base = txtBodega.getText();
         
         if (base.isEmpty()) {
-            metodos.msgAdvertenciaAjustado(this, "Seleccione una bodega...");
+            ControladorAlertas.alert("Seleccione una bodega...");
             return;
         }
 
@@ -1201,7 +1187,8 @@ public class infArmado extends javax.swing.JInternalFrame {
 
     public void cargarProducto(String codigo, String cantidad, String bodega) {
 
-        ndProducto nodo = instancias.getSql().getDatosProducto(codigo, bodega);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, bodega);
+
 
         if (nodo.getGrupo() != null) {
             if (nodo.getGrupo().equals("GRP-02")) {
@@ -1211,7 +1198,7 @@ public class infArmado extends javax.swing.JInternalFrame {
 
         for (int j = 0; j < tblProductos.getRowCount(); j++) {
             if (codigo.equalsIgnoreCase((String) tblProductos.getValueAt(j, 0))) {
-                metodos.msgAdvertencia(this, "El producto ya esta cargado");
+                ControladorAlertas.alert("El producto ya esta cargado");
                 tblProductos.setColumnSelectionInterval(3, 3);
                 tblProductos.setRowSelectionInterval(j, j);
                 tblProductos.editCellAt(j, 3);
@@ -1223,7 +1210,7 @@ public class infArmado extends javax.swing.JInternalFrame {
 
         if (nodo.getIdSistema() != null) {
             if (instancias.getSql().getProdActivo(nodo.getIdSistema())) {
-                metodos.msgError(this, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
             } else {
 
                 BigDecimal ponderado = BigDecimal.ZERO;
@@ -1255,7 +1242,7 @@ public class infArmado extends javax.swing.JInternalFrame {
 
         for (int j = 0; j < tblProductos.getRowCount(); j++) {
             if (codigo.equalsIgnoreCase((String) tblProductos.getValueAt(j, 0))) {
-                metodos.msgAdvertencia(this, "El producto ya esta cargado");
+                ControladorAlertas.alert("El producto ya esta cargado");
                 tblProductos.setColumnSelectionInterval(3, 3);
                 tblProductos.setRowSelectionInterval(j, j);
                 tblProductos.editCellAt(j, 3);
@@ -1265,19 +1252,14 @@ public class infArmado extends javax.swing.JInternalFrame {
             }
         }
 
-        ndProducto nodo = null;
+        ModeloProducto nodo = null;
 
-        String baseUtilizada = obtenerBase();
+        String idBodega = obtenerIdBodega();
         String codigoProd = "";
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-            if (listado.length > 0) {
-                codigo = listado[0][0].toString();
-            }
-
-            nodo = instancias.getSql().getDatosProducto(codigo, baseUtilizada);
+            nodo = daoProducto.obtenerDatosProducto(codigo, idBodega);
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -1285,7 +1267,7 @@ public class infArmado extends javax.swing.JInternalFrame {
 
         if (!codigoProd.equals("")) {
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-                metodos.msgError(this, "Este producto esta inactivo");
+                ControladorAlertas.alertFail("Este producto esta inactivo");
             } else {
                 BigDecimal ponderado = BigDecimal.ZERO;
                 BigDecimal ultimoCosto = BigDecimal.ZERO;
@@ -1333,21 +1315,16 @@ public class infArmado extends javax.swing.JInternalFrame {
 
     public void cargarProductoPrincipal(String cod) {
         if (cod.equals("")) {
-            metodos.msgAdvertencia(this, "Debe ingresar el codigo");
+            ControladorAlertas.alert("Debe ingresar el codigo");
         } else {
-            ndProducto nodo = null;
+            ModeloProducto nodo = null;
 
             String codigoProd = "";
             if (cod.equals("")) {
                 codigoProd = "";
             } else {
-                Object[][] listado = instancias.getSql().getCodigosRelacionados(cod, " where codigo");
-                if (listado.length > 0) {
-                    cod = listado[0][0].toString();
-                }
-
-                String baseUtilizada = obtenerBase();
-                nodo = instancias.getSql().getDatosProducto(cod, baseUtilizada);
+                String idBodega = obtenerIdBodega();
+                nodo = daoProducto.obtenerDatosProducto(cod, idBodega);
                 if (nodo.getIdSistema() != null) {
                     codigoProd = nodo.getIdSistema();
                 }
@@ -1433,7 +1410,7 @@ public class infArmado extends javax.swing.JInternalFrame {
                 return;
             }
 
-            metodos.msgError(this, "El producto no existe");
+            ControladorAlertas.alertFail("El producto no existe");
         }
     }
 

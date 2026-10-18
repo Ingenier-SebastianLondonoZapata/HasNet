@@ -1,5 +1,7 @@
 package formularios.Oftalmologia;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesOftalmologia.GeneradorReporteOftalmologia;
 import clases.Instancias;
 import clases.Oftalmologia.ndBiometria;
@@ -706,15 +708,15 @@ public class infBiometria extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
         if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             int i = 0;
 
@@ -732,19 +734,19 @@ public class infBiometria extends javax.swing.JInternalFrame {
             ndBiometria nodo = metodos.llenarBiometria(vector);
 
             if (!instancias.getSql().agregarBiometria(nodo)) {
-                metodos.msgError(this, "Hubo un problema al guardar la biometria");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la biometria");
                 return;
             }
 
             i++;
 
             if (!instancias.getSql().aumentarConsecutivo("BIOMETRIA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("BIOMETRIA")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la biometria");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la biometria");
                 return;
             }
 
             if (i > 0) {
-                metodos.msgExito(this, "Biometria guardada con exito");
+                ControladorAlertas.alertSuccess("Biometria guardada con exito");
             }
 
             new GeneradorReporteOftalmologia(instancias).ver_Biometria(txt1.getText(), txt2.getText(), txt3.getText(), txt4.getText(),

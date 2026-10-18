@@ -1,9 +1,11 @@
 package configuracion;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Modelo.Maestra.modeloConfiguracion;
 import clases.Instancias;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +25,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
     Object[][] grupos;
-    ndProducto nodoProducto;
+    ModeloProducto nodoProducto;
     modeloConfiguracion nodoConf;
 
     public infPlantillas() {
@@ -442,8 +444,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductoActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\PLANTILLA_PRODUCTOS.xls");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -457,9 +459,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Plantilla descargada con exito");
+        ControladorAlertas.alertSuccess("Plantilla descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir la plantilla?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir la plantilla?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {
@@ -470,8 +472,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprasActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\PLANTILLA_COMPRA.xls");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -485,9 +487,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Plantilla descargada con exito");
+        ControladorAlertas.alertSuccess("Plantilla descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir la plantilla?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir la plantilla?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {
@@ -498,8 +500,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnProducto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProducto1ActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\PRODUCTOS.pdf");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -513,9 +515,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Manual descargada con exito");
+        ControladorAlertas.alertSuccess("Manual descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir el manual?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir el manual?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {
@@ -526,8 +528,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnProducto2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProducto2ActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\GENERALIDADES_Y_TERCEROS.pdf");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -541,9 +543,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Manual descargada con exito");
+        ControladorAlertas.alertSuccess("Manual descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir el manual?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir el manual?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {
@@ -554,8 +556,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnProducto3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProducto3ActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\CARTERA.pdf");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -569,9 +571,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Manual descargada con exito");
+        ControladorAlertas.alertSuccess("Manual descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir el manual?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir el manual?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {
@@ -582,8 +584,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnProducto4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProducto4ActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\TESORERIA.pdf");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -597,9 +599,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Manual descargada con exito");
+        ControladorAlertas.alertSuccess("Manual descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir el manual?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir el manual?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {
@@ -610,8 +612,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnProducto5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProducto5ActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\VENTAS.pdf");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -625,9 +627,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Manual descargada con exito");
+        ControladorAlertas.alertSuccess("Manual descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir el manual?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir el manual?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {
@@ -638,8 +640,8 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private void btnCompras1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompras1ActionPerformed
         File archivo = new File(System.getProperty("user.home") + "\\Desktop\\ACCESOS_RAPIDOS.pdf");
         if (archivo.exists()) {
-            metodos.msgAdvertenciaAjustado(this, "¡ El archivo ya existe !");
-            if (metodos.msgPregunta(this, "¿Desea reemplazarlo?") != 0) {
+            ControladorAlertas.alert("¡ El archivo ya existe !");
+            if (!ControladorAlertas.option("¿Desea reemplazarlo?")) {
                 return;
             }
         }
@@ -653,9 +655,9 @@ public class infPlantillas extends javax.swing.JInternalFrame {
             Logger.getLogger(infPlantillas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        metodos.msgExito(this, "Documento descargada con exito");
+        ControladorAlertas.alertSuccess("Documento descargada con exito");
 
-        if (metodos.msgPregunta(this, "¿Desea abrir el documento?") == 0) {
+        if (ControladorAlertas.option("¿Desea abrir el documento?")) {
             try {
                 Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL " + destino);
             } catch (IOException e) {

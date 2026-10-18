@@ -3,8 +3,8 @@ package Vista.Tesoreria;
 import Consumidor.DocumentoSoporte.consumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
 import Impresiones.ImpresionesEgresos.GeneradorReporteEgreso;
-import dao.Configuraciones.DaoResoluciones;
-import dao.Egresos.DaoEgresos;
+import Dao.Configuraciones.DaoResoluciones;
+import Dao.Egresos.DaoEgresos;
 import Enums.TipoDocumento;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
@@ -1270,7 +1270,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
                 return;
             }
 
-            if (metodos.msgPregunta(null, "¿Desea continuar?") != 0) {
+            if (!ControladorAlertas.option("¿Desea continuar?")) {
                 return;
             }
         }
@@ -1329,7 +1329,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
                 noPuedaGuardar = instancias.getSql().eliminarCodEgreso(identificadorEgreso);
             }
 
-            metodos.msgError(this, "Hubo un problema al guardar el egreso");
+            ControladorAlertas.alertFail("Hubo un problema al guardar el egreso");
             return;
         }
 
@@ -1356,13 +1356,13 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
 
         //CAMBIAR CONSECUTIVO FACTURA
         if (!instancias.getSql().aumentarConsecutivo("EGR", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("EGR")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del egreso");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del egreso");
         }
 
         lbNoEgreso.setText((String) instancias.getSql().getNumConsecutivo("EGR")[0]);
 
         if (!saltarPasos) {
-            metodos.msgExito(this, "Egreso exitoso");
+            ControladorAlertas.alertSuccess("Egreso exitoso");
         }
 
         String tipo = "";
@@ -1371,7 +1371,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         }
 
         if (!saltarPasos) {
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 new GeneradorReporteEgreso(instancias).ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), true, tipo);
             } else {
                 new GeneradorReporteEgreso(instancias).ver_Egreso(identificadorEgreso, instancias.getInformacionEmpresa(), txtTotalLetras.getText(), false, tipo);
@@ -1441,7 +1441,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
 
             calcularValores();
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -1456,7 +1456,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where egreso ='" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgError(this, "El egreso no existe");
+            ControladorAlertas.alertFail("El egreso no existe");
             return;
         }
 
@@ -1468,7 +1468,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         ndEgreso nodo = instancias.getSql().getDatosEgreso(consecutivo);
 
         if (nodo.getId() == null) {
-            metodos.msgError(this, "Este egreso no existe.");
+            ControladorAlertas.alertFail("Este egreso no existe.");
             return;
         }
 
@@ -1490,7 +1490,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdEgreso", "Where egreso = '" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgError(this, "El egreso no existe");
+            ControladorAlertas.alertFail("El egreso no existe");
             return;
         }
 
@@ -1502,7 +1502,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         String pago = instancias.getSql().getIngresoAsociado(consecutivo);
         String mensaje = pago.isEmpty() ? "¿Anular egreso?" : "¿Anular egreso y " + pago;
 
-        if (metodos.msgPregunta(this, mensaje) == 0) {
+        if (ControladorAlertas.option(mensaje)) {
             if (pago.equals("")) {
                 //No hace nada
             } else if (pago.contains("PAGO")) {
@@ -1519,14 +1519,14 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
             }
 
             if (!instancias.getSql().anularEgreso(consecutivo)) {
-                metodos.msgError(this, "Hubo un problema al anular el egreso");
+                ControladorAlertas.alertFail("Hubo un problema al anular el egreso");
                 return;
             }
 
             if (pago.equals("")) {
-                metodos.msgExito(this, "Egreso anulado con éxito");
+                ControladorAlertas.alertSuccess("Egreso anulado con éxito");
             } else if (pago.contains("PAGO")) {
-                metodos.msgExito(this, "Egreso y pago anulado con éxito");
+                ControladorAlertas.alertSuccess("Egreso y pago anulado con éxito");
             }
         }
     }//GEN-LAST:event_btnAnularEgresoActionPerformed
@@ -1657,7 +1657,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
     private void btnModificarConceptoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarConceptoActionPerformed
         if (!txtCodigoConcepto.getText().equals("") && this.CODIGO_CONCEPTO_SELECCIONADO != null) {
             if (!instancias.getSql().modificarCodEgreso(new Object[]{this.CODIGO_CONCEPTO_SELECCIONADO, txtDescripcionConcepto.getText(), txtCodigoConcepto.getText()})) {
-                metodos.msgError(this, "Error al modificar el concepto");
+                ControladorAlertas.alertFail("Error al modificar el concepto");
                 return;
             }
 
@@ -1670,15 +1670,15 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
             btnModificarConcepto.setVisible(false);
             btnInactivarConcepto.setVisible(false);
 
-            metodos.msgExito(this, "Concepto modificado con exito");
+            ControladorAlertas.alertSuccess("Concepto modificado con exito");
         }
     }//GEN-LAST:event_btnModificarConceptoActionPerformed
 
     private void btnAgregarConceptoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarConceptoActionPerformed
-        if (validacionesCamposConceptos() && metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (validacionesCamposConceptos() && ControladorAlertas.option("¿Desea continuar?")) {
 
             if (!instancias.getSql().agregarCodEgreso(txtDescripcionConcepto.getText(), txtCodigoConcepto.getText())) {
-                metodos.msgError(this, "Error al guardar el concepto");
+                ControladorAlertas.alertFail("Error al guardar el concepto");
                 return;
             }
 
@@ -1686,22 +1686,22 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
             txtDescripcionConcepto.setText("");
             actualizarTablaConceptos();
 
-            metodos.msgExito(this, "Concepto registrado con exito");
+            ControladorAlertas.alertSuccess("Concepto registrado con exito");
             txtCodigoConcepto.requestFocus();
         }
     }//GEN-LAST:event_btnAgregarConceptoActionPerformed
 
     private void btnInactivarConceptoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInactivarConceptoActionPerformed
         if (btnInactivarConcepto.getText().equalsIgnoreCase("ACTIVAR")) {
-            if (metodos.msgPregunta(this, "¿Activar este concepto?") == 0) {
+            if (ControladorAlertas.option("¿Activar este concepto?")) {
                 if (instancias.getSql().activarRegistro1(this.CODIGO_CONCEPTO_SELECCIONADO, "codsEgresos")) {
-                    metodos.msgExito(this, "Concepto activado con éxito");
+                    ControladorAlertas.alertSuccess("Concepto activado con éxito");
                 }
             }
         } else {
-            if (metodos.msgPregunta(this, "¿Inactivar este concepto?") == 0) {
+            if (ControladorAlertas.option("¿Inactivar este concepto?")) {
                 if (instancias.getSql().inactivarRegistro1(this.CODIGO_CONCEPTO_SELECCIONADO, "codsEgresos")) {
-                    metodos.msgExito(this, "Concepto inactivado con éxito");
+                    ControladorAlertas.alertSuccess("Concepto inactivado con éxito");
                 }
             }
         }
@@ -1722,7 +1722,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
             }
         }
         limpiar();
-        metodos.msgAdvertenciaAjustado(this, "El codigo no existe");
+        ControladorAlertas.alert("El codigo no existe");
     }
 
     private ModeloDetalleEgreso obtenerDetalleEgreso(String identificadorEgreso, int fila) {
@@ -2138,7 +2138,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         if (nodo.getId() != null) {
 
             if (nodo.isActivo()) {
-                metodos.msgError(this, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 lbNit.requestFocus();
                 return;
             }
@@ -2154,7 +2154,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
         }
 //            else if (nodPro.getId() != null) {
 //                if (nodPro.isActivo()) {
-//                    metodos.msgError(this, "Este cliente esta inactivado");
+//                    ControladorAlertas.alertFail("Este cliente esta inactivado");
 //                    return;
 //                }
 //                txtRazon.setText(nodPro.getNombre());
@@ -2219,25 +2219,25 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
     private boolean validacionesCamposConceptos() {
         String concepto = txtDescripcionConcepto.getText();
         if (concepto.isEmpty()) {
-            metodos.msgAdvertenciaAjustado(this, "Debe ingresar un concepto");
+            ControladorAlertas.alert("Debe ingresar un concepto");
             return false;
         }
 
         String codigoConcepto = txtCodigoConcepto.getText();
         if (codigoConcepto.isEmpty()) {
-            metodos.msgAdvertenciaAjustado(this, "Debe ingresar un codigo");
+            ControladorAlertas.alert("Debe ingresar un codigo");
             return false;
         }
 
         Object[][] datos = instancias.getSql().getCodsEgresos();
         for (Object[] dato : datos) {
             if (dato[0].equals(codigoConcepto)) {
-                metodos.msgAdvertenciaAjustado(this, "El codigo ya existe");
+                ControladorAlertas.alert("El codigo ya existe");
                 txtCodigoConcepto.requestFocus();
                 return false;
             }
             if (dato[1].equals(concepto)) {
-                metodos.msgAdvertenciaAjustado(this, "El concepto ya existe");
+                ControladorAlertas.alert("El concepto ya existe");
                 txtDescripcionConcepto.requestFocus();
                 return false;
             }

@@ -1,12 +1,14 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.productos.*;
 import formularios.Parqueadero.*;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -391,24 +393,24 @@ public class dlgPonderadoNegativo extends javax.swing.JDialog {
 
                 if (!instancias.getSql().agregarPonderado(metodos.fechaConsulta(metodosGenerales.fecha()), tblTraslados.getValueAt(i, 0).toString(),
                         big.getMoneda(tblTraslados.getValueAt(i, 3).toString()), "0", "0", num1, "0", instancias.getUsuario(), num2, "")) {
-                    metodos.msgError(null, "Error al guardar el ponderado");
+                    ControladorAlertas.alertFail("Error al guardar el ponderado");
                 }
 
                 if (tblTraslados.getValueAt(i, 3).toString().equals("N/A")) {
                     if (!instancias.getSql().agregarUltimoPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), tblTraslados.getValueAt(i, 0).toString(),
                             big.getMoneda(tblTraslados.getValueAt(i, 3).toString()), "0", "0", num1, "0", instancias.getUsuario(), num2, "")) {
-                        metodos.msgError(null, "Error al guardar el ponderado");
+                        ControladorAlertas.alertFail("Error al guardar el ponderado");
                     }
                 } else {
                     if (!instancias.getSql().modificarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), tblTraslados.getValueAt(i, 0).toString(),
                             big.getMoneda(tblTraslados.getValueAt(i, 3).toString()), "0", "0", num1, "0", instancias.getUsuario(), num2, "")) {
-                        metodos.msgError(null, "Error al guardar el ponderado");
+                        ControladorAlertas.alertFail("Error al guardar el ponderado");
                     }
                 }
             }
         }
 
-        metodos.msgExito(null, "Ponderados actualizado");
+        ControladorAlertas.alertSuccess("Ponderados actualizado");
         this.dispose();
     }//GEN-LAST:event_txtFinalizarActionPerformed
 

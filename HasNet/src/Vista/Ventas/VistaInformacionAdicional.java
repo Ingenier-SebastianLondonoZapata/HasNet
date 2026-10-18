@@ -1,5 +1,7 @@
 package Vista.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
@@ -702,7 +704,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         if (NC != null) {
             if (NC.compareTo(big.getMoneda(txtNC.getText())) == -1) {
                 txtNC.setText(txtNC.getText().substring(0, txtNC.getText().length() - 1));
-                metodos.msgAdvertencia(null, "Valor no valido, el cliente no cuenta con esta suma");
+                ControladorAlertas.alert("Valor no valido, el cliente no cuenta con esta suma");
                 txtNC.setText(this.simbolo + " 0");
                 return;
             }
@@ -735,7 +737,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
 
         if (big.getMoneda(txtTotalDinero.getText()).compareTo(BigDecimal.ZERO) <= 0
                 && big.getMoneda(txtTotalGeneral.getText()).compareTo(BigDecimal.ZERO) != 0) {
-            metodos.msgError(null, "Debe ingresar el metodo de pago");
+            ControladorAlertas.alertFail("Debe ingresar el metodo de pago");
             lbEtiqueta1.requestFocus();
             return;
         }
@@ -747,12 +749,12 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         }
 
         if (big.getMoneda(txtTarjetaCredito.getText()).compareTo(BigDecimal.ZERO) > 0 && franquisia.equals("")) {
-            metodos.msgAdvertenciaAjustado(null, "Debe seleccionar la franquisia");
+            ControladorAlertas.alert("Debe seleccionar la franquisia");
             return;
         }
 
         if (big.getMoneda(txtCambio.getText()).compareTo(BigDecimal.ZERO) < 0) {
-            metodos.msgAdvertenciaAjustado(null, "Valor insuficiente");
+            ControladorAlertas.alert("Valor insuficiente");
             lbEtiqueta1.requestFocus();
             return;
         }
@@ -762,13 +764,13 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
             try {
                 porcPropina = Double.parseDouble(txtPorcPropina.getText().replace(",", "."));
             } catch (Exception e) {
-                metodos.msgError(null, "Porcentaje de propina incorrecto. ");
+                ControladorAlertas.alertFail("Porcentaje de propina incorrecto. ");
                 txtPorcPropina.requestFocus();
                 return;
             }
 
             if (porcPropina < 0) {
-                metodos.msgError(null, "Ingrese un porcentaje válido. ");
+                ControladorAlertas.alertFail("Ingrese un porcentaje válido. ");
                 txtPorcPropina.requestFocus();
                 return;
             }
@@ -818,11 +820,11 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                 } else if (big.getBigDecimal(nota[0]).compareTo(nc) == -1 || big.getBigDecimal(nota[0]).compareTo(nc) == 0) {
                     nc = nc.subtract(big.getBigDecimal(nota[0]));
                     if (!instancias.getSql().descontarNc((String) nota[1], "0")) {
-                        metodos.msgError(null, "Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
+                        ControladorAlertas.alertFail("Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
                     }
                 } else {
                     if (!instancias.getSql().descontarNc((String) nota[1], String.valueOf((big.getBigDecimal(nota[0])).subtract(nc)))) {
-                        metodos.msgError(null, "Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
+                        ControladorAlertas.alertFail("Hubo un problema al modificar el saldo de la nota credito: " + nota[1]);
                     }
                     nc = nc.subtract(big.getBigDecimal(nota[0]));
                 }

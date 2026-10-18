@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.Medico.ndInformacionPrestador;
 import clases.metodosGenerales;
@@ -1767,19 +1769,19 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
         String tipo = "NIT";
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
         if (jRadioButton2.isSelected()) {
             tipo = "CC";
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             Object[] vector = {"1", txtNombres1.getText(), tipo, txtNombres2.getText(), txtNombres3.getText(), txtNombres4.getText(), txtNombres5.getText(),
                 txtNombres6.getText(), cmbDepartamento.getSelectedItem(), cmbMunicipio.getSelectedItem(), jTextField3.getText(), txtNombres7.getText(), instancias.getUsuario()};
 
             ndInformacionPrestador nodo = metodos.llenarInformacionPrestador(vector);
             if (!instancias.getSql().modificarInformacionPrestador(nodo)) {
-                metodos.msgError(this, "Hubo un problema al modificar la información del prestador");
+                ControladorAlertas.alertFail("Hubo un problema al modificar la información del prestador");
                 return;
             }
             String id = "ASERV-" + instancias.getSql().getNumConsecutivo("ASERV")[0];
@@ -1791,19 +1793,19 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
                 metodosGenerales.fecha(), metodosGenerales.hora(), instancias.getUsuario()};
 
             if (!instancias.getSql().agregarAutorizacionServicios(vector2)) {
-                metodos.msgError(this, "Hubo un problema al guardar la autorizacion de servicios");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la autorizacion de servicios");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("ASERV", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("ASERV")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la autorizacion de servicios");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la autorizacion de servicios");
             }
 
             instancias.getReporte().verAutorizacionServicios(id);
 
             limpiar();
 
-            metodos.msgExito(this, "Autorizacion de servicios agregada con éxito");
+            ControladorAlertas.alertSuccess("Autorizacion de servicios agregada con éxito");
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
     private String cupTabla(int r) {
@@ -1846,12 +1848,12 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (!jTextField9.getText().equals("") && !jTextField10.getText().equals("")) {
             if (tblCups.getRowCount() > 19) {
-                metodos.msgError(this, "Solo se permiten 20 cups por autorización");
+                ControladorAlertas.alertFail("Solo se permiten 20 cups por autorización");
                 return;
             }
             for (int i = 0; i < tblCups.getRowCount(); i++) {
                 if (tblCups.getValueAt(i, 0).equals(jTextField9.getText())) {
-                    metodos.msgError(this, "Ya a ingresado este cup");
+                    ControladorAlertas.alertFail("Ya a ingresado este cup");
                     return;
                 }
             }
@@ -1861,7 +1863,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
             jTextField11.setText("");
             jTextField12.setText("");
         } else {
-            metodos.msgError(this, "Debe ingresar un cup con su respectiva cantidad");
+            ControladorAlertas.alertFail("Debe ingresar un cup con su respectiva cantidad");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1874,13 +1876,13 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un cup");
+            ControladorAlertas.alert("Seleccione un cup");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
     private void btnBuscTerceros1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros1ActionPerformed
         if (txtIdentificacion.getText().equals("")) {
-            metodos.msgError(this, "No ha seleccionado un paciente");
+            ControladorAlertas.alertFail("No ha seleccionado un paciente");
             return;
         }
         infReimpresionExamenes reimpresion = new infReimpresionExamenes();
@@ -1892,7 +1894,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         if (txtIdentificacion.getText().equals("")) {
-            metodos.msgError(this, "No ha seleccionado un paciente");
+            ControladorAlertas.alertFail("No ha seleccionado un paciente");
             return;
         }
         infReimpresionExamenes reimpresion = new infReimpresionExamenes();
@@ -1927,7 +1929,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
 
     public void anular(String consecutivo) {
         instancias.getSql().anularAutorizacion(consecutivo);
-        metodos.msgExito(this, "Autorizacion de servicio anulada con exito");
+        ControladorAlertas.alertSuccess("Autorizacion de servicio anulada con exito");
     }
 
     public void setInstancias(Instancias instancias) {
@@ -1983,7 +1985,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
             ventanaTerceros(paciente);
         } else {
             if (Paciente.isActivo()) {
-                metodos.msgError(null, "Este cliente esta inactivado");
+                ControladorAlertas.alertFail("Este cliente esta inactivado");
                 lbRazon11.requestFocus();
                 return;
             }

@@ -1,6 +1,8 @@
 package formularios.Tesoreria;
 
-import dao.InicioSesion.DaoInicioSesion;
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import formularios.terceros.buscClientes;
 import clases.Instancias;
@@ -541,11 +543,11 @@ public class infRepEgresos extends javax.swing.JInternalFrame {
 
     private void btnAggProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProvActionPerformed
         if (txtNomProveedor.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un proveedor");
+            ControladorAlertas.alertFail("Cargue primero un proveedor");
         } else {
             
             if (yaEsta(cmbProveedor, txtProveedor.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este proveedor");
+                ControladorAlertas.alert("Ya cargo este proveedor");
             } else {
                 cmbProveedor.addItem(txtProveedor.getText());
                 cmbProveedor.setSelectedItem(txtProveedor.getText());
@@ -563,7 +565,7 @@ public class infRepEgresos extends javax.swing.JInternalFrame {
     private void btnAggProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProdActionPerformed
         
         if (yaEsta(cmbProducto, String.valueOf(cmbConceptos.getSelectedIndex()))) {
-            metodos.msgAdvertencia(null, "Ya cargo este concepto");
+            ControladorAlertas.alert("Ya cargo este concepto");
         } else {
             cmbProducto.addItem(codigos.get(cmbConceptos.getSelectedItem().toString())[1]);
             cmbProducto.setSelectedItem(cmbConceptos.getSelectedIndex());
@@ -577,7 +579,7 @@ public class infRepEgresos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRemProdActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
             
             if (instancias.getUsuario().equals("ADMIN")) {
@@ -671,7 +673,7 @@ public class infRepEgresos extends javax.swing.JInternalFrame {
     private void btnAggTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggTerminalActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(this, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -680,7 +682,7 @@ public class infRepEgresos extends javax.swing.JInternalFrame {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(this, "No hay ninguna terminal seleccioanda");
+            ControladorAlertas.alertFail("No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());

@@ -1,5 +1,7 @@
 package formularios.Labotario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesLaboratorio.GeneradorReporteLaboratorio;
 import formularios.Medico.*;
 import clases.Instancias;
@@ -718,7 +720,7 @@ public class infCoprograma extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
@@ -726,7 +728,7 @@ public class infCoprograma extends javax.swing.JInternalFrame {
         tblTabla2.removeEditor();
         tblTabla3.removeEditor();
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "COPROGRAMA-" + instancias.getSql().getNumConsecutivo("COPROGRAMA")[0];
 
@@ -1090,18 +1092,18 @@ public class infCoprograma extends javax.swing.JInternalFrame {
                     teniaInfestacion, strongiloidesHuevos, strongiloidesInfestacion, larvasHuevos, larvasInfestacion, oxiurosHuevos, oxiurosInfestacion, sangreOcultaHuevos,
                     sangreOcultaInfestacion, phHuevos, phInfestacion, azucaresHuevos, azucaresInfestacion, gramHuevos, gramInfestacion, wrightHuevos, wrightInfestacion
             )) {
-                metodos.msgError(this, "Hubo un problema al guardar");
+                ControladorAlertas.alertFail("Hubo un problema al guardar");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("COPROGRAMA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("COPROGRAMA")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
                 return;
             }
 
-            metodos.msgExito(this, "Examen registrado con éxito");
+            ControladorAlertas.alertSuccess("Examen registrado con éxito");
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String legal = "", pie;
                 try {
                     legal = instancias.getLegal();

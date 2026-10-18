@@ -2156,7 +2156,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             if (NC != null) {
                 if (NC.compareTo(big.getMoneda(txtNC.getText())) == -1) {
                     txtNC.setText(txtNC.getText().substring(0, txtNC.getText().length() - 1));
-                    metodos.msgAdvertencia(this, "Valor no valido, el cliente no cuenta con esta suma");
+                    ControladorAlertas.alert("Valor no valido, el cliente no cuenta con esta suma");
                     return;
                 }
 
@@ -2305,7 +2305,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         nodo1 = instancias.getSql().getDatosAbonos(consecutivo);
 
         if (nodo1.isAnulada()) {
-            metodos.msgError(this, "Este documento se encuentra anulado");
+            ControladorAlertas.alertFail("Este documento se encuentra anulado");
             return;
         }
 
@@ -2329,23 +2329,23 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         try {
             anulado = instancias.getSql().getDocumentoAnulado("bdAbonos", "Where factura = '" + consecutivo + "' ");
         } catch (Exception e) {
-            metodos.msgError(this, "El abono no existe");
+            ControladorAlertas.alertFail("El abono no existe");
             return;
         }
 
         if (anulado) {
-            metodos.msgAdvertencia(this, "Este abono se encuentra anulado");
+            ControladorAlertas.alert("Este abono se encuentra anulado");
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea anular este abono?") == 0) {
+        if (ControladorAlertas.option("¿Desea anular este abono?")) {
             if (!instancias.getSql().anularAbono(consecutivo)) {
-                metodos.msgError(this, "Hubo un problema al anular el ingreso");
+                ControladorAlertas.alertFail("Hubo un problema al anular el ingreso");
                 return;
             }
 
             if (!instancias.getSql().modificarRegistroCxcAbono(consecutivo, "ANULADA")) {
-                metodos.msgError(this, "Hubo un problema al anular la Cxc");
+                ControladorAlertas.alertFail("Hubo un problema al anular la Cxc");
                 return;
             }
 
@@ -2357,12 +2357,12 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                 String estado = instancias.getSql().estadoCxcPro(facturasAbonos[i][0].toString());
                 if (estado.equalsIgnoreCase("CANCELADA")) {
                     if (!instancias.getSql().modificarEstadoCxcFactura(facturasAbonos[i][0].toString(), "PEND")) {
-                        metodos.msgError(this, "Error al cambiar el estado: " + facturasAbonos[i][0].toString());
+                        ControladorAlertas.alertFail("Error al cambiar el estado: " + facturasAbonos[i][0].toString());
                         return;
                     }
 
                     if (!instancias.getSql().modificarEstadoCxcFacturaCanceladas(facturasAbonos[i][0].toString(), "")) {
-                        metodos.msgError(this, "Error al cambiar el estado del abono");
+                        ControladorAlertas.alertFail("Error al cambiar el estado del abono");
                         return;
                     }
                 }
@@ -2381,12 +2381,12 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                     nodoCuota.setTotalAbono(totalAbono.multiply(BigDecimal.valueOf(-1)).toString());
                 }
                 if (!instancias.getSql().modificarCuota(nodoCuota)) {
-                    metodos.msgError(this, "Se guardo el abono pero hubo un error al cambiar el estado de la cuota");
+                    ControladorAlertas.alertFail("Se guardo el abono pero hubo un error al cambiar el estado de la cuota");
                     return;
                 }
             }
 
-            metodos.msgExito(this, "Abono anulado con éxito");
+            ControladorAlertas.alertSuccess("Abono anulado con éxito");
             cargarTabla();
         }
 
@@ -2838,7 +2838,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         }
 
         if (!entro) {
-            metodos.msgError(this, "Debe seleccionar un pedido");
+            ControladorAlertas.alertFail("Debe seleccionar un pedido");
             return;
         }
 
@@ -2854,7 +2854,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             }
         }
 
-        metodos.msgExito(this, "Domicilios facturados con exito");
+        ControladorAlertas.alertSuccess("Domicilios facturados con exito");
         btnActualizarActionPerformed(evt);
     }//GEN-LAST:event_btnFacturarActionPerformed
 
@@ -3308,7 +3308,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
     public String guardar() {
         if (txtAbonado.getText().equals(txtTotalAbonos.getText())) {
-            metodos.msgAdvertenciaAjustado(this, "No ha ingresado el metodo de pago");
+            ControladorAlertas.alert("No ha ingresado el metodo de pago");
             return "";
         }
 
@@ -3337,7 +3337,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         avisarSeparesSaldados(separesSaldados);
 
         if (!saltarPasos) {
-            metodos.msgExito(this, "Abono exitoso");
+            ControladorAlertas.alertSuccess("Abono exitoso");
             imprimirAbono(referencia);
             credito = false;
         }
@@ -3375,7 +3375,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         for (AbonoCuenta cuenta : separesSaldados) {
             String error = servicio.validarSepareAntesDeSaldar(cuenta.getIngreso());
             if (error != null) {
-                ControladorAlertas.bigAlert("No se puede generar la factura de " + cuenta.getIngreso()
+                ControladorAlertas.alert("No se puede generar la factura de " + cuenta.getIngreso()
                         + ": " + error + " El abono no fue guardado.");
                 return false;
             }
@@ -3386,12 +3386,12 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         int comprobante = SelectorComprobanteFacturacion.solicitar(this, servicio, nits);
         if (comprobante < 0) {
-            ControladorAlertas.bigAlert("El abono salda el plan separe y requiere generar la factura. "
+            ControladorAlertas.alert("El abono salda el plan separe y requiere generar la factura. "
                     + "Seleccione el tipo de comprobante para continuar; el abono no fue guardado.");
             return false;
         }
 
-        boolean imprimir = metodos.msgPregunta(this, "¿Desea imprimir la factura?") == 0;
+        boolean imprimir = ControladorAlertas.option("¿Desea imprimir la factura?");
 
         StringBuilder generadas = new StringBuilder();
         for (AbonoCuenta cuenta : separesSaldados) {
@@ -3400,7 +3400,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             if (!resultado.isFacturaGenerada()) {
                 String yaGeneradas = generadas.length() == 0 ? ""
                         : "\nFacturas ya generadas: " + generadas;
-                ControladorAlertas.bigAlert(resultado.getMensajeErrores() + "\nEl abono no fue guardado." + yaGeneradas);
+                ControladorAlertas.alert(resultado.getMensajeErrores() + "\nEl abono no fue guardado." + yaGeneradas);
                 return false;
             }
 
@@ -3412,7 +3412,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
     private void avisarSeparesSaldados(List<AbonoCuenta> separesSaldados) {
         if (!separesSaldados.isEmpty()) {
-            metodos.msgExito(this, "Valor saldado");
+            ControladorAlertas.alertSuccess("Valor saldado");
         }
     }
 
@@ -3426,18 +3426,18 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             ids.append(ids.length() == 0 ? "" : ", ").append(cuenta.getIngreso());
         }
 
-        ControladorAlertas.bigAlert("El abono no se pudo guardar, pero ya se generó la factura de: " + ids
+        ControladorAlertas.alert("El abono no se pudo guardar, pero ya se generó la factura de: " + ids
                 + ". Revise el estado de la cuenta antes de volver a abonar.");
     }
 
     private void imprimirAbono(String referencia) {
-        if (metodos.msgPregunta(this, "¿Desea imprimir abono?") != 0) {
+        if (!ControladorAlertas.option("¿Desea imprimir abono?")) {
             return;
         }
 
         new GeneradorReporteAbono(instancias).verAbonoGeneral(referencia, "Original", instancias.getInformacionEmpresaCompleto());
 
-        if (metodos.msgPregunta(this, "¿Desea imprimir copia?") != 0) {
+        if (!ControladorAlertas.option("¿Desea imprimir copia?")) {
             return;
         }
 
@@ -3656,7 +3656,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         int fila = buscarFilaDocumento(consecutivo);
         if (fila < 0) {
-            metodos.msgAdvertencia(this, "Factura no valida");
+            ControladorAlertas.alert("Factura no valida");
             return;
         }
 

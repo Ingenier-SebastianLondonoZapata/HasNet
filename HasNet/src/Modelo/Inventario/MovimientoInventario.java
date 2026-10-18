@@ -1,21 +1,21 @@
 package Modelo.Inventario;
 
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 
 public class MovimientoInventario {
 
-    private final ndProducto producto;
+    private final ModeloProducto producto;
     private final BigDecimal cantidad;
     private final BigDecimal valorProducto;
     private final String idDetalleProducto;
     private final boolean armado;
 
-    public MovimientoInventario(ndProducto producto, BigDecimal cantidad, BigDecimal valorProducto, String idDetalleProducto) {
+    public MovimientoInventario(ModeloProducto producto, BigDecimal cantidad, BigDecimal valorProducto, String idDetalleProducto) {
         this(producto, cantidad, valorProducto, idDetalleProducto, false);
     }
 
-    public MovimientoInventario(ndProducto producto, BigDecimal cantidad, BigDecimal valorProducto, String idDetalleProducto, boolean armado) {
+    public MovimientoInventario(ModeloProducto producto, BigDecimal cantidad, BigDecimal valorProducto, String idDetalleProducto, boolean armado) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.valorProducto = valorProducto;
@@ -23,7 +23,7 @@ public class MovimientoInventario {
         this.armado = armado;
     }
 
-    public ndProducto getProducto() {
+    public ModeloProducto getProducto() {
         return producto;
     }
 

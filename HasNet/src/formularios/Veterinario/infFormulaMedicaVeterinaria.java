@@ -1,5 +1,7 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
 import clases.Instancias;
 import clases.Medico.ndFormulaMedica;
@@ -828,7 +830,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblFormula.getRowCount() < 1) {
-            metodos.msgError(this, "Falta agregar la prescripcion y la posologia");
+            ControladorAlertas.alertFail("Falta agregar la prescripcion y la posologia");
             return;
         }
 
@@ -838,19 +840,19 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "FORMVET-" + instancias.getSql().getNumConsecutivo("FORMVET")[0];
 
 //            ndFormulaVeterinaria nodo = instancias.getSql().getDatosFormulaMedicaVeterinaria(id);
 //
 //            if (nodo.getId() != null) {
-//                metodos.msgError(this, "La formula ya existe");
+//                ControladorAlertas.alertFail("La formula ya existe");
 //                txtId.requestFocus();
 //                return;
 //            }
@@ -859,7 +861,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
 
             ndFormulaVeterinaria nodo = metodos.llenarFormulaVeterinaria(vector);
             if (!instancias.getSql().agregarFormulaMedicaVeterinaria(nodo)) {
-                metodos.msgError(this, "Error al guardar la formula");
+                ControladorAlertas.alertFail("Error al guardar la formula");
                 return;
             }
 
@@ -894,7 +896,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
                 ndTablaFormula nodo2 = metodos.llenarTablaFormula(vector2);
                 aux2 = aux2 + "Prescripcion: " + valor1 + "\tPosologia: " + valor2 + "\n";
                 if (!instancias.getSql().agregarTablaFormulaVeterinaria(nodo2)) {
-                    metodos.msgError(this, "Hubo un problema al guardar el TablaFormula");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar el TablaFormula");
                     return;
                 }
             }
@@ -903,20 +905,20 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
 
             //CAMBIAR CONSECUTIVO FORMULA MEDICA
             if (!instancias.getSql().aumentarConsecutivo("FORMVET", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORMVET")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la formula medica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la formula medica");
             }
 
             txtId.setText("" + instancias.getSql().getNumConsecutivo("FORMVET")[0]);
 
             limpiar();
-            metodos.msgExito(this, "Formula medica registrado con éxito");
+            ControladorAlertas.alertSuccess("Formula medica registrado con éxito");
 
 //            ndHistoria historia = instancias.getSql().getDatosHistoria(txtHistoria.getText());
 //            String con[] = historia.getConsecutivos().split("&");
 //            int aux = Integer.parseInt(con[2]);
 //            aux++;
 //            instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + con[1] + "&" + aux + "&" + con[3]);
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String tipo = "";
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
@@ -935,7 +937,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
 
 //                btnNuevoActionPerformed(evt);             
 //            } catch (Exception e) {
-//                metodos.msgError(this, "Hubo un problema al guardar el FormulaMedica");
+//                ControladorAlertas.alertFail("Hubo un problema al guardar el FormulaMedica");
 //            }
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -983,7 +985,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un item");
+            ControladorAlertas.alert("Seleccione un item");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -995,22 +997,22 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 
             if (txtPrescripcion.getText().equals("")) {
-                metodos.msgError(this, "Ingrese una prescripción");
+                ControladorAlertas.alertFail("Ingrese una prescripción");
                 return;
             }
 
             if (txtPosologia.getText().equals("")) {
-                metodos.msgError(this, "Ingrese una posología");
+                ControladorAlertas.alertFail("Ingrese una posología");
                 return;
             }
 
             if (txtMedida.getText().equals("")) {
-                metodos.msgError(this, "Ingrese la medida de la prescripción");
+                ControladorAlertas.alertFail("Ingrese la medida de la prescripción");
                 return;
             }
 
             if (txtCantidad.getText().equals("")) {
-                metodos.msgError(this, "Ingrese una cantidad");
+                ControladorAlertas.alertFail("Ingrese una cantidad");
                 return;
             }
 
@@ -1018,7 +1020,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
             for (int i = 0; i < tblFormula.getRowCount(); i++) {
                 codigo = (String) tblFormula.getValueAt(i, 0);
                 if (txtPrescripcion.getText().equals(codigo)) {
-                    metodos.msgError(this, "Ya ingresaste esta prescripción");
+                    ControladorAlertas.alertFail("Ya ingresaste esta prescripción");
                     txtPrescripcion.setText("");
                     txtPosologia.setText("");
                     txtMedida.setText("");
@@ -1180,7 +1182,7 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
         //        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
         //            if (txtId.getText().equals("")) {
         //                if (txtNombre.getText().equals("")) {
-        //                    metodos.msgError(null, "Debe seleccionar un tercero primero");
+        //                    ControladorAlertas.alertFail("Debe seleccionar un tercero primero");
         //                    return;
         //                } else {
         //                    infBuscadorCliente buscador = new infBuscadorCliente();

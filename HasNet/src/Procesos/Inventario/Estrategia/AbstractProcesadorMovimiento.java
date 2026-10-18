@@ -1,12 +1,13 @@
 package Procesos.Inventario.Estrategia;
 
 import Enums.Tablas;
+import Enums.enumBodegas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.PonderadoPendiente;
 import Utilidades.BaseDatos.SentenciaSql;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Procesos.Inventario.Servicio.ServicioTransaccionInventario;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimiento {
 
@@ -21,18 +24,23 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
 
     @Override
     public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos,
-            String numeroDocumento, String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
+            String numeroDocumento, String idBodega, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
+
+        String bodega = enumBodegas.obtenerIdBodega(idBodega);
+        if (bodega == null) {
+            throw new IllegalArgumentException("Bodega no válida: " + idBodega);
+        }
 
         List<SentenciaSql> sentencias = new ArrayList<>();
         List<PonderadoPendiente> ponderados = new ArrayList<>();
-        Map<String, ndProducto> productosCanonicos = new HashMap<>();
+        Map<String, ModeloProducto> productosCanonicos = new HashMap<>();
 
         for (MovimientoInventario movimiento : movimientos) {
             MovimientoInventario efectivo = canonizar(movimiento, productosCanonicos);
             agregarSentenciasDetalle(sentencias, efectivo, informacionAdicional);
-            SentenciaSql sentenciaInventario = generarSqlInventario(efectivo, tablaUtilizada, informacionAdicional);
+            SentenciaSql sentenciaInventario = generarSqlInventario(efectivo, bodega, informacionAdicional);
             if (sentenciaInventario != null) {
-                sentencias.add(sentenciaInventario);
+                sentencias.add(comoUpsert(sentenciaInventario));
             }
             agregarPonderado(ponderados, efectivo);
         }
@@ -47,11 +55,57 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
                 numeroDocumento);
     }
 
-    private MovimientoInventario canonizar(MovimientoInventario movimiento, Map<String, ndProducto> canonicos) {
-        ndProducto producto = movimiento.getProducto();
+    private static final Pattern ACTUALIZACION_INVENTARIO = Pattern.compile(
+            "^UPDATE (\\w+) SET (.+) WHERE idSistema = \\? AND idBodega = \\?$", Pattern.DOTALL);
+    private static final Pattern ASIGNACION = Pattern.compile("^\\s*(\\w+) = \\?\\s*$");
+
+    /**
+     * El inventario de un producto en una bodega no se crea al guardar el producto: su fila nace con el primer movimiento.
+     * Por eso el "UPDATE tabla SET a = ?, b = ? WHERE idSistema = ? AND idBodega = ?" que arma cada procesador se ejecuta como
+     * "INSERT ... ON DUPLICATE KEY UPDATE": inserta la fila si no existe y, si existe, actualiza las mismas columnas.
+     */
+    private SentenciaSql comoUpsert(SentenciaSql actualizacion) {
+        Matcher matcher = ACTUALIZACION_INVENTARIO.matcher(actualizacion.getSql());
+        if (!matcher.matches()) {
+            throw new IllegalStateException("Sentencia de inventario no soportada: " + actualizacion.getSql());
+        }
+
+        List<String> columnas = new ArrayList<>();
+        for (String asignacion : matcher.group(2).split(",")) {
+            Matcher columna = ASIGNACION.matcher(asignacion);
+            if (!columna.matches()) {
+                throw new IllegalStateException("Asignación de inventario no soportada: " + asignacion);
+            }
+            columnas.add(columna.group(1));
+        }
+
+        List<Object> originales = actualizacion.getParametros();
+        if (originales.size() != columnas.size() + 2) {
+            throw new IllegalStateException("Los parámetros no coinciden con las columnas de: " + actualizacion.getSql());
+        }
+
+        List<String> actualizar = new ArrayList<>();
+        for (String columna : columnas) {
+            actualizar.add(columna + " = VALUES(" + columna + ")");
+        }
+
+        List<Object> parametros = new ArrayList<>();
+        parametros.add(originales.get(columnas.size()));
+        parametros.add(originales.get(columnas.size() + 1));
+        parametros.addAll(originales.subList(0, columnas.size()));
+
+        String sql = "INSERT INTO " + matcher.group(1) + " (idSistema, idBodega, " + String.join(", ", columnas) + ") VALUES ("
+                + String.join(", ", java.util.Collections.nCopies(columnas.size() + 2, "?")) + ") ON DUPLICATE KEY UPDATE "
+                + String.join(", ", actualizar);
+
+        return new SentenciaSql(sql, parametros.toArray());
+    }
+
+    private MovimientoInventario canonizar(MovimientoInventario movimiento, Map<String, ModeloProducto> canonicos) {
+        ModeloProducto producto = movimiento.getProducto();
         String idSistema = producto.getIdSistema();
 
-        ndProducto canonico = canonicos.get(idSistema);
+        ModeloProducto canonico = canonicos.get(idSistema);
         if (canonico == null) {
             canonicos.put(idSistema, producto);
             return movimiento;
@@ -61,7 +115,7 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
                 movimiento.getIdDetalleProducto(), movimiento.esArmado());
     }
 
-    protected abstract SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional);
+    protected abstract SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String idBodega, InformacionAdicional informacionAdicional);
 
     protected void agregarSentenciasDetalle(List<SentenciaSql> sentencias, MovimientoInventario movimiento,
             InformacionAdicional informacionAdicional) {

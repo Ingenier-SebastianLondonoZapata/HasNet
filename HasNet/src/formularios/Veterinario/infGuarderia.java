@@ -1,5 +1,11 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndGuarderia;
@@ -7,7 +13,7 @@ import clases.Veterinario.ndMascota;
 import Modelo.Terceros.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import formularios.terceros.buscClientes;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class infGuarderia extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -29,14 +36,14 @@ public class infGuarderia extends javax.swing.JInternalFrame {
 
     public void actualizarPrecios() {
         
-        ndProducto nodo = instancias.getSql().getDatosProducto("GD1", "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto("GD1", enumBodegas.ID_BODEGA_PRINCIPAL);
         try {
             txtValorHora.setText(big.setMoneda(big.getBigDecimal(nodo.getL1())));
         } catch (Exception e) {
             txtValorHora.setText("Sin establecer");
         }
 
-        ndProducto nodo1 = instancias.getSql().getDatosProducto("GD2", "bdProductos");
+        ModeloProducto nodo1 = daoProducto.obtenerDatosProducto("GD2", enumBodegas.ID_BODEGA_PRINCIPAL);
         try {
             txtValorDia.setText(big.setMoneda(big.getBigDecimal(nodo1.getL1())));
         } catch (Exception e) {
@@ -628,11 +635,11 @@ public class infGuarderia extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             if (btnGuardar.getText().equalsIgnoreCase("GUARDAR")) {
                 Guardar();
             } else {
@@ -1017,16 +1024,16 @@ public class infGuarderia extends javax.swing.JInternalFrame {
         ndGuarderia nodo = metodos.llenarGuarderia(vector);
 
         if (!instancias.getSql().agregarGuarderia(nodo)) {
-            metodos.msgError(this, "Hubo un error al guardar este registro");
+            ControladorAlertas.alertFail("Hubo un error al guardar este registro");
             return;
         }
 
         modelo.addRow(new Object[]{txtCodigoMascota.getText(), txtNombre.getText(), metodosGenerales.fecha(), metodosGenerales.hora(), id});
         if (!instancias.getSql().aumentarConsecutivo("GUARDERIA", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("GUARDERIA")[0]) + 1)) {
-            metodos.msgError(this, "Hubo un problema al guardar en el consecutivo");
+            ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo");
         }
 
-        metodos.msgExito(this, "Guardería registrada con éxito");
+        ControladorAlertas.alertSuccess("Guardería registrada con éxito");
         txtCodigoMascota.requestFocus();
         idGuarderia = "";
         btnNuevoActionPerformed(null);

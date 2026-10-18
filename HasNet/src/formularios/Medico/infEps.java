@@ -1,5 +1,9 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.Productos.DaoListaPrecio;
+
 import clases.Instancias;
 import clases.Medico.ndEps;
 import clases.Medico.ndEpsPrecargados;
@@ -18,6 +22,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infEps extends javax.swing.JInternalFrame {
+    private final DaoListaPrecio daoListaPrecio = new DaoListaPrecio();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -510,10 +515,10 @@ public class infEps extends javax.swing.JInternalFrame {
                 ModeloContacto nodoDos = instancias.getSql().getDatosTercero(txtId.getText());
 
                 if (nodoDos.getId() == null) {
-                    metodos.msgAdvertencia(this, "El Cliente no existe");
+                    ControladorAlertas.alert("El Cliente no existe");
                 } else {
                     if (nodoDos.isActivo()) {
-                        metodos.msgError(null, "Este cliente esta inactivado");
+                        ControladorAlertas.alertFail("Este cliente esta inactivado");
                         lbNit.requestFocus();
                         return;
                     }
@@ -560,21 +565,21 @@ public class infEps extends javax.swing.JInternalFrame {
         String faltantes2 = metodos.camposVacios(campos2);
 
         if (txtRazon.getText().equals("")) {
-            metodos.msgAdvertencia(this, "Cargue un cliente valido");
+            ControladorAlertas.alert("Cargue un cliente valido");
             ventanaTerceros("");
             return;
         } else if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             try {
                 ndEps nodo = instancias.getSql().getDatosEps(txtId.getText());
                 if (nodo.getId() != null) {
-                    metodos.msgError(this, "El Eps ya existe");
+                    ControladorAlertas.alertFail("El Eps ya existe");
                     txtId.requestFocus();
                     return;
                 }
@@ -584,20 +589,20 @@ public class infEps extends javax.swing.JInternalFrame {
 
                 nodo = metodos.llenarEps(vector);
                 if (!instancias.getSql().agregarEps(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al guardar el Eps");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar el Eps");
                     return;
                 }
 
                 //CAMBIAR CONSECUTIVO INGRESO
                 if (!instancias.getSql().aumentarConsecutivo("CONVENIO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CONVENIO")[0]) + 1)) {
-                    metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del ingreso");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del ingreso");
                 }
 
-                metodos.msgExito(this, "Eps registrado con éxito");
+                ControladorAlertas.alertSuccess("Eps registrado con éxito");
 
                 btnNuevoActionPerformed(evt);
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al guardar el Eps");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el Eps");
             }
         }
     }//GEN-LAST:event_btnGuardar1ActionPerformed
@@ -612,12 +617,12 @@ public class infEps extends javax.swing.JInternalFrame {
         Object[] campos2 = {txtDato1};
         String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (!faltantes2.equals("")) {
-            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             try {
 
@@ -626,7 +631,7 @@ public class infEps extends javax.swing.JInternalFrame {
 
                 ndEps nodo = metodos.llenarEps(vector);
                 if (!instancias.getSql().modificarEps(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al modificar el Eps");
+                    ControladorAlertas.alertFail("Hubo un problema al modificar el Eps");
                     return;
                 }
 
@@ -642,16 +647,16 @@ public class infEps extends javax.swing.JInternalFrame {
                         modelo.setValueAt("0", i, 3);
                     }
 
-                    if (!instancias.getSql().modificarLista(modelo.getValueAt(i, 0).toString(), txtDato2.getText(), big.getMoneda(modelo.getValueAt(i, 3).toString()).toString())) {
-                        metodos.msgError(this, "Hubo un error al modificar el precio de " + modelo.getValueAt(i, 1).toString());
+                    if (!daoListaPrecio.modificarPrecioLista(modelo.getValueAt(i, 0).toString(), txtDato2.getText(), big.getMoneda(modelo.getValueAt(i, 3).toString()).toString())) {
+                        ControladorAlertas.alertFail("Hubo un error al modificar el precio de " + modelo.getValueAt(i, 1).toString());
                     }
                 }
 
-                metodos.msgExito(this, "Eps modificado con éxito");
+                ControladorAlertas.alertSuccess("Eps modificado con éxito");
 
                 btnNuevoActionPerformed(evt);
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al modificar el Eps");
+                ControladorAlertas.alertFail("Hubo un problema al modificar el Eps");
             }
         }
     }//GEN-LAST:event_btnActualizar1ActionPerformed
@@ -753,7 +758,7 @@ public class infEps extends javax.swing.JInternalFrame {
             if (nodoDos.getId() != null) {
                 txtRazon.setText(nodoDos.getNombre());
                 if (nodoDos.isActivo()) {
-                    metodos.msgError(null, "Este cliente esta inactivado");
+                    ControladorAlertas.alertFail("Este cliente esta inactivado");
                     lbNit.requestFocus();
                     return;
                 }
@@ -775,7 +780,7 @@ public class infEps extends javax.swing.JInternalFrame {
             btnGuardar1.setEnabled(false);
             txtId.setEditable(false);
 
-            int x = metodos.msgPregunta(this, "Cargar los precios de convenio igual a precio original\nNota: Recomendable primera vez");
+            boolean x = ControladorAlertas.option("Cargar los precios de convenio igual a precio original\nNota: Recomendable primera vez");
 
             tblProductos.setModel(instancias.getSql().getProductosConvenio(nodo.getDato2()));
             modelo = (DefaultTableModel) tblProductos.getModel();
@@ -790,7 +795,7 @@ public class infEps extends javax.swing.JInternalFrame {
                     modelo.setValueAt("0", i, 2);
                 }
 
-                if (x == 0) {
+                if (x) {
                     modelo.setValueAt(modelo.getValueAt(i, 2), i, 3);
                 } else {
                     try {

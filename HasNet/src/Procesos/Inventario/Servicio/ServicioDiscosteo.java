@@ -5,8 +5,8 @@ import Modelo.Inventario.ComponenteDiscosteo;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
 import Utilidades.Ventas.ParserPreparacion;
-import clases.productos.ndProducto;
-import dao.Productos.DaoDiseno;
+import Modelo.Productos.ModeloProducto;
+import Dao.Productos.DaoDiseno;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,20 +33,20 @@ public class ServicioDiscosteo {
         this.servicioActualizacionPonderado = servicioActualizacionPonderado;
     }
 
-    public List<MovimientoInventario> explotarSiEsDiscosteo(ndProducto producto, String preparacion, String tablaUtilizada, BigDecimal cantidadDiscosteo) throws SQLException {
+    public List<MovimientoInventario> explotarSiEsDiscosteo(ModeloProducto producto, String preparacion, String idBodega, BigDecimal cantidadDiscosteo) throws SQLException {
         if (esGenerico(producto)) {
             return Collections.emptyList();
         }
 
-        return explotar(producto, preparacion, tablaUtilizada, cantidadDiscosteo);
+        return explotar(producto, preparacion, idBodega, cantidadDiscosteo);
     }
 
-    public List<MovimientoInventario> explotar(ndProducto discosteo, String preparacion, String tablaUtilizada, BigDecimal cantidadDiscosteo) throws SQLException {
+    public List<MovimientoInventario> explotar(ModeloProducto discosteo, String preparacion, String idBodega, BigDecimal cantidadDiscosteo) throws SQLException {
         List<ComponenteDiscosteo> componentes = obtenerComponentes(discosteo, preparacion);
-        return listaMovimientos(componentes, tablaUtilizada, cantidadDiscosteo);
+        return listaMovimientos(componentes, idBodega, cantidadDiscosteo);
     }
 
-    private List<ComponenteDiscosteo> obtenerComponentes(ndProducto discosteo, String preparacion) throws SQLException {
+    private List<ComponenteDiscosteo> obtenerComponentes(ModeloProducto discosteo, String preparacion) throws SQLException {
         if (ParserPreparacion.tienePreparacion(preparacion)) {
             return ParserPreparacion.componentesActivos(preparacion);
         }
@@ -54,11 +54,11 @@ public class ServicioDiscosteo {
         return daoDiseno.obtenerComponentes(discosteo.getIdSistema());
     }
 
-    private List<MovimientoInventario> listaMovimientos(List<ComponenteDiscosteo> componentes, String tablaUtilizada, BigDecimal cantidadDiscosteo) {
+    private List<MovimientoInventario> listaMovimientos(List<ComponenteDiscosteo> componentes, String idBodega, BigDecimal cantidadDiscosteo) {
         List<MovimientoInventario> movimientos = new ArrayList<>();
 
         for (ComponenteDiscosteo componente : componentes) {
-            ndProducto insumo = cargadorProducto.cargar(componente.getCodigoInsumo(), tablaUtilizada);
+            ModeloProducto insumo = cargadorProducto.cargar(componente.getCodigoInsumo(), idBodega);
             if (insumo == null) {
                 continue;
             }
@@ -70,17 +70,17 @@ public class ServicioDiscosteo {
         return movimientos;
     }
 
-    private boolean esGenerico(ndProducto producto) {
+    private boolean esGenerico(ModeloProducto producto) {
         return TipoProducto.GENERICO.getValue().equals(producto.getUsuario());
     }
 
-    public BigDecimal calcularCostoPreparacion(ndProducto producto, String preparacion, String tablaUtilizada, BigDecimal cantidad) throws SQLException {
+    public BigDecimal calcularCostoPreparacion(ModeloProducto producto, String preparacion, String idBodega, BigDecimal cantidad) throws SQLException {
         BigDecimal costoTotal = BigDecimal.ZERO;
 
-        List<MovimientoInventario> movimientos = explotarSiEsDiscosteo(producto, preparacion, tablaUtilizada, cantidad);
+        List<MovimientoInventario> movimientos = explotarSiEsDiscosteo(producto, preparacion, idBodega, cantidad);
 
         for (MovimientoInventario movimiento : movimientos) {
-            ndProducto insumo = movimiento.getProducto();
+            ModeloProducto insumo = movimiento.getProducto();
             BigDecimal cantidadInsumo = movimiento.getCantidad();
 
             try {

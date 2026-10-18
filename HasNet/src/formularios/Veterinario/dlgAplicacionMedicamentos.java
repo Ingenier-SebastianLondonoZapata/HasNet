@@ -1,13 +1,20 @@
 package formularios.Veterinario;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.event.KeyEvent;
 
 public class dlgAplicacionMedicamentos extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     String idMedicamento = "";
     String idHospitalizacion = "";
@@ -292,14 +299,14 @@ public class dlgAplicacionMedicamentos extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (txtId.getText().equals("") || txtMedicamento.getText().equals("")) {
-            metodos.msgAdvertencia(null, "No ha cargado ningún medicamento");
+            ControladorAlertas.alert("No ha cargado ningún medicamento");
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             if (!instancias.getSql().agregarMedicamentosAplicados(idHospitalizacion, idMedicamento, lbTitulo.getText(), txtCant.getText(),
                     txtId.getText(), instancias.getUsuario(), metodosGenerales.fecha(), cmbHoras.getSelectedItem().toString(),
                     txtNota.getText(), metodosGenerales.fecha(), metodosGenerales.hora())) {
-                metodos.msgError(null, "Hubo un problema al guardar el aplique del medicamento");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el aplique del medicamento");
                 return;
             } else {
                 String campo = "";
@@ -355,7 +362,7 @@ public class dlgAplicacionMedicamentos extends javax.swing.JDialog {
 
                 instancias.getHospitalizacion().cargarProductoHospitalizacion(txtId.getText(), txtCant.getText());
                 instancias.getSql().cambiarEstadoDeMedicamento(idHospitalizacion, idMedicamento, campo);
-                metodos.msgExito(null, "Medicamento aplicado con exito !");
+                ControladorAlertas.alertSuccess("Medicamento aplicado con exito !");
                 dispose();
             }
         }
@@ -382,18 +389,13 @@ public class dlgAplicacionMedicamentos extends javax.swing.JDialog {
             String codigo = txtMedicamento.getText().replace("'", "//");
             String cant = txtCant.getText();
 
-            ndProducto nodo = null;
+            ModeloProducto nodo = null;
 
             String CodigoProd = "";
             if (codigo.equals("")) {
                 CodigoProd = "";
             } else {
-                Object[][] listado = instancias.getSql().getCodigosRelacionados(codigo, " where codigo");
-                if (listado.length > 0) {
-                    codigo = listado[0][0].toString();
-                }
-
-                nodo = instancias.getSql().getDatosProducto(codigo, "bdProductos");
+                nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
                 if (nodo.getIdSistema() != null) {
                     CodigoProd = nodo.getIdSistema();
                 }

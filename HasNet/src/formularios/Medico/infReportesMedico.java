@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import formularios.productos.*;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -145,7 +147,7 @@ public class infReportesMedico extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 jComboBox1.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -161,7 +163,7 @@ public class infReportesMedico extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 jComboBox1.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -177,7 +179,7 @@ public class infReportesMedico extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 jComboBox1.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -193,7 +195,7 @@ public class infReportesMedico extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 jComboBox1.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
 
@@ -209,7 +211,7 @@ public class infReportesMedico extends javax.swing.JInternalFrame {
                 jPanel1.setVisible(true);
             } else {
                 jComboBox1.setSelectedIndex(0);
-                metodos.msgAdvertencia(null, "No tiene permisos para esta función");
+                ControladorAlertas.alert("No tiene permisos para esta función");
             }
         }
     }

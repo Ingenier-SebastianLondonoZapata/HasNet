@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.Medico.ndConvenio;
 import clases.Medico.ndEpsPrecargados;
@@ -539,7 +541,7 @@ public class infConvenio extends javax.swing.JInternalFrame {
             
             if (nodo.getId() != null) {
                 if (nodo.isActivo()) {
-                    metodos.msgError(null, "Este cliente esta inactivado");
+                    ControladorAlertas.alertFail("Este cliente esta inactivado");
                     lbNit.requestFocus();
                     return;
                 }
@@ -617,11 +619,11 @@ public class infConvenio extends javax.swing.JInternalFrame {
         Object[] campos = {txtNit, txtNombre1, txtNumContrato};
         String faltantes = metodos.camposVacios(campos);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
         
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             String fecha = "2099/01/01";
             
             if (jCheckBox1.isSelected()) {
@@ -640,15 +642,15 @@ public class infConvenio extends javax.swing.JInternalFrame {
             
             ndConvenio nodo = metodos.llenarConvenio(vector);
             if (!instancias.getSql().agregarConvenio(nodo)) {
-                metodos.msgError(null, "Hubo un problema al guardar el convenio");
+                ControladorAlertas.alertFail("Hubo un problema al guardar el convenio");
                 return;
             }
             
             if (!instancias.getSql().aumentarConsecutivo("CONV", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CONV")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del convenio");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del convenio");
             }
             
-            metodos.msgExito(null, "Convenio registrado con éxito");
+            ControladorAlertas.alertSuccess("Convenio registrado con éxito");
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -695,10 +697,10 @@ public class infConvenio extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
         
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
             
             try {
                 String fecha = "01/01/2099";
@@ -716,14 +718,14 @@ public class infConvenio extends javax.swing.JInternalFrame {
                 ndConvenio nodo = metodos.llenarConvenio(vector);
                 
                 if (!instancias.getSql().modificarConvenio(nodo)) {
-                    metodos.msgError(this, "Hubo un problema al modificar el convenio");
+                    ControladorAlertas.alertFail("Hubo un problema al modificar el convenio");
                     return;
                 }
-                metodos.msgExito(this, "convenio modificado con éxito");
+                ControladorAlertas.alertSuccess("convenio modificado con éxito");
                 
                 btnNuevoActionPerformed(evt);
             } catch (Exception e) {
-                metodos.msgError(this, "Hubo un problema al modiicar el convenio");
+                ControladorAlertas.alertFail("Hubo un problema al modiicar el convenio");
             }
         }
     }//GEN-LAST:event_btnActualizarActionPerformed

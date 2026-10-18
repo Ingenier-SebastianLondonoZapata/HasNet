@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
@@ -235,20 +237,20 @@ public class buscTiposProductos extends javax.swing.JDialog {
 
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgError(null, "Ingrese el tipo de producto");
+            ControladorAlertas.alertFail("Ingrese el tipo de producto");
             return;
         }
 
         String aux = instancias.getSql().getDatosMedidas(txtId.getText());
         if (aux == null) {
-            if (metodos.msgPregunta(null, "¿Agregar tipo de producto?") == 0) {
+            if (ControladorAlertas.option("¿Agregar tipo de producto?")) {
 
                 if (!instancias.getSql().agregarTipoProd(txtId.getText())) {
-                    metodos.msgError(null, "Hubo un error al guardar");
+                    ControladorAlertas.alertFail("Hubo un error al guardar");
                     return;
                 }
 
-                metodos.msgExito(null, "Tipo de producto ingresado con exito");
+                ControladorAlertas.alertSuccess("Tipo de producto ingresado con exito");
                 this.setInstancia(instancias);
                 noEncontrado(txtId.getText());
                 btnEsteActionPerformed(evt);

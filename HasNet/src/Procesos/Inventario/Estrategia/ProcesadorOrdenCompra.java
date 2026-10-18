@@ -1,30 +1,28 @@
 package Procesos.Inventario.Estrategia;
 
+import Enums.Tablas;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Utilidades.BaseDatos.SentenciaSql;
-import Utilidades.BaseDatos.ValidadorTabla;
-import Utilidades.Inventario.UtilidadInventario;
-import Utilidades.Utilidades;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 
 public class ProcesadorOrdenCompra extends AbstractProcesadorMovimiento {
 
     @Override
-    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional) {
-        ndProducto producto = movimiento.getProducto();
+    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String idBodega, InformacionAdicional informacionAdicional) {
+        ModeloProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal enTransito = Utilidades.convertirBigDecimal(producto.getEnTransito()).add(cantidad);
-        producto.setEnTransito(UtilidadInventario.formatear(enTransito));
+        BigDecimal enTransito = producto.getEnTransito().add(cantidad);
+        producto.setEnTransito(enTransito);
 
-        String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
+        String sql = "UPDATE " + Tablas.INVENTARIO.getNombre() + " SET "
                 + "enTransito = ? "
-                + "WHERE idSistema = ?";
+                + "WHERE idSistema = ? AND idBodega = ?";
 
         return new SentenciaSql(sql,
-                UtilidadInventario.formatear(enTransito),
-                producto.getIdSistema());
+                enTransito,
+                producto.getIdSistema(), idBodega);
     }
 }

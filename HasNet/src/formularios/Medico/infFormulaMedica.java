@@ -1,5 +1,11 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndConsultaClinica;
@@ -7,7 +13,7 @@ import clases.Medico.ndFormulaMedica;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndMedicamentos;
 import clases.Medico.ndTablaFormula;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
@@ -25,6 +31,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infFormulaMedica extends javax.swing.JInternalFrame {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -609,7 +616,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblFormula.getRowCount() < 1) {
-            metodos.msgError(this, "Falta agregar la prescripcion y la posologia");
+            ControladorAlertas.alertFail("Falta agregar la prescripcion y la posologia");
             return;
         }
 
@@ -617,17 +624,17 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String id = "FORM-" + instancias.getSql().getNumConsecutivo("FORM")[0];
 
             ndFormulaMedica nodo = instancias.getSql().getDatosFormulaMedica(id);
             if (nodo.getId() != null) {
-                metodos.msgError(this, "La formula medica ya existe");
+                ControladorAlertas.alertFail("La formula medica ya existe");
                 txtId.requestFocus();
                 return;
             }
@@ -639,7 +646,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
 
             nodo = metodos.llenarFormulaMedica(vector);
             if (!instancias.getSql().agregarFormulaMedica(nodo)) {
-                metodos.msgError(this, "Error al guardar la formula medica");
+                ControladorAlertas.alertFail("Error al guardar la formula medica");
                 return;
             }
             ndConsultaClinica consulta = instancias.getSql().getDatosConsultaClinica(instancias.getHistoriaClinica().getConsulta());
@@ -653,7 +660,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
                 aux2 = aux2 + "Prescripcion: " + tblFormula.getValueAt(i, 0).toString() + "\tPosologia: " + tblFormula.getValueAt(i, 1).toString() + "\n";
 
                 if (!instancias.getSql().agregarTablaFormula(nodo2)) {
-                    metodos.msgError(this, "Hubo un problema al guardar el TablaFormula");
+                    ControladorAlertas.alertFail("Hubo un problema al guardar el TablaFormula");
                     return;
                 }
             }
@@ -661,13 +668,13 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
 
             //CAMBIAR CONSECUTIVO FORMULA MEDICA
             if (!instancias.getSql().aumentarConsecutivo("FORM", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("FORM")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo de la formula medica");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo de la formula medica");
             }
 
             txtId.setText("FORM-" + instancias.getSql().getNumConsecutivo("FORM")[0]);
             limpiar();
 
-            metodos.msgExito(this, "Formula Medica registrado con éxito");
+            ControladorAlertas.alertSuccess("Formula Medica registrado con éxito");
 
             ndHistoriaClinica historia = instancias.getSql().getDatosHistClinica(historiaClinica);
             String con[] = historia.getConsecutivos().split("&");
@@ -675,7 +682,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
             aux++;
             instancias.getSql().modificarConsecutivoHistoria(historia.getId(), con[0] + "&" + con[1] + "&" + aux + "&" + con[3]);
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 String tipo = "";
                 if (rbtCarta.isSelected()) {
                     tipo = "Completa";
@@ -724,7 +731,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
 
     private void txtIdentificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdentificacionKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(txtIdentificacion.getText().replace("'", "//"), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtIdentificacion.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
             if (nodo.getCodigo() != null) {
                 cargando(txtIdentificacion.getText());
             }
@@ -834,7 +841,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
             modelo.removeRow(fila);
 
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un item");
+            ControladorAlertas.alert("Seleccione un item");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 

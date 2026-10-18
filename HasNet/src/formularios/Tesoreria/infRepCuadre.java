@@ -1,6 +1,8 @@
 package formularios.Tesoreria;
 
-import dao.InicioSesion.DaoInicioSesion;
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -689,7 +691,7 @@ public class infRepCuadre extends javax.swing.JInternalFrame {
     private void btnAggProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProvActionPerformed
         for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
             if (cmbTerminal2.getItemAt(i).equals(cmbTerminal.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -698,14 +700,14 @@ public class infRepCuadre extends javax.swing.JInternalFrame {
 
     private void btnRemProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemProvActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(null, "Seleccione una terminal");
+            ControladorAlertas.alertFail("Seleccione una terminal");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
     }//GEN-LAST:event_btnRemProvActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
             if (jPanel9.isVisible()) {
                 if (cmbTerminal2.getItemCount() > 0) {
@@ -756,7 +758,7 @@ public class infRepCuadre extends javax.swing.JInternalFrame {
     private void btnAggProv1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggProv1ActionPerformed
         for (int i = 0; i < cmbUsuarios1.getItemCount(); i++) {
             if (cmbUsuarios1.getItemAt(i).equals(cmbUsuarios.getSelectedItem())) {
-                metodos.msgError(null, "Ya has ingresado esta terminal");
+                ControladorAlertas.alertFail("Ya has ingresado esta terminal");
                 return;
             }
         }
@@ -765,14 +767,14 @@ public class infRepCuadre extends javax.swing.JInternalFrame {
 
     private void btnRemProv1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemProv1ActionPerformed
         if (cmbUsuarios1.getItemCount() == 0) {
-            metodos.msgError(null, "Seleccione un usuario");
+            ControladorAlertas.alertFail("Seleccione un usuario");
             return;
         }
         cmbUsuarios1.removeItem(cmbUsuarios1.getSelectedItem());
     }//GEN-LAST:event_btnRemProv1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (cmbUsuarios1.getItemCount() > 0) {
@@ -808,7 +810,7 @@ public class infRepCuadre extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where totalPropina > 0 and ";
 
             String ini = metodos.desdeDate(dtInicio2.getCurrent()), fin = metodos.desdeDate(dtFinal2.getCurrent());

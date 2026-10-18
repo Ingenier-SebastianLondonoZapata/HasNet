@@ -1,5 +1,7 @@
 package formularios.Ventas;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Vista.Ventas.VistaFactura;
 import Vista.Productos.VistaIngreso;
 import formularios.productos.*;
@@ -481,17 +483,17 @@ public final class buscProblemas extends javax.swing.JDialog {
 
     private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
         if (txtId.getText().equals("")) {
-            metodos.msgAdvertencia(null, "Ingrese el problema");
+            ControladorAlertas.alert("Ingrese el problema");
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             if (!instancias.getSql().agregarProblema(txtId.getText().toUpperCase())) {
-                metodos.msgError(null, "Error al guardar el problema");
+                ControladorAlertas.alertFail("Error al guardar el problema");
                 return;
             } else {
-                metodos.msgExito(null, "Problema guardado con exito");
+                ControladorAlertas.alertSuccess("Problema guardado con exito");
             }
             this.dispose();
         }

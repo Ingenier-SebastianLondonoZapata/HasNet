@@ -1,5 +1,7 @@
 package Vista.Productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Enums.EstadosDetalleProducto;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
@@ -8,7 +10,6 @@ import Impresiones.ImpresionesProductos.GeneradorReporteProducto;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
-import Modelo.Productos.ResultadoBusquedaProducto;
 import Modelo.Productos.ResultadoPluProducto;
 import Utilidades.DatosMaestra;
 import Procesos.Inventario.Dao.DaoDetalleProducto;
@@ -17,13 +18,13 @@ import Procesos.Inventario.Servicio.ServicioInventario;
 import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
 import Utilidades.Utilidades;
 import clases.Instancias;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import clases.productos.ndTraslado;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndCompra;
 import clases.productos.ndProductoAjustes;
-import dao.Productos.DaoProducto;
+import Dao.Productos.DaoProducto;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -113,7 +114,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     public void consultarPermiso() {
         if (cmbTipoAjuste.getSelectedIndex() == 0) {
             if (!instancias.getUsuarioLog().isAjustesEntrada()) {
-                metodos.msgError(this, "No tiene permisos");
+                ControladorAlertas.alertFail("No tiene permisos");
                 btnGuardar.setEnabled(false);
                 btnLimpiar.setEnabled(false);
                 btnReimprimir.setEnabled(false);
@@ -126,7 +127,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             }
         } else {
             if (!instancias.getUsuarioLog().isAjustesSalida()) {
-                metodos.msgError(this, "No tiene permisos");
+                ControladorAlertas.alertFail("No tiene permisos");
                 btnGuardar.setEnabled(false);
                 btnLimpiar.setEnabled(false);
                 btnReimprimir.setEnabled(false);
@@ -633,19 +634,19 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblProductos.getRowCount() == 0) {
-            metodos.msgError(this, "No ha añadido ningun producto");
+            ControladorAlertas.alertFail("No ha añadido ningun producto");
         } else {
 
             int xyz = tblProductos.getRowCount();
             if (xyz > 0) {
                 for (int i = 0; i < xyz; i++) {
                     if (tblProductos.getValueAt(i, 3).equals("0")) {
-                        metodos.msgError(this, "Las cantidades deben ser mayor a 0");
+                        ControladorAlertas.alertFail("Las cantidades deben ser mayor a 0");
                         return;
                     }
 
                     if (big.getMoneda(tblProductos.getValueAt(i, 2).toString()).compareTo(BigDecimal.ZERO) <= 0) {
-                        metodos.msgError(this, "Los valores deben ser mayor a " + this.simbolo + " 0");
+                        ControladorAlertas.alertFail("Los valores deben ser mayor a " + this.simbolo + " 0");
                         return;
                     }
 
@@ -657,7 +658,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             }
 
             if (!saltarPasos) {
-                if (metodos.msgPregunta(this, "¿Desea continuar?") != 0) {
+                if (!ControladorAlertas.option("¿Desea continuar?")) {
                     return;
                 }
             }
@@ -682,7 +683,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             ndTraslado nodo = metodos.llenarTraslado(vector);
 
             if (!instancias.getSql().agregarTraslado(nodo)) {
-                metodos.msgError(this, "Error al guardar el ajuste");
+                ControladorAlertas.alertFail("Error al guardar el ajuste");
                 return;
             }
 
@@ -702,15 +703,15 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                 ndProductoAjustes nodoTras = metodos.llenarAjustes(vectVenta);
 
                 if (!instancias.getSql().agregarProductosAjustes(nodoTras)) {
-                    metodos.msgError(this, "Error al guardar el ajuste");
+                    ControladorAlertas.alertFail("Error al guardar el ajuste");
                 }
             }
 
             TipoDocumento tipoMovimiento = cmbTipoAjuste.getSelectedIndex() == 0 ? TipoDocumento.AJUSTE_ENTRADA : TipoDocumento.AJUSTE_SALIDA;
             List<DetalleProducto> detallesProductos = cmbTipoAjuste.getSelectedIndex() == 0 ? generarDetallesProductos() : new ArrayList<DetalleProducto>();
-            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, factura, tablaUtilizada, instancias.getUsuario(), null);
+            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            List<MovimientoInventario> productos = generarListadoProductos(idBodega);
+            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, factura, idBodega, instancias.getUsuario(), null);
 
             try {
                 servicioInventario.procesarMovimiento();
@@ -721,18 +722,18 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
             //CAMBIAR CONSECUTIVO FACTURA
             if (!instancias.getSql().aumentarConsecutivo("TRAS", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TRAS")[0]) + 1)) {
-                metodos.msgError(this, "Hubo un problema al guardar en el consecutivo del traslado");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del traslado");
             }
 
             lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("TRAS")[0]);
 
             if (!saltarPasos) {
-                metodos.msgExito(this, "Ajuste exitoso");
+                ControladorAlertas.alertSuccess("Ajuste exitoso");
             }
 
             saltarPasos = false;
 
-            if (metodos.msgPregunta(this, "¿Desea imprimir?") == 0) {
+            if (ControladorAlertas.option("¿Desea imprimir?")) {
                 generarReporte(factura);
             }
 
@@ -743,7 +744,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         if (preguntaLimpiar) {
-            if (metodos.msgPregunta(null, "¿Limpiar el ajuste?") != 0) {
+            if (!ControladorAlertas.option("¿Limpiar el ajuste?")) {
                 return;
             }
         }
@@ -779,7 +780,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             cargarTotales();
             guardarMovimientosPrecargados();
         } else {
-            metodos.msgAdvertencia(this, "Seleccione un producto");
+            ControladorAlertas.alert("Seleccione un producto");
         }
     }//GEN-LAST:event_popBorrarActionPerformed
 
@@ -792,7 +793,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         boolean anulado = instancias.getSql().getDocumentoAnulado("bdTraslados", "Where id='" + consecutivo + "' ");
 
         if (anulado) {
-            metodos.msgAdvertencia(this, "Este documento se encuentra anulado");
+            ControladorAlertas.alert("Este documento se encuentra anulado");
             return;
         }
 
@@ -814,18 +815,18 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         try {
             boolean anulado = instancias.getSql().getDocumentoAnulado("bdTraslados", "Where id='" + consecutivo + "' ");
             if (anulado) {
-                metodos.msgError(this, "El documento se encuentra anulado");
+                ControladorAlertas.alertFail("El documento se encuentra anulado");
                 return;
             }
         } catch (Exception e) {
-            metodos.msgError(this, "El documento no existe");
+            ControladorAlertas.alertFail("El documento no existe");
             return;
         }
 
-        if (metodos.msgPregunta(this, "¿Anular este ajuste?") == 0) {
+        if (ControladorAlertas.option("¿Anular este ajuste?")) {
 
             if (!instancias.getSql().anularDocumento(consecutivo, "bdTraslados")) {
-                metodos.msgError(this, "Hubo un problema al anular el ajuste");
+                ControladorAlertas.alertFail("Hubo un problema al anular el ajuste");
                 return;
             }
 
@@ -834,9 +835,9 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             boolean esAjusteEntrada = origen.equals("123-11");
 
             TipoDocumento tipoMovimiento = esAjusteEntrada ? TipoDocumento.ANULAR_AJUSTE_ENTRADA : TipoDocumento.ANULAR_AJUSTE_SALIDA;
-            String tablaUtilizada = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla();
-            List<MovimientoInventario> productos = generarListadoProductos(tablaUtilizada, productosAjuste);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, consecutivo, tablaUtilizada, instancias.getUsuario(), null);
+            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            List<MovimientoInventario> productos = generarListadoProductos(idBodega, productosAjuste);
+            ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, consecutivo, idBodega, instancias.getUsuario(), null);
 
             try {
                 servicioInventario.procesarMovimiento();
@@ -845,7 +846,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                 return;
             }
 
-            metodos.msgExito(this, "Ajuste anulado con éxito");
+            ControladorAlertas.alertSuccess("Ajuste anulado con éxito");
         }
     }//GEN-LAST:event_btnAnularActionPerformed
 
@@ -863,7 +864,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (tblProductos.getSelectedColumn() == 3) {
-            ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
             String tipoProducto = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
             if (cmbTipoAjuste.getSelectedIndex() == 0) {
@@ -878,7 +879,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                 }
             } else {
                 if (!tipoProducto.isEmpty()) {
-                    metodos.msgAdvertenciaAjustado(null, "La cantidad no se puede modificar");
+                    ControladorAlertas.alert("La cantidad no se puede modificar");
                 }
             }
         }
@@ -961,12 +962,12 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         }
     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada) {
+    private List<MovimientoInventario> generarListadoProductos(String idBodega) {
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ndProducto producto = instancias.getSql().getDatosProducto(tblProductos.getValueAt(i, 15).toString(), tablaUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 15).toString(), idBodega);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 10).toString());
             String idDetalleProducto = obtenerValorTabla(i, 14);
 
@@ -977,12 +978,12 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         return movimientos;
     }
 
-    private List<MovimientoInventario> generarListadoProductos(String tablaUtilizada, Object[][] productosAjuste) {
+    private List<MovimientoInventario> generarListadoProductos(String idBodega, Object[][] productosAjuste) {
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
 
         for (Object[] productoAjuste : productosAjuste) {
-            ndProducto producto = instancias.getSql().getDatosProducto(productoAjuste[0].toString(), tablaUtilizada);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(productoAjuste[0].toString(), idBodega);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(productoAjuste[1].toString());
             String idDetalleProducto = productoAjuste[2] != null ? productoAjuste[2].toString() : "";
 
@@ -1018,7 +1019,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     }
 
     public void calcularFila(int fila) {
-        ndProducto nodo = instancias.getSql().getDatosProducto(tblProductos.getValueAt(fila, 15).toString(), "bdProductos");
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 15).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
 
         BigDecimal valor = big.getMoneda(tblProductos.getValueAt(fila, 2).toString());
         BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 3));
@@ -1144,7 +1145,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
             ndCompra nodoComp = metodos.llenarCompra(vectCompra);
             if (!instancias.getSql().agregarPrecompra(nodoComp)) {
-                metodos.msgError(null, "Hubo un problema al guardar la precompra");
+                ControladorAlertas.alertFail("Hubo un problema al guardar la precompra");
             }
         }
     }
@@ -1159,7 +1160,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         }
 
         if (!daoDetalleProducto.guardarListaDetallesPrecargados(tipoDocumento, detalles)) {
-            metodos.msgError(null, "Error al guardar detalle del ajuste");
+            ControladorAlertas.alertFail("Error al guardar detalle del ajuste");
         }
     }
 
@@ -1198,7 +1199,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         }
     }
 
-    private boolean combinarConFilaExistente(ndProducto nodo, int plu, BigDecimal cantidad) {
+    private boolean combinarConFilaExistente(ModeloProducto nodo, int plu, BigDecimal cantidad) {
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             boolean mismoProducto = nodo.getIdSistema().equals(tblProductos.getValueAt(i, 15).toString());
             boolean mismoPlu = plu == Integer.parseInt(tblProductos.getValueAt(i, 9).toString());
@@ -1229,9 +1230,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         eliminarProductoDetalladoExistente(idProd);
         tblProductos.removeEditor();
 
-        ResultadoBusquedaProducto resultado = daoProducto.buscarPorCodigo(codigo);
-        codigo = resultado.getCodigoResuelto();
-        ndProducto nodo = resultado.getProducto();
+        ModeloProducto nodo = daoProducto.buscarPorCodigo(codigo);
 
         if (nodo.getCodigo() == null || nodo.getCodigo().isEmpty()) {
             ventanaProductos(codigo);
@@ -1239,7 +1238,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         }
 
         if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
-            metodos.msgError(null, "Este producto esta inactivo");
+            ControladorAlertas.alertFail("Este producto esta inactivo");
             lbProducto.requestFocus();
             return;
         }

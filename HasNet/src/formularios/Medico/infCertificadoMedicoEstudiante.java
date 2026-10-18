@@ -1,5 +1,7 @@
 package formularios.Medico;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import clases.Instancias;
 import clases.Medico.ndCertificadoMedico;
@@ -1186,7 +1188,7 @@ public class infCertificadoMedicoEstudiante extends javax.swing.JPanel {
                 txtimc.setText("");
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
-            metodos.msgError(null, "Esta función solo sirve con ENTER");
+            ControladorAlertas.alertFail("Esta función solo sirve con ENTER");
         }
     }//GEN-LAST:event_txtEstaturaKeyReleased
 
@@ -1380,21 +1382,21 @@ public class infCertificadoMedicoEstudiante extends javax.swing.JPanel {
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
-        if (metodos.msgPregunta(null, "¿Desea continuar? ") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar? ")) {
 
             String conse = "CERTIFICADOMEDEST-" + instancias.getSql().getNumConsecutivo("CERTIFICADOMEDEST")[0];
             ndCertificadoMedico nodo = instancias.getSql().getDatosCertificadoMedico(conse, "Estudiante");
 
             if (nodo.getId() != null) {
                 if (!instancias.getSql().aumentarConsecutivo("CERTIFICADOMEDEST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CERTIFICADOMEDEST")[0]) + 1)) {
-                    metodos.msgError(null, "Hubo un problema al aumentar el consecutivo del certificado");
+                    ControladorAlertas.alertFail("Hubo un problema al aumentar el consecutivo del certificado");
                 }
 
                 conse = "CERTIFICADOMEDEST-" + instancias.getSql().getNumConsecutivo("CERTIFICADOMEDEST")[0];
                 while (instancias.getSql().getDatosRemision(conse).getId() != null) {
 
                     if (!instancias.getSql().aumentarConsecutivo("CERTIFICADOMEDEST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CERTIFICADOMEDEST")[0]) + 1)) {
-                        metodos.msgError(null, "Hubo un problema al aumentar el consecutivo del certificado");
+                        ControladorAlertas.alertFail("Hubo un problema al aumentar el consecutivo del certificado");
                     }
                     conse = "CERTIFICADOMEDEST-" + instancias.getSql().getNumConsecutivo("CERTIFICADOMEDEST")[0];
                 }
@@ -1422,14 +1424,14 @@ public class infCertificadoMedicoEstudiante extends javax.swing.JPanel {
             nodo = metodos.llenarCertificadoMedico(vector);
 
             if (!instancias.getSql().agregarCertificadoMedico(nodo, "Estudiante")) {
-                metodos.msgError(null, "Error al guardar la Consulta");
+                ControladorAlertas.alertFail("Error al guardar la Consulta");
                 return;
             } else {
-                metodos.msgExito(null, "Certificado generado con exito!");
+                ControladorAlertas.alertSuccess("Certificado generado con exito!");
             }
 
             if (!instancias.getSql().aumentarConsecutivo("CERTIFICADOMEDEST", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CERTIFICADOMEDEST")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del certificado");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del certificado");
                 return;
             }
 

@@ -1,5 +1,7 @@
 package Vista.Restaurante;
 
+import Dao.Productos.DaoProducto;
+
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
 import Utilidades.Utilidades;
@@ -38,6 +40,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class VistaGruposProductos extends JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private final Instancias instancias;
     private final metodosGenerales metodos = new metodosGenerales();
@@ -284,7 +287,7 @@ public class VistaGruposProductos extends JDialog {
         }
 
         boolean conImpuestos = instancias.isPvpConIva();
-        Object[][] prods = instancias.getSql().getDatosProductosGrupo(codigo, conImpuestos);
+        Object[][] prods = daoProducto.obtenerProductosPorGrupo(codigo, conImpuestos);
 
         for (int i = 0; i < prods.length; i++) {
             String codProd = prods[i][0].toString();
@@ -364,7 +367,7 @@ public class VistaGruposProductos extends JDialog {
 
     private void cargar() {
         if (seleccionGlobal.isEmpty()) {
-            ControladorAlertas.bigAlert("Debe seleccionar al menos un producto (haga click en los productos deseados)");
+            ControladorAlertas.alert("Debe seleccionar al menos un producto (haga click en los productos deseados)");
             return;
         }
 

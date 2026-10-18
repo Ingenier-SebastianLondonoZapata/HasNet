@@ -9,6 +9,6 @@ import java.util.List;
 public interface ProcesadorMovimiento {
 
     void procesar(List<MovimientoInventario> productos, List<DetalleProducto> detallesProductos, 
-            String numeroDocumento, String tablaUtilizada, String usuario, InformacionAdicional informacionAdicional) throws SQLException;
+            String numeroDocumento, String idBodega, String usuario, InformacionAdicional informacionAdicional) throws SQLException;
 
 }

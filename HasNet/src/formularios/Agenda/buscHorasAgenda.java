@@ -1,5 +1,7 @@
 package formularios.Agenda;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
@@ -178,10 +180,10 @@ public class buscHorasAgenda extends javax.swing.JDialog {
         }
 
         if (cont == 0) {
-            metodos.msgError(null, "Debe seleccionar una hora");
+            ControladorAlertas.alertFail("Debe seleccionar una hora");
             return;
         } else if (cont > 1) {
-            metodos.msgError(null, "Solo se puede escojer una hora");
+            ControladorAlertas.alertFail("Solo se puede escojer una hora");
             return;
         } else {
             seleccionados = seleccionados.substring(0, seleccionados.length() - 2);

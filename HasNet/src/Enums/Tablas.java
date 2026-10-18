@@ -7,7 +7,14 @@ public enum Tablas {
     CONSECUTIVOS("bdConsecutivos"),
     DETALLE_PRODUCTO("bdDetalleProductos"),
     DISCOSTEO("bdDisCosteo"),
-    PRECARGAR_DETALLE("bdPreCompraDetalle");
+    PRECARGAR_DETALLE("bdPreCompraDetalle"),
+    PRODUCTO_LISTAS("bdProductosListas"),
+    INVENTARIO("bdinventario"),
+    INVENTARIO_INICIAL("bdInventarioInicial"),
+    INGRESO("bdIngreso"),
+    COMPRA("bdCompra"),
+    COLORES("bdColores"),
+    TALLA("bdTalla");
 
     private final String nombre;
 

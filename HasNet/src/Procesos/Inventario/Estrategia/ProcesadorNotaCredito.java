@@ -1,14 +1,12 @@
 package Procesos.Inventario.Estrategia;
 
+import Enums.Tablas;
 import Enums.EstadosDetalleProducto;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Utilidades.BaseDatos.SentenciaSql;
-import Utilidades.BaseDatos.ValidadorTabla;
-import Utilidades.Inventario.UtilidadInventario;
-import Utilidades.Utilidades;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -16,32 +14,32 @@ import java.util.List;
 public class ProcesadorNotaCredito extends AbstractProcesadorMovimiento {
 
     @Override
-    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String tablaUtilizada, InformacionAdicional informacionAdicional) {
-        ndProducto producto = movimiento.getProducto();
+    protected SentenciaSql generarSqlInventario(MovimientoInventario movimiento, String idBodega, InformacionAdicional informacionAdicional) {
+        ModeloProducto producto = movimiento.getProducto();
         BigDecimal cantidad = movimiento.getCantidad();
 
-        BigDecimal notaCredito = Utilidades.convertirBigDecimal(producto.getNc()).add(cantidad);
-        producto.setNc(UtilidadInventario.formatear(notaCredito));
+        BigDecimal notaCredito = producto.getNotaCredito().add(cantidad);
+        producto.setNotaCredito(notaCredito);
 
         if (!Boolean.TRUE.equals(producto.getManejaInventario())) {
-            String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET nc = ? WHERE idSistema = ?";
-            return new SentenciaSql(sql, UtilidadInventario.formatear(notaCredito), producto.getIdSistema());
+            String sql = "UPDATE " + Tablas.INVENTARIO.getNombre() + " SET notaCredito = ? WHERE idSistema = ? AND idBodega = ?";
+            return new SentenciaSql(sql, notaCredito, producto.getIdSistema(), idBodega);
         }
 
-        BigDecimal inventario = Utilidades.convertirBigDecimal(producto.getInventario()).add(cantidad);
-        BigDecimal fisicoInventario = Utilidades.convertirBigDecimal(producto.getFisicoInventario()).add(cantidad);
-        producto.setInventario(UtilidadInventario.formatear(inventario));
-        producto.setFisicoInventario(UtilidadInventario.formatear(fisicoInventario));
+        BigDecimal inventario = producto.getInventario().add(cantidad);
+        BigDecimal fisicoInventario = producto.getFisicoInventario().add(cantidad);
+        producto.setInventario(inventario);
+        producto.setFisicoInventario(fisicoInventario);
 
-        String sql = "UPDATE " + ValidadorTabla.validar(tablaUtilizada) + " SET "
-                + "inventario = ?, fisicoInventario = ?, nc = ? "
-                + "WHERE idSistema = ?";
+        String sql = "UPDATE " + Tablas.INVENTARIO.getNombre() + " SET "
+                + "inventario = ?, fisicoInventario = ?, notaCredito = ? "
+                + "WHERE idSistema = ? AND idBodega = ?";
 
         return new SentenciaSql(sql,
-                UtilidadInventario.formatear(inventario),
-                UtilidadInventario.formatear(fisicoInventario),
-                UtilidadInventario.formatear(notaCredito),
-                producto.getIdSistema());
+                inventario,
+                fisicoInventario,
+                notaCredito,
+                producto.getIdSistema(), idBodega);
     }
 
     @Override

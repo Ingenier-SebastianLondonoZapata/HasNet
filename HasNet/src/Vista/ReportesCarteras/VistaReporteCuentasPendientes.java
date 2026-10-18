@@ -1,6 +1,8 @@
 package Vista.ReportesCarteras;
 
-import dao.InicioSesion.DaoInicioSesion;
+import Controlador.Alertas.ControladorAlertas;
+
+import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import formularios.terceros.buscClientes;
 import clases.Instancias;
@@ -608,10 +610,10 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
 
     private void btnAggClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggClienteActionPerformed
         if (txtCliente.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero un cliente");
+            ControladorAlertas.alertFail("Cargue primero un cliente");
         } else {
             if (yaEsta(cmbCientes, txtCliente.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo este cliente");
+                ControladorAlertas.alert("Ya cargo este cliente");
             } else {
                 cmbCientes.addItem(txtCliente.getText());
                 cmbCientes.setSelectedItem(txtCliente.getText());
@@ -654,7 +656,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
 
     private void btnRemTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemTerminalActionPerformed
         if (cmbTerminal2.getItemCount() == 0) {
-            metodos.msgError(null, "No hay ninguna terminal seleccioanda");
+            ControladorAlertas.alertFail("No hay ninguna terminal seleccioanda");
             return;
         }
         cmbTerminal2.removeItem(cmbTerminal2.getSelectedItem());
@@ -662,11 +664,11 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
 
     private void btnAggPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggPlacaActionPerformed
         if (txtPlaca.getText().equals("")) {
-            metodos.msgError(null, "Cargue primero una placa");
+            ControladorAlertas.alertFail("Cargue primero una placa");
         } else {
 
             if (yaEsta(cmbPlaca, txtPlaca.getText())) {
-                metodos.msgAdvertencia(null, "Ya cargo esta placa");
+                ControladorAlertas.alert("Ya cargo esta placa");
             } else {
                 cmbPlaca.addItem(txtPlaca.getText());
                 cmbPlaca.setSelectedItem(txtPlaca.getText());
@@ -680,7 +682,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRemPlacaActionPerformed
 
     private void btnCuotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuotasActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
 //            String sql = "where";
             String sql = "";
 
@@ -726,7 +728,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCuotasActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        if (metodos.msgPregunta(null, "¿Esta seguro?") == 0) {
+        if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
 
             if (rdDomicilios.isSelected()) {

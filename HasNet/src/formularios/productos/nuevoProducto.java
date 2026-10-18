@@ -1,10 +1,16 @@
 package formularios.productos;
 
+import Controlador.Alertas.ControladorAlertas;
+
+import Enums.enumBodegas;
+
+import Dao.Productos.DaoProducto;
+
 import Vista.Productos.VistaIngreso;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProducto;
+import Modelo.Productos.ModeloProducto;
 import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +21,7 @@ import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 
 public class nuevoProducto extends javax.swing.JDialog {
+    private final DaoProducto daoProducto = new DaoProducto();
 
     private metodosGenerales metodos;
     private Instancias instancias;
@@ -393,7 +400,7 @@ public class nuevoProducto extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (rdInventarioNO.isSelected() == false && rdInventarioSI.isSelected() == false) {
-            metodos.msgError(null, "Seleccione el manejo del producto");
+            ControladorAlertas.alertFail("Seleccione el manejo del producto");
             return;
         }
 
@@ -401,17 +408,17 @@ public class nuevoProducto extends javax.swing.JDialog {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(null, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         }
 
-        if (metodos.msgPregunta(null, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             //try {
-            ndProducto nodo = instancias.getSql().getDatosProducto(txtCodigo.getText().replace("'", "//"), "bdProductos");
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
 
             if (nodo.getCodigo() != null) {
-                metodos.msgError(null, "El producto ya existe");
+                ControladorAlertas.alertFail("El producto ya existe");
                 txtCodigo.requestFocus();
                 return;
             }
@@ -431,54 +438,51 @@ public class nuevoProducto extends javax.swing.JDialog {
                 consecutivo = "0" + consecutivo;
             }
 
-            Object[] vector = {"PROD-" + consecutivo, txtCodigo.getText().replace("'", "//"), "", txtDescripcion.getText(), null, null, null, txtIva.getText(),
-                big.getMoneda(txtL1.getText()), big.getMoneda(txtL1.getText()), big.getMoneda(txtL1.getText()), big.getMoneda(txtL1.getText()),
-                big.getMoneda(txtL1.getText()), big.getMoneda(txtL1.getText()),
-                big.getMoneda(txtL1.getText()), big.getMoneda(txtL1.getText()), instancias.getUsuario(), "1", "Und",
-                "", big.getMoneda("0"), 20, 30, "",
-                txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "",
-                txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "", txtDescripcion.getText(), "", "", false, false, false, false, false, false, false,
-                "0", 0, instancias.getTerminal(), "0", "",
-                rdInventarioSI.isSelected(), "", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", false,
-                "", "", "", "", "", "", "", "", "", "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "1", "0", "0", txtDescripcion.getText(), "0"};
-            nodo = metodos.llenarProducto(vector);
+            nodo = new ModeloProducto();
+            nodo.setIdSistema("PROD-" + consecutivo);
+            nodo.setCodigo(txtCodigo.getText().replace("'", "//"));
+            nodo.setCodigoBarras("");
+            nodo.setDescripcion(txtDescripcion.getText());
+            nodo.setDescripcionLarga(txtDescripcion.getText());
+            nodo.setIva(txtIva.getText());
+            nodo.setL1(big.getMoneda(txtL1.getText()).toString());
+            nodo.setUsuario(instancias.getUsuario());
+            nodo.setMinimo("1");
+            nodo.setUnd("Und");
+            nodo.setReferencia("");
+            nodo.setCosto("0");
+            nodo.setMinima("20");
+            nodo.setMaxima("30");
+            nodo.setUbicacion1("");
+            nodo.setPonderado("0");
+            nodo.setTerminal(instancias.getTerminal());
+            nodo.setClaseBuscador("");
+            nodo.setManejaInventario(rdInventarioSI.isSelected());
+            nodo.setPorcentaje("");
+            nodo.setIndVentas("1");
+            nodo.setImpoconsumoVenta("0");
+            nodo.inicializarTextosOpcionales();
 
-            if (!instancias.getSql().agregarProducto(nodo, "bdProductos")) {
-                metodos.msgError(null, "Hubo un problema al guardar el producto");
-                return;
-            }
-            if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega1")) {
-                metodos.msgError(null, "Hubo un problema al guardar el producto");
-                return;
-            }
-            if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega2")) {
-                metodos.msgError(null, "Hubo un problema al guardar el producto");
-                return;
-            }
-            if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega3")) {
-                metodos.msgError(null, "Hubo un problema al guardar el producto");
-                return;
-            }
-            if (!instancias.getSql().agregarProducto(nodo, "bdProductosBodega4")) {
-                metodos.msgError(null, "Hubo un problema al guardar el producto");
+            if (!daoProducto.agregarProducto(nodo)) {
+                ControladorAlertas.alertFail("Hubo un problema al guardar el producto");
                 return;
             }
 
             if (!instancias.getSql().agregarPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), "PROD-" + consecutivo,
                     BigDecimal.ZERO, "0", "0", BigDecimal.ZERO, "0", instancias.getUsuario(), BigDecimal.ZERO, "CREACIÓN PROD")) {
-                metodos.msgError(null, "Error al guardar en el consecutivo del producto");
+                ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
             }
 
             if (!instancias.getSql().agregarUltimoPonderado(metodos.fechaConsulta(metodosGenerales.fechaHora()), "PROD-" + consecutivo,
                     BigDecimal.ZERO, "0", "0", BigDecimal.ZERO, "0", instancias.getUsuario(), BigDecimal.ZERO, "CREACIÓN PROD")) {
-                metodos.msgError(null, "Error al guardar en el consecutivo del producto");
+                ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
             }
 
             if (!instancias.getSql().aumentarConsecutivo("PROD", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("PROD")[0]) + 1)) {
-                metodos.msgError(null, "Error al guardar en el consecutivo del producto");
+                ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
             }
 
-            metodos.msgExito(null, "Producto registrado con éxito");
+            ControladorAlertas.alertSuccess("Producto registrado con éxito");
 
             switch (opc) {
                 case "factura":

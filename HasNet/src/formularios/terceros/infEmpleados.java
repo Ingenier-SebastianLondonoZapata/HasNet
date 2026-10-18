@@ -1,5 +1,7 @@
 package formularios.terceros;
 
+import Controlador.Alertas.ControladorAlertas;
+
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.Medico.ndEpsPrecargados;
@@ -965,22 +967,22 @@ public class infEmpleados extends javax.swing.JInternalFrame {
 //        Object[] campos2 = {txtTelefono, txtCelular, txtEmail, txtDpto, txtCiudad, txtSalario, dtFechaNacimiento, txtFechaIng, txtFechaRet};
 //        String faltantes2 = metodos.camposVacios(campos2);
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (txtEmail.getText().equals("") && txtTelefono.getText().equals("") && txtCelular.getText().equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, ingrese almenos un medio de comunicación");
+            ControladorAlertas.alert("No puede continuar, ingrese almenos un medio de comunicación");
             txtTelefono.requestFocus();
             return;
         } else if (!metodosGenerales.emailEsCorrecto(txtEmail.getText()) && !txtEmail.getText().equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, ingrese un E-mail correcto");
+            ControladorAlertas.alert("No puede continuar, ingrese un E-mail correcto");
             txtEmail.requestFocus();
             return;
         }
 //        else if (!faltantes2.equals("")) {
-//            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+//            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
 //        }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             if (txtSalario.getText().equals("")) {
                 txtSalario.setText("0");
@@ -1033,7 +1035,7 @@ public class infEmpleados extends javax.swing.JInternalFrame {
             nodo = metodos.llenarTercero(vector);
 
             if (!instancias.getSql().modificarTercero(nodo)) {
-                metodos.msgError(this, "Hubo un problema al modificar el empleado");
+                ControladorAlertas.alertFail("Hubo un problema al modificar el empleado");
                 return;
             }
 
@@ -1047,7 +1049,7 @@ public class infEmpleados extends javax.swing.JInternalFrame {
                 }
             }
 
-            metodos.msgExito(this, "Empleado modificado con éxito");
+            ControladorAlertas.alertSuccess("Empleado modificado con éxito");
 
             if (cmbUsuarios.getSelectedIndex() != 0) {
                 instancias.getMaestra().llenarVendedores(txtNombre.getText());
@@ -1061,17 +1063,17 @@ public class infEmpleados extends javax.swing.JInternalFrame {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         if (btnEliminar.getText().equalsIgnoreCase("ACTIVAR       ")) {
-            if (metodos.msgPregunta(this, "¿Activar este registro?") == 0) {
+            if (ControladorAlertas.option("¿Activar este registro?")) {
                 instancias.getSql().activarCliente(txtNit.getText());
-                metodos.msgExito(this, "Empleado activado con éxito");
+                ControladorAlertas.alertSuccess("Empleado activado con éxito");
                 btnNuevoActionPerformed(evt);
                 return;
             }
         }
 
-        if (metodos.msgPregunta(this, "¿Inactivar este registro?") == 0) {
+        if (ControladorAlertas.option("¿Inactivar este registro?")) {
             instancias.getSql().eliminarCliente(txtNit.getText());
-            metodos.msgAdvertencia(this, "Empleado inactivado con exito");
+            ControladorAlertas.alert("Empleado inactivado con exito");
             btnNuevoActionPerformed(evt);
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
@@ -1081,22 +1083,22 @@ public class infEmpleados extends javax.swing.JInternalFrame {
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, faltan los siguientes campos: " + faltantes);
+            ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return;
         } else if (txtEmail.getText().equals("") && txtTelefono.getText().equals("") && txtCelular.getText().equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, ingrese almenos un medio de comunicación: télefono, email o celular.");
+            ControladorAlertas.alert("No puede continuar, ingrese almenos un medio de comunicación: télefono, email o celular.");
             txtTelefono.requestFocus();
             return;
         } else if (!metodosGenerales.emailEsCorrecto(txtEmail.getText()) && !txtEmail.getText().equals("")) {
-            metodos.msgAdvertencia(this, "No puede continuar, ingrese un E-mail correcto");
+            ControladorAlertas.alert("No puede continuar, ingrese un E-mail correcto");
             txtEmail.requestFocus();
             return;
         }
 //        else if (!faltantes2.equals("")) {
-//            metodos.msgAdvertencia(this, "Faltan los siguientes campos: " + faltantes2);
+//            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes2);
 //        }
 
-        if (metodos.msgPregunta(this, "¿Desea continuar?") == 0) {
+        if (ControladorAlertas.option("¿Desea continuar?")) {
 
             String digito = txtDigito.getText();
             if (digito.equals("")) {
@@ -1108,7 +1110,7 @@ public class infEmpleados extends javax.swing.JInternalFrame {
             ModeloContacto nodo = instancias.getSql().getDatosTercero(txtNit.getText() + digito);
 
             if (nodo.getId() != null) {
-                metodos.msgError(this, "El empleado ya existe");
+                ControladorAlertas.alertFail("El empleado ya existe");
                 txtNit.requestFocus();
                 return;
             }
@@ -1162,12 +1164,12 @@ public class infEmpleados extends javax.swing.JInternalFrame {
             nodo = metodos.llenarTercero(vector);
 
             if (!instancias.getSql().agregarTercero(nodo)) {
-                metodos.msgError(this, "Error al guardar el empleado");
+                ControladorAlertas.alertFail("Error al guardar el empleado");
                 return;
             }
 
             if (!instancias.getSql().aumentarConsecutivo("TERCERO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TERCERO")[0]) + 1)) {
-                metodos.msgError(null, "Hubo un problema al guardar en el consecutivo del tercero");
+                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del tercero");
             }
 
             if (rdSiAgendar.isSelected()) {
@@ -1180,7 +1182,7 @@ public class infEmpleados extends javax.swing.JInternalFrame {
                 instancias.getPeluqueria().titulosTabla();
             }
 
-            metodos.msgExito(this, "Empleado registrado con éxito");
+            ControladorAlertas.alertSuccess("Empleado registrado con éxito");
 
             if (cmbUsuarios.getSelectedIndex() != 0) {
                 instancias.getMaestra().llenarVendedores(txtNombre.getText());
@@ -1204,7 +1206,7 @@ public class infEmpleados extends javax.swing.JInternalFrame {
     private void cmbUsuariosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbUsuariosFocusGained
         if (!instancias.getUsuario().equals("ADMIN")) {
             dtFechaIngreso.requestFocus();
-            metodos.msgError(this, "No tiene permisos para abrir esta lista");
+            ControladorAlertas.alertFail("No tiene permisos para abrir esta lista");
         }
     }//GEN-LAST:event_cmbUsuariosFocusGained
 
@@ -1287,7 +1289,7 @@ public class infEmpleados extends javax.swing.JInternalFrame {
                 lbFoto.setIcon(icono);
                 this.repaint();
             } catch (Exception ex) {
-                metodos.msgError(this, "Hubo un error al cargar el archivo");
+                ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
             }
         }
     }//GEN-LAST:event_btnImagenActionPerformed
@@ -1347,7 +1349,7 @@ public class infEmpleados extends javax.swing.JInternalFrame {
     public void cargarCliente(String nit) {
 
         if (nit.equals("")) {
-            metodos.msgAdvertencia(this, "Debe ingresar el documento");
+            ControladorAlertas.alert("Debe ingresar el documento");
         } else {
 
             ModeloContacto nodo = instancias.getSql().getDatosTercero(nit);
