@@ -16,6 +16,7 @@ public final class DescargadorPlantillas {
 
     public static final String CARPETA = "/Plantillas/";
     public static final String CARGAR_INVENTARIO = "CARGAR_INVENTARIO.xls";
+    public static final String CARGAR_INVENTARIO_DETALLADO = "CARGAR_INVENTARIO_DETALLADO.xls";
     public static final String CREAR_PRODUCTOS = "CREAR_PRODUCTOS.xls";
     public static final String CREAR_PRODUCTOS_CON_INVENTARIO = "CREAR_PRODUCTOS_CON_INVENTARIO.xls";
 

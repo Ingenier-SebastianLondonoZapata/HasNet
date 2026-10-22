@@ -96,7 +96,7 @@ public class VistaSeleccionarPLU extends javax.swing.JDialog {
 
             },
             new String [] {
-                "PLU", "Descripción", "Referencia", "Ubicación", "Cant", "Inv", "Ingresar"
+                "Código PLU", "Descripción", "Referencia", "Ubicación", "Cantidad unidades", "Inventario", "Cantidad a ingresar"
             }
         ));
         tblRegistros.setRowHeight(24);

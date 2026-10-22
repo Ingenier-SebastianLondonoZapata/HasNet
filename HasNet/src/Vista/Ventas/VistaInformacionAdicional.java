@@ -21,6 +21,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
     BigDecimal NC, valorTotal, valorNeto;
     String cliente, simbolo;
     private boolean soloInformacion;
+    private javax.swing.JTextField txtDiasPlazo;
     Instancias instancias = Instancias.getInstancias();
     metodosGenerales metodos = new metodosGenerales();
 
@@ -96,8 +97,14 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
     }
 
     public VistaInformacionAdicional(java.awt.Frame parent, boolean modal, BigDecimal valor, Instancias instancias, String cliente, BigDecimal valorNeto, JPanel panelInformacion) {
+        this(parent, modal, valor, instancias, cliente, valorNeto, panelInformacion, null);
+    }
+
+    public VistaInformacionAdicional(java.awt.Frame parent, boolean modal, BigDecimal valor, Instancias instancias, String cliente, BigDecimal valorNeto,
+            JPanel panelInformacion, javax.swing.JTextField campoDiasPlazo) {
         this(parent, modal, valor, instancias, cliente, valorNeto);
         instalarPanelInformacion(panelInformacion);
+        vincularDiasPlazo(campoDiasPlazo);
         pack();
         setLocationRelativeTo(null);
     }
@@ -129,6 +136,91 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         pnlInformacionAdicional.removeAll();
         pnlInformacionAdicional.add(panelInformacion, java.awt.BorderLayout.CENTER);
         pnlInformacionAdicional.setVisible(true);
+    }
+
+    private void vincularDiasPlazo(javax.swing.JTextField campoDiasPlazo) {
+        txtDiasPlazo = campoDiasPlazo;
+        if (txtDiasPlazo == null) {
+            return;
+        }
+
+        txtDiasPlazo.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarEstadoPagos();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarEstadoPagos();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarEstadoPagos();
+            }
+        });
+        actualizarEstadoPagos();
+    }
+
+    private boolean esVentaACredito() {
+        if (txtDiasPlazo == null) {
+            return false;
+        }
+        try {
+            return Integer.parseInt(txtDiasPlazo.getText().trim()) > 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private void conservarPropina() {
+        if (!instancias.getConfiguraciones().isRestaurante()) {
+            return;
+        }
+
+        String porcPropina = "0";
+        try {
+            porcPropina = String.valueOf(Double.parseDouble(txtPorcPropina.getText().replace(",", ".")));
+        } catch (NumberFormatException e) {
+        }
+
+        instancias.setPorcPropina(porcPropina);
+        instancias.setPropina(big.getMoneda(txtPropina.getText()));
+        instancias.setTotalPropina(big.getMoneda(txtTotalPropina.getText()));
+    }
+
+    private void actualizarEstadoPagos() {
+        boolean habilitar = !esVentaACredito();
+
+        if (!habilitar) {
+            String cero = this.simbolo + " 0";
+            txtValor.setText(cero);
+            txtNC.setText(cero);
+            txtCheque.setText(cero);
+            txtTarjetaDebito.setText(cero);
+            txtTarjetaCredito.setText(cero);
+            cmbTarjetas.setSelectedIndex(0);
+        }
+
+        txtValor.setEnabled(habilitar);
+        txtNC.setEnabled(habilitar);
+        txtCheque.setEnabled(habilitar);
+        txtTarjetaDebito.setEnabled(habilitar);
+        txtTarjetaCredito.setEnabled(habilitar);
+        cmbTarjetas.setEnabled(habilitar);
+        btnPagarTodo.setEnabled(habilitar);
+
+        calcularEfectivo();
+
+        if (!habilitar) {
+            Color gris = new Color(230, 230, 230);
+            txtValor.setBackground(gris);
+            txtNC.setBackground(gris);
+            txtCheque.setBackground(gris);
+            txtTarjetaDebito.setBackground(gris);
+            txtTarjetaCredito.setBackground(gris);
+        }
     }
 
     public ActionListener accion(final String opc, final JDialog ventana) {
@@ -221,7 +313,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         });
 
         pnlPropina.setBackground(new java.awt.Color(255, 255, 255));
-        pnlPropina.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Propina", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
+        pnlPropina.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Agregar Propina", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
 
         lbCheque4.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         lbCheque4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -600,24 +692,21 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(3, 3, 3))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(pnlInformacionAdicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlPropina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(5, 5, 5))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -626,16 +715,15 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(pnlInformacionAdicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(pnlPropina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pnlInformacionAdicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlPropina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
-                            .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
@@ -731,6 +819,14 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (soloInformacion) {
+            this.dispose();
+            return;
+        }
+
+        if (esVentaACredito()) {
+            new FuncionalidadVentas().reiniciarPagos(instancias);
+            conservarPropina();
+            instancias.setCancelarFactura(false);
             this.dispose();
             return;
         }
@@ -988,45 +1084,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
     }
 
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VistaInformacionAdicional.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VistaInformacionAdicional.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VistaInformacionAdicional.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VistaInformacionAdicional.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 VistaInformacionAdicional dialog = new VistaInformacionAdicional(new javax.swing.JFrame(), true, new BigDecimal(BigInteger.ZERO), null, null, new BigDecimal(BigInteger.ZERO));

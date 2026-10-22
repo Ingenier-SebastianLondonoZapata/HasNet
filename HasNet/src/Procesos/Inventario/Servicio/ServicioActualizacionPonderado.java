@@ -17,6 +17,19 @@ public class ServicioActualizacionPonderado {
         return daoPonderado.obtenerUltimoPonderado(producto);
     }
 
+    public UltimoPonderado obtenerOCrearUltimoPonderado(String idProducto, String usuario) throws SQLException {
+        UltimoPonderado ultimo = daoPonderado.obtenerUltimoPonderado(idProducto);
+        if (!ultimo.getFechaCompra().isEmpty()) {
+            return ultimo;
+        }
+
+        PonderadoPendiente calculo = new PonderadoPendiente(idProducto, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+                BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        daoPonderado.crearUltimoPonderado(idProducto, BigDecimal.ZERO, usuario);
+        daoPonderado.guardarHistorico(calculo, usuario, HistoricoPonderados.CREACION_PRODUCTO.getNombre());
+        return daoPonderado.obtenerUltimoPonderado(idProducto);
+    }
+
     public PonderadoPendiente calcular(ModeloProducto producto, BigDecimal cantidadIngresada, BigDecimal valorProducto) throws SQLException {
         UltimoPonderado ultimo = daoPonderado.obtenerUltimoPonderado(producto.getIdSistema());
         BigDecimal inventarioAnterior = producto.getInventario();

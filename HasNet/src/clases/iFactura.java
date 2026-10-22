@@ -2,14 +2,12 @@ package clases;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Impresiones.IniciarImpresion;
 import Impresiones.IniciarReporte;
 import Vista.BarraProceso.vistaBarraProceso;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -870,52 +868,6 @@ public class iFactura {
         }
 
         return foto;
-    }
-
-    public void abrirCajaRegistradora() {
-        JasperReport reporte;
-
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportes/ejemplo/abrirCaja.jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map parametros = new HashMap();
-            parametros.clear();
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, true, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
-    public void ver_RecogidaParcial(String info, String fecha, String usuario, String terminal, String valor, String valorAntes) {
-        JasperReport reporte;
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportes/ejemplo/recogidaParcial.jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map parametros = new HashMap();
-            parametros.clear();
-            parametros.put("fecha", fecha);
-            parametros.put("urlImagen", logo());
-            parametros.put("usuario", usuario);
-            parametros.put("info", info);
-            parametros.put("terminal", terminal);
-            parametros.put("valor", valor);
-            parametros.put("valorAntes", valorAntes);
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, false, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
     }
 
     public void verRemision1(String dato, String edad) {

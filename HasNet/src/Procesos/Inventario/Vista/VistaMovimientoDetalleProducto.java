@@ -33,6 +33,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.table.TableColumn;
 
@@ -47,6 +52,8 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     String tipoProducto = "";
     BigDecimal valorUnitarioDigitado;
     TableRowSorter modeloOrdenado;
+
+    private final Map<String, List<Object[]>> origenesPorClave = new LinkedHashMap<>();
 
     public VistaMovimientoDetalleProducto(java.awt.Frame parent, boolean modal, ModeloProducto producto, List<DetalleProducto> detallesProductos,
             String tipoMovimiento, String tipoDocumento, BigDecimal valorUnitario) {
@@ -246,11 +253,11 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
             if (esTipo(tipoProd, DetalleTipoProducto.TALLA)) {
                 tituloColumna(0, "Talla");
-                for (Object[] reg : existencias) {
+                for (Object[] reg : apilarExistencias(existencias)) {
                     modelo.addRow(new Object[]{reg[9], "", "", Utilidades.formatearCantidadVista(reg[2].toString()), false, "", reg[8]});
                 }
             } else {
-                for (Object[] reg : existencias) {
+                for (Object[] reg : apilarExistencias(existencias)) {
                     modelo.addRow(new Object[]{reg[7], reg[9], "", Utilidades.formatearCantidadVista(reg[2].toString()), false, "", reg[8]});
                 }
             }
@@ -282,15 +289,81 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             lbFiltro2.setText("Fecha V:");
             lbFiltro3.setText("Temp:");
 
-            for (Object[] reg : existencias) {
+            for (Object[] reg : apilarExistencias(existencias)) {
                 modelo.addRow(new Object[]{reg[4], reg[5], reg[6], Utilidades.formatearCantidadVista(reg[2].toString()), false, "", reg[8]});
             }
         }
     }
 
-    /**
-     * Oculta una columna de tblDetalle (ancho 0).
-     */
+    private List<Object[]> apilarExistencias(Object[][] existencias) {
+        origenesPorClave.clear();
+        Map<String, Object[]> apiladas = new LinkedHashMap<>();
+
+        for (Object[] reg : existencias) {
+            String clave = claveExistencia(reg);
+            BigDecimal disponible = Utilidades.convertirBigDecimal(reg[2].toString());
+
+            Object[] apilada = apiladas.get(clave);
+            if (apilada == null) {
+                apilada = new Object[reg.length];
+                System.arraycopy(reg, 0, apilada, 0, reg.length);
+                apilada[2] = disponible;
+                apiladas.put(clave, apilada);
+                origenesPorClave.put(clave, new ArrayList<Object[]>());
+            } else {
+                apilada[2] = ((BigDecimal) apilada[2]).add(disponible);
+            }
+
+            origenesPorClave.get(clave).add(new Object[]{reg[8], disponible});
+        }
+
+        for (List<Object[]> origenes : origenesPorClave.values()) {
+            Collections.sort(origenes, new Comparator<Object[]>() {
+                @Override
+                public int compare(Object[] a, Object[] b) {
+                    return compararIds(String.valueOf(a[0]), String.valueOf(b[0]));
+                }
+            });
+        }
+
+        return new ArrayList<>(apiladas.values());
+    }
+
+    private static int compararIds(String a, String b) {
+        try {
+            return Long.valueOf(a).compareTo(Long.valueOf(b));
+        } catch (NumberFormatException e) {
+            return a.compareTo(b);
+        }
+    }
+
+    private String claveExistencia(Object[] reg) {
+        if (esTipo(tipoProducto, DetalleTipoProducto.TALLA)) {
+            return String.valueOf(reg[9]);
+        }
+        if (esTipo(tipoProducto, DetalleTipoProducto.COLOR)) {
+            return String.valueOf(reg[7]);
+        }
+        if (esTipo(tipoProducto, DetalleTipoProducto.COLOR_TALLA)) {
+            return reg[7] + "|" + reg[9];
+        }
+        return reg[4] + "|" + reg[5] + "|" + reg[6];
+    }
+
+    private String claveFila(int fila) {
+        Object detalle1 = tblDetalle.getValueAt(fila, 0);
+        Object detalle2 = tblDetalle.getValueAt(fila, 1);
+        Object detalle3 = tblDetalle.getValueAt(fila, 2);
+
+        if (esTipo(tipoProducto, DetalleTipoProducto.TALLA) || esTipo(tipoProducto, DetalleTipoProducto.COLOR)) {
+            return String.valueOf(detalle1);
+        }
+        if (esTipo(tipoProducto, DetalleTipoProducto.COLOR_TALLA)) {
+            return detalle1 + "|" + detalle2;
+        }
+        return detalle1 + "|" + detalle2 + "|" + detalle3;
+    }
+
     private void ocultarColumna(int columna) {
         TableColumn col = tblDetalle.getColumnModel().getColumn(columna);
         col.setMinWidth(0);
@@ -303,18 +376,10 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         return value != null ? value.toString() : "";
     }
 
-    /**
-     * Cambia el encabezado de una columna de tblDetalle.
-     */
     private void tituloColumna(int columna, String texto) {
         tblDetalle.getTableHeader().getColumnModel().getColumn(columna).setHeaderValue(texto);
     }
 
-    /**
-     * Indica si el tipo de producto coincide con el del enum. Se compara sin
-     * distinguir mayúsculas porque el valor puede llegar como "IMEI"
-     * (getTipoProducto) o "Imei" (mapeado por algunos llamadores).
-     */
     private static boolean esTipo(String valor, DetalleTipoProducto tipo) {
         return tipo.getValue().equals(valor);
     }
@@ -1019,13 +1084,31 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
             if (!(Boolean) tblDetalle.getValueAt(i, 4)) {
                 continue;
             }
-            despacharFilaSalida(i, productoOficial);
+
+            BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
+            List<Object[]> origenes = origenesPorClave.get(claveFila(i));
+            if (DetalleTipoProducto.esSerialOImei(tipoProducto) || origenes == null) {
+                despacharFilaSalida(i, productoOficial, cantidad, obtenerValorTabla(i, 6));
+                continue;
+            }
+
+            // La fila apila varios ingresos: se saca primero de los más antiguos
+            BigDecimal pendiente = cantidad;
+            for (Object[] origen : origenes) {
+                if (pendiente.signum() <= 0) {
+                    break;
+                }
+
+                BigDecimal tomado = pendiente.min((BigDecimal) origen[1]);
+                if (tomado.signum() > 0) {
+                    despacharFilaSalida(i, productoOficial, tomado, String.valueOf(origen[0]));
+                    pendiente = pendiente.subtract(tomado);
+                }
+            }
         }
     }
 
-    private void despacharFilaSalida(int i, ModeloProducto productoOficial) {
-        BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
-        String cod = obtenerValorTabla(i, 6);
+    private void despacharFilaSalida(int i, ModeloProducto productoOficial, BigDecimal cantidad, String cod) {
         String imei = obtenerValorTabla(i, 0);
         String color = obtenerValorTabla(i, 1);
         String lote = obtenerValorTabla(i, 0);

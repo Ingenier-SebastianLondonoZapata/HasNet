@@ -2,37 +2,37 @@ package Vista.Tesoreria;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
-
-import Dao.Productos.DaoProducto;
-
 import Impresiones.ImpresionesCuadreCaja.GeneradorReporteCuadreCaja;
 import formularios.Ventas.*;
 import clases.Instancias;
 import clases.Ventas.ndCaja;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Productos.ModeloProducto;
+import Modelo.Tesoreria.ModeloDocumentoCuadre;
+import Modelo.Tesoreria.ModeloResumenCuadre;
+import Procesos.Tesoreria.Servicio.ServicioCuadreCaja;
+import Validaciones.Tesoreria.squemaCuadreCaja;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.swing.JComponent;
-import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class VistaCuadreCaja extends javax.swing.JInternalFrame {
-    private final DaoProducto daoProducto = new DaoProducto();
+
+    private final ServicioCuadreCaja servicioCuadreCaja = new ServicioCuadreCaja();
+    private final squemaCuadreCaja squemaCuadreCaja = new squemaCuadreCaja();
 
     Instancias instancias;
     metodosGenerales metodos = new metodosGenerales();
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
 
-    DefaultTableModel modelo;
-    int contContado = 0, contCredito = 0, contAbonos = 0, contEfectivo = 0, contCheque = 0, contTarjeta = 0,
+    DefaultTableModel modeloDocumento;
+    int contadorFacturasContado = 0, contadorFacturasCredito = 0, contadorAbonos = 0, contadorEfectivo = 0, contadorCheque = 0, contTarjeta = 0,
             contNcRealizadas = 0, contNcRecibidas = 0, contCuotasIniciales = 0, contGastos = 0, contNcReembolsadas = 0;
     String primeraFactura = "", ultimaFactura = "", primerAbono = "", ultimoAbono = "";
-    boolean calcular;
     String simbolo = "";
 
     public VistaCuadreCaja() {
@@ -49,7 +49,8 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         setBorder(null);
         repaint();
 
-        modelo = (DefaultTableModel) tblDocumentos1.getModel();
+        modeloDocumento = (DefaultTableModel) tblDocumentos.getModel();
+        tblDocumentos.setRowSorter(new TableRowSorter<>(modeloDocumento));
 
         Object[][] usuarios = instancias.getSql().getUsuarios();
 
@@ -57,17 +58,12 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             cmbUsuarios.addItem(usuario[0]);
         }
 
-        //pnlControl.setVisible(false);
         cmbUsuarios.setSelectedItem(instancias.getUsuario());
-        if (instancias.getUsuario().equals("ADMIN")) {
-            calcular = true;
-            //pnlControl.setVisible(true);
-//            cargarTabla();
-        } else {
+        if (!instancias.getUsuario().equals("ADMIN")) {
             btnReimprimir.setVisible(false);
-            calcular = false;
-            limpiarTablasCuadreCaja();
         }
+
+        btnActualizarActionPerformed(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -89,18 +85,18 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         pnlValoresActuales = new javax.swing.JPanel();
         lbNit7 = new javax.swing.JLabel();
-        tarjetaPend = new javax.swing.JTextField();
-        ncPend = new javax.swing.JTextField();
+        txtTarjeta = new javax.swing.JTextField();
+        txtNotaCredito = new javax.swing.JTextField();
         lbNit8 = new javax.swing.JLabel();
-        chequePend = new javax.swing.JTextField();
+        txtCheque = new javax.swing.JTextField();
         lbNit9 = new javax.swing.JLabel();
-        efectivoPend = new javax.swing.JTextField();
+        txtEfectivo = new javax.swing.JTextField();
         lbNit10 = new javax.swing.JLabel();
         lbNit11 = new javax.swing.JLabel();
         txtTotal = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         mensaje = new javax.swing.JLabel();
-        cuadre = new javax.swing.JTextField();
+        txtIndicadorValores = new javax.swing.JTextField();
         btnActualizar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnReimprimir = new javax.swing.JButton();
@@ -108,18 +104,21 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         lbNit19 = new javax.swing.JLabel();
         cmbUsuarios = new javax.swing.JComboBox();
-        btnGuardar1 = new javax.swing.JButton();
+        btnGuardarRecogidaParcial = new javax.swing.JButton();
         btnGuardarBase = new javax.swing.JButton();
         btnReimprimir1 = new javax.swing.JButton();
         lbNit12 = new javax.swing.JLabel();
         lbConsecutivo = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         lbNit18 = new javax.swing.JLabel();
-        dtInicio = new datechooser.beans.DateChooserCombo();
+        dtFechaCuadre = new datechooser.beans.DateChooserCombo();
+        lblBannerEgresos2 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tblInformativos = new javax.swing.JTable();
         scrFormulario = new javax.swing.JScrollPane();
         pnlDetalleCuadreCaja = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblDocumentos1 = new javax.swing.JTable();
+        tblDocumentos = new javax.swing.JTable();
 
         setTitle("Factura");
 
@@ -137,10 +136,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 {"Abonos plan separe", null},
                 {"TOTAL ABONOS", null},
                 {null, null},
-                {"Facturas plan separe", null},
-                {"Cuotas iniciales", null},
-                {"Ventas a domicilio", null},
-                {"Producto domicilio", null}
+                {"Cuotas iniciales", null}
             },
             new String [] {
                 "Descripción", "Valor"
@@ -269,37 +265,37 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         lbNit7.setText("Tarjeta");
         lbNit7.setOpaque(true);
 
-        tarjetaPend.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        tarjetaPend.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        tarjetaPend.setText("0");
-        tarjetaPend.addActionListener(new java.awt.event.ActionListener() {
+        txtTarjeta.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtTarjeta.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTarjeta.setText("$ 0");
+        txtTarjeta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tarjetaPendActionPerformed(evt);
+                txtTarjetaActionPerformed(evt);
             }
         });
-        tarjetaPend.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTarjeta.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                tarjetaPendKeyReleased(evt);
+                txtTarjetaKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                tarjetaPendKeyTyped(evt);
+                txtTarjetaKeyTyped(evt);
             }
         });
 
-        ncPend.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        ncPend.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        ncPend.setText("0");
-        ncPend.addActionListener(new java.awt.event.ActionListener() {
+        txtNotaCredito.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtNotaCredito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtNotaCredito.setText("$ 0");
+        txtNotaCredito.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ncPendActionPerformed(evt);
+                txtNotaCreditoActionPerformed(evt);
             }
         });
-        ncPend.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtNotaCredito.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                ncPendKeyReleased(evt);
+                txtNotaCreditoKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                ncPendKeyTyped(evt);
+                txtNotaCreditoKeyTyped(evt);
             }
         });
 
@@ -309,23 +305,23 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         lbNit8.setText("Nota Crédito");
         lbNit8.setOpaque(true);
 
-        chequePend.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        chequePend.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        chequePend.setText("0");
-        chequePend.addActionListener(new java.awt.event.ActionListener() {
+        txtCheque.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtCheque.setText("$ 0");
+        txtCheque.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chequePendActionPerformed(evt);
+                txtChequeActionPerformed(evt);
             }
         });
-        chequePend.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCheque.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                chequePendKeyPressed(evt);
+                txtChequeKeyPressed(evt);
             }
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                chequePendKeyReleased(evt);
+                txtChequeKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                chequePendKeyTyped(evt);
+                txtChequeKeyTyped(evt);
             }
         });
 
@@ -335,20 +331,20 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         lbNit9.setText("Cheque");
         lbNit9.setOpaque(true);
 
-        efectivoPend.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        efectivoPend.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        efectivoPend.setText("0");
-        efectivoPend.addActionListener(new java.awt.event.ActionListener() {
+        txtEfectivo.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtEfectivo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtEfectivo.setText("$ 0");
+        txtEfectivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                efectivoPendActionPerformed(evt);
+                txtEfectivoActionPerformed(evt);
             }
         });
-        efectivoPend.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtEfectivo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                efectivoPendKeyReleased(evt);
+                txtEfectivoKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                efectivoPendKeyTyped(evt);
+                txtEfectivoKeyTyped(evt);
             }
         });
 
@@ -384,10 +380,10 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                     .addComponent(lbNit8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(pnlValoresActualesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(ncPend, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tarjetaPend, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chequePend, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(efectivoPend, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNotaCredito, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtTarjeta, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCheque, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtEfectivo, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
                 .addGap(10, 10, 10))
         );
@@ -396,19 +392,19 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlValoresActualesLayout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addGroup(pnlValoresActualesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(efectivoPend)
+                    .addComponent(txtEfectivo)
                     .addComponent(lbNit10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(1, 1, 1)
                 .addGroup(pnlValoresActualesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(chequePend)
+                    .addComponent(txtCheque)
                     .addComponent(lbNit9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(1, 1, 1)
                 .addGroup(pnlValoresActualesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tarjetaPend)
+                    .addComponent(txtTarjeta)
                     .addComponent(lbNit7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(1, 1, 1)
                 .addGroup(pnlValoresActualesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ncPend)
+                    .addComponent(txtNotaCredito)
                     .addComponent(lbNit8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
                 .addGroup(pnlValoresActualesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -427,12 +423,12 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         mensaje.setText("ATENCION TIENE UN FALTANTE");
         mensaje.setOpaque(true);
 
-        cuadre.setEditable(false);
-        cuadre.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        cuadre.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        cuadre.addActionListener(new java.awt.event.ActionListener() {
+        txtIndicadorValores.setEditable(false);
+        txtIndicadorValores.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        txtIndicadorValores.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtIndicadorValores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cuadreActionPerformed(evt);
+                txtIndicadorValoresActionPerformed(evt);
             }
         });
 
@@ -504,7 +500,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                             .addComponent(btnReimprimir, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(cuadre)
+                        .addComponent(txtIndicadorValores)
                         .addComponent(mensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)))
                 .addGap(10, 10, 10))
         );
@@ -514,7 +510,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5)
                 .addComponent(mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(cuadre, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtIndicadorValores, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnActualizar)
@@ -549,15 +545,15 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             }
         });
 
-        btnGuardar1.setBackground(new java.awt.Color(204, 204, 204));
-        btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 15)); // NOI18N
-        btnGuardar1.setText("GUARDAR RECOGIDA PARCIAL");
-        btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnGuardar1.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnGuardar1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarRecogidaParcial.setBackground(new java.awt.Color(204, 204, 204));
+        btnGuardarRecogidaParcial.setFont(new java.awt.Font("Calibri", 1, 15)); // NOI18N
+        btnGuardarRecogidaParcial.setText("GUARDAR RECOGIDA PARCIAL");
+        btnGuardarRecogidaParcial.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardarRecogidaParcial.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGuardarRecogidaParcial.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnGuardarRecogidaParcial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardar1ActionPerformed(evt);
+                btnGuardarRecogidaParcialActionPerformed(evt);
             }
         });
 
@@ -612,13 +608,13 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lbNit12, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
                             .addComponent(lbConsecutivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addComponent(btnGuardarBase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnReimprimir1))
-                            .addComponent(btnGuardar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btnGuardarRecogidaParcial, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -631,7 +627,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 .addGap(10, 10, 10)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnGuardar1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnGuardarRecogidaParcial, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(3, 3, 3)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnReimprimir1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -675,7 +671,12 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         lbNit18.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         lbNit18.setText("Fecha del cuadre caja:");
 
-        dtInicio.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
+        dtFechaCuadre.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
+        dtFechaCuadre.addSelectionChangedListener(new datechooser.events.SelectionChangedListener() {
+            public void onSelectionChange(datechooser.events.SelectionChangedEvent evt) {
+                dtFechaCuadreOnSelectionChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -684,7 +685,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(lbNit18, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(dtInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(dtFechaCuadre, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -692,9 +693,49 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbNit18, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dtInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dtFechaCuadre, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0))
         );
+
+        lblBannerEgresos2.setBackground(new java.awt.Color(36, 90, 129));
+        lblBannerEgresos2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        lblBannerEgresos2.setForeground(new java.awt.Color(255, 255, 255));
+        lblBannerEgresos2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblBannerEgresos2.setText("DATOS INFORMATIVOS  -  No mueven la caja");
+        lblBannerEgresos2.setToolTipText("");
+        lblBannerEgresos2.setOpaque(true);
+
+        tblInformativos.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
+        tblInformativos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Plan separes generados", null},
+                {"Ventas por domicilio", null},
+                {"Producto domicilio", null}
+            },
+            new String [] {
+                "Descripción", "Valor"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblInformativos.setRowHeight(24);
+        tblInformativos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tblInformativosKeyReleased(evt);
+            }
+        });
+        jScrollPane5.setViewportView(tblInformativos);
+        if (tblInformativos.getColumnModel().getColumnCount() > 0) {
+            tblInformativos.getColumnModel().getColumn(1).setMinWidth(90);
+            tblInformativos.getColumnModel().getColumn(1).setPreferredWidth(120);
+            tblInformativos.getColumnModel().getColumn(1).setMaxWidth(150);
+        }
 
         javax.swing.GroupLayout pnlTotalizadosCuaddreCajaLayout = new javax.swing.GroupLayout(pnlTotalizadosCuaddreCaja);
         pnlTotalizadosCuaddreCaja.setLayout(pnlTotalizadosCuaddreCajaLayout);
@@ -711,9 +752,11 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                             .addComponent(lblBannerIngresos, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10)
-                        .addGroup(pnlTotalizadosCuaddreCajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblBannerEgresos, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnlTotalizadosCuaddreCajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lblBannerEgresos, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                            .addComponent(lblBannerEgresos2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addGap(10, 10, 10)
                         .addGroup(pnlTotalizadosCuaddreCajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -732,10 +775,16 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                     .addComponent(lblBannerEgresos1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, 0)
                 .addGroup(pnlTotalizadosCuaddreCajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(20, 20, 20)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlTotalizadosCuaddreCajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlTotalizadosCuaddreCajaLayout.createSequentialGroup()
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblBannerEgresos2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, 0)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(5, 5, 5)
                 .addComponent(lblBannerResumen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -746,8 +795,8 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
         pnlDetalleCuadreCaja.setBackground(new java.awt.Color(255, 255, 255));
 
-        tblDocumentos1.setFont(new java.awt.Font("Century Gothic", 0, 20)); // NOI18N
-        tblDocumentos1.setModel(new javax.swing.table.DefaultTableModel(
+        tblDocumentos.setFont(new java.awt.Font("Century Gothic", 0, 20)); // NOI18N
+        tblDocumentos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -763,49 +812,49 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tblDocumentos1.setEnabled(false);
-        tblDocumentos1.setRowHeight(25);
-        tblDocumentos1.getTableHeader().setResizingAllowed(false);
-        tblDocumentos1.getTableHeader().setReorderingAllowed(false);
-        tblDocumentos1.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblDocumentos.setEnabled(false);
+        tblDocumentos.setRowHeight(25);
+        tblDocumentos.getTableHeader().setResizingAllowed(false);
+        tblDocumentos.getTableHeader().setReorderingAllowed(false);
+        tblDocumentos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblDocumentos1MouseClicked(evt);
+                tblDocumentosMouseClicked(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                tblDocumentos1MousePressed(evt);
+                tblDocumentosMousePressed(evt);
             }
         });
-        jScrollPane1.setViewportView(tblDocumentos1);
-        if (tblDocumentos1.getColumnModel().getColumnCount() > 0) {
-            tblDocumentos1.getColumnModel().getColumn(0).setMinWidth(100);
-            tblDocumentos1.getColumnModel().getColumn(0).setPreferredWidth(140);
-            tblDocumentos1.getColumnModel().getColumn(0).setMaxWidth(170);
-            tblDocumentos1.getColumnModel().getColumn(4).setResizable(false);
-            tblDocumentos1.getColumnModel().getColumn(5).setResizable(false);
-            tblDocumentos1.getColumnModel().getColumn(6).setMinWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(6).setPreferredWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(6).setMaxWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(8).setMinWidth(80);
-            tblDocumentos1.getColumnModel().getColumn(8).setPreferredWidth(80);
-            tblDocumentos1.getColumnModel().getColumn(8).setMaxWidth(80);
-            tblDocumentos1.getColumnModel().getColumn(9).setMinWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(9).setPreferredWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(9).setMaxWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(10).setMinWidth(180);
-            tblDocumentos1.getColumnModel().getColumn(10).setPreferredWidth(180);
-            tblDocumentos1.getColumnModel().getColumn(10).setMaxWidth(180);
-            tblDocumentos1.getColumnModel().getColumn(11).setMinWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(11).setPreferredWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(11).setMaxWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(12).setMinWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(12).setPreferredWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(12).setMaxWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(13).setMinWidth(100);
-            tblDocumentos1.getColumnModel().getColumn(13).setPreferredWidth(130);
-            tblDocumentos1.getColumnModel().getColumn(13).setMaxWidth(160);
-            tblDocumentos1.getColumnModel().getColumn(14).setMinWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(14).setPreferredWidth(0);
-            tblDocumentos1.getColumnModel().getColumn(14).setMaxWidth(0);
+        jScrollPane1.setViewportView(tblDocumentos);
+        if (tblDocumentos.getColumnModel().getColumnCount() > 0) {
+            tblDocumentos.getColumnModel().getColumn(0).setMinWidth(100);
+            tblDocumentos.getColumnModel().getColumn(0).setPreferredWidth(140);
+            tblDocumentos.getColumnModel().getColumn(0).setMaxWidth(170);
+            tblDocumentos.getColumnModel().getColumn(4).setResizable(false);
+            tblDocumentos.getColumnModel().getColumn(5).setResizable(false);
+            tblDocumentos.getColumnModel().getColumn(6).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(6).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(6).setMaxWidth(0);
+            tblDocumentos.getColumnModel().getColumn(8).setMinWidth(80);
+            tblDocumentos.getColumnModel().getColumn(8).setPreferredWidth(80);
+            tblDocumentos.getColumnModel().getColumn(8).setMaxWidth(80);
+            tblDocumentos.getColumnModel().getColumn(9).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(9).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(9).setMaxWidth(0);
+            tblDocumentos.getColumnModel().getColumn(10).setMinWidth(180);
+            tblDocumentos.getColumnModel().getColumn(10).setPreferredWidth(180);
+            tblDocumentos.getColumnModel().getColumn(10).setMaxWidth(180);
+            tblDocumentos.getColumnModel().getColumn(11).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(11).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(11).setMaxWidth(0);
+            tblDocumentos.getColumnModel().getColumn(12).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(12).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(12).setMaxWidth(0);
+            tblDocumentos.getColumnModel().getColumn(13).setMinWidth(100);
+            tblDocumentos.getColumnModel().getColumn(13).setPreferredWidth(130);
+            tblDocumentos.getColumnModel().getColumn(13).setMaxWidth(160);
+            tblDocumentos.getColumnModel().getColumn(14).setMinWidth(0);
+            tblDocumentos.getColumnModel().getColumn(14).setPreferredWidth(0);
+            tblDocumentos.getColumnModel().getColumn(14).setMaxWidth(0);
         }
 
         javax.swing.GroupLayout pnlDetalleCuadreCajaLayout = new javax.swing.GroupLayout(pnlDetalleCuadreCaja);
@@ -821,7 +870,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             pnlDetalleCuadreCajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDetalleCuadreCajaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -845,123 +894,102 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tarjetaPendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tarjetaPendActionPerformed
+    private void txtTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTarjetaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tarjetaPendActionPerformed
+    }//GEN-LAST:event_txtTarjetaActionPerformed
 
-    private void ncPendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ncPendActionPerformed
+    private void txtNotaCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNotaCreditoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ncPendActionPerformed
+    }//GEN-LAST:event_txtNotaCreditoActionPerformed
 
-    private void chequePendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chequePendActionPerformed
+    private void txtChequeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtChequeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_chequePendActionPerformed
+    }//GEN-LAST:event_txtChequeActionPerformed
 
-    private void efectivoPendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_efectivoPendActionPerformed
-        if (efectivoPend.getText().equals("") || efectivoPend.getText().equals(this.simbolo) || efectivoPend.getText().equals(this.simbolo + " ")) {
-            efectivoPend.setText("0");
+    private void txtEfectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEfectivoActionPerformed
+        if (txtEfectivo.getText().equals("") || txtEfectivo.getText().equals(this.simbolo) || txtEfectivo.getText().equals(this.simbolo + " ")) {
+            txtEfectivo.setText("0");
         }
 
-        efectivoPend.setText(big.setMoneda(big.getMoneda(efectivoPend.getText())));
+        txtEfectivo.setText(big.setMoneda(big.getMoneda(txtEfectivo.getText())));
         calcularTotal();
-    }//GEN-LAST:event_efectivoPendActionPerformed
+    }//GEN-LAST:event_txtEfectivoActionPerformed
 
-    private void chequePendKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chequePendKeyReleased
-        if (chequePend.getText().equals("") || chequePend.getText().equals(this.simbolo) || chequePend.getText().equals(this.simbolo + " ")) {
-            chequePend.setText("0");
+    private void txtChequeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChequeKeyReleased
+        if (txtCheque.getText().equals("") || txtCheque.getText().equals(this.simbolo) || txtCheque.getText().equals(this.simbolo + " ")) {
+            txtCheque.setText("0");
         }
 
-        chequePend.setText(big.setMoneda(big.getMoneda(chequePend.getText())));
+        txtCheque.setText(big.setMoneda(big.getMoneda(txtCheque.getText())));
         calcularTotal();
-    }//GEN-LAST:event_chequePendKeyReleased
+    }//GEN-LAST:event_txtChequeKeyReleased
 
-    private void tarjetaPendKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tarjetaPendKeyReleased
-        if (tarjetaPend.getText().equals("") || tarjetaPend.getText().equals(this.simbolo) || tarjetaPend.getText().equals(this.simbolo + " ")) {
-            tarjetaPend.setText("0");
+    private void txtTarjetaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarjetaKeyReleased
+        if (txtTarjeta.getText().equals("") || txtTarjeta.getText().equals(this.simbolo) || txtTarjeta.getText().equals(this.simbolo + " ")) {
+            txtTarjeta.setText("0");
         }
 
-        tarjetaPend.setText(big.setMoneda(big.getMoneda(tarjetaPend.getText())));
+        txtTarjeta.setText(big.setMoneda(big.getMoneda(txtTarjeta.getText())));
         calcularTotal();
-    }//GEN-LAST:event_tarjetaPendKeyReleased
+    }//GEN-LAST:event_txtTarjetaKeyReleased
 
-    private void ncPendKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ncPendKeyReleased
-        if (ncPend.getText().equals("") || ncPend.getText().equals(this.simbolo) || ncPend.getText().equals(this.simbolo + " ")) {
-            ncPend.setText("0");
+    private void txtNotaCreditoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNotaCreditoKeyReleased
+        if (txtNotaCredito.getText().equals("") || txtNotaCredito.getText().equals(this.simbolo) || txtNotaCredito.getText().equals(this.simbolo + " ")) {
+            txtNotaCredito.setText("0");
         }
 
-        ncPend.setText(big.setMoneda(big.getMoneda(ncPend.getText())));
+        txtNotaCredito.setText(big.setMoneda(big.getMoneda(txtNotaCredito.getText())));
         calcularTotal();
-    }//GEN-LAST:event_ncPendKeyReleased
+    }//GEN-LAST:event_txtNotaCreditoKeyReleased
 
-    private void efectivoPendKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_efectivoPendKeyReleased
-        if (efectivoPend.getText().equals("") || efectivoPend.getText().equals(this.simbolo) || efectivoPend.getText().equals(this.simbolo + " ")) {
-            efectivoPend.setText("0");
+    private void txtEfectivoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEfectivoKeyReleased
+        if (txtEfectivo.getText().equals("") || txtEfectivo.getText().equals(this.simbolo) || txtEfectivo.getText().equals(this.simbolo + " ")) {
+            txtEfectivo.setText("0");
         }
 
-        efectivoPend.setText(big.setMoneda(big.getMoneda(efectivoPend.getText())));
+        txtEfectivo.setText(big.setMoneda(big.getMoneda(txtEfectivo.getText())));
         calcularTotal();
-    }//GEN-LAST:event_efectivoPendKeyReleased
+    }//GEN-LAST:event_txtEfectivoKeyReleased
 
-    private void efectivoPendKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_efectivoPendKeyTyped
+    private void txtEfectivoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEfectivoKeyTyped
         metodos.soloNum(evt);
-    }//GEN-LAST:event_efectivoPendKeyTyped
+    }//GEN-LAST:event_txtEfectivoKeyTyped
 
-    private void chequePendKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chequePendKeyPressed
+    private void txtChequeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChequeKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_chequePendKeyPressed
+    }//GEN-LAST:event_txtChequeKeyPressed
 
-    private void chequePendKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chequePendKeyTyped
+    private void txtChequeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChequeKeyTyped
         metodos.soloNum(evt);
-    }//GEN-LAST:event_chequePendKeyTyped
+    }//GEN-LAST:event_txtChequeKeyTyped
 
-    private void tarjetaPendKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tarjetaPendKeyTyped
+    private void txtTarjetaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarjetaKeyTyped
         metodos.soloNum(evt);
-    }//GEN-LAST:event_tarjetaPendKeyTyped
+    }//GEN-LAST:event_txtTarjetaKeyTyped
 
-    private void ncPendKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ncPendKeyTyped
+    private void txtNotaCreditoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNotaCreditoKeyTyped
         metodos.soloNum(evt);
-    }//GEN-LAST:event_ncPendKeyTyped
+    }//GEN-LAST:event_txtNotaCreditoKeyTyped
 
-    private void cuadreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cuadreActionPerformed
+    private void txtIndicadorValoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIndicadorValoresActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cuadreActionPerformed
+    }//GEN-LAST:event_txtIndicadorValoresActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Object[] campos = {efectivoPend, chequePend, tarjetaPend, ncPend};
-        String faltantes = metodos.camposVacios(campos);
-        boolean aux = calcular;
+        cargarTotalesCuadreCaja();
 
         BigDecimal totalFacturas = big.getMoneda(tblIngresos.getValueAt(3, 1).toString());
-        if (totalFacturas.compareTo(BigDecimal.ZERO) == 0) {
-            ControladorAlertas.alert("No se puede guardar sin facturas");
+        int congeladas = instancias.getSql().getDatosCongelada().length;
+
+        if (!squemaCuadreCaja.validacionesCuadre(totalFacturas, big.getMoneda(txtEfectivo.getText()),
+                big.getMoneda(txtCheque.getText()), big.getMoneda(txtTarjeta.getText()), big.getMoneda(txtNotaCredito.getText()), congeladas, instancias.getConfiguraciones().isRestaurante())) {
             return;
         }
 
-        if (!faltantes.equals("")) {
-            ControladorAlertas.alert("Faltan los siguientes campos: " + faltantes);
-        }
-
-        Object[][] congeladas = instancias.getSql().getDatosCongelada();
-        if (congeladas.length > 0) {
-            if (instancias.getConfiguraciones().isRestaurante()) {
-                ControladorAlertas.alert("¡Hay mesas sin finalizar!");
-                return;
-            } else {
-                ControladorAlertas.alert("¡Hay congeladas sin finalizar!");
-                return;
-            }
-        }
-
         if (ControladorAlertas.option("¿Desea continuar?")) {
-
-            if (!instancias.getUsuario().equals("ADMIN")) {
-                calcular = true;
-                cargarTabla();
-            }
-
             String documento = "CUADRE-" + instancias.getSql().getNumConsecutivo("CUADRE")[0];
             String usuario = instancias.getUsuario();
-            String fecha = metodos.desdeDate(dtInicio.getCurrent());
+            String fecha = metodos.desdeDate(dtFechaCuadre.getCurrent());
 
             if (instancias.getUsuario().equals("ADMIN")) {
                 usuario = cmbUsuarios.getSelectedItem().toString();
@@ -982,10 +1010,11 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             BigDecimal totalAbonosCartera = big.getMoneda(tblIngresos.getValueAt(5, 1).toString());
             BigDecimal totalAbonosPlanSepare = big.getMoneda(tblIngresos.getValueAt(6, 1).toString());
             BigDecimal totalAbonos = big.getMoneda(tblIngresos.getValueAt(7, 1).toString());
-            BigDecimal totalFacturaPlanSepare = big.getMoneda(tblIngresos.getValueAt(9, 1).toString());
-            BigDecimal totalCuotasIniciales = big.getMoneda(tblIngresos.getValueAt(10, 1).toString());
-            BigDecimal totalVentasDomicilio = big.getMoneda(tblIngresos.getValueAt(11, 1).toString());
-            BigDecimal totalProductoDomicilio = big.getMoneda(tblIngresos.getValueAt(12, 1).toString());
+            BigDecimal totalCuotasIniciales = big.getMoneda(tblIngresos.getValueAt(9, 1).toString());
+
+            BigDecimal totalFacturaPlanSepare = big.getMoneda(tblInformativos.getValueAt(0, 1).toString());
+            BigDecimal totalVentasDomicilio = big.getMoneda(tblInformativos.getValueAt(1, 1).toString());
+            BigDecimal totalProductoDomicilio = big.getMoneda(tblInformativos.getValueAt(2, 1).toString());
 
             BigDecimal totalNotasCreditoReembolsadas = big.getMoneda(tblSalidas.getValueAt(0, 1).toString());
             BigDecimal totalNotasCredito = big.getMoneda(tblSalidas.getValueAt(2, 1).toString());
@@ -993,14 +1022,14 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             BigDecimal totalGastosRegistrados = big.getMoneda(tblSalidas.getValueAt(4, 1).toString());
             BigDecimal totalGastosNoRegistrados = BigDecimal.ZERO;
 
-            Object[] vector = {documento, fecha, metodosGenerales.hora(), big.getMoneda(efectivoPend.getText()),
-                big.getMoneda(tarjetaPend.getText()), big.getMoneda(chequePend.getText()), big.getMoneda(ncPend.getText()), "cajero",
-                big.getMoneda(txtTotal.getText()), totalFacturas.add(totalAbonos), big.getMoneda(cuadre.getText()),
+            Object[] vector = {documento, fecha, metodosGenerales.hora(), big.getMoneda(txtEfectivo.getText()),
+                big.getMoneda(txtTarjeta.getText()), big.getMoneda(txtCheque.getText()), big.getMoneda(txtNotaCredito.getText()), "cajero",
+                big.getMoneda(txtTotal.getText()), totalFacturas.add(totalAbonos), big.getMoneda(txtIndicadorValores.getText()),
                 usuario, instancias.getTerminal(), totalGastosRegistrados, recogidaPendiente,
                 base, totalFacturas, totalFacturasCredito,
                 totalFacturasContado, totalNotasCredito, totalEfectivo, totalCheque, totalTarjeta,
-                totalNotasCreditoPagadas, contContado, contCredito, contNcRecibidas,
-                contNcRealizadas, contEfectivo, contCheque, contTarjeta, contAbonos,
+                totalNotasCreditoPagadas, contadorFacturasContado, contadorFacturasCredito, contNcRecibidas,
+                contNcRealizadas, contadorEfectivo, contadorCheque, contTarjeta, contadorAbonos,
                 totalAbonos, primeraFactura, ultimaFactura, primerAbono, ultimoAbono, totalFacturaPlanSepare,
                 totalCuotasIniciales, contCuotasIniciales, contGastos, totalNotasCreditoReembolsadas, contNcReembolsadas,
                 totalGastosNoRegistrados, totalAbonosCartera, totalAbonosPlanSepare,
@@ -1014,74 +1043,13 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
                 return;
             }
 
-            for (int i = 0; i < tblDocumentos1.getRowCount(); i++) {
-                boolean actualizo = false;
-
-                String tipo = tblDocumentos1.getValueAt(i, 0).toString().split("-")[0];
-
-                if (tipo.equals("SEPARE")) {
-                    actualizo = instancias.getSql().modificarCuadreSepare((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
-                } else if (tipo.equals("FACT")) {
-                    actualizo = instancias.getSql().modificarCuadreFactura((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
-                } else if (tipo.equals("ABONO")) {
-                    actualizo = instancias.getSql().modificarCuadreAbonos((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
-                } else if (tipo.equals("NC")) {
-                    if (!instancias.getSql().modificarRedNc((String) modelo.getValueAt(i, 0), documento)) {
-                        ControladorAlertas.alertFail("Hubo un problema al cambiar el estado del cuadre NC.");
-                    }
-
-                    actualizo = instancias.getSql().modificarCuadreNotasCredito((String) modelo.getValueAt(i, 0), documento, "REALIZADO");
-                }
-
-                if (!actualizo) {
-                    ControladorAlertas.alertFail("Error al actualizar estado de la factura");
-                }
+            String fechaConsulta = metodos.fechaConsulta(metodos.desdeDate2(dtFechaCuadre.getCurrent()));
+            if (!servicioCuadreCaja.marcarDocumentosCuadrados(documento, fechaConsulta, obtenerUsuarioCuadre())) {
+                ControladorAlertas.alertFail("Error al actualizar el estado de los documentos del cuadre, llamar a soporte técnico.");
+                return;
             }
 
-            while (tblDocumentos1.getRowCount() > 0) {
-                modelo.removeRow(0);
-            }
-
-            String fechaGastos = "";
-            int contAnuladas;
-            try {
-                fechaGastos = " ((fechaAnulacion)= '" + metodos.desdeDate(dtInicio.getCurrent()) + "') ";
-                contAnuladas = instancias.getSql().contadorFacturasAnuladas(fechaGastos, instancias.getUsuario());
-            } catch (Exception e) {
-                contAnuladas = 0;
-            }
-
-            if (contAnuladas > 0) {
-                Object[][] facturaAnulada = instancias.getSql().facturasAnuladasCuadre(fechaGastos, instancias.getUsuario());
-                for (Object[] facturaAnulada1 : facturaAnulada) {
-                    instancias.getSql().modificarCuadreAnulacion(facturaAnulada1[0].toString(), documento);
-                }
-            }
-
-            if (!instancias.getSql().modificarEstadoEgreso(metodos.desdeDate(dtInicio.getCurrent()), "REALIZADO", documento)) {
-                ControladorAlertas.alertFail("Error al modificar la recogida.");
-            }
-
-            if (!instancias.getSql().desactivarRecogidaParcial()) {
-                ControladorAlertas.alertFail("Error al desactivar la recogida.");
-            }
-
-            if (instancias.getUsuario().equals("ADMIN")) {
-                if (!instancias.getSql().desactivarBasesDeCaja(metodos.desdeDate(dtInicio.getCurrent()))) {
-                    ControladorAlertas.alertFail("Error al modificar la recogida");
-                }
-                if (!instancias.getSql().asignarCuadreABase(documento, metodos.desdeDate(dtInicio.getCurrent()))) {
-                    ControladorAlertas.alertFail("Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
-                }
-            } else {
-                if (!instancias.getSql().desactivarBasesDeCaja(metodos.desdeDate(dtInicio.getCurrent()), "")) {
-                    ControladorAlertas.alertFail("Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
-                }
-
-                if (!instancias.getSql().asignarCuadreABase(documento, metodos.desdeDate(dtInicio.getCurrent()), "")) {
-                    ControladorAlertas.alertFail("Hubo un problema al desactivar la recogida parcial, llamar a soporte tecnico.");
-                }
-            }
+            modeloDocumento.setRowCount(0);
 
             if (!instancias.getSql().aumentarConsecutivo("CUADRE", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("CUADRE")[0]) + 1)) {
                 ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del cuadre");
@@ -1092,6 +1060,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             lbConsecutivo.setText((String) instancias.getSql().getNumConsecutivo("CUADRE")[0]);
 
             btnLimpiarActionPerformed(evt);
+            limpiarTablasCuadreCaja();
 
             String tipoImpresion = "";
             if (instancias.getImpresion().equals("pos")) {
@@ -1103,35 +1072,35 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             if (instancias.isImprimirCuadreFiscal()) {
                 new GeneradorReporteCuadreCaja(instancias).verCuadreFiscal(documento, instancias.getInformacionEmpresa());
             }
-
-            calcular = aux;
-//            instancias.getReporte().verCaja(fecha, usuario, metodosGenerales.hora(), String.valueOf(registros),
-//                    txtEfectivoSistema.getText(), txtTarjetaSistema.getText(), txtChequeSistema.getText(), txtNcSistema.getText(), txtAbonos.getText(),
-//                    txtVenta.getText(), String.valueOf(tblDocumentos1.getRowCount()), efectivoPend.getText(), gastosPend.getText(), chequePend.getText(),
-//                    ncPend.getText(), txtAbonos.getText(), txtTotal.getText(), cuadre.getText(), mensaje.getText(), tarjetaPend.getText(), recogidaPend.getText(), "0");
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        limpiarTablasCuadreCaja();
-
-        contContado = 0;
-        contCredito = 0;
-        contAbonos = 0;
-        contEfectivo = 0;
-        contCheque = 0;
+        txtEfectivo.setText("$ 0");
+        txtCheque.setText("$ 0");
+        txtTarjeta.setText("$ 0");
+        txtNotaCredito.setText("$ 0");
+        txtTotal.setText("$ 0");
+        txtIndicadorValores.setText("$ 0");
+        mensaje.setBackground(new java.awt.Color(204, 255, 204));
+        mensaje.setForeground(new java.awt.Color(0, 102, 0));
+        mensaje.setText("CUADRE DE CAJA CORRECTO");
+        contadorFacturasContado = 0;
+        contadorFacturasCredito = 0;
+        contadorAbonos = 0;
+        contadorEfectivo = 0;
+        contadorCheque = 0;
         contTarjeta = 0;
         contNcRealizadas = 0;
         contNcRecibidas = 0;
         contNcReembolsadas = 0;
-        calcularTotal();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        cargarTabla();
+        cargarTotalesCuadreCaja();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
+    private void btnGuardarRecogidaParcialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRecogidaParcialActionPerformed
         if (!instancias.getUsuario().equals("ADMIN")) {
             dlgPedirContrasena contrasena = new dlgPedirContrasena(null, true, "caja");
             contrasena.setLocationRelativeTo(null);
@@ -1142,7 +1111,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             parcial.setVisible(true);
         }
 
-    }//GEN-LAST:event_btnGuardar1ActionPerformed
+    }//GEN-LAST:event_btnGuardarRecogidaParcialActionPerformed
 
     private void btnGuardarBaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarBaseActionPerformed
         if (!instancias.getUsuario().equals("ADMIN")) {
@@ -1157,12 +1126,12 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnGuardarBaseActionPerformed
 
     private void cmbUsuariosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbUsuariosItemStateChanged
-        cargarTabla();
+        cargarTotalesCuadreCaja();
     }//GEN-LAST:event_cmbUsuariosItemStateChanged
 
     private void cmbUsuariosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbUsuariosFocusGained
         if (!instancias.getUsuario().equals("ADMIN")) {
-            dtInicio.requestFocus();
+            dtFechaCuadre.requestFocus();
             ControladorAlertas.alertFail("No tiene permisos para abrir esta lista");
         }
     }//GEN-LAST:event_cmbUsuariosFocusGained
@@ -1187,9 +1156,9 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
     private void btnReimprimir1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimir1ActionPerformed
         if (instancias.getUsuario().equals("ADMIN")) {
-            new GeneradorReporteCuadreCaja(instancias).verBase(" where fecha = '" + metodos.desdeDate(dtInicio.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
+            new GeneradorReporteCuadreCaja(instancias).verBase(" where fecha = '" + metodos.desdeDate(dtFechaCuadre.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
         } else {
-            new GeneradorReporteCuadreCaja(instancias).verBase(" where usuario ='" + Instancias.getInstancias().getUsuario() + "'  and fecha = '" + metodos.desdeDate(dtInicio.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
+            new GeneradorReporteCuadreCaja(instancias).verBase(" where usuario ='" + Instancias.getInstancias().getUsuario() + "'  and fecha = '" + metodos.desdeDate(dtFechaCuadre.getCurrent()) + "' ;", instancias.getInformacionEmpresa());
         }
     }//GEN-LAST:event_btnReimprimir1ActionPerformed
 
@@ -1197,13 +1166,13 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbUsuariosActionPerformed
 
-    private void tblDocumentos1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDocumentos1MouseClicked
+    private void tblDocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDocumentosMouseClicked
 
-    }//GEN-LAST:event_tblDocumentos1MouseClicked
+    }//GEN-LAST:event_tblDocumentosMouseClicked
 
-    private void tblDocumentos1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDocumentos1MousePressed
+    private void tblDocumentosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDocumentosMousePressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tblDocumentos1MousePressed
+    }//GEN-LAST:event_tblDocumentosMousePressed
 
     private void tblSalidasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblSalidasKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -1218,398 +1187,193 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tblSalidasKeyReleased
 
+    private void tblInformativosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblInformativosKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblInformativosKeyReleased
+
+    private void dtFechaCuadreOnSelectionChange(datechooser.events.SelectionChangedEvent evt) {//GEN-FIRST:event_dtFechaCuadreOnSelectionChange
+        cargarTotalesCuadreCaja();
+    }//GEN-LAST:event_dtFechaCuadreOnSelectionChange
+
     public void actualizar() {
         btnActualizarActionPerformed(null);
     }
 
     public void desdeCajaPendiente(String usuario, String fecha) {
         cmbUsuarios.setSelectedItem(usuario);
-        dtInicio.setSelectedDate(metodos.haciaDate(metodos.fecha3(fecha)));
+        dtFechaCuadre.setSelectedDate(metodos.haciaDate(metodos.fecha3(fecha)));
 //        cargarTabla();
     }
 
     public void calcularTotal() {
+        /*if (!instancias.getUsuario().equals("ADMIN") && !instancias.isMostrarInformacionCuadre()) {
+         return;
+         }*/
 
-        if (calcular || instancias.isMostrarInformacionCuadre()) {
-            BigDecimal recogidaPendiente = big.getMoneda(tblValoresEsperados.getValueAt(6, 1).toString());
-            BigDecimal total = big.getMoneda(efectivoPend.getText()).add(big.getMoneda(chequePend.getText())
-                    .add(big.getMoneda(tarjetaPend.getText())).add(big.getMoneda(ncPend.getText()))).add(recogidaPendiente);
+        BigDecimal recogidaPendiente = big.getMoneda(tblValoresEsperados.getValueAt(6, 1).toString());
+        BigDecimal total = big.getMoneda(txtEfectivo.getText()).add(big.getMoneda(txtCheque.getText())
+                .add(big.getMoneda(txtTarjeta.getText())).add(big.getMoneda(txtNotaCredito.getText()))).add(recogidaPendiente);
 
-            txtTotal.setText(big.setMoneda(total));
+        txtTotal.setText(big.setMoneda(total));
 
-            BigDecimal totalCuotasIniciales = big.getMoneda(tblIngresos.getValueAt(10, 1).toString());
+        BigDecimal totalCuotasIniciales = big.getMoneda(tblIngresos.getValueAt(9, 1).toString());
 
-            BigDecimal totalEfectivo = big.getMoneda(tblValoresEsperados.getValueAt(1, 1).toString());
-            BigDecimal totalCheque = big.getMoneda(tblValoresEsperados.getValueAt(2, 1).toString());
-            BigDecimal totalTarjeta = big.getMoneda(tblValoresEsperados.getValueAt(3, 1).toString());
-            BigDecimal totalNotasCredito = big.getMoneda(tblValoresEsperados.getValueAt(4, 1).toString());
-            BigDecimal base = big.getMoneda(tblValoresEsperados.getValueAt(5, 1).toString());
-            BigDecimal totalPropinas = big.getMoneda(tblValoresEsperados.getValueAt(7, 1).toString());
+        BigDecimal totalEfectivo = big.getMoneda(tblValoresEsperados.getValueAt(1, 1).toString());
+        BigDecimal totalCheque = big.getMoneda(tblValoresEsperados.getValueAt(2, 1).toString());
+        BigDecimal totalTarjeta = big.getMoneda(tblValoresEsperados.getValueAt(3, 1).toString());
+        BigDecimal totalNotasCredito = big.getMoneda(tblValoresEsperados.getValueAt(4, 1).toString());
+        BigDecimal base = big.getMoneda(tblValoresEsperados.getValueAt(5, 1).toString());
+        BigDecimal totalPropinas = big.getMoneda(tblValoresEsperados.getValueAt(7, 1).toString());
 
-            BigDecimal sumCuadre = totalEfectivo.add(totalCheque).add(totalTarjeta).add(totalNotasCredito)
-                    .add(totalCuotasIniciales).add(totalPropinas).add(base);
+        BigDecimal sumCuadre = totalEfectivo.add(totalCheque).add(totalTarjeta).add(totalNotasCredito)
+                .add(totalCuotasIniciales).add(totalPropinas).add(base);
 
-            tblValoresEsperados.setValueAt(big.setMoneda(sumCuadre), 0, 1);
+        tblValoresEsperados.setValueAt(big.setMoneda(sumCuadre), 0, 1);
 
-            cuadre.setText(big.setMoneda(total.subtract(sumCuadre)));
+        txtIndicadorValores.setText(big.setMoneda(total.subtract(sumCuadre)));
 
-            int comparacion = total.compareTo(sumCuadre);
+        int comparacion = total.compareTo(sumCuadre);
 
-            if (comparacion == -1) {
-                mensaje.setBackground(new java.awt.Color(255, 204, 204));
-                mensaje.setForeground(new java.awt.Color(153, 0, 0));
-                mensaje.setText("ATENCION TIENE UN FALTANTE");
-            } else if (comparacion == 1) {
-                mensaje.setBackground(new java.awt.Color(255, 255, 204));
-                mensaje.setForeground(new java.awt.Color(255, 153, 0));
-                mensaje.setText("ATENCION TIENE UN SOBRANTE");
-            } else {
-                mensaje.setBackground(new java.awt.Color(204, 255, 204));
-                mensaje.setForeground(new java.awt.Color(0, 102, 0));
-                mensaje.setText("CUADRE DE CAJA CORRECTO");
-            }
+        if (comparacion == -1) {
+            mensaje.setBackground(new java.awt.Color(255, 204, 204));
+            mensaje.setForeground(new java.awt.Color(153, 0, 0));
+            mensaje.setText("ATENCION TIENE UN FALTANTE");
+        } else if (comparacion == 1) {
+            mensaje.setBackground(new java.awt.Color(255, 255, 204));
+            mensaje.setForeground(new java.awt.Color(255, 153, 0));
+            mensaje.setText("ATENCION TIENE UN SOBRANTE");
+        } else {
+            mensaje.setBackground(new java.awt.Color(204, 255, 204));
+            mensaje.setForeground(new java.awt.Color(0, 102, 0));
+            mensaje.setText("CUADRE DE CAJA CORRECTO");
         }
     }
 
-    public void cargarTabla() {
+    public void cargarTotalesCuadreCaja() {
+        /*if (!instancias.getUsuario().equals("ADMIN") && !instancias.isMostrarInformacionCuadre()) {
+         return;
+         }*/
 
-        if (calcular || instancias.isMostrarInformacionCuadre()) {
-            contContado = 0;
-            contCredito = 0;
-            contAbonos = 0;
-            contEfectivo = 0;
-            contCheque = 0;
-            contTarjeta = 0;
-            contNcRealizadas = 0;
-            contNcRecibidas = 0;
-            contNcReembolsadas = 0;
-            contCuotasIniciales = 0;
-            contGastos = 0;
+        String fecha = metodos.fechaConsulta(metodos.desdeDate2(dtFechaCuadre.getCurrent()));
+        ModeloResumenCuadre resumen = servicioCuadreCaja.calcular(fecha, obtenerUsuarioCuadre());
 
-            int j = tblDocumentos1.getRowCount();
-            for (int i = 0; i < j; i++) {
-                modelo.removeRow(0);
-            }
+        mostrarDocumentos(resumen.getDocumentos());
+        mostrarTotales(resumen);
+        guardarContadores(resumen);
 
-            String fecha1 = metodos.desdeDate2(dtInicio.getCurrent());
-            fecha1 = metodos.fechaConsulta(fecha1);
+        calcularTotal();
+    }
 
-            String fecha = " fechaFactura = '" + fecha1 + "' ";
-            String fechaGastos1 = " (((fecha) = '" + fecha1 + "') And ((fecha)<= '" + fecha1 + "' ))";
-
-            String usuario = instancias.getUsuario();
-            if (instancias.getUsuario().equals("ADMIN")) {
-                usuario = cmbUsuarios.getSelectedItem().toString();
-            }
-
-            Object[][] facturas;
-            Object[][] separes;
-            Object[][] abonos;
-            Object[][] notasCredito;
-            Object[][] domicilios;
-
-            BigDecimal totalGastosRegistrados;
-            if (usuario.equals("ADMIN")) {
-                facturas = instancias.getSql().getRegistrosFacturaAdmin(instancias.getTerminal(), fecha);
-                separes = instancias.getSql().getRegistrosSepareAdmin(instancias.getTerminal(), fecha);
-                abonos = instancias.getSql().getRegistrosAbonoAdmin(instancias.getTerminal(), fecha);
-                notasCredito = instancias.getSql().getRegistrosNotasCreditoAdmin(instancias.getTerminal(), fecha);
-
-                totalGastosRegistrados = big.getBigDecimal(instancias.getSql().gastosEgresosAdmin(fechaGastos1));
-                contGastos = Integer.parseInt(instancias.getSql().gastosEgresosContAdmin(fechaGastos1));
-            } else {
-                facturas = instancias.getSql().getRegistrosFactura(instancias.getTerminal(), usuario, fecha);
-                separes = instancias.getSql().getRegistrosPlanSepare(instancias.getTerminal(), usuario, fecha);
-                abonos = instancias.getSql().getRegistrosAbono(instancias.getTerminal(), usuario, fecha);
-                notasCredito = instancias.getSql().getRegistrosNotasCredito(instancias.getTerminal(), usuario, fecha);
-
-                totalGastosRegistrados = big.getBigDecimal(instancias.getSql().gastosEgresos(fechaGastos1, usuario));
-                contGastos = Integer.parseInt(instancias.getSql().gastosEgresosCont(fechaGastos1, usuario));
-            }
-
-            tblSalidas.setValueAt(big.setMoneda(totalGastosRegistrados), 4, 1);
-
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto("DOMI", enumBodegas.ID_BODEGA_PRINCIPAL);
-            domicilios = instancias.getSql().getItemDomicilio(nodo.getIdSistema(), fecha);
-
-            BigDecimal sumPropinas = big.getBigDecimal("0"), sumFacturas = big.getBigDecimal("0"), sumDomicilios = big.getBigDecimal("0"), sumAbonos = big.getBigDecimal("0"),
-                    sumEfectivo = big.getBigDecimal("0"), sumTarjeta = big.getBigDecimal("0"), sumNc = big.getBigDecimal("0"),
-                    sumCheque = big.getBigDecimal("0"), sumCredito = big.getBigDecimal("0"), sumSisteCredito = big.getBigDecimal("0"), sumContado = big.getBigDecimal("0"),
-                    sumNcReembolzadas = big.getBigDecimal("0"), sumNcRealizadas = big.getBigDecimal("0"),
-                    sumFacturasSepare = big.getBigDecimal("0"),
-                    recogidaPendiente = big.getBigDecimal(instancias.getSql().getTotalRecogida(fechaGastos1, usuario)),
-                    base = big.getBigDecimal(instancias.getSql().getTotalBaseCuadreCaja(fechaGastos1, usuario)), sumCuotaInicial = big.getBigDecimal("0"),
-                    sumItemDomi = big.getBigDecimal("0");
-
-            for (int i = 0; i < domicilios.length; i++) {
-                sumItemDomi = sumItemDomi.add(big.getBigDecimal(domicilios[i][0]));
-            }
-
-            for (int i = 0; i < facturas.length; i++) {
-                modelo.addRow(facturas[i]);
-
-                if (tblDocumentos1.getValueAt(i, 7) == null) {
-                    tblDocumentos1.setValueAt(this.simbolo + " 0", i, 7);
-                }
-
-                if (i == 0) {
-                    primeraFactura = facturas[i][0].toString();
-                }
-
-                if (facturas[i][12].toString().equals("DOMICILIO")) {
-                    sumDomicilios = sumDomicilios.add(big.getBigDecimal(facturas[i][5]));
-                }
-
-                if (facturas[i][10].toString().equals("1")) {
-                    if (tblDocumentos1.getValueAt(i, 14) != null) {
-                        if (tblDocumentos1.getValueAt(i, 14).toString().equals("1")) {
-                            sumSisteCredito = sumSisteCredito.add(big.getBigDecimal(facturas[i][5]));
-                        } else {
-                            sumCredito = sumCredito.add(big.getBigDecimal(facturas[i][5]));
-                        }
-                    } else {
-                        sumCredito = sumCredito.add(big.getBigDecimal(facturas[i][5]));
-                    }
-                    contCredito++;
-                } else {
-                    sumContado = sumContado.add(big.getBigDecimal(facturas[i][5]));
-                    contContado++;
-                }
-
-                BigDecimal cuotaInicial = BigDecimal.ZERO;
-
-                try {
-                    cuotaInicial = big.getBigDecimal(facturas[i][7]);
-                } catch (Exception e) {
-                    cuotaInicial = big.getBigDecimal("0");
-                }
-
-                try {
-                    if (cuotaInicial.compareTo(BigDecimal.ZERO) > 0) {
-                        contCuotasIniciales++;
-                    }
-                } catch (Exception e) {
-                }
-
-                sumFacturas = sumFacturas.add(big.getBigDecimal(facturas[i][5]));
-                sumPropinas = sumPropinas.add(big.getBigDecimal(facturas[i][13]));
-
-                try {
-                    sumCuotaInicial = sumCuotaInicial.add(cuotaInicial);
-                } catch (Exception e) {
-                }
-
-                try {
-                    sumEfectivo = sumEfectivo.add(cuotaInicial);
-                } catch (Exception e) {
-                }
-
-                sumEfectivo = sumEfectivo.add(big.getBigDecimal(facturas[i][1]));
-
-                if (big.getBigDecimal(facturas[i][1]).compareTo(BigDecimal.ZERO) > 0) {
-                    contEfectivo++;
-                }
-
-                sumTarjeta = sumTarjeta.add(big.getBigDecimal(facturas[i][2]));
-                sumTarjeta = sumTarjeta.add(big.getBigDecimal(facturas[i][11]));
-                if (big.getBigDecimal(facturas[i][2]).compareTo(BigDecimal.ZERO) > 0) {
-                    contTarjeta++;
-                }
-                if (big.getBigDecimal(facturas[i][11]).compareTo(BigDecimal.ZERO) > 0) {
-                    contTarjeta++;
-                }
-
-                sumCheque = sumCheque.add(big.getBigDecimal(facturas[i][3]));
-                if (big.getBigDecimal(facturas[i][3]).compareTo(BigDecimal.ZERO) > 0) {
-                    contCheque++;
-                }
-
-                sumNc = sumNc.add(big.getBigDecimal(facturas[i][4]));
-                if (big.getBigDecimal(facturas[i][4]).compareTo(BigDecimal.ZERO) > 0) {
-                    contNcRecibidas++;
-                }
-            }
-
-            for (int i = 0; i < separes.length; i++) {
-                sumFacturasSepare = sumFacturasSepare.add(big.getBigDecimal(separes[i][5]));
-                modelo.addRow(separes[i]);
-            }
-
-            for (int i = 0; i < abonos.length; i++) {
-                contAbonos++;
-                modelo.addRow(abonos[i]);
-                sumAbonos = sumAbonos.add(big.getBigDecimal(abonos[i][5]));
-                sumEfectivo = sumEfectivo.add(big.getBigDecimal(abonos[i][1]));
-                if (big.getBigDecimal(abonos[i][1]).compareTo(BigDecimal.ZERO) > 0) {
-                    contEfectivo++;
-                }
-                sumTarjeta = sumTarjeta.add(big.getBigDecimal(abonos[i][2]));
-                if (big.getBigDecimal(abonos[i][2]).compareTo(BigDecimal.ZERO) > 0) {
-                    contTarjeta++;
-                }
-                sumNc = sumNc.add(big.getBigDecimal(abonos[i][4]));
-                if (big.getBigDecimal(abonos[i][4]).compareTo(BigDecimal.ZERO) > 0) {
-                    contNcRecibidas++;
-                }
-                sumCheque = sumCheque.add(big.getBigDecimal(abonos[i][3]));
-                if (big.getBigDecimal(abonos[i][3]).compareTo(BigDecimal.ZERO) > 0) {
-                    contCheque++;
-                }
-            }
-
-            for (int i = 0; i < notasCredito.length; i++) {
-                modelo.addRow(notasCredito[i]);
-                sumNcRealizadas = sumNcRealizadas.add(big.getBigDecimal(notasCredito[i][4]));
-                contNcRealizadas++;
-
-                if (!notasCredito[i][10].equals("0")) {
-                    sumNcReembolzadas = sumNcReembolzadas.add(big.getBigDecimal(notasCredito[i][4]));
-                    contNcReembolsadas++;
-                }
-
-//                if (big.getBigDecimal(notasCredito[i][4]).compareTo(BigDecimal.ZERO) > 0) {
-//                    sumNcReembolzadas = sumNcReembolzadas.add(big.getBigDecimal(notasCredito[i][4]));
-//                    contNcReembolsadas++;
-//                }
-//                
-//                if (big.getBigDecimal(notasCredito[i][1]).compareTo(BigDecimal.ZERO) > 0) {
-//                    sumNcRealizadas = sumNcRealizadas.add(big.getBigDecimal(notasCredito[i][1]));
-//                    contNcRealizadas++;
-//                }
-            }
-
-            BigDecimal abonosCartera = BigDecimal.ZERO, abonosSepare = BigDecimal.ZERO;
-            for (int i = 0; i < tblDocumentos1.getRowCount(); i++) {
-
-                if (tblDocumentos1.getValueAt(i, 0).toString().contains("ABONO")) {
-                    if (tblDocumentos1.getValueAt(i, 9).toString().contains("SEPARE")) {
-                        abonosSepare = abonosSepare.add(big.getBigDecimal(tblDocumentos1.getValueAt(i, 5).toString()));
-                    } else {
-                        abonosCartera = abonosCartera.add(big.getBigDecimal(tblDocumentos1.getValueAt(i, 5).toString()));
-                    }
-                }
-
-                try {
-                    if (tblDocumentos1.getValueAt(i, 10).equals("0")) {
-                        if (tblDocumentos1.getValueAt(i, 0).toString().contains("NC-")) {
-                            tblDocumentos1.setValueAt("No Reembolzada", i, 10);
-                        } else {
-                            tblDocumentos1.setValueAt("Contado", i, 10);
-                        }
-                    } else {
-                        if (tblDocumentos1.getValueAt(i, 0).toString().contains("NC-")) {
-                            tblDocumentos1.setValueAt("Reembolzada", i, 10);
-                        } else {
-
-                            if (tblDocumentos1.getValueAt(i, 14) != null) {
-                                if (tblDocumentos1.getValueAt(i, 14).toString().equals("1")) {
-                                    tblDocumentos1.setValueAt("Sistecrédito", i, 10);
-                                } else {
-                                    tblDocumentos1.setValueAt("Crédito", i, 10);
-                                }
-                            } else {
-                                tblDocumentos1.setValueAt("Crédito", i, 10);
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    tblDocumentos1.setValueAt("", i, 10);
-                }
-
-                if (tblDocumentos1.getValueAt(i, 11) == null) {
-                    tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 2))), i, 2);
-                } else {
-                    tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 2)).
-                            add(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 11)))), i, 2);
-                }
-
-                if (tblDocumentos1.getValueAt(i, 13) != null) {
-                    if (tblDocumentos1.getValueAt(i, 13).toString().equals("")) {
-                        tblDocumentos1.setValueAt(this.simbolo + " 0", i, 13);
-                    } else {
-                        tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 13))), i, 13);
-                    }
-                } else {
-                    tblDocumentos1.setValueAt(this.simbolo + " 0", i, 13);
-                }
-
-                tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 1))), i, 1);
-                tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 3))), i, 3);
-                tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 4))), i, 4);
-                tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 5))), i, 5);
-
-                try {
-                    tblDocumentos1.setValueAt(big.setMoneda(big.getBigDecimal((String) tblDocumentos1.getValueAt(i, 7))), i, 7);
-                } catch (Exception e) {
-                    tblDocumentos1.setValueAt(this.simbolo + " 0", i, 7);
-                }
-            }
-
-            TableRowSorter modeloOrdenado;
-            modeloOrdenado = new TableRowSorter<>(modelo);
-            tblDocumentos1.setRowSorter(modeloOrdenado);
-            boolean abonoSi = false, facturaSi = false;
-
-            for (int i = 0; i < facturas.length; i++) {
-                facturaSi = true;
-            }
-
-            for (int i = 0; i < abonos.length; i++) {
-                abonoSi = true;
-            }
-
-            if (facturaSi) {
-                modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + "FACT", 0));
-                primeraFactura = tblDocumentos1.getValueAt(0, 0).toString();
-                ultimaFactura = tblDocumentos1.getValueAt(tblDocumentos1.getRowCount() - 1, 0).toString();
-            }
-
-            if (abonoSi) {
-                modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + "ABONO", 0));
-                primerAbono = tblDocumentos1.getValueAt(0, 0).toString();
-                ultimoAbono = tblDocumentos1.getValueAt(tblDocumentos1.getRowCount() - 1, 0).toString();
-            }
-
-            modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + "", 0));
-
-            tblIngresos.setValueAt(big.setMoneda(sumCredito), 0, 1);
-            tblIngresos.setValueAt(big.setMoneda(sumContado), 1, 1);
-            tblIngresos.setValueAt(big.setMoneda(sumSisteCredito), 2, 1);
-            tblIngresos.setValueAt(big.setMoneda(sumFacturas), 3, 1);
-
-            tblIngresos.setValueAt(big.setMoneda(abonosCartera), 5, 1);
-            tblIngresos.setValueAt(big.setMoneda(abonosSepare), 6, 1);
-            tblIngresos.setValueAt(big.setMoneda(sumAbonos), 7, 1);
-
-            tblIngresos.setValueAt(big.setMoneda(sumFacturasSepare), 9, 1);
-            tblIngresos.setValueAt(big.setMoneda(sumCuotaInicial), 10, 1);
-            tblIngresos.setValueAt(big.setMoneda(sumDomicilios), 11, 1);
-            tblIngresos.setValueAt(big.setMoneda(sumItemDomi), 12, 1);
-
-            BigDecimal subtotalGastos = sumEfectivo.subtract(sumNcReembolzadas).subtract(totalGastosRegistrados);
-            tblValoresEsperados.setValueAt(big.setMoneda(subtotalGastos), 1, 1);
-            tblValoresEsperados.setValueAt(big.setMoneda(sumCheque), 2, 1);
-            tblValoresEsperados.setValueAt(big.setMoneda(sumTarjeta), 3, 1);
-            tblValoresEsperados.setValueAt(big.setMoneda(sumNc), 4, 1);
-            tblValoresEsperados.setValueAt(big.setMoneda(base), 5, 1);
-            tblValoresEsperados.setValueAt(big.setMoneda(recogidaPendiente), 6, 1);
-            tblValoresEsperados.setValueAt(big.setMoneda(sumPropinas), 7, 1);
-
-            tblSalidas.setValueAt(big.setMoneda(sumNcReembolzadas), 0, 1);
-            tblSalidas.setValueAt(big.setMoneda(sumNcRealizadas), 2, 1);
-
-            BigDecimal ncNoReembolsadas = sumNcRealizadas.subtract(sumNcReembolzadas);
-            tblSalidas.setValueAt(big.setMoneda(ncNoReembolsadas), 1, 1);
-
-            calcularTotal();
+    /**
+     * Usuario cuyo cuadre se consulta: el de la sesión, o el elegido en la
+     * lista si quien cuadra es ADMIN. Retorna null cuando se debe consolidar a
+     * todos los usuarios (ADMIN sin filtrar por usuario).
+     */
+    private String obtenerUsuarioCuadre() {
+        String usuario = instancias.getUsuario();
+        if (usuario.equals("ADMIN")) {
+            usuario = cmbUsuarios.getSelectedItem().toString();
         }
+        return usuario.equals("ADMIN") ? null : usuario;
+    }
+
+    private void mostrarDocumentos(List<ModeloDocumentoCuadre> documentos) {
+        modeloDocumento.setRowCount(0);
+
+        for (ModeloDocumentoCuadre documento : documentos) {
+            boolean esFactura = documento.getTipo() == ModeloDocumentoCuadre.Tipo.FACTURA;
+
+            modeloDocumento.addRow(new Object[]{
+                documento.getId(),
+                big.setMoneda(documento.getEfectivo()),
+                big.setMoneda(documento.getTarjeta().add(documento.getTarjetaCredito())),
+                big.setMoneda(documento.getCheque()),
+                big.setMoneda(documento.getNotaCredito()),
+                big.setMoneda(documento.getTotal()),
+                documento.getReferencia(),
+                big.setMoneda(documento.getCuotaInicial()),
+                documento.getTerminal(),
+                documento.getComprobante(),
+                obtenerFormaPago(documento),
+                esFactura ? big.setMoneda(documento.getTarjetaCredito()) : null,
+                esFactura ? documento.getLugar() : null,
+                big.setMoneda(documento.getPropina()),
+                esFactura ? (documento.isSisteCredito() ? "1" : "0") : null
+            });
+        }
+    }
+
+    private String obtenerFormaPago(ModeloDocumentoCuadre documento) {
+        switch (documento.getTipo()) {
+            case FACTURA:
+                if (!documento.isCredito()) {
+                    return "Contado";
+                }
+                return documento.isSisteCredito() ? "Sistecrédito" : "Crédito";
+            case NOTA_CREDITO:
+                return documento.isReembolsada() ? "Reembolzada" : "No Reembolzada";
+            default:
+                return "";
+        }
+    }
+
+    private void mostrarTotales(ModeloResumenCuadre resumen) {
+        tblIngresos.setValueAt(big.setMoneda(resumen.getVentasCredito()), 0, 1);
+        tblIngresos.setValueAt(big.setMoneda(resumen.getVentasContado()), 1, 1);
+        tblIngresos.setValueAt(big.setMoneda(resumen.getVentasSistecredito()), 2, 1);
+        tblIngresos.setValueAt(big.setMoneda(resumen.getTotalVentas()), 3, 1);
+
+        tblIngresos.setValueAt(big.setMoneda(resumen.getAbonosCartera()), 5, 1);
+        tblIngresos.setValueAt(big.setMoneda(resumen.getAbonosPlanSepare()), 6, 1);
+        tblIngresos.setValueAt(big.setMoneda(resumen.getTotalAbonos()), 7, 1);
+
+        tblIngresos.setValueAt(big.setMoneda(resumen.getCuotasIniciales()), 9, 1);
+
+        tblInformativos.setValueAt(big.setMoneda(resumen.getFacturasPlanSepare()), 0, 1);
+        tblInformativos.setValueAt(big.setMoneda(resumen.getVentasDomicilio()), 1, 1);
+        tblInformativos.setValueAt(big.setMoneda(resumen.getProductoDomicilio()), 2, 1);
+
+        tblValoresEsperados.setValueAt(big.setMoneda(resumen.getEfectivoEsperado()), 1, 1);
+        tblValoresEsperados.setValueAt(big.setMoneda(resumen.getCheque()), 2, 1);
+        tblValoresEsperados.setValueAt(big.setMoneda(resumen.getTarjeta()), 3, 1);
+        tblValoresEsperados.setValueAt(big.setMoneda(resumen.getNotasCreditoRecibidas()), 4, 1);
+        tblValoresEsperados.setValueAt(big.setMoneda(resumen.getBase()), 5, 1);
+        tblValoresEsperados.setValueAt(big.setMoneda(resumen.getRecogidaPendiente()), 6, 1);
+        tblValoresEsperados.setValueAt(big.setMoneda(resumen.getPropinas()), 7, 1);
+
+        tblSalidas.setValueAt(big.setMoneda(resumen.getNotasCreditoReembolsadas()), 0, 1);
+        tblSalidas.setValueAt(big.setMoneda(resumen.getNotasCreditoNoReembolsadas()), 1, 1);
+        tblSalidas.setValueAt(big.setMoneda(resumen.getNotasCreditoRealizadas()), 2, 1);
+        tblSalidas.setValueAt(big.setMoneda(resumen.getGastosRegistrados()), 4, 1);
+    }
+
+    /**
+     * Conserva los contadores y consecutivos que usa btnGuardar para registrar
+     * el cuadre.
+     */
+    private void guardarContadores(ModeloResumenCuadre resumen) {
+        contadorFacturasContado = resumen.getContContado();
+        contadorFacturasCredito = resumen.getContCredito();
+        contadorAbonos = resumen.getContAbonos();
+        contadorEfectivo = resumen.getContEfectivo();
+        contadorCheque = resumen.getContCheque();
+        contTarjeta = resumen.getContTarjeta();
+        contNcRealizadas = resumen.getContNcRealizadas();
+        contNcRecibidas = resumen.getContNcRecibidas();
+        contNcReembolsadas = resumen.getContNcReembolsadas();
+        contCuotasIniciales = resumen.getContCuotasIniciales();
+        contGastos = resumen.getContGastos();
+
+        primeraFactura = resumen.getPrimeraFactura();
+        ultimaFactura = resumen.getUltimaFactura();
+        primerAbono = resumen.getPrimerAbono();
+        ultimoAbono = resumen.getUltimoAbono();
     }
 
     public void desdeRecogida(String valor) {
 
         if (instancias.isImprimirRecogida()) {
-            instancias.getReporte().ver_RecogidaParcial(instancias.getInformacionEmpresa(), metodosGenerales.fecha(), instancias.getUsuario(), instancias.getTerminal(), valor,
-                    tblValoresEsperados.getValueAt(6, 1).toString());
+            new GeneradorReporteCuadreCaja(instancias).verRecogidaParcial(valor, tblValoresEsperados.getValueAt(6, 1).toString());
         }
 
         btnActualizarActionPerformed(null);
@@ -1624,9 +1388,10 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         tblIngresos.setValueAt(this.simbolo + " 0", 6, 1);
         tblIngresos.setValueAt(this.simbolo + " 0", 7, 1);
         tblIngresos.setValueAt(this.simbolo + " 0", 9, 1);
-        tblIngresos.setValueAt(this.simbolo + " 0", 10, 1);
-        tblIngresos.setValueAt(this.simbolo + " 0", 11, 1);
-        tblIngresos.setValueAt(this.simbolo + " 0", 12, 1);
+
+        tblInformativos.setValueAt(this.simbolo + " 0", 0, 1);
+        tblInformativos.setValueAt(this.simbolo + " 0", 1, 1);
+        tblInformativos.setValueAt(this.simbolo + " 0", 2, 1);
 
         tblSalidas.setValueAt(this.simbolo + " 0", 0, 1);
         tblSalidas.setValueAt(this.simbolo + " 0", 1, 1);
@@ -1646,16 +1411,13 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnGuardar1;
     private javax.swing.JButton btnGuardarBase;
+    private javax.swing.JButton btnGuardarRecogidaParcial;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnReimprimir;
     private javax.swing.JButton btnReimprimir1;
-    private javax.swing.JTextField chequePend;
     private javax.swing.JComboBox cmbUsuarios;
-    private javax.swing.JTextField cuadre;
-    private datechooser.beans.DateChooserCombo dtInicio;
-    private javax.swing.JTextField efectivoPend;
+    private datechooser.beans.DateChooserCombo dtFechaCuadre;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1664,6 +1426,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lbConsecutivo;
     private javax.swing.JLabel lbNit10;
@@ -1676,19 +1439,24 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbNit9;
     private javax.swing.JLabel lblBannerEgresos;
     private javax.swing.JLabel lblBannerEgresos1;
+    private javax.swing.JLabel lblBannerEgresos2;
     private javax.swing.JLabel lblBannerIngresos;
     private javax.swing.JLabel lblBannerResumen;
     private javax.swing.JLabel mensaje;
-    private javax.swing.JTextField ncPend;
     private javax.swing.JPanel pnlDetalleCuadreCaja;
     private javax.swing.JPanel pnlTotalizadosCuaddreCaja;
     private javax.swing.JPanel pnlValoresActuales;
     private javax.swing.JScrollPane scrFormulario;
-    private javax.swing.JTextField tarjetaPend;
-    private javax.swing.JTable tblDocumentos1;
+    private javax.swing.JTable tblDocumentos;
+    private javax.swing.JTable tblInformativos;
     private javax.swing.JTable tblIngresos;
     private javax.swing.JTable tblSalidas;
     private javax.swing.JTable tblValoresEsperados;
+    private javax.swing.JTextField txtCheque;
+    private javax.swing.JTextField txtEfectivo;
+    private javax.swing.JTextField txtIndicadorValores;
+    private javax.swing.JTextField txtNotaCredito;
+    private javax.swing.JTextField txtTarjeta;
     private javax.swing.JLabel txtTotal;
     // End of variables declaration//GEN-END:variables
 }

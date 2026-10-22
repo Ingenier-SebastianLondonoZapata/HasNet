@@ -1,5 +1,6 @@
 package Vista.Documentos;
 
+import Dao.Ventas.DaoPlanSepare;
 import Dao.Productos.DaoProducto;
 
 import Controlador.Alertas.ControladorAlertas;
@@ -1580,6 +1581,12 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_filtrarItemStateChanged
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
+        if (cmbTipoDocumento.getSelectedItem().toString().equals("FACTURA")
+                && new DaoPlanSepare().esFacturaDePlanSepare(datosDocumento.getIdentificadorFactura())) {
+            ControladorAlertas.alert("No se puede anular la factura porque proviene de un plan separe");
+            return;
+        }
+
         if (!instancias.getUsuario().equals("ADMIN")) {
             AccionesPermisos accion = new AccionesPermisos(false, false, false);
             VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, TipoDocumento.ANULAR_FACTURACION.getValor(), accion, "FACT-" + NUMERO_DOCUMENTO_SELECCIONADO, BigDecimal.ZERO);

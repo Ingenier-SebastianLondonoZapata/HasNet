@@ -2540,8 +2540,6 @@ public class VistaProductos extends javax.swing.JInternalFrame {
                 ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
             }
 
-            ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
-
             try {
                 servicioActualizacionPonderado.crearPonderadoInicial(nodo, costoProducto, instancias.getUsuario());
             } catch (SQLException ex) {

@@ -1,4 +1,4 @@
-package formularios.terceros;
+package Vista.Terceros;
 
 import Controlador.Alertas.ControladorAlertas;
 
@@ -10,6 +10,8 @@ import clases.big;
 import clases.metodosGenerales;
 import Modelo.Terceros.ModeloContacto;
 import formularios.Medico.buscEpsPrecargadas;
+import formularios.terceros.buscCargos;
+import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Image;

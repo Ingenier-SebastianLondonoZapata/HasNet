@@ -2196,27 +2196,6 @@ public class SQL {
         return ok;
     }
 
-    /*public Object[] getUltimoPonderado(String producto) {
-     boolean ok = false;
-     String instruccion_sql = "select producto, ponderadoAntiguo, cantidadAntigua, cantidadEntrante, nuevoPonderado, nuevaCantidad, usuario, ultimoCosto, fecha"
-     + " from ultimoPonderado where producto = '" + producto + "' ";
-     String[] colName = {"producto", "ponderadoAntiguo", "cantidadAntigua", "cantidadEntrante", "nuevoPonderado", "nuevaCantidad", "usuario", "ultimoCosto", "fecha"};
-     boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true};
-     Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-     return data;
-     }*/
-    public String obtenerUltimoCostoProducto(String codigoProducto) {
-        String instruccion_sql = "select ultimoCosto from ultimoPonderado where producto = '" + codigoProducto + "'; ";
-        String[] colName = {"ultimoCosto"};
-        boolean[] cadena = {true};
-
-        try {
-            return GetRegistro(colName, cadena, instruccion_sql)[0].toString();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public Object[] getUltimoPonderado1(String producto) {
         boolean ok = false;
         String instruccion_sql = "select producto, ponderadoAntiguo, cantidadAntigua, cantidadEntrante, nuevoPonderado, nuevaCantidad, usuario, ultimoCosto, fecha, ingreso "
@@ -3735,16 +3714,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public void cambiarEstadoFactura(String estado, String id) {
-        String instruccion_sql = "update bdFactura set estado2=? WHERE factura ='" + id + "' ;";
-        Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
-    }
-
-    public void cambiarEstadoSepare(String estado, String id) {
-        String instruccion_sql = "update bdPlanSepare set estado2=? WHERE idFactura ='" + id + "' ;";
-        Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
-    }
-
     //PEDIDOS
     public DefaultTableModel getRegistrosPedidos(String condicion) {
         String columNames[] = {
@@ -3779,11 +3748,6 @@ public class SQL {
         String instruccion_sql = "insert into facturaReportePedido (Id, Fecha, Pedidos, Consulta) values (?,?,?,?);";
         ok = Agregar_Registro(vector, null, instruccion_sql);
         return ok;
-    }
-
-    public void cambiarEstadoPedido(String estado, String id) {
-        String instruccion_sql = "update bdPedido set estado2=? WHERE idFactura ='" + id + "' ;";
-        Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
     }
 
     public DefaultTableModel getReporteFacturaPedidos() {
@@ -4893,18 +4857,6 @@ public class SQL {
         return data[0].toString();
     }
 
-    public String getTotalRecogida(String fecha, String usuario) {
-        boolean ok = false;
-        String instruccion_sql = "select suma from conRecogidaParcial where usuario = '" + usuario + "' and " + fecha + ";";
-        String[] colName = {"suma"};
-        boolean[] cadena = {true};
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        if (data[0] == null) {
-            return "0";
-        }
-        return data[0].toString();
-    }
-
     public boolean desactivarBasesDeCaja(String fecha, String usuario) {
         boolean ok = false;
         String instruccion_sql = "update bdBaseCuadreCaja set activo=? "
@@ -4934,18 +4886,6 @@ public class SQL {
         String instruccion_sql = "update bdBaseCuadreCaja set idCuadre = ? where fecha = '" + fecha + "' ;";
         ok = Actualizar_Registro(new Object[]{"", cuadre}, null, instruccion_sql);
         return ok;
-    }
-
-    public String getTotalBaseCuadreCaja(String fecha, String usuario) {
-        boolean ok = false;
-        String instruccion_sql = "select suma from conBaseCuadreCaja where usuario = '" + usuario + "' and " + fecha + ";";
-        String[] colName = {"suma"};
-        boolean[] cadena = {true};
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        if (data[0] == null) {
-            return "0";
-        }
-        return data[0].toString();
     }
 
     public String getIngresoCxp(String factura) {
@@ -9403,40 +9343,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getRegistrosFactura(String terminal, String usuario, String fechaFactura) {
-        String colName[] = {
-            "idFactura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "factura", "cuotaInicial2",
-            "terminal", "comprobante", "credito", "tarjetaCredito", "conseMesa", "totalPropina", "sisteCredito"
-        };
-        String origen = " facturacion";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, efectivoGeneral, targetaGeneral, chequeGeneral, ncGeneral, totalGeneral, factura, cuotaInicial2, terminal, "
-                + "comprobante, credito, tarjetaCredito, conseMesa, totalPropina, sisteCredito from " + origen + " where estadoGeneral ='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura, " where estadoGeneral ='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura);
-
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosAbono(String terminal, String usuario, String fechaFactura) {
-        String colName[] = {
-            "factura", "efectivo", "targeta", "cheque", "nc", "total", "id", "cuotaInicial2", "terminal", "comprobante"
-        };
-        String origen = " abonos";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, efectivo, targeta, cheque, nc, total, id, cuotaInicial2, terminal, comprobante from " + origen + " where estado='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura, " where estado='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura);
-
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosNotasCredito(String terminal, String usuario, String fechaFactura) {
-        String colName[] = {
-            "factura", "efectivo", "targeta", "cheque", "nc", "total", "id", "cuotaInicial2", "terminal", "comprobante", "reembolsar"
-        };
-        String origen = " notasCredito";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, efectivo, targeta, cheque, nc, total, id, cuotaInicial2, terminal, comprobante, reembolsar from " + origen + " where estado='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura, " where estado='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura);
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosFacturaAdmin() {
         String colName[] = {
             "idFactura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "ordenId", "cuotaInicial2", "terminal", "comprobante", "fechaFactura", "usuario"
@@ -9448,44 +9354,12 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getItemDomicilio(String prod, String fechaFactura) {
-        String colName[] = {
-            "total", "idFactura"
-        };
-        String origen = " bdFactura ";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select total, idFactura from " + origen + " where producto = '" + prod + "' AND estadoGeneral ='PENDIENTE' AND anulada = false AND " + fechaFactura,
-                " where producto = '" + prod + "' AND estadoGeneral ='PENDIENTE' AND anulada = false AND " + fechaFactura);
-
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosPlanSepare(String terminal, String usuario, String fechaFactura) {
-        String colName[] = {
-            "factura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "factura", "cuotaInicial2", "terminal", "comprobante"
-        };
-        String origen = " plansepareagrupado ";
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, efectivoGeneral, targetaGeneral, chequeGeneral, ncGeneral, totalGeneral, factura, cuotaInicial2, terminal, comprobante from " + origen + " where estado='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura, " where estado='PENDIENTE' AND anulada = false AND usuario='" + usuario + "' AND " + fechaFactura);
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosSepareAdmin() {
         String colName[] = {
             "factura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "ordenId", "cuotaInicial2", "terminal", "comprobante"
         };
         String origen = " planSepare";
         Object dtDatos[][] = getDatos(colName, origen, "select idFactura, efectivoGeneral, targetaGeneral, chequeGeneral, ncGeneral, totalGeneral, ordenId, cuotaInicial2, terminal, comprobante from " + origen + " where estado='PENDIENTE' ", " where estado='PENDIENTE' ");
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosSepareAdmin(String terminal, String fechaFactura) {
-        String colName[] = {
-            "idFactura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "factura",
-            "cuotaInicial2", "terminal", "comprobante"
-        };
-        String origen = " PlanSepareAgrupado ";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, efectivoGeneral, targetaGeneral, chequeGeneral, ncGeneral, totalGeneral,"
-                + " factura, cuotaInicial2, terminal, comprobante from " + origen + " where estado='PENDIENTE' AND " + fechaFactura, " where estado='PENDIENTE' AND " + fechaFactura);
         return dtDatos;
     }
 
@@ -9522,43 +9396,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getRegistrosFacturaAdmin(String terminal, String fechaFactura) {
-
-        String colName[] = {
-            "factura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "factura", "cuotaInicial2",
-            "terminal", "comprobante", "credito", "tarjetaCredito", "conseMesa", "totalPropina", "sisteCredito"
-        };
-
-        String origen = " facturacion";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, efectivoGeneral, targetaGeneral, chequeGeneral, ncGeneral, totalGeneral, "
-                + "factura, cuotaInicial2, terminal, comprobante, credito, tarjetaCredito, conseMesa, totalPropina, sisteCredito "
-                + "from " + origen + " where estadoGeneral = 'PENDIENTE' AND " + fechaFactura + " AND anulada = false ", " where estadoGeneral ='PENDIENTE' AND " + fechaFactura + " AND anulada = false ");
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosAbonoAdmin(String terminal, String fechaFactura) {
-        String colName[] = {
-            "factura", "efectivo", "targeta", "cheque", "nc", "total", "factura", "cuotaInicial2", "terminal", "comprobante"
-        };
-        String origen = " abonos";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, efectivo, targeta, cheque, nc, total, anulada, credito, descuentos,factura,terminal,comprobante, cuotaInicial2 from " + origen + " where estado='PENDIENTE' AND anulada = false AND " + fechaFactura, " where estado='PENDIENTE' AND anulada = false AND " + fechaFactura);
-
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosNotasCreditoAdmin(String terminal, String fechaFactura) {
-        String colName[] = {
-            "id", "efectivo", "targeta", "cheque", "nc", "total", "factura", "cuotaInicial2", "terminal", "comprobante", "reembolsar"
-        };
-        String origen = " notasCredito";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select id, efectivo, targeta, cheque, nc, total, factura, cuotaInicial2, terminal, comprobante, reembolsar  from " + origen + " where estado='PENDIENTE' AND anulada = false AND " + fechaFactura, " where estado='PENDIENTE' AND anulada = false AND " + fechaFactura);
-
-        return dtDatos;
-    }
-
     public String getReciboPTM(String fact) {
         String colName[] = {
             "recibo"};
@@ -9566,34 +9403,6 @@ public class SQL {
         //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
         Object dtDatos[][] = getDatos(colName, origen, "select recibo from " + origen + " where factura = '" + fact + "'; ", " where factura = '" + fact + "' ");
         return dtDatos[0][0].toString();
-    }
-
-    public String gastosEgresosAdmin(String ini) {
-        String colName[] = {
-            "SumaDetotal"};
-        String origen = " gastosEgresosAdmin";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select SumaDetotal from " + origen + " where " + ini + " ", " where " + ini + "");
-
-        try {
-            return dtDatos[0][0].toString();
-        } catch (Exception e) {
-            return "0";
-        }
-    }
-
-    public String gastosEgresosContAdmin(String ini) {
-        String colName[] = {
-            "contGastos"};
-        String origen = " gastosEgresosAdmin";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select contGastos from " + origen + " where " + ini + " ", " where " + ini + "");
-
-        try {
-            return dtDatos[0][0].toString();
-        } catch (Exception e) {
-            return "0";
-        }
     }
 
     public Object[][] getRegistrosCajaPendiente() {
@@ -9618,34 +9427,6 @@ public class SQL {
         Object dtDatos[][] = getDatos(colName, origen, "select id, efectivo, targeta, cheque, nc, total, anulada, credito, descuentos from " + origen + " ", " ");
 
         return dtDatos;
-    }
-
-    public String gastosEgresos(String ini, String usuario) {
-        String colName[] = {
-            "SumaDetotal"};
-        String origen = " gastosEgresos";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select SumaDetotal from " + origen + " where " + ini + " AND usuario='" + usuario + "'", " where " + ini + " AND usuario='" + usuario + "'");
-
-        try {
-            return dtDatos[0][0].toString();
-        } catch (Exception e) {
-            return "0";
-        }
-    }
-
-    public String gastosEgresosCont(String ini, String usuario) {
-        String colName[] = {
-            "contGastos"};
-        String origen = " gastosEgresos";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select contGastos from " + origen + " where " + ini + " AND usuario='" + usuario + "'", " where " + ini + " AND usuario='" + usuario + "'");
-
-        try {
-            return dtDatos[0][0].toString();
-        } catch (Exception e) {
-            return "0";
-        }
     }
 
     public DefaultTableModel getPendientesCuadre(String factura) {

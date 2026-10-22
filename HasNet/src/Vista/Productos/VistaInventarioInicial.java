@@ -851,7 +851,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
 
         ResultadoImportacionInventarioInicial resultado;
         try {
-            resultado = new ServicioImportacionInventarioInicial().importar(archivo, new HashSet<>(productosCargados.keySet()),
+            resultado = new ServicioImportacionInventarioInicial(instancias.getConfiguraciones().isProductosDetallados()).importar(archivo, new HashSet<>(productosCargados.keySet()),
                     identificadoresCargados());
         } catch (IOException | BiffException ex) {
             Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
@@ -1034,7 +1034,9 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
     }//GEN-LAST:event_btnQuitarProductoKeyReleased
 
     private void btnDescargarPlantillaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescargarPlantillaActionPerformed
-        DescargadorPlantillas.descargar(this, DescargadorPlantillas.CARGAR_INVENTARIO);
+        String plantilla = instancias.getConfiguraciones().isProductosDetallados()
+                ? DescargadorPlantillas.CARGAR_INVENTARIO_DETALLADO : DescargadorPlantillas.CARGAR_INVENTARIO;
+        DescargadorPlantillas.descargar(this, plantilla);
     }//GEN-LAST:event_btnDescargarPlantillaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

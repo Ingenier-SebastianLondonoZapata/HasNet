@@ -9,14 +9,19 @@ import Utilidades.Constantes;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
+import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 
 public class squemaFacturacion extends javax.swing.JPanel {
 
     Instancias instancias = Instancias.getInstancias();
+    private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
     private final String simboloMoneda = instancias.getSimbolo();
 
     public squemaFacturacion() {
@@ -229,9 +234,14 @@ public class squemaFacturacion extends javax.swing.JPanel {
             }
 
             String idSistema = obtenerValorTabla(tablaProductos, "ID_SISTEMA", i, esNotaCredito, esNotaDebito);
-            String costoProducto = instancias.getSql().obtenerUltimoCostoProducto(idSistema);
-            if (valorProducto.compareTo(big.getBigDecimal(costoProducto)) < 0 && !saltarPasosFactura) {
-                alertas_validacion.add("El producto '" + descripcionProducto + "' se esta facturando por debajo del costo");
+            try {
+                BigDecimal costoProducto = servicioActualizacionPonderado.obtenerOCrearUltimoPonderado(idSistema, instancias.getUsuario()).getNuevoPonderado();
+                if (valorProducto.compareTo(costoProducto) < 0 && !saltarPasosFactura) {
+                    alertas_validacion.add("El producto '" + descripcionProducto + "' se esta facturando por debajo del costo");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(squemaFacturacion.class.getName()).log(Level.SEVERE, null, ex);
+                errores_validacion.add("No se pudo consultar el último ponderado del producto '" + descripcionProducto + "'");
             }
 
             if (instancias.isMensajeUtilidad() && !saltarPasosFactura) {

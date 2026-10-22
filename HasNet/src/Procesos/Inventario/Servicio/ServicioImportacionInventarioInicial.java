@@ -35,7 +35,12 @@ public class ServicioImportacionInventarioInicial {
 
     public static final String[] COLUMNAS = {"Codigo", "Cantidad", "CostoUnidad", "ImeiSerial", "Color", "Talla", "Lote", "FechaVence", "Temperatura"};
 
+    public static final String[] COLUMNAS_BASICAS = {"Codigo", "Cantidad", "CostoUnidad"};
+
     private static final int LONGITUD_IMEI = 15;
+
+    /** Con productos detallados se leen los campos de detalle; si no, solo código, cantidad y costo unidad. */
+    private final boolean productosDetallados;
 
     private final DaoProducto daoProducto = new DaoProducto();
     private final DaoDetalleProducto daoDetalleProducto = new DaoDetalleProducto();
@@ -46,6 +51,10 @@ public class ServicioImportacionInventarioInicial {
     private final Set<String> productosRechazados = new HashSet<>();
     private final Set<String> identificadoresVistos = new HashSet<>();
     private final Set<String> detallesVistos = new HashSet<>();
+
+    public ServicioImportacionInventarioInicial(boolean productosDetallados) {
+        this.productosDetallados = productosDetallados;
+    }
 
     public ResultadoImportacionInventarioInicial importar(File archivo, Set<String> idsYaCargados, Set<String> identificadoresYaCargados) throws IOException, BiffException {
         ResultadoImportacionInventarioInicial resultado = new ResultadoImportacionInventarioInicial();
@@ -83,7 +92,7 @@ public class ServicioImportacionInventarioInicial {
         for (String requerida : new String[]{"Codigo"}) {
             if (!columnas.containsKey(normalizar(requerida))) {
                 resultado.getErrores().add("El archivo no tiene la columna '" + requerida + "' en la primera fila. Columnas esperadas: "
-                        + String.join(", ", COLUMNAS));
+                        + String.join(", ", productosDetallados ? COLUMNAS : COLUMNAS_BASICAS));
             }
         }
 
@@ -175,7 +184,8 @@ public class ServicioImportacionInventarioInicial {
             return null;
         }
 
-        LineaImportacionInventarioInicial linea = new LineaImportacionInventarioInicial(producto, DetalleTipoProducto.obtenerTipoProducto(producto.getTipoProducto()));
+        LineaImportacionInventarioInicial linea = new LineaImportacionInventarioInicial(producto,
+                productosDetallados ? DetalleTipoProducto.obtenerTipoProducto(producto.getTipoProducto()) : "");
         lineasPorProducto.put(id, linea);
         return linea;
     }

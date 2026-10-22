@@ -1,5 +1,6 @@
 package Vista.Cartera;
 
+import Dao.Ventas.DaoPlanSepare;
 import Controlador.Alertas.ControladorAlertas;
 import Modelo.FacturacionMasiva.ResultadoFacturacion;
 import Procesos.Facturacion.Vista.SelectorComprobanteFacturacion;
@@ -2336,6 +2337,14 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         if (anulado) {
             ControladorAlertas.alert("Este abono se encuentra anulado");
             return;
+        }
+
+        DaoPlanSepare daoPlanSepare = new DaoPlanSepare();
+        for (Object[] facturaAbono : instancias.getSql().getFacturasAbonos(consecutivo)) {
+            if (daoPlanSepare.estaFacturado(facturaAbono[0].toString())) {
+                ControladorAlertas.alert("No se puede anular el abono porque el plan separe " + facturaAbono[0] + " ya está facturado");
+                return;
+            }
         }
 
         if (ControladorAlertas.option("¿Desea anular este abono?")) {

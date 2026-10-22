@@ -2,6 +2,7 @@ package Impresiones.ImpresionesCuadreCaja;
 
 import Impresiones.GeneradorReporteBase;
 import clases.Instancias;
+import clases.metodosGenerales;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,22 @@ public class GeneradorReporteCuadreCaja extends GeneradorReporteBase {
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());
         ejecutar("cuadreCaja" + tipo, parametros);
+    }
+
+    public void abrirCajaRegistradora() {
+        ejecutar("abrirCaja", new HashMap<String, Object>(), true);
+    }
+
+    public void verRecogidaParcial(String valor, String valorAntes) {
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("fecha", metodosGenerales.fecha());
+        parametros.put("urlImagen", logo());
+        parametros.put("usuario", instancias.getUsuario());
+        parametros.put("info", instancias.getInformacionEmpresa());
+        parametros.put("terminal", instancias.getTerminal());
+        parametros.put("valor", valor);
+        parametros.put("valorAntes", valorAntes);
+        ejecutar("recogidaParcial", parametros);
     }
 
     public void verBase(String condicion, String info) {

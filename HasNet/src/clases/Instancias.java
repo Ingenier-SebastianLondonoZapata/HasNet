@@ -1,5 +1,6 @@
 package clases;
 
+import Vista.Terceros.infEmpleados;
 import Vista.Cartera.VistaReportesCartera;
 import Vista.ReportesCarteras.VistaReporteAbonos;
 import Vista.ReportesCarteras.VistaReporteCuentasPendientes;

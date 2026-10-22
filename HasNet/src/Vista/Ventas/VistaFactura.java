@@ -7028,6 +7028,8 @@ public final class VistaFactura extends javax.swing.JPanel {
                 productosDisenados.add(nodo.getIdSistema());
             }
 
+            System.out.println("que numero carga: " + Utilidades.formatearCantidadVista(big.getBigDecimal(cantidadPlu).multiply(cantidad)));
+            
             modeloPro.addRow(new Object[]{
                 codigoProducto,
                 descripcion,
@@ -7393,7 +7395,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         BigDecimal descuento = validarDescuentoTabla(fila, subtotal, mostrarAlerta);
 
-        BigDecimal totalIva = BigDecimal.ZERO, totalImpoconsumo = BigDecimal.ZERO;
+        BigDecimal totalIva, totalImpoconsumo;
         BigDecimal porcentajeIva = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 7))).divide(BigDecimal.valueOf(100));
         BigDecimal porcentajeImpoconsumo = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 23))).divide(BigDecimal.valueOf(100));
         BigDecimal valorBaseProducto = BigDecimal.ONE;
@@ -7445,7 +7447,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         tblProductos.setValueAt(big.setMoneda(copago), fila, 17);
 
         ModeloListaPrecio listaPlu = nodo.getLista(Integer.parseInt(tblProductos.getValueAt(fila, 12).toString()));
-        tblProductos.setValueAt(listaPlu == null ? cantidad : cantidad.multiply(listaPlu.getCantidad()), fila, 13);
+        tblProductos.setValueAt(listaPlu == null ? cantidad : Utilidades.formatearCantidad(cantidad.multiply(listaPlu.getCantidad())), fila, 13);
 
         tblProductos.setValueAt(Utilidades.formatearCantidadVista(cantidad), fila, 3);
 
@@ -7466,7 +7468,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         System.out.println("utilidad producto: " + utilidad);
         tblProductos.setValueAt(big.setMoneda(utilidad), fila, 14);
 
-        // El IVA es uno solo (compra y venta): el costo base es el costo del producto
         compra = costo;
 
         utilidadMin = (compra.multiply(big.getBigDecimal(nodo.getMinima())).divide(new BigDecimal("100"))).add(compra).setScale(0, BigDecimal.ROUND_HALF_DOWN);
@@ -8044,7 +8045,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         if (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) || saltarPasosFactura) {
             devuelta = new VistaInformacionAdicional(instancias.getMenu(), true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
-                    instancias, ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()), pnlDatosAdicionales);
+                    instancias, ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()), pnlDatosAdicionales, txtDiasPlazo);
         }
 
         //MODULO DE DEVUELTA
@@ -8052,7 +8053,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             if (devuelta == null) {
                 if (txtFechaFactura.getText().equals(txtVencimiento.getText())) {
                     devuelta = new VistaInformacionAdicional(null, true, big.getMoneda(txtTotal.getText().replace("Total: ", "")),
-                            instancias, ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()), pnlDatosAdicionales);
+                            instancias, ID_CLIENTE_CARGADO, big.getMoneda(txtSubTotal.getText()), pnlDatosAdicionales, txtDiasPlazo);
                     devuelta.show();
                 } else {
                     funcionalidadVentas.reiniciarPagos(instancias);

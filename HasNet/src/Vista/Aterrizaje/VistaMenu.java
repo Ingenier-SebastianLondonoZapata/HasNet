@@ -115,7 +115,7 @@ import Vista.Productos.VistaDiseno;
 
 import formularios.terceros.infBodegas;
 import Vista.Terceros.vistaContactos;
-import formularios.terceros.infEmpleados;
+import Vista.Terceros.infEmpleados;
 import formularios.terceros.infRepClientes;
 import formularios.terceros.infRepEmpleados;
 
@@ -2864,7 +2864,7 @@ public class VistaMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_lbItem15ActionPerformed
 
     private void btnAbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirCajaActionPerformed
-        instancias.getReporte().abrirCajaRegistradora();
+        new Impresiones.ImpresionesCuadreCaja.GeneradorReporteCuadreCaja(instancias).abrirCajaRegistradora();
     }//GEN-LAST:event_btnAbrirCajaActionPerformed
 
     private void lbItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbItem16ActionPerformed
