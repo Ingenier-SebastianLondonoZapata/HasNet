@@ -1,7 +1,7 @@
 package Vista.InicioSesion;
 
 import Controlador.Alertas.ControladorAlertas;
-import Controlador.FacturacionElectronica.controladorFacturacionElectronica;
+import Controlador.FacturacionElectronica.ControladorFacturacionElectronica;
 import Controlador.InicioSesion.controladorInicioSesion;
 import Modelo.Maestra.modeloConfiguracion;
 import Utilidades.Constantes;
@@ -19,7 +19,7 @@ public class vistaInicioSesion extends javax.swing.JFrame {
     private final metodosGenerales metodos = new metodosGenerales();
     private static final Instancias instancias = Instancias.getInstancias();
     private final controladorInicioSesion controlador = new controladorInicioSesion();
-    private final controladorFacturacionElectronica controladorFacturacion = new controladorFacturacionElectronica();
+    private final ControladorFacturacionElectronica controladorFacturacion = new ControladorFacturacionElectronica();
     private final ControladorAlertas alertas = new ControladorAlertas();
     private Object[][] registroPago;
     private static boolean datosCorrectos = false;

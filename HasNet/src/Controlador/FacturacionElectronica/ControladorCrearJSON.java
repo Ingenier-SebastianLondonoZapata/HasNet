@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class controladorCrearJSON {
+public class ControladorCrearJSON {
 
      ModeloDetalleImpuestos detalleImpuestos = new ModeloDetalleImpuestos();
      ModeloDescuentos descuentos = new ModeloDescuentos();

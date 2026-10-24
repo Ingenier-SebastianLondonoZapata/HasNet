@@ -12,8 +12,6 @@ import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import clases.terceros.ndBodega;
-import formularios.terceros.buscBodegas;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.util.List;

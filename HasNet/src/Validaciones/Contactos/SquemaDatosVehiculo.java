@@ -1,4 +1,4 @@
-package Validaciones.Terceros;
+package Validaciones.Contactos;
 
 import Controlador.Alertas.ControladorAlertas;
 import Dao.Terceros.DaoVehiculos;
@@ -6,11 +6,11 @@ import Modelo.Terceros.ModeloDatosVehiculo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class squemaDatosVehiculo extends javax.swing.JPanel {
+public class SquemaDatosVehiculo extends javax.swing.JPanel {
 
     private final DaoVehiculos daoVehiculos = new DaoVehiculos();
 
-    public squemaDatosVehiculo() {
+    public SquemaDatosVehiculo() {
         initComponents();
     }
 

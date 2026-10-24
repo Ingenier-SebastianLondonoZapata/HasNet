@@ -6116,7 +6116,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
 
             instancias.getVistaAjusteInventario().consultarMaestros();
-            instancias.getPrestamos().consultarMaestros();
             instancias.getTrasladosInternos().consultarMaestros();
             instancias.getReporte().consultarMaestros();
 

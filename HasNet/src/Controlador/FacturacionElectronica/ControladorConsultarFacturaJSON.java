@@ -6,7 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class controladorConsultarFacturaJSON {
+public class ControladorConsultarFacturaJSON {
 
     public JSONObject crearJSON(ModeloConsultaFacturaElectronica datos) throws JSONException {
         JSONArray listadoFacturas = crearArrayFacturas(datos);

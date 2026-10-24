@@ -1,7 +1,7 @@
 package Consumidor.DocumentoSoporte;
 
 import Controlador.DocumentoSoporte.*;
-import Controlador.ConsumirServicio.controladorConsumirServicioREST;
+import Controlador.ConsumirServicio.ControladorConsumirServicioREST;
 import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
@@ -14,14 +14,14 @@ import formularios.esperandoRespuesta;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class consumidorDocumentoSoporte {
+public class ConsumidorDocumentoSoporte {
 
     Instancias instancias = Instancias.getInstancias();
     metodosGenerales metodos = new metodosGenerales();
 
     enviroments variablesEntorno = new enviroments();
     ControladorAlertas alertas = new ControladorAlertas();
-    controladorConsumirServicioREST consumirServicio = new controladorConsumirServicioREST();
+    ControladorConsumirServicioREST consumirServicio = new ControladorConsumirServicioREST();
     squemaDocumentosElectronicos validacionesDocumentosElectronicos = new squemaDocumentosElectronicos();
     controladorCrearJSON controladorCrearJSON = new controladorCrearJSON();
 

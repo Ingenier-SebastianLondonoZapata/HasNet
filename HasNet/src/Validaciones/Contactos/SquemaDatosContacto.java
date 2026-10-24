@@ -1,4 +1,4 @@
-package Validaciones.Terceros;
+package Validaciones.Contactos;
 
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoContacto;
@@ -7,9 +7,9 @@ import clases.metodosGenerales;
 import java.util.ArrayList;
 import java.util.List;
 
-public class squemaDatosContacto extends javax.swing.JPanel {
+public class SquemaDatosContacto extends javax.swing.JPanel {
 
-    public squemaDatosContacto() {
+    public SquemaDatosContacto() {
         initComponents();
     }
 
@@ -51,8 +51,6 @@ public class squemaDatosContacto extends javax.swing.JPanel {
 
         if (esEmpleado) {
             validarEmpleado(datos, errores);
-        } else if (estaVacio(datos.getTelefono())) {
-            errores.add("Debe ingresar el teléfono");
         }
 
         if (!estaVacio(datos.getEmail()) && !metodosGenerales.emailEsCorrecto(datos.getEmail())) {

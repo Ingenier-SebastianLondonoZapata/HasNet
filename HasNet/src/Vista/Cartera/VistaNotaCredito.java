@@ -4,7 +4,7 @@ import Procesos.Inventario.Dao.DaoInventario;
 
 import Dao.Productos.DaoProducto;
 
-import Consumidor.FacturacionElectronica.consumidorFacturacionElectronica;
+import Consumidor.FacturacionElectronica.ConsumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
@@ -59,7 +59,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
     private ControladorAlertas alertas = new ControladorAlertas();
     private squemaFacturacion squemaFacturacion = new squemaFacturacion();
     private squemaFacturacionElectronica squemaFacturacionElectronica = new squemaFacturacionElectronica();
-    private consumidorFacturacionElectronica consumidorFacturacionElectronica = new consumidorFacturacionElectronica();
+    private ConsumidorFacturacionElectronica consumidorFacturacionElectronica = new ConsumidorFacturacionElectronica();
 
     private DecimalFormat formatoDosDecimales = new DecimalFormat("#.00");
     private BigDecimal porcentajeReteFuente = BigDecimal.ZERO;

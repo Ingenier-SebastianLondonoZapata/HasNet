@@ -19,7 +19,6 @@ import clases.ndMaestra;
 import clases.ndUsuario;
 import clases.productos.*;
 import clases.recordatorios.*;
-import clases.terceros.*;
 import formularios.Agenda.*;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -40,7 +39,7 @@ public class SQL {
 
     public void obtenerConexion(String nombreBaseDatos, Boolean esDesdeMultiempresas) {
         nombreBaseDatosUtilizada = nombreBaseDatos;
-        mysql = MySql_connection.getMySql_connection(this.nombreBaseDatosUtilizada, esDesdeMultiempresas);
+        mysql = MySql_connection.getMySql_connection(nombreBaseDatosUtilizada, esDesdeMultiempresas);
     }
 
     public String getBaseDatos() {
@@ -1306,15 +1305,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getTrasladosPendientes() {
-        String colName[] = {
-            "Id", "origen", "destino", "fecha", "diasPlazo", "BodegaDestino", "BodegaOrigen"
-        };
-        String origen = "traslados1";
-        Object dtDatos[][] = getDatos(colName, origen, "select Id, origen, destino, fecha, diasPlazo, BodegaDestino, BodegaOrigen from " + origen + " where estado = 'PENDIENTE' and anulada = false ", " where estado = 'PENDIENTE' and anulada = false ");
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosFacturacionAutomatica(String condicion) {
         String colName[] = {
             "idFactura", "cliente", "totalGeneral", "descripcion", "fechaUltimoPago", "cantFacturados", "preparacion", "inicio", "hasta", "cantIncremento"};
@@ -1363,13 +1353,6 @@ public class SQL {
         String colName[] = {"idSistema"};
         String origen = " bdTerceros";
         Object dtDatos[][] = getDatos(colName, origen, "select idSistema FROM bdTerceros where nombre = '" + id + "'; ", " where nombre = '" + id + "' ");
-        return dtDatos[0][0].toString();
-    }
-
-    public String getBaseBodega(String id) {
-        String colName[] = {"base"};
-        String origen = " bdBodegas";
-        Object dtDatos[][] = getDatos(colName, origen, "select base FROM bdBodegas where abreviado = '" + id + "';", " where abreviado = '" + id + "' ");
         return dtDatos[0][0].toString();
     }
 
@@ -1599,26 +1582,6 @@ public class SQL {
         String origen = " lavadero";
         Object dtDatos[][] = getDatos(colName, origen, "select id, observaciones, total, fecha, fechaRealizado, cliente, estadoGeneral, codServicio, servicio, valor, "
                 + "liquidado, pago, empleado, placa, oServicio, tipoVehiculo, marca from lavadero where id = '" + producto + "' ", " where id = '" + producto + "' ");
-        return dtDatos;
-    }
-
-    public Object[][] getProductosTraslados(String producto) {
-        String colName[] = {
-            "Id", "origen", "destino", "fecha", "unidades", "valor", "diasPlazo", "estado", "producto", "cantidad", "lista", "imeil",
-            "observacion", "total", "lote", "idProd"};
-        String origen = " traslados";
-        Object dtDatos[][] = getDatos(colName, origen, "select Id, origen, destino, fecha, unidades, valor, diasPlazo, estado, producto, cantidad, lista, imeil, "
-                + "observacion, total, lote, idProd from traslados where Id = '" + producto + "' and estadoProd = 'PENDIENTE' ",
-                " where Id = '" + producto + "' and estadoProd = 'PENDIENTE' ");
-        return dtDatos;
-    }
-
-    public Object[][] getProductosProductosServiciosAdicionales(String id) {
-        String colName[] = {
-            "producto", "cantidad", "lista", "imeil", "observacion", "total", "lote", "idProd"};
-        String origen = " bdProductosServiciosAdiciones";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, cantidad, lista, imeil, observacion, total, lote, idProd "
-                + "from bdProductosServiciosAdiciones where traslado = '" + id + "' ", " where traslado = '" + id + "' ");
         return dtDatos;
     }
 
@@ -4571,9 +4534,9 @@ public class SQL {
         Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select ingreso, tipo, proveedor, nombre, "
                 + "fechaFactura,fechaVencimiento,valor, saldo, edadCartera, estadoVenc from ").append(origen).toString());
 
-        for (int i = 0; i < dtDatos.length; i++) {
-            String aux = dtDatos[i][1].toString();
-            dtDatos[i][1] = aux.replace("FACT-", "");
+        for (Object[] dtDato : dtDatos) {
+            String aux = dtDato[1].toString();
+            dtDato[1] = aux.replace("FACT-", "");
         }
 
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
@@ -4791,40 +4754,6 @@ public class SQL {
         String instruccion_sql = "update bdProductos set ponderado=? WHERE Codigo='" + producto + "' ;";
         ok = Actualizar_Registro(null, new Object[]{ponderado}, instruccion_sql);
 
-        return ok;
-    }
-
-//    public boolean actualizarInventario(String producto, String inv) {
-//        boolean ok = false;
-//        String instruccion_sql = "update bdProductos set inventario=? WHERE Codigo='" + producto + "' ;";
-//        ok = Actualizar_Registro(null, new Object[]{inv}, instruccion_sql);
-//        return ok;
-//    }
-    public boolean devolucionTraslado(String traslado, String idProd, String dev, String campo) {
-        boolean ok = false;
-        String instruccion_sql = "update bdTrasladosBodegasProd set estado=?, " + campo + "=? WHERE idProd = '" + idProd + "' and traslado = '" + traslado + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", "FINALIZADO", dev}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean devolucionTraslado1(String traslado, String prod, String dev, String campo) {
-        boolean ok = false;
-        String instruccion_sql = "update bdTrasladosBodegasProd set estado=?, " + campo + "=? WHERE producto = '" + prod + "' and traslado = '" + traslado + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", "FINALIZADO", dev}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean anulacionPrestamo(String traslado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdTrasladosBodegas set tipo=? WHERE Id = '" + traslado + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", "ANULADO"}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean devolucionTraslado(String ingreso, String tipo) {
-        boolean ok = false;
-        String instruccion_sql = "update bdTrasladosBodegas set devolucion=?, estado=?, tipo=? WHERE Id='" + ingreso + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", metodosGenerales.fecha(), "FINALIZADO", tipo}, null, instruccion_sql);
         return ok;
     }
 
@@ -6090,22 +6019,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarBodega(ndBodega nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdBodegas(codigo, nombre, direccion, telefono, usuario, ciudad, abreviado, filas, columnas, tipo)"
-                + " values(?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosBodega(nodo), null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarBodega(ndBodega nodo) {
-        boolean ok = false;
-        String instruccion_sql = "update bdBodegas set nombre=?, direccion=?, telefono=?, usuario=?, ciudad=?, abreviado=?, filas=?, columnas=?, tipo=? "
-                + "where codigo = '" + nodo.getCodigo() + "' ;";
-        ok = Actualizar_Registro(metodos.pasarDatosBodega(nodo), null, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarIngreso(ndIngreso nodo) {
         boolean ok = false;
         String instruccion_sql = "insert into bdIngreso(id, proveedor, fechaFactura, fechaVencimiento,"
@@ -6133,14 +6046,6 @@ public class SQL {
             "Id", "origen", "tipo", "fecha", "valor", "usuario"};
         String instruccion_sql = "select Id, origen, tipo, fecha, valor, usuario from bdTraslados where Id = '" + prod + "' ";
         Object dtDatos[][] = getDatos(colName, " bdTraslados ", instruccion_sql, " where Id = '" + prod + "' ");
-        return dtDatos;
-    }
-
-    public Object[][] getPrestamosMovimientos(String prod) {
-        String colName[] = {
-            "Id", "origen", "tipo", "fecha", "valor", "usuario"};
-        String instruccion_sql = "select Id, origen, tipo, fecha, valor, usuario from bdTrasladosBodegas where Id = '" + prod + "' ";
-        Object dtDatos[][] = getDatos(colName, " bdTrasladosBodegas ", instruccion_sql, " where Id = '" + prod + "' ");
         return dtDatos;
     }
 
@@ -6262,15 +6167,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getProductosPrestamos(String imei) {
-        String colName[] = {
-            "traslado", "imeil"};
-        String instruccion_sql = "select traslado, imeil from bdTrasladosBodegasProd where imeil LIKE '" + imei + "%' and estado = 'PENDIENTE' ";
-        Object dtDatos[][] = getDatos(colName, " bdTrasladosBodegasProd ", instruccion_sql, " where imeil LIKE '" + imei + "%' and estado = 'PENDIENTE' ");
-
-        return dtDatos;
-    }
-
     public Object[][] getProveedorIngreso(String prod, String bodega) {
         String colName[] = {
             "codigo", "nombre", "fechaFactura", "usuario"};
@@ -6388,39 +6284,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarTrasladoInterno(ndTrasladoBodega nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdTrasladosInternos(id, origen, destino, fecha, unidades, tipo, devolucion, usuario, terminal, "
-                + "diasPlazo, estado, hora, valor)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosTraslado(nodo), metodos.pasarValoresTraslado(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarTrasladoBodega(ndTrasladoBodega nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdTrasladosBodegas(id, origen, destino, fecha, unidades, tipo, devolucion, usuario, terminal, "
-                + "diasPlazo, estado, hora, valor)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?);";
-
-        ok = Agregar_Registro(metodos.pasarDatosTraslado(nodo), metodos.pasarValoresTraslado(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public ndTrasladoBodega getDatosTraslados(String cod) {
-        String instruccion_sql = "select id, origen, destino, fecha, unidades, valor, tipo, devolucion, usuario, terminal, diasPlazo,"
-                + "estado, hora from bdTrasladosBodegas where id = '" + cod + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"id", "origen", "destino", "fecha", "unidades", "valor", "tipo", "devolucion", "usuario", "terminal", "diasPlazo",
-            "estado", "hora"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        ndTrasladoBodega nodo = metodos.llenarTrasladoBodega(data);
-
-        return nodo;
-    }
-
     public boolean agregarProductosAjustes(ndProductoAjustes nodo) {
         boolean ok = false;
         String instruccion_sql = "insert into bdTrasladosProd(traslado, producto, cantidad, observacion, descripcion, plu, cantidad2, idProd, "
@@ -6429,34 +6292,7 @@ public class SQL {
         ok = Agregar_Registro(metodos.pasarDatosProductosAjustes(nodo), metodos.pasarValoresProductosAjustes(nodo), instruccion_sql);
         return ok;
     }
-
-    public boolean agregarTrasladoInterno(ndProdTraslBodega nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdTrasladosInternosProd(traslado, producto, imeil, observacion, lote, estado, facturados, "
-                + "devueltos, idProd, plu, cantidad, lista, total, cant2, iva)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosTraslado(nodo), metodos.pasarValoresTraslado(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarProductosAdicionales(ndProdTraslBodega nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdProductosServiciosAdiciones(traslado, producto, imeil, observacion, lote, estado, facturados, "
-                + "devueltos, idProd, plu, cantidad, lista, total, cant2, iva)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosTraslado(nodo), metodos.pasarValoresTraslado(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarTrasladoBodega(ndProdTraslBodega nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdTrasladosBodegasProd(traslado, producto, imeil, observacion, lote, estado, facturados, "
-                + "devueltos, idProd, plu, cantidad, lista, total, cant2, iva)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosTraslado(nodo), metodos.pasarValoresTraslado(nodo), instruccion_sql);
-        return ok;
-    }
-
+    
     public boolean agregarEgreso(ndEgreso nodo) {
         boolean ok = false;
         String instruccion_sql = "insert into bdEgreso(Id, nit, razon, telefono, direccion, cred1, cred2, deb1, deb2, fecha, documento,"
@@ -7858,19 +7694,6 @@ public class SQL {
         return data;
     }
 
-    public ndBodega getDatosBodega(String id) {
-
-        String instruccion_sql = "select codigo, nombre, direccion, telefono, usuario, ciudad, abreviado, filas, columnas, tipo, base from bdBodegas where codigo = '" + id + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"codigo", "nombre", "direccion", "telefono", "usuario", "ciudad", "abreviado", "filas", "columnas", "tipo", "base"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        ndBodega nodo = metodos.llenarBodega(data);
-
-        return nodo;
-    }
-
     public Object[] getHistProd(String id) {
 
         String instruccion_sql = "select fisico from historico where Codigo = '" + id + "'; ";
@@ -7883,27 +7706,6 @@ public class SQL {
         return data;
     }
 
-//    public Object[] getCostoProd(String id) {
-//
-//        String instruccion_sql = "select costoUnd from inventario where Codigo = '" + id + "'; ";
-//        //columnas de la tabla que se
-//        String[] colName = {"costoUnd"};
-//        boolean[] cadena = {true};
-//        //se realiza la consulta
-//        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-//
-//        return data;
-//    }
-//    public Object[] getCostoProd(String id) {
-//        String instruccion_sql = "select ponderado from bdProductos where Codigo = '" + id + "'; ";
-//        //columnas de la tabla que se
-//        String[] colName = {"ponderado"};
-//        boolean[] cadena = {true};
-//        //se realiza la consulta
-//        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-//
-//        return data;
-//    }
     public Object[][] getNotasEnfermeria(String id) {
         String colName[] = {
             "Id", "fecha"
@@ -8757,23 +8559,6 @@ public class SQL {
         return datos;
     }
 
-    public DefaultTableModel getRegistrosBodegas(String consulta) {
-        String columNames[] = {
-            "Codigo", "Nombre"
-        };
-        String colName[] = {
-            "codigo", "nombre"
-        };
-        String origen = " bdBodegas " + consulta;
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select codigo, nombre from ").append(origen).toString());
-        DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        return datos;
-    }
-
     public DefaultTableModel getRegistrosMascotas() {
         String columNames[] = {
             "Codigo", "Nombre"
@@ -9454,17 +9239,7 @@ public class SQL {
         };
         return datos;
     }
-
-    public Object[][] getRegistrosTrasladosBuscador(String cliente) {
-        String colName[] = {
-            "Id", "fecha", "usuario"
-        };
-        String origen = "bdTrasladosBodegas";
-        Object dtDatos[][] = getDatos(colName, origen, "select Id, fecha, usuario from " + origen + " where destino LIKE  '" + cliente + "%'", " where destino LIKE '" + cliente + "%'");
-
-        return dtDatos;
-    }
-
+    
     public Object[][] getRegistrosOServicioBuscador(String cliente) {
         String colName[] = {
             "id", "fechaFactura", "usuario"
@@ -9503,24 +9278,6 @@ public class SQL {
         String origen = " bdCongelada";
         Object dtDatos[][] = getDatos(colName, origen, "select producto, cantidad, descripcion, plu, cant2, lista, descuento, preparacion, "
                 + "conseMesa, notaAnulacion, rango, porcDescuento, imei, idProd, impoconsumo, porcImpo from bdCongelada where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
-
-        return dtDatos;
-    }
-
-//    public Object[][] getProductosPreventaGeneral() {
-//        String colName[] = {
-//            "producto", "cantidad", "Descripcion", "plu", "cant2", "lista", "descuento"};
-//        String origen = " conPreventa";
-//        Object dtDatos[][] = getDatos(colName, origen, "select producto,cantidad,Descripcion,plu,cant2,lista,descuento from conPreventa ", " ");
-//
-//        return dtDatos;
-//    }
-    public Object[][] getTodasBodegas() {
-        String colName[] = {
-            "codigo", "abreviado"
-        };
-        String origen = "bdBodegas";
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, abreviado from " + origen + " where tipo = 'INTERNA' ", " where tipo = 'INTERNA' ");
 
         return dtDatos;
     }

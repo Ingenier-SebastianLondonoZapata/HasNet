@@ -7,7 +7,7 @@ import Vista.Restaurante.VistaCambiarMesa;
 import Vista.Restaurante.PanelGruposCompacto;
 import Vista.Restaurante.VistaImpresionComanda;
 import Vista.Restaurante.VistaGruposProductos;
-import Consumidor.FacturacionElectronica.consumidorFacturacionElectronica;
+import Consumidor.FacturacionElectronica.ConsumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.DetalleTipoProducto;
 import Enums.EstadosTipoDocumento;
@@ -137,7 +137,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private boolean DESCUENTO_GENERAL_CARGADO = false;
     private final squemaFacturacion squemaFacturacion = new squemaFacturacion();
     private final squemaFacturacionElectronica squemaFacturacionElectronica = new squemaFacturacionElectronica();
-    private final consumidorFacturacionElectronica consumidorFacturacionElectronica = new consumidorFacturacionElectronica();
+    private final ConsumidorFacturacionElectronica consumidorFacturacionElectronica = new ConsumidorFacturacionElectronica();
     private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
     private final FuncionalidadVentas funcionalidadVentas = new FuncionalidadVentas();
     private final DocumentosElectronicos documentosElectronicos = new DocumentosElectronicos();

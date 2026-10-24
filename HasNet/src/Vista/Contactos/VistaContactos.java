@@ -1,10 +1,14 @@
-package Vista.Terceros;
+package Vista.Contactos;
 
+import Consumidor.Contactos.ConsumidorContactos;
 import Controlador.Alertas.ControladorAlertas;
 
 import Dao.Terceros.DaoContactos;
 import Enums.TipoContacto;
+import Enums.enumTipoIdentificacion;
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
+import Modelo.Terceros.ContactoApiDTO;
+import Modelo.Terceros.ModeloConsultaContacto;
 import Modelo.Terceros.ModeloDatosVehiculo;
 import Utilidades.Limpiadores;
 import clases.ImagePreviewPanel;
@@ -12,7 +16,7 @@ import clases.Instancias;
 import clases.Medico.ndConvenio;
 import clases.Medico.ndEpsPrecargados;
 import Modelo.Terceros.ModeloContacto;
-import Validaciones.Terceros.squemaDatosContacto;
+import Validaciones.Contactos.SquemaDatosContacto;
 import clases.big;
 import clases.metodosGenerales;
 import formularios.Medico.buscConvenio;
@@ -51,8 +55,9 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     private static final String TEXTO_ACTIVAR = "ACTIVAR";
     private static final String TEXTO_INACTIVAR = "INACTIVAR";
 
-    private squemaDatosContacto squemaDatosContacto = new squemaDatosContacto();
+    private SquemaDatosContacto squemaDatosContacto = new SquemaDatosContacto();
     private final DaoContactos daoTerceros = new DaoContactos();
+    private final ConsumidorContactos consumidorContactos = new ConsumidorContactos();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
@@ -83,6 +88,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
 
+        btnConsultarInformacionDesdeApi.setVisible(false);
         pnlInvisible.setVisible(false);
 
         configurarSegunModo();
@@ -250,8 +256,6 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         cmbTipoIdentificacion = new javax.swing.JComboBox();
         lbNit = new javax.swing.JLabel();
         txtIdentificacion = new javax.swing.JTextField();
-        txtDigito = new javax.swing.JTextField();
-        lbNit3 = new javax.swing.JLabel();
         lbRazon = new javax.swing.JLabel();
         txtNombreCompleto = new javax.swing.JTextField();
         lbPNombre = new javax.swing.JLabel();
@@ -300,6 +304,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnAgregarVehiculo = new javax.swing.JButton();
         btnModificarVehiculo = new javax.swing.JButton();
         btnEliminarVehiculo = new javax.swing.JButton();
+        btnConsultarInformacionDesdeApi = new javax.swing.JButton();
         pnlDatosVentasYOtros = new javax.swing.JPanel();
         pnlDatosVentas = new javax.swing.JPanel();
         lbEmail8 = new javax.swing.JLabel();
@@ -342,6 +347,12 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         txtCelular = new javax.swing.JTextField();
         lbDireccion1 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblBodegasContactos = new javax.swing.JTable();
+        btnAgregarBodega = new javax.swing.JButton();
+        btnModificarBodega = new javax.swing.JButton();
+        btnCambiarEstadoBodega = new javax.swing.JButton();
         pnlDatosMedicos = new javax.swing.JPanel();
         pnlDatos = new javax.swing.JPanel();
         lbCiudad23 = new javax.swing.JLabel();
@@ -563,6 +574,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         });
 
         txtIdentificacion.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtIdentificacion.setToolTipText("Digite la identificación con el dígito de verificación cuando aplique, por ejemplo 900123456-7");
         txtIdentificacion.setName("CC/NIT"); // NOI18N
         txtIdentificacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -577,21 +589,6 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 txtIdentificacionKeyTyped(evt);
             }
         });
-
-        txtDigito.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtDigito.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtDigito.setName("CC/NIT"); // NOI18N
-        txtDigito.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtDigitoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtDigitoKeyTyped(evt);
-            }
-        });
-
-        lbNit3.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbNit3.setText("-");
 
         lbRazon.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         lbRazon.setText("Razón social: ");
@@ -748,18 +745,14 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lbNit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(5, 5, 5)
-                        .addComponent(txtIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(3, 3, 3)
-                        .addComponent(lbNit3)
-                        .addGap(3, 3, 3)
-                        .addComponent(txtDigito, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlDatosObligatoriosLayout.createSequentialGroup()
                         .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cmbCodigoPostal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtpApellido)
-                            .addComponent(cmbDepartamento, 0, 167, Short.MAX_VALUE)
-                            .addComponent(txtpNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(txtpApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbDepartamento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtpNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
@@ -770,8 +763,8 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(cmbCiudad, javax.swing.GroupLayout.Alignment.TRAILING, 0, 167, Short.MAX_VALUE)
-                                        .addComponent(txtsApellido))
+                                        .addComponent(cmbCiudad, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtsApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
                                 .addComponent(lbSNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -787,9 +780,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtIdentificacion, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtDigito, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbNit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbNit3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(cmbTipoIdentificacion, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                         .addComponent(lbTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)))
@@ -968,7 +959,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                         .addGap(5, 5, 5)
                         .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtSalario)
-                            .addComponent(dtFechaRetiro, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                            .addComponent(dtFechaRetiro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtArl)
                             .addComponent(cmbUsuarios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -1050,7 +1041,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnAgregarVehiculo.setBackground(new java.awt.Color(46, 204, 113));
         btnAgregarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnAgregarVehiculo.setText("Agregar Vehiculo");
+        btnAgregarVehiculo.setText("Agregar vehiculo");
         btnAgregarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAgregarVehiculo.setEnabled(false);
         btnAgregarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1063,7 +1054,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnModificarVehiculo.setBackground(new java.awt.Color(93, 173, 226));
         btnModificarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnModificarVehiculo.setText("Modificar Vehiculo");
+        btnModificarVehiculo.setText("Modificar vehiculo");
         btnModificarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnModificarVehiculo.setEnabled(false);
         btnModificarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1076,7 +1067,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnEliminarVehiculo.setBackground(new java.awt.Color(241, 148, 138));
         btnEliminarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnEliminarVehiculo.setText("Eliminar Vehiculo");
+        btnEliminarVehiculo.setText("Eliminar vehiculo");
         btnEliminarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEliminarVehiculo.setEnabled(false);
         btnEliminarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1117,6 +1108,13 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        btnConsultarInformacionDesdeApi.setText("Consultar información");
+        btnConsultarInformacionDesdeApi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarInformacionDesdeApiActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlDatosContactoLayout = new javax.swing.GroupLayout(pnlDatosContacto);
         pnlDatosContacto.setLayout(pnlDatosContactoLayout);
         pnlDatosContactoLayout.setHorizontalGroup(
@@ -1129,7 +1127,9 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                     .addGroup(pnlDatosContactoLayout.createSequentialGroup()
                         .addComponent(lbCiudad4, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbTipoContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmbTipoContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnConsultarInformacionDesdeApi, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlDatosVehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(15, 15, 15))
         );
@@ -1137,10 +1137,14 @@ public class VistaContactos extends javax.swing.JInternalFrame {
             pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDatosContactoLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbCiudad4, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                    .addComponent(cmbTipoContacto))
-                .addGap(10, 10, 10)
+                .addGroup(pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosContactoLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(btnConsultarInformacionDesdeApi, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cmbTipoContacto, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lbCiudad4, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlDatosObligatorios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlDatosEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1222,7 +1226,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         txtNota.setColumns(20);
         txtNota.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtNota.setLineWrap(true);
-        txtNota.setRows(4);
+        txtNota.setRows(3);
         txtNota.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtNotaKeyReleased(evt);
@@ -1277,7 +1281,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbNota, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(10, 10, 10))
         );
 
         pnlOtrosDatos.setBackground(new java.awt.Color(255, 255, 255));
@@ -1591,6 +1595,88 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bodegas relacionadas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
+
+        tblBodegasContactos.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblBodegasContactos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Codigo", "Nombre bodega"
+            }
+        ));
+        jScrollPane4.setViewportView(tblBodegasContactos);
+
+        btnAgregarBodega.setBackground(new java.awt.Color(46, 204, 113));
+        btnAgregarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnAgregarBodega.setText("Agregar bodega");
+        btnAgregarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarBodega.setEnabled(false);
+        btnAgregarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnAgregarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnAgregarBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarBodegaActionPerformed(evt);
+            }
+        });
+
+        btnModificarBodega.setBackground(new java.awt.Color(93, 173, 226));
+        btnModificarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnModificarBodega.setText("Modificar bodega");
+        btnModificarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarBodega.setEnabled(false);
+        btnModificarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnModificarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnModificarBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarBodegaActionPerformed(evt);
+            }
+        });
+
+        btnCambiarEstadoBodega.setBackground(new java.awt.Color(241, 148, 138));
+        btnCambiarEstadoBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnCambiarEstadoBodega.setText("Inactivar bodega");
+        btnCambiarEstadoBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCambiarEstadoBodega.setEnabled(false);
+        btnCambiarEstadoBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnCambiarEstadoBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnCambiarEstadoBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCambiarEstadoBodegaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout pnlDatosVentasYOtrosLayout = new javax.swing.GroupLayout(pnlDatosVentasYOtros);
         pnlDatosVentasYOtros.setLayout(pnlDatosVentasYOtrosLayout);
         pnlDatosVentasYOtrosLayout.setHorizontalGroup(
@@ -1599,7 +1685,8 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(pnlDatosVentasYOtrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlDatosVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlOtrosDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlOtrosDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlDatosVentasYOtrosLayout.setVerticalGroup(
@@ -1609,7 +1696,9 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 .addComponent(pnlDatosVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlOtrosDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabDatosTerceros.addTab("Datos ventas y otros", pnlDatosVentasYOtros);
@@ -2094,7 +2183,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                         .addComponent(pnlInvisible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlFormularioLayout.createSequentialGroup()
                         .addGap(5, 5, 5)
-                        .addComponent(tabDatosTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 638, Short.MAX_VALUE)))
+                        .addComponent(tabDatosTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)))
                 .addGap(10, 10, 10))
         );
 
@@ -2127,15 +2216,17 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     private void txtIdentificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdentificacionKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (daoTerceros.consultarPorIdentificacion(txtIdentificacion.getText()) == null) {
-                txtDigito.requestFocus();
+                enfocarNombre();
             } else {
                 cargarTercero(txtIdentificacion.getText());
             }
         }
         if (evt.getKeyCode() == KeyEvent.VK_TAB) {
-            txtDigito.requestFocus();
+            enfocarNombre();
         }
+
         btnImagen.setEnabled(!txtIdentificacion.getText().isEmpty());
+        activarBotonConsultarInformacionApi();
     }//GEN-LAST:event_txtIdentificacionKeyReleased
 
     private void txtEmailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyReleased
@@ -2214,7 +2305,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
             ControladorAlertas.alertSuccess(etiquetaContacto() + " creado con éxito");
         }
 
-        String cliente = txtIdentificacion.getText();
+        String cliente = identificacionSinDigito();
         boolean esEmpleado = tipoSeleccionado() == TipoContacto.EMPLEADO;
         refrescarModulosRelacionados(contacto);
         limpiarFormulario();
@@ -2222,7 +2313,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         if (!esEmpleado) {
             procesarCitaPendiente(cliente);
         }
-        
+
         lbNit.requestFocus();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -2362,6 +2453,8 @@ public class VistaContactos extends javax.swing.JInternalFrame {
             txtNombreCompleto.setEditable(false);
             txtNombreCompleto.setText("");
         }
+
+        activarBotonConsultarInformacionApi();
     }//GEN-LAST:event_cmbTipoIdentificacionItemStateChanged
 
     private void txtsNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtsNombreActionPerformed
@@ -2637,16 +2730,6 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIdSistemaKeyTyped
 
-    private void txtDigitoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDigitoKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
-            txtTipoCliente.requestFocus();
-        }
-    }//GEN-LAST:event_txtDigitoKeyReleased
-
-    private void txtDigitoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDigitoKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDigitoKeyTyped
-
     private void lbNitKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbNitKeyReleased
         txtIdentificacion.requestFocus();
     }//GEN-LAST:event_lbNitKeyReleased
@@ -2724,6 +2807,22 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_cmbUsuariosFocusGained
 
+    private void btnConsultarInformacionDesdeApiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarInformacionDesdeApiActionPerformed
+        consultarContactoEnLaApi();
+    }//GEN-LAST:event_btnConsultarInformacionDesdeApiActionPerformed
+
+    private void btnAgregarBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarBodegaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAgregarBodegaActionPerformed
+
+    private void btnModificarBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarBodegaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnModificarBodegaActionPerformed
+
+    private void btnCambiarEstadoBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarEstadoBodegaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCambiarEstadoBodegaActionPerformed
+
     private void capturarVehiculo(int fila) {
         VistaDatosVehiculo modal = new VistaDatosVehiculo(instancias.getMenu(), true);
         modal.preparar(fila < 0 ? null : vehiculoDeLaFila(fila), placasRegistradas(fila), txtIdSistema.getText());
@@ -2794,6 +2893,70 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         ventanaTerceros(Id, txtIdentificacion, "");
     }
 
+    private void consultarContactoEnLaApi() {
+        String tipoIdentificacion = enumTipoIdentificacion.obtenerTipoIdentificacion(seleccion(cmbTipoIdentificacion));
+        String identificacion = identificacionCompleta();
+
+        if (tipoIdentificacion.isEmpty()) {
+            ControladorAlertas.alert("Debe seleccionar el tipo de identificación");
+            return;
+        }
+
+        if (identificacion.isEmpty()) {
+            ControladorAlertas.alert("Debe ingresar el número de identificación");
+            return;
+        }
+
+        if (contactoYaRegistrado()) {
+            return;
+        }
+
+        // el servicio recibe el número sin el dígito de verificación
+        ContactoApiDTO contacto = consumidorContactos.consultarContacto(
+                new ModeloConsultaContacto(tipoIdentificacion, identificacionSinDigito()));
+
+        if (contacto == null) {
+            return;
+        }
+
+        String tipoIdentificacionSeleccionado = seleccion(cmbTipoIdentificacion);
+        String tipoContactoSeleccionado = seleccion(cmbTipoContacto);
+
+        limpiarFormulario();
+        cmbTipoContacto.setSelectedItem(tipoContactoSeleccionado);
+        cmbTipoIdentificacion.setSelectedItem(tipoIdentificacionSeleccionado);
+        txtIdentificacion.setText(identificacion);
+
+        mostrarContactoDeLaApi(contacto);
+        ControladorAlertas.alertSuccess("Datos cargados, revíselos y guarde el " + etiquetaContacto().toLowerCase());
+    }
+
+    private boolean contactoYaRegistrado() {
+        ModeloContacto existente = daoTerceros.consultarPorIdentificacion(identificacionCompleta());
+
+        if (existente == null && !identificacionSinDigito().equals(identificacionCompleta())) {
+            existente = daoTerceros.consultarPorIdentificacion(identificacionSinDigito());
+        }
+
+        if (existente == null) {
+            return false;
+        }
+
+        ControladorAlertas.alert("El " + etiquetaContacto().toLowerCase() + " ya está registrado, se cargaron sus datos");
+        mostrarContacto(existente);
+        btnConsultarInformacionDesdeApi.setVisible(false);
+        return true;
+    }
+
+    private void mostrarContactoDeLaApi(ContactoApiDTO contacto) {
+        txtNombreCompleto.setText(contacto.getNombre());
+        txtEmail.setText(contacto.getEmail());
+
+        tabDatosTerceros.setSelectedIndex(0);
+        btnGuardar.setEnabled(true);
+        txtTelefono.requestFocus();
+    }
+
     private void mostrarContacto(ModeloContacto contacto) {
         TipoContacto tipoContacto = TipoContacto.desdeValor(contacto.getTipoTercero());
         boolean esEmpleado = tipoContacto == TipoContacto.EMPLEADO;
@@ -2807,9 +2970,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         cmbTipoContacto.setSelectedItem(tipoContacto.getValor());
 
         txtIdSistema.setText(contacto.getIdSistema());
-        String[] partesId = contacto.getId().split("-");
-        txtIdentificacion.setText(partesId[0]);
-        txtDigito.setText(partesId.length > 1 ? partesId[1] : "");
+        txtIdentificacion.setText(texto(contacto.getId()));
 
         mostrarTipoIdentificacion(contacto.getTipo());
 
@@ -2899,7 +3060,8 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnImprimir.setEnabled(true);
         btnGuardar.setEnabled(false);
         btnImagen.setEnabled(true);
-
+        btnConsultarInformacionDesdeApi.setVisible(false);
+        
         if (contacto.isActivo()) {
             btnEliminar.setText(TEXTO_ACTIVAR);
             btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png")));
@@ -2987,6 +3149,8 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         repaint();
 
         btnImagen.setEnabled(false);
+        btnConsultarInformacionDesdeApi.setVisible(false);
+
         cmbDepartamento.setSelectedItem(DEPARTAMENTO_PREDETERMINADO);
         dtFechaNacimiento.setCalendar(null);
         dtFechaIngreso.setCalendar(null);
@@ -3000,6 +3164,10 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnGuardar.setEnabled(true);
         btnEliminar.setText(TEXTO_INACTIVAR);
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
+
+        btnAgregarVehiculo.setEnabled(false);
+        btnModificarVehiculo.setEnabled(false);
+        btnEliminarVehiculo.setEnabled(false);
 
         txtIdSistema.setText(daoTerceros.obtenerSiguienteIdSistema());
         txtCupo.setText(this.simbolo + " 0");
@@ -3029,11 +3197,8 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         TipoContacto tipoContacto = tipoSeleccionado();
         boolean esEmpleado = tipoContacto == TipoContacto.EMPLEADO;
 
-        String identificacion = txtIdentificacion.getText().trim();
-        String digito = txtDigito.getText().trim();
-
         contacto.setIdSistema(txtIdSistema.getText().trim());
-        contacto.setId(identificacion.isEmpty() || digito.isEmpty() ? identificacion : identificacion + "-" + digito);
+        contacto.setId(identificacionCompleta());
         contacto.setTipo(seleccion(cmbTipoIdentificacion));
         contacto.setNombre(txtNombreCompleto.getText().trim());
         contacto.setCompleta(contacto.getNombre());
@@ -3168,7 +3333,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     }
 
     private boolean crearHistoriaClinica(ModeloContacto contacto) {
-        String historia = "HSTC-" + txtIdentificacion.getText();
+        String historia = "HSTC-" + identificacionSinDigito();
         String fecha = fechaActual();
         Object[] datosHistoria = {historia, contacto.getIdSistema(), fecha, "", fecha, fecha, "",
             "", "", "", "", "0&0&0&0", "", "", ""};
@@ -3243,6 +3408,30 @@ public class VistaContactos extends javax.swing.JInternalFrame {
             default:
                 return "Cliente";
         }
+    }
+
+    private void enfocarNombre() {
+        if (enumTipoIdentificacion.TipoIdentificacion.NIT.getValue().equalsIgnoreCase(seleccion(cmbTipoIdentificacion))) {
+            txtNombreCompleto.requestFocus();
+        } else {
+            txtpNombre.requestFocus();
+        }
+    }
+
+    private String identificacionCompleta() {
+        String identificacion = txtIdentificacion.getText().trim().replace(" ", "");
+
+        while (identificacion.endsWith("-")) {
+            identificacion = identificacion.substring(0, identificacion.length() - 1);
+        }
+
+        return identificacion;
+    }
+
+    private String identificacionSinDigito() {
+        String identificacion = identificacionCompleta();
+        int guion = identificacion.indexOf('-');
+        return guion < 0 ? identificacion : identificacion.substring(0, guion);
     }
 
     private String texto(String valor) {
@@ -3398,16 +3587,27 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnEliminarVehiculo.setEnabled(tipoAccion);
     }
 
+    private void activarBotonConsultarInformacionApi() {
+        if (btnGuardar.isEnabled() && cmbTipoIdentificacion.getSelectedIndex() > 0
+                && instancias.getConfiguraciones().isFacturaElectronica()) {
+            btnConsultarInformacionDesdeApi.setVisible(!txtIdentificacion.getText().isEmpty());
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnAgregarBodega;
     private javax.swing.JButton btnAgregarVehiculo;
     private javax.swing.JButton btnBuscTerceros;
     private javax.swing.JButton btnBuscTerceros1;
+    private javax.swing.JButton btnCambiarEstadoBodega;
+    private javax.swing.JButton btnConsultarInformacionDesdeApi;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnEliminarVehiculo;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnImagen;
     private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnModificarBodega;
     private javax.swing.JButton btnModificarVehiculo;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JCheckBox chkNoResponsableIVA;
@@ -3439,6 +3639,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private com.toedter.calendar.JMonthChooser jMonthChooser1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JRadioButton jRadioButton1;
@@ -3446,6 +3647,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lbApellido;
     private javax.swing.JLabel lbBarrio;
     private javax.swing.JLabel lbBarrio1;
@@ -3492,7 +3694,6 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbNit;
     private javax.swing.JLabel lbNit1;
     private javax.swing.JLabel lbNit2;
-    private javax.swing.JLabel lbNit3;
     private javax.swing.JLabel lbNota;
     private javax.swing.JLabel lbPNombre;
     private javax.swing.JLabel lbPlazo;
@@ -3522,6 +3723,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane scrFormulario;
     private javax.swing.JTabbedPane tabDatosTerceros;
     private javax.swing.JTable tblAutos;
+    private javax.swing.JTable tblBodegasContactos;
     private javax.swing.JTextField txtArl;
     private javax.swing.JTextField txtBarrio;
     private javax.swing.JTextField txtCargo;
@@ -3530,7 +3732,6 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtCodigoReferido;
     private javax.swing.JTextField txtConvenio;
     private javax.swing.JTextField txtCupo;
-    private javax.swing.JTextField txtDigito;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtEps;

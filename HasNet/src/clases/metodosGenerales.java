@@ -62,13 +62,9 @@ import clases.productos.ndIngreso;
 import clases.productos.ndIngresoEx;
 import clases.productos.ndInventarioInicial;
 import clases.productos.ndProceso;
-import clases.productos.ndProdTraslBodega;
 import clases.productos.ndProductoAjustes;
 import clases.productos.ndTraslado;
-import clases.productos.ndTrasladoBodega;
 import clases.recordatorios.ndRecordatorio;
-import clases.terceros.ndBodega;
-import clases.terceros.ndEmpleado;
 import Modelo.Terceros.ModeloContacto;
 import com.toedter.calendar.JDateChooser;
 import configuracion.msgIngresar;
@@ -3366,25 +3362,6 @@ public class metodosGenerales {
         return nodo;
     }
 
-    public ndBodega llenarBodega(Object[] vector) {
-
-        ndBodega nodo = new ndBodega();
-
-        nodo.setCodigo((String) vector[0]);
-        nodo.setNombre((String) vector[1]);
-        nodo.setDireccion((String) vector[2]);
-        nodo.setTelefono((String) vector[3]);
-        nodo.setUsuario((String) vector[4]);
-        nodo.setCiudad((String) vector[5]);
-        nodo.setAbreviado((String) vector[6]);
-        nodo.setFilas((String) vector[7]);
-        nodo.setColumnas((String) vector[8]);
-        nodo.setTipo((String) vector[9]);
-        nodo.setBase((String) vector[10]);
-
-        return nodo;
-    }
-
     public ndNc llenarNc(Object[] vector) {
 
         ndNc nodo = new ndNc();
@@ -3431,27 +3408,6 @@ public class metodosGenerales {
         return nodo;
     }
 
-    public ndTrasladoBodega llenarTrasladoBodega(Object[] vector) {
-
-        ndTrasladoBodega nodo = new ndTrasladoBodega();
-
-        nodo.setId((String) vector[0]);
-        nodo.setOrigen((String) vector[1]);
-        nodo.setDestino((String) vector[2]);
-        nodo.setFecha((String) vector[3]);
-        nodo.setUnidades(String.valueOf(vector[4]));
-        nodo.setValor(String.valueOf(vector[5]));
-        nodo.setTipo((String) vector[6]);
-        nodo.setDevolucion((String) vector[7]);
-        nodo.setUsuario((String) vector[8]);
-        nodo.setTerminal((String) vector[9]);
-        nodo.setDiasPlazo((String) vector[10]);
-        nodo.setEstado((String) vector[11]);
-        nodo.setHora((String) vector[12]);
-
-        return nodo;
-    }
-
     public ndProductoAjustes llenarAjustes(Object[] vector) {
         ndProductoAjustes nodo = new ndProductoAjustes();
         nodo.setTraslado((String) vector[0]);
@@ -3473,29 +3429,6 @@ public class metodosGenerales {
         nodo.setCosto(String.valueOf(vector[16]));
         nodo.setPorcImpo(Double.parseDouble(((vector[17]).toString()).replace(",", ".")));
         nodo.setImpoconsumo(String.valueOf(vector[18]));
-        return nodo;
-    }
-
-    public ndProdTraslBodega llenarProdTralBodega(Object[] vector) {
-
-        ndProdTraslBodega nodo = new ndProdTraslBodega();
-
-        nodo.setTraslado((String) vector[0]);
-        nodo.setProducto((String) vector[1]);
-        nodo.setCantidad(String.valueOf(vector[2]));
-        nodo.setLista(String.valueOf(vector[3]));
-        nodo.setImeil((String) vector[4]);
-        nodo.setObservaciones((String) vector[5]);
-        nodo.setTotal(String.valueOf(vector[6]));
-        nodo.setLote((String) vector[7]);
-        nodo.setEstado((String) vector[8]);
-        nodo.setFacturados((String) vector[9]);
-        nodo.setDevueltos((String) vector[10]);
-        nodo.setIdProd((String) vector[11]);
-        nodo.setCant2(String.valueOf(vector[12]));
-        nodo.setPlu(String.valueOf(vector[13]));
-        nodo.setIva(String.valueOf(vector[14]));
-
         return nodo;
     }
 
@@ -3854,14 +3787,6 @@ public class metodosGenerales {
         return vector;
     }
 
-    public Object[] pasarDatosBodega(ndBodega nodo) {
-
-        Object[] vector = {nodo.getCodigo(), nodo.getNombre(), nodo.getDireccion(), nodo.getTelefono(), nodo.getUsuario(), nodo.getCiudad(), nodo.getAbreviado(), nodo.getFilas(),
-            nodo.getColumnas(), nodo.getTipo()};
-
-        return vector;
-    }
-
     public Object[] pasarDatosIngresoEx(ndIngresoEx nodo) {
         Object[] vector = {nodo.getId(), nodo.getProveedor(), nodo.getFechaFactura(), nodo.getFechaVencimiento(), nodo.getTipo(),
             nodo.getConcepto(), nodo.isCredito(), nodo.getCxp(), nodo.getUsuario(), nodo.getTerminal(), nodo.getObservaciones(),
@@ -3923,22 +3848,6 @@ public class metodosGenerales {
         return vector;
     }
 
-    public Object[] pasarDatosTraslado(ndTrasladoBodega nodo) {
-        Object[] vector = {nodo.getId(), nodo.getOrigen(), nodo.getDestino(), nodo.getFecha(), nodo.getUnidades(), nodo.getTipo(), nodo.getDevolucion(),
-            nodo.getUsuario(), nodo.getTerminal(), nodo.getDiasPlazo(), nodo.getEstado(), nodo.getHora()};
-        return vector;
-    }
-
-    public Object[] pasarValoresTraslado(ndTrasladoBodega nodo) {
-        Object[] vector = {nodo.getValor()};
-        return vector;
-    }
-
-//    public Object[] pasarDatosTraslado(ndProdTrasl nodo) {
-//        Object[] vector = {nodo.getTraslado(), nodo.getProducto(), nodo.getCantidad(), nodo.getObservaciones(), nodo.getDescripcion(),
-//            nodo.getPlu(), nodo.getCantidad2(), nodo.getIdProd(), nodo.getImei(), nodo.getTalla(), nodo.getColor()};
-//        return vector;
-//    }
     public Object[] pasarDatosProductosAjustes(ndProductoAjustes nodo) {
         Object[] vector = {nodo.getTraslado(), nodo.getProducto(), nodo.getCantidad(), nodo.getObservaciones(), nodo.getDescripcion(),
             nodo.getPlu(), nodo.getCantidad2(), nodo.getIdProd(), nodo.getImei(), nodo.getTalla(), nodo.getColor(), nodo.getPorcIva(),
@@ -3948,21 +3857,6 @@ public class metodosGenerales {
 
     public Object[] pasarValoresProductosAjustes(ndProductoAjustes nodo) {
         Object[] vector = {nodo.getLista(), nodo.getTotal(), nodo.getSubtotal(), nodo.getIva(), nodo.getCosto(), nodo.getImpoconsumo()};
-        return vector;
-    }
-
-//    public Object[] pasarValoresTraslado(ndProdTrasl nodo) {
-//        Object[] vector = {nodo.getLista(), nodo.getTotal()};
-//        return vector;
-//    }
-    public Object[] pasarDatosTraslado(ndProdTraslBodega nodo) {
-        Object[] vector = {nodo.getTraslado(), nodo.getProducto(), nodo.getImeil(), nodo.getObservaciones(), nodo.getLote(),
-            nodo.getEstado(), nodo.getFacturados(), nodo.getDevueltos(), nodo.getIdProd(), nodo.getPlu()};
-        return vector;
-    }
-
-    public Object[] pasarValoresTraslado(ndProdTraslBodega nodo) {
-        Object[] vector = {nodo.getCantidad(), nodo.getLista(), nodo.getTotal(), nodo.getCant2(), nodo.getIva()};
         return vector;
     }
 
@@ -3986,63 +3880,6 @@ public class metodosGenerales {
 
     public Object[] pasarValoresEgreso(ModeloDetalleEgreso nodo) {
         Object[] vector = {nodo.getValor(), nodo.getSubtotal(), nodo.getIva()};
-        return vector;
-    }
-
-    public ndEmpleado llenarEmpleado(Object[] vector) {
-
-        ndEmpleado nodo = new ndEmpleado();
-
-        nodo.setId((String) vector[0]);
-        nodo.setNombre((String) vector[1]);
-        nodo.setTelefono((String) vector[2]);
-        nodo.setCelular((String) vector[3]);
-        nodo.setDireccion((String) vector[4]);
-        nodo.setCiudad((String) vector[5]);
-        nodo.setEmail((String) vector[6]);
-        nodo.setDepartamento((String) vector[7]);
-        nodo.setFecha((String) vector[8]);
-        nodo.setSalario(String.valueOf(vector[9]));
-        nodo.setCargo((String) vector[10]);
-        nodo.setUsuario((String) vector[11]);
-
-        try {
-            nodo.setActivo((boolean) vector[12]);
-        } catch (NullPointerException e) {
-            nodo.setActivo(false);
-        }
-
-        nodo.setIng((String) vector[13]);
-        nodo.setRet((String) vector[14]);
-
-        try {
-            nodo.setAgendar((boolean) vector[15]);
-        } catch (NullPointerException e) {
-            nodo.setAgendar(false);
-        }
-
-        nodo.setUsuarioAsociado((String) vector[16]);
-        nodo.setEps((String) vector[17]);
-        nodo.setArl((String) vector[18]);
-        nodo.setCcf((String) vector[19]);
-        nodo.setFechaCreacion((String) vector[20]);
-        return nodo;
-    }
-
-    public Object[] pasarDatosEmpleado(ndEmpleado nodo) {
-
-        Object[] vector = {nodo.getId(), nodo.getNombre(), nodo.getTelefono(), nodo.getCelular(), nodo.getDireccion(), nodo.getCiudad(), nodo.getEmail(),
-            nodo.getDepartamento(), nodo.getFecha(), nodo.getCargo(), nodo.getUsuario(), nodo.isActivo(), nodo.getIng(), nodo.getRet(), nodo.isAgendar(),
-            nodo.getUsuarioAsociado(), nodo.getEps(), nodo.getArl(), nodo.getCcf(), nodo.getFechaCreacion()
-        };
-
-        return vector;
-    }
-
-    public Object[] pasarValoresEmpleado(ndEmpleado nodo) {
-
-        Object[] vector = {nodo.getSalario()};
-
         return vector;
     }
 

@@ -2,7 +2,7 @@ package Vista.Cartera;
 
 import Dao.Productos.DaoProducto;
 
-import Consumidor.FacturacionElectronica.consumidorFacturacionElectronica;
+import Consumidor.FacturacionElectronica.ConsumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
 import Enums.enumBodegas;
@@ -45,7 +45,6 @@ import formularios.Ventas.dlgTipoDescuento;
 import Vista.Productos.VistaBuscadorProductos;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import Vista.Productos.VistaSeleccionarPLU;
-import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
 import java.awt.Color;
 import java.awt.Component;
@@ -86,7 +85,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     private ControladorAlertas alertas = new ControladorAlertas();
     private squemaFacturacion squemaFacturacion = new squemaFacturacion();
     private squemaFacturacionElectronica squemaFacturacionElectronica = new squemaFacturacionElectronica();
-    private consumidorFacturacionElectronica consumidorFacturacionElectronica = new consumidorFacturacionElectronica();
+    private ConsumidorFacturacionElectronica consumidorFacturacionElectronica = new ConsumidorFacturacionElectronica();
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
@@ -304,8 +303,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         txtCant = new javax.swing.JTextField();
         txtPorcentaje = new javax.swing.JTextField();
         lbVendedor1 = new javax.swing.JLabel();
-        lbBodega = new javax.swing.JLabel();
-        txtBodega = new javax.swing.JTextField();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
@@ -1438,53 +1435,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         lbVendedor1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         lbVendedor1.setText("Desc: %");
 
-        lbBodega.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbBodega.setText("Bodega:");
-        lbBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                lbBodegaKeyReleased(evt);
-            }
-        });
-
-        txtBodega.setBackground(new java.awt.Color(255, 204, 204));
-        txtBodega.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        txtBodega.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtBodega.setText("123-22");
-        txtBodega.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtBodega.setName("combo"); // NOI18N
-        txtBodega.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseEntered(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                txtBodegaMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                txtBodegaMouseReleased(evt);
-            }
-        });
-        txtBodega.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBodegaActionPerformed(evt);
-            }
-        });
-        txtBodega.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtBodegaFocusGained(evt);
-            }
-        });
-        txtBodega.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBodegaKeyReleased(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1500,17 +1450,13 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         .addComponent(lbProducto1)
                         .addGap(2, 2, 2)
                         .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
-                        .addComponent(lbBodega)
-                        .addGap(1, 1, 1)
-                        .addComponent(txtBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
+                        .addGap(15, 15, 15)
                         .addComponent(lbProducto)
                         .addGap(1, 1, 1)
                         .addComponent(txtCodProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
                         .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 591, Short.MAX_VALUE)
                         .addComponent(lbVendedor1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1524,23 +1470,20 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                         .addGap(5, 5, 5)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbProducto1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lbBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(txtCodProducto, javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(lbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtBodega, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addComponent(btnBusProd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(txtPorcentaje, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                 .addComponent(lbVendedor1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)))))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrProductos1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                    .addComponent(scrProductos1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                     .addComponent(scrInventario, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
                 .addGap(5, 5, 5))
         );
@@ -1579,7 +1522,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(scrFormulario, javax.swing.GroupLayout.DEFAULT_SIZE, 1126, Short.MAX_VALUE)
+                .addComponent(scrFormulario)
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
@@ -2447,106 +2390,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         metodos.soloNum(evt);
     }//GEN-LAST:event_txtPorcentajeKeyTyped
 
-    private void lbBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbBodegaKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lbBodegaKeyReleased
-
-    private void txtBodegaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseClicked
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (!ControladorAlertas.option("¿Limpiar nota debito?")) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblInventario.getRowCount() > 0) {
-                            modeloInventario.removeRow(0);
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseClicked
-
-    private void txtBodegaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseEntered
-
-    }//GEN-LAST:event_txtBodegaMouseEntered
-
-    private void txtBodegaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMousePressed
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (!ControladorAlertas.option("¿Limpiar nota debito?")) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblInventario.getRowCount() > 0) {
-                            modeloInventario.removeRow(0);
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMousePressed
-
-    private void txtBodegaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBodegaMouseReleased
-        if (txtBodega.isEnabled()) {
-            if (!txtBodega.getText().equals("")) {
-                if (tblProductos.getRowCount() > 0) {
-                    if (!ControladorAlertas.option("¿Limpiar nota debito?")) {
-                        txtCodProducto.requestFocus();
-                        return;
-                    } else {
-                        while (tblProductos.getRowCount() > 0) {
-                            modeloPro.removeRow(0);
-                        }
-                        while (tblInventario.getRowCount() > 0) {
-                            modeloInventario.removeRow(0);
-                        }
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaMouseReleased
-
-    private void txtBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBodegaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaActionPerformed
-
-    private void txtBodegaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBodegaFocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaFocusGained
-
-    private void txtBodegaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBodegaKeyPressed
-
-    private void txtBodegaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBodegaKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (txtBodega.getText().equals("")) {
-                ventanaBodegas("");
-            } else {
-                txtCodProducto.requestFocus();
-            }
-        } else {
-            txtBodega.setText("");
-            if (tblProductos.getRowCount() > 0) {
-                while (tblProductos.getRowCount() > 0) {
-                    modeloPro.removeRow(0);
-                }
-                while (tblInventario.getRowCount() > 0) {
-                    modeloInventario.removeRow(0);
-                }
-            }
-        }
-    }//GEN-LAST:event_txtBodegaKeyReleased
-
     private void tblComprobantesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblComprobantesMouseClicked
         for (int i = 0; i < tblComprobantes.getRowCount(); i++) {
             tblComprobantes.setValueAt(false, i, 2);
@@ -2934,16 +2777,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 txtCodProducto.requestFocus();
             }
         }
-    }
-
-    public void ventanaBodegas(String nit) {
-        buscBodegas buscar = new buscBodegas(instancias.getMenu(), true, "INTERNA");
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscBodegas(buscar);
-        instancias.setCampoActual(txtBodega);
-        txtBodega.requestFocus();
-        buscar.noEncontrado(nit);
-        buscar.show();
     }
 
     public void consultarMaestros() {
@@ -4656,7 +4489,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane12;
-    private javax.swing.JLabel lbBodega;
     private javax.swing.JLabel lbCar;
     private javax.swing.JLabel lbDiasPlazo;
     private javax.swing.JTextField lbFacturaNo;
@@ -4689,7 +4521,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     private javax.swing.JTable tblComprobantes;
     private javax.swing.JTable tblInventario;
     private javax.swing.JTable tblProductos;
-    private javax.swing.JTextField txtBodega;
     private javax.swing.JTextField txtCant;
     private javax.swing.JLabel txtCantProductos;
     private javax.swing.JLabel txtCantUnidades;

@@ -37,7 +37,7 @@ import Vista.Productos.ordenCompra;
 import Vista.Productos.ingreso;
 import Vista.Productos.VistaIngreso;
 import Vista.Tesoreria.VistaEgresos;
-import Vista.Terceros.VistaContactos;
+import Vista.Contactos.VistaContactos;
 import Vista.Restaurante.VistaMesas;
 import Vista.Documentos.VistaDocumentos;
 import Vista.Cartera.VistaNotaDebito;
@@ -55,7 +55,6 @@ import formularios.Parqueadero.*;
 import formularios.*;
 import configuracion.*;
 import formularios.Agenda.*;
-import formularios.Cartera.*;
 import formularios.Tesoreria.*;
 import formularios.Genericos.*;
 import formularios.Medico.*;
@@ -270,7 +269,6 @@ public class Instancias {
     private VistaContactos paciente;
     private infBodegas bodegas;
     private infBodegasClientes bodegasClientes;
-    private buscBodegas buscBodegas;
     private buscClientes busClientes;
     private buscEmpleados buscEmpleados;
 
@@ -310,7 +308,6 @@ public class Instancias {
     private buscMedidas buscMedidas;
     private buscMarcas buscMarcas;
     private buscTiposProductos buscTiposProductos;
-    private infPrestamos prestamos;
     private infTrasladosInternos trasladosInternos;
     private infRepProductos repProductos;
     private infRepIvasCompras repIvasCompras;
@@ -2265,14 +2262,6 @@ public class Instancias {
         this.mesas = mesas;
     }
 
-    public infPrestamos getPrestamos() {
-        return prestamos;
-    }
-
-    public void setPrestamos(infPrestamos prestamos) {
-        this.prestamos = prestamos;
-    }
-
     public buscServicios getBuscServicios() {
         return buscServicios;
     }
@@ -2531,14 +2520,6 @@ public class Instancias {
 
     public VistaNotaCredito getNc() {
         return nc;
-    }
-
-    public buscBodegas getBuscBodegas() {
-        return buscBodegas;
-    }
-
-    public void setBuscBodegas(buscBodegas buscBodegas) {
-        this.buscBodegas = buscBodegas;
     }
 
     public void setNc(VistaNotaCredito nc) {

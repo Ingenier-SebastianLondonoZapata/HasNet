@@ -709,10 +709,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                         this.dispose();
                         instancias.getOrdenCompra().cargarProductos(cantidad);
                         break;
-                    case "traslado":
-                        this.dispose();
-                        instancias.getPrestamos().cargarProductos(cantidad);
-                        break;
                     case "trasladoInterno":
                         this.dispose();
                         instancias.getTrasladosInternos().cargarProductos(cantidad);

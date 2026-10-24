@@ -3,7 +3,6 @@ package formularios.terceros;
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
-import clases.terceros.ndBodega;
 import Modelo.Terceros.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
@@ -15,7 +14,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.table.DefaultTableModel;
 
 public class infBodegasClientes extends javax.swing.JInternalFrame {
 

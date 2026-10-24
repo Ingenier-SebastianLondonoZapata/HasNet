@@ -1,6 +1,6 @@
 package Vista.Tesoreria;
 
-import Consumidor.DocumentoSoporte.consumidorDocumentoSoporte;
+import Consumidor.DocumentoSoporte.ConsumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
 import Impresiones.ImpresionesEgresos.GeneradorReporteEgreso;
 import Dao.Configuraciones.DaoResoluciones;
@@ -50,7 +50,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
     private final DaoEgresos daoEgresos = new DaoEgresos();
 
     private final DocumentosElectronicos documentosElectronicos = new DocumentosElectronicos();
-    private final consumidorDocumentoSoporte consumidorDocumentoSoporte = new consumidorDocumentoSoporte();
+    private final ConsumidorDocumentoSoporte consumidorDocumentoSoporte = new ConsumidorDocumentoSoporte();
     private final squemaDocumentoSoporte squemaDocumentoSoporte = new squemaDocumentoSoporte();
     private final ControladorAlertas alertas = new ControladorAlertas();
     private final squemaEgresos squemaEgresos = new squemaEgresos();

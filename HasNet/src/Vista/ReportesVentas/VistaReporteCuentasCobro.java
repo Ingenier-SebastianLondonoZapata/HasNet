@@ -7,12 +7,10 @@ import Enums.enumBodegas;
 import Dao.Productos.DaoProducto;
 
 import clases.Instancias;
-import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.terceros.buscBodegas;
 import formularios.terceros.buscClientes;
 import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;

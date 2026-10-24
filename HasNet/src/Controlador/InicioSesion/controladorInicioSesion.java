@@ -2,7 +2,7 @@ package Controlador.InicioSesion;
 
 import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
-import Controlador.FacturacionElectronica.controladorFacturacionElectronica;
+import Controlador.FacturacionElectronica.ControladorFacturacionElectronica;
 import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import Utilidades.Constantes;
@@ -19,7 +19,7 @@ public class controladorInicioSesion {
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
     Instancias instancias = Instancias.getInstancias();
     metodosGenerales metodos = new metodosGenerales();
-    controladorFacturacionElectronica controladorFacturacion = new controladorFacturacionElectronica();
+    ControladorFacturacionElectronica controladorFacturacion = new ControladorFacturacionElectronica();
     ControladorAlertas alertas = new ControladorAlertas();
 
     private static final String RUTA_FICHERO = "C:/info.txt";

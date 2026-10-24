@@ -1,6 +1,6 @@
 package Controlador.FacturacionElectronica;
 
-import Controlador.ConsumirServicio.controladorConsumirServicioREST;
+import Controlador.ConsumirServicio.ControladorConsumirServicioREST;
 import Controlador.Alertas.ControladorAlertas;
 import Modelo.FacturacionElectronica.Entrada.ModeloConsultaFacturaElectronica;
 import Modelo.FacturacionElectronica.Salida.ConsultaFacturaElectronicaDTO;
@@ -11,17 +11,17 @@ import enviroments.enviroments;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class controladorFacturacionElectronica {
+public class ControladorFacturacionElectronica {
 
     Instancias instancias = Instancias.getInstancias();
     metodosGenerales metodos = new metodosGenerales();
 
     enviroments variablesEntorno = new enviroments();
     ControladorAlertas alertas = new ControladorAlertas();
-    controladorConsumirServicioREST consumirServicio = new controladorConsumirServicioREST();
+    ControladorConsumirServicioREST consumirServicio = new ControladorConsumirServicioREST();
     squemaDocumentosElectronicos validacionesDocumentosElectronicos = new squemaDocumentosElectronicos();
-    controladorCrearJSON controladorCrearJSON = new controladorCrearJSON();
-    controladorConsultarFacturaJSON controladorConsultarFacturaJSON = new controladorConsultarFacturaJSON();
+    ControladorCrearJSON controladorCrearJSON = new ControladorCrearJSON();
+    ControladorConsultarFacturaJSON controladorConsultarFacturaJSON = new ControladorConsultarFacturaJSON();
 
     public boolean generarToken(String nitEmisor, String tipoDocumento) {
         Boolean datosCorrectosJson = false;

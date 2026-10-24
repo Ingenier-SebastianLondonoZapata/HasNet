@@ -114,7 +114,7 @@ import formularios.productos.infArmado;
 import Vista.Productos.VistaDiseno;
 
 import formularios.terceros.infBodegas;
-import Vista.Terceros.VistaContactos;
+import Vista.Contactos.VistaContactos;
 import formularios.terceros.infRepClientes;
 import formularios.terceros.infRepEmpleados;
 
@@ -131,7 +131,6 @@ import Vista.Productos.VistaAjusteInventario;
 import Vista.Productos.VistaInventarioInicial;
 import Vista.Productos.ordenCompra;
 import formularios.infUsuarios;
-import formularios.productos.infPrestamos;
 import formularios.productos.infReportesProductos;
 import formularios.productos.infTrasladosInternos;
 import formularios.recordatorios.infRecordatorios;
@@ -3615,19 +3614,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 interno13.show();
             }
             interno13.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            infPrestamos interno11 = new infPrestamos();
-            dkpFormularios.add(interno11);
-            instancias.setPrestamos(interno11);
-            if (instancias.getUsuarioLog().isTrasladosExternos()) {
-                interno11.show();
-            }
-            interno11.setMaximum(true);
-            interno11.setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }

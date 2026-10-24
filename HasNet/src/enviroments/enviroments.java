@@ -18,6 +18,7 @@ public class enviroments {
     public String urlFacturacion;
     public String urlConsultarFactura;
     public String urlDocumentoSoporte;
+    public String urlCreacionContactos;
 
     public void generarEnviroments(String nitEmisor, Instancias instancias) {        
         if (instancias.isPruebasFacturacionElectronica()) {
@@ -26,12 +27,14 @@ public class enviroments {
             urlRegistrarResolucion = "https://alfauat.dominadigital.com.co/api/RegistrarResoluciones/" + nitEmisor;
             urlConsultarFactura = "https://alfauat.dominadigital.com.co/api/ConsultarEstadoFactura";
             urlDocumentoSoporte = "https://alfauat.dominadigital.com.co/api/ReceptorSoporteAdquisicionJson/" + nitEmisor;
+            urlCreacionContactos = "https://alfauat.dominadigital.com.co/api/ConsultaInformacionDIAN/" + nitEmisor;
         } else {
             urlGenerarToken = "https://alfaprod.dominadigital.com.co/api/GenerarTokenJWT/" + nitEmisor;
             urlFacturacion = "https://alfaprod.dominadigital.com.co/api/ReceptorFacturaJson/" + nitEmisor;
             urlRegistrarResolucion = "https://alfaprod.dominadigital.com.co/api/RegistrarResoluciones/" + nitEmisor;
             urlConsultarFactura = "https://alfaprod.dominadigital.com.co/api/ConsultarEstadoFactura";
             urlDocumentoSoporte = "https://alfaprod.dominadigital.com.co/api/ReceptorSoporteAdquisicionJson/" + nitEmisor;
+            urlCreacionContactos = "https://alfaprod.dominadigital.com.co/api/ConsultaInformacionDIAN/" + nitEmisor;
         }
     }    
 }

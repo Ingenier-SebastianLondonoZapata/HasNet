@@ -16,7 +16,6 @@ import Modelo.Productos.ModeloProducto;
 import Vista.Productos.VistaInventarioInicial;
 import clases.big;
 import clases.metodosGenerales;
-import formularios.terceros.buscBodegas;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -1157,16 +1156,6 @@ public class infArmado extends javax.swing.JInternalFrame {
         }
 
         return enumBodegas.ID_BODEGA_PRINCIPAL;
-    }
-
-    public void ventanaBodegas(String nit) {
-        buscBodegas buscar = new buscBodegas(instancias.getMenu(), true, "INTERNA");
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscBodegas(buscar);
-        instancias.setCampoActual(txtBodega);
-        txtBodega.requestFocus();
-        buscar.noEncontrado(nit);
-        buscar.show();
     }
 
     public void ventanaProductos2() {

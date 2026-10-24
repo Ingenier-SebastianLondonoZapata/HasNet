@@ -309,9 +309,9 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             tblProductos.getColumnModel().getColumn(4).setMinWidth(80);
             tblProductos.getColumnModel().getColumn(4).setPreferredWidth(100);
             tblProductos.getColumnModel().getColumn(4).setMaxWidth(150);
-            tblProductos.getColumnModel().getColumn(5).setMinWidth(30);
-            tblProductos.getColumnModel().getColumn(5).setPreferredWidth(50);
-            tblProductos.getColumnModel().getColumn(5).setMaxWidth(70);
+            tblProductos.getColumnModel().getColumn(5).setMinWidth(0);
+            tblProductos.getColumnModel().getColumn(5).setPreferredWidth(0);
+            tblProductos.getColumnModel().getColumn(5).setMaxWidth(0);
             tblProductos.getColumnModel().getColumn(6).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(6).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(6).setMaxWidth(0);

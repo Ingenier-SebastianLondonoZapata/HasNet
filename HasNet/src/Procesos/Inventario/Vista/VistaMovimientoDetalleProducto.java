@@ -1166,9 +1166,6 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         if (tipoDocumento.equals("trasladoInterno")) {
             return instancias.getTrasladosInternos();
         }
-        if (tipoDocumento.equals("prestamos")) {
-            return instancias.getPrestamos();
-        }
         return null;
     }
 

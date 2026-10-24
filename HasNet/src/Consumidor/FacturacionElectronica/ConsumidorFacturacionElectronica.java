@@ -1,7 +1,7 @@
 package Consumidor.FacturacionElectronica;
 
 import Controlador.FacturacionElectronica.*;
-import Controlador.ConsumirServicio.controladorConsumirServicioREST;
+import Controlador.ConsumirServicio.ControladorConsumirServicioREST;
 import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Modelo.FacturacionElectronica.Entrada.ModeloConsultaFacturaElectronica;
@@ -17,17 +17,17 @@ import formularios.esperandoRespuesta;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class consumidorFacturacionElectronica {
+public class ConsumidorFacturacionElectronica {
 
     Instancias instancias = Instancias.getInstancias();
     metodosGenerales metodos = new metodosGenerales();
 
     enviroments variablesEntorno = new enviroments();
     ControladorAlertas alertas = new ControladorAlertas();
-    controladorConsumirServicioREST consumirServicio = new controladorConsumirServicioREST();
+    ControladorConsumirServicioREST consumirServicio = new ControladorConsumirServicioREST();
     squemaDocumentosElectronicos validacionesDocumentosElectronicos = new squemaDocumentosElectronicos();
-    controladorCrearJSON controladorCrearJSON = new controladorCrearJSON();
-    controladorConsultarFacturaJSON controladorConsultarFacturaJSON = new controladorConsultarFacturaJSON();
+    ControladorCrearJSON controladorCrearJSON = new ControladorCrearJSON();
+    ControladorConsultarFacturaJSON controladorConsultarFacturaJSON = new ControladorConsultarFacturaJSON();
 
     public boolean generarFacturacionElectronica(ModeloFacturacionElectronica modeloFacturacionElectronica, boolean esNotaDebito, boolean esNotaDebitoPos,
             boolean esNotaCredito, boolean esFacturacionPos) throws Exception {
@@ -52,7 +52,7 @@ public class consumidorFacturacionElectronica {
 
     public ConsultaFacturaElectronicaDTO consultarFacturaElectronica(String factura) throws Exception {
         ModeloConsultaFacturaElectronica modeloConsulta = crearModeloConsulta(factura);
-        controladorFacturacionElectronica controladorFacturacion = new controladorFacturacionElectronica();
+        ControladorFacturacionElectronica controladorFacturacion = new ControladorFacturacionElectronica();
         ConsultaFacturaElectronicaDTO datosFacturaElectronica = controladorFacturacion.consultarFacturaElectronica(modeloConsulta);
         return datosFacturaElectronica;
     }

@@ -1,6 +1,6 @@
 package Vista.Productos;
 
-import Consumidor.DocumentoSoporte.consumidorDocumentoSoporte;
+import Consumidor.DocumentoSoporte.ConsumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
@@ -87,7 +87,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
     private final DocumentosElectronicos documentosElectronicos = new DocumentosElectronicos();
-    private final consumidorDocumentoSoporte consumidorDocumentoSoporte = new consumidorDocumentoSoporte();
+    private final ConsumidorDocumentoSoporte consumidorDocumentoSoporte = new ConsumidorDocumentoSoporte();
     private final ControladorAlertas alertas = new ControladorAlertas();
     private final squemaCompras squemaCompras = new squemaCompras();
     private final squemaDocumentoSoporte squemaDocumentoSoporte = new squemaDocumentoSoporte();

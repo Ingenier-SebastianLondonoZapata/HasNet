@@ -11,7 +11,6 @@ import clases.Instancias;
 import clases.Veterinario.ndMascota;
 import clases.big;
 import clases.metodosGenerales;
-import clases.productos.ndProdTraslBodega;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Terceros.ModeloContacto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;

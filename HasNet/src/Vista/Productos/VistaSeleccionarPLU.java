@@ -187,10 +187,6 @@ public class VistaSeleccionarPLU extends javax.swing.JDialog {
                         instancias.getTrasladosInternos().setPlu(false);
                         instancias.getTrasladosInternos().cargarProducto(codigo, cantidadAIngresar, numeroPlu, "", "", "", "", "", "", "");
                         break;
-                    case "traslado":
-                        instancias.getPrestamos().setPlu(false);
-                        instancias.getPrestamos().cargarProducto(codigo, cantidadAIngresar, numeroPlu, "", "", "", "", "", "", "");
-                        break;
                     default:
                         instancias.setValorCampo((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
                         metodosGenerales.presionarEnter(instancias.getCampoActual());

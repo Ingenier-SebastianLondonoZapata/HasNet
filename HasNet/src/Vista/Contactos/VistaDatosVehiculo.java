@@ -1,9 +1,9 @@
-package Vista.Terceros;
+package Vista.Contactos;
 
 import Controlador.Alertas.ControladorAlertas;
 import Dao.Terceros.DaoVehiculos;
 import Modelo.Terceros.ModeloDatosVehiculo;
-import Validaciones.Terceros.squemaDatosVehiculo;
+import Validaciones.Contactos.SquemaDatosVehiculo;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +18,7 @@ import javax.swing.KeyStroke;
 public class VistaDatosVehiculo extends javax.swing.JDialog {
 
     private final DaoVehiculos daoVehiculos = new DaoVehiculos();
-    private final squemaDatosVehiculo validaciones = new squemaDatosVehiculo();
+    private final SquemaDatosVehiculo validaciones = new SquemaDatosVehiculo();
     private final metodosGenerales metodos = new metodosGenerales();
 
     private boolean aceptado;
