@@ -1,14 +1,13 @@
 package Validaciones.Terceros;
 
 import Controlador.Alertas.ControladorAlertas;
+import Enums.TipoContacto;
 import Modelo.Terceros.ModeloContacto;
-import clases.Instancias;
+import clases.metodosGenerales;
 import java.util.ArrayList;
 import java.util.List;
 
 public class squemaDatosContacto extends javax.swing.JPanel {
-
-    Instancias instancias = Instancias.getInstancias();
 
     public squemaDatosContacto() {
         initComponents();
@@ -30,123 +29,97 @@ public class squemaDatosContacto extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public boolean validacionesDatosContacto(ModeloContacto datosContacto, boolean esTipoPaciente, boolean esFacturacionElectronica,
-            String digitoVerificacion, ModeloContacto consultaDatosContacto) {
+    public boolean validarContacto(ModeloContacto datos, TipoContacto tipoContacto, boolean esPaciente,
+            boolean esFacturacionElectronica, boolean esNuevo, ModeloContacto existente) {
 
-        List<Object> errores_validacion = new ArrayList<>();
+        List<Object> errores = new ArrayList<>();
+        boolean esEmpleado = tipoContacto == TipoContacto.EMPLEADO;
 
-        if (datosContacto.getTipo() != null) {
-            if ("".equals(datosContacto.getTipo())) {
-                errores_validacion.add("Debe ingresar el tipo de identificación");
-            }
-        } else {
-            errores_validacion.add("Debe ingresar el tipo de identificación");
+        if (estaVacio(datos.getTipo())) {
+            errores.add("Debe ingresar el tipo de identificación");
         }
 
-        if (datosContacto.getId() != null) {
-            if ("".equals(datosContacto.getId())) {
-                errores_validacion.add("Debe ingresar la identificación");
-            } else {
-                if (consultaDatosContacto.getId() != null) {
-                    errores_validacion.add(esTipoPaciente ? "El paciente ya existe" : "El cliente ya existe");
-                }
-            }
-        } else {
-            errores_validacion.add("Debe ingresar la identificación");
+        if (estaVacio(datos.getId())) {
+            errores.add("Debe ingresar la identificación");
+        } else if (existente != null && (esNuevo || !datos.getIdSistema().equals(existente.getIdSistema()))) {
+            errores.add(esEmpleado ? "El empleado ya existe" : esPaciente ? "El paciente ya existe" : "El cliente ya existe");
         }
 
-        if (datosContacto.getNombre() != null) {
-            if ("".equals(datosContacto.getNombre())) {
-                errores_validacion.add("Debe ingresar el nombre");
-            }
-        } else {
-            errores_validacion.add("Debe ingresar el nombre");
+        if (estaVacio(datos.getNombre())) {
+            errores.add("Debe ingresar el nombre");
         }
 
-        if (datosContacto.getTelefono() != null) {
-            if ("".equals(datosContacto.getTelefono())) {
-                errores_validacion.add("Debe ingresar el teléfono");
-            }
-        } else {
-            errores_validacion.add("Debe ingresar el teléfono");
+        if (esEmpleado) {
+            validarEmpleado(datos, errores);
+        } else if (estaVacio(datos.getTelefono())) {
+            errores.add("Debe ingresar el teléfono");
         }
 
-        if (esTipoPaciente || esFacturacionElectronica) {
-            if (datosContacto.getDepartamento() != null) {
-                if (" ".equals(datosContacto.getDepartamento())) {
-                    errores_validacion.add("Debe seleccionar el departamento");
-                }
-            } else {
-                errores_validacion.add("Debe seleccionar el departamento");
+        if (!estaVacio(datos.getEmail()) && !metodosGenerales.emailEsCorrecto(datos.getEmail())) {
+            errores.add("Debe ingresar un correo electrónico correcto");
+        }
+
+        if (esPaciente || (esFacturacionElectronica && !esEmpleado)) {
+            if (estaVacio(datos.getDepartamento())) {
+                errores.add("Debe seleccionar el departamento");
             }
 
-            if (datosContacto.getCiudad() != null) {
-                if (" ".equals(datosContacto.getCiudad())) {
-                    errores_validacion.add("Debe seleccionar la ciudad");
-                }
-            } else {
-                errores_validacion.add("Debe seleccionar la ciudad");
+            if (estaVacio(datos.getCiudad())) {
+                errores.add("Debe seleccionar la ciudad");
             }
         }
 
-        if (esFacturacionElectronica) {
-            if (datosContacto.getEmail() != null) {
-                if ("".equals(datosContacto.getEmail())) {
-                    errores_validacion.add("Debe ingresar el correo electrónico");
-                }
-            } else {
-                errores_validacion.add("Debe ingresar el correo electrónico");
+        if (esFacturacionElectronica && !esEmpleado) {
+            if (estaVacio(datos.getEmail())) {
+                errores.add("Debe ingresar el correo electrónico");
             }
 
-            if (datosContacto.getCodigoPostal() != null) {
-                if (" ".equals(datosContacto.getCodigoPostal())) {
-                    errores_validacion.add("Debe seleccionar el código postal");
-                }
-            } else {
-                errores_validacion.add("Debe seleccionar el código postal");
+            if (estaVacio(datos.getCodigoPostal())) {
+                errores.add("Debe seleccionar el código postal");
             }
         }
 
-        if (esTipoPaciente) {
-            if (datosContacto.getEps() != null) {
-                if ("".equals(datosContacto.getEps())) {
-                    errores_validacion.add("Debe cargar una EPS");
-                }
-            } else {
-                errores_validacion.add("Debe cargar una EPS");
-            }
-
-            if (datosContacto.getRegimen() != null) {
-                if (" ".equals(datosContacto.getRegimen())) {
-                    errores_validacion.add("Debe seleccionar un régimen");
-                }
-            } else {
-                errores_validacion.add("Debe seleccionar un régimen");
-            }
-
-            if (datosContacto.getAfiliado() != null) {
-                if (" ".equals(datosContacto.getAfiliado())) {
-                    errores_validacion.add("Debe seleccionar el tipo de afiliado");
-                }
-            } else {
-                errores_validacion.add("Debe seleccionar el tipo de afiliado");
-            }
-
-            if (datosContacto.getTipoTrabajador() != null) {
-                if (" ".equals(datosContacto.getTipoTrabajador())) {
-                    errores_validacion.add("Debe seleccionar el tipo de trabajador");
-                }
-            } else {
-                errores_validacion.add("Debe seleccionar el tipo de trabajador");
-            }
+        if (esPaciente) {
+            validarPaciente(datos, errores);
         }
 
-        if (errores_validacion.size() > 0) {
-            ControladorAlertas.alertaGrandeListado("Se presentaron los siguientes errores...", errores_validacion, false);
+        if (!errores.isEmpty()) {
+            ControladorAlertas.alertaGrandeListado("Se presentaron los siguientes errores...", errores, false);
             return false;
-        } else {
-            return true;
         }
+        return true;
+    }
+
+    private void validarEmpleado(ModeloContacto datos, List<Object> errores) {
+        if (estaVacio(datos.getCargo())) {
+            errores.add("Debe ingresar el cargo");
+        }
+
+        if (estaVacio(datos.getTelefono()) && estaVacio(datos.getCelular()) && estaVacio(datos.getEmail())) {
+            errores.add("Debe ingresar al menos un medio de comunicación: teléfono, celular o correo electrónico");
+        }
+    }
+
+    private void validarPaciente(ModeloContacto datos, List<Object> errores) {
+        if (estaVacio(datos.getEps())) {
+            errores.add("Debe cargar una EPS");
+        }
+
+        if (estaVacio(datos.getRegimen())) {
+            errores.add("Debe seleccionar un régimen");
+        }
+
+        if (estaVacio(datos.getAfiliado())) {
+            errores.add("Debe seleccionar el tipo de afiliado");
+        }
+
+        if (estaVacio(datos.getTipoTrabajador())) {
+            errores.add("Debe seleccionar el tipo de trabajador");
+        }
+    }
+
+    private boolean estaVacio(String valor) {
+        return valor == null || valor.trim().isEmpty();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

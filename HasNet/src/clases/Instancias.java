@@ -1,6 +1,5 @@
 package clases;
 
-import Vista.Terceros.infEmpleados;
 import Vista.Cartera.VistaReportesCartera;
 import Vista.ReportesCarteras.VistaReporteAbonos;
 import Vista.ReportesCarteras.VistaReporteCuentasPendientes;
@@ -38,7 +37,7 @@ import Vista.Productos.ordenCompra;
 import Vista.Productos.ingreso;
 import Vista.Productos.VistaIngreso;
 import Vista.Tesoreria.VistaEgresos;
-import Vista.Terceros.vistaContactos;
+import Vista.Terceros.VistaContactos;
 import Vista.Restaurante.VistaMesas;
 import Vista.Documentos.VistaDocumentos;
 import Vista.Cartera.VistaNotaDebito;
@@ -267,14 +266,13 @@ public class Instancias {
     private infRepOrdenesMedicas repMedico;
 
     /* INICIO TERCEROS */
-    private vistaContactos clientes;
-    private vistaContactos paciente;
+    private VistaContactos clientes;
+    private VistaContactos paciente;
     private infBodegas bodegas;
     private infBodegasClientes bodegasClientes;
     private buscBodegas buscBodegas;
     private buscClientes busClientes;
     private buscEmpleados buscEmpleados;
-    private infEmpleados empleados;
 
     /* INICIO VENTAS */
     private VistaPreparacion preparacion;
@@ -1578,11 +1576,11 @@ public class Instancias {
         this.imprimirFacturaOrdenMedica = imprimirFacturaOrdenMedica;
     }
 
-    public vistaContactos getPaciente() {
+    public VistaContactos getPaciente() {
         return paciente;
     }
 
-    public void setPaciente(vistaContactos paciente) {
+    public void setPaciente(VistaContactos paciente) {
         this.paciente = paciente;
     }
 
@@ -2527,14 +2525,6 @@ public class Instancias {
         this.uInt = uInt;
     }
 
-    public infEmpleados getEmpleados() {
-        return empleados;
-    }
-
-    public void setEmpleados(infEmpleados empleados) {
-        this.empleados = empleados;
-    }
-
     public VistaEgresos getEgresos() {
         return egresos;
     }
@@ -2619,11 +2609,11 @@ public class Instancias {
         this.bodegas = bodegas;
     }
 
-    public vistaContactos getClientes() {
+    public VistaContactos getClientes() {
         return clientes;
     }
 
-    public void setClientes(vistaContactos clientes) {
+    public void setClientes(VistaContactos clientes) {
         this.clientes = clientes;
     }
 

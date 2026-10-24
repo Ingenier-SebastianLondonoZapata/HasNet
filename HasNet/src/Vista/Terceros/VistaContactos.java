@@ -2,24 +2,22 @@ package Vista.Terceros;
 
 import Controlador.Alertas.ControladorAlertas;
 
+import Dao.Terceros.DaoContactos;
+import Enums.TipoContacto;
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
 import Modelo.Terceros.ModeloDatosVehiculo;
 import Utilidades.Limpiadores;
-import Validaciones.Terceros.squemaDatosVehiculo;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.Medico.ndConvenio;
 import clases.Medico.ndEpsPrecargados;
-import clases.Medico.ndHistoriaClinica;
 import Modelo.Terceros.ModeloContacto;
 import Validaciones.Terceros.squemaDatosContacto;
 import clases.big;
 import clases.metodosGenerales;
 import formularios.Medico.buscConvenio;
 import formularios.Medico.buscEpsPrecargadas;
-import formularios.Ventas.buscTipoVehiculo;
-import formularios.productos.buscColores;
-import formularios.productos.buscMarcas;
+import formularios.terceros.buscCargos;
 import formularios.terceros.buscClientes;
 import formularios.terceros.buscOcupaciones;
 import java.awt.Dimension;
@@ -27,14 +25,18 @@ import java.awt.Event;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.nio.file.CopyOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
+import java.beans.PropertyVetoException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import com.toedter.calendar.JDateChooser;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
@@ -42,16 +44,20 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-public class vistaContactos extends javax.swing.JInternalFrame {
+public class VistaContactos extends javax.swing.JInternalFrame {
 
-    private squemaDatosVehiculo squemaDatosVehiculo = new squemaDatosVehiculo();
+    private static final String TIPO_PACIENTE = "paciente";
+    private static final String DEPARTAMENTO_PREDETERMINADO = "ANTIOQUIA";
+    private static final String TEXTO_ACTIVAR = "ACTIVAR";
+    private static final String TEXTO_INACTIVAR = "INACTIVAR";
+
     private squemaDatosContacto squemaDatosContacto = new squemaDatosContacto();
+    private final DaoContactos daoTerceros = new DaoContactos();
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias;
 
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
     String tipo = "", id = "", simbolo = "";
 
     public String getId() {
@@ -62,68 +68,44 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         this.id = id;
     }
 
-    public vistaContactos(String tipo) {
+    public VistaContactos(String tipo) {
 
         initComponents();
         instancias = Instancias.getInstancias();
 
         simbolo = instancias.getSimbolo();
+        this.tipo = tipo;
 
-        String consecutivo = "";
-        int num = Integer.parseInt(instancias.getSql().getNumConsecutivo("TERCERO")[0].toString());
-        consecutivo = String.valueOf(num);
-        for (int i = 0; i < 8 - String.valueOf(num).length(); i++) {
-            consecutivo = "0" + consecutivo;
-        }
-        txtIdSistema.setText("TERC-" + consecutivo);
+        txtIdSistema.setText(daoTerceros.obtenerSiguienteIdSistema());
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
         Barra.setSize(0, 0);
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
 
         pnlInvisible.setVisible(false);
 
-        this.tipo = tipo;
+        configurarSegunModo();
+        cargarDepartamentos();
+        cargarUsuarios();
 
-        if (tipo.equals("paciente")) {
-            btnImprimir.setVisible(true);
-            cmbTipoIdentificacion.removeItem("Nit");
-            lbNota.setVisible(false);
-            jScrollPane1.setVisible(false);
-            txtNota.setVisible(false);
-        } else {
-            btnImprimir.setVisible(false);
-
-            try {
-                tabDatosTerceros.remove(2);
-            } catch (Exception e) {
-            }
-        }
-
-        if (instancias.getConfiguraciones().isOrdenServicio() || instancias.getConfiguraciones().isParqueadero()) {
-
-        } else {
-            try {
-                tabDatosTerceros.remove(1);
-            } catch (Exception e) {
-            }
-        }
-
-        Object[][] dep = instancias.getSql().getDepartamentos();
-        cmbDepartamento.removeAllItems();
-
-        if (dep != null) {
-            for (int i = 0; i < dep.length; i++) {
-                if (null != dep[i][0]) {
-                    cmbDepartamento.addItem(dep[i][0].toString().toUpperCase());
+        cmbTipoContacto.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() != ItemEvent.SELECTED) {
+                    return;
                 }
-            }
-        }
 
-        cmbDepartamento.setSelectedItem("ANTIOQUIA");
-        consultarMunicipios("ANTIOQUIA");
+                if (tipoSeleccionado() == TipoContacto.EMPLEADO && !puedeGestionarEmpleados()) {
+                    ControladorAlertas.alertFail("No tiene permisos para gestionar empleados");
+                    cmbTipoContacto.setSelectedItem(TipoContacto.TERCERO.getValor());
+                    return;
+                }
+
+                actualizarPestanaEmpleado();
+            }
+        });
+        actualizarPestanaEmpleado();
 
         pnlFormulario.registerKeyboardAction(accion("guardar"), "guardar", KeyStroke.getKeyStroke(KeyEvent.VK_G, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         pnlFormulario.registerKeyboardAction(accion("limpiar"), "limpiar", KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -162,13 +144,75 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         return a;
     }
 
+    private boolean esPaciente() {
+        return TIPO_PACIENTE.equals(tipo);
+    }
+
+    private void configurarSegunModo() {
+        if (esPaciente()) {
+            btnImprimir.setVisible(true);
+            cmbTipoIdentificacion.removeItem("Nit");
+            cmbTipoContacto.removeItem(TipoContacto.EMPLEADO.getValor());
+            lbNota.setVisible(false);
+            jScrollPane1.setVisible(false);
+            txtNota.setVisible(false);
+            tabDatosTerceros.remove(pnlDatosVentasYOtros);
+        } else {
+            btnImprimir.setVisible(false);
+            tabDatosTerceros.remove(pnlDatosMedicos);
+        }
+
+        if (!(instancias.getConfiguraciones().isOrdenServicio() || instancias.getConfiguraciones().isParqueadero())) {
+            pnlDatosVehiculo.setVisible(false);
+        }
+    }
+
+    private void cargarDepartamentos() {
+        Object[][] departamentos = instancias.getSql().getDepartamentos();
+        cmbDepartamento.removeAllItems();
+
+        if (departamentos != null) {
+            for (Object[] departamento : departamentos) {
+                if (departamento[0] != null) {
+                    cmbDepartamento.addItem(departamento[0].toString().toUpperCase());
+                }
+            }
+        }
+
+        cmbDepartamento.setSelectedItem(DEPARTAMENTO_PREDETERMINADO);
+        consultarMunicipios(DEPARTAMENTO_PREDETERMINADO);
+    }
+
+    private void cargarUsuarios() {
+        cmbUsuarios.addItem("");
+        Object[][] usuarios = instancias.getSql().getUsuarios();
+        if (usuarios != null) {
+            for (Object[] usuario : usuarios) {
+                cmbUsuarios.addItem(usuario[0]);
+            }
+        }
+    }
+
+    private void actualizarPestanaEmpleado() {
+        boolean esEmpleado = tipoSeleccionado() == TipoContacto.EMPLEADO;
+        pnlDatosEmpleado.setVisible(esEmpleado);
+    }
+
+    private boolean puedeGestionarEmpleados() {
+        return instancias.getUsuarioLog().isCrearEmpleado();
+    }
+
+    private TipoContacto tipoSeleccionado() {
+        return TipoContacto.desdeValor(String.valueOf(cmbTipoContacto.getSelectedItem()));
+    }
+
     public void consultarMunicipios(String departamento) {
         Object[][] municipios = instancias.getSql().getMunicipios(departamento);
         cmbCiudad.removeAllItems();
         cmbCiudad.addItem(" ");
-        for (int i = 0; i < municipios.length; i++) {
-            if (null != municipios[i][0]) {
-                cmbCiudad.addItem(municipios[i][0]);
+        for (Object[] municipio : municipios) {
+            if (null != municipio[0]) {
+                cmbCiudad.addItem(municipio[0]);
             }
         }
     }
@@ -178,47 +222,6 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         cargarTercero(idSistema);
     }
 
-//    public void nuevoCliente(String id, String nombre, String tel, String cel, String idSistema) {
-//
-//        Object[][] nuevoTercero = instancias.getSql().getNuevoTercero(idSistema);
-//
-//        txtId.setText(id);
-//        txtNombre.setText(nombre);
-//        txtTelefono.setText(tel);
-//        txtCelular.setText(cel);
-//
-//        String nombre1, nombre2, nombre3, nombre4;
-//
-//        try {
-//            nombre1 = nuevoTercero[0][1].toString();
-//        } catch (Exception e) {
-//            nombre1 = "";
-//        }
-//
-//        try {
-//            nombre2 = nuevoTercero[0][2].toString();
-//        } catch (Exception e) {
-//            nombre2 = "";
-//        }
-//
-//        try {
-//            nombre3 = nuevoTercero[0][3].toString();
-//        } catch (Exception e) {
-//            nombre3 = "";
-//        }
-//
-//        try {
-//            nombre4 = nuevoTercero[0][4].toString();
-//        } catch (Exception e) {
-//            nombre4 = "";
-//        }
-//
-//        txtpNombre.setText(nombre1);
-//        txtsNombre.setText(nombre2);
-//        txtpApellido.setText(nombre3);
-//        txtsApellido.setText(nombre4);
-//        txtNombre.setText(nombre1 + " " + nombre2 + " " + nombre3 + " " + nombre4);
-//    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -230,6 +233,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         popBorrar = new javax.swing.JMenuItem();
         grupoConvenio = new javax.swing.ButtonGroup();
         grpResponsableIva = new javax.swing.ButtonGroup();
+        grupoAgendar = new javax.swing.ButtonGroup();
         scrFormulario = new javax.swing.JScrollPane();
         pnlFormulario = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -240,19 +244,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         btnBuscTerceros = new javax.swing.JButton();
         btnImprimir = new javax.swing.JButton();
         tabDatosTerceros = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        pnlDatosVentas = new javax.swing.JPanel();
-        lbEmail8 = new javax.swing.JLabel();
-        cmbLista = new javax.swing.JComboBox();
-        cmbVendedor = new javax.swing.JComboBox();
-        lbVendedor = new javax.swing.JLabel();
-        lbPlazo = new javax.swing.JLabel();
-        txtPlazo = new javax.swing.JTextField();
-        txtCupo = new javax.swing.JTextField();
-        lbCupo = new javax.swing.JLabel();
-        lbNota = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtNota = new javax.swing.JTextArea();
+        pnlDatosContacto = new javax.swing.JPanel();
         pnlDatosObligatorios = new javax.swing.JPanel();
         lbTipo = new javax.swing.JLabel();
         cmbTipoIdentificacion = new javax.swing.JComboBox();
@@ -260,8 +252,6 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         txtIdentificacion = new javax.swing.JTextField();
         txtDigito = new javax.swing.JTextField();
         lbNit3 = new javax.swing.JLabel();
-        lbCiudad4 = new javax.swing.JLabel();
-        cmbTipoContacto = new javax.swing.JComboBox();
         lbRazon = new javax.swing.JLabel();
         txtNombreCompleto = new javax.swing.JTextField();
         lbPNombre = new javax.swing.JLabel();
@@ -282,6 +272,47 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         txtTelefono = new javax.swing.JTextField();
         lbEmail = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
+        lbCiudad4 = new javax.swing.JLabel();
+        cmbTipoContacto = new javax.swing.JComboBox();
+        pnlDatosEmpleado = new javax.swing.JPanel();
+        lbPlazo6 = new javax.swing.JLabel();
+        txtCargo = new javax.swing.JTextField();
+        lbCupo2 = new javax.swing.JLabel();
+        txtSalario = new javax.swing.JTextField();
+        lbFecha3 = new javax.swing.JLabel();
+        dtFechaIngreso = new com.toedter.calendar.JDateChooser();
+        lbFecha4 = new javax.swing.JLabel();
+        dtFechaRetiro = new com.toedter.calendar.JDateChooser();
+        lbPlazo7 = new javax.swing.JLabel();
+        cmbUsuarios = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        rdSiAgendar = new javax.swing.JRadioButton();
+        rdNoAgendar = new javax.swing.JRadioButton();
+        lbCiudad2 = new javax.swing.JLabel();
+        txtEps = new javax.swing.JTextField();
+        lbCiudad5 = new javax.swing.JLabel();
+        txtArl = new javax.swing.JTextField();
+        txtccf = new javax.swing.JTextField();
+        lbCiudad8 = new javax.swing.JLabel();
+        pnlDatosVehiculo = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblAutos = new javax.swing.JTable();
+        btnAgregarVehiculo = new javax.swing.JButton();
+        btnModificarVehiculo = new javax.swing.JButton();
+        btnEliminarVehiculo = new javax.swing.JButton();
+        pnlDatosVentasYOtros = new javax.swing.JPanel();
+        pnlDatosVentas = new javax.swing.JPanel();
+        lbEmail8 = new javax.swing.JLabel();
+        cmbLista = new javax.swing.JComboBox();
+        cmbVendedor = new javax.swing.JComboBox();
+        lbVendedor = new javax.swing.JLabel();
+        lbPlazo = new javax.swing.JLabel();
+        txtPlazo = new javax.swing.JTextField();
+        txtCupo = new javax.swing.JTextField();
+        lbCupo = new javax.swing.JLabel();
+        lbNota = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtNota = new javax.swing.JTextArea();
         pnlOtrosDatos = new javax.swing.JPanel();
         lbNit1 = new javax.swing.JLabel();
         txtTipoCliente = new javax.swing.JTextField();
@@ -311,29 +342,8 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         txtCelular = new javax.swing.JTextField();
         lbDireccion1 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
-        pnlDatosVehiculo = new javax.swing.JPanel();
-        lbEmail6 = new javax.swing.JLabel();
-        lbPlazo1 = new javax.swing.JLabel();
-        txtPlaca = new javax.swing.JTextField();
-        lbCupo1 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tblAutos = new javax.swing.JTable();
-        btnGuardarDatosVehiculo = new javax.swing.JButton();
-        txtMarca = new javax.swing.JTextField();
-        lbPlazo2 = new javax.swing.JLabel();
-        lbPlazo3 = new javax.swing.JLabel();
-        lbPlazo4 = new javax.swing.JLabel();
-        txtChasis = new javax.swing.JTextField();
-        txtModelo = new javax.swing.JTextField();
-        txtMotor = new javax.swing.JTextField();
-        lbEmail7 = new javax.swing.JLabel();
-        txtColor = new javax.swing.JTextField();
-        lbPlazo5 = new javax.swing.JLabel();
-        dtFechaCompra = new datechooser.beans.DateChooserCombo();
-        txtTipoVehiculo = new javax.swing.JTextField();
-        jPanel6 = new javax.swing.JPanel();
         pnlDatosMedicos = new javax.swing.JPanel();
+        pnlDatos = new javax.swing.JPanel();
         lbCiudad23 = new javax.swing.JLabel();
         lbCiudad24 = new javax.swing.JLabel();
         txtNombreMadre = new javax.swing.JTextField();
@@ -521,138 +531,13 @@ public class vistaContactos extends javax.swing.JInternalFrame {
 
         tabDatosTerceros.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Adobe Arabic", 1, 12))); // NOI18N
-
-        pnlDatosVentas.setBackground(new java.awt.Color(255, 255, 255));
-        pnlDatosVentas.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos para ventas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 14))); // NOI18N
-
-        lbEmail8.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbEmail8.setText("Lista Precio:");
-
-        cmbLista.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        cmbLista.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8" }));
-        cmbLista.setName("Lista Precios"); // NOI18N
-        cmbLista.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                cmbListaKeyReleased(evt);
-            }
-        });
-
-        cmbVendedor.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        cmbVendedor.setName("Vendedor"); // NOI18N
-        cmbVendedor.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                cmbVendedorKeyReleased(evt);
-            }
-        });
-
-        lbVendedor.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbVendedor.setText("Vendedor:");
-
-        lbPlazo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbPlazo.setText("Días de plazo:");
-
-        txtPlazo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtPlazo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPlazo.setName("Plazo"); // NOI18N
-        txtPlazo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtPlazoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtPlazoKeyTyped(evt);
-            }
-        });
-
-        txtCupo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtCupo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtCupo.setText("0");
-        txtCupo.setName("Cupo"); // NOI18N
-        txtCupo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCupoActionPerformed(evt);
-            }
-        });
-        txtCupo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCupoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtCupoKeyTyped(evt);
-            }
-        });
-
-        lbCupo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbCupo.setText("Cupo crédito:");
-
-        lbNota.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbNota.setText("Notas:");
-
-        txtNota.setColumns(20);
-        txtNota.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtNota.setLineWrap(true);
-        txtNota.setRows(2);
-        txtNota.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtNotaKeyReleased(evt);
-            }
-        });
-        jScrollPane1.setViewportView(txtNota);
-
-        javax.swing.GroupLayout pnlDatosVentasLayout = new javax.swing.GroupLayout(pnlDatosVentas);
-        pnlDatosVentas.setLayout(pnlDatosVentasLayout);
-        pnlDatosVentasLayout.setHorizontalGroup(
-            pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDatosVentasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(lbNota, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbVendedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
-                    .addComponent(lbCupo, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlDatosVentasLayout.createSequentialGroup()
-                        .addComponent(txtCupo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
-                        .addComponent(lbPlazo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPlazo, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbEmail8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbLista, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(cmbVendedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
-        );
-        pnlDatosVentasLayout.setVerticalGroup(
-            pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDatosVentasLayout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbCupo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbPlazo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPlazo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbEmail8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbNota, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        pnlDatosContacto.setBackground(new java.awt.Color(255, 255, 255));
+        pnlDatosContacto.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Adobe Arabic", 1, 12))); // NOI18N
 
         pnlDatosObligatorios.setBackground(new java.awt.Color(255, 255, 255));
-        pnlDatosObligatorios.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos obligatorios", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 14))); // NOI18N
+        pnlDatosObligatorios.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos obligatorios", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
 
-        lbTipo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbTipo.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         lbTipo.setText("Tipo identificación: ");
 
         cmbTipoIdentificacion.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
@@ -669,7 +554,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             }
         });
 
-        lbNit.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbNit.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         lbNit.setText("Identificación:");
         lbNit.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -707,17 +592,6 @@ public class vistaContactos extends javax.swing.JInternalFrame {
 
         lbNit3.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         lbNit3.setText("-");
-
-        lbCiudad4.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbCiudad4.setText("Tipo contacto:");
-
-        cmbTipoContacto.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        cmbTipoContacto.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "TERCERO", "PROVEEDOR" }));
-        cmbTipoContacto.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                cmbTipoContactoKeyReleased(evt);
-            }
-        });
 
         lbRazon.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         lbRazon.setText("Razón social: ");
@@ -858,7 +732,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         pnlDatosObligatoriosLayout.setHorizontalGroup(
             pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(5, 5, 5)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(lbEmail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbDepartamento5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -866,14 +740,11 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                     .addComponent(lbApellido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbPNombre, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbRazon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTipo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbCiudad4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbTipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                        .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cmbTipoIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbTipoContacto, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cmbTipoIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lbNit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(5, 5, 5)
@@ -888,7 +759,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                             .addComponent(cmbCodigoPostal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtpApellido)
                             .addComponent(cmbDepartamento, 0, 167, Short.MAX_VALUE)
-                            .addComponent(txtpNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtpNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(12, 12, 12)
                         .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
@@ -908,68 +779,509 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                                 .addComponent(txtsNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(txtNombreCompleto))
-                .addContainerGap())
+                .addGap(10, 10, 10))
         );
         pnlDatosObligatoriosLayout.setVerticalGroup(
             pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbTipoContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbCiudad4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
+                .addGap(5, 5, 5)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtIdentificacion, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtDigito, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbNit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbNit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbNit3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(cmbTipoIdentificacion, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(lbTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)))
+                        .addComponent(cmbTipoIdentificacion, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                        .addComponent(lbTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)))
                 .addGap(3, 3, 3)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtNombreCompleto)
-                    .addComponent(lbRazon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtNombreCompleto, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lbRazon, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
                         .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbPNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtpNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtsNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lbPNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtpNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtsNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(3, 3, 3)
-                        .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtpApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lbSapellido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtsApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(lbSNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lbApellido, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(txtpApellido, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lbSapellido, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtsApellido)))
+                    .addComponent(lbSNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
                         .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lbDepartamento, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                            .addComponent(cmbDepartamento, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                            .addComponent(lbDepartamento, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                            .addComponent(cmbDepartamento, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(lbCiudad, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(cmbCiudad, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(lbCiudad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmbCiudad))
                 .addGap(3, 3, 3)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(lbDepartamento5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cmbCodigoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbDepartamento5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbCodigoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lbTelefono, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(txtTelefono, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
+                    .addComponent(txtTelefono))
                 .addGap(3, 3, 3)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtEmail)
-                    .addComponent(lbEmail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(3, 3, 3))
+                    .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lbEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                .addGap(10, 10, 10))
+        );
+
+        lbCiudad4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        lbCiudad4.setText("Tipo de contacto:");
+
+        cmbTipoContacto.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        cmbTipoContacto.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "TERCERO", "PROVEEDOR", "EMPLEADO" }));
+
+        pnlDatosEmpleado.setBackground(new java.awt.Color(255, 255, 255));
+        pnlDatosEmpleado.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del empleado", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
+
+        lbPlazo6.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        lbPlazo6.setText("Cargo del empleado: *");
+
+        txtCargo.setBackground(new java.awt.Color(255, 204, 204));
+        txtCargo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtCargo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCargo.setName("Cargo"); // NOI18N
+        txtCargo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCargoKeyReleased(evt);
+            }
+        });
+
+        lbCupo2.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        lbCupo2.setText("Salario:");
+
+        txtSalario.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtSalario.setText("$ 0");
+        txtSalario.setName("Salario"); // NOI18N
+        txtSalario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSalarioKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtSalarioKeyTyped(evt);
+            }
+        });
+
+        lbFecha3.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        lbFecha3.setText("Fecha de ingreso:");
+
+        dtFechaIngreso.setDateFormatString("dd/MM/yyyy");
+        dtFechaIngreso.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+
+        lbFecha4.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        lbFecha4.setText("Fecha de retiro: ");
+
+        dtFechaRetiro.setDateFormatString("dd/MM/yyyy");
+        dtFechaRetiro.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+
+        lbPlazo7.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        lbPlazo7.setText("Usuario asignado:");
+
+        cmbUsuarios.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cmbUsuariosFocusGained(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        jLabel1.setText("Permitir agendar:");
+
+        rdSiAgendar.setBackground(new java.awt.Color(255, 255, 255));
+        grupoAgendar.add(rdSiAgendar);
+        rdSiAgendar.setText("SI");
+
+        rdNoAgendar.setBackground(new java.awt.Color(255, 255, 255));
+        grupoAgendar.add(rdNoAgendar);
+        rdNoAgendar.setSelected(true);
+        rdNoAgendar.setText("NO");
+
+        lbCiudad2.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        lbCiudad2.setText("EPS:");
+
+        txtEps.setBackground(new java.awt.Color(255, 204, 204));
+        txtEps.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtEps.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtEps.setName("Ciudad"); // NOI18N
+        txtEps.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtEpsKeyReleased(evt);
+            }
+        });
+
+        lbCiudad5.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        lbCiudad5.setText("ARL:");
+
+        txtArl.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtArl.setName("Ciudad"); // NOI18N
+        txtArl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtArlKeyReleased(evt);
+            }
+        });
+
+        txtccf.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtccf.setName("Ciudad"); // NOI18N
+
+        lbCiudad8.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        lbCiudad8.setText("CCF:");
+
+        javax.swing.GroupLayout pnlDatosEmpleadoLayout = new javax.swing.GroupLayout(pnlDatosEmpleado);
+        pnlDatosEmpleado.setLayout(pnlDatosEmpleadoLayout);
+        pnlDatosEmpleadoLayout.setHorizontalGroup(
+            pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosEmpleadoLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbFecha3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbCiudad8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbCiudad2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbPlazo6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosEmpleadoLayout.createSequentialGroup()
+                        .addComponent(rdSiAgendar)
+                        .addGap(10, 10, 10)
+                        .addComponent(rdNoAgendar)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(pnlDatosEmpleadoLayout.createSequentialGroup()
+                        .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtEps)
+                            .addComponent(txtccf)
+                            .addComponent(dtFechaIngreso, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                            .addComponent(txtCargo, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lbCupo2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbCiudad5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbFecha4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                            .addComponent(lbPlazo7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(5, 5, 5)
+                        .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtSalario)
+                            .addComponent(dtFechaRetiro, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                            .addComponent(txtArl)
+                            .addComponent(cmbUsuarios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        pnlDatosEmpleadoLayout.setVerticalGroup(
+            pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosEmpleadoLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbPlazo6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCargo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lbPlazo7, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbCiudad2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEps, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbCiudad5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtArl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lbCiudad8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtccf, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                    .addComponent(lbCupo2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbFecha3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dtFechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbFecha4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dtFechaRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosEmpleadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(rdSiAgendar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rdNoAgendar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(10, 10, 10))
+        );
+
+        pnlDatosVehiculo.setBackground(new java.awt.Color(255, 255, 255));
+        pnlDatosVehiculo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos de vehiculos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
+
+        tblAutos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        tblAutos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Placa", "Tipo", "Modelo", "Marca", "Color", "Chasis", "Motor", "F.Compra"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblAutos.setComponentPopupMenu(jPopupMenu1);
+        tblAutos.setRowHeight(20);
+        tblAutos.getTableHeader().setReorderingAllowed(false);
+        tblAutos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblAutosMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tblAutos);
+        if (tblAutos.getColumnModel().getColumnCount() > 0) {
+            tblAutos.getColumnModel().getColumn(0).setMinWidth(55);
+            tblAutos.getColumnModel().getColumn(0).setPreferredWidth(55);
+            tblAutos.getColumnModel().getColumn(0).setMaxWidth(55);
+            tblAutos.getColumnModel().getColumn(2).setMinWidth(55);
+            tblAutos.getColumnModel().getColumn(2).setPreferredWidth(55);
+            tblAutos.getColumnModel().getColumn(2).setMaxWidth(55);
+        }
+
+        btnAgregarVehiculo.setBackground(new java.awt.Color(46, 204, 113));
+        btnAgregarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnAgregarVehiculo.setText("Agregar Vehiculo");
+        btnAgregarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarVehiculo.setEnabled(false);
+        btnAgregarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnAgregarVehiculo.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnAgregarVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarVehiculoActionPerformed(evt);
+            }
+        });
+
+        btnModificarVehiculo.setBackground(new java.awt.Color(93, 173, 226));
+        btnModificarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnModificarVehiculo.setText("Modificar Vehiculo");
+        btnModificarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarVehiculo.setEnabled(false);
+        btnModificarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnModificarVehiculo.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnModificarVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarVehiculoActionPerformed(evt);
+            }
+        });
+
+        btnEliminarVehiculo.setBackground(new java.awt.Color(241, 148, 138));
+        btnEliminarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnEliminarVehiculo.setText("Eliminar Vehiculo");
+        btnEliminarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminarVehiculo.setEnabled(false);
+        btnEliminarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnEliminarVehiculo.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnEliminarVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarVehiculoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlDatosVehiculoLayout = new javax.swing.GroupLayout(pnlDatosVehiculo);
+        pnlDatosVehiculo.setLayout(pnlDatosVehiculoLayout);
+        pnlDatosVehiculoLayout.setHorizontalGroup(
+            pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosVehiculoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosVehiculoLayout.createSequentialGroup()
+                        .addComponent(btnAgregarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnModificarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEliminarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
+                .addContainerGap())
+        );
+        pnlDatosVehiculoLayout.setVerticalGroup(
+            pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosVehiculoLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEliminarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout pnlDatosContactoLayout = new javax.swing.GroupLayout(pnlDatosContacto);
+        pnlDatosContacto.setLayout(pnlDatosContactoLayout);
+        pnlDatosContactoLayout.setHorizontalGroup(
+            pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDatosContactoLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlDatosEmpleado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlDatosObligatorios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlDatosContactoLayout.createSequentialGroup()
+                        .addComponent(lbCiudad4, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbTipoContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlDatosVehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(15, 15, 15))
+        );
+        pnlDatosContactoLayout.setVerticalGroup(
+            pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosContactoLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(pnlDatosContactoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbCiudad4, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(cmbTipoContacto))
+                .addGap(10, 10, 10)
+                .addComponent(pnlDatosObligatorios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlDatosEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlDatosVehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tabDatosTerceros.addTab("Datos contacto", pnlDatosContacto);
+
+        pnlDatosVentasYOtros.setBackground(new java.awt.Color(255, 255, 255));
+        pnlDatosVentasYOtros.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 14))); // NOI18N
+
+        pnlDatosVentas.setBackground(new java.awt.Color(255, 255, 255));
+        pnlDatosVentas.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos para ventas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
+
+        lbEmail8.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbEmail8.setText("Lista de precio predeterminada:");
+
+        cmbLista.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        cmbLista.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8" }));
+        cmbLista.setName("Lista Precios"); // NOI18N
+        cmbLista.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cmbListaKeyReleased(evt);
+            }
+        });
+
+        cmbVendedor.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        cmbVendedor.setName("Vendedor"); // NOI18N
+        cmbVendedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cmbVendedorKeyReleased(evt);
+            }
+        });
+
+        lbVendedor.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbVendedor.setText("Vendedor por defecto :");
+
+        lbPlazo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbPlazo.setText("Días de plazo automático:");
+
+        txtPlazo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtPlazo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtPlazo.setName("Plazo"); // NOI18N
+        txtPlazo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPlazoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPlazoKeyTyped(evt);
+            }
+        });
+
+        txtCupo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtCupo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCupo.setText("$ 0");
+        txtCupo.setName("Cupo"); // NOI18N
+        txtCupo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCupoActionPerformed(evt);
+            }
+        });
+        txtCupo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCupoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCupoKeyTyped(evt);
+            }
+        });
+
+        lbCupo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbCupo.setText("Cupo para créditos:");
+
+        lbNota.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbNota.setText("Notas:");
+
+        txtNota.setColumns(20);
+        txtNota.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtNota.setLineWrap(true);
+        txtNota.setRows(4);
+        txtNota.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtNotaKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(txtNota);
+
+        javax.swing.GroupLayout pnlDatosVentasLayout = new javax.swing.GroupLayout(pnlDatosVentas);
+        pnlDatosVentas.setLayout(pnlDatosVentasLayout);
+        pnlDatosVentasLayout.setHorizontalGroup(
+            pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosVentasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbVendedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbEmail8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                    .addComponent(lbPlazo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbCupo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbNota, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosVentasLayout.createSequentialGroup()
+                        .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cmbLista, javax.swing.GroupLayout.Alignment.LEADING, 0, 126, Short.MAX_VALUE)
+                            .addComponent(txtPlazo, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCupo, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 270, Short.MAX_VALUE))
+                    .addComponent(cmbVendedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
+        );
+        pnlDatosVentasLayout.setVerticalGroup(
+            pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDatosVentasLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtCupo, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lbCupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbPlazo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtPlazo, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbEmail8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmbLista, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
+                .addGroup(pnlDatosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbNota, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlOtrosDatos.setBackground(new java.awt.Color(255, 255, 255));
-        pnlOtrosDatos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Otros datos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 14))); // NOI18N
+        pnlOtrosDatos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Otros datos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
 
         lbNit1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         lbNit1.setText("Tipo de cliente:");
@@ -1179,12 +1491,12 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                         .addGap(9, 9, 9)
                         .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlOtrosDatosLayout.createSequentialGroup()
-                                .addComponent(cmbNaturaleza, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cmbNaturaleza, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                                 .addComponent(lbCiudad3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cmbRut, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                .addComponent(cmbRut, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(lbBarrio1)
                                 .addGap(5, 5, 5)
                                 .addComponent(chkSiResponsableIVA)
@@ -1204,29 +1516,26 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                         .addGap(9, 9, 9)
                         .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlOtrosDatosLayout.createSequentialGroup()
+                                .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cmbSexo, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(dtFechaNacimiento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                                    .addComponent(txtTipoCliente, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtBarrio))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(cmbSexo, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(dtFechaNacimiento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
-                                        .addComponent(txtTipoCliente, javax.swing.GroupLayout.Alignment.TRAILING))
-                                    .addComponent(txtBarrio))
-                                .addGap(32, 32, 32)
+                                        .addComponent(lbFecha1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                                        .addComponent(lbCiudad7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(lbNit2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(lbCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(pnlOtrosDatosLayout.createSequentialGroup()
-                                        .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(lbFecha1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                            .addComponent(lbCiudad7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(lbNit2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtTarjeta)
-                                            .addComponent(txtLugarNacimiento)
-                                            .addComponent(cmbEstadoCivil, 0, 167, Short.MAX_VALUE)))
-                                    .addGroup(pnlOtrosDatosLayout.createSequentialGroup()
-                                        .addComponent(lbCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                                        .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(txtTarjeta)
+                                    .addComponent(txtLugarNacimiento)
+                                    .addComponent(cmbEstadoCivil, 0, 167, Short.MAX_VALUE)
+                                    .addComponent(txtCelular))
+                                .addGap(1, 1, 1))
+                            .addComponent(txtDireccion))))
                 .addContainerGap())
         );
         pnlOtrosDatosLayout.setVerticalGroup(
@@ -1234,302 +1543,80 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             .addGroup(pnlOtrosDatosLayout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbRut, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbCiudad3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbNaturaleza, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbDepartamento3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbRut, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbCiudad3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbNaturaleza, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbDepartamento3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(chkSiResponsableIVA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(lbBarrio1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(chkNoResponsableIVA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, Short.MAX_VALUE)))
-                .addGap(3, 3, 3)
-                .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscTerceros1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(chkSiResponsableIVA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbBarrio1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(chkNoResponsableIVA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(3, 3, 3)
                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(dtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(txtLugarNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(lbFecha1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(lbFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(dtFechaNacimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtLugarNacimiento, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lbFecha1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtTarjeta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTarjeta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlOtrosDatosLayout.createSequentialGroup()
                         .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbCiudad7, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbEstadoCivil, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbCiudad6, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbCiudad7, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbEstadoCivil, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbCiudad6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(3, 3, 3)
                         .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbNit1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbNit2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(lbNit1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbNit2, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))))
                 .addGap(3, 3, 3)
                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbBarrio, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtBarrio, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lbBarrio, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBarrio, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(lbCelular, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(txtCelular, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, Short.MAX_VALUE)))
+                        .addComponent(lbCelular, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtCelular, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)))
                 .addGap(3, 3, 3)
                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbDireccion1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(pnlDatosObligatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 660, Short.MAX_VALUE)
-                    .addComponent(pnlOtrosDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlDatosVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(10, 10, 10))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(pnlDatosObligatorios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(pnlDatosVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(pnlOtrosDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5))
-        );
-
-        tabDatosTerceros.addTab("Datos contacto", jPanel1);
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-
-        pnlDatosVehiculo.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbEmail6.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbEmail6.setText("Marca:");
-
-        lbPlazo1.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
-        lbPlazo1.setText("Tipo de vehiculo:");
-
-        txtPlaca.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txtPlaca.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPlaca.setEnabled(false);
-        txtPlaca.setName("Cupo"); // NOI18N
-        txtPlaca.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtPlacaKeyReleased(evt);
-            }
-        });
-
-        lbCupo1.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
-        lbCupo1.setText("Placa:");
-
-        tblAutos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        tblAutos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Placa", "Tipo", "Modelo", "Marca", "Color", "Chasis", "Motor", "F.Compra"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, true, true, true, true, true, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblAutos.setComponentPopupMenu(jPopupMenu1);
-        tblAutos.setRowHeight(20);
-        tblAutos.getTableHeader().setReorderingAllowed(false);
-        jScrollPane3.setViewportView(tblAutos);
-        if (tblAutos.getColumnModel().getColumnCount() > 0) {
-            tblAutos.getColumnModel().getColumn(0).setMinWidth(55);
-            tblAutos.getColumnModel().getColumn(0).setPreferredWidth(55);
-            tblAutos.getColumnModel().getColumn(0).setMaxWidth(55);
-            tblAutos.getColumnModel().getColumn(2).setMinWidth(55);
-            tblAutos.getColumnModel().getColumn(2).setPreferredWidth(55);
-            tblAutos.getColumnModel().getColumn(2).setMaxWidth(55);
-        }
-
-        btnGuardarDatosVehiculo.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardarDatosVehiculo.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnGuardarDatosVehiculo.setText("Agregar Vehiculo");
-        btnGuardarDatosVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardarDatosVehiculo.setEnabled(false);
-        btnGuardarDatosVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnGuardarDatosVehiculo.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnGuardarDatosVehiculo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarDatosVehiculoActionPerformed(evt);
-            }
-        });
-
-        txtMarca.setBackground(new java.awt.Color(255, 204, 204));
-        txtMarca.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtMarca.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtMarca.setEnabled(false);
-        txtMarca.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtMarcaKeyReleased(evt);
-            }
-        });
-
-        lbPlazo2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbPlazo2.setText("Modelo:");
-
-        lbPlazo3.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbPlazo3.setText("# de chasis:");
-
-        lbPlazo4.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbPlazo4.setText("# de motor:");
-
-        txtChasis.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtChasis.setEnabled(false);
-
-        txtModelo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtModelo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtModelo.setEnabled(false);
-
-        txtMotor.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtMotor.setEnabled(false);
-
-        lbEmail7.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbEmail7.setText("Color:");
-
-        txtColor.setBackground(new java.awt.Color(255, 204, 204));
-        txtColor.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtColor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtColor.setEnabled(false);
-        txtColor.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtColorKeyReleased(evt);
-            }
-        });
-
-        lbPlazo5.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbPlazo5.setText("Fecha compra:");
-
-        dtFechaCompra.setFieldFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 12));
-        dtFechaCompra.addCommitListener(new datechooser.events.CommitListener() {
-            public void onCommit(datechooser.events.CommitEvent evt) {
-                dtFechaCompraOnCommit(evt);
-            }
-        });
-
-        txtTipoVehiculo.setBackground(new java.awt.Color(255, 204, 204));
-        txtTipoVehiculo.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txtTipoVehiculo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtTipoVehiculo.setEnabled(false);
-        txtTipoVehiculo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtTipoVehiculoKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtTipoVehiculoKeyReleased(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnlDatosVehiculoLayout = new javax.swing.GroupLayout(pnlDatosVehiculo);
-        pnlDatosVehiculo.setLayout(pnlDatosVehiculoLayout);
-        pnlDatosVehiculoLayout.setHorizontalGroup(
-            pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
-            .addGroup(pnlDatosVehiculoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbPlazo4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbPlazo3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbCupo1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbPlazo5, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
-                .addGap(5, 5, 5)
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtPlaca)
-                    .addComponent(txtMotor)
-                    .addComponent(dtFechaCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                    .addComponent(txtChasis, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(60, 60, 60)
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbEmail7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbEmail6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbPlazo2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbPlazo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtModelo)
-                    .addComponent(txtMarca)
-                    .addComponent(txtColor)
-                    .addComponent(txtTipoVehiculo, javax.swing.GroupLayout.Alignment.LEADING)))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDatosVehiculoLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnGuardarDatosVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        pnlDatosVehiculoLayout.setVerticalGroup(
-            pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDatosVehiculoLayout.createSequentialGroup()
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbCupo1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(txtPlaca, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbPlazo1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtTipoVehiculo, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(10, 10, 10)
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbPlazo2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(txtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lbPlazo3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                    .addComponent(txtChasis, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                    .addComponent(lbDireccion1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbEmail6, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtMotor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                    .addComponent(lbPlazo4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-                .addGap(3, 3, 3)
-                .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbPlazo5, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                    .addComponent(dtFechaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 24, Short.MAX_VALUE)
-                    .addGroup(pnlDatosVehiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbEmail7, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnGuardarDatosVehiculo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlDatosVehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbEmail2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscTerceros1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlDatosVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+
+        javax.swing.GroupLayout pnlDatosVentasYOtrosLayout = new javax.swing.GroupLayout(pnlDatosVentasYOtros);
+        pnlDatosVentasYOtros.setLayout(pnlDatosVentasYOtrosLayout);
+        pnlDatosVentasYOtrosLayout.setHorizontalGroup(
+            pnlDatosVentasYOtrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosVentasYOtrosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlDatosVentasYOtrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlDatosVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlOtrosDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        pnlDatosVentasYOtrosLayout.setVerticalGroup(
+            pnlDatosVentasYOtrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosVentasYOtrosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlDatosVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlOtrosDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(73, Short.MAX_VALUE))
         );
 
-        tabDatosTerceros.addTab("Datos Vehiculo", jPanel5);
-
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        tabDatosTerceros.addTab("Datos ventas y otros", pnlDatosVentasYOtros);
 
         pnlDatosMedicos.setBackground(new java.awt.Color(255, 255, 255));
+
+        pnlDatos.setBackground(new java.awt.Color(255, 255, 255));
 
         lbCiudad23.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         lbCiudad23.setText("Nombre completo de la madre:");
@@ -1774,7 +1861,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                                             .addComponent(lbCiudad15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(pnlDatosMedicosImportantesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(cmbAfiliado, 0, 181, Short.MAX_VALUE)
+                                            .addComponent(cmbAfiliado, 0, 208, Short.MAX_VALUE)
                                             .addComponent(cmbZona, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(txtReligion)))
                                     .addComponent(txtNombreEps))))))
@@ -1831,31 +1918,31 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                 .addGap(10, 10, 10))
         );
 
-        javax.swing.GroupLayout pnlDatosMedicosLayout = new javax.swing.GroupLayout(pnlDatosMedicos);
-        pnlDatosMedicos.setLayout(pnlDatosMedicosLayout);
-        pnlDatosMedicosLayout.setHorizontalGroup(
-            pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDatosMedicosLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnlDatosLayout = new javax.swing.GroupLayout(pnlDatos);
+        pnlDatos.setLayout(pnlDatosLayout);
+        pnlDatosLayout.setHorizontalGroup(
+            pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlDatosMedicosImportantes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlDatosMedicosLayout.createSequentialGroup()
-                        .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(pnlDatosLayout.createSequentialGroup()
+                        .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(lbCiudad24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbCiudad23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNombreMadre)
                             .addComponent(txtNombrePadre)))
                     .addComponent(lbCiudad19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlDatosMedicosLayout.createSequentialGroup()
-                        .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosLayout.createSequentialGroup()
+                        .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbCiudad21, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbCiudad20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNombreResponsable)
-                            .addGroup(pnlDatosMedicosLayout.createSequentialGroup()
+                            .addGroup(pnlDatosLayout.createSequentialGroup()
                                 .addComponent(cmbParentesco, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
                                 .addComponent(lbCiudad22)
@@ -1863,25 +1950,25 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                                 .addComponent(txtTelefonoResponsable, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
-        pnlDatosMedicosLayout.setVerticalGroup(
-            pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDatosMedicosLayout.createSequentialGroup()
+        pnlDatosLayout.setVerticalGroup(
+            pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosLayout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtNombreMadre)
                     .addComponent(lbCiudad23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
-                .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbCiudad24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtNombrePadre))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbCiudad19)
                 .addGap(3, 3, 3)
-                .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbCiudad20, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNombreResponsable, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
-                .addGroup(pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbCiudad22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtTelefonoResponsable)
                     .addComponent(cmbParentesco)
@@ -1891,24 +1978,24 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlDatosMedicosLayout = new javax.swing.GroupLayout(pnlDatosMedicos);
+        pnlDatosMedicos.setLayout(pnlDatosMedicosLayout);
+        pnlDatosMedicosLayout.setHorizontalGroup(
+            pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosMedicosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlDatosMedicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        pnlDatosMedicosLayout.setVerticalGroup(
+            pnlDatosMedicosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosMedicosLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(pnlDatosMedicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        tabDatosTerceros.addTab("Datos Medicos", jPanel6);
+        tabDatosTerceros.addTab("Datos Medicos", pnlDatosMedicos);
 
         lbFoto.setBackground(new java.awt.Color(204, 204, 204));
         lbFoto.setToolTipText("Esta herramienta solo recibe formatos JPG y PNG. Al montar la imagen recibe el tamaño de 250x250.");
@@ -1978,27 +2065,24 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         pnlFormularioLayout.setHorizontalGroup(
             pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(pnlFormularioLayout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .addComponent(tabDatosTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(tabDatosTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
                 .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlFormularioLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlFormularioLayout.createSequentialGroup()
-                                .addGap(36, 36, 36)
-                                .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(pnlFormularioLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(pnlInvisible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlFormularioLayout.createSequentialGroup()
+                            .addGap(36, 36, 36)
+                            .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(pnlInvisible, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlFormularioLayout.setVerticalGroup(
             pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFormularioLayout.createSequentialGroup()
-                .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlFormularioLayout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2010,8 +2094,8 @@ public class vistaContactos extends javax.swing.JInternalFrame {
                         .addComponent(pnlInvisible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlFormularioLayout.createSequentialGroup()
                         .addGap(5, 5, 5)
-                        .addComponent(tabDatosTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 638, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(24, 24, 24))
+                        .addComponent(tabDatosTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 638, Short.MAX_VALUE)))
+                .addGap(10, 10, 10))
         );
 
         scrFormulario.setViewportView(pnlFormulario);
@@ -2026,10 +2110,8 @@ public class vistaContactos extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(scrFormulario)
-                .addGap(0, 0, 0))
+                .addGap(4, 4, 4))
         );
-
-        getAccessibleContext().setAccessibleName("Creación de contactos");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -2044,8 +2126,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
 
     private void txtIdentificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdentificacionKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ModeloContacto nodo = instancias.getSql().getDatosTercero(txtIdentificacion.getText());
-            if (nodo.getId() == null) {
+            if (daoTerceros.consultarPorIdentificacion(txtIdentificacion.getText()) == null) {
                 txtDigito.requestFocus();
             } else {
                 cargarTercero(txtIdentificacion.getText());
@@ -2054,11 +2135,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             txtDigito.requestFocus();
         }
-        if (txtIdentificacion.getText().equals("")) {
-            btnImagen.setEnabled(false);
-        } else {
-            btnImagen.setEnabled(true);
-        }
+        btnImagen.setEnabled(!txtIdentificacion.getText().isEmpty());
     }//GEN-LAST:event_txtIdentificacionKeyReleased
 
     private void txtEmailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyReleased
@@ -2110,398 +2187,90 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCelularKeyReleased
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        chkNoResponsableIVA.setSelected(true);
-        txtNota1.setText("");
-
-        txtIdentificacion.setEditable(true);
-
-        Limpiadores.limpiarPanel(pnlDatosObligatorios);
-        Limpiadores.limpiarPanel(pnlDatosVentas);
-        Limpiadores.limpiarPanel(pnlOtrosDatos);
-
-        Limpiadores.limpiarPanel(pnlDatosVehiculo);
-        edicionCamposDatosVehiculo(false);
-        DefaultTableModel modelo = (DefaultTableModel) tblAutos.getModel();
-        while (tblAutos.getRowCount() != 0) {
-            modelo.removeRow(0);
-        }
-
-        Limpiadores.limpiarPanel(pnlDatosMedicos);
-        Limpiadores.limpiarPanel(pnlDatosMedicosImportantes);
-        
-        
-        
-        Limpiadores.limpiarPanel(jPanel1);
-        Limpiadores.limpiarPanel(jPanel6);
-
-        lbFoto.setIcon(null);
-        repaint();
-
-        btnImagen.setEnabled(false);
-        cmbDepartamento.setSelectedItem("Antioquia");
-        dtFechaNacimiento.setCalendar(null);
-        tabDatosTerceros.setSelectedIndex(0);
-        txtIdentificacion.requestFocus();
-        btnGuardarDatosVehiculo.setEnabled(false);
-        btnActualizar.setEnabled(false);
-        btnEliminar.setEnabled(false);
-        btnImprimir.setEnabled(false);
-        btnGuardar.setEnabled(true);
-        btnEliminar.setText("INACTIVAR");
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
-
-        String consecutivo = "";
-        int num = Integer.parseInt(instancias.getSql().getNumConsecutivo("TERCERO")[0].toString());
-        consecutivo = String.valueOf(num);
-        for (int i = 0; i < 8 - String.valueOf(num).length(); i++) {
-            consecutivo = "0" + consecutivo;
-        }
-        txtIdSistema.setText("TERC-" + consecutivo);
-        txtCupo.setText(this.simbolo + " 0");
+        limpiarFormulario();
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String digitoVerificacion = txtDigito.getText().equals("") ? "" : "-" + txtDigito.getText();
-        ModeloContacto datosContacto = new ModeloContacto(txtIdentificacion.getText(), txtTelefono.getText(), cmbCiudad.getSelectedItem().toString(), 
-                txtEmail.getText(), cmbDepartamento.getSelectedItem().toString(), cmbTipoIdentificacion.getSelectedItem().toString(), 
-                txtNombreCompleto.getText(), cmbRegimen.getSelectedItem().toString(), cmbAfiliado.getSelectedItem().toString(), 
-                cmbTrabajador.getSelectedItem().toString(), txtNombreEps.getText(), cmbCodigoPostal.getSelectedItem().toString());
+        ModeloContacto contacto = leerFormulario(crearContactoNuevo());
 
-        ModeloContacto consultaDatosContacto = instancias.getSql().getDatosTercero(datosContacto.getId() + digitoVerificacion);
-        if (!squemaDatosContacto.validacionesDatosContacto(datosContacto, this.tipo.equals("paciente"), 
-                instancias.getConfiguraciones().isFacturaElectronica(), digitoVerificacion, consultaDatosContacto)) {
+        if (!validarContacto(contacto, true)) {
             return;
         }
 
-        if (ControladorAlertas.option("¿Desea continuar?")) {
-            
-            if (txtCupo.getText().equals("")) {
-                txtCupo.setText("0");
-            }
-            if (txtPlazo.getText().equals("")) {
-                txtPlazo.setText("0");
-            }
-            if (txtNombreEps.getText().equals("")) {
-                txtCodigoEps.setText("");
-            }
-
-            String idVendedor = "";
-            if (cmbVendedor.getSelectedIndex() > 0) {
-                idVendedor = instancias.getSql().getIdEmpleado(cmbVendedor.getSelectedItem().toString());
-            }
-
-            String fechaNacimiento = "";
-            if (instancias.getConfiguraciones().isMedico() || instancias.getConfiguraciones().isLaboratorio()
-                    || instancias.getConfiguraciones().isOftalmologia()) {
-                try {
-                    fechaNacimiento = metodos.desdeDate(dtFechaNacimiento.getCalendar());
-                } catch (Exception e) {
-                    ControladorAlertas.alert("Debe ingresar la fecha de nacimiento");
-                    return;
-                }
-            } else {
-                try {
-                    fechaNacimiento = metodos.desdeDate(dtFechaNacimiento.getCalendar());
-                } catch (Exception e) {
-                    fechaNacimiento = metodos.fechaConsulta(metodosGenerales.fecha());
-                }
-            }
-
-            String convenio = "";
-            if (jRadioButton1.isSelected()) {
-                convenio = "1";
-            }
-
-            String consecutivo = "";
-            int num = Integer.parseInt(instancias.getSql().getNumConsecutivo("TERCERO")[0].toString());
-            consecutivo = String.valueOf(num);
-            for (int i = 0; i < 8 - String.valueOf(num).length(); i++) {
-                consecutivo = "0" + consecutivo;
-            }
-
-            String eps = txtCodigoEps.getText();
-            if ("".equals(eps)) {
-                eps = null;
-            }
-
-            Object[] vector = {"TERC-" + consecutivo, txtIdentificacion.getText() + digitoVerificacion, txtNombreCompleto.getText(),
-                txtTelefono.getText(), txtCelular.getText(), txtDireccion.getText(), cmbCiudad.getSelectedItem(),
-                txtEmail.getText(), cmbDepartamento.getSelectedItem(),
-                metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(),
-                cmbTipoIdentificacion.getSelectedItem().toString(), txtNombreCompleto.getText(),
-                txtpNombre.getText(), txtsNombre.getText(), txtpApellido.getText(), txtsApellido.getText(),
-                txtOcupacion.getText(), cmbNaturaleza.getSelectedItem().toString(), cmbRut.getSelectedItem().toString(),
-                false, txtPlazo.getText(), big.getMoneda(txtCupo.getText()), "", "Colombia",
-                cmbSexo.getSelectedItem(), cmbEstadoCivil.getSelectedItem(), txtOcupacion.getText(), cmbRegimen.getSelectedItem(),
-                cmbAfiliado.getSelectedItem(), cmbTrabajador.getSelectedItem(),
-                cmbZona.getSelectedItem(), fechaNacimiento, txtSangre.getText(), eps, instancias.getTerminal(),
-                txtCodigoReferido.getText(), idVendedor, cmbLista.getSelectedItem(), txtNota.getText() + "" + txtNota1.getText(), "",
-                "", cmbCodigoPostal.getSelectedItem().toString(), convenio, txtConvenio.getText(), txtReligion.getText(),
-                txtNombreMadre.getText(), txtNombrePadre.getText(), txtNombreResponsable.getText(), cmbParentesco.getSelectedItem(), txtTelefonoResponsable.getText(),
-                txtLugarNacimiento.getText(), txtBarrio.getText(), txtTipoCliente.getText(), txtTarjeta.getText(), "", "", "", "", 0,
-                metodos.fechaConsulta(metodosGenerales.fecha()), metodos.fechaConsulta(metodosGenerales.fecha()), false, "", "", "",
-                cmbTipoContacto.getSelectedItem().toString(), "", chkSiResponsableIVA.isSelected()};
-
-            consultaDatosContacto = metodos.llenarTercero(vector);
-
-            if (!instancias.getSql().agregarTercero(consultaDatosContacto)) {
-                ControladorAlertas.alertFail("Hubo un error al guardar");
-                return;
-            }
-
-            for (int i = 0; i < tblAutos.getRowCount(); i++) {
-                if (!instancias.getSql().agregarPlacas(txtIdentificacion.getText(), tblAutos.getValueAt(i, 0).toString(),
-                        tblAutos.getValueAt(i, 1).toString(), tblAutos.getValueAt(i, 2).toString(), tblAutos.getValueAt(i, 3).toString(),
-                        tblAutos.getValueAt(i, 4).toString(), tblAutos.getValueAt(i, 5).toString(), tblAutos.getValueAt(i, 6).toString(),
-                        tblAutos.getValueAt(i, 7).toString())) {
-                    ControladorAlertas.alertFail("Hubo un error al guardar las placas");
-                    return;
-                }
-            }
-
-            if (this.tipo.equals("paciente")) {
-                String historia = "HSTC-" + txtIdentificacion.getText();
-                Object[] vector2 = {historia, "TERC-" + consecutivo, metodos.fechaConsulta(metodosGenerales.fecha()), "",
-                    metodos.fechaConsulta(metodosGenerales.fecha()), metodos.fechaConsulta(metodosGenerales.fecha()), "",
-                    "", "", "", "", "0&0&0&0", "", "", ""};
-
-                ndHistoriaClinica nodoDos = metodos.llenarHistClinica(vector2);
-
-                if (!instancias.getSql().agregarHistClinica(nodoDos)) {
-                    ControladorAlertas.alertFail("Error al guardar historia clinica");
-                    return;
-                } else {
-                    ControladorAlertas.alertSuccess("Historia Clinica No." + historia.replace("HSTC-", ""));
-                }
-            } else {
-                ControladorAlertas.alertSuccess("Cliente creado con éxito");
-            }
-
-            if (!instancias.getSql().aumentarConsecutivo("TERCERO", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TERCERO")[0]) + 1)) {
-                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del tercero");
-            }
-
-            String cliente = txtIdentificacion.getText();
-            btnNuevoActionPerformed(evt);
-            String cita = "";
-            String medico = "";
-
-            try {
-                cita = instancias.getSql().getAgendasDelDia(cliente, metodos.fechaConsulta(metodosGenerales.fecha()));
-            } catch (Exception e) {
-            }
-
-            if (!cita.equals("")) {
-                medico = instancias.getSql().medicoDeLaCita(cita);
-            }
-
-            if (!cita.equalsIgnoreCase("")) {
-                if (tipo.equals("paciente")) {
-                    if (instancias.isGeneraOrdenMedica()) {
-                        instancias.getOrdenMedica().cargarClienteDesdeAgenda(cliente, medico);
-                        try {
-                            instancias.getOrdenMedica().setSelected(true);
-                        } catch (Exception e) {
-                        }
-                    } else {
-                        instancias.getHistoriaC().setPaciente(cliente);
-                        try {
-                            instancias.getHistoriaC().setSelected(true);
-                        } catch (Exception e) {
-                        }
-                    }
-                } else {
-                    instancias.getFactura().cargarCliente(cliente);
-                    try {
-                        instancias.getFacturaContenedor().setSelected(true);
-                    } catch (Exception e) {
-                    }
-
-                }
-            }
-
-            lbNit.requestFocus();
+        if (!ControladorAlertas.option("¿Desea continuar?")) {
+            return;
         }
-    }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        if (this.tipo.equals("paciente")) {
-            Object[] campos = {txtNombreCompleto, txtTelefono, cmbTipoIdentificacion, txtIdentificacion, txtNombreEps, cmbRegimen, cmbAfiliado, cmbTrabajador, cmbDepartamento, cmbCiudad};
-            String faltantes = metodos.camposVacios(campos);
+        if (!daoTerceros.guardar(contacto, leerVehiculos())) {
+            ControladorAlertas.alertFail("Hubo un error al guardar");
+            return;
+        }
 
-            if (!faltantes.equals("")) {
-                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
+        if (esPaciente()) {
+            if (!crearHistoriaClinica(contacto)) {
                 return;
             }
         } else {
-
-            String faltantes = "";
-            if (instancias.getConfiguraciones().isFacturaElectronica()) {
-                Object[] campos = {txtNombreCompleto, txtTelefono, cmbTipoIdentificacion, txtIdentificacion, txtEmail, cmbDepartamento, cmbCiudad};
-                faltantes = metodos.camposVacios(campos);
-                if (cmbCodigoPostal.getSelectedIndex() == 0) {
-                    ControladorAlertas.alert("El codigo postal es obligatorio");
-                    return;
-                }
-            } else {
-                Object[] campos = {txtNombreCompleto, txtTelefono, cmbTipoIdentificacion, txtIdentificacion};
-                faltantes = metodos.camposVacios(campos);
-            }
-
-            if (!faltantes.equals("")) {
-                ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
-                return;
-            }
+            ControladorAlertas.alertSuccess(etiquetaContacto() + " creado con éxito");
         }
 
-        ModeloContacto nodo = instancias.getSql().getDatosTercero(txtIdentificacion.getText() + "-" + txtDigito.getText());
-        if (nodo.getId() != null) {
-            if (!txtIdSistema.getText().equals(nodo.getIdSistema())) {
-                ControladorAlertas.alertFail("El documento ya existe");
-                txtIdentificacion.requestFocus();
-                return;
-            }
+        String cliente = txtIdentificacion.getText();
+        boolean esEmpleado = tipoSeleccionado() == TipoContacto.EMPLEADO;
+        refrescarModulosRelacionados(contacto);
+        limpiarFormulario();
+
+        if (!esEmpleado) {
+            procesarCitaPendiente(cliente);
+        }
+        
+        lbNit.requestFocus();
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        ModeloContacto guardado = daoTerceros.consultarPorIdentificacion(txtIdSistema.getText());
+        if (guardado == null) {
+            ControladorAlertas.alertFail("No se encontró el contacto a modificar");
+            return;
         }
 
-        if (ControladorAlertas.option("¿Desea continuar?")) {
+        ModeloContacto contacto = leerFormulario(guardado);
 
-//            try {
-            if (txtCupo.getText().equals("")) {
-                txtCupo.setText("0");
-            }
-
-            if (txtNombreEps.getText().equals("")) {
-                txtCodigoEps.setText("");
-            }
-            String idVendedor = "";
-            if (cmbVendedor.getSelectedIndex() > 0) {
-                idVendedor = instancias.getSql().getIdEmpleado(cmbVendedor.getSelectedItem().toString());
-            }
-
-            String fechaNacimiento = "";
-//            boolean fechaNull = false;
-            try {
-                fechaNacimiento = metodos.desdeDate(dtFechaNacimiento.getCalendar());
-
-            } catch (Exception e) {
-                fechaNacimiento = metodosGenerales.fecha();
-//                fechaNull = true;
-            }
-
-            String convenio = "";
-            if (jRadioButton1.isSelected()) {
-                convenio = "1";
-            }
-
-            String digito = txtDigito.getText();
-            if (digito.equals("")) {
-                digito = "";
-            } else {
-                digito = "-" + digito;
-            }
-
-            String eps = txtCodigoEps.getText();
-            if ("".equals(eps)) {
-                eps = null;
-            }
-
-            Object[] vector = {txtIdSistema.getText(), txtIdentificacion.getText() + digito, txtNombreCompleto.getText(), txtTelefono.getText(), txtCelular.getText(), txtDireccion.getText(), cmbCiudad.getSelectedItem(),
-                txtEmail.getText(), cmbDepartamento.getSelectedItem(), nodo.getFecha(), nodo.getUsuario(), cmbTipoIdentificacion.getSelectedItem().toString(), txtNombreCompleto.getText(),
-                txtpNombre.getText(), txtsNombre.getText(), txtpApellido.getText(), txtsApellido.getText(), txtOcupacion.getText(), cmbNaturaleza.getSelectedItem().toString(),
-                cmbRut.getSelectedItem().toString(), nodo.isActivo(), txtPlazo.getText(), big.getMoneda(txtCupo.getText()), "", "Colombia", cmbSexo.getSelectedItem(),
-                cmbEstadoCivil.getSelectedItem(), txtOcupacion.getText(), cmbRegimen.getSelectedItem(), cmbAfiliado.getSelectedItem(), cmbTrabajador.getSelectedItem(),
-                cmbZona.getSelectedItem(), fechaNacimiento, txtSangre.getText(), eps, nodo.getTerminal(),
-                txtCodigoReferido.getText(), idVendedor, cmbLista.getSelectedItem(), txtNota.getText() + "" + txtNota1.getText(), "",
-                "", cmbCodigoPostal.getSelectedItem().toString(), convenio, txtConvenio.getText(), txtReligion.getText(), txtNombreMadre.getText(), txtNombrePadre.getText(),
-                txtNombreResponsable.getText(), cmbParentesco.getSelectedItem(), txtTelefonoResponsable.getText(), txtLugarNacimiento.getText(), txtBarrio.getText(),
-                txtTipoCliente.getText(), txtTarjeta.getText(), "", "", "", "", 0, null, null, false, "", "", "",
-                cmbTipoContacto.getSelectedItem().toString(), "", chkSiResponsableIVA.isSelected()};
-
-            nodo = metodos.llenarTercero(vector);
-            if (!instancias.getSql().modificarTercero(nodo)) {
-                ControladorAlertas.alertFail("Hubo un problema al modificar el Tercero");
-                return;
-            }
-
-            instancias.getSql().eliminar_registro("bdPlacas", " usuario = '" + txtIdSistema.getText() + "'");
-
-            for (int i = 0; i < tblAutos.getRowCount(); i++) {
-
-                String valor1, valor2, valor3, valor4, valor5, valor6, valor7;
-
-                try {
-                    valor1 = tblAutos.getValueAt(i, 1).toString();
-                } catch (Exception e) {
-                    valor1 = "";
-                }
-
-                try {
-                    valor2 = tblAutos.getValueAt(i, 2).toString();
-                } catch (Exception e) {
-                    valor2 = "";
-                }
-
-                try {
-                    valor3 = tblAutos.getValueAt(i, 3).toString();
-                } catch (Exception e) {
-                    valor3 = "";
-                }
-
-                try {
-                    valor4 = tblAutos.getValueAt(i, 4).toString();
-                } catch (Exception e) {
-                    valor4 = "";
-                }
-
-                try {
-                    valor5 = tblAutos.getValueAt(i, 5).toString();
-                } catch (Exception e) {
-                    valor5 = "";
-                }
-
-                try {
-                    valor6 = tblAutos.getValueAt(i, 6).toString();
-                } catch (Exception e) {
-                    valor6 = "";
-                }
-
-                try {
-                    valor7 = tblAutos.getValueAt(i, 7).toString();
-                } catch (Exception e) {
-                    valor7 = "";
-                }
-
-                if (!instancias.getSql().agregarPlacas(txtIdSistema.getText(), tblAutos.getValueAt(i, 0).toString(),
-                        valor1, valor2, valor3, valor4, valor5, valor6, valor7)) {
-                    ControladorAlertas.alertFail("Hubo un error al guardar las placas");
-                    return;
-                }
-            }
-
-            ControladorAlertas.alertSuccess("Tercero modificado con éxito");
-
-            btnNuevoActionPerformed(evt);
-//            } catch (Exception e) {
-//                ControladorAlertas.alertFail("Hubo un problema al modiicar el Tercero");
-//            }
+        if (!validarContacto(contacto, false)) {
+            return;
         }
+
+        if (!ControladorAlertas.option("¿Desea continuar?")) {
+            return;
+        }
+
+        if (!daoTerceros.modificar(contacto, leerVehiculos())) {
+            ControladorAlertas.alertFail("Hubo un problema al modificar el " + etiquetaContacto().toLowerCase());
+            return;
+        }
+
+        refrescarModulosRelacionados(contacto);
+        ControladorAlertas.alertSuccess(etiquetaContacto() + " modificado con éxito");
+        limpiarFormulario();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        if (btnEliminar.getText().equalsIgnoreCase("ACTIVAR")) {
-            if (ControladorAlertas.option("¿Activar este registro?")) {
-                instancias.getSql().activarCliente(txtIdentificacion.getText());
-                ControladorAlertas.alertSuccess("Cliente activado con éxito");
-                btnNuevoActionPerformed(evt);
-                return;
-            }
+        boolean activar = TEXTO_ACTIVAR.equalsIgnoreCase(btnEliminar.getText().trim());
+
+        if (!ControladorAlertas.option(activar ? "¿Activar este registro?" : "¿Inactivar este registro?")) {
+            return;
         }
 
-        if (ControladorAlertas.option("¿Inactivar este registro?")) {
-            instancias.getSql().eliminarCliente(txtIdentificacion.getText());
-            ControladorAlertas.alert("Cliente inactivado, este registro podrá ser activado posteriormente");
-            btnNuevoActionPerformed(evt);
+        if (!daoTerceros.cambiarEstado(txtIdSistema.getText(), !activar)) {
+            ControladorAlertas.alertFail("No fue posible cambiar el estado del registro");
+            return;
         }
+
+        if (activar) {
+            ControladorAlertas.alertSuccess(etiquetaContacto() + " activado con éxito");
+        } else {
+            ControladorAlertas.alert(etiquetaContacto() + " inactivado, este registro podrá ser activado posteriormente");
+        }
+        limpiarFormulario();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnBuscTercerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTercerosActionPerformed
@@ -2756,52 +2525,27 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBarrioKeyReleased
 
     private void btnImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenActionPerformed
-
         JFileChooser chooser = new JFileChooser();
         ImagePreviewPanel preview = new ImagePreviewPanel();
         chooser.setAccessory(preview);
         chooser.addPropertyChangeListener(preview);
+        chooser.setFileFilter(new FileNameExtensionFilter("JPG, PNG & GIF", "jpg", "png", "gif"));
 
-        FileNameExtensionFilter filtroImagen = new FileNameExtensionFilter("JPG, PNG & GIF", "jpg", "png", "gif");
-        chooser.setFileFilter(filtroImagen);
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
 
-        int respuesta = chooser.showSaveDialog(this);
+        String origen = chooser.getSelectedFile().getAbsolutePath();
 
-        if (respuesta == JFileChooser.APPROVE_OPTION) {
-            Path FROM = Paths.get(chooser.getSelectedFile().getAbsolutePath());
+        try {
+            metodos.montarImagenTerceros(origen, rutaFoto(txtIdSistema.getText(), tipoSeleccionado()));
 
-            String id = "";
-
-            if (lbFoto.getToolTipText().equalsIgnoreCase("")) {
-                id = Arrays.toString(instancias.getSql().getNumConsecutivo("IMG"));
-
-            } else {
-                id = lbFoto.getToolTipText();
-            }
-
-            Path TO = Paths.get(System.getProperty("user.dir") + "\\imagenes\\terceros\\" + txtIdSistema.getText() + ".jpg");
-
-            //sobreescribir el fichero de destino, si existe, y copiar
-            // los atributos, incluyendo los permisos rwx
-            CopyOption[] options = new CopyOption[]{
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.COPY_ATTRIBUTES
-            };
-
-            try {
-//                Files.copy(FROM, TO, options);
-
-                metodos.montarImagenTerceros(FROM.toString(), TO.toString());
-
-                ImageIcon fot = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
-                Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
-                lbFoto.setIcon(icono);
-                this.repaint();
-
-            } catch (Exception ex) {
-                ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
-            }
-
+            ImageIcon fot = new ImageIcon(origen);
+            Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
+            lbFoto.setIcon(icono);
+            this.repaint();
+        } catch (Exception ex) {
+            ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
         }
     }//GEN-LAST:event_btnImagenActionPerformed
 
@@ -2813,44 +2557,31 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNota1KeyReleased
 
-    private void txtPlacaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtTipoVehiculo.requestFocus();
-        } else {
-            txtPlaca.setText(txtPlaca.getText().toUpperCase());
-        }
-    }//GEN-LAST:event_txtPlacaKeyReleased
+    private void btnAgregarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarVehiculoActionPerformed
+        capturarVehiculo(-1);
+    }//GEN-LAST:event_btnAgregarVehiculoActionPerformed
 
-    private void btnGuardarDatosVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarDatosVehiculoActionPerformed
-        ModeloDatosVehiculo datosVehiculo = new ModeloDatosVehiculo(txtPlaca.getText(), txtTipoVehiculo.getText(), txtChasis.getText(), txtMotor.getText(),
-                txtModelo.getText(), txtMarca.getText(), dtFechaCompra.getText(), txtColor.getText());
-
-        if (!squemaDatosVehiculo.validacionesDatosVehiculo(datosVehiculo, tblAutos)) {
+    private void btnModificarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarVehiculoActionPerformed
+        if (tblAutos.getSelectedRow() < 0) {
+            ControladorAlertas.alert("Seleccione una placa");
             return;
         }
+        capturarVehiculo(tblAutos.getSelectedRow());
+    }//GEN-LAST:event_btnModificarVehiculoActionPerformed
 
-        DefaultTableModel modelo = (DefaultTableModel) tblAutos.getModel();
-        modelo.addRow(new Object[]{txtPlaca.getText(), txtTipoVehiculo.getText(), txtModelo.getText(), txtMarca.getText(),
-            txtColor.getText(), txtChasis.getText(), txtMotor.getText(), dtFechaCompra.getText()});
+    private void btnEliminarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarVehiculoActionPerformed
+        eliminarVehiculoSeleccionado();
+    }//GEN-LAST:event_btnEliminarVehiculoActionPerformed
 
-        Limpiadores.limpiarPanel(pnlDatosVehiculo);
-    }//GEN-LAST:event_btnGuardarDatosVehiculoActionPerformed
+    private void tblAutosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAutosMouseClicked
+        if (evt.getClickCount() == 2 && btnModificarVehiculo.isEnabled() && tblAutos.getSelectedRow() > -1) {
+            capturarVehiculo(tblAutos.getSelectedRow());
+        }
+    }//GEN-LAST:event_tblAutosMouseClicked
 
     private void popBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popBorrarActionPerformed
-        if (tblAutos.getSelectedRow() > -1) {
-            int fila = tblAutos.getSelectedRow();
-
-            DefaultTableModel modelo = (DefaultTableModel) tblAutos.getModel();
-            modelo.removeRow(fila);
-            tblAutos.removeEditor();
-        } else {
-            ControladorAlertas.alert("Seleccione una placa");
-        }
+        eliminarVehiculoSeleccionado();
     }//GEN-LAST:event_popBorrarActionPerformed
-
-    private void dtFechaCompraOnCommit(datechooser.events.CommitEvent evt) {//GEN-FIRST:event_dtFechaCompraOnCommit
-
-    }//GEN-LAST:event_dtFechaCompraOnCommit
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         instancias.getReporte().setImagenInforme1(txtIdSistema.getText());
@@ -2920,48 +2651,6 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         txtIdentificacion.requestFocus();
     }//GEN-LAST:event_lbNitKeyReleased
 
-    private void txtTipoVehiculoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTipoVehiculoKeyPressed
-
-    }//GEN-LAST:event_txtTipoVehiculoKeyPressed
-
-    private void txtTipoVehiculoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTipoVehiculoKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (!txtTipoVehiculo.getText().equals("")) {
-                txtChasis.requestFocus();
-            } else {
-                ventanaTipoVehiculos(txtTipoVehiculo.getText());
-            }
-        } else {
-            txtTipoVehiculo.setText("");
-        }
-    }//GEN-LAST:event_txtTipoVehiculoKeyReleased
-
-    private void txtMarcaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMarcaKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (!txtMarca.getText().equals("")) {
-                btnNuevo.requestFocus();
-            } else {
-                ventanaMarcas(txtMarca.getText());
-            }
-        } else {
-            txtMarca.setText("");
-        }
-    }//GEN-LAST:event_txtMarcaKeyReleased
-
-    private void txtColorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColorKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String color = txtColor.getText();
-
-            if (!txtColor.getText().equals("")) {
-                btnGuardarDatosVehiculo.requestFocus();
-            } else {
-                ventanaColores1(txtColor.getText());
-            }
-        } else {
-            txtColor.setText("");
-        }
-    }//GEN-LAST:event_txtColorKeyReleased
-
     private void btnBuscTerceros1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros1ActionPerformed
         ventanaOcupaciones("");
     }//GEN-LAST:event_btnBuscTerceros1ActionPerformed
@@ -2981,9 +2670,9 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         cmbCodigoPostal.removeAllItems();
         cmbCodigoPostal.addItem(" ");
 
-        for (int i = 0; i < codigosPostales.length; i++) {
-            if (null != codigosPostales[i][0]) {
-                cmbCodigoPostal.addItem(codigosPostales[i][0]);
+        for (Object[] codigosPostale : codigosPostales) {
+            if (null != codigosPostale[0]) {
+                cmbCodigoPostal.addItem(codigosPostale[0]);
             }
         }
     }//GEN-LAST:event_cmbCiudadItemStateChanged
@@ -2992,51 +2681,103 @@ public class vistaContactos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbCodigoPostalItemStateChanged
 
-    private void cmbTipoContactoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbTipoContactoKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbTipoContactoKeyReleased
-
     private void txtDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccionActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDireccionActionPerformed
 
-    public void ventanaColores1(String nit) {
-        buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscColores(buscar);
-        instancias.setCampoActual(txtColor);
-        txtColor.requestFocus();
-        buscar.setInstancia(instancias);
-        buscar.noEncontrado(nit);
-        buscar.show();
+    private void txtEpsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEpsKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            cargarEpsEmpleado(txtEps.getText());
+        } else {
+            txtEps.setText("");
+        }
+    }//GEN-LAST:event_txtEpsKeyReleased
+
+    private void txtArlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtArlKeyReleased
+        avanzarConEnter(evt, txtccf);
+    }//GEN-LAST:event_txtArlKeyReleased
+
+    private void txtCargoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCargoKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (txtCargo.getText().trim().isEmpty()) {
+                ventanaCargos("");
+            } else {
+                dtFechaIngreso.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_txtCargoKeyReleased
+
+    private void txtSalarioKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSalarioKeyReleased
+        if (!txtSalario.getText().trim().isEmpty()) {
+            txtSalario.setText(big.setMoneda(big.getMoneda(txtSalario.getText())));
+        }
+    }//GEN-LAST:event_txtSalarioKeyReleased
+
+    private void txtSalarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSalarioKeyTyped
+        metodos.soloNum(evt);
+    }//GEN-LAST:event_txtSalarioKeyTyped
+
+    private void cmbUsuariosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbUsuariosFocusGained
+        if (!instancias.getUsuario().equals("ADMIN")) {
+            dtFechaIngreso.requestFocus();
+            ControladorAlertas.alertFail("No tiene permisos para abrir esta lista");
+        }
+    }//GEN-LAST:event_cmbUsuariosFocusGained
+
+    private void capturarVehiculo(int fila) {
+        VistaDatosVehiculo modal = new VistaDatosVehiculo(instancias.getMenu(), true);
+        modal.preparar(fila < 0 ? null : vehiculoDeLaFila(fila), placasRegistradas(fila), txtIdSistema.getText());
+        modal.setVisible(true);
+
+        if (!modal.isAceptado()) {
+            return;
+        }
+
+        ModeloDatosVehiculo vehiculo = modal.getVehiculo();
+        DefaultTableModel modelo = (DefaultTableModel) tblAutos.getModel();
+        Object[] valores = new Object[]{vehiculo.getPlaca(), vehiculo.getTipoVehiculo(), vehiculo.getModelo(), vehiculo.getMarca(),
+            vehiculo.getColor(), vehiculo.getNumeroChasis(), vehiculo.getNumeroMotor(), vehiculo.getFechaCompra()};
+
+        if (fila < 0) {
+            modelo.addRow(valores);
+            return;
+        }
+
+        for (int columna = 0; columna < valores.length; columna++) {
+            modelo.setValueAt(valores[columna], fila, columna);
+        }
     }
 
-    public void ventanaMarcas(String nit) {
-        buscMarcas buscar = new buscMarcas(instancias.getMenu(), rootPaneCheckingEnabled);
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscMarcas(buscar);
-        instancias.setCampoActual(txtMarca);
-        txtMarca.requestFocus();
-        buscar.setInstancia(instancias);
-        buscar.noEncontrado(nit);
-        buscar.show();
+    private ModeloDatosVehiculo vehiculoDeLaFila(int fila) {
+        return new ModeloDatosVehiculo(valorCelda(fila, 0), valorCelda(fila, 1), valorCelda(fila, 5), valorCelda(fila, 6),
+                valorCelda(fila, 2), valorCelda(fila, 3), valorCelda(fila, 7), valorCelda(fila, 4));
     }
 
-    public void ventanaTipoVehiculos(String nit) {
-        buscTipoVehiculo buscar = new buscTipoVehiculo(instancias.getMenu(), true);
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscTipoVehiculo(buscar);
-        instancias.setCampoActual(txtTipoVehiculo);
-        txtTipoVehiculo.requestFocus();
-        buscar.setInstancia(instancias);
-        buscar.noEncontrado(nit);
-        buscar.show();
+    private List<String> placasRegistradas(int filaOmitida) {
+        List<String> placas = new ArrayList<>();
+
+        for (int fila = 0; fila < tblAutos.getRowCount(); fila++) {
+            if (fila != filaOmitida) {
+                placas.add(valorCelda(fila, 0));
+            }
+        }
+        return placas;
+    }
+
+    private void eliminarVehiculoSeleccionado() {
+        if (tblAutos.getSelectedRow() < 0) {
+            ControladorAlertas.alert("Seleccione una placa");
+            return;
+        }
+
+        ((DefaultTableModel) tblAutos.getModel()).removeRow(tblAutos.getSelectedRow());
+        tblAutos.removeEditor();
     }
 
     public void cargarReferido() {
-        ModeloContacto nodo = instancias.getSql().getDatosTercero(txtCodigoReferido.getText());
-        if (nodo.getId() != null) {
-            txtNombreReferido.setText(nodo.getNombre());
+        ModeloContacto referido = daoTerceros.consultarPorIdentificacion(txtCodigoReferido.getText());
+        if (referido != null) {
+            txtNombreReferido.setText(referido.getNombre());
             cmbVendedor.requestFocus();
         } else {
             ventanaTercerosReferidos(txtCodigoReferido.getText());
@@ -3044,292 +2785,533 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     }
 
     public void cargarTercero(String Id) {
+        ModeloContacto contacto = daoTerceros.consultarPorIdentificacion(Id);
 
-        ModeloContacto nodo = instancias.getSql().getDatosTercero(Id);
-
-        if (nodo.getId() != null) {
-
-            edicionCamposDatosVehiculo(true);
-
-            txtIdSistema.setText(nodo.getIdSistema());
-            txtIdentificacion.setText(nodo.getId().split("-")[0]);
-            try {
-                txtDigito.setText(nodo.getId().split("-")[1]);
-            } catch (Exception e) {
-                txtDigito.setText("");
-            }
-
-            try {
-                txtTelefono.setText(nodo.getTelefono());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtTarjeta.setText(nodo.getCargo());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtTipoCliente.setText(nodo.getNombreContacto());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtCelular.setText(nodo.getCelular());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtDireccion.setText(nodo.getDireccion());
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbDepartamento.setSelectedItem(nodo.getDepartamento());
-            } catch (Exception e) {
-                cmbDepartamento.addItem(nodo.getDepartamento());
-                cmbDepartamento.setSelectedItem(nodo.getDepartamento());
-            }
-
-            try {
-                cmbCiudad.setSelectedItem(nodo.getCiudad());
-            } catch (Exception e) {
-                cmbCiudad.addItem(nodo.getCiudad());
-                cmbCiudad.setSelectedItem(nodo.getCiudad());
-            }
-
-            try {
-                cmbCodigoPostal.setSelectedItem(nodo.getCodigoPostal());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtEmail.setText(nodo.getEmail());
-            } catch (Exception e) {
-            }
-
-            try {
-                dtFechaNacimiento.setCalendar(metodos.haciaDate(nodo.getNacimiento()));
-            } catch (Exception e) {
-            }
-
-            try {
-                if (nodo.getTipo().equals("CEDULA") || nodo.getTipo().equals("CC") || nodo.getTipo().equals("Cedula") || nodo.getTipo().equals("Cédula")) {
-                    cmbTipoIdentificacion.setSelectedItem("Cédula de ciudadanía");
-                } else if (nodo.getTipo().equals("NIT") || nodo.getTipo().equals("Nit")) {
-                    cmbTipoIdentificacion.setSelectedItem("Nit");
-                } else {
-                    cmbTipoIdentificacion.setSelectedItem(nodo.getTipo());
-                }
-            } catch (Exception e) {
-            }
-
-            try {
-                txtpNombre.setText(nodo.getpNombre());
-            } catch (Exception e) {
-            }
-            try {
-                txtsNombre.setText(nodo.getsNombre());
-            } catch (Exception e) {
-            }
-            try {
-                txtpApellido.setText(nodo.getpApellido());
-            } catch (Exception e) {
-            }
-            try {
-                txtsApellido.setText(nodo.getsApellido());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtOcupacion.setText(nodo.getOcupacion());
-            } catch (Exception e) {
-            }
-            try {
-                cmbEstadoCivil.setSelectedItem(nodo.getEstado());
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbRegimen.setSelectedItem(nodo.getRegimen());
-            } catch (Exception e) {
-            }
-
-            //--------------------------------------------------------
-            try {
-                cmbTrabajador.setSelectedItem(nodo.getTipoTrabajador());
-            } catch (Exception e) {
-            }
-            try {
-                cmbAfiliado.setSelectedItem(nodo.getAfiliado());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtCodigoEps.setText(nodo.getEps());
-                if (!nodo.getEps().equals("")) {
-                    cargarEps(nodo.getEps());
-                }
-
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbNaturaleza.setSelectedItem(nodo.getNaturaleza());
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbRut.setSelectedItem(nodo.getRut());
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbTipoContacto.setSelectedItem(nodo.getTipoTercero());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtPlazo.setText(nodo.getPlazo());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtCupo.setText(big.setMoneda(big.getBigDecimal(nodo.getCupo())));
-            } catch (Exception e) {
-            }
-
-            try {
-                if (!nodo.getReferido().equals("")) {
-                    txtCodigoReferido.setText(nodo.getReferido());
-                    cargarReferido();
-                }
-            } catch (Exception e) {
-            }
-
-            try {
-                String nombreVendedor = "";
-                if (!nodo.getVendedor().equals("")) {
-                    nombreVendedor = instancias.getSql().getNombreEmpleado(nodo.getVendedor());
-                    cmbVendedor.setSelectedItem(nombreVendedor);
-                }
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbLista.setSelectedItem(nodo.getLista());
-            } catch (Exception e) {
-            }
-
-            try {
-                if (tipo.equals("paciente")) {
-                    txtNota1.setText(nodo.getNota());
-                } else {
-                    txtNota.setText(nodo.getNota());
-                }
-
-            } catch (Exception e) {
-            }
-
-            try {
-                txtReligion.setText(nodo.getReligion());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtNombreMadre.setText(nodo.getNombreMadre());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtNombrePadre.setText(nodo.getNombrePadre());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtNombreResponsable.setText(nodo.getNombreResponsable());
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbParentesco.setSelectedItem(nodo.getParentescoResponsable());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtTelefonoResponsable.setText(nodo.getTelefonoResponsable());
-            } catch (Exception e) {
-            }
-
-            try {
-                cmbSexo.setSelectedItem(nodo.getSexo());
-            } catch (Exception e) {
-            }
-
-            try {
-                txtSangre.setText(nodo.getSangre());
-            } catch (Exception e) {
-            }
-            try {
-                txtLugarNacimiento.setText(nodo.getLugarNacimiento());
-            } catch (Exception e) {
-            }
-            try {
-                txtBarrio.setText(nodo.getBarrio());
-            } catch (Exception e) {
-            }
-
-            if (nodo.isResponsableIva()) {
-                chkSiResponsableIVA.setSelected(true);
-            } else {
-                chkNoResponsableIVA.setSelected(true);
-            }
-
-            try {
-                txtConvenio.setText(nodo.getConvenioActual());
-                if (!txtConvenio.getText().equals("")) {
-                    ModeloContacto nodoConv = instancias.getSql().getDatosTercero(txtConvenio.getText());
-                    if (nodoConv.getId() != null) {
-                        txtNombreConvenio.setText(nodoConv.getCompleta());
-//                    cargarConvenio(nodo.getConvenioActual());
-                    }
-                }
-            } catch (Exception e) {
-            }
-
-            txtNombreCompleto.setText(nodo.getNombre());
-
-            ImageIcon fot = new ImageIcon(System.getProperty("user.dir") + "\\imagenes\\terceros\\" + txtIdSistema.getText() + ".jpg");
-            Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
-            lbFoto.setIcon(icono);
-            this.repaint();
-
-            btnGuardarDatosVehiculo.setEnabled(true);
-            btnActualizar.setEnabled(true);
-            btnEliminar.setEnabled(true);
-            btnImprimir.setEnabled(true);
-            btnGuardar.setEnabled(false);
-            btnImagen.setEnabled(true);
-
-            if (nodo.isActivo()) {
-                btnEliminar.setText("ACTIVAR");
-                btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png")));
-            } else {
-                btnEliminar.setText("INACTIVAR");
-                btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
-            }
-
-            Object[][] placas = instancias.getSql().getPlacasUsuario(nodo.getIdSistema());
-
-            DefaultTableModel modelo = (DefaultTableModel) tblAutos.getModel();
-
-            for (int i = 0; i < placas.length; i++) {
-                modelo.addRow(new Object[]{placas[i][1], placas[i][2], placas[i][3], placas[i][4], placas[i][5], placas[i][6], placas[i][7], placas[i][8]});
-            }
-
+        if (contacto != null) {
+            mostrarContacto(contacto);
             return;
         }
         ventanaTerceros(Id, txtIdentificacion, "");
+    }
+
+    private void mostrarContacto(ModeloContacto contacto) {
+        TipoContacto tipoContacto = TipoContacto.desdeValor(contacto.getTipoTercero());
+        boolean esEmpleado = tipoContacto == TipoContacto.EMPLEADO;
+
+        if (esEmpleado && !puedeGestionarEmpleados()) {
+            ControladorAlertas.alertFail("No tiene permisos para gestionar empleados");
+            return;
+        }
+
+        edicionCamposDatosVehiculo(true);
+        cmbTipoContacto.setSelectedItem(tipoContacto.getValor());
+
+        txtIdSistema.setText(contacto.getIdSistema());
+        String[] partesId = contacto.getId().split("-");
+        txtIdentificacion.setText(partesId[0]);
+        txtDigito.setText(partesId.length > 1 ? partesId[1] : "");
+
+        mostrarTipoIdentificacion(contacto.getTipo());
+
+        txtTelefono.setText(texto(contacto.getTelefono()));
+        txtCelular.setText(texto(contacto.getCelular()));
+        txtDireccion.setText(texto(contacto.getDireccion()));
+        txtEmail.setText(texto(contacto.getEmail()));
+        seleccionarOAgregar(cmbDepartamento, contacto.getDepartamento());
+        seleccionarOAgregar(cmbCiudad, contacto.getCiudad());
+        seleccionarOAgregar(cmbCodigoPostal, contacto.getCodigoPostal());
+        dtFechaNacimiento.setCalendar(metodos.haciaDate(contacto.getNacimiento()));
+
+        txtpNombre.setText(texto(contacto.getpNombre()));
+        txtsNombre.setText(texto(contacto.getsNombre()));
+        txtpApellido.setText(texto(contacto.getpApellido()));
+        txtsApellido.setText(texto(contacto.getsApellido()));
+        txtOcupacion.setText(texto(contacto.getOcupacion()));
+        seleccionar(cmbEstadoCivil, contacto.getEstado());
+        seleccionar(cmbRegimen, contacto.getRegimen());
+        seleccionar(cmbTrabajador, contacto.getTipoTrabajador());
+        seleccionar(cmbAfiliado, contacto.getAfiliado());
+        seleccionar(cmbNaturaleza, contacto.getNaturaleza());
+        seleccionar(cmbRut, contacto.getRut());
+        txtPlazo.setText(texto(contacto.getPlazo()));
+        mostrarMonto(txtCupo, contacto.getCupo());
+        seleccionar(cmbLista, contacto.getLista());
+        seleccionar(cmbSexo, contacto.getSexo());
+
+        if (esPaciente()) {
+            txtNota1.setText(texto(contacto.getNota()));
+        } else {
+            txtNota.setText(texto(contacto.getNota()));
+        }
+
+        txtReligion.setText(texto(contacto.getReligion()));
+        txtNombreMadre.setText(texto(contacto.getNombreMadre()));
+        txtNombrePadre.setText(texto(contacto.getNombrePadre()));
+        txtNombreResponsable.setText(texto(contacto.getNombreResponsable()));
+        seleccionar(cmbParentesco, contacto.getParentescoResponsable());
+        txtTelefonoResponsable.setText(texto(contacto.getTelefonoResponsable()));
+        txtSangre.setText(texto(contacto.getSangre()));
+        txtLugarNacimiento.setText(texto(contacto.getLugarNacimiento()));
+        txtBarrio.setText(texto(contacto.getBarrio()));
+        txtTipoCliente.setText(texto(contacto.getNombreContacto()));
+        seleccionar(cmbZona, contacto.getZona());
+
+        if (contacto.isResponsableIva()) {
+            chkSiResponsableIVA.setSelected(true);
+        } else {
+            chkNoResponsableIVA.setSelected(true);
+        }
+
+        if (!texto(contacto.getReferido()).isEmpty()) {
+            txtCodigoReferido.setText(contacto.getReferido());
+            cargarReferido();
+        }
+
+        if (!texto(contacto.getVendedor()).isEmpty()) {
+            cmbVendedor.setSelectedItem(daoTerceros.obtenerNombrePorIdSistema(contacto.getVendedor()));
+        }
+
+        txtConvenio.setText(texto(contacto.getConvenioActual()));
+        if (!txtConvenio.getText().isEmpty()) {
+            ModeloContacto convenio = daoTerceros.consultarPorIdentificacion(txtConvenio.getText());
+            if (convenio != null) {
+                txtNombreConvenio.setText(texto(convenio.getCompleta()));
+            }
+        }
+
+        if (esEmpleado) {
+            mostrarDatosEmpleado(contacto);
+        } else {
+            txtTarjeta.setText(texto(contacto.getCargo()));
+            txtCodigoEps.setText(texto(contacto.getEps()));
+            if (!txtCodigoEps.getText().isEmpty()) {
+                cargarEps(txtCodigoEps.getText());
+            }
+        }
+
+        txtNombreCompleto.setText(texto(contacto.getNombre()));
+
+        mostrarFoto(contacto.getIdSistema(), tipoContacto);
+        mostrarVehiculos(daoTerceros.consultarVehiculos(contacto.getIdSistema()));
+
+        btnActualizar.setEnabled(true);
+        btnEliminar.setEnabled(true);
+        btnImprimir.setEnabled(true);
+        btnGuardar.setEnabled(false);
+        btnImagen.setEnabled(true);
+
+        if (contacto.isActivo()) {
+            btnEliminar.setText(TEXTO_ACTIVAR);
+            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png")));
+        } else {
+            btnEliminar.setText(TEXTO_INACTIVAR);
+            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
+        }
+    }
+
+    private void mostrarDatosEmpleado(ModeloContacto contacto) {
+        txtCargo.setText(texto(contacto.getCargo()));
+        txtEps.setText(texto(contacto.getEps()));
+        txtArl.setText(texto(contacto.getArl()));
+        txtccf.setText(texto(contacto.getCcf()));
+        mostrarMonto(txtSalario, contacto.getSalario());
+        dtFechaIngreso.setCalendar(metodos.haciaDate(contacto.getIngreso()));
+        dtFechaRetiro.setCalendar(metodos.haciaDate(contacto.getRetiro()));
+        cmbUsuarios.setSelectedItem(texto(contacto.getUsuarioAsociado()));
+
+        if (contacto.isAgendar()) {
+            rdSiAgendar.setSelected(true);
+        } else {
+            rdNoAgendar.setSelected(true);
+        }
+    }
+
+    private void mostrarTipoIdentificacion(String tipoIdentificacion) {
+        if (tipoIdentificacion == null) {
+            return;
+        }
+
+        if (tipoIdentificacion.equalsIgnoreCase("CEDULA") || tipoIdentificacion.equalsIgnoreCase("CC")
+                || tipoIdentificacion.equalsIgnoreCase("Cédula")) {
+            cmbTipoIdentificacion.setSelectedItem("Cédula de ciudadanía");
+        } else if (tipoIdentificacion.equalsIgnoreCase("NIT")) {
+            cmbTipoIdentificacion.setSelectedItem("Nit");
+        } else {
+            cmbTipoIdentificacion.setSelectedItem(tipoIdentificacion);
+        }
+    }
+
+    private void mostrarFoto(String idSistema, TipoContacto tipoContacto) {
+        ImageIcon fot = new ImageIcon(rutaFoto(idSistema, tipoContacto));
+        Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
+        lbFoto.setIcon(icono);
+        this.repaint();
+    }
+
+    private String rutaFoto(String idSistema, TipoContacto tipoContacto) {
+        String carpeta = tipoContacto == TipoContacto.EMPLEADO ? "empleados" : "terceros";
+        return System.getProperty("user.dir") + "\\imagenes\\" + carpeta + "\\" + idSistema + ".jpg";
+    }
+
+    private void mostrarVehiculos(List<ModeloDatosVehiculo> vehiculos) {
+        DefaultTableModel modelo = (DefaultTableModel) tblAutos.getModel();
+        modelo.setRowCount(0);
+
+        for (ModeloDatosVehiculo vehiculo : vehiculos) {
+            modelo.addRow(new Object[]{vehiculo.getPlaca(), vehiculo.getTipoVehiculo(), vehiculo.getModelo(), vehiculo.getMarca(),
+                vehiculo.getColor(), vehiculo.getNumeroChasis(), vehiculo.getNumeroMotor(), vehiculo.getFechaCompra()});
+        }
+    }
+
+    private void limpiarFormulario() {
+        chkNoResponsableIVA.setSelected(true);
+        txtNota1.setText("");
+
+        txtIdentificacion.setEditable(true);
+
+        Limpiadores.limpiarPanel(pnlDatosObligatorios);
+        Limpiadores.limpiarPanel(pnlDatosVentas);
+        Limpiadores.limpiarPanel(pnlOtrosDatos);
+        Limpiadores.limpiarPanel(pnlDatosVentasYOtros);
+
+        edicionCamposDatosVehiculo(true);
+        ((DefaultTableModel) tblAutos.getModel()).setRowCount(0);
+
+        Limpiadores.limpiarPanel(pnlDatos);
+        Limpiadores.limpiarPanel(pnlDatosMedicosImportantes);
+
+        Limpiadores.limpiarPanel(pnlDatosContacto);
+        Limpiadores.limpiarPanel(pnlDatosMedicos);
+
+        lbFoto.setIcon(null);
+        repaint();
+
+        btnImagen.setEnabled(false);
+        cmbDepartamento.setSelectedItem(DEPARTAMENTO_PREDETERMINADO);
+        dtFechaNacimiento.setCalendar(null);
+        dtFechaIngreso.setCalendar(null);
+        dtFechaRetiro.setCalendar(null);
+        rdNoAgendar.setSelected(true);
+        tabDatosTerceros.setSelectedIndex(0);
+        txtIdentificacion.requestFocus();
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnImprimir.setEnabled(false);
+        btnGuardar.setEnabled(true);
+        btnEliminar.setText(TEXTO_INACTIVAR);
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
+
+        txtIdSistema.setText(daoTerceros.obtenerSiguienteIdSistema());
+        txtCupo.setText(this.simbolo + " 0");
+        actualizarPestanaEmpleado();
+    }
+
+    private ModeloContacto crearContactoNuevo() {
+        ModeloContacto contacto = new ModeloContacto();
+        contacto.setFecha(fechaActual());
+        contacto.setUsuario(instancias.getUsuario());
+        contacto.setTerminal(instancias.getTerminal());
+        contacto.setActivo(false);
+        contacto.setPais("Colombia");
+        contacto.setPlacas("");
+        contacto.setTipo2("");
+        contacto.setRango("");
+        contacto.setTelefonoContacto("");
+        contacto.setWeb("");
+        contacto.setRnt("");
+        contacto.setTipoProveedor("");
+        contacto.setCodigoUsuario("");
+        contacto.setSalario("0");
+        return contacto;
+    }
+
+    private ModeloContacto leerFormulario(ModeloContacto contacto) {
+        TipoContacto tipoContacto = tipoSeleccionado();
+        boolean esEmpleado = tipoContacto == TipoContacto.EMPLEADO;
+
+        String identificacion = txtIdentificacion.getText().trim();
+        String digito = txtDigito.getText().trim();
+
+        contacto.setIdSistema(txtIdSistema.getText().trim());
+        contacto.setId(identificacion.isEmpty() || digito.isEmpty() ? identificacion : identificacion + "-" + digito);
+        contacto.setTipo(seleccion(cmbTipoIdentificacion));
+        contacto.setNombre(txtNombreCompleto.getText().trim());
+        contacto.setCompleta(contacto.getNombre());
+        contacto.setpNombre(txtpNombre.getText().trim());
+        contacto.setsNombre(txtsNombre.getText().trim());
+        contacto.setpApellido(txtpApellido.getText().trim());
+        contacto.setsApellido(txtsApellido.getText().trim());
+
+        contacto.setTelefono(txtTelefono.getText().trim());
+        contacto.setCelular(txtCelular.getText().trim());
+        contacto.setDireccion(txtDireccion.getText().trim());
+        contacto.setEmail(txtEmail.getText().trim());
+        contacto.setDepartamento(seleccion(cmbDepartamento));
+        contacto.setCiudad(seleccion(cmbCiudad));
+        contacto.setCodigoPostal(seleccion(cmbCodigoPostal));
+        contacto.setNacimiento(fechaNacimientoParaGuardar());
+
+        contacto.setOcupacion(txtOcupacion.getText().trim());
+        contacto.setActividad(contacto.getOcupacion());
+        contacto.setNaturaleza(seleccion(cmbNaturaleza));
+        contacto.setRut(seleccion(cmbRut));
+        contacto.setSexo(seleccion(cmbSexo));
+        contacto.setEstado(seleccion(cmbEstadoCivil));
+        contacto.setRegimen(seleccion(cmbRegimen));
+        contacto.setAfiliado(seleccion(cmbAfiliado));
+        contacto.setTipoTrabajador(seleccion(cmbTrabajador));
+        contacto.setZona(seleccion(cmbZona));
+        contacto.setSangre(txtSangre.getText().trim());
+        contacto.setEps(leerEps(esEmpleado));
+
+        contacto.setPlazo(txtPlazo.getText().trim().isEmpty() ? "0" : txtPlazo.getText().trim());
+        contacto.setCupo(montoComoTexto(txtCupo));
+        contacto.setReferido(txtCodigoReferido.getText().trim());
+        contacto.setVendedor(cmbVendedor.getSelectedIndex() > 0 ? daoTerceros.obtenerIdSistemaPorNombre(seleccion(cmbVendedor)) : "");
+        contacto.setLista(seleccion(cmbLista));
+        contacto.setNota(txtNota.getText() + txtNota1.getText());
+        contacto.setConvenio(jRadioButton1.isSelected() ? "1" : "");
+        contacto.setConvenioActual(txtConvenio.getText().trim());
+
+        contacto.setReligion(txtReligion.getText().trim());
+        contacto.setNombreMadre(txtNombreMadre.getText().trim());
+        contacto.setNombrePadre(txtNombrePadre.getText().trim());
+        contacto.setNombreResponsable(txtNombreResponsable.getText().trim());
+        contacto.setParentescoResponsable(seleccion(cmbParentesco));
+        contacto.setTelefonoResponsable(txtTelefonoResponsable.getText().trim());
+        contacto.setLugarNacimiento(txtLugarNacimiento.getText().trim());
+        contacto.setBarrio(txtBarrio.getText().trim());
+        contacto.setNombreContacto(txtTipoCliente.getText().trim());
+
+        contacto.setTipoTercero(tipoContacto.getValor());
+        contacto.setResponsableIva(chkSiResponsableIVA.isSelected());
+
+        if (esEmpleado) {
+            leerDatosEmpleado(contacto);
+        } else {
+            // la columna cargo guarda la tarjeta del cliente o el cargo del empleado
+            contacto.setCargo(txtTarjeta.getText().trim());
+        }
+
+        return contacto;
+    }
+
+    private void leerDatosEmpleado(ModeloContacto contacto) {
+        contacto.setCargo(txtCargo.getText().trim());
+        contacto.setSalario(montoComoTexto(txtSalario));
+        contacto.setIngreso(fechaDe(dtFechaIngreso) != null ? fechaDe(dtFechaIngreso) : fechaActual());
+        contacto.setRetiro(fechaDe(dtFechaRetiro));
+        contacto.setAgendar(rdSiAgendar.isSelected());
+        contacto.setUsuarioAsociado(seleccion(cmbUsuarios));
+        contacto.setArl(txtArl.getText().trim());
+        contacto.setCcf(txtccf.getText().trim());
+    }
+
+    private String leerEps(boolean esEmpleado) {
+        String eps;
+        if (esEmpleado) {
+            eps = txtEps.getText().trim();
+        } else {
+            eps = txtNombreEps.getText().trim().isEmpty() ? "" : txtCodigoEps.getText().trim();
+        }
+        return eps.isEmpty() ? null : eps;
+    }
+
+    private List<ModeloDatosVehiculo> leerVehiculos() {
+        List<ModeloDatosVehiculo> vehiculos = new ArrayList<>();
+
+        for (int fila = 0; fila < tblAutos.getRowCount(); fila++) {
+            vehiculos.add(new ModeloDatosVehiculo(valorCelda(fila, 0), valorCelda(fila, 1), valorCelda(fila, 5), valorCelda(fila, 6),
+                    valorCelda(fila, 2), valorCelda(fila, 3), valorCelda(fila, 7), valorCelda(fila, 4)));
+        }
+        return vehiculos;
+    }
+
+    private String valorCelda(int fila, int columna) {
+        Object valor = tblAutos.getValueAt(fila, columna);
+        return valor == null ? "" : valor.toString();
+    }
+
+    private boolean validarContacto(ModeloContacto contacto, boolean esNuevo) {
+        ModeloContacto existente = contacto.getId().isEmpty() ? null : daoTerceros.consultarPorIdentificacion(contacto.getId());
+
+        if (!squemaDatosContacto.validarContacto(contacto, tipoSeleccionado(), esPaciente(),
+                instancias.getConfiguraciones().isFacturaElectronica(), esNuevo, existente)) {
+            return false;
+        }
+
+        if (requiereFechaNacimiento() && dtFechaNacimiento.getCalendar() == null) {
+            ControladorAlertas.alert("Debe ingresar la fecha de nacimiento");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean requiereFechaNacimiento() {
+        return tipoSeleccionado() != TipoContacto.EMPLEADO
+                && (instancias.getConfiguraciones().isMedico() || instancias.getConfiguraciones().isLaboratorio()
+                || instancias.getConfiguraciones().isOftalmologia());
+    }
+
+    private String fechaNacimientoParaGuardar() {
+        String fecha = fechaDe(dtFechaNacimiento);
+        return fecha != null ? fecha : fechaActual();
+    }
+
+    private String fechaDe(JDateChooser selector) {
+        Calendar calendario = selector.getCalendar();
+        return calendario == null ? null : metodos.desdeDate(calendario);
+    }
+
+    private String fechaActual() {
+        return metodos.fechaConsulta(metodosGenerales.fecha());
+    }
+
+    private boolean crearHistoriaClinica(ModeloContacto contacto) {
+        String historia = "HSTC-" + txtIdentificacion.getText();
+        String fecha = fechaActual();
+        Object[] datosHistoria = {historia, contacto.getIdSistema(), fecha, "", fecha, fecha, "",
+            "", "", "", "", "0&0&0&0", "", "", ""};
+
+        if (!instancias.getSql().agregarHistClinica(metodos.llenarHistClinica(datosHistoria))) {
+            ControladorAlertas.alertFail("Error al guardar historia clinica");
+            return false;
+        }
+
+        ControladorAlertas.alertSuccess("Historia Clinica No." + historia.replace("HSTC-", ""));
+        return true;
+    }
+
+    private void refrescarModulosRelacionados(ModeloContacto contacto) {
+        if (!TipoContacto.EMPLEADO.getValor().equals(contacto.getTipoTercero())) {
+            return;
+        }
+
+        if (instancias.getConfiguraciones().isVeterinaria()) {
+            instancias.getPeluqueria().titulosTabla();
+        }
+
+        if (contacto.isAgendar() && instancias.getConfiguraciones().isAgenda()) {
+            instancias.getAgendaConsulta().titulosTabla();
+        }
+
+        instancias.getMaestra().llenarVendedores(cmbUsuarios.getSelectedIndex() != 0 ? contacto.getNombre() : "");
+    }
+
+    private void procesarCitaPendiente(String cliente) {
+        String cita;
+        try {
+            cita = instancias.getSql().getAgendasDelDia(cliente, fechaActual());
+        } catch (Exception e) {
+            return;
+        }
+
+        if (cita == null || cita.isEmpty()) {
+            return;
+        }
+
+        String medico = instancias.getSql().medicoDeLaCita(cita);
+
+        try {
+            if (esPaciente()) {
+                if (instancias.isGeneraOrdenMedica()) {
+                    instancias.getOrdenMedica().cargarClienteDesdeAgenda(cliente, medico);
+                    instancias.getOrdenMedica().setSelected(true);
+                } else {
+                    instancias.getHistoriaC().setPaciente(cliente);
+                    instancias.getHistoriaC().setSelected(true);
+                }
+            } else {
+                instancias.getFactura().cargarCliente(cliente);
+                instancias.getFacturaContenedor().setSelected(true);
+            }
+        } catch (PropertyVetoException e) {
+            // la ventana no acepta el foco; no impide el flujo
+        }
+    }
+
+    private String etiquetaContacto() {
+        if (esPaciente()) {
+            return "Paciente";
+        }
+
+        switch (tipoSeleccionado()) {
+            case EMPLEADO:
+                return "Empleado";
+            case PROVEEDOR:
+                return "Proveedor";
+            default:
+                return "Cliente";
+        }
+    }
+
+    private String texto(String valor) {
+        return valor == null ? "" : valor;
+    }
+
+    private String seleccion(JComboBox combo) {
+        Object item = combo.getSelectedItem();
+        return item == null ? "" : item.toString().trim();
+    }
+
+    private void seleccionar(JComboBox combo, String valor) {
+        if (valor != null) {
+            combo.setSelectedItem(valor);
+        }
+    }
+
+    private void seleccionarOAgregar(JComboBox combo, String valor) {
+        if (valor == null || valor.trim().isEmpty()) {
+            return;
+        }
+
+        DefaultComboBoxModel modelo = (DefaultComboBoxModel) combo.getModel();
+        if (modelo.getIndexOf(valor) < 0) {
+            combo.addItem(valor);
+        }
+        combo.setSelectedItem(valor);
+    }
+
+    private void mostrarMonto(JTextField campo, String valor) {
+        try {
+            campo.setText(big.setMoneda(big.getBigDecimal(valor)));
+        } catch (RuntimeException e) {
+            campo.setText(simbolo + " 0");
+        }
+    }
+
+    private String montoComoTexto(JTextField campo) {
+        String valor = campo.getText().trim();
+        if (valor.isEmpty() || valor.equals(simbolo)) {
+            return "0";
+        }
+        return big.getMoneda(valor).toPlainString();
+    }
+
+    private void avanzarConEnter(java.awt.event.KeyEvent evt, java.awt.Component siguiente) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            siguiente.requestFocus();
+        }
+    }
+
+    public void cargarEpsEmpleado(String codigo) {
+        ndEpsPrecargados eps = instancias.getSql().getDatosEpsPrecargados(codigo);
+
+        if (eps.getId() != null) {
+            txtArl.requestFocus();
+            return;
+        }
+        ventanaEps(codigo, txtEps);
+    }
+
+    public void ventanaCargos(String nit) {
+        buscCargos buscar = new buscCargos(instancias.getMenu(), rootPaneCheckingEnabled);
+        buscar.setLocationRelativeTo(null);
+        instancias.setCampoActual(txtCargo);
+        txtCargo.requestFocus();
+        buscar.setInstancia(instancias);
+        buscar.noEncontrado(nit);
+        buscar.show();
     }
 
     public void ventanaTerceros(String nit, JTextField campo, String opcionBuscador) {
@@ -3397,34 +3379,36 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaEps(String nit) {
+        ventanaEps(nit, txtCodigoEps);
+    }
+
+    private void ventanaEps(String nit, JTextField campo) {
         buscEpsPrecargadas buscar = new buscEpsPrecargadas(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
         instancias.setBuscEpsPre(buscar);
-        instancias.setCampoActual(txtCodigoEps);
-        txtCodigoEps.requestFocus();
+        instancias.setCampoActual(campo);
+        campo.requestFocus();
         buscar.noEncontrado(nit);
         buscar.show();
     }
 
     private void edicionCamposDatosVehiculo(boolean tipoAccion) {
-        txtPlaca.setEnabled(tipoAccion);
-        txtChasis.setEnabled(tipoAccion);
-        txtMotor.setEnabled(tipoAccion);
-        txtTipoVehiculo.setEnabled(tipoAccion);
-        txtModelo.setEnabled(tipoAccion);
-        txtMarca.setEnabled(tipoAccion);
-        txtColor.setEnabled(tipoAccion);
+        btnAgregarVehiculo.setEnabled(tipoAccion);
+        btnModificarVehiculo.setEnabled(tipoAccion);
+        btnEliminarVehiculo.setEnabled(tipoAccion);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnAgregarVehiculo;
     private javax.swing.JButton btnBuscTerceros;
     private javax.swing.JButton btnBuscTerceros1;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnEliminarVehiculo;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnGuardarDatosVehiculo;
     private javax.swing.JButton btnImagen;
     private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnModificarVehiculo;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JCheckBox chkNoResponsableIVA;
     private javax.swing.JCheckBox chkSiResponsableIVA;
@@ -3442,19 +3426,20 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox cmbTipoContacto;
     private javax.swing.JComboBox cmbTipoIdentificacion;
     private javax.swing.JComboBox cmbTrabajador;
+    private javax.swing.JComboBox cmbUsuarios;
     private javax.swing.JComboBox cmbVendedor;
     private javax.swing.JComboBox cmbZona;
-    private datechooser.beans.DateChooserCombo dtFechaCompra;
+    private com.toedter.calendar.JDateChooser dtFechaIngreso;
     private com.toedter.calendar.JDateChooser dtFechaNacimiento;
+    private com.toedter.calendar.JDateChooser dtFechaRetiro;
     private javax.swing.ButtonGroup grpResponsableIva;
+    private javax.swing.ButtonGroup grupoAgendar;
     private javax.swing.ButtonGroup grupoConvenio;
     private javax.swing.ButtonGroup grupoResidencia;
     private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JLabel jLabel1;
     private com.toedter.calendar.JMonthChooser jMonthChooser1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
@@ -3472,6 +3457,7 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbCiudad14;
     private javax.swing.JLabel lbCiudad15;
     private javax.swing.JLabel lbCiudad19;
+    private javax.swing.JLabel lbCiudad2;
     private javax.swing.JLabel lbCiudad20;
     private javax.swing.JLabel lbCiudad21;
     private javax.swing.JLabel lbCiudad22;
@@ -3479,11 +3465,13 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbCiudad24;
     private javax.swing.JLabel lbCiudad3;
     private javax.swing.JLabel lbCiudad4;
+    private javax.swing.JLabel lbCiudad5;
     private javax.swing.JLabel lbCiudad6;
     private javax.swing.JLabel lbCiudad7;
+    private javax.swing.JLabel lbCiudad8;
     private javax.swing.JLabel lbCiudad9;
     private javax.swing.JLabel lbCupo;
-    private javax.swing.JLabel lbCupo1;
+    private javax.swing.JLabel lbCupo2;
     private javax.swing.JLabel lbCupo6;
     private javax.swing.JLabel lbDepartamento;
     private javax.swing.JLabel lbDepartamento3;
@@ -3495,11 +3483,11 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbEmail3;
     private javax.swing.JLabel lbEmail4;
     private javax.swing.JLabel lbEmail5;
-    private javax.swing.JLabel lbEmail6;
-    private javax.swing.JLabel lbEmail7;
     private javax.swing.JLabel lbEmail8;
     private javax.swing.JLabel lbFecha;
     private javax.swing.JLabel lbFecha1;
+    private javax.swing.JLabel lbFecha3;
+    private javax.swing.JLabel lbFecha4;
     private javax.swing.JLabel lbFoto;
     private javax.swing.JLabel lbNit;
     private javax.swing.JLabel lbNit1;
@@ -3508,46 +3496,47 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbNota;
     private javax.swing.JLabel lbPNombre;
     private javax.swing.JLabel lbPlazo;
-    private javax.swing.JLabel lbPlazo1;
-    private javax.swing.JLabel lbPlazo2;
-    private javax.swing.JLabel lbPlazo3;
-    private javax.swing.JLabel lbPlazo4;
-    private javax.swing.JLabel lbPlazo5;
+    private javax.swing.JLabel lbPlazo6;
+    private javax.swing.JLabel lbPlazo7;
     private javax.swing.JLabel lbRazon;
     private javax.swing.JLabel lbSNombre;
     private javax.swing.JLabel lbSapellido;
     private javax.swing.JLabel lbTelefono;
     private javax.swing.JLabel lbTipo;
     private javax.swing.JLabel lbVendedor;
+    private javax.swing.JPanel pnlDatos;
+    private javax.swing.JPanel pnlDatosContacto;
+    private javax.swing.JPanel pnlDatosEmpleado;
     private javax.swing.JPanel pnlDatosMedicos;
     private javax.swing.JPanel pnlDatosMedicosImportantes;
     private javax.swing.JPanel pnlDatosObligatorios;
     private javax.swing.JPanel pnlDatosVehiculo;
     private javax.swing.JPanel pnlDatosVentas;
+    private javax.swing.JPanel pnlDatosVentasYOtros;
     private javax.swing.JPanel pnlFormulario;
     private javax.swing.JPanel pnlInvisible;
     private javax.swing.JPanel pnlOtrosDatos;
     private javax.swing.JMenuItem popBorrar;
+    private javax.swing.JRadioButton rdNoAgendar;
+    private javax.swing.JRadioButton rdSiAgendar;
     private javax.swing.JScrollPane scrFormulario;
     private javax.swing.JTabbedPane tabDatosTerceros;
     private javax.swing.JTable tblAutos;
+    private javax.swing.JTextField txtArl;
     private javax.swing.JTextField txtBarrio;
+    private javax.swing.JTextField txtCargo;
     private javax.swing.JTextField txtCelular;
-    private javax.swing.JTextField txtChasis;
     private javax.swing.JTextField txtCodigoEps;
     private javax.swing.JTextField txtCodigoReferido;
-    private javax.swing.JTextField txtColor;
     private javax.swing.JTextField txtConvenio;
     private javax.swing.JTextField txtCupo;
     private javax.swing.JTextField txtDigito;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtEps;
     private javax.swing.JTextField txtIdSistema;
     private javax.swing.JTextField txtIdentificacion;
     private javax.swing.JTextField txtLugarNacimiento;
-    private javax.swing.JTextField txtMarca;
-    private javax.swing.JTextField txtModelo;
-    private javax.swing.JTextField txtMotor;
     private javax.swing.JTextField txtNombreCompleto;
     private javax.swing.JTextField txtNombreConvenio;
     private javax.swing.JTextField txtNombreEps;
@@ -3558,15 +3547,15 @@ public class vistaContactos extends javax.swing.JInternalFrame {
     private javax.swing.JTextArea txtNota;
     private javax.swing.JTextArea txtNota1;
     private javax.swing.JTextField txtOcupacion;
-    private javax.swing.JTextField txtPlaca;
     private javax.swing.JTextField txtPlazo;
     private javax.swing.JTextField txtReligion;
+    private javax.swing.JTextField txtSalario;
     private javax.swing.JTextField txtSangre;
     private javax.swing.JTextField txtTarjeta;
     private javax.swing.JTextField txtTelefono;
     private javax.swing.JTextField txtTelefonoResponsable;
     private javax.swing.JTextField txtTipoCliente;
-    private javax.swing.JTextField txtTipoVehiculo;
+    private javax.swing.JTextField txtccf;
     private javax.swing.JTextField txtpApellido;
     private javax.swing.JTextField txtpNombre;
     private javax.swing.JTextField txtsApellido;

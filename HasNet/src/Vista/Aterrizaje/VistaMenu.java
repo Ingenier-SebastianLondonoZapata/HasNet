@@ -114,8 +114,7 @@ import formularios.productos.infArmado;
 import Vista.Productos.VistaDiseno;
 
 import formularios.terceros.infBodegas;
-import Vista.Terceros.vistaContactos;
-import Vista.Terceros.infEmpleados;
+import Vista.Terceros.VistaContactos;
 import formularios.terceros.infRepClientes;
 import formularios.terceros.infRepEmpleados;
 
@@ -1978,7 +1977,7 @@ public class VistaMenu extends javax.swing.JFrame {
                 }
 
                 textos[1] = (String) null;
-                textos[2] = "EMPLEADO";
+                textos[2] = (String) null;
 
                 if (instancias.getConfiguraciones().isInventarioBodegas()) {
                     textos[3] = "BOD.INTERNA";
@@ -2000,7 +1999,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
                 forms[0] = instancias.getClientes();
                 forms[1] = null;
-                forms[2] = instancias.getEmpleados();
+                forms[2] = null;
                 forms[3] = instancias.getBodegas();
                 forms[4] = instancias.getBodegasClientes();
                 forms[5] = null;
@@ -2348,7 +2347,7 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR COBRAR");
             }
 
-            if (formularios[0] instanceof vistaContactos) {
+            if (formularios[0] instanceof VistaContactos) {
                 if (instancias.getConfiguraciones().isMedico() || instancias.getConfiguraciones().isLaboratorio()
                         || instancias.getConfiguraciones().isOftalmologia()) {
                     instancias.getMenu().cambiarTitulo("PACIENTES Y PROVEEDORES");
@@ -2440,10 +2439,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
             if (formularios[2] instanceof infLavadero) {
                 instancias.getMenu().cambiarTitulo("LAVADO");
-            }
-
-            if (formularios[2] instanceof infEmpleados) {
-                instancias.getMenu().cambiarTitulo("EMPLEADOS");
             }
 
             if (formularios[2] instanceof VistaInventarioInicial) {
@@ -3653,7 +3648,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
     private void cargarModulosTerceros() {
         try {
-            vistaContactos interno3 = new vistaContactos("");
+            VistaContactos interno3 = new VistaContactos("");
             dkpFormularios.add(interno3);
             instancias.setClientes(interno3);
             if (instancias.getUsuarioLog().isCrearClientes()) {
@@ -3673,18 +3668,6 @@ public class VistaMenu extends javax.swing.JFrame {
             }
             interno.setMaximum(true);
             interno.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            infEmpleados interno = new infEmpleados();
-            dkpFormularios.add(interno);
-            instancias.setEmpleados(interno);
-            if (instancias.getUsuarioLog().isCrearEmpleado()) {
-                interno.show();
-            }
-            interno.setMaximum(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -4193,7 +4176,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
     private void cargarModulosOftalmologia() {
         try {
-            vistaContactos interno3 = new vistaContactos("paciente");
+            VistaContactos interno3 = new VistaContactos("paciente");
             dkpFormularios.add(interno3);
             instancias.setPaciente(interno3);
             interno3.show();
@@ -4275,7 +4258,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
     private void cargarModulosLaboratorio() {
         try {
-            vistaContactos interno3 = new vistaContactos("paciente");
+            VistaContactos interno3 = new VistaContactos("paciente");
             dkpFormularios.add(interno3);
             instancias.setPaciente(interno3);
             interno3.show();
@@ -4527,7 +4510,7 @@ public class VistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            vistaContactos interno3 = new vistaContactos("paciente");
+            VistaContactos interno3 = new VistaContactos("paciente");
             dkpFormularios.add(interno3);
             instancias.setPaciente(interno3);
             if (instancias.getUsuarioLog().isCrearClientes()) {

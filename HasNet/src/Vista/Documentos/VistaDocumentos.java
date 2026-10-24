@@ -34,7 +34,7 @@ import clases.Ventas.ndPlanSepare;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Dao.Terceros.DaoTerceros;
+import Dao.Terceros.DaoContactos;
 import Dao.Ventas.DaoReimpresiones;
 import Procesos.Inventario.Servicio.CargadorProducto;
 import Procesos.Inventario.Servicio.ServicioDiscosteo;
@@ -64,7 +64,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     private final DaoProducto daoProducto = new DaoProducto();
 
     private final DaoReimpresiones daoReimpresiones = new DaoReimpresiones();
-    private final DaoTerceros daoTerceros = new DaoTerceros();
+    private final DaoContactos daoTerceros = new DaoContactos();
     private DefaultTableModel modeloTablaDocumentos;
 
     DecimalFormat df = new DecimalFormat("#.00");

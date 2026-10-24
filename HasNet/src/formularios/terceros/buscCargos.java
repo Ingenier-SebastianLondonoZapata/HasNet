@@ -234,7 +234,7 @@ public class buscCargos extends javax.swing.JDialog {
             if (tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 2).equals("1")) {
                 ControladorAlertas.alertFail("No se puede modificar este cargo");
                 this.dispose();
-                instancias.getEmpleados().ventanaCargos("");
+                instancias.getClientes().ventanaCargos("");
             } else {
                 if (ControladorAlertas.option("¿Desea modificar el cargo?")) {
                     instancias.getSql().modificarCargo(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 1).toString().toUpperCase(),

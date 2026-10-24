@@ -33,6 +33,10 @@ public class ServicioActualizacionPonderado {
     public PonderadoPendiente calcular(ModeloProducto producto, BigDecimal cantidadIngresada, BigDecimal valorProducto) throws SQLException {
         UltimoPonderado ultimo = daoPonderado.obtenerUltimoPonderado(producto.getIdSistema());
         BigDecimal inventarioAnterior = producto.getInventario();
+        if(inventarioAnterior.compareTo(BigDecimal.ZERO) < 0) {
+            inventarioAnterior = BigDecimal.ZERO;
+        }
+        
         BigDecimal ponderadoAnterior = ultimo.getNuevoPonderado();
         BigDecimal inventarioNuevo = inventarioAnterior.add(cantidadIngresada);
         BigDecimal ultimoCosto = valorProducto;

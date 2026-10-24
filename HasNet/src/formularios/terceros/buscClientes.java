@@ -388,14 +388,6 @@ public class buscClientes extends javax.swing.JDialog {
             consulta = " Where activo = false ";
         }
 
-        if (!opc.equals("factura") && !opc.equals("factura1") && !opc.equals("egreso") && !opc.equals("ingreso")) {
-            if (consulta.equals("")) {
-                consulta = " Where tipoTercero = 'TERCERO' OR tipoTercero = 'PROVEEDOR' ";
-            } else {
-                consulta = consulta + " AND tipoTercero = 'TERCERO' OR tipoTercero = 'PROVEEDOR' ";
-            }
-        }
-
         if (tipoBuscador.equals("convenio")) {
             if (consulta.equals("")) {
                 consulta = " Where convenio <> '' ";
