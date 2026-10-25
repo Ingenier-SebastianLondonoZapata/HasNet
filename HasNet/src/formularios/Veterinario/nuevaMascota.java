@@ -7,7 +7,7 @@ import clases.Veterinario.ndHistoria;
 import clases.Veterinario.ndMascota;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.event.KeyEvent;
 

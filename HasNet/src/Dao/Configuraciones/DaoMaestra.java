@@ -12,6 +12,20 @@ public class DaoMaestra {
 
     private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
 
+    /**
+     * La pestaña de bodegas de la maestra no tiene un Guardar propio, así que el cambio se escribe al seleccionarlo.
+     */
+    public boolean actualizarBodega(String codigo) {
+        try (PreparedStatement stmt = conexion.prepareStatement("UPDATE bdMaestra SET bodega = ? WHERE Id = 1")) {
+            stmt.setString(1, codigo == null ? "" : codigo.trim());
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al guardar la bodega predeterminada: " + e.getMessage());
+            return false;
+        }
+    }
+
     public ndMaestra obtenerMaestra() {
         String sql = "SELECT l1, l2, l4, c1, c2, c3, c4, c5, d1, d2, d3, d4, d5, d6, d7, pie, legal, "
                 + "c6, c7, recogida, lector, tituloFactura, pvpSinIva, costoSinIva, ventasPredeterminado, mensajeUtilidad, "
@@ -31,12 +45,13 @@ public class DaoMaestra {
                 + "pvpImpoconsumo, costoImpoconsumo, impresionPorGrupo, copiasComanda, copiasPrefactura, "
                 + "previsualizarComanda, previsualizarPrefactura, impresoraComanda, impresoraPrefactura, "
                 + "meserosFacturarMesas, soloMesas, borrarMesas, idUsuario, password, numFacturaIncremento, "
-                + "responsabilidades, gmail, passGmail FROM bdMaestra WHERE Id = 1";
+                + "responsabilidades, gmail, passGmail, bodega FROM bdMaestra WHERE Id = 1";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 ndMaestra m = new ndMaestra();
+                m.setBodega(rs.getString("bodega"));
                 m.setL1(rs.getString("l1"));
                 m.setL2(rs.getString("l2"));
                 m.setL4(rs.getString("l4"));

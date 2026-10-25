@@ -2,7 +2,7 @@ package formularios.Veterinario;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -10,7 +10,7 @@ import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndGuarderia;
 import clases.Veterinario.ndMascota;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
@@ -36,14 +36,14 @@ public class infGuarderia extends javax.swing.JInternalFrame {
 
     public void actualizarPrecios() {
         
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto("GD1", enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto("GD1", Bodegas.predeterminada());
         try {
             txtValorHora.setText(big.setMoneda(big.getBigDecimal(nodo.getL1())));
         } catch (Exception e) {
             txtValorHora.setText("Sin establecer");
         }
 
-        ModeloProducto nodo1 = daoProducto.obtenerDatosProducto("GD2", enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo1 = daoProducto.obtenerDatosProducto("GD2", Bodegas.predeterminada());
         try {
             txtValorDia.setText(big.setMoneda(big.getBigDecimal(nodo1.getL1())));
         } catch (Exception e) {

@@ -2,7 +2,7 @@ package formularios.Parqueadero;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -14,7 +14,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Vista.Solicitudes.VistaSolicitarPermisos;
 import formularios.Tesoreria.dlgTipoEgreso;
 import Vista.Productos.VistaBuscadorProductos;
@@ -1900,7 +1900,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -2022,7 +2022,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         for (int i = 0; i < tblLiquidaciones.getRowCount(); i++) {
 
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), Bodegas.predeterminada());
 
             BigDecimal porcentaje;
 
@@ -2116,7 +2116,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         for (int i = 0; i < tblLiquidaciones.getRowCount(); i++) {
             tblLiquidaciones.setValueAt(metodos.fecha(tblLiquidaciones.getValueAt(i, 1).toString()), i, 1);
 
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblLiquidaciones.getValueAt(i, 10).toString(), Bodegas.predeterminada());
 
             BigDecimal porcentaje;
             if (nodo.getPorcentaje() != null) {

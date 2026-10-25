@@ -8,7 +8,7 @@ package Validaciones.DocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
 import Utilidades.Constantes;
 import clases.Instancias;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;

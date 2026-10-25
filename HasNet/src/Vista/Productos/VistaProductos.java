@@ -2,12 +2,12 @@ package Vista.Productos;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
 import Modelo.Inventario.UltimoPonderado;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.big;
@@ -1713,7 +1713,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
 
     private void txtCodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText().replace("'", "//"), Bodegas.predeterminada());
             if (nodo.getCodigo() == null) {
                 txtDescripcion.requestFocus();
             } else {
@@ -1907,7 +1907,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
                 grupo = grupos[txtGrupo.getSelectedIndex() - 1][0].toString();
             }
 
-            ModeloProducto producto = daoProducto.obtenerDatosProducto(txtIdSistema.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(txtIdSistema.getText(), Bodegas.predeterminada());
             String tipo = producto.getUsuario();
             String tipo1 = "";
 
@@ -2120,7 +2120,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
             if (codigo.equals("")) {
                 CodigoProd = "";
             } else {
-                nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+                nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
                 if (nodo.getIdSistema() != null) {
                     CodigoProd = nodo.getIdSistema();
                 }
@@ -2262,7 +2262,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
 
     private void txtCodigoBarrasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoBarrasKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigoBarras.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigoBarras.getText().replace("'", "//"), Bodegas.predeterminada());
             if (nodo.getCodigo() == null) {
                 txtDescripcion.requestFocus();
             } else {
@@ -2403,7 +2403,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
                 codigo = txtCodigo.getText();
             }
 
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
 
             try {
                 if (txtReferencia.getText().equalsIgnoreCase(instancias.getSql().getRefenciaProducto(txtReferencia.getText()))) {
@@ -2776,7 +2776,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     }
 
     public void cargarProductoTabla(String cod1, String cod2) {
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(cod2, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(cod2, Bodegas.predeterminada());
         instancias.getSql().agregarProductosUnificados(new Object[]{cod1, nodo.getIdSistema(), instancias.getUsuario()});
 
         ((DefaultTableModel) tblProductosUnificados.getModel()).addRow(
@@ -2822,7 +2822,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         if (cod.equals("")) {
             ControladorAlertas.alert("Debe ingresar el codigo");
         } else {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(cod.replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(cod.replace("'", "//"), Bodegas.predeterminada());
 
             if (nodo.getCodigo() != null) {
 

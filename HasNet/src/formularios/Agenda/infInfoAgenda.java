@@ -2,11 +2,11 @@ package formularios.Agenda;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
@@ -1594,7 +1594,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
         this.repaint();
 
         try {
-            ModeloProducto producto = daoProducto.obtenerDatosProducto(nodoAgenda.getMotivo(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(nodoAgenda.getMotivo(), Bodegas.predeterminada());
             if (!producto.getCodigo().equalsIgnoreCase("")) {
                 cargarProducto(nodoAgenda.getMotivo());
             }
@@ -1675,7 +1675,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

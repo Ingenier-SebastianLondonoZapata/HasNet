@@ -4,7 +4,7 @@ import Controlador.Alertas.ControladorAlertas;
 
 import formularios.terceros.buscClientes;
 import clases.Instancias;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;

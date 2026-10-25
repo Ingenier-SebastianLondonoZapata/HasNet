@@ -1,8 +1,15 @@
 package formularios.productos;
+import java.util.List;
+import java.util.ArrayList;
+
+import formularios.terceros.buscBodegas;
+
+import Dao.Terceros.DaoBodegas;
+import Modelo.Contactos.ModeloBodega;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Procesos.Inventario.Dao.DaoInventario;
 
@@ -17,7 +24,7 @@ import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import formularios.terceros.buscClientes;
@@ -37,6 +44,8 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 public class infTrasladosInternos extends javax.swing.JInternalFrame implements Vista.Productos.ReceptorProductoSalida {
+
+    private final DaoBodegas daoBodegas = new DaoBodegas();
     private final DaoInventario daoInventario = new DaoInventario();
     private final DaoProducto daoProducto = new DaoProducto();
 
@@ -738,13 +747,13 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     tblProductos.setValueAt(cantidad, fila, 8);
                     break;
                 case "2":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(2))), fila, 8);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(2))), fila, 8);
                     break;
                 case "3":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(3))), fila, 8);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(3))), fila, 8);
                     break;
                 case "4":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(4))), fila, 8);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(4))), fila, 8);
                     break;
             }
 
@@ -782,9 +791,9 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 return;
             }
 
-            ndBodega nodo = instancias.getSql().getDatosBodega(txtNitBO.getText());
+            ModeloBodega nodo = daoBodegas.consultarPorCodigo(txtNitBO.getText());
 
-            if (nodo.getCodigo() != null) {
+            if (nodo != null) {
                 txtNombreBO.setText(nodo.getNombre());
                 txtBaseOrigen.setText(nodo.getCodigo());
                 txtNitBD.requestFocus();
@@ -869,9 +878,9 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 return;
             }
 
-            ndBodega nodo = instancias.getSql().getDatosBodega(txtNitBD.getText());
+            ModeloBodega nodo = daoBodegas.consultarPorCodigo(txtNitBD.getText());
 
-            if (nodo.getCodigo() != null) {
+            if (nodo != null) {
                 txtNombreBD.setText(nodo.getNombre());
                 txtBaseDestino.setText(nodo.getCodigo());
                 txtCodProducto.requestFocus();
@@ -939,27 +948,24 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                     txtUnidades.getText(), big.getMoneda(txtValor.getText()), "", "", instancias.getUsuario(),
                     instancias.getTerminal(), "0", "PENDIENTE", metodosGenerales.hora()};
 
-                ndTrasladoBodega nodo = metodos.llenarTrasladoBodega(vector);
-
-                if (!instancias.getSql().agregarTrasladoInterno(nodo)) {
-                    ControladorAlertas.alertFail("Error al guardar el traslado");
-                    return;
-                }
-
-                //PROCESO GUARDAR VENTA
+                List<Object[]> productosTraslado = new ArrayList<>();
                 for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                    Object vectVenta[] = {factura, tblProductos.getValueAt(i, 0), big.getBigDecimal(tblProductos.getValueAt(i, 3).toString().replace(",", ".")),
+                    productosTraslado.add(new Object[]{factura, tblProductos.getValueAt(i, 0), big.getBigDecimal(tblProductos.getValueAt(i, 3).toString().replace(",", ".")),
                         big.getMoneda(tblProductos.getValueAt(i, 2).toString()), tblProductos.getValueAt(i, 4),
                         tblProductos.getValueAt(i, 7), big.getMoneda(tblProductos.getValueAt(i, 10).toString()),
                         tblProductos.getValueAt(i, 5), "PENDIENTE", "", "", tblProductos.getValueAt(i, 6),
                         big.getBigDecimal(tblProductos.getValueAt(i, 8).toString().replace(",", ".")), tblProductos.getValueAt(i, 9), big.getMoneda("0")
-                    };
+                    });
+                }
 
-                    ndProdTraslBodega nodoTras = metodos.llenarProdTralBodega(vectVenta);
+                // La cabecera y sus productos se guardan juntos: si algo falla no queda un traslado a medias.
+                /*if (!daoTrasladosInternos.agregarTraslado(vector, productosTraslado)) {
+                    ControladorAlertas.alertFail("Error al guardar el traslado");
+                    return;
+                }*/
 
-                    if (!instancias.getSql().agregarTrasladoInterno(nodoTras)) {
-                        ControladorAlertas.alertFail("Hubo un problema al guardar el traslado");
-                    }
+                //PROCESO MOVER EL INVENTARIO
+                for (int i = 0; i < tblProductos.getRowCount(); i++) {
 
                     /* SACAMOS LA MERCANCIA DE LA BODEGA DE ORIGEN */
                     ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 0).toString(), txtBaseOrigen.getText());
@@ -1216,9 +1222,13 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
         buscar.show();
     }
 
+    /**
+     * PENDIENTE: la reimpresión de traslados dependía de infBuscadorCliente e infPrestamos, que se eliminaron junto
+     * con el módulo viejo de préstamos. Hay que rehacer el buscador sobre bdTrasladosInternos.
+     */
     private void ventanaTraslados(String cliente) {
-        infBuscadorCliente reimpresion = new infBuscadorCliente();
-        reimpresion.cargarRegistros(cliente, "traslado", instancias);
+        ControladorAlertas.alert("La consulta de traslados de un cliente está pendiente de reconstruirse");
+        limpiarTraslado(1);
     }
 
     public void limpiarTraslado(int opc) {
@@ -1441,15 +1451,15 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             txtTraslado.setText(prodTraslados[0][0].toString().replace("TRASB-", ""));
             txtUnidades.setText(prodTraslados[0][4].toString());
 
-            ndBodega nodo = instancias.getSql().getDatosBodega(prodTraslados[0][1].toString());
-            if (nodo.getCodigo() != null) {
+            ModeloBodega nodo = daoBodegas.consultarPorCodigo(prodTraslados[0][1].toString());
+            if (nodo != null) {
                 txtNitBO.setText(prodTraslados[0][1].toString());
                 txtNombreBO.setText(nodo.getNombre());
                 txtBaseOrigen.setText(nodo.getCodigo());
             }
 
-            ndBodega nodo1 = instancias.getSql().getDatosBodega(prodTraslados[0][2].toString());
-            if (nodo1.getCodigo() != null) {
+            ModeloBodega nodo1 = daoBodegas.consultarPorCodigo(prodTraslados[0][2].toString());
+            if (nodo1 != null) {
                 txtNombreBD.setText(nodo1.getNombre());
                 txtNitBD.setText(prodTraslados[0][2].toString());
                 txtBaseDestino.setText(nodo1.getCodigo());
@@ -1534,7 +1544,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             CodigoProd = "";
         } else {
             nodo = daoProducto.obtenerDatosProducto(codigo, txtBaseOrigen.getText());
-            if (nodo.getCodigo() != null) {
+            if (nodo != null) {
                 CodigoProd = nodo.getCodigo();
             }
         }

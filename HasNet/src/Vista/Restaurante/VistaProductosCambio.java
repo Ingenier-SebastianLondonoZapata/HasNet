@@ -2,7 +2,7 @@ package Vista.Restaurante;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -10,7 +10,7 @@ import Utilidades.Utilidades;
 import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,7 +51,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
         prodPrimero1 = prodPrimero;
         instancias = Instancias.getInstancias();
 
-        nodo = daoProducto.obtenerDatosProducto(codPrincipal, enumBodegas.ID_BODEGA_PRINCIPAL);
+        nodo = daoProducto.obtenerDatosProducto(codPrincipal, Bodegas.predeterminada());
         lbProducto.setText(nodo.getDescripcion());
 
         cargarTabla();
@@ -388,7 +388,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -414,7 +414,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
     }
 
     public void cargarTabla() {
-        ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(prodPrimero1, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(prodPrimero1, Bodegas.predeterminada());
 
         txtNombre.setText(nodo.getDescripcion());
 
@@ -424,7 +424,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
 
             try {
                 if (fila1 > 0) {
-                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(listado[0][1].toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(listado[0][1].toString(), Bodegas.predeterminada());
                     modelo.addRow(new Object[]{listado[0][1], nodo.getDescripcion()});
                 }
             } catch (Exception e) {

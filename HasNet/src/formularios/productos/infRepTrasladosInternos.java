@@ -1,8 +1,11 @@
 package formularios.productos;
 
+import Dao.Terceros.DaoBodegas;
+import Modelo.Contactos.ModeloBodega;
+
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -12,7 +15,6 @@ import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import clases.terceros.ndBodega;
 import formularios.terceros.buscBodegas;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -20,6 +22,8 @@ import java.util.List;
 import javax.swing.JComboBox;
 
 public class infRepTrasladosInternos extends javax.swing.JPanel {
+
+    private final DaoBodegas daoBodegas = new DaoBodegas();
     private final DaoProducto daoProducto = new DaoProducto();
 
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
@@ -629,7 +633,7 @@ public class infRepTrasladosInternos extends javax.swing.JPanel {
             ModeloProducto nodo = null;
 
             String CodigoProd = "", codigo = txtCodigo.getText();
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -759,9 +763,9 @@ public class infRepTrasladosInternos extends javax.swing.JPanel {
 
     public void cargarCliente(String nit) {
 
-        ndBodega nodo = instancias.getSql().getDatosBodega(nit);
+        ModeloBodega nodo = daoBodegas.consultarPorCodigo(nit);
 
-        if (nodo.getCodigo() != null) {
+        if (nodo != null) {
             btnAggClienteActionPerformed(null);
             return;
         }
@@ -789,8 +793,8 @@ public class infRepTrasladosInternos extends javax.swing.JPanel {
     }
 
     public void cargarBodegaDestino(String nit) {
-        ndBodega nodo = instancias.getSql().getDatosBodega(nit);
-        if (nodo.getCodigo() != null) {
+        ModeloBodega nodo = daoBodegas.consultarPorCodigo(nit);
+        if (nodo != null) {
             btnAggProvActionPerformed(null);
             return;
         }
@@ -805,7 +809,7 @@ public class infRepTrasladosInternos extends javax.swing.JPanel {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

@@ -294,7 +294,6 @@ public class squemaFacturacion extends javax.swing.JPanel {
 
         List<Object> destino = facturarSinInventario ? alertas : errores;
 
-        // [0]=id, [1]=descripcion, [2]=disponible, [3]=necesario
         for (Object[] prod : inventario.getProductosSinInventario()) {
             destino.add(prod[1] + " (disponible: " + Utilidades.formatearCantidadVista(prod[2].toString())
                     + ", necesario: " + Utilidades.formatearCantidadVista(prod[3].toString()) + ")");

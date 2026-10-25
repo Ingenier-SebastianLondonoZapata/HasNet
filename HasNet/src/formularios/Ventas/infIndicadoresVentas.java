@@ -2,7 +2,7 @@ package formularios.Ventas;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -11,7 +11,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.productos.buscGrupos;
 import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
@@ -1374,7 +1374,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     public void cargarProducto(String nit) {
 
         if (!nit.equals("")) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(nit, enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(nit, Bodegas.predeterminada());
 
             if (yaEsta(cmbGrupo, nodo.getIdSistema())) {
                 ControladorAlertas.alert("Ya cargo este producto");

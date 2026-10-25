@@ -2,7 +2,7 @@ package formularios.productos;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -573,7 +573,7 @@ public class infRepAjustes extends javax.swing.JPanel {
         } else {
             ModeloProducto nodo = null;
             String CodigoProd = "", codigo = txtCodigo.getText();
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -612,7 +612,7 @@ public class infRepAjustes extends javax.swing.JPanel {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

@@ -1,7 +1,9 @@
 package Utilidades.BaseDatos;
 
+import Utilidades.Contactos.Bodegas;
+
 import Modelo.Egresos.ModeloDetalleEgreso;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Modelo.Maestra.modeloConfiguracion;
 import clases.Cartera.*;
 import clases.Egresos.*;
@@ -6164,23 +6166,6 @@ public class SQL {
         String instruccion_sql = "select traslado, imei from ajustesImei where imei LIKE '" + imei + "%' and tipo = '" + tipo + "' ";
         Object dtDatos[][] = getDatos(colName, " ajustesImei ", instruccion_sql, " where imei LIKE '" + imei + "%' and tipo = '" + tipo + "'  ");
 
-        return dtDatos;
-    }
-
-    public Object[][] getProveedorIngreso(String prod, String bodega) {
-        String colName[] = {
-            "codigo", "nombre", "fechaFactura", "usuario"};
-
-        String condicion = "";
-        if (bodega.equals("123-22")) {
-            condicion = " where ingreso = '" + prod + "' and (bodega = '" + bodega + "' or bodega = '') ";
-        } else {
-            condicion = " where ingreso = '" + prod + "' and bodega = '" + bodega + "' ";
-        }
-
-        String instruccion_sql = "select codigo, nombre, fechaFactura, usuario from ingresoGeneral " + condicion;
-
-        Object dtDatos[][] = getDatos(colName, " ingresoGeneral ", instruccion_sql, condicion);
         return dtDatos;
     }
 

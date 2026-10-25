@@ -1,6 +1,6 @@
 package formularios.productos;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -305,7 +305,7 @@ public class dlgConsultarCodigos extends javax.swing.JDialog {
             if (codigo.equals("")) {
                 codigoProd = "";
             } else {
-                nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+                nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
                 if (nodo.getIdSistema() != null) {
                     codigoProd = nodo.getIdSistema();
                 }

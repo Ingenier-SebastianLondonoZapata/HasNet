@@ -3,6 +3,7 @@ package Vista.Productos;
 import Dao.Productos.DaoProducto;
 
 import Procesos.Inventario.Dao.DaoInventario;
+import Utilidades.Contactos.Bodegas;
 import Utilidades.Utilidades;
 import Vista.Ventas.VistaFactura;
 import clases.IconCellRenderer;
@@ -191,7 +192,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         }
 
         String from = " (" + base + " LEFT JOIN bdultimoponderado ON ((bdultimoponderado.producto = " + base + ".idSistema))"
-                + DaoInventario.unirInventario(base) + ") " + consulta;
+                + DaoInventario.unirInventario(base, Bodegas.predeterminada()) + ") " + consulta;
 
         String sentenciaSQL1 = " SELECT " + base + ".Codigo AS Codigo, " + base + ".Descripcion AS Descripcion, "
                 + "" + base + ".referencia AS referencia, " + pvp1 + ", " + DaoInventario.FISICO_COMO_TEXTO + " AS inventario, " + base + ".ubicacion1 AS ubicacion1, false as sel, "

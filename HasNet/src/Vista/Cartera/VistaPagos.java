@@ -7,7 +7,7 @@ import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import Modelo.Cartera.AbonoCuenta;
 import Modelo.Cartera.MediosPagoAbono;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;

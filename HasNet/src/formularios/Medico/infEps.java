@@ -10,7 +10,7 @@ import clases.Medico.ndEpsPrecargados;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;

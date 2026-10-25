@@ -2,14 +2,14 @@ package formularios.Parqueadero;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
 import clases.Instancias;
 import Modelo.Productos.ModeloProducto;
 import Utilidades.BaseDatos.SQL;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
@@ -651,7 +651,7 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

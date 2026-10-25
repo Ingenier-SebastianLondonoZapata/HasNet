@@ -2,7 +2,7 @@ package Procesos.Inventario.Vista;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -918,7 +918,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
 
         tblDetalle.removeEditor();
         tblDetalle.clearSelection();
-        ModeloProducto productoOficial = daoProducto.obtenerDatosProducto(prodOficial, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto productoOficial = daoProducto.obtenerDatosProducto(prodOficial, Bodegas.predeterminada());
 
         if (tipoMovimiento.equals("Entrada")) {
             if (!validarEntrada()) {

@@ -1,8 +1,9 @@
 package Dao.Terceros;
 
 import Estrategia.AbstractDao;
-import Modelo.Terceros.ModeloContacto;
-import Modelo.Terceros.ModeloDatosVehiculo;
+import Modelo.Contactos.ModeloBodega;
+import Modelo.Contactos.ModeloContacto;
+import Modelo.Contactos.ModeloDatosVehiculo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +16,8 @@ import java.util.logging.Logger;
 public class DaoContactos extends AbstractDao {
 
     private static final Logger LOGGER = Logger.getLogger(DaoContactos.class.getName());
+
+    private final DaoBodegas daoBodegas = new DaoBodegas();
 
     private static final String CONSECUTIVO_TERCERO = "TERCERO";
     private static final String PREFIJO_ID_SISTEMA = "TERC-";
@@ -77,7 +80,7 @@ public class DaoContactos extends AbstractDao {
         }
     }
 
-    public boolean guardar(ModeloContacto contacto, List<ModeloDatosVehiculo> vehiculos) {
+    public boolean guardar(ModeloContacto contacto, List<ModeloDatosVehiculo> vehiculos, List<ModeloBodega> bodegas) {
         Connection conexion = getConnection();
         boolean autoCommitPrevio = true;
 
@@ -95,6 +98,7 @@ public class DaoContactos extends AbstractDao {
             }
 
             insertarVehiculos(conexion, contacto.getIdSistema(), vehiculos);
+            daoBodegas.sincronizar(conexion, contacto.getIdSistema(), bodegas);
             actualizarConsecutivo(conexion, consecutivo + 1);
 
             conexion.commit();
@@ -108,7 +112,7 @@ public class DaoContactos extends AbstractDao {
         }
     }
 
-    public boolean modificar(ModeloContacto contacto, List<ModeloDatosVehiculo> vehiculos) {
+    public boolean modificar(ModeloContacto contacto, List<ModeloDatosVehiculo> vehiculos, List<ModeloBodega> bodegas) {
         Connection conexion = getConnection();
         boolean autoCommitPrevio = true;
 
@@ -127,6 +131,7 @@ public class DaoContactos extends AbstractDao {
                 stmt.executeUpdate();
             }
             insertarVehiculos(conexion, contacto.getIdSistema(), vehiculos);
+            daoBodegas.sincronizar(conexion, contacto.getIdSistema(), bodegas);
 
             conexion.commit();
             return true;

@@ -6,7 +6,7 @@ import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndMascota;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;

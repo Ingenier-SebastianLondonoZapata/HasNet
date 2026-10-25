@@ -2,11 +2,15 @@ package formularios.productos;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Procesos.Inventario.Dao.DaoInventario;
 
 import Dao.Productos.DaoProducto;
+import Dao.Terceros.DaoBodegas;
+import Modelo.Contactos.ModeloBodega;
+import java.util.ArrayList;
+import java.util.List;
 
 import Vista.Productos.VistaBuscadorProductos;
 import clases.Instancias;
@@ -14,7 +18,7 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -23,6 +27,9 @@ import java.math.RoundingMode;
 import javax.swing.JComboBox;
 
 public class infInventario extends javax.swing.JPanel {
+
+    private final DaoBodegas daoBodegas = new DaoBodegas();
+    private final List<ModeloBodega> bodegasDisponibles = new ArrayList<>();
     private final DaoInventario daoInventario = new DaoInventario();
     private final DaoProducto daoProducto = new DaoProducto();
 
@@ -71,14 +78,30 @@ public class infInventario extends javax.swing.JPanel {
             lbBodega.setVisible(true);
             cmbBodegas.setVisible(true);
 
-            Object[][] bodegas = instancias.getSql().getTodasBodegas();
-            for (int i = 0; i < bodegas.length; i++) {
-                cmbBodegas.addItem(bodegas[i][1]);
+            bodegasDisponibles.clear();
+            for (ModeloBodega bodega : daoBodegas.listarInternas()) {
+                bodegasDisponibles.add(bodega);
+                cmbBodegas.addItem(bodega.getNombre());
             }
         } else {
             lbBodega.setVisible(false);
             cmbBodegas.setVisible(false);
         }
+    }
+
+    /**
+     * El combo muestra el abreviado, pero lo que viaja al inventario es el código de la bodega.
+     */
+    private String bodegaSeleccionada() {
+        if (!instancias.getConfiguraciones().isInventarioBodegas()) {
+            return Bodegas.predeterminada();
+        }
+
+        int indice = cmbBodegas.getSelectedIndex();
+        if (indice < 0 || indice >= bodegasDisponibles.size()) {
+            return Bodegas.predeterminada();
+        }
+        return bodegasDisponibles.get(indice).getCodigo();
     }
 
     @SuppressWarnings("unchecked")
@@ -814,7 +837,7 @@ public class infInventario extends javax.swing.JPanel {
         } else {
             ModeloProducto nodo = null;
             String CodigoProd = "", codigo = txtCodigo.getText();
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -918,23 +941,7 @@ public class infInventario extends javax.swing.JPanel {
                 sql = sql.substring(0, sql.length() - 2) + ") AND";
             }
 
-            String codigoBodega = "";
-            if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                String bodega = instancias.getSql().getBaseBodega(cmbBodegas.getSelectedItem().toString());
-                if (bodega.equals("bdProductos")) {
-                    codigoBodega = "123-22";
-                } else if (bodega.equals("bdProductosBodega1")) {
-                    codigoBodega = "BODEGA-1";
-                } else if (bodega.equals("bdProductosBodega2")) {
-                    codigoBodega = "BODEGA-2";
-                } else if (bodega.equals("bdProductosBodega3")) {
-                    codigoBodega = "BODEGA-3";
-                } else if (bodega.equals("bdProductosBodega4")) {
-                    codigoBodega = "BODEGA-4";
-                }
-            } else {
-                codigoBodega = "123-22";
-            }
+            String codigoBodega = bodegaSeleccionada();
 
             sql = sql + " (bodega = '" + codigoBodega + "') AND";
 
@@ -988,7 +995,7 @@ public class infInventario extends javax.swing.JPanel {
 
             String sql = "";
             boolean inventarioPorBodega = instancias.getConfiguraciones().isInventarioBodegas();
-            String idBodega = inventarioPorBodega ? enumBodegas.obtenerIdBodega(instancias.getSql().getBaseBodega(cmbBodegas.getSelectedItem().toString())) : null;
+            String idBodega = Bodegas.resolver(bodegaSeleccionada(), inventarioPorBodega);
             String base = DaoInventario.consultaReporteInventario(idBodega);
 
             //instancias.getSql().modificarFechaHistorico(metodos.desdeDate(dtFinal.getCurrent()));
@@ -1092,7 +1099,7 @@ public class infInventario extends javax.swing.JPanel {
 
             String sql = "";
             boolean inventarioPorBodega = instancias.getConfiguraciones().isInventarioBodegas();
-            String idBodega = inventarioPorBodega ? enumBodegas.obtenerIdBodega(instancias.getSql().getBaseBodega(cmbBodegas.getSelectedItem().toString())) : null;
+            String idBodega = Bodegas.resolver(bodegaSeleccionada(), inventarioPorBodega);
             String base = DaoInventario.consultaReporteInventario(idBodega);
 
             //instancias.getSql().modificarFechaHistorico(metodos.desdeDate(dtFinal.getCurrent()));
@@ -1224,7 +1231,7 @@ public class infInventario extends javax.swing.JPanel {
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }

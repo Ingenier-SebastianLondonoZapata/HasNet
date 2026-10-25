@@ -2,7 +2,7 @@ package formularios.Veterinario;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -13,7 +13,7 @@ import clases.Veterinario.ndMascota;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.Agenda.ndAgenda;
 import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
@@ -1963,7 +1963,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
         txtIdProd.setText(nodoAgenda.getMotivo());
 
         try {
-            ModeloProducto producto = daoProducto.obtenerDatosProducto(nodoAgenda.getMotivo(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(nodoAgenda.getMotivo(), Bodegas.predeterminada());
             if (!producto.getCodigo().equalsIgnoreCase("")) {
                 cargarProducto(nodoAgenda.getMotivo());
             }
@@ -2047,7 +2047,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
         if (cod.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(cod, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(cod, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

@@ -9,7 +9,7 @@ import Impresiones.ImpresionesIngresos.GeneradorReporteIngreso;
 import Dao.Configuraciones.DaoResoluciones;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
 import Modelo.DocumentosElectronicos.ModeloDescuentos;
 import Modelo.DocumentosElectronicos.ModeloDetalleImpuestos;
@@ -31,7 +31,7 @@ import clases.metodosGenerales;
 import clases.productos.ndCompra;
 import clases.productos.ndIngreso;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Procesos.Inventario.Dao.DaoDetalleProducto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import java.time.LocalDate;
@@ -1505,7 +1505,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         //PROCESO GUARDAR COMPRA
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 24).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 24).toString(), Bodegas.predeterminada());
             String cant2 = "1";
             switch (tblProductos.getValueAt(i, 13).toString()) {
                 case "2":
@@ -1573,7 +1573,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         if (tipoProceso.equals(TipoDocumento.COMPRA.getValor())) {
             TipoDocumento tipoMovimiento = TipoDocumento.COMPRA;
-            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            String idBodega = Bodegas.predeterminada();
             List<MovimientoInventario> productos = generarListadoProductos(idBodega);
             List<DetalleProducto> detallesProductos = generarDetallesProductos(EstadosDetalleProducto.DISPONIBLE.getNombre());
             ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, idBodega, instancias.getUsuario(), null);
@@ -1586,7 +1586,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             }
         } else {
             TipoDocumento tipoMovimiento = TipoDocumento.ORDEN_COMPRA;
-            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            String idBodega = Bodegas.predeterminada();
             List<MovimientoInventario> productos = generarListadoProductos(idBodega);
             List<DetalleProducto> detallesProductos = generarDetallesProductos(EstadosDetalleProducto.EN_TRANSITO.getNombre());
             ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, ingreso, idBodega, instancias.getUsuario(), null);
@@ -2042,7 +2042,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         switch (tblProductos.getSelectedColumn()) {
             case 3:
-                ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 24).toString(), Bodegas.predeterminada());
                 String tipo = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
                 String estadoDetalleProducto = tipoProceso.equals(TipoDocumento.COMPRA.getValor())
@@ -2369,7 +2369,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     }
 
     private void devolverCantidadesDocumento(String idDocumento, TipoDocumento tipoAnulacion) {
-        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+        String idBodega = Bodegas.predeterminada();
         Object[][] productos = instancias.getSql().getProductosCargarCompra(idDocumento);
         List<MovimientoInventario> productosARevertir = new ArrayList<>();
         for (Object[] reg : productos) {
@@ -2602,7 +2602,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }
@@ -2709,7 +2709,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void cargarProductoDetal(String codigo, String cantidad, BigDecimal precio) {
 
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
 
         if (nodo.getCodigo() != null) {
 
@@ -2892,7 +2892,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     public void cargarProductoPreCompra(String codigo, String cantidad, int plu, String valor, String tipoDescuento) {
 
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
 
         if (nodo.getIdSistema() != null) {
             String cant2 = "1";
@@ -3526,7 +3526,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void actualizarCantidadPLU(int fila, BigDecimal cantidad) {
         String codigoProducto = tblProductos.getValueAt(fila, 24).toString();
 
-        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigoProducto, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigoProducto, Bodegas.predeterminada());
         int numeroPLU = Integer.parseInt(Utilidades.formatearCantidad(tblProductos.getValueAt(fila, 13).toString()));
 
         ResultadoPluProducto resultadoPluProducto = daoProducto.obtenerDatosPluProducto(producto, numeroPLU);

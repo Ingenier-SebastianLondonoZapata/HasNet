@@ -10,7 +10,7 @@ import Enums.TipoDocumento;
 import Utilidades.Constantes;
 import clases.Instancias;
 import clases.big;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

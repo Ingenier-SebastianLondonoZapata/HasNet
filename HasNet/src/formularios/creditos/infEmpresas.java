@@ -9,7 +9,7 @@ import clases.Medico.ndEps;
 import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.Labotario.infAcidoUrico;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;

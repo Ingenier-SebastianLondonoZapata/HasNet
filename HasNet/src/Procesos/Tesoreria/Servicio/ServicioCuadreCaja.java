@@ -2,7 +2,7 @@ package Procesos.Tesoreria.Servicio;
 
 import Dao.Productos.DaoProducto;
 import Dao.Tesoreria.DaoCuadreCaja;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Tesoreria.ModeloDocumentoCuadre;
 import Modelo.Tesoreria.ModeloResumenCuadre;
@@ -174,7 +174,7 @@ public class ServicioCuadreCaja {
     }
 
     private BigDecimal obtenerTotalProductoDomicilio(String fecha, String usuario) {
-        ModeloProducto producto = daoProducto.obtenerDatosProducto(CODIGO_DOMICILIO, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(CODIGO_DOMICILIO, Bodegas.predeterminada());
         return daoCuadreCaja.obtenerTotalProductoDomicilio(producto.getIdSistema(), fecha, usuario);
     }
 

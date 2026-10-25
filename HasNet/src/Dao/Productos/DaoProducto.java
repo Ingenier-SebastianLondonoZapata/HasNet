@@ -1,7 +1,7 @@
 package Dao.Productos;
 
 import Enums.Tablas;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Estrategia.AbstractDao;
 import Procesos.Inventario.Dao.DaoInventario;
 import Modelo.Productos.ModeloListaPrecio;
@@ -63,7 +63,7 @@ public class DaoProducto extends AbstractDao {
             return new ModeloProducto();
         }
 
-        return obtenerDatosProducto(obtenerCodigoPadre(codigo), enumBodegas.ID_BODEGA_PRINCIPAL);
+        return obtenerDatosProducto(obtenerCodigoPadre(codigo), Bodegas.predeterminada());
     }
 
     private String obtenerCodigoPadre(String codigo) {
@@ -89,7 +89,7 @@ public class DaoProducto extends AbstractDao {
     }
 
     public ModeloProducto obtenerDatosProducto(String codigo, String idBodega) {
-        String tabla = ValidadorTabla.validar(enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla());
+        String tabla = ValidadorTabla.validar(Tablas.PRODUCTOS.getNombre());
         String sql = "SELECT " + COLUMNAS + " FROM " + tabla + " p WHERE " + CONDICION_BUSQUEDA
                 + " UNION SELECT " + COLUMNAS + " FROM " + tabla + " p INNER JOIN " + Tablas.PRODUCTO_LISTAS.getNombre() + " l ON l.idSistema = p.idSistema WHERE l.codigo = ?";
 
@@ -131,7 +131,7 @@ public class DaoProducto extends AbstractDao {
 
         Object[][] filas = new Object[unificados.size()][7];
         for (int i = 0; i < unificados.size(); i++) {
-            ModeloProducto unificado = obtenerDatosProducto(unificados.get(i), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto unificado = obtenerDatosProducto(unificados.get(i), Bodegas.predeterminada());
             filas[i] = new Object[]{unificados.get(i), unificado.getDescripcion(), unificado.getReferencia(), unificado.getL1(),
                 Utilidades.formatearCantidad(unificado.getInventario()), unificado.getUbicacion1(), unificado.getCodigo()};
         }
@@ -159,7 +159,7 @@ public class DaoProducto extends AbstractDao {
                 : "((ROUND((L1 * ((IVA / 100) + 1)), 2) + ROUND((L1 * ((impoconsumoVenta / 100) + 1)), 2)) - L1)";
 
         String sql = "SELECT Codigo, Descripcion, grupo, " + precio + " AS precio, idSistema FROM "
-                + ValidadorTabla.validar(enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla())
+                + ValidadorTabla.validar(Tablas.PRODUCTOS.getNombre())
                 + " WHERE grupo = ? AND activo = false";
 
         List<Object[]> filas = new ArrayList<>();

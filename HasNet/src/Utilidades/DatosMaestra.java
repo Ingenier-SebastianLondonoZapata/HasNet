@@ -30,6 +30,14 @@ public class DatosMaestra {
         return sb.toString();
     }
 
+    /**
+     * Bodega con la que trabaja el sistema. Devuelve vacío si todavía no se cargó la maestra, para que quien pregunte
+     * caiga en la principal en vez de reventar.
+     */
+    public static String getBodega() {
+        return maestra == null || maestra.getBodega() == null ? "" : maestra.getBodega().trim();
+    }
+
     // ── Encabezado empresa ──────────────────────────────────────────────────
     public static String getL1() {
         return maestra.getL1();

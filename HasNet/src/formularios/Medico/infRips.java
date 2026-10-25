@@ -2,7 +2,7 @@ package formularios.Medico;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -971,7 +971,7 @@ public class infRips extends javax.swing.JInternalFrame {
 
     private void txtId1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtId1KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtId1.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtId1.getText(), Bodegas.predeterminada());
             if (nodo.getCodigo() != null) {
                 for (int i = 0; i < jTable1.getRowCount(); i++) {
                     if (jTable1.getValueAt(i, 0).equals(nodo.getCodigo())) {
@@ -1043,7 +1043,7 @@ public class infRips extends javax.swing.JInternalFrame {
                     int f = jTable2.getSelectedRow();
                     String codigo = jTable2.getValueAt(f, 4).toString();
                     int fPro = codigoTabla(codigo);
-                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
                     BigDecimal copago = big.getBigDecimal(jTable2.getValueAt(f, 11).toString());
                     BigDecimal valorUnidad = big.getBigDecimal(nodo.getL1());
 
@@ -1059,7 +1059,7 @@ public class infRips extends javax.swing.JInternalFrame {
                     int f = jTable2.getSelectedRow();
                     String codigo = jTable2.getValueAt(f, 4).toString();
                     int fPro = codigoTabla(codigo);
-                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
                     BigDecimal copago = big.getBigDecimal(jTable2.getValueAt(f, 11).toString());
                     BigDecimal valorUnidad = big.getBigDecimal(nodo.getL1());
 

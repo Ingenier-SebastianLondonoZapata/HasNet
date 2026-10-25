@@ -5,7 +5,7 @@ import Controlador.Alertas.ControladorAlertas;
 import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;

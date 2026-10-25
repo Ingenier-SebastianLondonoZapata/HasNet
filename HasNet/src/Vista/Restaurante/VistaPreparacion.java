@@ -2,7 +2,7 @@ package Vista.Restaurante;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -690,7 +690,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getCodigo() != null) {
                 CodigoProd = nodo.getCodigo();
             }
@@ -740,7 +740,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         codigoPrincipal = prod;
         mesaCongelada1 = mesaCongelada;
 
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(prod, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(prod, Bodegas.predeterminada());
         if (nodo.getCodigo() != null) {
             lbTitulo.setText(nodo.getDescripcion());
         }
@@ -775,13 +775,13 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             int fila = filaDeProductoPrincipal(opcion.getPrincipal());
 
             if (fila >= 0) {
-                ModeloProducto nodo = daoProducto.obtenerDatosProducto(opcion.getCodigo(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                ModeloProducto nodo = daoProducto.obtenerDatosProducto(opcion.getCodigo(), Bodegas.predeterminada());
                 tblProductosPrincipales.setValueAt(opcion.getCodigo(), fila, 1);
                 tblProductosPrincipales.setValueAt(nodo.getDescripcion(), fila, 2);
                 tblProductosPrincipales.setValueAt(Utilidades.formatearCantidadVista(opcion.getCantidad()), fila, 3);
                 marcarEstado(fila, opcion.activa());
             } else if (opcion.getPrincipal().contains("ADICION")) {
-                ModeloProducto nodo = daoProducto.obtenerDatosProducto(opcion.getCodigo(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                ModeloProducto nodo = daoProducto.obtenerDatosProducto(opcion.getCodigo(), Bodegas.predeterminada());
                 tablaPrincipal.addRow(new Object[]{"ADICION", opcion.getCodigo(), nodo.getDescripcion(),
                     Utilidades.formatearCantidadVista(opcion.getCantidad()), true, "   QUITAR"});
             }

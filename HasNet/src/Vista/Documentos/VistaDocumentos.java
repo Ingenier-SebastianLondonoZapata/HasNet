@@ -6,7 +6,7 @@ import Dao.Productos.DaoProducto;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Impresiones.ImpresionesCotizaciones.GeneradorReporteCotizacion;
 import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
 import Impresiones.ImpresionesOrdenServicio.GeneradorReporteOrdenServicio;
@@ -14,8 +14,8 @@ import Impresiones.ImpresionesPedidos.GeneradorReportePedido;
 import Impresiones.ImpresionesSepares.GeneradorReporteSepare;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
-import Modelo.Terceros.ModeloContacto;
-import Modelo.Terceros.ModeloDatosVehiculo;
+import Modelo.Contactos.ModeloContacto;
+import Modelo.Contactos.ModeloDatosVehiculo;
 import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
 import Utilidades.CambiarColorTablaReimpresionYAnulacion;
@@ -1714,7 +1714,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }
 
     private void actualizarInventarioMovimiento() {
-        String idBodega = enumBodegas.resolverIdBodega(BODEGA_SELECCIONADA, instancias.getConfiguraciones().isInventarioBodegas());
+        String idBodega = Bodegas.resolver(BODEGA_SELECCIONADA, instancias.getConfiguraciones().isInventarioBodegas());
 
         if (cmbTipoDocumento.getSelectedItem().equals("FACTURA")) {
             // Anula los documentos de costeo de los discosteos (efecto ajeno al inventario)
@@ -2133,9 +2133,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         String bodegaDocumento = datosDocumento.getBodega();
         if (bodegaDocumento == null && bodegaDocumento.isEmpty()) {
-            BODEGA_SELECCIONADA = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            BODEGA_SELECCIONADA = Bodegas.predeterminada();
         } else {
-            BODEGA_SELECCIONADA = enumBodegas.resolverIdBodega(bodegaDocumento, instancias.getConfiguraciones().isInventarioBodegas());
+            BODEGA_SELECCIONADA = Bodegas.resolver(bodegaDocumento, instancias.getConfiguraciones().isInventarioBodegas());
         }
 
         String obs = datosDocumento.getObservaciones();

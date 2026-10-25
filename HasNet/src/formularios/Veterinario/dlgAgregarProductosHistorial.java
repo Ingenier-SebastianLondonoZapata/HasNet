@@ -2,7 +2,7 @@ package formularios.Veterinario;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -12,7 +12,7 @@ import clases.Veterinario.ndMascota;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
 import Vista.Productos.VistaBuscadorProductos;
@@ -60,7 +60,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
         cargarCliente(cliente);
         cargarMascota(mascota);
 
-        Object[][] productos = instancias.getSql().getProductosProductosServiciosAdicionales(conse);
+        /*Object[][] productos = instancias.getSql().getProductosProductosServiciosAdicionales(conse);
 
         if (productos != null) {
             for (int i = 0; i < productos.length; i++) {
@@ -74,7 +74,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 evento.setKeyCode(KeyEvent.VK_ENTER);
                 tblViejoKeyReleased(evento);
             }
-        }
+        }*/
 
         tblViejo.removeEditor();
         tblViejo.setEnabled(false);
@@ -749,7 +749,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 tblProductos.setValueAt(j, tblProductos.getSelectedRow(), i);
             }
 
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada());
 
             valor = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
             cantidad = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 3)).replace(".", ","));
@@ -856,7 +856,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                 tblViejo.setValueAt(j, tblViejo.getSelectedRow(), i);
             }
 
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblViejo.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblViejo.getValueAt(fila, 0).toString(), Bodegas.predeterminada());
 
             valor = big.getMoneda(String.valueOf(tblViejo.getValueAt(fila, 2)));
             cantidad = big.getMoneda(String.valueOf(tblViejo.getValueAt(fila, 3)).replace(".", ","));
@@ -937,11 +937,11 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
                         big.getMoneda((String) tblProductos.getValueAt(i, 14))
                     };
 
-                    ndProdTraslBodega nodoTras = metodos.llenarProdTralBodega(vectVenta);
+                    /*ndProdTraslBodega nodoTras = metodos.llenarProdTralBodega(vectVenta);
 
                     if (!instancias.getSql().agregarProductosAdicionales(nodoTras)) {
                         ControladorAlertas.alertFail("Hubo un problema al guardar el prestamo");
-                    }
+                    }*/
                 }
 
                 ControladorAlertas.alertSuccess("Productos guardados exitoso");
@@ -1075,7 +1075,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }
@@ -1247,7 +1247,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }

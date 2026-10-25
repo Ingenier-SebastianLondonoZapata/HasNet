@@ -1,7 +1,6 @@
 package Utilidades.BaseDatos;
 
 import Enums.Tablas;
-import Enums.enumBodegas;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,10 +13,6 @@ public final class ValidadorTabla {
 
     private static Set<String> construirListaBlanca() {
         Set<String> permitidas = new HashSet<>();
-
-        for (enumBodegas.TipoBodega bodega : enumBodegas.TipoBodega.values()) {
-            permitidas.add(bodega.getNombreTabla());
-        }
 
         for (Tablas tabla : Tablas.values()) {
             permitidas.add(tabla.getNombre());

@@ -113,7 +113,6 @@ import Vista.Productos.ingreso;
 import formularios.productos.infArmado;
 import Vista.Productos.VistaDiseno;
 
-import formularios.terceros.infBodegas;
 import Vista.Contactos.VistaContactos;
 import formularios.terceros.infRepClientes;
 import formularios.terceros.infRepEmpleados;
@@ -134,7 +133,6 @@ import formularios.infUsuarios;
 import formularios.productos.infReportesProductos;
 import formularios.productos.infTrasladosInternos;
 import formularios.recordatorios.infRecordatorios;
-import formularios.terceros.infBodegasClientes;
 
 import java.awt.Color;
 import java.awt.Event;
@@ -1978,13 +1976,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 textos[1] = (String) null;
                 textos[2] = (String) null;
 
-                if (instancias.getConfiguraciones().isInventarioBodegas()) {
-                    textos[3] = "BOD.INTERNA";
-                } else {
-                    textos[3] = (String) null;
-                }
-
-                textos[4] = "C. PRESTAMOS";
+                textos[3] = (String) null;
+                textos[4] = (String) null;
                 textos[5] = (String) null;
                 textos[6] = "R.CONTACTOS";
                 textos[7] = (String) null;
@@ -1999,8 +1992,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 forms[0] = instancias.getClientes();
                 forms[1] = null;
                 forms[2] = null;
-                forms[3] = instancias.getBodegas();
-                forms[4] = instancias.getBodegasClientes();
+                forms[3] = null;
+                forms[4] = null;
                 forms[5] = null;
                 forms[6] = instancias.getRepClientes();
                 forms[7] = null;
@@ -2489,10 +2482,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 instancias.getMenu().cambiarTitulo("DISEÑO DE PRODUCTO");
             }
 
-            if (formularios[3] instanceof infBodegas) {
-                instancias.getMenu().cambiarTitulo("BODEGAS INTERNAS");
-            }
-
             if (formularios[3] instanceof cotizacion) {
                 instancias.getMenu().cambiarTitulo("COTIZACIONES");
             }
@@ -2557,10 +2546,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
             if (formularios[4] instanceof infGuarderia) {
                 instancias.getMenu().cambiarTitulo("ABONOS CUENTAS POR PAGAR");
-            }
-
-            if (formularios[4] instanceof infBodegasClientes) {
-                instancias.getMenu().cambiarTitulo("CLIENTES DE PRESTAMOS");
             }
 
             accionarMenu();
@@ -3654,30 +3639,6 @@ public class VistaMenu extends javax.swing.JFrame {
             }
             interno.setMaximum(true);
             interno.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            infBodegasClientes interno2 = new infBodegasClientes();
-            dkpFormularios.add(interno2);
-            instancias.setBodegasClientes(interno2);
-            if (instancias.getUsuarioLog().isClientesPrestamos()) {
-                interno2.show();
-            }
-            interno2.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            infBodegas interno2 = new infBodegas();
-            dkpFormularios.add(interno2);
-            instancias.setBodegas(interno2);
-            if (instancias.getUsuarioLog().isBodegasInternas()) {
-                interno2.show();
-            }
-            interno2.setMaximum(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -2,7 +2,7 @@ package Procesos.Inventario.Servicio;
 
 import Enums.HistoricoPonderados;
 import Enums.TipoDocumento;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.LineaInventarioInicial;
 import Modelo.Inventario.MovimientoInventario;
@@ -101,7 +101,7 @@ public class ServicioInventarioInicial {
     }
 
     private void procesarMovimientos(List<LineaInventarioInicial> lineas, List<DetalleProducto> detalles) throws SQLException {
-        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+        String idBodega = Bodegas.predeterminada();
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
         for (LineaInventarioInicial linea : lineas) {

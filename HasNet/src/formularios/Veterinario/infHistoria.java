@@ -14,7 +14,7 @@ import clases.Veterinario.ndHistoria;
 import clases.Veterinario.ndMascota;
 import clases.Veterinario.ndSeguimiento;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import datechooser.beans.DateChooserCombo;
 import java.awt.Color;
 import java.awt.Dimension;

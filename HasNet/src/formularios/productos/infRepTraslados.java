@@ -1,8 +1,13 @@
 package formularios.productos;
 
+import formularios.terceros.buscBodegas;
+
+import Dao.Terceros.DaoBodegas;
+import Modelo.Contactos.ModeloBodega;
+
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -18,6 +23,8 @@ import java.util.List;
 import javax.swing.JComboBox;
 
 public class infRepTraslados extends javax.swing.JPanel {
+
+    private final DaoBodegas daoBodegas = new DaoBodegas();
     private final DaoProducto daoProducto = new DaoProducto();
 
     private final DaoInicioSesion daoInicioSesion = new DaoInicioSesion();
@@ -617,7 +624,7 @@ public class infRepTraslados extends javax.swing.JPanel {
             ModeloProducto nodo = null;
 
             String CodigoProd = "", codigo = txtCodigo.getText();
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -777,9 +784,9 @@ public class infRepTraslados extends javax.swing.JPanel {
 
     public void cargarCliente(String nit) {
 
-        ndBodega nodo = instancias.getSql().getDatosBodega(nit);
+        ModeloBodega nodo = daoBodegas.consultarPorCodigo(nit);
 
-        if (nodo.getCodigo() != null) {
+        if (nodo != null) {
             txtCliente.setText(nodo.getNombre());
             btnAggClienteActionPerformed(null);
             return;
@@ -809,9 +816,9 @@ public class infRepTraslados extends javax.swing.JPanel {
 
     public void cargarBodegaDestino(String nit) {
 
-        ndBodega nodo = instancias.getSql().getDatosBodega(nit);
+        ModeloBodega nodo = daoBodegas.consultarPorCodigo(nit);
 
-        if (nodo.getCodigo() != null) {
+        if (nodo != null) {
             txtBodegaDestino.setText(nodo.getNombre());
             btnAggProvActionPerformed(null);
             return;
@@ -827,7 +834,7 @@ public class infRepTraslados extends javax.swing.JPanel {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }

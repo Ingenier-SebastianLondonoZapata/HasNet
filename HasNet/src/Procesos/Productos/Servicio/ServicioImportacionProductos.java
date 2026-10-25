@@ -2,7 +2,7 @@ package Procesos.Productos.Servicio;
 
 import Enums.ColumnaPlantillaProductos;
 import Enums.DetalleTipoProducto;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.LineaInventarioInicial;
 import Modelo.Productos.FilaPlantillaProductos;
@@ -133,7 +133,7 @@ public class ServicioImportacionProductos {
                 continue;
             }
 
-            ModeloProducto producto = daoProducto.obtenerDatosProducto(valor, enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto producto = daoProducto.obtenerDatosProducto(valor, Bodegas.predeterminada());
             if (producto.getIdSistema() != null) {
                 return "El código " + valor + " ya existe en el sistema (producto " + producto.getIdSistema() + ")";
             }

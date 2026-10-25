@@ -16,7 +16,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.Genericos.buscPlantillaDeTextos;
 import formularios.terceros.buscClientes;
 import java.awt.Color;

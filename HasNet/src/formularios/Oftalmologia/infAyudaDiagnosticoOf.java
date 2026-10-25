@@ -2,7 +2,7 @@ package formularios.Oftalmologia;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -15,7 +15,7 @@ import clases.Oftalmologia.ndAyudaDiagnosticaOf;
 import Modelo.Productos.ModeloProducto;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -695,7 +695,7 @@ public class infAyudaDiagnosticoOf extends javax.swing.JInternalFrame {
     private void txtIdentificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdentificacionKeyReleased
 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtIdentificacion.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtIdentificacion.getText().replace("'", "//"), Bodegas.predeterminada());
 
             if (nodo.getCodigo() == null) {
                 txtFecha.requestFocus();

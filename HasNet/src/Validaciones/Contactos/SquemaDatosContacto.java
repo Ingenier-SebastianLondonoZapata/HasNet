@@ -2,7 +2,7 @@ package Validaciones.Contactos;
 
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoContacto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import java.util.ArrayList;
 import java.util.List;

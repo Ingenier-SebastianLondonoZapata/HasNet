@@ -4,7 +4,7 @@ import Controlador.Alertas.ControladorAlertas;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
 import Modelo.DocumentosElectronicos.DatosClienteAsignable;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.Instancias;
 import javax.swing.JTable;
 

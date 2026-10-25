@@ -1,8 +1,10 @@
 package formularios.productos;
 
+import formularios.terceros.buscBodegas;
+
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Procesos.Inventario.Dao.DaoInventario;
 
 import Dao.Productos.DaoProducto;
@@ -265,7 +267,7 @@ public class infArmado extends javax.swing.JInternalFrame {
         txtBodega.setBackground(new java.awt.Color(255, 204, 204));
         txtBodega.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         txtBodega.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtBodega.setText("123-22");
+        txtBodega.setText(Bodegas.predeterminada());
         txtBodega.setName("combo"); // NOI18N
         txtBodega.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -871,7 +873,7 @@ public class infArmado extends javax.swing.JInternalFrame {
         btnGuardar.setEnabled(false);
         btnBusProd.setEnabled(false);
         txtCodProducto.setEnabled(false);
-        txtBodega.setText("123-22");
+        txtBodega.setText(Bodegas.predeterminada());
         spCantidad.setValue(1);
     }//GEN-LAST:event_btnNuevoActionPerformed
 
@@ -983,6 +985,16 @@ public class infArmado extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtBodegaKeyReleased
 
+    public void ventanaBodegas(String nit) {
+        buscBodegas buscar = new buscBodegas(instancias.getMenu(), true, buscBodegas.TIPO_INTERNA);
+        buscar.setLocationRelativeTo(null);
+        instancias.setBuscBodegas(buscar);
+        instancias.setCampoActual(txtBodega);
+        txtBodega.requestFocus();
+        buscar.noEncontrado(nit);
+        buscar.setVisible(true);
+    }
+
     private void btnBusBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusBodegaActionPerformed
         ventanaBodegas("");
     }//GEN-LAST:event_btnBusBodegaActionPerformed
@@ -1045,7 +1057,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             }
 
             if ("".equals(idBodega)) {
-                idBodega = "123-22";
+                idBodega = Bodegas.predeterminada();
             }
 
 
@@ -1155,7 +1167,7 @@ public class infArmado extends javax.swing.JInternalFrame {
             return txtBodega.getText();
         }
 
-        return enumBodegas.ID_BODEGA_PRINCIPAL;
+        return Bodegas.predeterminada();
     }
 
     public void ventanaProductos2() {

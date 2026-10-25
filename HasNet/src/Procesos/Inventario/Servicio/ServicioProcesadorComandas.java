@@ -1,6 +1,6 @@
 package Procesos.Inventario.Servicio;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -116,7 +116,7 @@ public class ServicioProcesadorComandas {
             
             if (!esAdicion && (principal == null || principal.isEmpty() || principal.equals(" "))) {
                 if (estado.equals("false")) {
-                    ModeloProducto datosProducto = daoProducto.obtenerDatosProducto(opcion.getCodigo(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto datosProducto = daoProducto.obtenerDatosProducto(opcion.getCodigo(), Bodegas.predeterminada());
                     ingredientes.append(datosProducto.getDescripcion()).append(", ");
                 }
             }

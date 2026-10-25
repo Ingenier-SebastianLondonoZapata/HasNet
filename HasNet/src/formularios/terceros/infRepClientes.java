@@ -3,7 +3,7 @@ package formularios.terceros;
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;

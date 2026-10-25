@@ -6,7 +6,7 @@ import clases.Instancias;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import clases.recordatorios.ndRecordatorio;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.terceros.buscClientes;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;

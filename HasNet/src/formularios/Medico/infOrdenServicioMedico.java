@@ -2,7 +2,7 @@ package formularios.Medico;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -16,7 +16,7 @@ import clases.Ventas.ndFactura;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Vista.Tesoreria.VistaEgresos;
 import Vista.Productos.VistaBuscadorProductos;
 import formularios.terceros.buscClientes;
@@ -2281,7 +2281,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 codigoProd = nodo.getIdSistema();
             }

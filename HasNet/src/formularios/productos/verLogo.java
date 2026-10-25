@@ -1,6 +1,6 @@
 package formularios.productos;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -27,7 +27,7 @@ public final class verLogo extends javax.swing.JDialog {
 
         setTitle("Vista previa");
         instancias = Instancias.getInstancias();
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
 
         lbTitulo.setText(nodo.getDescripcion());
 

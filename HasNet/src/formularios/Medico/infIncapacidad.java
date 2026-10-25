@@ -8,7 +8,7 @@ import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndIncapacidad;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;

@@ -6,7 +6,7 @@ import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import formularios.terceros.buscClientes;
 import clases.Instancias;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import formularios.Parqueadero.buscPlacas;
 import java.awt.event.KeyEvent;

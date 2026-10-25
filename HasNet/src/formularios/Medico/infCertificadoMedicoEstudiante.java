@@ -8,7 +8,7 @@ import clases.Medico.ndCertificadoMedico;
 import clases.Medico.ndHistoriaClinica;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;

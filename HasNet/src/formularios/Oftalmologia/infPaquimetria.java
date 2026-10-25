@@ -7,7 +7,7 @@ import clases.Instancias;
 import clases.Oftalmologia.ndPaquimetria;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.Oftalmologia.pnlDibujo;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;

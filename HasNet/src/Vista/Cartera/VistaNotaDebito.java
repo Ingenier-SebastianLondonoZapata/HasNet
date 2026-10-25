@@ -5,7 +5,7 @@ import Dao.Productos.DaoProducto;
 import Consumidor.FacturacionElectronica.ConsumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
 import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
@@ -28,7 +28,7 @@ import clases.Ventas.ndFactura;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Modelo.Ventas.FilaProductoTabla;
 import Modelo.Ventas.OpcionPreparacion;
 import Modelo.Ventas.ModeloValidacionFactura;
@@ -140,11 +140,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         txtIdSistema.setVisible(false);
         tblProductos.setDefaultRenderer(Object.class, new IconCellRenderer());
         tblProductos.getColumnModel().getColumn(1).setCellRenderer(new WordWrapCellRenderer());
-
-        if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-            lbBodega.setVisible(false);
-            txtBodega.setVisible(false);
-        }
 
         if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
             tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
@@ -3289,12 +3284,11 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         cargarTotales();
     }
 
+    /**
+     * La nota débito ya no pide bodega en pantalla, así que siempre mueve el inventario de la principal.
+     */
     public String obtenerIdBodega() {
-        if (instancias.getConfiguraciones().isInventarioBodegas()) {
-            return txtBodega.getText();
-        }
-
-        return enumBodegas.ID_BODEGA_PRINCIPAL;
+        return Bodegas.predeterminada();
     }
 
     public void cambiarListaCliente() {
@@ -3810,10 +3804,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 } catch (Exception e) {
                 }
 
-                String bodega = txtBodega.getText();
-                if (!instancias.getConfiguraciones().isInventarioBodegas()) {
-                    bodega = "123-22";
-                }
+                String bodega = obtenerIdBodega();
 
                 if (daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 32).toString(), idBodega).getUsuario().equalsIgnoreCase("FACTURA")) {
                     //instancias.getArmado().facturarPreparado(tblProductos.getValueAt(i, 32).toString(), tblProductos.getValueAt(i, 3).toString(),
@@ -3864,7 +3855,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                     instancias.getComision(), instancias.getValorComision(), instancias.getTotalFacturaComision(), imei, lote, idProd,
                     mesFacturar, instancias.getTarjetaCredito(), instancias.getTotalPropina(), instancias.getPorcPropina(),
                     consecutivoCosteo, hora, tblProductos.getValueAt(i, 23).toString().replace(".", "").replace(",", "."),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 8)), false, txtBodega.getText(), ponderado, tipoFacturacion
+                    big.getMoneda((String) tblProductos.getValueAt(i, 8)), false, obtenerIdBodega(), ponderado, tipoFacturacion
                 };
 
                 nodo = metodos.llenarFactura(vector);

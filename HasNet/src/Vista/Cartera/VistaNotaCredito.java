@@ -7,7 +7,7 @@ import Dao.Productos.DaoProducto;
 import Consumidor.FacturacionElectronica.ConsumidorFacturacionElectronica;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Enums.enumTipoIdentificacion;
 import Enums.enumTipoPersona;
 import Impresiones.ImpresionesNotasCredito.GeneradorReporteNotaCredito;
@@ -24,7 +24,7 @@ import Validaciones.Facturacion.squemaFacturacion;
 import Validaciones.FacturacionElectronica.squemaFacturacionElectronica;
 import clases.Cartera.ndNc;
 import clases.Instancias;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Procesos.Inventario.Servicio.ServicioInventario;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
@@ -1275,13 +1275,13 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
                     tblProductos.setValueAt(cantidad, fila, 12);
                     break;
                 case "2":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(2))), fila, 12);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(2))), fila, 12);
                     break;
                 case "3":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(3))), fila, 12);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(3))), fila, 12);
                     break;
                 case "4":
-                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(4))), fila, 12);
+                    tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(4))), fila, 12);
                     break;
             }
             cargarTotales();
@@ -1463,7 +1463,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
 
             for (int i = 0; i < notasCredito.length; i++) {
 
-                ModeloProducto producto = daoProducto.obtenerDatosProducto(notasCredito[i][1].toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                ModeloProducto producto = daoProducto.obtenerDatosProducto(notasCredito[i][1].toString(), Bodegas.predeterminada());
                 double cantidad;
                 double inventario;
                 double fisicoInventario;
@@ -2355,7 +2355,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         }
 
         if (!txtValorTotal.getText().equals(this.simbolo + " 0")) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto("EFECTIVO", enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto("EFECTIVO", Bodegas.predeterminada());
             Object vectVenta[] = {
                 nodoCaja.getFactura() + " NC", nodo.getIdSistema(),
                 big.getMoneda(txtValorEfectivo.getText()).multiply(big.getBigDecimal("-1")), "-" + 1, big.getMoneda("0"),
@@ -2386,7 +2386,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         }
 
         TipoDocumento tipoMovimiento = TipoDocumento.NOTA_CREDITO;
-        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+        String idBodega = Bodegas.predeterminada();
         List<MovimientoInventario> productos = generarListadoProductos(idBodega);
         ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, "", idBodega, instancias.getUsuario(), null);
 

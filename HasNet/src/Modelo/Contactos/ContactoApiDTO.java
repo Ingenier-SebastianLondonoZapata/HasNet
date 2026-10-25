@@ -1,4 +1,4 @@
-package Modelo.Terceros;
+package Modelo.Contactos;
 
 import org.json.JSONException;
 import org.json.JSONObject;

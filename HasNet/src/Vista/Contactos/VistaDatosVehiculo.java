@@ -2,7 +2,7 @@ package Vista.Contactos;
 
 import Controlador.Alertas.ControladorAlertas;
 import Dao.Terceros.DaoVehiculos;
-import Modelo.Terceros.ModeloDatosVehiculo;
+import Modelo.Contactos.ModeloDatosVehiculo;
 import Validaciones.Contactos.SquemaDatosVehiculo;
 import clases.metodosGenerales;
 import java.awt.event.ActionEvent;

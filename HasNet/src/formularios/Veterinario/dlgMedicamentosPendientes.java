@@ -2,7 +2,7 @@ package formularios.Veterinario;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -665,7 +665,7 @@ public class dlgMedicamentosPendientes extends javax.swing.JDialog {
 
                 String producto = txtId.getText();
                 if (!producto.equals("")) {
-                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(producto, enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(producto, Bodegas.predeterminada());
                     Object[] vector = {txtIdHosp.getText(), nodo.getIdSistema(), nodo.getDescripcion(), txtCant.getText(),
                         big.setMoneda(big.getMoneda(nodo.getL1().replace(".", ","))), "1", instancias.getUsuario(),
                         metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora()};
@@ -741,7 +741,7 @@ public class dlgMedicamentosPendientes extends javax.swing.JDialog {
             if (codigo.equals("")) {
                 CodigoProd = "";
             } else {
-                nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+                nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
                 if (nodo.getIdSistema() != null) {
                     CodigoProd = nodo.getIdSistema();
                 }

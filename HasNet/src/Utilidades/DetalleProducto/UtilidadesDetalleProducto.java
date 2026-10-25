@@ -1,6 +1,6 @@
 package Utilidades.DetalleProducto;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.Inventario.DetalleProducto;
 import Utilidades.Utilidades;
 import clases.Instancias;
@@ -50,7 +50,7 @@ public class UtilidadesDetalleProducto {
                     fechaVencimiento,
                     temperatura,
                     estadoDetalleProducto,
-                    enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue(),
+                    Bodegas.predeterminada(),
                     cantidad,
                     cantidad
             );

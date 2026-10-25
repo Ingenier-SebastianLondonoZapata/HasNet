@@ -2,7 +2,7 @@ package formularios.productos;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -13,7 +13,7 @@ import clases.Instancias;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -613,7 +613,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
             ModeloProducto nodo = null;
 
             String CodigoProd = "", codigo = txtCodigo.getText();
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -761,7 +761,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
             return;
         }
 
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(nit, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(nit, Bodegas.predeterminada());
 
         if (nodo.getCodigo() != null) {
             txtCodigo.setText(nodo.getIdSistema());

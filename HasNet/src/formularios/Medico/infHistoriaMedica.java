@@ -2,7 +2,7 @@ package formularios.Medico;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -21,7 +21,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.Genericos.buscPlantillaDeTextos;
 import formularios.Veterinario.visor;
 
@@ -7638,7 +7638,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         String factura = "";
 
         try {
-            ModeloProducto prod = daoProducto.obtenerDatosProducto(nodoCampos.getServicio(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto prod = daoProducto.obtenerDatosProducto(nodoCampos.getServicio(), Bodegas.predeterminada());
             valor = prod.getL1();
         } catch (Exception e) {
         }

@@ -2,7 +2,7 @@ package formularios.Medico;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -592,7 +592,7 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
 
                 String valor = "0";
                 try {
-                    ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText(), Bodegas.predeterminada());
                     System.out.println(valor);
                     valor = prod.getL1();
                 } catch (Exception e) {
@@ -904,7 +904,7 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
 
     public void cargarProducto(String codigo, int sw) {
 
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
 
         if (nodo.getCodigo() != null) {
             txtValor.setText(big.setMoneda(big.getBigDecimal(nodo.getL1())));

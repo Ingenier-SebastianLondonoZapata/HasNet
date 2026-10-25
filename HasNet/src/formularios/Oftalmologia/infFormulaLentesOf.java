@@ -7,7 +7,7 @@ import clases.Instancias;
 import clases.Oftalmologia.ndFormulaLentes;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;

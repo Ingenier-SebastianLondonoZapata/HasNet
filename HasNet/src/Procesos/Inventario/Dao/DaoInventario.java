@@ -1,7 +1,7 @@
 package Procesos.Inventario.Dao;
 
 import Enums.Tablas;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Estrategia.AbstractDao;
 import Modelo.Productos.ModeloProducto;
 import Utilidades.BaseDatos.SentenciaSql;
@@ -22,13 +22,13 @@ public class DaoInventario extends AbstractDao {
 
     public static final String FISICO_COMO_TEXTO = "REPLACE(CAST(CAST(COALESCE(" + Tablas.INVENTARIO.getNombre() + ".fisicoInventario, 0) AS DOUBLE) AS CHAR), '.', ',')";
 
-    public static String unirInventario(String tablaProducto) {
+    public static String unirInventario(String tablaProducto, String bodega) {
         return " LEFT JOIN " + Tablas.INVENTARIO.getNombre() + " ON ((" + Tablas.INVENTARIO.getNombre() + ".idSistema = " + tablaProducto
-                + ".idSistema) AND (" + Tablas.INVENTARIO.getNombre() + ".idBodega = '" + enumBodegas.obtenerIdBodega(tablaProducto) + "'))";
+                + ".idSistema) AND (" + Tablas.INVENTARIO.getNombre() + ".idBodega = '" + Bodegas.resolver(bodega) + "'))";
     }
 
     public static String consultaReporteInventario(String bodega) {
-        String idBodega = enumBodegas.resolverIdBodega(bodega, true);
+        String idBodega = Bodegas.resolver(bodega, true);
         String inv = Tablas.INVENTARIO.getNombre();
 
         return "(SELECT p.idSistema AS Codigo, p.Descripcion AS Descripcion, " + texto("inventario") + " AS inventario, "
@@ -51,7 +51,7 @@ public class DaoInventario extends AbstractDao {
                 + texto("trasladoInternoEntrada") + " AS trasladoInternoEntrada, " + texto("trasladoInternoSalida") + " AS trasladoInternoSalida, "
                 + texto("congelada") + " AS congelada, " + texto("trasladoBod") + " AS trasladoBod, " + texto("enTransito") + " AS enTransito, "
                 + texto("notaDebito") + " AS nd "
-                + "FROM " + enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla() + " p "
+                + "FROM " + Tablas.PRODUCTOS.getNombre() + " p "
                 + "LEFT JOIN " + inv + " i ON i.idSistema = p.idSistema AND i.idBodega = '" + idBodega + "' "
                 + "LEFT JOIN bdgrupo g ON g.codigo = p.grupo "
                 + "LEFT JOIN bdsubgrupo sg ON sg.codigo = p.Sub_grupo "
@@ -70,8 +70,8 @@ public class DaoInventario extends AbstractDao {
     }
 
     public void cargarInventario(ModeloProducto producto, String bodega) {
-        String idBodega = enumBodegas.obtenerIdBodega(bodega);
-        if (producto.getIdSistema() == null || idBodega == null) {
+        String idBodega = Bodegas.resolver(bodega);
+        if (producto.getIdSistema() == null) {
             return;
         }
 
@@ -116,10 +116,7 @@ public class DaoInventario extends AbstractDao {
             throw new IllegalArgumentException("Columna de inventario no permitida: " + columna);
         }
 
-        String idBodega = enumBodegas.obtenerIdBodega(bodega);
-        if (idBodega == null) {
-            throw new IllegalArgumentException("Bodega no válida: " + bodega);
-        }
+        String idBodega = Bodegas.resolver(bodega);
 
         String sql = "INSERT INTO " + Tablas.INVENTARIO.getNombre() + " (idSistema, idBodega, " + columna + ") VALUES (?, ?, ?) "
                 + "ON DUPLICATE KEY UPDATE " + columna + " = VALUES(" + columna + ")";
@@ -134,11 +131,11 @@ public class DaoInventario extends AbstractDao {
     }
 
     public BigDecimal obtenerFisicoInventario(String codigo) {
-        String sql = "SELECT i.fisicoInventario FROM " + ValidadorTabla.validar(enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getNombreTabla()) + " p "
+        String sql = "SELECT i.fisicoInventario FROM " + ValidadorTabla.validar(Tablas.PRODUCTOS.getNombre()) + " p "
                 + "INNER JOIN " + Tablas.INVENTARIO.getNombre() + " i ON i.idSistema = p.idSistema AND i.idBodega = ? WHERE p.Codigo = ?";
 
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setString(1, enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue());
+            ps.setString(1, Bodegas.predeterminada());
             ps.setString(2, codigo);
 
             try (ResultSet rs = ps.executeQuery()) {

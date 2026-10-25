@@ -1,5 +1,7 @@
 package clases;
 
+import formularios.terceros.buscBodegas;
+
 import Vista.Cartera.VistaReportesCartera;
 import Vista.ReportesCarteras.VistaReporteAbonos;
 import Vista.ReportesCarteras.VistaReporteCuentasPendientes;
@@ -76,6 +78,7 @@ public class Instancias {
 
     private static Instancias instancias;
 
+    private buscBodegas buscBodegas;
     private final SQL sql;
     private final SQL1 sqlPagos;
 
@@ -267,8 +270,6 @@ public class Instancias {
     /* INICIO TERCEROS */
     private VistaContactos clientes;
     private VistaContactos paciente;
-    private infBodegas bodegas;
-    private infBodegasClientes bodegasClientes;
     private buscClientes busClientes;
     private buscEmpleados buscEmpleados;
 
@@ -928,13 +929,6 @@ public class Instancias {
         this.trasladosInternos = trasladosInternos;
     }
 
-    public infBodegasClientes getBodegasClientes() {
-        return bodegasClientes;
-    }
-
-    public void setBodegasClientes(infBodegasClientes bodegasClientes) {
-        this.bodegasClientes = bodegasClientes;
-    }
     
     public infRepHistorial getRepHistorial() {
         return repHistorial;
@@ -2582,14 +2576,6 @@ public class Instancias {
         this.productos = productos;
     }
 
-    public infBodegas getBodegas() {
-        return bodegas;
-    }
-
-    public void setBodegas(infBodegas bodegas) {
-        this.bodegas = bodegas;
-    }
-
     public VistaContactos getClientes() {
         return clientes;
     }
@@ -2664,6 +2650,14 @@ public class Instancias {
 
     public void setCuentaCobro(infCuentaCobro cuentaCobro) {
         this.cuentaCobro = cuentaCobro;
+    }
+
+    public buscBodegas getBuscBodegas() {
+        return buscBodegas;
+    }
+
+    public void setBuscBodegas(buscBodegas buscBodegas) {
+        this.buscBodegas = buscBodegas;
     }
 
     public JTextField getCampoActual() {

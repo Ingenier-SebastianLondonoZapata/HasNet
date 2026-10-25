@@ -1,4 +1,4 @@
-package Modelo.Terceros;
+package Modelo.Contactos;
 
 public class ModeloDatosVehiculo {
 

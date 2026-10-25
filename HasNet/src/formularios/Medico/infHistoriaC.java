@@ -7,7 +7,7 @@ import clases.Instancias;
 import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndOrdenServicio;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.terceros.buscClientes;
 import java.awt.Cursor;
 import java.awt.Dimension;

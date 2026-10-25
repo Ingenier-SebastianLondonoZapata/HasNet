@@ -65,7 +65,7 @@ import clases.productos.ndProceso;
 import clases.productos.ndProductoAjustes;
 import clases.productos.ndTraslado;
 import clases.recordatorios.ndRecordatorio;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import com.toedter.calendar.JDateChooser;
 import configuracion.msgIngresar;
 import configuracion.msgIngresar1;

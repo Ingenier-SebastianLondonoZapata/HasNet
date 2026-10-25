@@ -7,7 +7,7 @@ import clases.Medico.ndConvenio;
 import clases.Medico.ndEpsPrecargados;
 import clases.big;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.creditos.*;
 import formularios.terceros.buscClientes;
 import java.awt.Dimension;

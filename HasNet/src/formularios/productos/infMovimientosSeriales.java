@@ -748,12 +748,12 @@ public class infMovimientosSeriales extends javax.swing.JPanel {
                     }
 
                     for (int i = 0; i < prestado.length; i++) {
-                        resultados = instancias.getSql().getPrestamosMovimientos(prestado[i][0].toString());
+/*                        resultados = instancias.getSql().getPrestamosMovimientos(prestado[i][0].toString());
                         modelo.addRow(new Object[]{resultados[0][0], resultados[0][1], resultados[0][2],
                             metodos.fecha(resultados[0][3].toString()),
                             big.setMoneda(big.getMoneda(resultados[0][4].toString())),
                             this.simbolo + " 0", this.simbolo + " 0", big.setMoneda(big.getMoneda(resultados[0][4].toString())), resultados[0][5]
-                        });
+                        });*/
                     }
 
                     tblResultados.getColumnModel().getColumn(9).setMinWidth(0);
@@ -816,7 +816,7 @@ public class infMovimientosSeriales extends javax.swing.JPanel {
             anulas = instancias.getSql().getProductosVentasAnuladasImei(cod);
             ajustesSalida = instancias.getSql().getProductosAjustes(cod, "Ajuste Salida");
             ajustesEntrada = instancias.getSql().getProductosAjustes(cod, "Ajustes Entrada");
-            prestado = instancias.getSql().getProductosPrestamos(cod);
+            //prestado = instancias.getSql().getProductosPrestamos(cod);
 
             tblEntradas.setValueAt(compras.length, 0, 1);
             tblEntradas.setValueAt(ajustesEntrada.length, 1, 1);

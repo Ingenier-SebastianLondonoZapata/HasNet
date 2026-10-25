@@ -16,6 +16,7 @@ public class ndMaestra {
     private String horaInicioAgenda, horaFinAgenda, intervaloAgenda;
     private String descuentoMaximoVentas, valorBolsa;
     private String codigoPrestadorServicio;
+    private String bodega;
     private String tipoPrestadorServicio, otros, domicilios, limite, turno1, informacion, anexoFacturacion, anexoOrdenServicio, foco;
 
     private boolean copiasFactura, copiasOServicio, copiasCotizacion, copiasPlanSepare, copiasPedido, previsualizarFactura, previsualizarOServicio, previsualizarCotizacion,
@@ -25,6 +26,17 @@ public class ndMaestra {
     private String numFactura, numOServicio, numCotizacion, numPlanSepare, numPedido, impresoraCarta, impresoraMediaCarta, impresoraPos, imprimirCada,
             cantidadEstablecida, filas, columnas, porcPropina, inicioHosp, finHosp, intervalosHosp, copiasComanda, copiasPrefactura, impresoraComanda, impresoraPrefactura,
             diasCobrarMora, porcentajeMora, idCliente, password, numFacturaIncremento, responsabilidadesFiscales, gmail, passwordGmail;
+
+    /**
+     * Bodega interna con la que trabaja el sistema por defecto. Vacío = la principal.
+     */
+    public String getBodega() {
+        return bodega;
+    }
+
+    public void setBodega(String bodega) {
+        this.bodega = bodega;
+    }
 
     public String getGmail() {
         return gmail;

@@ -16,7 +16,7 @@ import clases.credito.ndPrestamo;
 import clases.metodosGenerales;
 import Modelo.Cartera.AbonoCuenta;
 import Modelo.Cartera.MediosPagoAbono;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;

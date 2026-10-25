@@ -2,7 +2,7 @@ package formularios.Veterinario;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -337,7 +337,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
                 tblProductos.setValueAt(j, tblProductos.getSelectedRow(), i);
             }
 
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada());
 
             valor = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 2)));
             cantidad = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 3)).replace(".", ","));
@@ -485,7 +485,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             codigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getCodigo() != null) {
                 codigoProd = nodo.getCodigo();
             }

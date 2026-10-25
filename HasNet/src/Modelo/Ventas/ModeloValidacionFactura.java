@@ -1,6 +1,6 @@
 package Modelo.Ventas;
 
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import javax.swing.JTable;
 
 public class ModeloValidacionFactura {

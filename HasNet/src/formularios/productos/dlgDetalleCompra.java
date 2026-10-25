@@ -2,7 +2,7 @@ package formularios.productos;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -339,7 +339,7 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
 //        if (tblProductos.getSelectedColumn() == 3) {
-//            ModeloProducto nodo = sql.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+//            ModeloProducto nodo = sql.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), Bodegas.predeterminada());
 //
 //            String tipo = "";
 //            try {
@@ -404,7 +404,7 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
                         tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(fila, 12).toString())), fila, 12);
                     }
 
-                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 0).toString(), Bodegas.predeterminada());
                     if (ControladorAlertas.option("¿Desea cambiar el PVP?")) {
                         nodo.setL1(big.getBigDecimal(big.getMoneda(tblProductos.getValueAt(tblProductos.getSelectedRow(), 12).toString())).toString());
 
@@ -444,7 +444,7 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
                         iva = (iva.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
                         total = valor.multiply(iva);
                         total = total.multiply(aumento.divide(big.getBigDecimal("100")).add(big.getBigDecimal("1")));
-                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada());
                         nodo.setL1(big.getMoneda(big.setMonedaExacta(total)).toString());
                         if (!daoProducto.modificarProducto(nodo)) {
                             ControladorAlertas.alertFail("Hubo un problema al modificar el producto");
@@ -596,35 +596,35 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
                 break;
             case "2":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(2))), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(2))), fila, 14);
                 break;
             case "3":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(3))), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(3))), fila, 14);
                 break;
             case "4":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(4))), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(4))), fila, 14);
                 break;
             case "5":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(5))), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(5))), fila, 14);
                 break;
             case "6":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(6))), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(6))), fila, 14);
                 break;
             case "7":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(7))), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(7))), fila, 14);
                 break;
             case "8":
                 tblProductos.setValueAt(cantidad.multiply(big.getBigDecimal(
-                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL).getCantidadLista(8))), fila, 14);
+                        daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada()).getCantidadLista(8))), fila, 14);
                 break;
         }
 
-        ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 0).toString(), Bodegas.predeterminada());
 
         BigDecimal ponderadoViejo = BigDecimal.ZERO;
         try {

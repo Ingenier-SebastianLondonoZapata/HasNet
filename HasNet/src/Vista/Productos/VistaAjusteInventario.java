@@ -5,7 +5,7 @@ import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosDetalleProducto;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Impresiones.ImpresionesProductos.GeneradorReporteProducto;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
@@ -669,11 +669,11 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             String origen = "", destino = "";
 
             if (cmbTipoAjuste.getSelectedIndex() == 0) {
-                origen = "123-11";
-                destino = "123-22";
+                origen = Bodegas.AJUSTE_EXTERNO;
+                destino = Bodegas.predeterminada();
             } else {
-                origen = "123-22";
-                destino = "123-11";
+                origen = Bodegas.predeterminada();
+                destino = Bodegas.AJUSTE_EXTERNO;
             }
 
             Object[] vector = {factura, origen, destino, metodos.fechaConsulta(metodosGenerales.fecha()), cantidadTotal,
@@ -709,7 +709,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
             TipoDocumento tipoMovimiento = cmbTipoAjuste.getSelectedIndex() == 0 ? TipoDocumento.AJUSTE_ENTRADA : TipoDocumento.AJUSTE_SALIDA;
             List<DetalleProducto> detallesProductos = cmbTipoAjuste.getSelectedIndex() == 0 ? generarDetallesProductos() : new ArrayList<DetalleProducto>();
-            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            String idBodega = Bodegas.predeterminada();
             List<MovimientoInventario> productos = generarListadoProductos(idBodega);
             ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, factura, idBodega, instancias.getUsuario(), null);
 
@@ -832,10 +832,10 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
             Object[][] productosAjuste = instancias.getSql().getProductosAjuste(consecutivo);
             String origen = instancias.getSql().tipoAjuste(consecutivo);
-            boolean esAjusteEntrada = origen.equals("123-11");
+            boolean esAjusteEntrada = origen.equals(Bodegas.AJUSTE_EXTERNO);
 
             TipoDocumento tipoMovimiento = esAjusteEntrada ? TipoDocumento.ANULAR_AJUSTE_ENTRADA : TipoDocumento.ANULAR_AJUSTE_SALIDA;
-            String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+            String idBodega = Bodegas.predeterminada();
             List<MovimientoInventario> productos = generarListadoProductos(idBodega, productosAjuste);
             ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, consecutivo, idBodega, instancias.getUsuario(), null);
 
@@ -864,7 +864,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
         if (tblProductos.getSelectedColumn() == 3) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 15).toString(), Bodegas.predeterminada());
             String tipoProducto = Enums.DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
 
             if (cmbTipoAjuste.getSelectedIndex() == 0) {
@@ -946,7 +946,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         GeneradorReporteProducto reportes = new GeneradorReporteProducto(instancias);
         reportes.verAjusteInventario(consecutivo);
 
-        boolean esAjusteEntrada = instancias.getSql().tipoAjuste(consecutivo).equals("123-11");
+        boolean esAjusteEntrada = instancias.getSql().tipoAjuste(consecutivo).equals(Bodegas.AJUSTE_EXTERNO);
         if (instancias.getConfiguraciones().isProductosDetallados() && esAjusteEntrada) {
             reportes.verIngresoDetalle(consecutivo);
         }
@@ -1019,7 +1019,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     }
 
     public void calcularFila(int fila) {
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 15).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 15).toString(), Bodegas.predeterminada());
 
         BigDecimal valor = big.getMoneda(tblProductos.getValueAt(fila, 2).toString());
         BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 3));

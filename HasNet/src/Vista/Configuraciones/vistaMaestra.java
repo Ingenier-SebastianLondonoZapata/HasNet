@@ -2,9 +2,14 @@ package Vista.Configuraciones;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
+import Dao.Terceros.DaoBodegas;
+import Modelo.Contactos.ModeloBodega;
+import Vista.Contactos.VistaBodegaContacto;
+import java.util.ArrayList;
+import java.util.List;
 
 import Utilidades.DatosMaestra;
 import clases.Instancias;
@@ -31,10 +36,15 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class vistaMaestra extends javax.swing.JInternalFrame {
     private final DaoProducto daoProducto = new DaoProducto();
+    private final DaoBodegas daoBodegas = new DaoBodegas();
+    private final List<ModeloBodega> bodegasCombo = new ArrayList<>();
+    private boolean cargandoBodegas = false;
 
     metodosGenerales metodos = new metodosGenerales();
     private Instancias instancias = Instancias.getInstancias();
@@ -147,6 +157,22 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 //            rdSiConsecutivo.setVisible(true);
 //            rdNoConsecutivo.setVisible(true);
         }
+
+        tblBodegasInternas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    actualizarBotonEstadoBodega();
+                }
+            }
+        });
+        cmbBodegas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guardarBodegaPredeterminada();
+            }
+        });
+        cargarBodegasInternas();
 
         this.registerKeyboardAction(accion("primera"), "primera", KeyStroke.getKeyStroke(KeyEvent.VK_A, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         this.registerKeyboardAction(accion("segunda"), "segunda", KeyStroke.getKeyStroke(KeyEvent.VK_M, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -663,6 +689,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         rbtNoModificarValor = new javax.swing.JRadioButton();
         rbtSiModificarValor = new javax.swing.JRadioButton();
         jPanel52 = new javax.swing.JPanel();
+        pnlBodegas = new javax.swing.JPanel();
+        jScrollPane15 = new javax.swing.JScrollPane();
+        tblBodegasInternas = new javax.swing.JTable();
+        btnAgregarBodega = new javax.swing.JButton();
+        btnModificarBodega = new javax.swing.JButton();
+        btnCambiarEstadoBodega = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        cmbBodegas = new javax.swing.JComboBox();
         jPanel12 = new javax.swing.JPanel();
         lbTelefono7 = new javax.swing.JLabel();
         txtDiasAlerta1 = new javax.swing.JTextField();
@@ -877,7 +911,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbRazon1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtNit, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
+                    .addComponent(txtNit, javax.swing.GroupLayout.PREFERRED_SIZE, 25, Short.MAX_VALUE))
                 .addGap(2, 2, 2)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbTelefono2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1040,13 +1074,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(lbNit8, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
                 .addGap(20, 20, 20)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbAnexo1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbAnexo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
                     .addComponent(jScrollPane5))
                 .addGap(24, 24, 24))
         );
@@ -2497,7 +2531,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(lbNit12, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(btnGuardar5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(290, Short.MAX_VALUE))
+                .addContainerGap(357, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Tarjetas", jPanel16);
@@ -2948,7 +2982,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlInformacionMedico2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, Short.MAX_VALUE)
                     .addComponent(pnlInformacionMedico1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(244, Short.MAX_VALUE))
+                .addContainerGap(311, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Médico", jPanel7);
@@ -3079,7 +3113,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addGroup(pnlImpresionesGrupoLayout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addGap(3, 3, 3)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -4313,7 +4347,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(lbTelefono38, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -4886,7 +4920,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel34Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
+                        .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNumMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -5044,7 +5078,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(pnlAgenda1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(103, 103, 103)
                 .addComponent(cmbDoctores3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(471, Short.MAX_VALUE))
+                .addContainerGap(538, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Veterinario", jPanel35);
@@ -5316,7 +5350,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel49Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jScrollPane14, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addComponent(jScrollPane14, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
                 .addGap(5, 5, 5)
                 .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -5558,12 +5592,107 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addComponent(jPanel49, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel50, javax.swing.GroupLayout.PREFERRED_SIZE, 429, Short.MAX_VALUE)
+                    .addComponent(jPanel50, javax.swing.GroupLayout.PREFERRED_SIZE, 458, Short.MAX_VALUE)
                     .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         tabPanel.addTab("Parqueadero", pnlFormulario1);
+
+        tblBodegasInternas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Codigo", "Nombre bodega", "Estado"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane15.setViewportView(tblBodegasInternas);
+
+        btnAgregarBodega.setBackground(new java.awt.Color(46, 204, 113));
+        btnAgregarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnAgregarBodega.setText("Agregar bodega");
+        btnAgregarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnAgregarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnAgregarBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarBodegaActionPerformed(evt);
+            }
+        });
+
+        btnModificarBodega.setBackground(new java.awt.Color(93, 173, 226));
+        btnModificarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnModificarBodega.setText("Modificar bodega");
+        btnModificarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnModificarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnModificarBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarBodegaActionPerformed(evt);
+            }
+        });
+
+        btnCambiarEstadoBodega.setBackground(new java.awt.Color(241, 148, 138));
+        btnCambiarEstadoBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnCambiarEstadoBodega.setText("Inactivar bodega");
+        btnCambiarEstadoBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCambiarEstadoBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnCambiarEstadoBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnCambiarEstadoBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCambiarEstadoBodegaActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Bodega seleccionada por defecto:");
+
+        javax.swing.GroupLayout pnlBodegasLayout = new javax.swing.GroupLayout(pnlBodegas);
+        pnlBodegas.setLayout(pnlBodegasLayout);
+        pnlBodegasLayout.setHorizontalGroup(
+            pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBodegasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlBodegasLayout.createSequentialGroup()
+                        .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlBodegasLayout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cmbBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(504, Short.MAX_VALUE))
+        );
+        pnlBodegasLayout.setVerticalGroup(
+            pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBodegasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(45, 45, 45)
+                .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cmbBodegas)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(235, Short.MAX_VALUE))
+        );
+
+        tabPanel.addTab("Bodegas", pnlBodegas);
 
         jPanel12.setBackground(new java.awt.Color(255, 255, 255));
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -5928,7 +6057,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
                 String valor = "0";
                 try {
-                    ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                    ModeloProducto prod = daoProducto.obtenerDatosProducto(txtaCobrar.getText(), Bodegas.predeterminada());
                     valor = prod.getL1();
                 } catch (Exception e) {
 
@@ -7500,6 +7629,193 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_rdNoPvpIvaItemStateChanged
 
+    private void btnAgregarBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarBodegaActionPerformed
+        capturarBodega(-1);
+    }//GEN-LAST:event_btnAgregarBodegaActionPerformed
+
+    private void btnModificarBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarBodegaActionPerformed
+        if (tblBodegasInternas.getSelectedRow() < 0) {
+            ControladorAlertas.alert("Seleccione una bodega");
+            return;
+        }
+        capturarBodega(tblBodegasInternas.getSelectedRow());
+    }//GEN-LAST:event_btnModificarBodegaActionPerformed
+
+    private void btnCambiarEstadoBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarEstadoBodegaActionPerformed
+        cambiarEstadoBodegaSeleccionada();
+    }//GEN-LAST:event_btnCambiarEstadoBodegaActionPerformed
+
+    /**
+     * Las bodegas internas son de la empresa: no cuelgan de ningún contacto y esta pestaña no tiene un Guardar propio,
+     * así que se escriben apenas se acepta el modal.
+     */
+    private void capturarBodega(int fila) {
+        VistaBodegaContacto modal = new VistaBodegaContacto(instancias.getMenu(), true);
+        modal.preparar(fila < 0 ? null : bodegaDeLaFila(fila), nombresBodegasRegistradas(fila), "", Bodegas.TIPO_INTERNA);
+        modal.setVisible(true);
+
+        if (!modal.isAceptado()) {
+            return;
+        }
+
+        ModeloBodega bodega = modal.getBodega();
+
+        if (fila < 0) {
+            bodega.setEstado(Bodegas.ESTADO_ACTIVO);
+            bodega.setUsuario(instancias.getUsuario());
+
+            if (daoBodegas.guardar(bodega) == null) {
+                ControladorAlertas.alertFail("No fue posible guardar la bodega");
+                return;
+            }
+            ControladorAlertas.alertSuccess("Bodega " + bodega.getCodigo() + " creada con éxito");
+        } else {
+            if (!daoBodegas.modificar(bodega)) {
+                ControladorAlertas.alertFail("No fue posible modificar la bodega");
+                return;
+            }
+            ControladorAlertas.alertSuccess("Bodega modificada con éxito");
+        }
+
+        cargarBodegasInternas();
+    }
+
+    private void cambiarEstadoBodegaSeleccionada() {
+        int fila = tblBodegasInternas.getSelectedRow();
+
+        if (fila < 0) {
+            ControladorAlertas.alert("Seleccione una bodega");
+            return;
+        }
+
+        ModeloBodega bodega = bodegaDeLaFila(fila);
+
+        if (bodega.esPrincipal()) {
+            ControladorAlertas.alertFail("La bodega principal no se puede inactivar");
+            return;
+        }
+
+        boolean activar = !bodega.estaActiva();
+
+        // Si se inactivara la bodega con la que trabaja el sistema, el inventario quedaria apuntando a una bodega muerta
+        if (!activar && bodega.getCodigo().equals(Bodegas.predeterminada())) {
+            ControladorAlertas.alertFail("La bodega " + bodega.getCodigo() + " es la predeterminada del sistema. "
+                    + "Seleccione otra bodega por defecto antes de inactivarla");
+            return;
+        }
+
+        if (!ControladorAlertas.option(activar ? "¿Activar la bodega " + bodega.getCodigo() + "?"
+                : "¿Inactivar la bodega " + bodega.getCodigo() + "?")) {
+            return;
+        }
+
+        bodega.setEstado(Bodegas.estado(activar));
+
+        if (!daoBodegas.modificar(bodega)) {
+            ControladorAlertas.alertFail("No fue posible cambiar el estado de la bodega");
+            return;
+        }
+
+        if (activar) {
+            ControladorAlertas.alertSuccess("Bodega activada con éxito");
+        } else {
+            ControladorAlertas.alert("Bodega inactivada, este registro podrá ser activado posteriormente");
+        }
+        cargarBodegasInternas();
+    }
+
+    private void cargarBodegasInternas() {
+        cargandoBodegas = true;
+        try {
+            DefaultTableModel modelo = (DefaultTableModel) tblBodegasInternas.getModel();
+            modelo.setRowCount(0);
+
+            bodegasCombo.clear();
+            cmbBodegas.removeAllItems();
+
+            for (ModeloBodega bodega : daoBodegas.listarInternas()) {
+                modelo.addRow(new Object[]{bodega.getCodigo(), bodega.getNombre(), Bodegas.etiqueta(bodega.estaActiva())});
+
+                // Una bodega inactiva no se puede elegir como predeterminada
+                if (bodega.estaActiva()) {
+                    bodegasCombo.add(bodega);
+                    cmbBodegas.addItem(bodega.getCodigo() + " - " + bodega.getNombre());
+                }
+            }
+
+            seleccionarBodegaPredeterminada(Bodegas.predeterminada());
+        } finally {
+            cargandoBodegas = false;
+        }
+        actualizarBotonEstadoBodega();
+    }
+
+    private void seleccionarBodegaPredeterminada(String codigo) {
+        for (int i = 0; i < bodegasCombo.size(); i++) {
+            if (bodegasCombo.get(i).getCodigo().equalsIgnoreCase(codigo)) {
+                cmbBodegas.setSelectedIndex(i);
+                return;
+            }
+        }
+        cmbBodegas.setSelectedIndex(bodegasCombo.isEmpty() ? -1 : 0);
+    }
+
+    /**
+     * Al cambiar la bodega predeterminada se refresca la maestra en memoria, para que el resto del sistema empiece a
+     * mover inventario sobre ella sin reiniciar.
+     */
+    private void guardarBodegaPredeterminada() {
+        int indice = cmbBodegas.getSelectedIndex();
+
+        if (cargandoBodegas || indice < 0 || indice >= bodegasCombo.size()) {
+            return;
+        }
+
+        String codigo = bodegasCombo.get(indice).getCodigo();
+
+        if (codigo.equals(Bodegas.predeterminada())) {
+            return;
+        }
+
+        if (!new DaoMaestra().actualizarBodega(codigo)) {
+            ControladorAlertas.alertFail("No fue posible guardar la bodega predeterminada");
+            return;
+        }
+
+        DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
+        ControladorAlertas.alertSuccess("El sistema trabajará con la bodega " + codigo);
+    }
+
+    /**
+     * La columna de estado muestra una etiqueta, pero el modelo viaja con el 1/0 que guarda la base de datos.
+     */
+    private ModeloBodega bodegaDeLaFila(int fila) {
+        return new ModeloBodega(valorCeldaBodega(fila, 0), "", valorCeldaBodega(fila, 1),
+                Bodegas.TIPO_INTERNA, Bodegas.estado(valorCeldaBodega(fila, 2)), instancias.getUsuario());
+    }
+
+    private List<String> nombresBodegasRegistradas(int filaOmitida) {
+        List<String> nombres = new ArrayList<>();
+
+        for (int fila = 0; fila < tblBodegasInternas.getRowCount(); fila++) {
+            if (fila != filaOmitida) {
+                nombres.add(valorCeldaBodega(fila, 1));
+            }
+        }
+        return nombres;
+    }
+
+    private String valorCeldaBodega(int fila, int columna) {
+        Object valor = tblBodegasInternas.getValueAt(fila, columna);
+        return valor == null ? "" : valor.toString();
+    }
+
+    private void actualizarBotonEstadoBodega() {
+        int fila = tblBodegasInternas.getSelectedRow();
+        boolean inactiva = fila >= 0 && !Bodegas.esEstadoActivo(valorCeldaBodega(fila, 2));
+        btnCambiarEstadoBodega.setText(inactiva ? "Activar bodega" : "Inactivar bodega");
+    }
+
     public void cargarProducto(String codigo) {
         ModeloProducto nodo = null;
 
@@ -7507,7 +7823,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -7532,7 +7848,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -8725,7 +9041,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnActualizarMesas;
     private javax.swing.JButton btnAggResponsabilidades;
     private javax.swing.JButton btnAggResponsabilidades1;
+    private javax.swing.JButton btnAgregarBodega;
     private javax.swing.JButton btnBusProd;
+    private javax.swing.JButton btnCambiarEstadoBodega;
     private javax.swing.JButton btnGenerarTabla;
     private javax.swing.JButton btnGuardar1;
     private javax.swing.JButton btnGuardar2;
@@ -8733,12 +9051,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnGuardar4;
     private javax.swing.JButton btnGuardar5;
     private javax.swing.JButton btnGuardar6;
+    private javax.swing.JButton btnModificarBodega;
     private javax.swing.JButton btnOcultarImpresiones;
     private javax.swing.JButton btnOcultarImpresiones1;
     private javax.swing.JButton btnResolucion;
     private javax.swing.JRadioButton carta;
     private javax.swing.JComboBox cmbActoQuirurgico;
     private javax.swing.JComboBox cmbAmbito;
+    private javax.swing.JComboBox cmbBodegas;
     private javax.swing.JComboBox cmbCausa;
     private javax.swing.JComboBox cmbCodigoConsulta;
     private javax.swing.JComboBox cmbComanda;
@@ -8832,6 +9152,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -8897,6 +9218,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane14;
+    private javax.swing.JScrollPane jScrollPane15;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -9031,6 +9353,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton mostrarRetencionesSi;
     private javax.swing.JPanel pnlAgenda;
     private javax.swing.JPanel pnlAgenda1;
+    private javax.swing.JPanel pnlBodegas;
     private javax.swing.JPanel pnlCredito;
     private javax.swing.JPanel pnlFormulario;
     private javax.swing.JPanel pnlFormulario1;
@@ -9142,6 +9465,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton recogidaSi;
     private javax.swing.JScrollPane scrFormulario;
     private javax.swing.JTabbedPane tabPanel;
+    private javax.swing.JTable tblBodegasInternas;
     private javax.swing.JTable tblCascos;
     private javax.swing.JTable tblConfig;
     private javax.swing.JTable tblDiasBloqueo;

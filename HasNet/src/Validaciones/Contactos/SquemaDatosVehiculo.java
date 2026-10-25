@@ -2,7 +2,7 @@ package Validaciones.Contactos;
 
 import Controlador.Alertas.ControladorAlertas;
 import Dao.Terceros.DaoVehiculos;
-import Modelo.Terceros.ModeloDatosVehiculo;
+import Modelo.Contactos.ModeloDatosVehiculo;
 import java.util.ArrayList;
 import java.util.List;
 

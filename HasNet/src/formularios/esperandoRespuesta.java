@@ -4,7 +4,6 @@ import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import clases.Instancias;
 import clases.Job;
-import com.sun.awt.AWTUtilities;
 import javax.swing.ImageIcon;
 
 public class esperandoRespuesta extends javax.swing.JFrame {
@@ -15,7 +14,7 @@ public class esperandoRespuesta extends javax.swing.JFrame {
         initComponents();
 
         jLabel1.setText(texto);
-        AWTUtilities.setWindowOpaque(this, false);
+        setBackground(new java.awt.Color(0, 0, 0, 0));
         barra = new jcThread(null, Integer.valueOf("0"), this);
         x.setBarra(barra);
         x.start();

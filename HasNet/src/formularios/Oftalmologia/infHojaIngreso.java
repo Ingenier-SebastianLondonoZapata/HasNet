@@ -2,7 +2,7 @@ package formularios.Oftalmologia;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -20,7 +20,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import formularios.Agenda.infInfoAgenda;
 import formularios.Medico.buscAntecedentes;
 import formularios.Medico.buscCies;
@@ -2494,7 +2494,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
                         btnPaquimetria.setEnabled(true);
                         txtProcedimiento4.setEnabled(false);
 
-                        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), Bodegas.predeterminada());
                         txtCodProducto.setText(producto.getDescripcion());
 
                         if (txtRefraccionOD.getText().equals("")) {
@@ -2584,7 +2584,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
                         txtCup2.setText(nodo.getCup2());
                         txtCup3.setText(nodo.getCup3());
                         txtCup4.setText(nodo.getCup4());
-                        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), Bodegas.predeterminada());
                         txtCodProducto.setText(producto.getDescripcion());
 
                         int i = 0;
@@ -3477,7 +3477,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCodProductoKeyReleased
 
     private void txtCodServiciooKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodServiciooKeyReleased
-        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(txtCodServicioo.getText(), Bodegas.predeterminada());
         txtCodProducto.setText(producto.getDescripcion());
     }//GEN-LAST:event_txtCodServiciooKeyReleased
 
@@ -4160,7 +4160,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         ndCamposOrdenPredeterminada nodo = instancias.getSql().getDatosCamposOrdenPredeterminada("1");
 
         try {
-            ModeloProducto prod = daoProducto.obtenerDatosProducto(nodo.getServicio(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto prod = daoProducto.obtenerDatosProducto(nodo.getServicio(), Bodegas.predeterminada());
             System.out.println(valor);
             valor = prod.getL1();
         } catch (Exception e) {
@@ -4266,7 +4266,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         }
 
         txtCodServicioo.setText(producto);
-        ModeloProducto producto1 = daoProducto.obtenerDatosProducto(producto, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto producto1 = daoProducto.obtenerDatosProducto(producto, Bodegas.predeterminada());
         txtCodProducto.setText(producto1.getDescripcion());
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

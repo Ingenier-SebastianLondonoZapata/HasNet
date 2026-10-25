@@ -2,7 +2,7 @@ package formularios.productos;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -415,7 +415,7 @@ public class nuevoProducto extends javax.swing.JDialog {
         if (ControladorAlertas.option("¿Desea continuar?")) {
 
             //try {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText().replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText().replace("'", "//"), Bodegas.predeterminada());
 
             if (nodo.getCodigo() != null) {
                 ControladorAlertas.alertFail("El producto ya existe");

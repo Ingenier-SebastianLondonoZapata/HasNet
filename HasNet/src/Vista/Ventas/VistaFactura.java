@@ -13,7 +13,7 @@ import Enums.DetalleTipoProducto;
 import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Impresiones.ImpresionesCreditos.GeneradorReporteCredito;
 import Impresiones.ImpresionesPedidos.GeneradorReportePedido;
 import Impresiones.ImpresionesRestaurante.GeneradorReporteRestaurante;
@@ -28,7 +28,7 @@ import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
 import Modelo.Maestra.ModeloResolucion;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Modelo.Ventas.CabeceraDocumento;
 import Modelo.Ventas.DocumentoMovimiento;
 import Modelo.Ventas.FilaProductoTabla;
@@ -388,8 +388,8 @@ public final class VistaFactura extends javax.swing.JPanel {
 //                        break;
                     case "aumentarCantidad":
                         if (tblProductos.getSelectedRow() > -1) {
-                            String baseUtilizada = "bdProductos";
-                            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
+                            String idBodega = Bodegas.predeterminada();
+                            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), idBodega);
 
                             if (!nodo.getUsuario().equals("ADMIN") && !tipoProceso.equals("cotizacion")) {
                                 ControladorAlertas.alert("La cantidad no se puede aumentar");
@@ -410,7 +410,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                         break;
                     case "disminuirCantidad":
                         if (tblProductos.getSelectedRow() > -1) {
-                            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+                            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), Bodegas.predeterminada());
 
                             if (!nodo.getUsuario().equals("ADMIN") && !tipoProceso.equals("cotizacion")) {
                                 return;
@@ -3446,9 +3446,9 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private String validacionInicialFactura(boolean imprimir) {
 
-        String baseUtilizada = "bdProductos";
+        String idBodega = Bodegas.predeterminada();
         if (instancias.getConfiguraciones().isRestaurante()) {
-            agregarAdicionesATabla(baseUtilizada);
+            agregarAdicionesATabla(idBodega);
         }
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
@@ -3457,7 +3457,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         tblProductos.removeEditor();
 
-        ResultadoValidacionInventario resultadoValidacion = this.saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada);
+        ResultadoValidacionInventario resultadoValidacion = this.saltarPasosFactura ? null : validarInventarioProductos(idBodega);
 
         ModeloContacto datosCliente = !ID_CLIENTE_CARGADO.equals("") ? instancias.getSql().getDatosTercero(ID_CLIENTE_CARGADO) : new ModeloContacto();
         if (!validacionesGeneralesDeFacturacion(datosCliente, resultadoValidacion, DatosMaestra.isFacturarSinInventario())) {
@@ -3759,7 +3759,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     public void cambiarListaCliente() {
         if (tblProductos.getSelectedRow() != -1) {
-            ModeloProducto codigo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto codigo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), Bodegas.predeterminada());
             String valor = "";
 
             valor = big.setMonedaExacta(funcionalidadVentas.obtenerPrecioLista((String) tblProductos.getValueAt(tblProductos.getSelectedRow(), 37), codigo));
@@ -3853,9 +3853,9 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void cmbListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbListasActionPerformed
         if (tblProductos.getSelectedRow() != -1) {
 
-            String baseUtilizada = "bdProductos";
+            String idBodega = Bodegas.predeterminada();
 
-            ModeloProducto codigo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
+            ModeloProducto codigo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), idBodega);
             String valor = "";
 
             valor = big.setMonedaExacta(funcionalidadVentas.obtenerPrecioLista((String) tblProductos.getValueAt(tblProductos.getSelectedRow(), 37), codigo));
@@ -4326,9 +4326,9 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         instancias.setCancelarFactura(false);
 
-        String baseUtilizada = "bdProductos";
+        String idBodega = Bodegas.predeterminada();
         if (instancias.getConfiguraciones().isRestaurante()) {
-            agregarAdicionesATabla(baseUtilizada);
+            agregarAdicionesATabla(idBodega);
         }
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
@@ -4337,7 +4337,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         tblProductos.removeEditor();
 
-        ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura ? null : validarInventarioProductos(baseUtilizada, lineasOriginales);
+        ResultadoValidacionInventario resultadoValidacion = saltarPasosFactura ? null : validarInventarioProductos(idBodega, lineasOriginales);
 
         ModeloContacto datosCliente = !ID_CLIENTE_CARGADO.equals("")
                 ? instancias.getSql().getDatosTercero(ID_CLIENTE_CARGADO)
@@ -4508,7 +4508,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
-        String baseUtilizada = "bdProductos";
+        String idBodega = Bodegas.predeterminada();
 
         if (instancias.getConfiguraciones().isFacturaElectronica() && evt.getClickCount() >= 1
                 && (tblProductos.getSelectedColumn() == 5 || tblProductos.getSelectedColumn() == 6)) {
@@ -4516,7 +4516,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         if (!this.tipoProceso.equals(TipoDocumento.COTIZACION.getValor())) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), baseUtilizada);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), idBodega);
 
             if (nodo.getUsuario().equalsIgnoreCase(TipoProducto.PRODUCTO_DISENADO.getValue()) && evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 1) {
                 if (!this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
@@ -6678,7 +6678,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             cargarProducto("GD2", Utilidades.convertirBigDecimal(dias), 1, "", "", "", true, "", "", "", "", "");
         }
 
-        Object[][] productosAdicionales = instancias.getSql().getProductosProductosServiciosAdicionales(consecutivo);
+        /*Object[][] productosAdicionales = instancias.getSql().getProductosProductosServiciosAdicionales(consecutivo);
         if (productosAdicionales != null) {
             for (int i = 0; i < productosAdicionales.length; i++) {
                 cargarProducto(productosAdicionales[i][0].toString(), Utilidades.convertirBigDecimal(productosAdicionales[i][1].toString()), 1, productosAdicionales[i][3].toString(),
@@ -6688,7 +6688,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 evento.setKeyCode(KeyEvent.VK_ENTER);
                 tblProductosKeyReleased(evento);
             }
-        }
+        }*/
 
         cargarTotales();
         txtObservaciones.setText(consecutivo);
@@ -6707,7 +6707,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         cargarProducto(productos, BigDecimal.ONE, 1, "", "", "", true, "", "", "", "", "");
 
-        Object[][] productosAdicionales = instancias.getSql().getProductosProductosServiciosAdicionales(consecutivo);
+        /*Object[][] productosAdicionales = instancias.getSql().getProductosProductosServiciosAdicionales(consecutivo);
         if (productosAdicionales != null) {
             for (int i = 0; i < productosAdicionales.length; i++) {
                 cargarProducto(productosAdicionales[i][0].toString(), Utilidades.convertirBigDecimal(productosAdicionales[i][1].toString()), 1, productosAdicionales[i][3].toString(),
@@ -6718,7 +6718,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 evento.setKeyCode(KeyEvent.VK_ENTER);
                 tblProductosKeyReleased(evento);
             }
-        }
+        }*/
 
         cargarTotales();
         txtObservaciones.setText(consecutivo);
@@ -7155,7 +7155,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         String cantEstablecida = txtCantidad.getText();
 
         for (int i = 0; i < productos.length; i++) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(productos[i][0].toString(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(productos[i][0].toString(), Bodegas.predeterminada());
 
             String codigo = productos[i][0].toString();
             String cantidad = productos[i][1].toString();
@@ -7329,10 +7329,10 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    private void agregarAdicionesATabla(String baseUtilizada) {
+    private void agregarAdicionesATabla(String idBodega) {
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 32).toString(), baseUtilizada);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 32).toString(), idBodega);
             BigDecimal cantidadProducto = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 13).toString());
 
             if (nodo.getUsuario().equals("FACTURA")) {
@@ -7352,7 +7352,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                             BigDecimal cantidadTotal = cantidadProducto.multiply(cantidad);
 
                             if (estado.equals(" true")) {
-                                ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(codigo, baseUtilizada);
+                                ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(codigo, idBodega);
 
                                 if (nodo1.getGrupo() != null) {
                                     if (nodo1.getGrupo().equals("GRP-02")) {
@@ -7370,8 +7370,8 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void calcularTabla(int fila, boolean mostrarAlerta) {
 
-        String baseUtilizada = "bdProductos";
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), baseUtilizada);
+        String idBodega = Bodegas.predeterminada();
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
 
         BigDecimal copago = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 17)));
         BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(fila, 3).replace(".", "").replace(",", "."));
@@ -7958,7 +7958,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         return value != null ? value.toString() : "";
     }
 
-    private ResultadoValidacionInventario validarInventarioProductos(String baseUtilizada) {
+    private ResultadoValidacionInventario validarInventarioProductos(String idBodega) {
         List<FilaProductoTabla> filas = extraerFilasDeTabla();
         ServicioValidacionFactura servicio = new ServicioValidacionFactura(new CargadorProducto() {
             @Override
@@ -7966,10 +7966,10 @@ public final class VistaFactura extends javax.swing.JPanel {
                 return daoProducto.obtenerDatosProducto(codigo, idBodega);
             }
         });
-        return servicio.validar(filas, baseUtilizada);
+        return servicio.validar(filas, idBodega);
     }
 
-    private ResultadoValidacionInventario validarInventarioProductos(String baseUtilizada, List<LineaProducto> originales) {
+    private ResultadoValidacionInventario validarInventarioProductos(String idBodega, List<LineaProducto> originales) {
         List<FilaProductoTabla> filas = extraerFilasDeTabla();
         List<FilaProductoTabla> filasAValidar = originales.isEmpty()
                 ? filas
@@ -7980,7 +7980,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 return daoProducto.obtenerDatosProducto(codigo, idBodega);
             }
         });
-        return servicio.validar(filasAValidar, baseUtilizada);
+        return servicio.validar(filasAValidar, idBodega);
     }
 
     private List<FilaProductoTabla> calcularFilasNetasModificacion(List<FilaProductoTabla> filas, List<LineaProducto> originales) {
@@ -8122,7 +8122,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(this.tipoProceso);
-        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+        String idBodega = Bodegas.predeterminada();
         funcionalidadVentas.procesarMovimientoInventario(
                 tipoAnulacion,
                 prefijoGeneral + "-" + lbNoFactura.getText(),
@@ -8143,7 +8143,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             funcionalidadVentas.procesarMovimientoInventario(
                     TipoDocumento.fromValue(tipoDocumentoOrigen),
                     TipoDocumento.obtenerPrefijoGeneralPorValor(tipoDocumentoOrigen) + "-" + lbNoFactura.getText(),
-                    enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue(),
+                    Bodegas.predeterminada(),
                     instancias.getUsuario(),
                     construirMovimientosDesdeLineas(lineasOriginales),
                     new ArrayList<DetalleProducto>(),
@@ -8163,7 +8163,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private List<MovimientoInventario> construirMovimientosDesdeLineas(List<LineaProducto> lineas) throws SQLException {
-        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+        String idBodega = Bodegas.predeterminada();
         ServicioDiscosteo servicioDiscosteo = new ServicioDiscosteo(new CargadorProducto() {
             @Override
             public ModeloProducto cargar(String codigo, String idBodega) {
@@ -8182,7 +8182,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void actualizarInventarioDocumento(TipoDocumento tipoDocumento) {
         InformacionAdicional informacionAdicional = new InformacionAdicional(false, false, false);
-        String idBodega = enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue();
+        String idBodega = Bodegas.predeterminada();
         try {
             funcionalidadVentas.procesarMovimientoInventario(tipoDocumento, "", idBodega,
                     instancias.getUsuario(), generarListadoProductos(idBodega), new ArrayList<DetalleProducto>(), informacionAdicional);
@@ -8202,7 +8202,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         BigDecimal costoPreparacion = BigDecimal.ZERO;
 
         try {
-            String idBodega = enumBodegas.ID_BODEGA_PRINCIPAL;
+            String idBodega = Bodegas.predeterminada();
             ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(linea, 32).toString(), idBodega);
             BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(linea, 3).toString());
 
@@ -8367,7 +8367,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         String cotizacionesAsociadas = "";
         List<ModeloComanda> comandasAinsertar = new ArrayList<>();
         boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
-        String idBodega = enumBodegas.ID_BODEGA_PRINCIPAL;
+        String idBodega = Bodegas.predeterminada();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             if (!tblProductos.getValueAt(i, 16).equals("REALIZADO")) {
@@ -8471,7 +8471,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         String cotizacionesAsociadas = "";
         List<ModeloComanda> comandasAinsertar = new ArrayList<>();
         boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
-        String idBodega = enumBodegas.ID_BODEGA_PRINCIPAL;
+        String idBodega = Bodegas.predeterminada();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             if (!tblProductos.getValueAt(i, 16).equals("REALIZADO")) {
@@ -8605,7 +8605,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         List<ModeloComanda> comandasAinsertar = new ArrayList<>();
         boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
-        String idBodega = enumBodegas.ID_BODEGA_PRINCIPAL;
+        String idBodega = Bodegas.predeterminada();
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
 

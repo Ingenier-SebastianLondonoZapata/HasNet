@@ -9,7 +9,7 @@ import clases.Instancias;
 import clases.Parqueadero.ndParqueadero;
 import Utilidades.BaseDatos.SQL;
 import Modelo.Productos.ModeloProducto;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
 import formularios.Ventas.dlgPedirContrasena;

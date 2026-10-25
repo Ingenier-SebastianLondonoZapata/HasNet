@@ -1,5 +1,7 @@
 package Vista.Productos;
 
+import Utilidades.Contactos.Bodegas;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Modelo.Productos.ModeloListaPrecio;
@@ -573,6 +575,6 @@ public class VistaListasPrecio extends JPanel {
     private static final int JComponent_WHEN_IN_FOCUSED_WINDOW = javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
     private static String enumBodegaPrincipal() {
-        return Enums.enumBodegas.ID_BODEGA_PRINCIPAL;
+        return Bodegas.predeterminada();
     }
 }

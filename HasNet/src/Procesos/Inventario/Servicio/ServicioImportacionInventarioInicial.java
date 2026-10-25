@@ -1,7 +1,7 @@
 package Procesos.Inventario.Servicio;
 
 import Enums.DetalleTipoProducto;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.Inventario.LineaImportacionInventarioInicial;
 import Modelo.Inventario.ResultadoImportacionInventarioInicial;
 import Modelo.Productos.ModeloProducto;
@@ -144,7 +144,7 @@ public class ServicioImportacionInventarioInicial {
     private LineaImportacionInventarioInicial obtenerLinea(String codigo, int numero, Set<String> idsYaCargados, ResultadoImportacionInventarioInicial resultado) {
         ModeloProducto producto = productosPorCodigo.get(codigo);
         if (producto == null) {
-            producto = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            producto = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             productosPorCodigo.put(codigo, producto);
         }
 

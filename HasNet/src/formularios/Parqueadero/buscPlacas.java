@@ -4,7 +4,7 @@ import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
 import clases.metodosGenerales;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;

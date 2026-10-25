@@ -2,7 +2,7 @@ package formularios.Veterinario;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -395,7 +395,7 @@ public class dlgAplicacionMedicamentos extends javax.swing.JDialog {
             if (codigo.equals("")) {
                 CodigoProd = "";
             } else {
-                nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+                nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
                 if (nodo.getIdSistema() != null) {
                     CodigoProd = nodo.getIdSistema();
                 }

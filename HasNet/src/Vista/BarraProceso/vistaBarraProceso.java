@@ -2,7 +2,6 @@ package Vista.BarraProceso;
 
 import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
-import com.sun.awt.AWTUtilities;
 import clases.Instancias;
 import clases.Job;
 import java.awt.Color;
@@ -22,7 +21,7 @@ public class vistaBarraProceso extends javax.swing.JFrame {
     public vistaBarraProceso(controladorBarraProceso x, Instancias instancias) {
 
         initComponents();
-        AWTUtilities.setWindowOpaque(this, false);
+        setBackground(new java.awt.Color(0, 0, 0, 0));
         barra = new jcThread(null, Integer.valueOf("0"), this);
         x.setBarra(barra);
         x.start();

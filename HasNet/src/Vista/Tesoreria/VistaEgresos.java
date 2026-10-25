@@ -14,7 +14,7 @@ import Modelo.Maestra.ModeloResolucion;
 import clases.Egresos.ndEgreso;
 import Modelo.Egresos.ModeloDetalleEgreso;
 import clases.Instancias;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import Utilidades.Constantes;
 import Utilidades.DocumentosElectronicos;
 import Utilidades.Numeros;

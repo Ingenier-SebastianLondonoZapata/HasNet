@@ -20,7 +20,6 @@ public class ResultadoValidacionInventario {
         return tieneBolsa;
     }
 
-    // [0]=id, [1]=descripcion, [2]=disponible, [3]=necesario
     public Object[][] getProductosSinInventario() {
         return productosSinInventario.toArray(new Object[0][]);
     }

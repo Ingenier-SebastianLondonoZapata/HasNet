@@ -4,7 +4,7 @@ import Controlador.Alertas.ControladorAlertas;
 import Enums.DetalleTipoProducto;
 import Enums.EstadosDetalleProducto;
 import Enums.TipoDocumento;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.LineaInventarioInicial;
 import Modelo.Productos.ModeloProducto;
@@ -540,7 +540,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
             return;
         }
 
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
         if (nodo.getIdSistema() == null) {
             ventanaProductos(codigo);
             return;
@@ -566,7 +566,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
 
         for (Object[] seleccionado : productos) {
             String codigo = seleccionado[0].toString();
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() == null) {
                 omitidos.add("El producto " + codigo + " no existe");
                 continue;
@@ -786,7 +786,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
             BigDecimal cantidad = Utilidades.convertirBigDecimal(obtenerValorTabla(i, 5));
             detalles.add(new DetalleProducto("", idSistema, obtenerValorTabla(i, 6), obtenerValorTabla(i, 1), obtenerValorTabla(i, 2),
                     obtenerValorTabla(i, 7), obtenerValorTabla(i, 8), fechaVence, obtenerValorTabla(i, 4),
-                    EstadosDetalleProducto.DISPONIBLE.getNombre(), enumBodegas.TipoBodega.BODEGA_PRINCIPAL.getValue(), cantidad, cantidad));
+                    EstadosDetalleProducto.DISPONIBLE.getNombre(), Bodegas.predeterminada(), cantidad, cantidad));
         }
 
         return detalles;

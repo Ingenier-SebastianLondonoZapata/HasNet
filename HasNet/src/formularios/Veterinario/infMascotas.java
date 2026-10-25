@@ -5,7 +5,7 @@ import Controlador.Alertas.ControladorAlertas;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.Veterinario.ndHistoria;
-import Modelo.Terceros.ModeloContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import clases.Veterinario.ndMascota;
 import datechooser.beans.DateChooserCombo;

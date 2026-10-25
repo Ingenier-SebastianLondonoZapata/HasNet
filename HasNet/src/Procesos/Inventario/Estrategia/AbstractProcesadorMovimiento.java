@@ -1,7 +1,8 @@
 package Procesos.Inventario.Estrategia;
 
 import Enums.Tablas;
-import Enums.enumBodegas;
+import Dao.Terceros.DaoBodegas;
+import Utilidades.Contactos.Bodegas;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
@@ -22,12 +23,14 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
 
     protected final ServicioTransaccionInventario servicioTransaccionInventario = new ServicioTransaccionInventario();
 
+    private final DaoBodegas daoBodegas = new DaoBodegas();
+
     @Override
     public void procesar(List<MovimientoInventario> movimientos, List<DetalleProducto> detallesProductos,
             String numeroDocumento, String idBodega, String usuario, InformacionAdicional informacionAdicional) throws SQLException {
 
-        String bodega = enumBodegas.obtenerIdBodega(idBodega);
-        if (bodega == null) {
+        String bodega = Bodegas.resolver(idBodega);
+        if (!daoBodegas.existe(bodega)) {
             throw new IllegalArgumentException("Bodega no válida: " + idBodega);
         }
 
@@ -59,11 +62,6 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
             "^UPDATE (\\w+) SET (.+) WHERE idSistema = \\? AND idBodega = \\?$", Pattern.DOTALL);
     private static final Pattern ASIGNACION = Pattern.compile("^\\s*(\\w+) = \\?\\s*$");
 
-    /**
-     * El inventario de un producto en una bodega no se crea al guardar el producto: su fila nace con el primer movimiento.
-     * Por eso el "UPDATE tabla SET a = ?, b = ? WHERE idSistema = ? AND idBodega = ?" que arma cada procesador se ejecuta como
-     * "INSERT ... ON DUPLICATE KEY UPDATE": inserta la fila si no existe y, si existe, actualiza las mismas columnas.
-     */
     private SentenciaSql comoUpsert(SentenciaSql actualizacion) {
         Matcher matcher = ACTUALIZACION_INVENTARIO.matcher(actualizacion.getSql());
         if (!matcher.matches()) {

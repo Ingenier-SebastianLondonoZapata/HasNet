@@ -3,7 +3,7 @@ package Vista.Productos;
 import Controlador.Alertas.ControladorAlertas;
 
 import Modelo.Productos.ModeloListaPrecio;
-import Enums.enumBodegas;
+import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
@@ -968,7 +968,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         String consecutivo = "";
         if (ControladorAlertas.option("¿Desea continuar?")) {
 
-            ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(txtCodigo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo1 = daoProducto.obtenerDatosProducto(txtCodigo.getText(), Bodegas.predeterminada());
             if (nodo1.getIdSistema() != null) {
                 ControladorAlertas.alert("¡El codigo ya existe!");
                 txtCodigo.requestFocus();
@@ -1199,7 +1199,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             return;
         }
 
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
         boolean existe = nodo != null && nodo.getIdSistema() != null && !nodo.getIdSistema().equals("");
 
         if (!existe) {
@@ -1277,7 +1277,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                 tipo = "COSTEO";
             }
 
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText(), enumBodegas.ID_BODEGA_PRINCIPAL);
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(txtCodigo.getText(), Bodegas.predeterminada());
 
             String grupo = "";
             try {
@@ -1531,7 +1531,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         if (codigo.equals("")) {
             CodigoProd = "";
         } else {
-            nodo = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+            nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
             if (nodo.getIdSistema() != null) {
                 CodigoProd = nodo.getIdSistema();
             }
@@ -1639,7 +1639,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     public void cargarProductoDiseno(String codigoProducto) {
-        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigoProducto.replace("'", "//"), enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigoProducto.replace("'", "//"), Bodegas.predeterminada());
 
         if (nodo.getCodigo() == null) {
             ventanaProductos2();
@@ -1718,7 +1718,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     private BigDecimal factorConversion(String codigo, int nivel) {
-        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigo, enumBodegas.ID_BODEGA_PRINCIPAL);
+        ModeloProducto producto = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
         switch (nivel) {
             case 2:
                 return big.getMoneda(producto.getCantidadLista(2).toPlainString());
