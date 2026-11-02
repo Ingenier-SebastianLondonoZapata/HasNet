@@ -495,7 +495,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         jLabel9 = new javax.swing.JLabel();
         rdImpresionPorGrupo = new javax.swing.JRadioButton();
         pnlImpresiones = new javax.swing.JPanel();
-        jPanel10 = new javax.swing.JPanel();
+        pnlNumeroDeCopias = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
         lbTelefono11 = new javax.swing.JLabel();
         lbTelefono30 = new javax.swing.JLabel();
@@ -549,7 +549,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         mostrarRetencionesNo = new javax.swing.JRadioButton();
         mostrarImpoconsumoSi = new javax.swing.JRadioButton();
         mostrarImpoconsumoNo = new javax.swing.JRadioButton();
-        jPanel19 = new javax.swing.JPanel();
+        pnlPrevisualizar = new javax.swing.JPanel();
         jPanel24 = new javax.swing.JPanel();
         rdPrevisualizarFacturaNO = new javax.swing.JRadioButton();
         rdPrevisualizarOServicioNO = new javax.swing.JRadioButton();
@@ -567,7 +567,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         lbTelefono55 = new javax.swing.JLabel();
         lbTelefono56 = new javax.swing.JLabel();
         lbTelefono57 = new javax.swing.JLabel();
-        jPanel33 = new javax.swing.JPanel();
+        pnlImpresorasPorDocumento = new javax.swing.JPanel();
         cmbTipoCarta = new javax.swing.JComboBox();
         cmbTipoMediaCarta = new javax.swing.JComboBox();
         cmbTipoPos = new javax.swing.JComboBox();
@@ -592,9 +592,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnOcultarImpresiones = new javax.swing.JButton();
         btnOcultarImpresiones1 = new javax.swing.JButton();
         jScrollPane16 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblImpresionDocumentos = new javax.swing.JTable();
         jScrollPane17 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tblImpresoraPorTipo = new javax.swing.JTable();
         jPanel15 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblExamenes = new javax.swing.JTable();
@@ -3089,8 +3089,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
         pnlImpresiones.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel10.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Número de copias", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
+        pnlNumeroDeCopias.setBackground(new java.awt.Color(255, 255, 255));
+        pnlNumeroDeCopias.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Número de copias", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
 
         jPanel20.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -3395,11 +3395,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5))
         );
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlNumeroDeCopiasLayout = new javax.swing.GroupLayout(pnlNumeroDeCopias);
+        pnlNumeroDeCopias.setLayout(pnlNumeroDeCopiasLayout);
+        pnlNumeroDeCopiasLayout.setHorizontalGroup(
+            pnlNumeroDeCopiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNumeroDeCopiasLayout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -3409,11 +3409,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGap(3, 3, 3)
                 .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        pnlNumeroDeCopiasLayout.setVerticalGroup(
+            pnlNumeroDeCopiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNumeroDeCopiasLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlNumeroDeCopiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -3686,8 +3686,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5))
         );
 
-        jPanel19.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel19.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Previsualizar", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
+        pnlPrevisualizar.setBackground(new java.awt.Color(255, 255, 255));
+        pnlPrevisualizar.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Previsualizar", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
 
         jPanel24.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -3893,24 +3893,24 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
-        jPanel19.setLayout(jPanel19Layout);
-        jPanel19Layout.setHorizontalGroup(
-            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel19Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlPrevisualizarLayout = new javax.swing.GroupLayout(pnlPrevisualizar);
+        pnlPrevisualizar.setLayout(pnlPrevisualizarLayout);
+        pnlPrevisualizarLayout.setHorizontalGroup(
+            pnlPrevisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPrevisualizarLayout.createSequentialGroup()
                 .addComponent(jPanel25, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-        jPanel19Layout.setVerticalGroup(
-            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        pnlPrevisualizarLayout.setVerticalGroup(
+            pnlPrevisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jPanel33.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Impresoras", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 10))); // NOI18N
+        pnlImpresorasPorDocumento.setBackground(new java.awt.Color(255, 255, 255));
+        pnlImpresorasPorDocumento.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Impresoras", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 10))); // NOI18N
 
         cmbTipoCarta.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
 
@@ -3963,57 +3963,57 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         lbPrefactura.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         lbPrefactura.setText("Prefactura:");
 
-        javax.swing.GroupLayout jPanel33Layout = new javax.swing.GroupLayout(jPanel33);
-        jPanel33.setLayout(jPanel33Layout);
-        jPanel33Layout.setHorizontalGroup(
-            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel33Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlImpresorasPorDocumentoLayout = new javax.swing.GroupLayout(pnlImpresorasPorDocumento);
+        pnlImpresorasPorDocumento.setLayout(pnlImpresorasPorDocumentoLayout);
+        pnlImpresorasPorDocumentoLayout.setHorizontalGroup(
+            pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel33Layout.createSequentialGroup()
+                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
                         .addComponent(mediaCarta)
                         .addGap(6, 6, 6))
-                    .addGroup(jPanel33Layout.createSequentialGroup()
-                        .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
+                        .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(carta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbComanda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel33Layout.createSequentialGroup()
+                            .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
                                 .addComponent(lbPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmbPrefactura, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cmbComanda, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel33Layout.createSequentialGroup()
-                        .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
+                        .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cmbTipoMediaCarta, 0, 312, Short.MAX_VALUE)
                             .addComponent(cmbTipoCarta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmbTipoPos, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel33Layout.setVerticalGroup(
-            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel33Layout.createSequentialGroup()
+        pnlImpresorasPorDocumentoLayout.setVerticalGroup(
+            pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
                 .addGap(1, 1, 1)
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbTipoCarta)
                     .addComponent(carta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(2, 2, 2)
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(mediaCarta)
                     .addComponent(cmbTipoMediaCarta, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbTipoPos, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pos))
                 .addGap(3, 3, 3)
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbComanda, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
                     .addComponent(lbComanda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbPrefactura)
                     .addComponent(lbPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(2, 2, 2))
@@ -4152,14 +4152,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlImpresionesLayout.createSequentialGroup()
                 .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlNumeroDeCopias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlImpresorasPorDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlImpresionesLayout.createSequentialGroup()
                         .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pnlPrevisualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlRestaurante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -4169,12 +4169,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5)
                 .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnlImpresionesLayout.createSequentialGroup()
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pnlNumeroDeCopias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pnlImpresorasPorDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlImpresionesLayout.createSequentialGroup()
                         .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPanel19, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pnlPrevisualizar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(4, 4, 4)
                         .addComponent(pnlRestaurante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -4197,7 +4197,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblImpresionDocumentos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"Factura", null, null, null},
                 {"Orden de servicio", null, null, null},
@@ -4219,14 +4219,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane16.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMinWidth(120);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(120);
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(120);
+        jScrollPane16.setViewportView(tblImpresionDocumentos);
+        if (tblImpresionDocumentos.getColumnModel().getColumnCount() > 0) {
+            tblImpresionDocumentos.getColumnModel().getColumn(0).setMinWidth(120);
+            tblImpresionDocumentos.getColumnModel().getColumn(0).setPreferredWidth(120);
+            tblImpresionDocumentos.getColumnModel().getColumn(0).setMaxWidth(120);
         }
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tblImpresoraPorTipo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"Carta", null},
                 {"Media carta", null},
@@ -4238,11 +4238,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 "Tipo Documento", "Impresora"
             }
         ));
-        jScrollPane17.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setMinWidth(120);
-            jTable2.getColumnModel().getColumn(0).setPreferredWidth(120);
-            jTable2.getColumnModel().getColumn(0).setMaxWidth(120);
+        jScrollPane17.setViewportView(tblImpresoraPorTipo);
+        if (tblImpresoraPorTipo.getColumnModel().getColumnCount() > 0) {
+            tblImpresoraPorTipo.getColumnModel().getColumn(0).setMinWidth(120);
+            tblImpresoraPorTipo.getColumnModel().getColumn(0).setPreferredWidth(120);
+            tblImpresoraPorTipo.getColumnModel().getColumn(0).setMaxWidth(120);
         }
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -9190,7 +9190,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
@@ -9199,7 +9198,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
@@ -9213,7 +9211,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel30;
     private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel32;
-    private javax.swing.JPanel jPanel33;
     private javax.swing.JPanel jPanel34;
     private javax.swing.JPanel jPanel35;
     private javax.swing.JPanel jPanel37;
@@ -9257,8 +9254,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JLabel lbAnexo;
     private javax.swing.JLabel lbAnexo1;
     private javax.swing.JLabel lbCelular10;
@@ -9388,9 +9383,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JPanel pnlFormulario1;
     private javax.swing.JPanel pnlImpresiones;
     private javax.swing.JPanel pnlImpresionesGrupo;
+    private javax.swing.JPanel pnlImpresorasPorDocumento;
     private javax.swing.JPanel pnlInformacionMedico1;
     private javax.swing.JPanel pnlInformacionMedico2;
+    private javax.swing.JPanel pnlNumeroDeCopias;
     private javax.swing.JPanel pnlOrdenMedica;
+    private javax.swing.JPanel pnlPrevisualizar;
     private javax.swing.JPanel pnlRestaurante;
     private javax.swing.JMenuItem popBorrar;
     private javax.swing.JMenuItem popBorrar1;
@@ -9500,6 +9498,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JTable tblDiasBloqueo;
     private javax.swing.JTable tblExamenes;
     private javax.swing.JTable tblHoras;
+    private javax.swing.JTable tblImpresionDocumentos;
+    private javax.swing.JTable tblImpresoraPorTipo;
     private javax.swing.JTable tblImpresoras;
     private javax.swing.JTable tblImpresoras1;
     private javax.swing.JTable tblMesas;
