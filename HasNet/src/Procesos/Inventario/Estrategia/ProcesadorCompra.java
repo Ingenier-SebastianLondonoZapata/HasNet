@@ -50,6 +50,7 @@ public class ProcesadorCompra extends AbstractProcesadorMovimiento {
         ponderados.add(servicioPonderado.calcular(
                 movimiento.getProducto(),
                 movimiento.getCantidad(),
-                movimiento.getValorProducto()));
+                movimiento.getValorProducto(),
+                ponderados));
     }
 }

@@ -41,11 +41,12 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
         for (MovimientoInventario movimiento : movimientos) {
             MovimientoInventario efectivo = canonizar(movimiento, productosCanonicos);
             agregarSentenciasDetalle(sentencias, efectivo, informacionAdicional);
+            agregarPonderado(ponderados, efectivo);
+            
             SentenciaSql sentenciaInventario = generarSqlInventario(efectivo, bodega, informacionAdicional);
             if (sentenciaInventario != null) {
                 sentencias.add(comoUpsert(sentenciaInventario));
             }
-            agregarPonderado(ponderados, efectivo);
         }
 
         agregarSentenciasFinales(sentencias, numeroDocumento);

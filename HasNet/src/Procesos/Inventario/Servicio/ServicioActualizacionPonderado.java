@@ -8,6 +8,7 @@ import Modelo.Productos.ModeloProducto;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ServicioActualizacionPonderado {
 
@@ -30,14 +31,14 @@ public class ServicioActualizacionPonderado {
         return daoPonderado.obtenerUltimoPonderado(idProducto);
     }
 
-    public PonderadoPendiente calcular(ModeloProducto producto, BigDecimal cantidadIngresada, BigDecimal valorProducto) throws SQLException {
-        UltimoPonderado ultimo = daoPonderado.obtenerUltimoPonderado(producto.getIdSistema());
+    public PonderadoPendiente calcular(ModeloProducto producto, BigDecimal cantidadIngresada, BigDecimal valorProducto,
+            List<PonderadoPendiente> pendientes) throws SQLException {
         BigDecimal inventarioAnterior = producto.getInventario();
         if(inventarioAnterior.compareTo(BigDecimal.ZERO) < 0) {
             inventarioAnterior = BigDecimal.ZERO;
         }
-        
-        BigDecimal ponderadoAnterior = ultimo.getNuevoPonderado();
+
+        BigDecimal ponderadoAnterior = obtenerPonderadoVigente(producto.getIdSistema(), pendientes);
         BigDecimal inventarioNuevo = inventarioAnterior.add(cantidadIngresada);
         BigDecimal ultimoCosto = valorProducto;
         BigDecimal totalAnterior = inventarioAnterior.multiply(ponderadoAnterior);
@@ -54,6 +55,18 @@ public class ServicioActualizacionPonderado {
         resultado.setInventarioNuevo(inventarioNuevo);
         resultado.setUltimoCosto(ultimoCosto);
         return resultado;
+    }
+
+    private BigDecimal obtenerPonderadoVigente(String idProducto, List<PonderadoPendiente> pendientes) throws SQLException {
+        if (pendientes != null) {
+            for (int i = pendientes.size() - 1; i >= 0; i--) {
+                PonderadoPendiente pendiente = pendientes.get(i);
+                if (idProducto.equals(pendiente.getProducto())) {
+                    return pendiente.getPonderadoNuevo();
+                }
+            }
+        }
+        return daoPonderado.obtenerUltimoPonderado(idProducto).getNuevoPonderado();
     }
 
     public void crearPonderadoInicial(ModeloProducto producto, BigDecimal costoInicial, String usuario) throws SQLException {
