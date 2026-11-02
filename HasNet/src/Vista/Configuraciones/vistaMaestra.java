@@ -65,6 +65,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     public vistaMaestra() {
 
         initComponents();
+
+        inicializarTablaImpresoraPorTipo();
+        inicializarTablaImpresionDocumentos();
+
         tblImpresoras1.setDefaultRenderer(Object.class, new cambiarColorTabla(14, 0));
         tblDiasBloqueo.setDefaultRenderer(Object.class, new cambiarColorTabla(20, 0));
 
@@ -5999,7 +6003,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
             ndMaestra nodo2 = new DaoMaestra().obtenerMaestra();
 
-            String impresionPos = cmbTipoPos.getSelectedItem().toString().toLowerCase();
+            String impresionPos = getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Pos", 1).toLowerCase();
 
             String responsabilidades = "";
             for (int i = 0; i < cmbMisResponsabilidades.getItemCount(); i++) {
@@ -6021,19 +6025,19 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 false, txtDescuentoMaximo.getText().replace(",", "."), cmbTipoPrestador.getSelectedItem(), "0",
                 "6", txtLimite.getText(), rdSiCombinar.isSelected(), rdSiModificarNombre.isSelected(), rdSiBolsa.isSelected(), txtValor.getText(),
                 rdTurnoSi.isSelected(), txtTurno.getText(), txtAnexoFactura.getText(), rdSiConsecutivo.isSelected(), horaSi.isSelected(), rdSiPondNegativo.isSelected(),
-                txtAnexoOrden.getText(), rdSiModificarPrecio.isSelected(), rdSiBorrarProdMesas.isSelected(), rdPreguntaFacturaSI.isSelected(), rdPreguntaOServicioSI.isSelected(),
-                rdPreguntaCotizacionSI.isSelected(), rdPreguntaPlanSepareSI.isSelected(), rdPreguntaPedidosSI.isSelected(), rdPrevisualizarFacturaSI.isSelected(),
-                rdPrevisualizarOServicioSI.isSelected(), rdPrevisualizarCotizacionSI.isSelected(), rdPrevisualizarPlanSepareSI.isSelected(), rdPrevisualizarPedidosSI.isSelected(),
-                txtCantFactura.getText(), txtCantOServicio.getText(), txtCantCotizacion.getText(), txtCantPlanSepare.getText(), txtCantPedidos.getText(), rdSiPagoTerceros.isSelected(),
-                rdSiFacturarSinInventario.isSelected(), true, impresionPos, cmbTipoMediaCarta.getSelectedItem(), cmbTipoCarta.getSelectedItem(),
+                txtAnexoOrden.getText(), rdSiModificarPrecio.isSelected(), rdSiBorrarProdMesas.isSelected(), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Factura", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 2),
+                getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Cotización", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Plan separe", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Pedido", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Factura", 1),
+                getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Cotización", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Plan separe", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Pedido", 1),
+                getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Factura", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Cotización", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Plan separe", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Pedido", 3), rdSiPagoTerceros.isSelected(),
+                rdSiFacturarSinInventario.isSelected(), true, impresionPos, getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Media carta", 1), getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Carta", 1),
                 mostrarImpoconsumoSi.isSelected(), mostrarRetencionesSi.isSelected(), txtNombreFormato.getText(), txtCantidadEstablecida.getText(),
                 txtFilas.getText(), txtColumnas.getText(), txtPorcPropina.getText(), rdSiDevuelta.isSelected(), cmbHoraInicio1.getSelectedItem(),
                 cmbHoraFin1.getSelectedItem(), cmbIntervalo1.getSelectedItem(), rdSiDiasAutomaticos.isSelected(), rdSiSolicitudesPermisos.isSelected(),
                 cmbFoco.getSelectedItem(), rdSiPvpImpo.isSelected(), rdSiCostoImpo.isSelected(), rdImpresionPorGrupo.isSelected(),
-                txtCantCopiasComanda.getText(), txtCantCopiasPrefactura.getText(), rdSiPrevisualizarComanda.isSelected(), rdSiPrevisualizarPrefactura.isSelected(),
-                cmbComanda.getSelectedItem(), cmbPrefactura.getSelectedItem(), rdSiFacturarMesas.isSelected(), rdSiSoloVisibleMesas.isSelected(),
+                getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Comanda", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Prefactura", 3), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Comanda", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Prefactura", 1),
+                getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Comanda", 1), getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Prefactura", 1), rdSiFacturarMesas.isSelected(), rdSiSoloVisibleMesas.isSelected(),
                 rdSiBorrarMesas.isSelected(), "", "", txtNumFactIncremento.getText(), responsabilidades,
-                txtEmail.getText(), txtPassword.getText()
+                "", ""
             };
 
             ndMaestra nodo = metodos.llenarMaestra(vector);
@@ -6508,6 +6512,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         cmbTipoPos.setSelectedItem(impresionPos);
         cmbTipoMediaCarta.setSelectedItem(impresionMediaCarta);
         cmbTipoCarta.setSelectedItem(impresionCarta);
+
+        inicializarTablaImpresoraPorTipo();
+        setFilaTabla(tblImpresoraPorTipo, "Carta", 1, impresionCarta);
+        setFilaTabla(tblImpresoraPorTipo, "Media carta", 1, impresionMediaCarta);
+        setFilaTabla(tblImpresoraPorTipo, "Pos", 1, impresionPos);
+        setFilaTabla(tblImpresoraPorTipo, "Comanda", 1, DatosMaestra.getImpresoraComanda() != null ? DatosMaestra.getImpresoraComanda() : "");
+        setFilaTabla(tblImpresoraPorTipo, "Prefactura", 1, DatosMaestra.getImpresoraPrefactura() != null ? DatosMaestra.getImpresoraPrefactura() : "");
     }//GEN-LAST:event_btnGuardar3ActionPerformed
 
     private void btnGuardar4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar4ActionPerformed
@@ -8131,9 +8142,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         }
 
-        txtPassword.setText(datos.getPasswordGmail() != null ? datos.getPasswordGmail() : "");
-        txtEmail.setText(datos.getGmail() != null ? datos.getGmail() : "");
-
         if (datos.isBorrarMesas()) {
             rdSiBorrarMesas.setSelected(true);
         } else {
@@ -8183,6 +8191,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         txtCantCopiasPrefactura.setText(datos.getCopiasPrefactura() != null ? datos.getCopiasPrefactura() : "");
         txtCantCopiasComanda.setText(datos.getCopiasComanda() != null ? datos.getCopiasComanda() : "0");
         txtNumFactIncremento.setText(datos.getNumFacturaIncremento() != null ? datos.getNumFacturaIncremento() : "0");
+
+        // Cargar tblImpresoraPorTipo
+        inicializarTablaImpresoraPorTipo();
+        setFilaTabla(tblImpresoraPorTipo, "Carta", 1, datos.getImpresoraCarta() != null ? datos.getImpresoraCarta() : "");
+        setFilaTabla(tblImpresoraPorTipo, "Media carta", 1, datos.getImpresoraMediaCarta() != null ? datos.getImpresoraMediaCarta() : "");
+        setFilaTabla(tblImpresoraPorTipo, "Pos", 1, datos.getImpresoraPos() != null ? datos.getImpresoraPos() : "");
+        setFilaTabla(tblImpresoraPorTipo, "Comanda", 1, impresoraComanda);
+        setFilaTabla(tblImpresoraPorTipo, "Prefactura", 1, impresoraPrefactura);
 
         rdImpresionPorGrupo.setSelected(datos.isImpresionPorGrupo());
 
@@ -8550,6 +8566,34 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         txtCantPlanSepare.setText(datos.getNumPlanSepare() != null ? datos.getNumPlanSepare() : "0");
         txtCantPedidos.setText(datos.getNumPedido() != null ? datos.getNumPedido() : "0");
         //FIN COPIAS
+
+        // Cargar tblImpresionDocumentos
+        inicializarTablaImpresionDocumentos();
+        setFilaTabla(tblImpresionDocumentos, "Factura", 1, datos.isPrevisualizarFactura());
+        setFilaTabla(tblImpresionDocumentos, "Factura", 2, datos.isCopiasFactura());
+        setFilaTabla(tblImpresionDocumentos, "Factura", 3, datos.getNumFactura() != null ? datos.getNumFactura() : "0");
+
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 1, datos.isPrevisualizarOServicio());
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 2, datos.isCopiasOServicio());
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 3, datos.getNumOServicio() != null ? datos.getNumOServicio() : "0");
+
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 1, datos.isPrevisualizarCotizacion());
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 2, datos.isCopiasCotizacion());
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 3, datos.getNumCotizacion() != null ? datos.getNumCotizacion() : "0");
+
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 1, datos.isPrevisualizarPlanSepare());
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 2, datos.isCopiasPlanSepare());
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 3, datos.getNumPlanSepare() != null ? datos.getNumPlanSepare() : "0");
+
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 1, datos.isPrevisualizarPedido());
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 2, datos.isCopiasPedido());
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 3, datos.getNumPedido() != null ? datos.getNumPedido() : "0");
+
+        setFilaTabla(tblImpresionDocumentos, "Comanda", 1, datos.isPrevisualizarComanda());
+        setFilaTabla(tblImpresionDocumentos, "Comanda", 3, datos.getCopiasComanda() != null ? datos.getCopiasComanda() : "0");
+
+        setFilaTabla(tblImpresionDocumentos, "Prefactura", 1, datos.isPrevisualizarPrefactura());
+        setFilaTabla(tblImpresionDocumentos, "Prefactura", 3, datos.getCopiasPrefactura() != null ? datos.getCopiasPrefactura() : "");
 
         if (datos.isBorrarCongelada()) {
             rdSiBorrarProdMesas.setSelected(true);
@@ -9063,6 +9107,113 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     }
 
+
+    private void inicializarTablaImpresoraPorTipo() {
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+            new String[]{"Tipo Documento", "Impresora"}, 0
+        ) {
+            public boolean isCellEditable(int row, int col) { return col == 1; }
+        };
+        modelo.addRow(new Object[]{"Carta", null});
+        modelo.addRow(new Object[]{"Media carta", null});
+        modelo.addRow(new Object[]{"Pos", null});
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            modelo.addRow(new Object[]{"Comanda", null});
+            modelo.addRow(new Object[]{"Prefactura", null});
+        }
+        tblImpresoraPorTipo.setModel(modelo);
+        tblImpresoraPorTipo.getColumnModel().getColumn(0).setMinWidth(120);
+        tblImpresoraPorTipo.getColumnModel().getColumn(0).setPreferredWidth(120);
+        tblImpresoraPorTipo.getColumnModel().getColumn(0).setMaxWidth(120);
+        refrescarEditorImpresoraPorTipo();
+    }
+
+    private void inicializarTablaImpresionDocumentos() {
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+            new String[]{"Tipo Documento", "Previsualizar", "Preguntar copias", "Número copias"}, 0
+        ) {
+            Class[] types = new Class[]{Object.class, Boolean.class, Boolean.class, Object.class};
+            public Class getColumnClass(int columnIndex) { return types[columnIndex]; }
+            public boolean isCellEditable(int row, int col) { return col != 0; }
+        };
+        modelo.addRow(new Object[]{"Factura", null, null, null});
+        if (instancias.getConfiguraciones().isOrdenServicio()) {
+            modelo.addRow(new Object[]{"Orden de servicio", null, null, null});
+        }
+        modelo.addRow(new Object[]{"Cotización", null, null, null});
+        if (instancias.getConfiguraciones().isSepare()) {
+            modelo.addRow(new Object[]{"Plan separe", null, null, null});
+        }
+        if (instancias.getConfiguraciones().isPedido()) {
+            modelo.addRow(new Object[]{"Pedido", null, null, null});
+        }
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            modelo.addRow(new Object[]{"Comanda", null, null, null});
+            modelo.addRow(new Object[]{"Prefactura", null, null, null});
+        }
+        tblImpresionDocumentos.setModel(modelo);
+        tblImpresionDocumentos.getColumnModel().getColumn(0).setMinWidth(120);
+        tblImpresionDocumentos.getColumnModel().getColumn(0).setPreferredWidth(120);
+        tblImpresionDocumentos.getColumnModel().getColumn(0).setMaxWidth(120);
+    }
+
+    private void refrescarEditorImpresoraPorTipo() {
+        javax.swing.JComboBox<String> cmbImpresora = new javax.swing.JComboBox<>();
+        cmbImpresora.addItem("Predeterminada");
+        PrintService[] impresoras = PrintServiceLookup.lookupPrintServices(null, null);
+        for (PrintService imp : impresoras) {
+            try {
+                String nombre = imp.toString().split(" : ")[1];
+                if (!nombre.equals("Fax")) {
+                    cmbImpresora.addItem(nombre);
+                }
+            } catch (Exception e) {}
+        }
+        tblImpresoraPorTipo.getColumnModel().getColumn(1).setCellEditor(new javax.swing.DefaultCellEditor(cmbImpresora));
+    }
+
+    private int getFilaTabla(javax.swing.JTable tabla, String etiqueta) {
+        for (int i = 0; i < tabla.getRowCount(); i++) {
+            Object val = tabla.getValueAt(i, 0);
+            if (etiqueta.equals(val)) return i;
+        }
+        return -1;
+    }
+
+    private void setFilaTabla(javax.swing.JTable tabla, String etiqueta, int columna, Object valor) {
+        int fila = getFilaTabla(tabla, etiqueta);
+        if (fila >= 0) tabla.setValueAt(valor, fila, columna);
+    }
+
+    private boolean getCeldaBooleana(javax.swing.JTable tabla, int fila, int columna) {
+        try {
+            Object val = tabla.getValueAt(fila, columna);
+            return val != null && (Boolean) val;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private String getCeldaTexto(javax.swing.JTable tabla, int fila, int columna) {
+        try {
+            Object val = tabla.getValueAt(fila, columna);
+            return val != null ? val.toString() : "";
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private boolean getCeldaBooleanaPorEtiqueta(javax.swing.JTable tabla, String etiqueta, int columna) {
+        int fila = getFilaTabla(tabla, etiqueta);
+        if (fila < 0) return false;
+        return getCeldaBooleana(tabla, fila, columna);
+    }
+
+    private String getCeldaTextoPorEtiqueta(javax.swing.JTable tabla, String etiqueta, int columna) {
+        int fila = getFilaTabla(tabla, etiqueta);
+        if (fila < 0) return "";
+        return getCeldaTexto(tabla, fila, columna);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizarMesas;
