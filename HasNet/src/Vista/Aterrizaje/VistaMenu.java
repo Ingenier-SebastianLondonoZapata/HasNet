@@ -9,7 +9,6 @@ import Vista.InicioSesion.vistaInicioSesion;
 import clases.Instancias;
 import clases.alertasHospitalizacionVeterinario;
 import clases.metodosGenerales;
-import clases.ocultarAlerta;
 import clases.recordatorios.alertaRecordatorio;
 import clases.solicitudesPermisos;
 import Vista.Configuraciones.vistaSuperMaestra;
@@ -23,7 +22,7 @@ import formularios.Agenda.infRepAgenda;
 import Vista.Cartera.VistaAbonos;
 import Vista.Cartera.VistaNotaDebito;
 import Vista.Cartera.VistaPagos;
-import Vista.Cartera.VistaReportesCartera;
+import Vista.Cartera.Reportes.VistaReportesCartera;
 
 import Vista.Tesoreria.VistaEgresos;
 import formularios.Tesoreria.infRepEgresos;
@@ -110,7 +109,6 @@ import formularios.Veterinario.infIngresoHospitalizacion;
 import formularios.productos.dlgConsultarCodigos;
 import Vista.Productos.VistaGrupos;
 import Vista.Productos.ingreso;
-import formularios.productos.infArmado;
 import Vista.Productos.VistaDiseno;
 
 import Vista.Contactos.VistaContactos;
@@ -130,7 +128,6 @@ import Vista.Productos.VistaAjusteInventario;
 import Vista.Productos.VistaInventarioInicial;
 import Vista.Productos.ordenCompra;
 import formularios.infUsuarios;
-import formularios.productos.infReportesProductos;
 import formularios.productos.infTrasladosInternos;
 import formularios.recordatorios.infRecordatorios;
 
@@ -154,13 +151,14 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.KeyStroke;
 import Dao.Configuraciones.DaoMaestra;
+import Vista.Productos.Reportes.VistaReportesProducto;
 
 public class VistaMenu extends javax.swing.JFrame {
 
     private final Rectangle desktop;
     private final metodosGenerales metodos;
     private Instancias instancias;
-    private Rectangle MENU, SUBMENU;
+    private final Rectangle MENU, SUBMENU;
     boolean seVeElMenu;
     private JInternalFrame[] formularios, anula, caja, cartera;
     ServerSocket SERVER_SOCKETE;
@@ -183,7 +181,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
         JInternalFrame[] forms = {null, null, null, null, null, null, null, null, null, null};
         btnVeterinario.setVisible(false);
-        //jButton1.setVisible(false);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -195,7 +192,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
         configurarAtajos();
 
-        pnlMensaje.setVisible(false);
         pnlMiniaturas.setVisible(false);
 
         DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
@@ -367,16 +363,12 @@ public class VistaMenu extends javax.swing.JFrame {
     }
 
     public void actualizarUsuario(String usuario) {
-        lbNombre.setText(usuario);
-        lbFecha.setText(metodosGenerales.fecha());
-        setTitle("HasNet - " + usuario);
+        setTitle("HasNet - " + metodosGenerales.fecha() + " - " + usuario);
     }
 
     private void cerrar() {
-        if (btnSalir.isEnabled()) {
-            msgSalir salir = new msgSalir(this, seVeElMenu, "");
-            salir.setVisible(true);
-        }
+        msgSalir salir = new msgSalir(this, seVeElMenu, "");
+        salir.setVisible(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -425,11 +417,6 @@ public class VistaMenu extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         btnVerificar = new javax.swing.JButton();
         btnTestConexion1 = new javax.swing.JButton();
-        pnlMensaje = new javax.swing.JPanel();
-        lbIcon = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lbMensaje1 = new javax.swing.JTextArea();
-        lbMensaje = new javax.swing.JLabel();
         btnOcultar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnCambiarUsuario = new javax.swing.JButton();
@@ -453,19 +440,11 @@ public class VistaMenu extends javax.swing.JFrame {
         lbConfiguraciones = new javax.swing.JButton();
         lbMedico1 = new javax.swing.JButton();
         btnParqueadero1 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        lbNombreEmpresa = new javax.swing.JLabel();
-        lbFecha = new javax.swing.JLabel();
-        btnSalir = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        lbNombre = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         setMinimumSize(new java.awt.Dimension(1177, 317));
-        setUndecorated(true);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 formComponentHidden(evt);
@@ -474,6 +453,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 formComponentResized(evt);
             }
         });
+
+        dkpFormularios.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout dkpFormulariosLayout = new javax.swing.GroupLayout(dkpFormularios);
         dkpFormularios.setLayout(dkpFormulariosLayout);
@@ -511,7 +492,7 @@ public class VistaMenu extends javax.swing.JFrame {
         jPanel3.setName("panel"); // NOI18N
 
         lbItem1.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem1.setText("COTIZACION");
         lbItem1.setBorderPainted(false);
@@ -525,7 +506,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem2.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem2.setText("COTIZACION");
         lbItem2.setBorderPainted(false);
@@ -539,7 +520,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem3.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem3.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem3.setText("COTIZACION");
         lbItem3.setBorderPainted(false);
@@ -553,7 +534,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem4.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem4.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem4.setText("COTIZACION");
         lbItem4.setBorderPainted(false);
@@ -567,7 +548,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem5.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem5.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem5.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem5.setText("COTIZACION");
         lbItem5.setBorderPainted(false);
@@ -581,7 +562,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem6.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem6.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem6.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem6.setText("COTIZACION");
         lbItem6.setBorderPainted(false);
@@ -595,7 +576,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem7.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem7.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem7.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem7.setText("COTIZACION");
         lbItem7.setBorderPainted(false);
@@ -609,7 +590,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem8.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem8.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem8.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem8.setText("COTIZACION");
         lbItem8.setBorderPainted(false);
@@ -623,7 +604,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem9.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem9.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem9.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem9.setText("COTIZACION");
         lbItem9.setBorderPainted(false);
@@ -637,7 +618,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem10.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem10.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem10.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem10.setText("COTIZACION");
         lbItem10.setBorderPainted(false);
@@ -651,7 +632,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem11.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem11.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem11.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem11.setText("COTIZACION");
         lbItem11.setBorderPainted(false);
@@ -665,7 +646,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem12.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem12.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem12.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem12.setText("COTIZACION");
         lbItem12.setBorderPainted(false);
@@ -679,7 +660,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem13.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem13.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem13.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem13.setText("COTIZACION");
         lbItem13.setBorderPainted(false);
@@ -693,7 +674,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem14.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem14.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem14.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem14.setText("COTIZACION");
         lbItem14.setBorderPainted(false);
@@ -707,7 +688,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem15.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem15.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem15.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem15.setText("COTIZACION");
         lbItem15.setBorderPainted(false);
@@ -721,7 +702,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem16.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem16.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem16.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem16.setText("COTIZACION");
         lbItem16.setBorderPainted(false);
@@ -735,7 +716,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem17.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem17.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem17.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem17.setText("COTIZACION");
         lbItem17.setBorderPainted(false);
@@ -749,7 +730,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbItem18.setBackground(new java.awt.Color(255, 255, 255));
-        lbItem18.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lbItem18.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem18.setText("COTIZACION");
         lbItem18.setBorderPainted(false);
@@ -769,7 +750,7 @@ public class VistaMenu extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbItem1, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                    .addComponent(lbItem1, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
                     .addComponent(lbItem2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbItem3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbItem4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -792,41 +773,41 @@ public class VistaMenu extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(lbItem1)
+                .addComponent(lbItem1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem2)
+                .addComponent(lbItem2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem3)
+                .addComponent(lbItem3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem4)
+                .addComponent(lbItem4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem5)
+                .addComponent(lbItem5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem6)
+                .addComponent(lbItem6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem7)
+                .addComponent(lbItem7, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem8)
+                .addComponent(lbItem8, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem9)
+                .addComponent(lbItem9, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem10)
+                .addComponent(lbItem10, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem11)
+                .addComponent(lbItem11, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem12)
+                .addComponent(lbItem12, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem13)
+                .addComponent(lbItem13, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem14)
+                .addComponent(lbItem14, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem15)
+                .addComponent(lbItem15, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem16)
+                .addComponent(lbItem16, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem17)
+                .addComponent(lbItem17, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lbItem18))
+                .addComponent(lbItem18, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanelsSliding1.add(jPanel3, "card2");
@@ -834,7 +815,7 @@ public class VistaMenu extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(242, 244, 244));
 
         btnVentas.setBackground(new java.awt.Color(214, 214, 214));
-        btnVentas.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnVentas.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/VENTAS-NEGRO.png"))); // NOI18N
         btnVentas.setText(" MIS VENTAS");
         btnVentas.setBorder(null);
@@ -848,7 +829,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnProductos.setBackground(new java.awt.Color(214, 214, 214));
-        btnProductos.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnProductos.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/PRODUCTOS-NEGRO.png"))); // NOI18N
         btnProductos.setText(" PRODUCTOS");
         btnProductos.setBorder(null);
@@ -865,7 +846,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnTerceros.setBackground(new java.awt.Color(214, 214, 214));
-        btnTerceros.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnTerceros.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/TERCEROS-NEGRO.png"))); // NOI18N
         btnTerceros.setText(" TERCEROS");
         btnTerceros.setBorder(null);
@@ -879,7 +860,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnTesoreria.setBackground(new java.awt.Color(214, 214, 214));
-        btnTesoreria.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnTesoreria.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnTesoreria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/TESORERIA-NEGRO.png"))); // NOI18N
         btnTesoreria.setText(" TESORERIA");
         btnTesoreria.setBorder(null);
@@ -896,7 +877,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnCartera.setBackground(new java.awt.Color(214, 214, 214));
-        btnCartera.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnCartera.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnCartera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/CARTERA-NEGRO.png"))); // NOI18N
         btnCartera.setText(" CARTERA");
         btnCartera.setBorder(null);
@@ -919,7 +900,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnAgenda.setBackground(new java.awt.Color(214, 214, 214));
-        btnAgenda.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnAgenda.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnAgenda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/AGENDA-NEGRO.png"))); // NOI18N
         btnAgenda.setText(" AGENDA");
         btnAgenda.setBorder(null);
@@ -932,7 +913,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnVeterinario.setBackground(new java.awt.Color(214, 214, 214));
-        btnVeterinario.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnVeterinario.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnVeterinario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/VETERINARIO-NEGRO.png"))); // NOI18N
         btnVeterinario.setText(" VETERINARIO");
         btnVeterinario.setBorder(null);
@@ -945,7 +926,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnMedico.setBackground(new java.awt.Color(214, 214, 214));
-        btnMedico.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnMedico.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnMedico.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/MEDICO-NEGRO.png"))); // NOI18N
         btnMedico.setText("MEDICO");
         btnMedico.setBorder(null);
@@ -961,7 +942,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnOftalmologia.setBackground(new java.awt.Color(214, 214, 214));
-        btnOftalmologia.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnOftalmologia.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnOftalmologia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/MEDICO-NEGRO.png"))); // NOI18N
         btnOftalmologia.setText("OFTALMOLOGIA");
         btnOftalmologia.setBorder(null);
@@ -977,7 +958,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnParqueadero.setBackground(new java.awt.Color(214, 214, 214));
-        btnParqueadero.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnParqueadero.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnParqueadero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/PARQUEADERO-NEGRO.png"))); // NOI18N
         btnParqueadero.setText("PARQUEADERO");
         btnParqueadero.setBorder(null);
@@ -993,7 +974,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnRecordatorios.setBackground(new java.awt.Color(214, 214, 214));
-        btnRecordatorios.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnRecordatorios.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnRecordatorios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/RECORDATORIO-NEGRO.png"))); // NOI18N
         btnRecordatorios.setText("RECORDATORIO");
         btnRecordatorios.setBorder(null);
@@ -1009,7 +990,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnLaboratorio.setBackground(new java.awt.Color(214, 214, 214));
-        btnLaboratorio.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnLaboratorio.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         btnLaboratorio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/LABORATORIO-NEGRO.png"))); // NOI18N
         btnLaboratorio.setText("LABORATORIO");
         btnLaboratorio.setBorder(null);
@@ -1128,8 +1109,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelsSliding1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(jPanelsSliding1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         pnlPrincipalLayout.setVerticalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1141,52 +1122,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addGap(0, 0, 0))
         );
 
-        pnlMensaje.setBackground(new java.awt.Color(255, 153, 153));
-
-        lbIcon.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
-        lbIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/alert1.png"))); // NOI18N
-        lbIcon.setText("Error!");
-
-        jScrollPane1.setBorder(null);
-
-        lbMensaje1.setBackground(new java.awt.Color(255, 153, 153));
-        lbMensaje1.setColumns(20);
-        lbMensaje1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lbMensaje1.setLineWrap(true);
-        lbMensaje1.setRows(2);
-        lbMensaje1.setText("No ha añadido ningún producto");
-        lbMensaje1.setWrapStyleWord(true);
-        lbMensaje1.setBorder(null);
-        lbMensaje1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        lbMensaje1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        lbMensaje1.setEnabled(false);
-        jScrollPane1.setViewportView(lbMensaje1);
-
-        lbMensaje.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lbMensaje.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbMensaje.setText("Error!");
-
-        javax.swing.GroupLayout pnlMensajeLayout = new javax.swing.GroupLayout(pnlMensaje);
-        pnlMensaje.setLayout(pnlMensajeLayout);
-        pnlMensajeLayout.setHorizontalGroup(
-            pnlMensajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(lbIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lbMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        pnlMensajeLayout.setVerticalGroup(
-            pnlMensajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlMensajeLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(lbIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbMensaje)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
         pnlMenu.setLayout(pnlMenuLayout);
         pnlMenuLayout.setHorizontalGroup(
@@ -1194,18 +1129,17 @@ public class VistaMenu extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
                 .addGap(3, 3, 3)
                 .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlMenuLayout.createSequentialGroup()
+                        .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0))))
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMenuLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(5, 5, 5)
                 .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(pnlMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addGap(5, 5, 5)
                 .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1237,9 +1171,9 @@ public class VistaMenu extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(54, 54, 52));
 
         btnCambiarUsuario.setBackground(new java.awt.Color(54, 54, 52));
-        btnCambiarUsuario.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
+        btnCambiarUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         btnCambiarUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        btnCambiarUsuario.setText("Cambiar Usuario");
+        btnCambiarUsuario.setText("Cambiar usuario");
         btnCambiarUsuario.setBorder(null);
         btnCambiarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1264,7 +1198,7 @@ public class VistaMenu extends javax.swing.JFrame {
         sep2.setForeground(new java.awt.Color(255, 255, 255));
         sep2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        lbTitulo.setFont(new java.awt.Font("Century Gothic", 1, 22)); // NOI18N
+        lbTitulo.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
         lbTitulo.setForeground(new java.awt.Color(255, 255, 255));
         lbTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTitulo.setText("TITULO");
@@ -1289,8 +1223,8 @@ public class VistaMenu extends javax.swing.JFrame {
         sep4.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         cmbAccesos.setBackground(new java.awt.Color(54, 54, 52));
-        cmbAccesos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        cmbAccesos.setForeground(new java.awt.Color(0, 153, 255));
+        cmbAccesos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        cmbAccesos.setForeground(new java.awt.Color(255, 255, 255));
         cmbAccesos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Accesos rápidos", "Ventas", "Congeladas", "Compras", "Ajustes" }));
         cmbAccesos.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -1304,7 +1238,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnDocumentos.setBackground(new java.awt.Color(54, 54, 52));
-        btnDocumentos.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
+        btnDocumentos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         btnDocumentos.setForeground(new java.awt.Color(255, 255, 255));
         btnDocumentos.setText("Mis movimientos");
         btnDocumentos.setToolTipText("");
@@ -1324,7 +1258,7 @@ public class VistaMenu extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE)
+                .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnMedicamentos, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
@@ -1347,14 +1281,14 @@ public class VistaMenu extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(sep2)
-            .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-            .addComponent(btnSolicitudes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnCambiarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+            .addComponent(btnSolicitudes, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+            .addComponent(btnCambiarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
             .addComponent(sep3)
-            .addComponent(btnMedicamentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnMedicamentos, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
             .addComponent(sep4)
-            .addComponent(cmbAccesos)
-            .addComponent(btnDocumentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(cmbAccesos, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+            .addComponent(btnDocumentos, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
             .addComponent(sep5)
         );
 
@@ -1512,7 +1446,7 @@ public class VistaMenu extends javax.swing.JFrame {
         pnlMiniaturasLayout.setVerticalGroup(
             pnlMiniaturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMiniaturasLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addGap(5, 5, 5)
                 .addComponent(lbVentas8, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbVentas9, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1535,71 +1469,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addGap(10, 10, 10))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbNombreEmpresa.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbNombreEmpresa.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbNombreEmpresa.setText("TITULO");
-
-        lbFecha.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbFecha.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbFecha.setText("27/09/2018");
-
-        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cerrar1.png"))); // NOI18N
-        btnSalir.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSalirMouseClicked(evt);
-            }
-        });
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/maximizar.png"))); // NOI18N
-        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel2MouseClicked(evt);
-            }
-        });
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/line.png"))); // NOI18N
-        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel3MouseClicked(evt);
-            }
-        });
-
-        lbNombre.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbNombre.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lbNombre.setText("- Name");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(lbFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbNombreEmpresa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSalir)
-                .addGap(95, 95, 95))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(lbFecha)
-                .addComponent(lbNombre))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                .addComponent(lbNombreEmpresa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1614,12 +1483,10 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addComponent(btnOcultar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(dkpFormularios))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -1823,7 +1690,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         switch (opc) {
             case "ventas":
-                textos[0] = "FACTURA";
+                textos[0] = "FACTURAS";
 
                 if (instancias.getConfiguraciones().isCongeladas()) {
                     if (instancias.getConfiguraciones().isRestaurante()) {
@@ -1841,10 +1708,10 @@ public class VistaMenu extends javax.swing.JFrame {
                     textos[2] = (String) null;
                 }
 
-                textos[3] = "COTIZACIÓN";
+                textos[3] = "COTIZACIONES";
 
                 if (instancias.getConfiguraciones().isSepare()) {
-                    textos[4] = "PLAN.SEPARE";
+                    textos[4] = "PLAN SEPARES";
                 } else {
                     textos[4] = (String) null;
                 }
@@ -1856,13 +1723,13 @@ public class VistaMenu extends javax.swing.JFrame {
                 }
 
                 if (instancias.getConfiguraciones().isPedido()) {
-                    textos[6] = "PEDIDO";
+                    textos[6] = "PEDIDOS";
                 } else {
                     textos[6] = (String) null;
                 }
 
                 if (instancias.getConfiguraciones().isOrdenServicio()) {
-                    textos[7] = "ORDEN";
+                    textos[7] = "ORDENES";
                 } else {
                     textos[7] = (String) null;
                 }
@@ -1874,7 +1741,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 }
 
                 textos[9] = (String) null;
-                //textos[9] = "ANULACIÓN";
                 textos[10] = (String) null;
                 textos[11] = "REPORTES";
                 textos[12] = (String) null;
@@ -1896,7 +1762,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 forms[6] = instancias.getPedidoContenedor();
                 forms[7] = instancias.getOrdenServicioContenedor();
                 forms[8] = instancias.getFacturarLotes();
-                //forms[9] = instancias.getAnula();
                 forms[9] = null;
                 forms[10] = null;
                 forms[11] = instancias.getReportesVentas();
@@ -1909,13 +1774,12 @@ public class VistaMenu extends javax.swing.JFrame {
             case "productos":
                 textos[0] = "PRODUCTOS";
                 textos[1] = "GRUPOS";
-                textos[2] = "INV.INICIAL";
-                textos[3] = "DISEÑO";
-                textos[4] = "O.COMPRA";
+                textos[2] = "INVENTARIO INICIAL";
+                textos[3] = "DISEÑO Y ARMADOS";
+                textos[4] = "ORDEN DE COMPRA";
                 textos[5] = "COMPRAS";
-                textos[6] = "ARMADO";
-                textos[7] = "AJUSTES";
-                textos[8] = "REPORTES";
+                textos[6] = "AJUSTES INVENTARIO";
+                textos[7] = "REPORTES";
 
                 forms[0] = instancias.getProductos();
                 forms[1] = instancias.getGrupos();
@@ -1923,9 +1787,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 forms[3] = instancias.getCosteo();
                 forms[4] = instancias.getOrdenCompraContenedor();
                 forms[5] = instancias.getIngresoContenedor();
-                forms[6] = instancias.getArmado();
-                forms[7] = instancias.getVistaAjusteInventario();
-                forms[8] = instancias.getReportesProductos();
+                forms[6] = instancias.getVistaAjusteInventario();
+                forms[7] = instancias.getReportesProductos();
 
                 color = new Color(214, 214, 214);
                 break;
@@ -1945,7 +1808,6 @@ public class VistaMenu extends javax.swing.JFrame {
                 textos[12] = (String) null;
                 textos[13] = (String) null;
                 textos[14] = (String) null;
-//                textos[15] = "INV.INICIAL";
 
                 forms[0] = instancias.getRecordatorios();
                 forms[1] = null;
@@ -2479,7 +2341,7 @@ public class VistaMenu extends javax.swing.JFrame {
             }
 
             if (formularios[3] instanceof VistaDiseno) {
-                instancias.getMenu().cambiarTitulo("DISEÑO DE PRODUCTO");
+                ((VistaDiseno) formularios[3]).seleccionarPestanaDiseno();
             }
 
             if (formularios[3] instanceof cotizacion) {
@@ -2601,8 +2463,9 @@ public class VistaMenu extends javax.swing.JFrame {
                 ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
-            if (formularios[6] instanceof infArmado) {
-                instancias.getMenu().cambiarTitulo("ARMADO DE PRODUCTO DISEÑADO");
+            if (formularios[6] instanceof VistaAjusteInventario) {
+                instancias.getVistaAjusteInventario().consultarPermiso();
+                instancias.getMenu().cambiarTitulo("AJUSTES DE INVENTARIO");
             }
 
             if (formularios[6] instanceof infRepParqueadero) {
@@ -2642,9 +2505,8 @@ public class VistaMenu extends javax.swing.JFrame {
                 ControladorAlertas.alert("No tiene permisos para esta función");
             }
 
-            if (formularios[7] instanceof VistaAjusteInventario) {
-                instancias.getVistaAjusteInventario().consultarPermiso();
-                instancias.getMenu().cambiarTitulo("AJUSTES DE INVENTARIO");
+            if (formularios[7] instanceof VistaReportesProducto) {
+                instancias.getMenu().cambiarTitulo("REPORTES DE PRODUCTOS");
             }
 
             if (formularios[7] instanceof infRepLavadero1) {
@@ -2726,10 +2588,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
             if (formularios[9] instanceof infFormatos) {
                 instancias.getMenu().cambiarTitulo("FORMATOS DE IMPRESIÓN");
-            }
-
-            if (formularios[9] instanceof infReportesProductos) {
-                instancias.getMenu().cambiarTitulo("REPORTES DE PRODUCTOS");
             }
 
             accionarMenu();
@@ -3028,21 +2886,6 @@ public class VistaMenu extends javax.swing.JFrame {
         activarColor(btnLaboratorio, "Laboratorio");
     }//GEN-LAST:event_btnLaboratorioActionPerformed
 
-    private void btnSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalirMouseClicked
-        if (btnSalir.isEnabled()) {
-            msgSalir salir = new msgSalir(this, seVeElMenu, "");
-            salir.setVisible(true);
-        }
-    }//GEN-LAST:event_btnSalirMouseClicked
-
-    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        this.setExtendedState(MAXIMIZED_BOTH);
-    }//GEN-LAST:event_jLabel2MouseClicked
-
-    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        this.setExtendedState(ICONIFIED);
-    }//GEN-LAST:event_jLabel3MouseClicked
-
     private void btnVerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerificarActionPerformed
         new dlgConsultarCodigos(this, true).setVisible(true);
     }//GEN-LAST:event_btnVerificarActionPerformed
@@ -3212,12 +3055,7 @@ public class VistaMenu extends javax.swing.JFrame {
         instancias.getMaestra().llenarVendedores(nombre);
         instancias.getReporte().setFirma();
 
-        if (DatosMaestra.getD1() != null) {
-            lbNombreEmpresa.setText(DatosMaestra.getD1());
-        }
-
         abrirCaja();
-
     }
 
     private void obtenerRecordatorios() {
@@ -3559,7 +3397,7 @@ public class VistaMenu extends javax.swing.JFrame {
             VistaDiseno interno14 = new VistaDiseno();
             dkpFormularios.add(interno14);
             instancias.setCosteo(interno14);
-            if (instancias.getUsuarioLog().isDisenos()) {
+            if (instancias.getUsuarioLog().isDisenos() || instancias.getUsuarioLog().isArmados()) {
                 interno14.show();
             }
             interno14.setMaximum(true);
@@ -3568,19 +3406,7 @@ public class VistaMenu extends javax.swing.JFrame {
         }
 
         try {
-            infArmado interno14 = new infArmado();
-            dkpFormularios.add(interno14);
-            instancias.setArmado(interno14);
-            if (instancias.getUsuarioLog().isArmados()) {
-                interno14.show();
-            }
-            interno14.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            infReportesProductos interno = new infReportesProductos();
+            VistaReportesProducto interno = new VistaReportesProducto();
             dkpFormularios.add(interno);
             instancias.setReportesProductos(interno);
             if (instancias.getUsuarioLog().isReporteProductos()) {
@@ -4614,7 +4440,6 @@ public class VistaMenu extends javax.swing.JFrame {
     }
 
     public void soloMesas() {
-        btnSalir.setEnabled(true);
         btnDocumentos.setVisible(false);
         sep2.setVisible(false);
         pnlContenedor.setVisible(false);
@@ -4656,8 +4481,6 @@ public class VistaMenu extends javax.swing.JFrame {
     public void abrirCaja() {
         if (instancias.getImpresion().equals("pos")) {
             btnAbrirCaja.setVisible(false);
-            //Para cuando sea pos active el boton de abrir caja
-//            btnAbrirCaja.setVisible(true);
         } else {
             btnAbrirCaja.setVisible(false);
         }
@@ -4678,19 +4501,14 @@ public class VistaMenu extends javax.swing.JFrame {
     }
 
     public void ocultarMenu(String desde) {
-//        pnlMiniaturas.setVisible(true);
-//        pnlOpcionesPeque.setVisible(true);
         pnlContenedor.setVisible(false);
-
         pnlMenu.setSize(0, 0);
-//        dkpFormularios.setBounds(0, 0, this.getWidth() - 13, this.getHeight());
         seVeElMenu = false;
 
         if (desde.equals("preparacion")) {
             noAbrir = false;
             btnOcultar.setEnabled(false);
             btnCambiarUsuario.setEnabled(false);
-            btnSalir.setEnabled(false);
             btnDocumentos.setEnabled(false);
             pnlMiniaturas.setVisible(false);
             cmbAccesos.setEnabled(false);
@@ -4744,53 +4562,12 @@ public class VistaMenu extends javax.swing.JFrame {
         dkpFormularios.setBounds(323, 128, this.getWidth() - 338, this.getHeight() - 166);
         seVeElMenu = true;
         btnCambiarUsuario.setEnabled(true);
-        btnSalir.setEnabled(true);
         btnDocumentos.setEnabled(true);
         cmbAccesos.setEnabled(true);
     }
 
     public boolean getSeVeElMenu() {
         return pnlContenedor.isVisible();
-    }
-
-    public void activarMensaje(String tipoMsg, String mensaje) {
-
-        lbLogo.setVisible(false);
-        pnlMensaje.setVisible(true);
-
-        if (tipoMsg.equals("Error")) {
-            pnlMensaje.setBackground(new Color(255, 153, 153));
-            lbIcon.setText(" Error!");
-            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/alert1.png")));
-            jScrollPane1.setVisible(false);
-            lbMensaje.setVisible(true);
-            lbMensaje.setText(mensaje);
-        } else if (tipoMsg.equals("Exito")) {
-            pnlMensaje.setBackground(new Color(153, 255, 153));
-            lbIcon.setText(" Exito!");
-            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/exito.png")));
-            jScrollPane1.setVisible(false);
-            lbMensaje.setVisible(true);
-            lbMensaje.setText(mensaje);
-        } else if (tipoMsg.equals("Atencion")) {
-            pnlMensaje.setBackground(new Color(255, 178, 2));
-            lbMensaje1.setBackground(new Color(255, 178, 2));
-            lbIcon.setText(" Atención!");
-            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/advertencia.png")));
-            lbMensaje1.setText(mensaje);
-            lbMensaje.setVisible(false);
-            jScrollPane1.setVisible(true);
-        }
-
-        ocultarAlerta ocultarAlert = new ocultarAlerta();
-        ocultarAlert.start();
-    }
-
-    public void desactivarMensaje() {
-        lbLogo.setVisible(true);
-        pnlMensaje.setVisible(false);
-//        ocultarAlert.stop();
-//        ocultarAlert.destroy();
     }
 
     public void accionarMenu() {
@@ -4848,7 +4625,6 @@ public class VistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnParqueadero1;
     private javax.swing.JButton btnProductos;
     private javax.swing.JButton btnRecordatorios;
-    private javax.swing.JLabel btnSalir;
     private javax.swing.JButton btnSolicitudes;
     private javax.swing.JButton btnTerceros;
     private javax.swing.JButton btnTesoreria;
@@ -4858,19 +4634,13 @@ public class VistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnVeterinario;
     private javax.swing.JComboBox cmbAccesos;
     private javax.swing.JDesktopPane dkpFormularios;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private formularios.JPanelsSliding jPanelsSliding1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton lbAgenda1;
     private javax.swing.JButton lbConfiguraciones;
-    private javax.swing.JLabel lbFecha;
-    private javax.swing.JLabel lbIcon;
     private javax.swing.JButton lbItem1;
     private javax.swing.JButton lbItem10;
     private javax.swing.JButton lbItem11;
@@ -4891,10 +4661,6 @@ public class VistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton lbItem9;
     private javax.swing.JButton lbLogo;
     private javax.swing.JButton lbMedico1;
-    private javax.swing.JLabel lbMensaje;
-    private javax.swing.JTextArea lbMensaje1;
-    private javax.swing.JLabel lbNombre;
-    private javax.swing.JLabel lbNombreEmpresa;
     private javax.swing.JLabel lbTitulo;
     private javax.swing.JButton lbVentas10;
     private javax.swing.JButton lbVentas11;
@@ -4903,7 +4669,6 @@ public class VistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton lbVentas9;
     private javax.swing.JButton lbVeterinaria1;
     private javax.swing.JPanel pnlContenedor;
-    private javax.swing.JPanel pnlMensaje;
     private javax.swing.JPanel pnlMenu;
     private javax.swing.JPanel pnlMiniaturas;
     private javax.swing.JPanel pnlPrincipal;

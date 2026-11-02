@@ -1,14 +1,17 @@
 package clases;
 
+import Vista.Productos.Reportes.VistaReporteProductos;
+import Vista.Productos.Reportes.VistaReporteInventario;
+import Vista.Productos.Reportes.VistaReportesProducto;
 import formularios.terceros.buscBodegas;
 
-import Vista.Cartera.VistaReportesCartera;
-import Vista.ReportesCarteras.VistaReporteAbonos;
-import Vista.ReportesCarteras.VistaReporteCuentasPendientes;
-import Vista.ReportesCarteras.VistaReportePagos;
-import Vista.ReportesCarteras.VistaReportePagosPedientes;
-import Vista.ReportesCarteras.VistaReporteNotasCredito;
-import Vista.ReportesCarteras.VistaReporteNotasDebito;
+import Vista.Cartera.Reportes.VistaReportesCartera;
+import Vista.Cartera.Reportes.VistaReporteAbonos;
+import Vista.Cartera.Reportes.VistaReporteCuentasPendientes;
+import Vista.Cartera.Reportes.VistaReportePagos;
+import Vista.Cartera.Reportes.VistaReportePagosPedientes;
+import Vista.Cartera.Reportes.VistaReporteNotasCredito;
+import Vista.Cartera.Reportes.VistaReporteNotasDebito;
 import Vista.ReportesVentas.VistaReporteCotizaciones;
 import Vista.ReportesVentas.VistaReportePlanSepares;
 import Vista.ReportesVentas.VistaReporteCuentasCobro;
@@ -136,7 +139,6 @@ public class Instancias {
     private ndUsuario usuarioLog;
     private VistaDiseno costeo;
     private String tFactura;
-    private infArmado armado;
     private infProcesos procesos;
     private buscProcesos buscProcesos;
     private iFactura reporte;
@@ -147,7 +149,7 @@ public class Instancias {
     private buscServicios buscServicios;
 
     private infRepCuadre repCuadre;
-    private infReportesProductos reportesProductos;
+    private VistaReportesProducto reportesProductos;
     private buscGrupos buscGrupos;
     private buscSubGrupos buscSubGrupos;
     private String regimen;
@@ -299,7 +301,7 @@ public class Instancias {
     private VistaDocumentos reimpresion;
 
     /* INICIO PRODUCTOS */
-    private infInventario inventario;
+    private VistaReporteInventario inventario;
     private VistaProductos productos;
     private VistaGrupos grupos;
     private VistaBuscadorProductos buscProductos;
@@ -310,13 +312,11 @@ public class Instancias {
     private buscMarcas buscMarcas;
     private buscTiposProductos buscTiposProductos;
     private infTrasladosInternos trasladosInternos;
-    private infRepProductos repProductos;
+    private VistaReporteProductos repProductos;
     private infRepIvasCompras repIvasCompras;
     private infMovimientosSeriales movimientosSeriales;
     private infRepIngresos repIngresos;
     private infRepAjustes repAjustes;
-    private infRepTraslados repTraslados;
-    private infRepTrasladosInternos repTrasladosInternos;
     private VistaAjusteInventario uInt;
     private VistaInventarioInicial inventarioInicial;
     private ingreso ingresos;
@@ -865,14 +865,6 @@ public class Instancias {
         this.buscTiposProductos = buscTiposProductos;
     }
 
-    public infRepTrasladosInternos getRepTrasladosInternos() {
-        return repTrasladosInternos;
-    }
-
-    public void setRepTrasladosInternos(infRepTrasladosInternos repTrasladosInternos) {
-        this.repTrasladosInternos = repTrasladosInternos;
-    }
-
     public buscMarcas getBuscMarcas() {
         return buscMarcas;
     }
@@ -897,11 +889,11 @@ public class Instancias {
         this.buscMedidas = buscMedidas;
     }
 
-    public infInventario getInventario() {
+    public VistaReporteInventario getInventario() {
         return inventario;
     }
 
-    public void setInventario(infInventario inventario) {
+    public void setInventario(VistaReporteInventario inventario) {
         this.inventario = inventario;
     }
 
@@ -1234,14 +1226,6 @@ public class Instancias {
         this.cocaina = cocaina;
     }
 
-    public infRepTraslados getRepTraslados() {
-        return repTraslados;
-    }
-
-    public void setRepTraslados(infRepTraslados repTraslados) {
-        this.repTraslados = repTraslados;
-    }
-
     public infCannabinoides getCannabinoides() {
         return cannabinoides;
     }
@@ -1302,11 +1286,11 @@ public class Instancias {
         return buscProductos;
     }
 
-    public infReportesProductos getReportesProductos() {
+    public VistaReportesProducto getReportesProductos() {
         return reportesProductos;
     }
 
-    public void setReportesProductos(infReportesProductos reportesProductos) {
+    public void setReportesProductos(VistaReportesProducto reportesProductos) {
         this.reportesProductos = reportesProductos;
     }
 
@@ -1326,11 +1310,11 @@ public class Instancias {
         return mesa;
     }
 
-    public infRepProductos getRepProductos() {
+    public VistaReporteProductos getRepProductos() {
         return repProductos;
     }
 
-    public void setRepProductos(infRepProductos repProductos) {
+    public void setRepProductos(VistaReporteProductos repProductos) {
         this.repProductos = repProductos;
     }
 
@@ -2320,10 +2304,6 @@ public class Instancias {
         return tFactura;
     }
 
-    public infArmado getArmado() {
-        return armado;
-    }
-
     public buscProcesos getBuscProcesos() {
         return buscProcesos;
     }
@@ -2334,10 +2314,6 @@ public class Instancias {
 
     public SQL getSql() {
         return sql;
-    }
-
-    public void setArmado(infArmado armado) {
-        this.armado = armado;
     }
 
     public void settFactura(String tFactura) {

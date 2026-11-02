@@ -203,7 +203,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
      * Salida.
      */
     private void configurarSalida(String tipoProd, String producto, DefaultTableModel modelo) {
-        Object[][] existencias = instancias.getSql().obtenerProductosDetallePorProducto(producto);
+        Object[][] existencias = instancias.getSql().obtenerProductosDetallePorProducto(producto, Bodegas.predeterminada());
 
         pnlColor.setVisible(false);
         pnlFechaLote.setVisible(false);

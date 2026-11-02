@@ -3,14 +3,18 @@ package Procesos.Inventario.Dao;
 import Enums.Tablas;
 import Utilidades.Contactos.Bodegas;
 import Estrategia.AbstractDao;
+import Modelo.Inventario.FiltroReporteInventario;
 import Modelo.Productos.ModeloProducto;
+import Utilidades.BaseDatos.FiltrosSql;
 import Utilidades.BaseDatos.SentenciaSql;
+import Utilidades.Constantes;
 import Utilidades.BaseDatos.ValidadorTabla;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,40 +31,85 @@ public class DaoInventario extends AbstractDao {
                 + ".idSistema) AND (" + Tablas.INVENTARIO.getNombre() + ".idBodega = '" + Bodegas.resolver(bodega) + "'))";
     }
 
-    public static String consultaReporteInventario(String bodega) {
-        String idBodega = Bodegas.resolver(bodega, true);
-        String inv = Tablas.INVENTARIO.getNombre();
+    /**
+     * Arma el reporte de inventario directamente sobre bdProductos y bdinventario. Las cantidades
+     * viajan como decimales; el formato (máximo Constantes.MAX_DECIMALES_CANTIDAD decimales y sin
+     * ceros al final) lo aplica el reporte con Utilidades.formatearCantidad.
+     */
+    public static String consultaReporteInventario(FiltroReporteInventario filtro) {
+        return consultaBase(Bodegas.resolver(filtro.getBodega())) + condiciones(filtro);
+    }
 
-        return "(SELECT p.idSistema AS Codigo, p.Descripcion AS Descripcion, " + texto("inventario") + " AS inventario, "
-                + "CAST(COALESCE(i.inventario, 0) AS SIGNED) AS inv, " + texto("fisicoInventario") + " AS fisicoInventario, "
-                + texto("compras") + " AS compras, " + texto("ventas") + " AS ventas, " + texto("notaCredito") + " AS nc, "
-                + texto("ajusteEntrada") + " AS ajusteEntrada, " + texto("ajusteSalida") + " AS ajusteSalida, "
-                + texto("planSepare") + " AS planSepare, " + texto("pedidos") + " AS pedidos, " + texto("anulacion") + " AS anulacion, "
-                + texto("inventarioInicial") + " AS inventarioInicial, " + texto("ajusteInventario") + " AS ajusteInventario, "
-                + texto("armado") + " AS armado, " + texto("costeo") + " AS costeo, "
-                + "u.nuevoPonderado AS costoUnd, u.ultimoCosto AS ultimoCosto, p.minimo AS minimo, "
-                + "IF(CAST(COALESCE(i.fisicoInventario, 0) AS SIGNED) <= 0, 'SIN INVENTARIO', "
-                + "IF(CAST(COALESCE(i.fisicoInventario, 0) AS SIGNED) < p.minimo, 'BAJO', "
-                + "IF(CAST(COALESCE(i.fisicoInventario, 0) AS SIGNED) = p.minimo, 'MEDIO', 'ALTO'))) AS estado, "
-                + "p.L1 AS L1, (SELECT l2.precio FROM " + Tablas.PRODUCTO_LISTAS.getNombre() + " l2 WHERE l2.idSistema = p.idSistema AND l2.numeroLista = 2) AS L2, p.referencia AS referencia, p.ubicacion1 AS ubicacion1, g.nombre AS grupoDesc, "
-                + "sg.nombre AS subGrupoDesc, t.nombre AS proveedorNombre, p.grupo AS Grupo, "
-                + "(CAST(u.nuevoPonderado AS SIGNED) * CAST(COALESCE(i.inventario, 0) AS SIGNED)) AS costoPTotal, "
-                + "(CAST(u.ultimoCosto AS SIGNED) * CAST(COALESCE(i.inventario, 0) AS SIGNED)) AS costoTotal, "
-                + texto("ordenServicio") + " AS ordenServicio, p.manejaInventario AS manejaInventario, p.Proveedor AS Proveedor, "
-                + "u.fecha AS fecha, p.Codigo AS Codigo1, p.codigoBarras AS codigoBarras, "
-                + texto("trasladoInternoEntrada") + " AS trasladoInternoEntrada, " + texto("trasladoInternoSalida") + " AS trasladoInternoSalida, "
-                + texto("congelada") + " AS congelada, " + texto("trasladoBod") + " AS trasladoBod, " + texto("enTransito") + " AS enTransito, "
-                + texto("notaDebito") + " AS nd "
+    private static String consultaBase(String idBodega) {
+        return "(SELECT p.idSistema AS Codigo, p.Codigo AS Codigo1, p.codigoBarras AS codigoBarras, p.Descripcion AS Descripcion, "
+                + cantidad("inventario") + ", " + cantidad("fisicoInventario") + ", " + cantidad("inventarioInicial") + ", "
+                + cantidad("compras") + ", " + cantidad("ventas") + ", " + cantidad("notaCredito", "nc") + ", "
+                + cantidad("notaDebito", "nd") + ", " + cantidad("ajusteEntrada") + ", " + cantidad("ajusteSalida") + ", "
+                + cantidad("ajusteInventario") + ", " + cantidad("planSepare") + ", " + cantidad("pedidos") + ", "
+                + cantidad("anulacion") + ", " + cantidad("armado") + ", " + cantidad("costeo") + ", "
+                + cantidad("ordenServicio") + ", " + cantidad("trasladoInternoEntrada") + ", " + cantidad("trasladoInternoSalida") + ", "
+                + cantidad("congelada") + ", " + cantidad("trasladoBod") + ", " + cantidad("enTransito") + ", "
+                + "u.nuevoPonderado AS costoUnd, u.ultimoCosto AS ultimoCosto, " + fechaUltimaCompra() + " AS fecha, p.minimo AS minimo, "
+                + estado() + " AS estado, "
+                + "p.L1 AS L1, (SELECT l2.precio FROM " + Tablas.PRODUCTO_LISTAS.getNombre() + " l2 WHERE l2.idSistema = p.idSistema AND l2.numeroLista = 2) AS L2, "
+                + "p.referencia AS referencia, p.ubicacion1 AS ubicacion1, g.nombre AS grupoDesc, sg.nombre AS subGrupoDesc, "
+                + "t.nombre AS proveedorNombre, p.grupo AS Grupo, p.Proveedor AS Proveedor, p.manejaInventario AS manejaInventario, "
+                + "(COALESCE(u.nuevoPonderado, 0) * COALESCE(i.inventario, 0)) AS costoPTotal, "
+                + "(COALESCE(u.ultimoCosto, 0) * COALESCE(i.inventario, 0)) AS costoTotal "
                 + "FROM " + Tablas.PRODUCTOS.getNombre() + " p "
-                + "LEFT JOIN " + inv + " i ON i.idSistema = p.idSistema AND i.idBodega = '" + idBodega + "' "
+                + "LEFT JOIN " + Tablas.INVENTARIO.getNombre() + " i ON i.idSistema = p.idSistema AND i.idBodega = '" + FiltrosSql.escapar(idBodega) + "' "
                 + "LEFT JOIN bdgrupo g ON g.codigo = p.grupo "
                 + "LEFT JOIN bdsubgrupo sg ON sg.codigo = p.Sub_grupo "
                 + "LEFT JOIN bdterceros t ON t.id = p.Proveedor "
-                + "LEFT JOIN ultimoponderado u ON u.producto = p.idSistema) AS inventario";
+                + "LEFT JOIN bdUltimoponderado u ON u.producto = p.idSistema) AS inventario";
     }
 
-    private static String texto(String columna) {
-        return "REPLACE(CAST(CAST(COALESCE(i." + columna + ", 0) AS DOUBLE) AS CHAR), '.', ',')";
+    /**
+     * bdUltimoPonderado.fecha es texto ('yyyy-MM-dd', y vacío cuando no se pudo parsear), por eso se
+     * formatea en SQL en vez de dejar que el reporte intente leerla como java.sql.Date.
+     */
+    private static String fechaUltimaCompra() {
+        return "DATE_FORMAT(u.fecha, '%d/%m/%Y')";
+    }
+
+    private static String estado() {
+        String fisico = "COALESCE(i.fisicoInventario, 0)";
+
+        return "IF(" + fisico + " <= 0, '" + FiltroReporteInventario.ESTADO_SIN_INVENTARIO + "', "
+                + "IF(" + fisico + " < p.minimo, '" + FiltroReporteInventario.ESTADO_BAJO + "', "
+                + "IF(" + fisico + " = p.minimo, '" + FiltroReporteInventario.ESTADO_MEDIO + "', '" + FiltroReporteInventario.ESTADO_ALTO + "')))";
+    }
+
+    /**
+     * Las condiciones usan los alias de la subconsulta, por eso van por fuera de ella.
+     */
+    private static String condiciones(FiltroReporteInventario filtro) {
+        List<String> condiciones = new ArrayList<>();
+        condiciones.add("manejaInventario = true");
+
+        if (filtro.tieneRangoInventario()) {
+            condiciones.add("(inventario >= " + filtro.getInventarioDesde().toPlainString()
+                    + " AND inventario <= " + filtro.getInventarioHasta().toPlainString() + ")");
+        }
+
+        if (filtro.tieneRangoFechas()) {
+            condiciones.add("(fecha >= '" + FiltrosSql.escapar(filtro.getFechaDesde()) + "' AND fecha <= '" + FiltrosSql.escapar(filtro.getFechaHasta()) + "')");
+        }
+
+        FiltrosSql.agregarEn(condiciones, "estado", filtro.getEstados());
+        FiltrosSql.agregarEn(condiciones, "Proveedor", filtro.getProveedores());
+        FiltrosSql.agregarEn(condiciones, "Codigo", filtro.getProductos());
+        FiltrosSql.agregarEn(condiciones, "Grupo", filtro.getGrupos());
+
+        return FiltrosSql.donde(condiciones);
+    }
+
+    private static String cantidad(String columna) {
+        return cantidad(columna, columna);
+    }
+
+    private static String cantidad(String columna, String alias) {
+        return "CAST(COALESCE(i." + columna + ", 0) AS DECIMAL(18, " + Constantes.MAX_DECIMALES_CANTIDAD + ")) AS " + alias;
     }
 
     public void ejecutarSentencias(Connection conn, List<SentenciaSql> sentencias) throws SQLException {

@@ -70,7 +70,7 @@ public class ServicioInventarioInicial {
     private void guardarRegistros(LineaInventarioInicial linea) throws SQLException {
         ModeloProducto producto = linea.getProducto();
 
-        daoInventarioInicial.insertarInventarioInicial(producto.getIdSistema(), linea.getCostoUnidad(), linea.getCantidad());
+        daoInventarioInicial.insertarInventarioInicial(producto.getIdSistema(), linea.getCostoUnidad(), linea.getCantidad(), Bodegas.predeterminada());
         daoInventarioInicial.insertarCompra(INGRESO_INICIAL, producto.getIdSistema(), producto.getDescripcion(), linea.getCantidad(),
                 linea.getCostoUnidad(), linea.getTotalCosto(), instancias.getUsuario());
     }

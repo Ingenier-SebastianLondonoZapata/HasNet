@@ -26,7 +26,9 @@ public enum TipoDocumento {
     ORDEN_COMPRA("ordenCompra", ""),
     ANULAR_ORDEN_COMPRA("anularOrdenCompra", ""),
     EGRESO("egreso", ""),
-    INVENTARIO_INICIAL("inventarioInicial", "");
+    INVENTARIO_INICIAL("inventarioInicial", ""),
+    ARMADO("armado", "CST"),
+    ANULAR_ARMADO("anularArmado", "");
 
     private final String valor;
     private final String prefijoGeneral;

@@ -24,10 +24,10 @@ public class DaoInventarioInicial extends AbstractDao {
         }
     }
 
-    public void insertarInventarioInicial(String idSistema, BigDecimal costoUnidad, BigDecimal cantidad) throws SQLException {
+    public void insertarInventarioInicial(String idSistema, BigDecimal costoUnidad, BigDecimal cantidad, String idBodega) throws SQLException {
         String sql = "INSERT INTO " + Tablas.INVENTARIO_INICIAL.getNombre()
-                + " (producto, costo, conteo1, conteo2, conteo3, total, auditoria1, auditoria2, totalAuditoria, finalizado, bodega)"
-                + " VALUES (?, ?, ?, '0', '0', ?, '', '', '', '', '')";
+                + " (producto, costo, conteo1, total, bodega)"
+                + " VALUES (?, ?, ?, ?, ?)";
 
         String cantidadTexto = cantidad.stripTrailingZeros().toPlainString();
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
@@ -35,6 +35,7 @@ public class DaoInventarioInicial extends AbstractDao {
             ps.setString(2, costoUnidad.toPlainString());
             ps.setString(3, cantidadTexto);
             ps.setString(4, cantidadTexto);
+            ps.setString(5, idBodega);
             ps.executeUpdate();
         }
     }

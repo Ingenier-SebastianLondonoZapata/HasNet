@@ -15,6 +15,8 @@ public enum Tablas {
     INVENTARIO_INICIAL("bdInventarioInicial"),
     INGRESO("bdIngreso"),
     COMPRA("bdCompra"),
+    ARMADO("bdCosteo"),
+    ARMADO_PRODUCTO("bdCosteoProd"),
     COLORES("bdColores"),
     TALLA("bdTalla");
 

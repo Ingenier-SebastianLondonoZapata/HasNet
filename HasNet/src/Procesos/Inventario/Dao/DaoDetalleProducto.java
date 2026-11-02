@@ -1,8 +1,12 @@
 package Procesos.Inventario.Dao;
 
+import Enums.EstadosDetalleProducto;
 import Enums.Tablas;
 import Estrategia.AbstractDao;
 import Modelo.Inventario.DetalleProducto;
+import Modelo.Inventario.FiltroReporteInventario;
+import Utilidades.BaseDatos.FiltrosSql;
+import Utilidades.Constantes;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,6 +18,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DaoDetalleProducto extends AbstractDao {
+
+    /**
+     * Reporte de inventario detallado armado sobre bdDetalleProductos y bdProductos; reemplaza a la
+     * vista inventarioDetallado, que no estaba versionada. Solo trae el detalle que sigue en
+     * existencia (mismo criterio que {@link #existeImeiOSerialEnInventario}).
+     */
+    public static String consultaReporteInventarioDetallado(FiltroReporteInventario filtro) {
+        return "(SELECT p.Codigo AS Codigo, p.idSistema AS idSistema, p.Descripcion AS Descripcion, "
+                + "CAST(COALESCE(d.cantidadDisponible, 0) AS DECIMAL(18, " + Constantes.MAX_DECIMALES_CANTIDAD + ")) AS cantidad, "
+                + "d.imei AS imei, d.color AS color, d.talla AS talla, d.lote AS lote, "
+                + "DATE_FORMAT(d.fechaVencimiento, '%d/%m/%Y') AS fechaVencimiento, "
+                + "d.temperatura AS temperatura, d.estado AS estado, d.bodega AS bodega, p.Proveedor AS Proveedor "
+                + "FROM " + Tablas.DETALLE_PRODUCTO.getNombre() + " d "
+                + "INNER JOIN " + Tablas.PRODUCTOS.getNombre() + " p ON p.idSistema = d.producto"
+                + condicionesDetalle(filtro) + ") AS inventarioDetallado";
+    }
+
+    private static String condicionesDetalle(FiltroReporteInventario filtro) {
+        List<String> condiciones = new ArrayList<>();
+        condiciones.add("d.estado IN (" + FiltrosSql.literal(EstadosDetalleProducto.DISPONIBLE.getNombre())
+                + ", " + FiltrosSql.literal(EstadosDetalleProducto.EN_PEDIDO.getNombre()) + ")");
+        condiciones.add("d.bodega = " + FiltrosSql.literal(filtro.getBodega()));
+
+        FiltrosSql.agregarEn(condiciones, "d.imei", filtro.getImeis());
+        FiltrosSql.agregarEn(condiciones, "d.color", filtro.getColores());
+        FiltrosSql.agregarEn(condiciones, "p.idSistema", filtro.getProductos());
+        FiltrosSql.agregarEn(condiciones, "p.grupo", filtro.getGrupos());
+        FiltrosSql.agregarEn(condiciones, "p.Proveedor", filtro.getProveedores());
+
+        return FiltrosSql.donde(condiciones);
+    }
 
     public boolean existeImeiOSerialEnInventario(String imeiOSerial) throws SQLException {
         String sql = "SELECT 1 FROM " + Tablas.DETALLE_PRODUCTO.getNombre() + " WHERE imei = ? AND (estado = 'DISPONIBLE' OR estado = 'PRESTADO') LIMIT 1";

@@ -2,6 +2,8 @@ package Procesos.Inventario.Fabrica;
 
 import Enums.TipoDocumento;
 import Procesos.Inventario.Estrategia.ProcesadorAjusteEntrada;
+import Procesos.Inventario.Estrategia.ProcesadorAnularArmado;
+import Procesos.Inventario.Estrategia.ProcesadorArmado;
 import Procesos.Inventario.Estrategia.ProcesadorAjusteSalida;
 import Procesos.Inventario.Estrategia.ProcesadorAnularAjusteEntrada;
 import Procesos.Inventario.Estrategia.ProcesadorAnularFacturacion;
@@ -57,6 +59,8 @@ public class FabricaProcesadores {
         registro.put(TipoDocumento.ANULAR_PEDIDO, new ProcesadorAnularPedido());
         registro.put(TipoDocumento.ANULAR_MESA, new ProcesadorAnularMesa());
         registro.put(TipoDocumento.ANULAR_ORDER_SERVICIO, new ProcesadorAnularOrdenServicio());
+        registro.put(TipoDocumento.ARMADO, new ProcesadorArmado());
+        registro.put(TipoDocumento.ANULAR_ARMADO, new ProcesadorAnularArmado());
 
         return registro;
     }

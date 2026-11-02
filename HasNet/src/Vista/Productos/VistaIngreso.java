@@ -2813,11 +2813,11 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 codigoLista,
                 descripcion,
                 big.setMoneda(ponderado.multiply(cantidadPlu)),
-                cantidad, big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIva())),
+                Utilidades.formatearCantidad(cantidad), big.setMoneda(big.getBigDecimal("0")), "0", big.setMoneda(big.getBigDecimal("0")), big.setNumero(big.getBigDecimal(nodo.getIva())),
                 big.setNumero(big.getBigDecimal(nodo.getImpoconsumoVenta())), "0", nodo.getUnd(), big.setMoneda(ultimoCosto),
                 big.setMoneda(listaPrecio),
                 pluProducto,
-                cantidadPlu.multiply(cantidad),
+                Utilidades.formatearCantidad(cantidadPlu.multiply(cantidad)),
                 big.setMoneda(ponderado), 0,
                 big.setMoneda(utilidad), "", "BD-Principal", false, this.simbolo + " 0", "0", new JLabel(icono), nodo.getIdSistema(), ""});
 

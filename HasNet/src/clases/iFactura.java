@@ -1042,7 +1042,7 @@ public class iFactura {
 
         try {
             //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesInventario/inventario" + tipo + ".jasper");
+            URL in = this.getClass().getResource("/Vista/Productos/Reportes/inventario" + tipo + ".jasper");
             reporte = (JasperReport) JRLoader.loadObject(in);
             //Se crea un objeto HashMap
             Map<String, String> parametros = new HashMap();
@@ -1064,7 +1064,7 @@ public class iFactura {
 
         try {
             //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesInventario/inventarioDetalle" + tipo + ".jasper");
+            URL in = this.getClass().getResource("/Vista/Productos/Reportes/inventarioDetalle" + tipo + ".jasper");
             reporte = (JasperReport) JRLoader.loadObject(in);
             //Se crea un objeto HashMap
             Map<String, String> parametros = new HashMap();
@@ -1779,52 +1779,6 @@ public class iFactura {
         }
     }
 
-    public void ver_RepProductosComunSumandoIva(String sql, String encabezado, String tipo) {
-        JasperReport reporte;
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesProductos/repProductosComunDividiendoIva" + tipo + ".jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map<String, String> parametros = new HashMap<String, String>();
-            parametros.clear();
-            parametros.put("cliente", sql);
-            parametros.put("encabezado", encabezado);
-            parametros.put("simbolo", instancia.getSimbolo());
-            parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
-    public void ver_RepProductosComunDiviendoIva(String sql, String encabezado, String tipo) {
-        JasperReport reporte;
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesProductos/repProductosComun" + tipo + ".jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map<String, String> parametros = new HashMap<String, String>();
-            parametros.clear();
-            parametros.put("cliente", sql);
-            parametros.put("encabezado", encabezado);
-            parametros.put("simbolo", instancia.getSimbolo());
-            parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
     public void ver_RepEmpleados(String consulta, String tipo) {
         JasperReport reporte;
 
@@ -2014,52 +1968,6 @@ public class iFactura {
         }
     }
 
-    public void ver_RepTraslados(String sql, String encabezado, String tipo) {
-        JasperReport reporte;
-
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesPrestamo/repTraslados" + tipo + ".jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map<String, String> parametros = new HashMap<String, String>();
-            parametros.clear();
-            parametros.put("cliente", sql);
-            parametros.put("encabezado", encabezado);
-            parametros.put("simbolo", instancia.getSimbolo());
-            parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
-    public void ver_RepTrasladosInternos(String sql, String encabezado, String tipo) {
-        JasperReport reporte;
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesTrasladosInternos/repTraslados" + tipo + ".jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map<String, String> parametros = new HashMap<String, String>();
-            parametros.clear();
-            parametros.put("cliente", sql);
-            parametros.put("encabezado", encabezado);
-            parametros.put("simbolo", instancia.getSimbolo());
-            parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
     public void ver_RepAjuste(String sql, String encabezado, Boolean totalizar) {
         JasperReport reporte;
 
@@ -2101,33 +2009,6 @@ public class iFactura {
             parametros.clear();
             parametros.put("numFactura", factura);
             IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
-    public void ver_RepProdImagenes(String sql, String info, Boolean imprimir) {
-        JasperReport reporte;
-        String ruta = System.getProperty("user.dir") + "\\imagenes\\productos\\";
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportesInventario/repProdImagenes.jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map parametros = new HashMap();
-            parametros.clear();
-            parametros.put("cliente", sql);
-            parametros.put("urlImagen", logo());
-            parametros.put("ruta", ruta);
-            parametros.put("info", info);
-            parametros.put("informacionLegalClick", informacionLegalReportes);
-            parametros.put("simbolo", instancia.getSimbolo());
-            parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, imprimir, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
             barra.show();
 

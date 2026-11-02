@@ -8707,43 +8707,10 @@ public class SQL {
         };
         return datos;
     }
-
-    public DefaultTableModel getProductosCosteo1(String factura) {
-        String columNames[] = {
-            "Codigo", "Descripción", "Cantidad", "Plu", "Cant2", "Cambio", "Costo P", "Ultimo C.", "Subtotal", "Alto", "Ancho"
-        };
-
-        String colName[] = {
-            "producto", "Descripcion", "cantidad2", "plu", "cantidad", "opcionCambio", "nuevoPonderado", "ultimoCosto", "alto", "ancho"
-        };
-
-        String origen = " conDisCosteo where codigo = '" + factura + "'";
-        Object dtDatos2[][] = GetTabla(colName, origen, (new StringBuilder()).append("select producto, Descripcion, cantidad2, plu, cantidad,"
-                + " opcionCambio, nuevoPonderado, ultimoCosto, alto, ancho from conDisCosteo where codigo = '" + factura + "' ").toString(), new Integer[]{5});
-        DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 5 || column == 2 || column == 6 || column == 9 || column == 10) {
-                    return true;
-                }
-                return false;
-            }
-
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
-                java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-        };
-        return datos;
-    }
-
+    
     public DefaultTableModel getProductosCosteo(String factura) {
         String columNames[] = {
-            "Codigo", "Descripción", "Cantidad", "Plu", "Cant2", "Cambio", "Costo P", "Ultimo C.", "Subtotal"
+            "Codigo", "Descripción", "Cantidad", "Plu", "Cant2", "Cambio", "Costo Ponderado", "Ultimo Costo", "Subtotal"
         };
 
         String colName[] = {
@@ -9431,11 +9398,12 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] obtenerProductosDetallePorProducto(String cod) {
+    public Object[][] obtenerProductosDetallePorProducto(String cod, String bodega) {
         String colName[] = {"producto", "descripcion", "cantidadDisponible", "imei", "lote", "fechaVencimiento", "temperatura", "color", "Id", "talla"};
         String instruccion_sql = "select producto, descripcion, cantidadDisponible, imei, lote, fechaVencimiento, temperatura, color, Id, talla "
-                + "from bdDetalleProductos where producto = '" + cod + "' and estado = 'DISPONIBLE' ";
-        Object dtDatos[][] = getDatos(colName, " bdDetalleProductos ", instruccion_sql, " where producto = '" + cod + "' and estado = 'DISPONIBLE' ");
+                + "from bdDetalleProductos where producto = '" + cod + "' and estado = 'DISPONIBLE' and bodega = '" + bodega + "' ";
+        Object dtDatos[][] = getDatos(colName, " bdDetalleProductos ", instruccion_sql, " where producto = '" + cod + "' and estado = 'DISPONIBLE' "
+                + "and bodega = '" + bodega + "'  ");
 
         return dtDatos;
     }

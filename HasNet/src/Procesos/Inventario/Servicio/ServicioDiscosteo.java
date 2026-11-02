@@ -34,7 +34,7 @@ public class ServicioDiscosteo {
     }
 
     public List<MovimientoInventario> explotarSiEsDiscosteo(ModeloProducto producto, String preparacion, String idBodega, BigDecimal cantidadDiscosteo) throws SQLException {
-        if (esGenerico(producto)) {
+        if (esProductoSinDiseno(producto)) {
             return Collections.emptyList();
         }
 
@@ -70,8 +70,9 @@ public class ServicioDiscosteo {
         return movimientos;
     }
 
-    private boolean esGenerico(ModeloProducto producto) {
-        return TipoProducto.GENERICO.getValue().equals(producto.getUsuario());
+    private boolean esProductoSinDiseno(ModeloProducto producto) {
+        return TipoProducto.GENERICO.getValue().equals(producto.getUsuario()) || 
+                TipoProducto.PRODUCTO_COSTEADO.getValue().equals(producto.getUsuario());
     }
 
     public BigDecimal calcularCostoPreparacion(ModeloProducto producto, String preparacion, String idBodega, BigDecimal cantidad) throws SQLException {
