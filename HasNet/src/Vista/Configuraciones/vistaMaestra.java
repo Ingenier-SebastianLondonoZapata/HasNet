@@ -302,10 +302,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         cmbResponsabilidades = new javax.swing.JComboBox();
         btnAggResponsabilidades = new javax.swing.JButton();
         btnAggResponsabilidades1 = new javax.swing.JButton();
-        lbNit2 = new javax.swing.JLabel();
-        txtEmail = new javax.swing.JTextField();
-        lbTelefono3 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JPasswordField();
         lbNit7 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtPiePagina = new javax.swing.JTextArea();
@@ -595,6 +591,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         txtCantCopiasPrefactura = new javax.swing.JTextField();
         btnOcultarImpresiones = new javax.swing.JButton();
         btnOcultarImpresiones1 = new javax.swing.JButton();
+        jScrollPane16 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jScrollPane17 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel15 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblExamenes = new javax.swing.JTable();
@@ -839,21 +839,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        lbNit2.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbNit2.setText("E-MAIL OBLIGATORIO GMAIL:");
-
-        txtEmail.setName("Razón social"); // NOI18N
-        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtEmailKeyReleased(evt);
-            }
-        });
-
-        lbTelefono3.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono3.setText("CONTRASEÑA:");
-
-        txtPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -866,7 +851,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(lbResponsabilidades, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbResponsabilidades, 0, 657, Short.MAX_VALUE)
+                        .addComponent(cmbResponsabilidades, 0, 661, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAggResponsabilidades, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -887,21 +872,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                             .addComponent(txtNit)
                             .addComponent(txtDireccion)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lbMisResponsabilidades, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbNit2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(lbMisResponsabilidades)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(txtEmail)
-                                .addGap(18, 18, 18)
-                                .addComponent(lbTelefono3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(cmbMisResponsabilidades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnAggResponsabilidades1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(cmbMisResponsabilidades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAggResponsabilidades1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -911,7 +886,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbRazon1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtNit, javax.swing.GroupLayout.PREFERRED_SIZE, 25, Short.MAX_VALUE))
+                    .addComponent(txtNit, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
                 .addGap(2, 2, 2)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbTelefono2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -926,13 +901,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtDireccion)
                     .addComponent(lbRazon2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbTelefono3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbNit2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtEmail)
-                    .addComponent(txtPassword))
-                .addGap(2, 2, 2)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbMisResponsabilidades)
                     .addComponent(lbMisResponsabilidades, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1066,7 +1035,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbOtroConsecutivo, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                     .addComponent(txtNumeroFactosElectronicas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(30, 30, 30)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1074,13 +1043,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(lbNit8, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE))
                 .addGap(20, 20, 20)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbAnexo1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbAnexo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                     .addComponent(jScrollPane5))
                 .addGap(24, 24, 24))
         );
@@ -2531,7 +2500,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(lbNit12, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(btnGuardar5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(357, Short.MAX_VALUE))
+                .addContainerGap(816, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Tarjetas", jPanel16);
@@ -2982,7 +2951,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlInformacionMedico2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, Short.MAX_VALUE)
                     .addComponent(pnlInformacionMedico1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(311, Short.MAX_VALUE))
+                .addContainerGap(774, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Médico", jPanel7);
@@ -3113,8 +3082,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addGroup(pnlImpresionesGrupoLayout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addGap(3, 3, 3)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -4228,25 +4197,84 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Factura", null, null, null},
+                {"Orden de servicio", null, null, null},
+                {"Cotización", null, null, null},
+                {"Plan separe", null, null, null},
+                {"Pedido", null, null, null},
+                {"Comanda", null, null, null},
+                {"Prefactura", null, null, null}
+            },
+            new String [] {
+                "Tipo Documento", "Previsualizar", "Preguntar copias", "Número copias"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane16.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setMinWidth(120);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(120);
+            jTable1.getColumnModel().getColumn(0).setMaxWidth(120);
+        }
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Carta", null},
+                {"Media carta", null},
+                {"Pos", null},
+                {"Comanda", null},
+                {"Prefactura", null}
+            },
+            new String [] {
+                "Tipo Documento", "Impresora"
+            }
+        ));
+        jScrollPane17.setViewportView(jTable2);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setMinWidth(120);
+            jTable2.getColumnModel().getColumn(0).setPreferredWidth(120);
+            jTable2.getColumnModel().getColumn(0).setMaxWidth(120);
+        }
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pnlImpresionesGrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlImpresiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnOcultarImpresiones)
-                    .addComponent(btnOcultarImpresiones1))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(pnlImpresionesGrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlImpresiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnOcultarImpresiones)
+                            .addComponent(btnOcultarImpresiones1)))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlImpresiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnOcultarImpresiones))
@@ -4347,7 +4375,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(lbTelefono38, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1180, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -4920,7 +4948,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel34Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                        .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 1025, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNumMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -5078,7 +5106,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(pnlAgenda1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(103, 103, 103)
                 .addComponent(cmbDoctores3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(538, Short.MAX_VALUE))
+                .addContainerGap(1007, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Veterinario", jPanel35);
@@ -5350,7 +5378,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel49Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jScrollPane14, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                .addComponent(jScrollPane14, javax.swing.GroupLayout.DEFAULT_SIZE, 706, Short.MAX_VALUE)
                 .addGap(5, 5, 5)
                 .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -5592,7 +5620,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addComponent(jPanel49, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel50, javax.swing.GroupLayout.PREFERRED_SIZE, 458, Short.MAX_VALUE)
+                    .addComponent(jPanel50, javax.swing.GroupLayout.PREFERRED_SIZE, 473, Short.MAX_VALUE)
                     .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -5621,6 +5649,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnAgregarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnAgregarBodega.setText("Agregar bodega");
         btnAgregarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarBodega.setEnabled(false);
         btnAgregarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnAgregarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnAgregarBodega.addActionListener(new java.awt.event.ActionListener() {
@@ -5633,6 +5662,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnModificarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnModificarBodega.setText("Modificar bodega");
         btnModificarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarBodega.setEnabled(false);
         btnModificarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnModificarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnModificarBodega.addActionListener(new java.awt.event.ActionListener() {
@@ -5645,6 +5675,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnCambiarEstadoBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnCambiarEstadoBodega.setText("Inactivar bodega");
         btnCambiarEstadoBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCambiarEstadoBodega.setEnabled(false);
         btnCambiarEstadoBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnCambiarEstadoBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnCambiarEstadoBodega.addActionListener(new java.awt.event.ActionListener() {
@@ -5689,7 +5720,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbBodegas)
                     .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(235, Short.MAX_VALUE))
+                .addContainerGap(702, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Bodegas", pnlBodegas);
@@ -5856,7 +5887,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(scrFormulario)
+                .addComponent(scrFormulario, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
 
@@ -7589,10 +7620,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         cmbMisResponsabilidades.removeItem(cmbMisResponsabilidades.getSelectedItem());
     }//GEN-LAST:event_btnAggResponsabilidades1ActionPerformed
 
-    private void txtEmailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtEmailKeyReleased
-
     private void lbOtroConsecutivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbOtroConsecutivoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_lbOtroConsecutivoActionPerformed
@@ -9219,6 +9246,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane14;
     private javax.swing.JScrollPane jScrollPane15;
+    private javax.swing.JScrollPane jScrollPane16;
+    private javax.swing.JScrollPane jScrollPane17;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -9228,6 +9257,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JLabel lbAnexo;
     private javax.swing.JLabel lbAnexo1;
     private javax.swing.JLabel lbCelular10;
@@ -9249,7 +9280,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbNit12;
     private javax.swing.JLabel lbNit13;
     private javax.swing.JLabel lbNit14;
-    private javax.swing.JLabel lbNit2;
     private javax.swing.JLabel lbNit3;
     private javax.swing.JLabel lbNit4;
     private javax.swing.JLabel lbNit6;
@@ -9292,7 +9322,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbTelefono27;
     private javax.swing.JLabel lbTelefono28;
     private javax.swing.JLabel lbTelefono29;
-    private javax.swing.JLabel lbTelefono3;
     private javax.swing.JLabel lbTelefono30;
     private javax.swing.JLabel lbTelefono31;
     private javax.swing.JLabel lbTelefono32;
@@ -9499,7 +9528,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtDiasAlerta1;
     private javax.swing.JTextField txtDiasCobrarMora;
     private javax.swing.JTextField txtDireccion;
-    private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtFilas;
     private javax.swing.JTextField txtFilas1;
     private javax.swing.JTextField txtFranquisia;
@@ -9513,7 +9541,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtNumFactIncremento;
     private javax.swing.JLabel txtNumMesas;
     private javax.swing.JTextField txtNumeroFactosElectronicas;
-    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextArea txtPiePagina;
     private javax.swing.JTextField txtPorcPropina;
     private javax.swing.JTextField txtPorcentajeMora;

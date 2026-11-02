@@ -209,7 +209,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="scrFormulario" max="32767" attributes="0"/>
+              <Component id="scrFormulario" pref="894" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -324,7 +324,7 @@
                                   <Component id="lbOtroConsecutivo" pref="26" max="32767" attributes="0"/>
                                   <Component id="txtNumeroFactosElectronicas" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -333,7 +333,7 @@
                               </Group>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jScrollPane1" max="32767" attributes="0"/>
-                                  <Component id="jScrollPane2" pref="186" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" pref="421" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -341,7 +341,7 @@
                                   <Component id="lbAnexo" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                               </Group>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPane9" pref="181" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane9" pref="417" max="32767" attributes="0"/>
                                   <Component id="jScrollPane5" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
@@ -376,7 +376,7 @@
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="lbResponsabilidades" min="-2" pref="273" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="cmbResponsabilidades" pref="657" max="32767" attributes="0"/>
+                                          <Component id="cmbResponsabilidades" pref="661" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="btnAggResponsabilidades" min="-2" pref="38" max="-2" attributes="0"/>
                                       </Group>
@@ -402,25 +402,11 @@
                                           </Group>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="lbMisResponsabilidades" max="32767" attributes="0"/>
-                                              <Component id="lbNit2" max="32767" attributes="0"/>
-                                          </Group>
+                                          <Component id="lbMisResponsabilidades" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Group type="102" attributes="0">
-                                                  <Component id="txtEmail" max="32767" attributes="0"/>
-                                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                                  <Component id="lbTelefono3" min="-2" pref="124" max="-2" attributes="0"/>
-                                                  <EmptySpace max="-2" attributes="0"/>
-                                                  <Component id="txtPassword" min="-2" pref="211" max="-2" attributes="0"/>
-                                              </Group>
-                                              <Group type="102" attributes="0">
-                                                  <Component id="cmbMisResponsabilidades" max="32767" attributes="0"/>
-                                                  <EmptySpace max="-2" attributes="0"/>
-                                                  <Component id="btnAggResponsabilidades1" min="-2" pref="39" max="-2" attributes="0"/>
-                                              </Group>
-                                          </Group>
+                                          <Component id="cmbMisResponsabilidades" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="btnAggResponsabilidades1" min="-2" pref="39" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -453,14 +439,7 @@
                                       <Component id="txtDireccion" max="32767" attributes="0"/>
                                       <Component id="lbRazon2" min="-2" pref="25" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="lbTelefono3" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="lbNit2" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtEmail" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtPassword" max="32767" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="cmbMisResponsabilidades" max="32767" attributes="0"/>
                                       <Component id="lbMisResponsabilidades" max="32767" attributes="0"/>
@@ -640,35 +619,6 @@
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAggResponsabilidades1ActionPerformed"/>
                           </Events>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lbNit2">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Century Gothic" size="16" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="E-MAIL OBLIGATORIO GMAIL:"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JTextField" name="txtEmail">
-                          <Properties>
-                            <Property name="name" type="java.lang.String" value="Raz&#xf3;n social" noResource="true"/>
-                          </Properties>
-                          <Events>
-                            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtEmailKeyReleased"/>
-                          </Events>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lbTelefono3">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Century Gothic" size="16" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="CONTRASE&#xd1;A:"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JPasswordField" name="txtPassword">
-                          <Properties>
-                            <Property name="horizontalAlignment" type="int" value="0"/>
-                          </Properties>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -3141,7 +3091,7 @@
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnGuardar5" min="-2" pref="40" max="-2" attributes="0"/>
-                              <EmptySpace pref="357" max="32767" attributes="0"/>
+                              <EmptySpace pref="816" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -3285,7 +3235,7 @@
                                   <Component id="pnlInformacionMedico2" pref="248" max="32767" attributes="0"/>
                                   <Component id="pnlInformacionMedico1" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="311" max="32767" attributes="0"/>
+                              <EmptySpace pref="774" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -4053,16 +4003,26 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="pnlImpresionesGrupo" max="32767" attributes="0"/>
-                                  <Component id="pnlImpresiones" max="32767" attributes="0"/>
-                              </Group>
+                          <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="btnOcultarImpresiones" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnOcultarImpresiones1" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="pnlImpresionesGrupo" max="32767" attributes="0"/>
+                                          <Component id="pnlImpresiones" max="32767" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="btnOcultarImpresiones" min="-2" max="-2" attributes="0"/>
+                                          <Component id="btnOcultarImpresiones1" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="jScrollPane16" min="-2" pref="469" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jScrollPane17" min="-2" pref="313" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -4072,6 +4032,11 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jScrollPane16" min="-2" pref="157" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane17" min="-2" pref="157" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="pnlImpresiones" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnOcultarImpresiones" min="-2" max="-2" attributes="0"/>
@@ -4142,9 +4107,9 @@
                                       <Group type="102" attributes="0">
                                           <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                                          <Component id="jScrollPane3" pref="305" max="32767" attributes="0"/>
+                                          <Component id="jScrollPane3" pref="624" max="32767" attributes="0"/>
                                       </Group>
-                                      <Component id="jScrollPane4" pref="0" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane4" pref="648" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -6196,6 +6161,104 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOcultarImpresiones1ActionPerformed"/>
                       </Events>
                     </Component>
+                    <Container class="javax.swing.JScrollPane" name="jScrollPane16">
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTable" name="jTable1">
+                          <Properties>
+                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                              <Table columnCount="4" rowCount="7">
+                                <Column editable="true" title="Tipo Documento" type="java.lang.Object">
+                                  <Data value="Factura"/>
+                                  <Data value="Orden de servicio"/>
+                                  <Data value="Cotizaci&#xf3;n"/>
+                                  <Data value="Plan separe"/>
+                                  <Data value="Pedido"/>
+                                  <Data value="Comanda"/>
+                                  <Data value="Prefactura"/>
+                                </Column>
+                                <Column editable="true" title="Previsualizar" type="java.lang.Boolean"/>
+                                <Column editable="true" title="Preguntar copias" type="java.lang.Boolean"/>
+                                <Column editable="true" title="N&#xfa;mero copias" type="java.lang.Object"/>
+                              </Table>
+                            </Property>
+                            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                              <TableColumnModel selectionModel="0">
+                                <Column maxWidth="120" minWidth="120" prefWidth="120" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                              </TableColumnModel>
+                            </Property>
+                            <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JScrollPane" name="jScrollPane17">
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTable" name="jTable2">
+                          <Properties>
+                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                              <Table columnCount="2" rowCount="5">
+                                <Column editable="true" title="Tipo Documento" type="java.lang.Object">
+                                  <Data value="Carta"/>
+                                  <Data value="Media carta"/>
+                                  <Data value="Pos"/>
+                                  <Data value="Comanda"/>
+                                  <Data value="Prefactura"/>
+                                </Column>
+                                <Column editable="true" title="Impresora" type="java.lang.Object"/>
+                              </Table>
+                            </Property>
+                            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                              <TableColumnModel selectionModel="0">
+                                <Column maxWidth="120" minWidth="120" prefWidth="120" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                              </TableColumnModel>
+                            </Property>
+                            <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel15">
@@ -6231,7 +6294,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="lbTelefono38" min="-2" pref="42" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jScrollPane6" pref="717" max="32767" attributes="0"/>
+                              <Component id="jScrollPane6" pref="1180" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -6923,7 +6986,7 @@
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jScrollPane11" pref="552" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane11" pref="1025" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -7509,7 +7572,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="103" max="-2" attributes="0"/>
                               <Component id="cmbDoctores3" min="-2" pref="0" max="-2" attributes="0"/>
-                              <EmptySpace pref="538" max="32767" attributes="0"/>
+                              <EmptySpace pref="1007" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -7838,7 +7901,7 @@
                               <Component id="jPanel49" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jPanel50" alignment="0" pref="458" max="32767" attributes="0"/>
+                                  <Component id="jPanel50" alignment="0" pref="473" max="32767" attributes="0"/>
                                   <Component id="jPanel47" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -8103,7 +8166,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                  <Component id="jScrollPane14" pref="262" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane14" pref="706" max="32767" attributes="0"/>
                                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="jLabel15" alignment="0" max="32767" attributes="0"/>
@@ -8708,7 +8771,7 @@
                                   <Component id="cmbBodegas" max="32767" attributes="0"/>
                                   <Component id="jLabel13" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="235" max="32767" attributes="0"/>
+                              <EmptySpace pref="702" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
