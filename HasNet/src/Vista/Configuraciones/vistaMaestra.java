@@ -14,11 +14,12 @@ import java.util.List;
 import Utilidades.DatosMaestra;
 import clases.Instancias;
 import Dao.Configuraciones.DaoMaestra;
+import Modelo.Maestra.ModeloMaestraGeneral;
+import Modelo.Maestra.ModeloMaestraImpresiones;
 import clases.Medico.ndCamposOrdenPredeterminada;
 import clases.big;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
-import clases.ndMaestra;
 import Modelo.Productos.ModeloProducto;
 import configuracion.dlgFinSoporte;
 import formularios.dlgPedirSuperContrasena;
@@ -41,15 +42,16 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class vistaMaestra extends javax.swing.JInternalFrame {
-    private final DaoProducto daoProducto = new DaoProducto();
-    private final DaoBodegas daoBodegas = new DaoBodegas();
+
+    private DaoProducto daoProducto;
+    private DaoBodegas daoBodegas;
+    private DaoMaestra daoMaestra;
     private final List<ModeloBodega> bodegasCombo = new ArrayList<>();
     private boolean cargandoBodegas = false;
 
-    metodosGenerales metodos = new metodosGenerales();
-    private Instancias instancias = Instancias.getInstancias();
-    private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
+    metodosGenerales metodos;
+    private Instancias instancias;
+    private JComponent Barra;
     int teclasPresionadas = 0;
     String turno, valor, url, simbolo = "";
     private PanelDisenoMesas panelDisenoMesas;
@@ -66,8 +68,22 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
         initComponents();
 
+        if (java.beans.Beans.isDesignTime()) {
+            return;
+        }
+
+        daoProducto = new DaoProducto();
+        daoBodegas = new DaoBodegas();
+        daoMaestra = new DaoMaestra();
+        instancias = Instancias.getInstancias();
+        metodos = new metodosGenerales();
+
         inicializarTablaImpresoraPorTipo();
         inicializarTablaImpresionDocumentos();
+        inicializarTablaInformacionEmpresa();
+        inicializarTablaInformacionImpresion();
+        inicializarTablaConfiguracionesFacturacion();
+        inicializarTablaConfiguraciones1(instancias.getConfiguraciones().isRestaurante(), instancias.getConfiguraciones().isCreditos());
 
         tblImpresoras1.setDefaultRenderer(Object.class, new cambiarColorTabla(14, 0));
         tblDiasBloqueo.setDefaultRenderer(Object.class, new cambiarColorTabla(20, 0));
@@ -81,7 +97,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         jScrollPane11.setViewportView(panelDisenoMesas);
 
         Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
         Barra.setSize(0, 0);
         Barra.setPreferredSize(new Dimension(0, 0));
         setBorder(null);
@@ -93,26 +108,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             lbRazon11.setVisible(false);
             txtaCobrar.setVisible(false);
             txtaCobrar1.setVisible(false);
-            txtValor.setVisible(false);
             lbRazon19.setVisible(false);
-        }
-
-        if (!instancias.getConfiguraciones().isProductosDetallados()) {
-            lbAnexo.setVisible(false);
-            lbAnexo1.setVisible(false);
-            txtAnexoFactura.setVisible(false);
-            jScrollPane5.setVisible(false);
-            jScrollPane9.setVisible(false);
-            txtAnexoOrden.setVisible(false);
-        }
-
-        if (!instancias.getConfiguraciones().isOrdenServicio()) {
-            lbAnexo.setVisible(false);
-            lbAnexo1.setVisible(false);
-            txtAnexoFactura.setVisible(false);
-            jScrollPane5.setVisible(false);
-            jScrollPane9.setVisible(false);
-            txtAnexoOrden.setVisible(false);
         }
 
         this.simbolo = instancias.getSimbolo();
@@ -120,47 +116,15 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         PrintService[] impresoras = PrintServiceLookup.lookupPrintServices(null, null);
         DefaultTableModel model = (DefaultTableModel) tblImpresoras.getModel();
 
-        cmbTipoCarta.removeAllItems();
-        cmbTipoMediaCarta.removeAllItems();
-        cmbTipoPos.removeAllItems();
-        cmbComanda.removeAllItems();
-        cmbPrefactura.removeAllItems();
-
-        cmbTipoCarta.addItem("Predeterminada");
-        cmbTipoMediaCarta.addItem("Predeterminada");
-        cmbTipoPos.addItem("Predeterminada");
-        cmbComanda.addItem("Predeterminada");
-        cmbPrefactura.addItem("Predeterminada");
-
         if (impresoras.length > 0) {
             for (int i = 0; i < impresoras.length; i++) {
                 if (!impresoras[i].toString().split(" : ")[1].equals("Fax")) {
-                    cmbTipoCarta.addItem(impresoras[i].toString().split(" : ")[1]);
-                    cmbTipoMediaCarta.addItem(impresoras[i].toString().split(" : ")[1]);
-                    cmbTipoPos.addItem(impresoras[i].toString().split(" : ")[1]);
-                    cmbComanda.addItem(impresoras[i].toString().split(" : ")[1]);
-                    cmbPrefactura.addItem(impresoras[i].toString().split(" : ")[1]);
+                    model.addRow(new Object[]{impresoras[i].toString().split(" : ")[1]});
                 }
             }
         }
 
-        if (instancias.getConfiguraciones().isRestaurante()) {
-
-            jPanel13.setVisible(true);
-//            lbTelefono37.setVisible(false);
-//            rdSiConsecutivo.setVisible(false);
-//            rdNoConsecutivo.setVisible(false);
-        } else {
-            lbComanda.setVisible(false);
-            lbPrefactura.setVisible(false);
-            cmbComanda.setVisible(false);
-            cmbPrefactura.setVisible(false);
-            pnlRestaurante.setVisible(false);
-            jPanel13.setVisible(false);
-//            lbTelefono37.setVisible(true);
-//            rdSiConsecutivo.setVisible(true);
-//            rdNoConsecutivo.setVisible(true);
-        }
+        jPanel13.setVisible(false);
 
         tblBodegasInternas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -286,73 +250,42 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         scrFormulario = new javax.swing.JScrollPane();
         pnlFormulario = new javax.swing.JPanel();
         tabPanel = new javax.swing.JTabbedPane();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        txtRegimen = new javax.swing.JTextField();
-        lbTelefono1 = new javax.swing.JLabel();
-        lbRazon1 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
-        txtNit = new javax.swing.JTextField();
-        lbTelefono2 = new javax.swing.JLabel();
-        lbRazon2 = new javax.swing.JLabel();
-        txtDireccion = new javax.swing.JTextField();
-        txtTelefono = new javax.swing.JTextField();
-        lbNit6 = new javax.swing.JLabel();
-        lbNit1 = new javax.swing.JLabel();
-        jSeparator3 = new javax.swing.JSeparator();
-        cmbMisResponsabilidades = new javax.swing.JComboBox();
-        lbMisResponsabilidades = new javax.swing.JLabel();
-        lbResponsabilidades = new javax.swing.JLabel();
-        cmbResponsabilidades = new javax.swing.JComboBox();
-        btnAggResponsabilidades = new javax.swing.JButton();
-        btnAggResponsabilidades1 = new javax.swing.JButton();
-        lbNit7 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtPiePagina = new javax.swing.JTextArea();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtLegal = new javax.swing.JTextArea();
-        lbNit8 = new javax.swing.JLabel();
-        lbAnexo1 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        txtAnexoFactura = new javax.swing.JTextArea();
-        lbAnexo = new javax.swing.JLabel();
-        jScrollPane9 = new javax.swing.JScrollPane();
-        txtAnexoOrden = new javax.swing.JTextArea();
+        pnlDatosEmpresa = new javax.swing.JPanel();
         lbOtroConsecutivo = new javax.swing.JTextField();
         txtNumeroFactosElectronicas = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
+        jScrollPane19 = new javax.swing.JScrollPane();
+        tblInformacionEmpresa = new javax.swing.JTable();
+        pnlBodegas = new javax.swing.JPanel();
+        jScrollPane15 = new javax.swing.JScrollPane();
+        tblBodegasInternas = new javax.swing.JTable();
+        btnAgregarBodega = new javax.swing.JButton();
+        btnModificarBodega = new javax.swing.JButton();
+        btnCambiarEstadoBodega = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        cmbBodegas = new javax.swing.JComboBox();
+        jScrollPane21 = new javax.swing.JScrollPane();
+        tblConfiguraciones = new javax.swing.JTable();
+        jScrollPane22 = new javax.swing.JScrollPane();
+        tblConfiguraciones1 = new javax.swing.JTable();
+        pnlVariablesYConf = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lbNit3 = new javax.swing.JLabel();
         lbTelefono9 = new javax.swing.JLabel();
         lbTelefono6 = new javax.swing.JLabel();
         lbTelefono10 = new javax.swing.JLabel();
-        lbTelefono75 = new javax.swing.JLabel();
         lbTelefono24 = new javax.swing.JLabel();
         lbTelefono13 = new javax.swing.JLabel();
-        lbTelefono74 = new javax.swing.JLabel();
         lbTelefono14 = new javax.swing.JLabel();
-        lbTelefono15 = new javax.swing.JLabel();
-        lbTelefono25 = new javax.swing.JLabel();
-        lbTelefono26 = new javax.swing.JLabel();
         txtDiasAlerta = new javax.swing.JTextField();
         txtContra = new javax.swing.JPasswordField();
         txtContra2 = new javax.swing.JPasswordField();
         txtCantidadEstablecida = new javax.swing.JTextField();
-        txtNumFactIncremento = new javax.swing.JTextField();
         rdSiSolicitudesPermisos = new javax.swing.JRadioButton();
         rdNoSolicitudesPermisos = new javax.swing.JRadioButton();
-        rdCopiasSi = new javax.swing.JRadioButton();
-        rdCopiasNo = new javax.swing.JRadioButton();
         lectorSi = new javax.swing.JRadioButton();
         lectorNo = new javax.swing.JRadioButton();
         rdSiPvpIva = new javax.swing.JRadioButton();
         rdNoPvpIva = new javax.swing.JRadioButton();
-        rdSiCostoIva = new javax.swing.JRadioButton();
-        rdNoCostoIva = new javax.swing.JRadioButton();
-        rdSiPvpImpo = new javax.swing.JRadioButton();
-        rdNoPvpImpo = new javax.swing.JRadioButton();
-        rdSiCostoImpo = new javax.swing.JRadioButton();
-        rdNoCostoImpo = new javax.swing.JRadioButton();
         jPanel13 = new javax.swing.JPanel();
         lbTelefono35 = new javax.swing.JLabel();
         rdTurnoSi = new javax.swing.JRadioButton();
@@ -361,76 +294,28 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         jButton5 = new javax.swing.JButton();
         jPanel37 = new javax.swing.JPanel();
         jPanel38 = new javax.swing.JPanel();
-        lbTelefono32 = new javax.swing.JLabel();
-        lbTelefono40 = new javax.swing.JLabel();
-        lbTelefono31 = new javax.swing.JLabel();
         lbTelefono29 = new javax.swing.JLabel();
         lbTelefono59 = new javax.swing.JLabel();
         lbNit4 = new javax.swing.JLabel();
-        lbTelefono4 = new javax.swing.JLabel();
-        lbTelefono17 = new javax.swing.JLabel();
-        lbTelefono16 = new javax.swing.JLabel();
-        lbTelefono37 = new javax.swing.JLabel();
         lbTelefono27 = new javax.swing.JLabel();
-        lbTelefono47 = new javax.swing.JLabel();
-        lbTelefono46 = new javax.swing.JLabel();
         lbTelefono5 = new javax.swing.JLabel();
-        lbTelefono33 = new javax.swing.JLabel();
         lbTelefono48 = new javax.swing.JLabel();
-        lbTelefono63 = new javax.swing.JLabel();
-        lbTelefono64 = new javax.swing.JLabel();
         lbTelefono65 = new javax.swing.JLabel();
-        lbTelefono66 = new javax.swing.JLabel();
         jPanel39 = new javax.swing.JPanel();
-        rdSiModificarNombre = new javax.swing.JRadioButton();
-        rdNoModificarNombre = new javax.swing.JRadioButton();
-        rdSiModificarPrecio = new javax.swing.JRadioButton();
-        rdNoModificarPrecio = new javax.swing.JRadioButton();
-        rdSiCombinar = new javax.swing.JRadioButton();
-        rdNoCombinar = new javax.swing.JRadioButton();
         txtLimite = new javax.swing.JTextField();
         txtTituloFactura = new javax.swing.JTextField();
-        utilidadSi = new javax.swing.JRadioButton();
-        utilidadNo = new javax.swing.JRadioButton();
-        rdSiMensajeUtilidad = new javax.swing.JRadioButton();
-        rdNoMensajeUtilidad = new javax.swing.JRadioButton();
-        rdSiVentasPredeterminado = new javax.swing.JRadioButton();
-        rdNoVentasPredeterminado = new javax.swing.JRadioButton();
-        rdSiConsecutivo = new javax.swing.JRadioButton();
-        rdNoConsecutivo = new javax.swing.JRadioButton();
         txtDescuentoMaximo = new javax.swing.JTextField();
-        rdSiFacturarSinInventario = new javax.swing.JRadioButton();
-        rdNoFacturarSinInventario = new javax.swing.JRadioButton();
-        rdSiPagoTerceros = new javax.swing.JRadioButton();
-        rdNoPagoTerceros = new javax.swing.JRadioButton();
         descuentoPorcentaje = new javax.swing.JRadioButton();
         descuentoPeso = new javax.swing.JRadioButton();
-        rdSiBolsa = new javax.swing.JRadioButton();
-        rdNoBolsa = new javax.swing.JRadioButton();
-        txtValor = new javax.swing.JTextField();
         txtPorcPropina = new javax.swing.JTextField();
-        rdSiDevuelta = new javax.swing.JRadioButton();
-        rdNoDevuelta = new javax.swing.JRadioButton();
-        rdSiDiasAutomaticos = new javax.swing.JRadioButton();
-        rdNoDiasAutomaticos = new javax.swing.JRadioButton();
         cmbFoco = new javax.swing.JComboBox();
-        rdSiCupoCredito = new javax.swing.JRadioButton();
-        rdNoCupoCredito = new javax.swing.JRadioButton();
-        jPanel40 = new javax.swing.JPanel();
-        jPanel18 = new javax.swing.JPanel();
-        lbTelefono39 = new javax.swing.JLabel();
-        jPanel41 = new javax.swing.JPanel();
-        rdSiPondNegativo = new javax.swing.JRadioButton();
-        rdNoPondNegativo = new javax.swing.JRadioButton();
         jPanel42 = new javax.swing.JPanel();
         jPanel43 = new javax.swing.JPanel();
         lbTelefono43 = new javax.swing.JLabel();
-        lbNit = new javax.swing.JLabel();
         lbTelefono69 = new javax.swing.JLabel();
         jPanel44 = new javax.swing.JPanel();
         rdSiBorrarProdMesas = new javax.swing.JRadioButton();
         rdNoBorrarProdMesas = new javax.swing.JRadioButton();
-        txtL1 = new javax.swing.JTextField();
         rdSiBorrarMesas = new javax.swing.JRadioButton();
         rdNoBorrarMesas = new javax.swing.JRadioButton();
         pnlCredito = new javax.swing.JPanel();
@@ -488,7 +373,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         cmbForma = new javax.swing.JComboBox();
         cmbPersonal = new javax.swing.JComboBox();
         txtaCobrar1 = new javax.swing.JTextField();
-        jPanel8 = new javax.swing.JPanel();
+        pnlImpresiones = new javax.swing.JPanel();
         pnlImpresionesGrupo = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblImpresoras1 = new javax.swing.JTable();
@@ -498,107 +383,15 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnGuardar3 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         rdImpresionPorGrupo = new javax.swing.JRadioButton();
-        pnlImpresiones = new javax.swing.JPanel();
-        pnlNumeroDeCopias = new javax.swing.JPanel();
-        jPanel20 = new javax.swing.JPanel();
-        lbTelefono11 = new javax.swing.JLabel();
-        lbTelefono30 = new javax.swing.JLabel();
-        lbTelefono36 = new javax.swing.JLabel();
-        lbTelefono50 = new javax.swing.JLabel();
-        lbTelefono52 = new javax.swing.JLabel();
-        jPanel21 = new javax.swing.JPanel();
-        txtCantFactura = new javax.swing.JTextField();
-        txtCantOServicio = new javax.swing.JTextField();
-        txtCantCotizacion = new javax.swing.JTextField();
-        txtCantPlanSepare = new javax.swing.JTextField();
-        txtCantPedidos = new javax.swing.JTextField();
-        jPanel22 = new javax.swing.JPanel();
-        rdPreguntaFacturaNO = new javax.swing.JRadioButton();
-        rdPreguntaOServicioNO = new javax.swing.JRadioButton();
-        rdPreguntaCotizacionNO = new javax.swing.JRadioButton();
-        rdPreguntaPlanSepareNO = new javax.swing.JRadioButton();
-        rdPreguntaPedidosNO = new javax.swing.JRadioButton();
-        rdPreguntaFacturaSI = new javax.swing.JRadioButton();
-        rdPreguntaOServicioSI = new javax.swing.JRadioButton();
-        rdPreguntaCotizacionSI = new javax.swing.JRadioButton();
-        rdPreguntaPlanSepareSI = new javax.swing.JRadioButton();
-        rdPreguntaPedidosSI = new javax.swing.JRadioButton();
-        jPanel23 = new javax.swing.JPanel();
-        lbTelefono28 = new javax.swing.JLabel();
-        lbTelefono44 = new javax.swing.JLabel();
-        lbTelefono45 = new javax.swing.JLabel();
-        lbTelefono49 = new javax.swing.JLabel();
-        lbTelefono51 = new javax.swing.JLabel();
-        jPanel30 = new javax.swing.JPanel();
-        jPanel31 = new javax.swing.JPanel();
-        lbTelefono41 = new javax.swing.JLabel();
-        lbTelefono42 = new javax.swing.JLabel();
-        lbTelefono8 = new javax.swing.JLabel();
-        lbTelefono22 = new javax.swing.JLabel();
-        lbTelefono23 = new javax.swing.JLabel();
-        lbTelefono58 = new javax.swing.JLabel();
-        lbTelefono60 = new javax.swing.JLabel();
-        lbTelefono61 = new javax.swing.JLabel();
-        lbTelefono62 = new javax.swing.JLabel();
-        jPanel32 = new javax.swing.JPanel();
-        ubicacionSi = new javax.swing.JRadioButton();
-        ubicacionNo = new javax.swing.JRadioButton();
-        horaSi = new javax.swing.JRadioButton();
-        horaNo = new javax.swing.JRadioButton();
-        recogidaSi = new javax.swing.JRadioButton();
-        recogidaNo = new javax.swing.JRadioButton();
-        rdSiImprimirCuadreFiscal = new javax.swing.JRadioButton();
-        rdNoImprimirCuadreFiscal = new javax.swing.JRadioButton();
-        mostrarRetencionesSi = new javax.swing.JRadioButton();
-        mostrarRetencionesNo = new javax.swing.JRadioButton();
-        mostrarImpoconsumoSi = new javax.swing.JRadioButton();
-        mostrarImpoconsumoNo = new javax.swing.JRadioButton();
-        pnlPrevisualizar = new javax.swing.JPanel();
-        jPanel24 = new javax.swing.JPanel();
-        rdPrevisualizarFacturaNO = new javax.swing.JRadioButton();
-        rdPrevisualizarOServicioNO = new javax.swing.JRadioButton();
-        rdPrevisualizarCotizacionNO = new javax.swing.JRadioButton();
-        rdPrevisualizarPlanSepareNO = new javax.swing.JRadioButton();
-        rdPrevisualizarPedidosNO = new javax.swing.JRadioButton();
-        rdPrevisualizarFacturaSI = new javax.swing.JRadioButton();
-        rdPrevisualizarOServicioSI = new javax.swing.JRadioButton();
-        rdPrevisualizarCotizacionSI = new javax.swing.JRadioButton();
-        rdPrevisualizarPlanSepareSI = new javax.swing.JRadioButton();
-        rdPrevisualizarPedidosSI = new javax.swing.JRadioButton();
-        jPanel25 = new javax.swing.JPanel();
-        lbTelefono53 = new javax.swing.JLabel();
-        lbTelefono54 = new javax.swing.JLabel();
-        lbTelefono55 = new javax.swing.JLabel();
-        lbTelefono56 = new javax.swing.JLabel();
-        lbTelefono57 = new javax.swing.JLabel();
-        pnlImpresorasPorDocumento = new javax.swing.JPanel();
-        cmbTipoCarta = new javax.swing.JComboBox();
-        cmbTipoMediaCarta = new javax.swing.JComboBox();
-        cmbTipoPos = new javax.swing.JComboBox();
-        carta = new javax.swing.JRadioButton();
-        mediaCarta = new javax.swing.JRadioButton();
-        pos = new javax.swing.JRadioButton();
-        cmbComanda = new javax.swing.JComboBox();
-        cmbPrefactura = new javax.swing.JComboBox();
-        lbComanda = new javax.swing.JLabel();
-        lbPrefactura = new javax.swing.JLabel();
-        pnlRestaurante = new javax.swing.JPanel();
-        lbTelefono68 = new javax.swing.JLabel();
-        lbTelefono70 = new javax.swing.JLabel();
-        rdSiPrevisualizarComanda = new javax.swing.JRadioButton();
-        rdNoPrevisualizarComanda = new javax.swing.JRadioButton();
-        lbTelefono71 = new javax.swing.JLabel();
-        txtCantCopiasComanda = new javax.swing.JTextField();
-        rdSiPrevisualizarPrefactura = new javax.swing.JRadioButton();
-        rdNoPrevisualizarPrefactura = new javax.swing.JRadioButton();
-        lbTelefono72 = new javax.swing.JLabel();
-        txtCantCopiasPrefactura = new javax.swing.JTextField();
-        btnOcultarImpresiones = new javax.swing.JButton();
         btnOcultarImpresiones1 = new javax.swing.JButton();
         jScrollPane16 = new javax.swing.JScrollPane();
         tblImpresionDocumentos = new javax.swing.JTable();
         jScrollPane17 = new javax.swing.JScrollPane();
         tblImpresoraPorTipo = new javax.swing.JTable();
+        jScrollPane18 = new javax.swing.JScrollPane();
+        tblOpcionesImpresiones = new javax.swing.JTable();
+        jScrollPane20 = new javax.swing.JScrollPane();
+        tblInformacionImpresion = new javax.swing.JTable();
         jPanel15 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblExamenes = new javax.swing.JTable();
@@ -693,23 +486,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         rbtNoModificarValor = new javax.swing.JRadioButton();
         rbtSiModificarValor = new javax.swing.JRadioButton();
         jPanel52 = new javax.swing.JPanel();
-        pnlBodegas = new javax.swing.JPanel();
-        jScrollPane15 = new javax.swing.JScrollPane();
-        tblBodegasInternas = new javax.swing.JTable();
-        btnAgregarBodega = new javax.swing.JButton();
-        btnModificarBodega = new javax.swing.JButton();
-        btnCambiarEstadoBodega = new javax.swing.JButton();
-        jLabel13 = new javax.swing.JLabel();
-        cmbBodegas = new javax.swing.JComboBox();
         jPanel12 = new javax.swing.JPanel();
-        lbTelefono7 = new javax.swing.JLabel();
-        txtDiasAlerta1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtIdProd = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         btnGuardar2 = new javax.swing.JButton();
-        btnGuardar1 = new javax.swing.JButton();
+        btnGuardarMaestra = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         btnResolucion = new javax.swing.JButton();
 
@@ -749,225 +532,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
         tabPanel.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Adobe Arabic", 1, 12), new java.awt.Color(102, 153, 0))); // NOI18N
-
-        txtRegimen.setName("Teléfono"); // NOI18N
-        txtRegimen.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtRegimenKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtRegimenKeyTyped(evt);
-            }
-        });
-
-        lbTelefono1.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono1.setText("REGIMEN:");
-
-        lbRazon1.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbRazon1.setText("NOMBRE:");
-
-        txtNombre.setName("Razón social"); // NOI18N
-        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtNombreKeyReleased(evt);
-            }
-        });
-
-        txtNit.setName("CC/NIT"); // NOI18N
-        txtNit.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtNitKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNitKeyTyped(evt);
-            }
-        });
-
-        lbTelefono2.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono2.setText("TELEFONO/PBX");
-
-        lbRazon2.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbRazon2.setText("DIRECCIÓN:");
-
-        txtDireccion.setName("Razón social"); // NOI18N
-        txtDireccion.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtDireccionKeyReleased(evt);
-            }
-        });
-
-        txtTelefono.setName("Teléfono"); // NOI18N
-        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtTelefonoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtTelefonoKeyTyped(evt);
-            }
-        });
-
-        lbNit6.setBackground(new java.awt.Color(204, 204, 204));
-        lbNit6.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        lbNit6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbNit6.setText("Datos de la empresa");
-        lbNit6.setOpaque(true);
-
-        lbNit1.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbNit1.setText("NIT:");
-
-        lbMisResponsabilidades.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbMisResponsabilidades.setText("MIS RESPONSABILIDADES FISCALES:");
-
-        lbResponsabilidades.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbResponsabilidades.setText("RESPONSABILIDADES FISCALES:");
-
-        cmbResponsabilidades.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione una responsabilidad fiscal...", "ZZ /No aplica", "O-13 /Gran contribuyente", "O-15 /Autorretenedor", "O-23 /Agente de retención en el impuesto sobre las ventas", "O-47 /Régimen Simple de Tributación – SIMPLE" }));
-
-        btnAggResponsabilidades.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnAggResponsabilidades.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/boton-de-suma.png"))); // NOI18N
-        btnAggResponsabilidades.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAggResponsabilidadesActionPerformed(evt);
-            }
-        });
-
-        btnAggResponsabilidades1.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnAggResponsabilidades1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/boton-resta.png"))); // NOI18N
-        btnAggResponsabilidades1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAggResponsabilidades1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbNit6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator3)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(lbResponsabilidades, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbResponsabilidades, 0, 661, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAggResponsabilidades, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(lbNit1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTelefono1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbRazon1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbRazon2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtRegimen, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(txtNombre)
-                                .addGap(18, 18, 18)
-                                .addComponent(lbTelefono2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtNit)
-                            .addComponent(txtDireccion)))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(lbMisResponsabilidades)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbMisResponsabilidades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAggResponsabilidades1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(lbNit6, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbRazon1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtNit, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
-                .addGap(2, 2, 2)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbTelefono2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbNit1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtNombre)
-                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtRegimen)
-                    .addComponent(lbTelefono1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtDireccion)
-                    .addComponent(lbRazon2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cmbMisResponsabilidades)
-                    .addComponent(lbMisResponsabilidades, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnAggResponsabilidades1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cmbResponsabilidades)
-                    .addComponent(lbResponsabilidades, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnAggResponsabilidades, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        lbNit7.setBackground(new java.awt.Color(204, 204, 204));
-        lbNit7.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        lbNit7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbNit7.setText("Pie de pagina");
-        lbNit7.setOpaque(true);
-
-        txtPiePagina.setColumns(20);
-        txtPiePagina.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtPiePagina.setLineWrap(true);
-        txtPiePagina.setRows(5);
-        jScrollPane2.setViewportView(txtPiePagina);
-
-        txtLegal.setColumns(20);
-        txtLegal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtLegal.setLineWrap(true);
-        txtLegal.setRows(3);
-        txtLegal.setText("\n");
-        jScrollPane1.setViewportView(txtLegal);
-
-        lbNit8.setBackground(new java.awt.Color(204, 204, 204));
-        lbNit8.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        lbNit8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbNit8.setText("Legal");
-        lbNit8.setOpaque(true);
-
-        lbAnexo1.setBackground(new java.awt.Color(204, 204, 204));
-        lbAnexo1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        lbAnexo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbAnexo1.setText("Anexo Factura");
-        lbAnexo1.setOpaque(true);
-
-        txtAnexoFactura.setColumns(20);
-        txtAnexoFactura.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtAnexoFactura.setLineWrap(true);
-        txtAnexoFactura.setRows(3);
-        jScrollPane5.setViewportView(txtAnexoFactura);
-
-        lbAnexo.setBackground(new java.awt.Color(204, 204, 204));
-        lbAnexo.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        lbAnexo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbAnexo.setText("Anexo Orden Servicio");
-        lbAnexo.setOpaque(true);
-
-        txtAnexoOrden.setColumns(20);
-        txtAnexoOrden.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtAnexoOrden.setLineWrap(true);
-        txtAnexoOrden.setRows(3);
-        jScrollPane9.setViewportView(txtAnexoOrden);
+        pnlDatosEmpresa.setBackground(new java.awt.Color(255, 255, 255));
 
         lbOtroConsecutivo.setEditable(false);
         lbOtroConsecutivo.setBackground(new java.awt.Color(255, 255, 255));
@@ -1005,62 +570,203 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        tblInformacionEmpresa.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblInformacionEmpresa.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Nombre", null},
+                {"Nit", null},
+                {"Teléfono", null},
+                {"Régimen", null},
+                {"Dirección", null}
+            },
+            new String [] {
+                "Datos de la empresa", "Valor"
+            }
+        ));
+        tblInformacionEmpresa.setRowHeight(24);
+        jScrollPane19.setViewportView(tblInformacionEmpresa);
+
+        pnlBodegas.setBackground(new java.awt.Color(255, 255, 255));
+        pnlBodegas.setBorder(javax.swing.BorderFactory.createTitledBorder("Bodegas"));
+
+        tblBodegasInternas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Codigo", "Nombre bodega", "Estado"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane15.setViewportView(tblBodegasInternas);
+
+        btnAgregarBodega.setBackground(new java.awt.Color(46, 204, 113));
+        btnAgregarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnAgregarBodega.setText("Agregar bodega");
+        btnAgregarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnAgregarBodega.setEnabled(false);
+        btnAgregarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnAgregarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnAgregarBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarBodegaActionPerformed(evt);
+            }
+        });
+
+        btnModificarBodega.setBackground(new java.awt.Color(93, 173, 226));
+        btnModificarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnModificarBodega.setText("Modificar bodega");
+        btnModificarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnModificarBodega.setEnabled(false);
+        btnModificarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnModificarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnModificarBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarBodegaActionPerformed(evt);
+            }
+        });
+
+        btnCambiarEstadoBodega.setBackground(new java.awt.Color(241, 148, 138));
+        btnCambiarEstadoBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnCambiarEstadoBodega.setText("Inactivar bodega");
+        btnCambiarEstadoBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnCambiarEstadoBodega.setEnabled(false);
+        btnCambiarEstadoBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnCambiarEstadoBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnCambiarEstadoBodega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCambiarEstadoBodegaActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Bodega seleccionada por defecto:");
+
+        javax.swing.GroupLayout pnlBodegasLayout = new javax.swing.GroupLayout(pnlBodegas);
+        pnlBodegas.setLayout(pnlBodegasLayout);
+        pnlBodegasLayout.setHorizontalGroup(
+            pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBodegasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbAnexo1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbNit7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane5))
-                        .addGap(7, 7, 7)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbAnexo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbNit8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane9)))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnlBodegasLayout.createSequentialGroup()
+                        .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnModificarBodega)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCambiarEstadoBodega))
+                    .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(pnlBodegasLayout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cmbBodegas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBodegasLayout.setVerticalGroup(
+            pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBodegasLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        tblConfiguraciones.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblConfiguraciones.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Consecutivo adicional en factura:", null}
+            },
+            new String [] {
+                "Datos de la empresa", "Valor"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tblConfiguraciones.setRowHeight(24);
+        jScrollPane21.setViewportView(tblConfiguraciones);
+
+        tblConfiguraciones1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblConfiguraciones1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Consecutivo adicional en factura:", null}
+            },
+            new String [] {
+                "Datos de la empresa", "Valor"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tblConfiguraciones1.setRowHeight(24);
+        jScrollPane22.setViewportView(tblConfiguraciones1);
+
+        javax.swing.GroupLayout pnlDatosEmpresaLayout = new javax.swing.GroupLayout(pnlDatosEmpresa);
+        pnlDatosEmpresa.setLayout(pnlDatosEmpresaLayout);
+        pnlDatosEmpresaLayout.setHorizontalGroup(
+            pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
                         .addComponent(lbOtroConsecutivo, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNumeroFactosElectronicas, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(txtNumeroFactosElectronicas, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
+                        .addComponent(jScrollPane19, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
+                        .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane22, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        pnlDatosEmpresaLayout.setVerticalGroup(
+            pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbOtroConsecutivo, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                     .addComponent(txtNumeroFactosElectronicas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(30, 30, 30)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbNit7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbNit8, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE))
-                .addGap(20, 20, 20)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbAnexo1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbAnexo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
-                    .addComponent(jScrollPane5))
-                .addGap(24, 24, 24))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane19, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane22, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        tabPanel.addTab("Datos Empresa", jPanel6);
+        tabPanel.addTab("Datos Empresa", pnlDatosEmpresa);
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        pnlVariablesYConf.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "En General", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 12))); // NOI18N
@@ -1077,29 +783,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         lbTelefono10.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono10.setText("Cantidad al cargar:");
 
-        lbTelefono75.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono75.setText("% incremento fact automatica:");
-
         lbTelefono24.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono24.setText("Solicitudes de permisos");
 
         lbTelefono13.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono13.setText("Lector:");
 
-        lbTelefono74.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono74.setText("Pregunta copia de seguridad");
-
         lbTelefono14.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono14.setText("P.V.P Con Iva:");
-
-        lbTelefono15.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono15.setText("Costo Con Iva:");
-
-        lbTelefono25.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono25.setText("P.V.P Con Impoconsumo");
-
-        lbTelefono26.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono26.setText("Costo con Impoconsumo");
 
         txtDiasAlerta.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         txtDiasAlerta.setName("CC/NIT"); // NOI18N
@@ -1130,15 +821,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        txtNumFactIncremento.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtNumFactIncremento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtNumFactIncremento.setText("0");
-        txtNumFactIncremento.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNumFactIncrementoKeyTyped(evt);
-            }
-        });
-
         rdSiSolicitudesPermisos.setBackground(new java.awt.Color(255, 255, 255));
         grupoSolicitudesPermisos.add(rdSiSolicitudesPermisos);
         rdSiSolicitudesPermisos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
@@ -1151,21 +833,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         rdNoSolicitudesPermisos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rdNoSolicitudesPermisosActionPerformed(evt);
-            }
-        });
-
-        rdCopiasSi.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiaSeguridad.add(rdCopiasSi);
-        rdCopiasSi.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdCopiasSi.setText("Si");
-
-        rdCopiasNo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiaSeguridad.add(rdCopiasNo);
-        rdCopiasNo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdCopiasNo.setText("No");
-        rdCopiasNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdCopiasNoActionPerformed(evt);
             }
         });
 
@@ -1209,42 +876,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        rdSiCostoIva.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCostoConIva.add(rdSiCostoIva);
-        rdSiCostoIva.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiCostoIva.setText("Si");
-        rdSiCostoIva.setEnabled(false);
-
-        rdNoCostoIva.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCostoConIva.add(rdNoCostoIva);
-        rdNoCostoIva.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoCostoIva.setText("No");
-        rdNoCostoIva.setEnabled(false);
-
-        rdSiPvpImpo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPVPImpoconsumo.add(rdSiPvpImpo);
-        rdSiPvpImpo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiPvpImpo.setText("Si");
-        rdSiPvpImpo.setEnabled(false);
-
-        rdNoPvpImpo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPVPImpoconsumo.add(rdNoPvpImpo);
-        rdNoPvpImpo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoPvpImpo.setText("No");
-        rdNoPvpImpo.setEnabled(false);
-
-        rdSiCostoImpo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCostoImpoconsumo.add(rdSiCostoImpo);
-        rdSiCostoImpo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiCostoImpo.setText("Si");
-        rdSiCostoImpo.setEnabled(false);
-
-        rdNoCostoImpo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCostoImpoconsumo.add(rdNoCostoImpo);
-        rdNoCostoImpo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoCostoImpo.setText("No");
-        rdNoCostoImpo.setEnabled(false);
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1252,26 +883,20 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbTelefono26, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbTelefono14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbTelefono13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono75, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbTelefono24, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(lbTelefono6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTelefono9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                            .addComponent(lbTelefono9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                             .addComponent(lbNit3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbTelefono10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(lbTelefono74, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtNumFactIncremento)
                             .addComponent(txtDiasAlerta, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtContra, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtContra2, javax.swing.GroupLayout.Alignment.LEADING)
@@ -1279,22 +904,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                         .addGap(56, 56, 56))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(rdSiCostoImpo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
-                            .addComponent(rdSiPvpImpo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdSiCostoIva, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdSiPvpIva, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(rdSiPvpIva, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
                             .addComponent(lectorSi, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdCopiasSi, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(rdSiSolicitudesPermisos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rdNoSolicitudesPermisos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdCopiasNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lectorNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdNoPvpIva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdNoCostoIva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdNoPvpImpo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdNoCostoImpo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(rdNoPvpIva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(59, 59, 59))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -1317,21 +934,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(lbTelefono10, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(3, 3, 3)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbTelefono75, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNumFactIncremento, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)
+                        .addGap(29, 29, 29)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbTelefono24, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rdSiSolicitudesPermisos, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rdNoSolicitudesPermisos, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbTelefono74, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rdCopiasSi, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rdCopiasNo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbTelefono13, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lectorSi, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1340,26 +948,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbTelefono14, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rdSiPvpIva, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rdNoPvpIva, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(lbTelefono15, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(rdNoCostoIva, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(rdSiCostoIva, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(rdNoPvpIva, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(txtCantidadEstablecida, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbTelefono25, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(rdSiPvpImpo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(rdNoPvpImpo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(3, 3, 3)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbTelefono26, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdSiCostoImpo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, Short.MAX_VALUE)
-                    .addComponent(rdNoCostoImpo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
+                .addGap(10, 10, 10))
         );
 
         jPanel13.setBackground(new java.awt.Color(255, 255, 255));
@@ -1438,18 +1029,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
         jPanel38.setBackground(new java.awt.Color(255, 255, 255));
 
-        lbTelefono32.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono32.setText("Modificar nombre de productos:");
-        lbTelefono32.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
-        lbTelefono40.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono40.setText("Modificar precio de productos:");
-        lbTelefono40.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
-        lbTelefono31.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono31.setText("Combinar productos iguales:");
-        lbTelefono31.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
         lbTelefono29.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono29.setText("Limite de productos por factura");
         lbTelefono29.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
@@ -1462,56 +1041,19 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         lbNit4.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbNit4.setText("Titulo en Factura:");
 
-        lbTelefono4.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono4.setText("Facturar Utilidad Sobrepasada:");
-
-        lbTelefono17.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono17.setText("Alertar Utilidad Sobrepasada:");
-
-        lbTelefono16.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono16.setText("Ventas Contado Predeterminado:");
-
-        lbTelefono37.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono37.setText("Consecutivo adicional en factura:");
-        lbTelefono37.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
         lbTelefono27.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono27.setText("Descuento maximo en factura:");
         lbTelefono27.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
 
-        lbTelefono47.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono47.setText("Facturar sin inventario:");
-        lbTelefono47.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
-        lbTelefono46.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono46.setText("Pago a terceros en factura:");
-        lbTelefono46.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
         lbTelefono5.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono5.setText("Tipo de descuento:");
-
-        lbTelefono33.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono33.setText("Preguntar por imp. bolsa");
-        lbTelefono33.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
 
         lbTelefono48.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono48.setText("% Propina en la pre-factura:");
 
-        lbTelefono63.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono63.setText("Mostrar devuelta en factura:");
-        lbTelefono63.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
-        lbTelefono64.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono64.setText("Días de plazo automaticos:");
-        lbTelefono64.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
         lbTelefono65.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono65.setText("Foco despues de cargar el producto:");
         lbTelefono65.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
-        lbTelefono66.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono66.setText("Validar el cupo del credito:");
-        lbTelefono66.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
 
         javax.swing.GroupLayout jPanel38Layout = new javax.swing.GroupLayout(jPanel38);
         jPanel38.setLayout(jPanel38Layout);
@@ -1524,33 +1066,16 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                         .addComponent(lbTelefono27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel38Layout.createSequentialGroup()
-                        .addComponent(lbTelefono16, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanel38Layout.createSequentialGroup()
-                        .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lbTelefono32, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                                .addComponent(lbTelefono40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lbTelefono31, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lbTelefono59, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lbTelefono29, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lbTelefono59, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbTelefono29, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel38Layout.createSequentialGroup()
                         .addComponent(lbNit4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(145, 145, 145))
-                    .addComponent(lbTelefono4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono46, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbTelefono5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbTelefono48, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono63, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono64, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono65, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono66, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(lbTelefono65, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
         );
         jPanel38Layout.setVerticalGroup(
             jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1565,100 +1090,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addComponent(lbTelefono48, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addComponent(lbNit4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTelefono37, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(lbTelefono16, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(lbTelefono32)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTelefono40)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTelefono31)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTelefono64)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTelefono4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(lbTelefono17, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
-                .addComponent(lbTelefono47, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(lbTelefono46, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
                 .addComponent(lbTelefono5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(lbTelefono33, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTelefono63, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
+                .addGap(58, 58, 58)
                 .addComponent(lbTelefono65, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono66)
-                .addContainerGap())
+                .addGap(39, 39, 39))
         );
 
         jPanel39.setBackground(new java.awt.Color(255, 255, 255));
-
-        rdSiModificarNombre.setBackground(new java.awt.Color(255, 255, 255));
-        grupoModificarNombreProductos.add(rdSiModificarNombre);
-        rdSiModificarNombre.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiModificarNombre.setText("Si");
-        rdSiModificarNombre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiModificarNombreActionPerformed(evt);
-            }
-        });
-
-        rdNoModificarNombre.setBackground(new java.awt.Color(255, 255, 255));
-        grupoModificarNombreProductos.add(rdNoModificarNombre);
-        rdNoModificarNombre.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoModificarNombre.setText("No");
-        rdNoModificarNombre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoModificarNombreActionPerformed(evt);
-            }
-        });
-
-        rdSiModificarPrecio.setBackground(new java.awt.Color(255, 255, 255));
-        grupoModificarPrecioProductos.add(rdSiModificarPrecio);
-        rdSiModificarPrecio.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiModificarPrecio.setText("Si");
-        rdSiModificarPrecio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiModificarPrecioActionPerformed(evt);
-            }
-        });
-
-        rdNoModificarPrecio.setBackground(new java.awt.Color(255, 255, 255));
-        grupoModificarPrecioProductos.add(rdNoModificarPrecio);
-        rdNoModificarPrecio.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoModificarPrecio.setText("No");
-        rdNoModificarPrecio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoModificarPrecioActionPerformed(evt);
-            }
-        });
-
-        rdSiCombinar.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCombinarProductos.add(rdSiCombinar);
-        rdSiCombinar.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiCombinar.setText("Si");
-        rdSiCombinar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiCombinarActionPerformed(evt);
-            }
-        });
-
-        rdNoCombinar.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCombinarProductos.add(rdNoCombinar);
-        rdNoCombinar.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoCombinar.setText("No");
-        rdNoCombinar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoCombinarActionPerformed(evt);
-            }
-        });
 
         txtLimite.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         txtLimite.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -1680,127 +1119,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        utilidadSi.setBackground(new java.awt.Color(255, 255, 255));
-        grupoFacturarUtilidadSobrepasada.add(utilidadSi);
-        utilidadSi.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        utilidadSi.setText("Si");
-        utilidadSi.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                utilidadSiItemStateChanged(evt);
-            }
-        });
-
-        utilidadNo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoFacturarUtilidadSobrepasada.add(utilidadNo);
-        utilidadNo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        utilidadNo.setText("No");
-        utilidadNo.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                utilidadNoItemStateChanged(evt);
-            }
-        });
-        utilidadNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                utilidadNoActionPerformed(evt);
-            }
-        });
-
-        rdSiMensajeUtilidad.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMensajeUtilidad.add(rdSiMensajeUtilidad);
-        rdSiMensajeUtilidad.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiMensajeUtilidad.setSelected(true);
-        rdSiMensajeUtilidad.setText("Si");
-
-        rdNoMensajeUtilidad.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMensajeUtilidad.add(rdNoMensajeUtilidad);
-        rdNoMensajeUtilidad.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoMensajeUtilidad.setText("No");
-        rdNoMensajeUtilidad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoMensajeUtilidadActionPerformed(evt);
-            }
-        });
-
-        rdSiVentasPredeterminado.setBackground(new java.awt.Color(255, 255, 255));
-        grupoVentasContado.add(rdSiVentasPredeterminado);
-        rdSiVentasPredeterminado.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiVentasPredeterminado.setText("Si");
-
-        rdNoVentasPredeterminado.setBackground(new java.awt.Color(255, 255, 255));
-        grupoVentasContado.add(rdNoVentasPredeterminado);
-        rdNoVentasPredeterminado.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoVentasPredeterminado.setText("No");
-        rdNoVentasPredeterminado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoVentasPredeterminadoActionPerformed(evt);
-            }
-        });
-
-        rdSiConsecutivo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoConsecutivoAdicional.add(rdSiConsecutivo);
-        rdSiConsecutivo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiConsecutivo.setText("Si");
-        rdSiConsecutivo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiConsecutivoActionPerformed(evt);
-            }
-        });
-
-        rdNoConsecutivo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoConsecutivoAdicional.add(rdNoConsecutivo);
-        rdNoConsecutivo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoConsecutivo.setText("No");
-        rdNoConsecutivo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoConsecutivoActionPerformed(evt);
-            }
-        });
-
         txtDescuentoMaximo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         txtDescuentoMaximo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtDescuentoMaximo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtDescuentoMaximoKeyTyped(evt);
-            }
-        });
-
-        rdSiFacturarSinInventario.setBackground(new java.awt.Color(255, 255, 255));
-        grupoFacturacionSeparado.add(rdSiFacturarSinInventario);
-        rdSiFacturarSinInventario.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiFacturarSinInventario.setText("Si");
-        rdSiFacturarSinInventario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiFacturarSinInventarioActionPerformed(evt);
-            }
-        });
-
-        rdNoFacturarSinInventario.setBackground(new java.awt.Color(255, 255, 255));
-        grupoFacturacionSeparado.add(rdNoFacturarSinInventario);
-        rdNoFacturarSinInventario.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoFacturarSinInventario.setText("No");
-        rdNoFacturarSinInventario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoFacturarSinInventarioActionPerformed(evt);
-            }
-        });
-
-        rdSiPagoTerceros.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPagoTercerosFactura.add(rdSiPagoTerceros);
-        rdSiPagoTerceros.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiPagoTerceros.setText("Si");
-        rdSiPagoTerceros.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiPagoTercerosActionPerformed(evt);
-            }
-        });
-
-        rdNoPagoTerceros.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPagoTercerosFactura.add(rdNoPagoTerceros);
-        rdNoPagoTerceros.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoPagoTerceros.setText("No");
-        rdNoPagoTerceros.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoPagoTercerosActionPerformed(evt);
             }
         });
 
@@ -1815,41 +1138,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         descuentoPeso.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         descuentoPeso.setText("Valor");
 
-        rdSiBolsa.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPreguntarImpuestoBolsa.add(rdSiBolsa);
-        rdSiBolsa.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiBolsa.setText("Si");
-        rdSiBolsa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiBolsaActionPerformed(evt);
-            }
-        });
-
-        rdNoBolsa.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPreguntarImpuestoBolsa.add(rdNoBolsa);
-        rdNoBolsa.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoBolsa.setText("No");
-        rdNoBolsa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoBolsaActionPerformed(evt);
-            }
-        });
-
-        txtValor.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtValor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtValorActionPerformed(evt);
-            }
-        });
-        txtValor.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtValorKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtValorKeyTyped(evt);
-            }
-        });
-
         txtPorcPropina.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtPorcPropina.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtPorcPropina.setText("0");
@@ -1859,68 +1147,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        rdSiDevuelta.setBackground(new java.awt.Color(255, 255, 255));
-        grupoDevuelta.add(rdSiDevuelta);
-        rdSiDevuelta.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiDevuelta.setText("Si");
-        rdSiDevuelta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiDevueltaActionPerformed(evt);
-            }
-        });
-
-        rdNoDevuelta.setBackground(new java.awt.Color(255, 255, 255));
-        grupoDevuelta.add(rdNoDevuelta);
-        rdNoDevuelta.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoDevuelta.setText("No");
-        rdNoDevuelta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoDevueltaActionPerformed(evt);
-            }
-        });
-
-        rdSiDiasAutomaticos.setBackground(new java.awt.Color(255, 255, 255));
-        grupoDiasPlazo.add(rdSiDiasAutomaticos);
-        rdSiDiasAutomaticos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiDiasAutomaticos.setText("Si");
-        rdSiDiasAutomaticos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiDiasAutomaticosActionPerformed(evt);
-            }
-        });
-
-        rdNoDiasAutomaticos.setBackground(new java.awt.Color(255, 255, 255));
-        grupoDiasPlazo.add(rdNoDiasAutomaticos);
-        rdNoDiasAutomaticos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoDiasAutomaticos.setText("No");
-        rdNoDiasAutomaticos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoDiasAutomaticosActionPerformed(evt);
-            }
-        });
-
         cmbFoco.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         cmbFoco.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cant", "Valor" }));
-
-        rdSiCupoCredito.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCupoCredito.add(rdSiCupoCredito);
-        rdSiCupoCredito.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiCupoCredito.setText("Si");
-        rdSiCupoCredito.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiCupoCreditoActionPerformed(evt);
-            }
-        });
-
-        rdNoCupoCredito.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCupoCredito.add(rdNoCupoCredito);
-        rdNoCupoCredito.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoCupoCredito.setText("No");
-        rdNoCupoCredito.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoCupoCreditoActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel39Layout = new javax.swing.GroupLayout(jPanel39);
         jPanel39.setLayout(jPanel39Layout);
@@ -1934,60 +1162,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel39Layout.createSequentialGroup()
                         .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txtPorcPropina, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addComponent(rdSiBolsa)
-                                .addGap(2, 2, 2)
-                                .addComponent(rdNoBolsa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addComponent(rdSiPagoTerceros)
-                                .addGap(2, 2, 2)
-                                .addComponent(rdNoPagoTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addComponent(rdSiFacturarSinInventario)
-                                .addGap(2, 2, 2)
-                                .addComponent(rdNoFacturarSinInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addComponent(rdSiConsecutivo)
-                                .addGap(2, 2, 2)
-                                .addComponent(rdNoConsecutivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addComponent(rdSiVentasPredeterminado)
-                                .addGap(2, 2, 2)
-                                .addComponent(rdNoVentasPredeterminado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(utilidadSi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdSiMensajeUtilidad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(utilidadNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdNoMensajeUtilidad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(rdSiModificarNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdSiModificarPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdSiCombinar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdSiDiasAutomaticos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(rdNoModificarPrecio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdNoModificarNombre, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdNoCombinar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdNoDiasAutomaticos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(txtLimite)
-                            .addComponent(txtDescuentoMaximo)
-                            .addGroup(jPanel39Layout.createSequentialGroup()
-                                .addComponent(rdSiDevuelta)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(rdNoDevuelta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel39Layout.createSequentialGroup()
-                        .addComponent(rdSiCupoCredito)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rdNoCupoCredito)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(txtDescuentoMaximo))
+                        .addGap(66, 66, 66))
                     .addGroup(jPanel39Layout.createSequentialGroup()
                         .addComponent(descuentoPorcentaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -2005,67 +1182,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addComponent(txtPorcPropina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addComponent(txtTituloFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiConsecutivo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdNoConsecutivo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiVentasPredeterminado, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdNoVentasPredeterminado, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(rdNoModificarNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdSiModificarNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(2, 2, 2)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(rdSiModificarPrecio)
-                    .addComponent(rdNoModificarPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rdSiCombinar)
-                    .addComponent(rdNoCombinar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rdNoDiasAutomaticos)
-                    .addComponent(rdSiDiasAutomaticos))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(utilidadSi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(utilidadNo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiMensajeUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdNoMensajeUtilidad, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiFacturarSinInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdNoFacturarSinInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiPagoTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdNoPagoTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(descuentoPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(descuentoPeso, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(rdSiBolsa, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(rdNoBolsa, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiDevuelta, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdNoDevuelta, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(57, 57, 57)
                 .addComponent(cmbFoco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rdNoCupoCredito)
-                    .addComponent(rdSiCupoCredito))
-                .addContainerGap())
+                .addGap(34, 34, 34))
         );
 
         javax.swing.GroupLayout jPanel37Layout = new javax.swing.GroupLayout(jPanel37);
@@ -2089,96 +1212,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5))
         );
 
-        jPanel40.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel40.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "En Cuadre de Caja", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 12))); // NOI18N
-
-        jPanel18.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbTelefono39.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono39.setText("Permitir ponderados negativos:");
-        lbTelefono39.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
-        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
-        jPanel18.setLayout(jPanel18Layout);
-        jPanel18Layout.setHorizontalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel18Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbTelefono39, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel18Layout.setVerticalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel18Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(lbTelefono39, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3))
-        );
-
-        jPanel41.setBackground(new java.awt.Color(255, 255, 255));
-
-        rdSiPondNegativo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPermitirPonderados.add(rdSiPondNegativo);
-        rdSiPondNegativo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiPondNegativo.setText("Si");
-        rdSiPondNegativo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiPondNegativoActionPerformed(evt);
-            }
-        });
-
-        rdNoPondNegativo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPermitirPonderados.add(rdNoPondNegativo);
-        rdNoPondNegativo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoPondNegativo.setText("No");
-        rdNoPondNegativo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoPondNegativoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel41Layout = new javax.swing.GroupLayout(jPanel41);
-        jPanel41.setLayout(jPanel41Layout);
-        jPanel41Layout.setHorizontalGroup(
-            jPanel41Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel41Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rdSiPondNegativo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rdNoPondNegativo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel41Layout.setVerticalGroup(
-            jPanel41Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel41Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(jPanel41Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiPondNegativo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdNoPondNegativo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3))
-        );
-
-        javax.swing.GroupLayout jPanel40Layout = new javax.swing.GroupLayout(jPanel40);
-        jPanel40.setLayout(jPanel40Layout);
-        jPanel40Layout.setHorizontalGroup(
-            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel40Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel41, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
-        jPanel40Layout.setVerticalGroup(
-            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel40Layout.createSequentialGroup()
-                .addGap(2, 2, 2)
-                .addGroup(jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel41, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(3, 3, 3))
-        );
-
         jPanel42.setBackground(new java.awt.Color(255, 255, 255));
         jPanel42.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Congeladas y Mesas ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 12))); // NOI18N
 
@@ -2187,9 +1220,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         lbTelefono43.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono43.setText("Borrar productos:");
         lbTelefono43.setToolTipText("Visualizar toda la información de facturacion, \nreportes y abonos de todas las terminales.");
-
-        lbNit.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbNit.setText("Numero de mesas:");
 
         lbTelefono69.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono69.setText("Borrar mesas:");
@@ -2203,16 +1233,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(lbTelefono69, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono43, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbNit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbTelefono43, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE))
                 .addContainerGap(120, Short.MAX_VALUE))
         );
         jPanel43Layout.setVerticalGroup(
             jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel43Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(lbNit)
-                .addGap(5, 5, 5)
+                .addGap(31, 31, 31)
                 .addComponent(lbTelefono43)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbTelefono69)
@@ -2239,17 +1266,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         rdNoBorrarProdMesas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rdNoBorrarProdMesasActionPerformed(evt);
-            }
-        });
-
-        txtL1.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtL1.setName("CC/NIT"); // NOI18N
-        txtL1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtL1KeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtL1KeyTyped(evt);
             }
         });
 
@@ -2281,11 +1297,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             .addGroup(jPanel44Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtL1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel44Layout.createSequentialGroup()
                         .addComponent(rdSiBorrarProdMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rdNoBorrarProdMesas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(rdNoBorrarProdMesas, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE))
                     .addGroup(jPanel44Layout.createSequentialGroup()
                         .addComponent(rdSiBorrarMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -2295,9 +1310,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         jPanel44Layout.setVerticalGroup(
             jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel44Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(txtL1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
+                .addGap(30, 30, 30)
                 .addGroup(jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rdSiBorrarProdMesas)
                     .addComponent(rdNoBorrarProdMesas))
@@ -2315,7 +1328,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5)
                 .addComponent(jPanel43, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel44, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel44, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel42Layout.setVerticalGroup(
@@ -2380,35 +1393,32 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+        javax.swing.GroupLayout pnlVariablesYConfLayout = new javax.swing.GroupLayout(pnlVariablesYConf);
+        pnlVariablesYConf.setLayout(pnlVariablesYConfLayout);
+        pnlVariablesYConfLayout.setHorizontalGroup(
+            pnlVariablesYConfLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlVariablesYConfLayout.createSequentialGroup()
+                .addContainerGap(44, Short.MAX_VALUE)
+                .addGroup(pnlVariablesYConfLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlVariablesYConfLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel42, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlCredito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        pnlVariablesYConfLayout.setVerticalGroup(
+            pnlVariablesYConfLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlVariablesYConfLayout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(pnlVariablesYConfLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlVariablesYConfLayout.createSequentialGroup()
                         .addComponent(jPanel37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(3, 3, 3)
                         .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jPanel40, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
+                    .addGroup(pnlVariablesYConfLayout.createSequentialGroup()
                         .addComponent(jPanel42, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2417,7 +1427,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5))
         );
 
-        tabPanel.addTab("Variables y cofiguraciones", jPanel5);
+        tabPanel.addTab("Variables y cofiguraciones", pnlVariablesYConf);
 
         jPanel16.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -2454,7 +1464,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnGuardar5.setBackground(new java.awt.Color(204, 204, 204));
         btnGuardar5.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar5.setText("CARGAR");
-        btnGuardar5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar5.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar5.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnGuardar5.addActionListener(new java.awt.event.ActionListener() {
@@ -2470,7 +1480,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbNit11, javax.swing.GroupLayout.DEFAULT_SIZE, 1017, Short.MAX_VALUE)
+                    .addComponent(lbNit11, javax.swing.GroupLayout.DEFAULT_SIZE, 1026, Short.MAX_VALUE)
                     .addGroup(jPanel16Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2504,7 +1514,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(lbNit12, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(btnGuardar5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(816, Short.MAX_VALUE))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Tarjetas", jPanel16);
@@ -2955,12 +1965,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlInformacionMedico2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, Short.MAX_VALUE)
                     .addComponent(pnlInformacionMedico1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(774, Short.MAX_VALUE))
+                .addContainerGap(150, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Médico", jPanel7);
 
-        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        pnlImpresiones.setBackground(new java.awt.Color(255, 255, 255));
 
         pnlImpresionesGrupo.setBackground(new java.awt.Color(255, 255, 255));
         pnlImpresionesGrupo.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -2997,9 +2007,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         jScrollPane4.setViewportView(tblImpresoras1);
 
         btnGuardar4.setBackground(new java.awt.Color(241, 148, 138));
-        btnGuardar4.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        btnGuardar4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         btnGuardar4.setText("BORRAR IMPRESORA");
-        btnGuardar4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar4.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar4.setMargin(null);
         btnGuardar4.addActionListener(new java.awt.event.ActionListener() {
@@ -3034,10 +2044,10 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         jScrollPane3.setViewportView(tblImpresoras);
 
         btnGuardar3.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        btnGuardar3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         btnGuardar3.setText("ACTUALIZAR IMPRESORAS");
-        btnGuardar3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGuardar3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnGuardar3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGuardar3.setMargin(null);
         btnGuardar3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3060,1138 +2070,37 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(pnlImpresionesGrupoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlImpresionesGrupoLayout.createSequentialGroup()
-                        .addComponent(rdImpresionPorGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGuardar3, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGuardar4))
-                    .addGroup(pnlImpresionesGrupoLayout.createSequentialGroup()
                         .addGroup(pnlImpresionesGrupoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4)))
+                        .addComponent(jScrollPane4))
+                    .addGroup(pnlImpresionesGrupoLayout.createSequentialGroup()
+                        .addComponent(rdImpresionPorGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGuardar3, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGuardar4)))
                 .addContainerGap())
         );
         pnlImpresionesGrupoLayout.setVerticalGroup(
             pnlImpresionesGrupoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlImpresionesGrupoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlImpresionesGrupoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGuardar4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdImpresionPorGrupo)
-                    .addComponent(btnGuardar3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(5, 5, 5)
+                .addGroup(pnlImpresionesGrupoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlImpresionesGrupoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnGuardar3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnGuardar4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(rdImpresionPorGrupo))
+                .addGap(10, 10, 10)
                 .addGroup(pnlImpresionesGrupoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlImpresionesGrupoLayout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addGap(3, 3, 3)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        pnlImpresiones.setBackground(new java.awt.Color(255, 255, 255));
-
-        pnlNumeroDeCopias.setBackground(new java.awt.Color(255, 255, 255));
-        pnlNumeroDeCopias.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Número de copias", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
-
-        jPanel20.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbTelefono11.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbTelefono11.setText("Cant:");
-
-        lbTelefono30.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbTelefono30.setText("Cant:");
-
-        lbTelefono36.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbTelefono36.setText("Cant:");
-
-        lbTelefono50.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbTelefono50.setText("Cant:");
-
-        lbTelefono52.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbTelefono52.setText("Cant:");
-
-        javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
-        jPanel20.setLayout(jPanel20Layout);
-        jPanel20Layout.setHorizontalGroup(
-            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel20Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbTelefono52, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono50, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono36, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(3, 3, 3))
-        );
-        jPanel20Layout.setVerticalGroup(
-            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel20Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono11)
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono30)
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono36)
-                .addGap(4, 4, 4)
-                .addComponent(lbTelefono50)
-                .addGap(4, 4, 4)
-                .addComponent(lbTelefono52)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel21.setBackground(new java.awt.Color(255, 255, 255));
-
-        txtCantFactura.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtCantFactura.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        txtCantOServicio.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtCantOServicio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        txtCantCotizacion.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtCantCotizacion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtCantCotizacion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCantCotizacionActionPerformed(evt);
-            }
-        });
-
-        txtCantPlanSepare.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtCantPlanSepare.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        txtCantPedidos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtCantPedidos.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
-        jPanel21.setLayout(jPanel21Layout);
-        jPanel21Layout.setHorizontalGroup(
-            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel21Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtCantPlanSepare, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                    .addComponent(txtCantPedidos, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtCantCotizacion, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtCantOServicio)
-                    .addComponent(txtCantFactura, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(3, 3, 3))
-        );
-        jPanel21Layout.setVerticalGroup(
-            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel21Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(txtCantFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(txtCantOServicio)
-                .addGap(3, 3, 3)
-                .addComponent(txtCantCotizacion)
-                .addGap(3, 3, 3)
-                .addComponent(txtCantPlanSepare)
-                .addGap(3, 3, 3)
-                .addComponent(txtCantPedidos)
-                .addGap(5, 5, 5))
-        );
-
-        jPanel22.setBackground(new java.awt.Color(255, 255, 255));
-
-        rdPreguntaFacturaNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasFactura.add(rdPreguntaFacturaNO);
-        rdPreguntaFacturaNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaFacturaNO.setText("No");
-        rdPreguntaFacturaNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaFacturaNOActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaOServicioNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasOServicio.add(rdPreguntaOServicioNO);
-        rdPreguntaOServicioNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaOServicioNO.setText("No");
-        rdPreguntaOServicioNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaOServicioNOActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaCotizacionNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasCotizacion.add(rdPreguntaCotizacionNO);
-        rdPreguntaCotizacionNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaCotizacionNO.setText("No");
-        rdPreguntaCotizacionNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaCotizacionNOActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaPlanSepareNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasPlanSepare.add(rdPreguntaPlanSepareNO);
-        rdPreguntaPlanSepareNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaPlanSepareNO.setText("No");
-        rdPreguntaPlanSepareNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaPlanSepareNOActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaPedidosNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasPedido.add(rdPreguntaPedidosNO);
-        rdPreguntaPedidosNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaPedidosNO.setText("No");
-        rdPreguntaPedidosNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaPedidosNOActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaFacturaSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasFactura.add(rdPreguntaFacturaSI);
-        rdPreguntaFacturaSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaFacturaSI.setText("Si");
-        rdPreguntaFacturaSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaFacturaSIActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaOServicioSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasOServicio.add(rdPreguntaOServicioSI);
-        rdPreguntaOServicioSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaOServicioSI.setText("Si");
-        rdPreguntaOServicioSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaOServicioSIActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaCotizacionSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasCotizacion.add(rdPreguntaCotizacionSI);
-        rdPreguntaCotizacionSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaCotizacionSI.setText("Si");
-        rdPreguntaCotizacionSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaCotizacionSIActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaPlanSepareSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasPlanSepare.add(rdPreguntaPlanSepareSI);
-        rdPreguntaPlanSepareSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaPlanSepareSI.setText("Si");
-        rdPreguntaPlanSepareSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaPlanSepareSIActionPerformed(evt);
-            }
-        });
-
-        rdPreguntaPedidosSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCopiasPedido.add(rdPreguntaPedidosSI);
-        rdPreguntaPedidosSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPreguntaPedidosSI.setText("Si");
-        rdPreguntaPedidosSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPreguntaPedidosSIActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
-        jPanel22.setLayout(jPanel22Layout);
-        jPanel22Layout.setHorizontalGroup(
-            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel22Layout.createSequentialGroup()
-                        .addComponent(rdPreguntaFacturaSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(2, 2, 2))
-                    .addGroup(jPanel22Layout.createSequentialGroup()
-                        .addComponent(rdPreguntaOServicioSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
-                        .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(rdPreguntaPlanSepareSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdPreguntaCotizacionSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(jPanel22Layout.createSequentialGroup()
-                        .addComponent(rdPreguntaPedidosSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(rdPreguntaPedidosNO, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPreguntaFacturaNO, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPreguntaOServicioNO, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPreguntaCotizacionNO, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPreguntaPlanSepareNO, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel22Layout.setVerticalGroup(
-            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel22Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPreguntaFacturaNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPreguntaFacturaSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPreguntaOServicioNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPreguntaOServicioSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPreguntaCotizacionNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPreguntaCotizacionSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPreguntaPlanSepareNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPreguntaPlanSepareSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPreguntaPedidosNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPreguntaPedidosSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel23.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbTelefono28.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono28.setText("Preguntar en Factura:");
-
-        lbTelefono44.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono44.setText("Preguntar en O.Servicio:");
-
-        lbTelefono45.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono45.setText("Preguntar en Cotización:");
-
-        lbTelefono49.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono49.setText("Preguntar en Plan Separe:");
-
-        lbTelefono51.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono51.setText("Preguntar en Pedidos:");
-
-        javax.swing.GroupLayout jPanel23Layout = new javax.swing.GroupLayout(jPanel23);
-        jPanel23.setLayout(jPanel23Layout);
-        jPanel23Layout.setHorizontalGroup(
-            jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel23Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbTelefono51, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono49, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono45, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono44, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono28, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(3, 3, 3))
-        );
-        jPanel23Layout.setVerticalGroup(
-            jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel23Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(lbTelefono28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono44)
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono45)
-                .addGap(4, 4, 4)
-                .addComponent(lbTelefono49)
-                .addGap(4, 4, 4)
-                .addComponent(lbTelefono51)
-                .addGap(5, 5, 5))
-        );
-
-        javax.swing.GroupLayout pnlNumeroDeCopiasLayout = new javax.swing.GroupLayout(pnlNumeroDeCopias);
-        pnlNumeroDeCopias.setLayout(pnlNumeroDeCopiasLayout);
-        pnlNumeroDeCopiasLayout.setHorizontalGroup(
-            pnlNumeroDeCopiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlNumeroDeCopiasLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        pnlNumeroDeCopiasLayout.setVerticalGroup(
-            pnlNumeroDeCopiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlNumeroDeCopiasLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(pnlNumeroDeCopiasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-
-        jPanel30.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel30.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Opciones", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-
-        jPanel31.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbTelefono41.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono41.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTelefono41.setText("Imprimir y mostrar");
-
-        lbTelefono42.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono42.setText("Imprimir hora en factura:");
-
-        lbTelefono8.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono8.setText("Imprimir Recogida:");
-
-        lbTelefono22.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono22.setText("Imprimir C. Fiscal:");
-
-        lbTelefono23.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono23.setText("Imprimir retenciones en");
-
-        lbTelefono58.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono58.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTelefono58.setText("Imprimir impoconsumo");
-
-        lbTelefono60.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono60.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTelefono60.setText("Ubicación en factura:");
-
-        lbTelefono61.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono61.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTelefono61.setText("factura");
-
-        lbTelefono62.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono62.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTelefono62.setText("en factura");
-
-        javax.swing.GroupLayout jPanel31Layout = new javax.swing.GroupLayout(jPanel31);
-        jPanel31.setLayout(jPanel31Layout);
-        jPanel31Layout.setHorizontalGroup(
-            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel31Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbTelefono58, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel31Layout.createSequentialGroup()
-                        .addGroup(jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lbTelefono8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTelefono41, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTelefono42, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTelefono22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTelefono60, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTelefono62, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(lbTelefono61, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        jPanel31Layout.setVerticalGroup(
-            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel31Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono41, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(lbTelefono60, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
-                .addComponent(lbTelefono42)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbTelefono23)
-                .addGap(0, 0, 0)
-                .addComponent(lbTelefono61, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addComponent(lbTelefono58)
-                .addGap(0, 0, 0)
-                .addComponent(lbTelefono62, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTelefono8)
-                .addGap(3, 3, 3)
-                .addComponent(lbTelefono22)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel32.setBackground(new java.awt.Color(255, 255, 255));
-
-        ubicacionSi.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarUbicacion.add(ubicacionSi);
-        ubicacionSi.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        ubicacionSi.setSelected(true);
-        ubicacionSi.setText("Si");
-
-        ubicacionNo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarUbicacion.add(ubicacionNo);
-        ubicacionNo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        ubicacionNo.setText("No");
-        ubicacionNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ubicacionNoActionPerformed(evt);
-            }
-        });
-
-        horaSi.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarHora.add(horaSi);
-        horaSi.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        horaSi.setSelected(true);
-        horaSi.setText("Si");
-
-        horaNo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarHora.add(horaNo);
-        horaNo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        horaNo.setText("No");
-        horaNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                horaNoActionPerformed(evt);
-            }
-        });
-
-        recogidaSi.setBackground(new java.awt.Color(255, 255, 255));
-        grupoImprimirRecogida.add(recogidaSi);
-        recogidaSi.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        recogidaSi.setSelected(true);
-        recogidaSi.setText("Si");
-
-        recogidaNo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoImprimirRecogida.add(recogidaNo);
-        recogidaNo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        recogidaNo.setText("No");
-        recogidaNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                recogidaNoActionPerformed(evt);
-            }
-        });
-
-        rdSiImprimirCuadreFiscal.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCuadreFiscal.add(rdSiImprimirCuadreFiscal);
-        rdSiImprimirCuadreFiscal.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiImprimirCuadreFiscal.setSelected(true);
-        rdSiImprimirCuadreFiscal.setText("Si");
-
-        rdNoImprimirCuadreFiscal.setBackground(new java.awt.Color(255, 255, 255));
-        grupoCuadreFiscal.add(rdNoImprimirCuadreFiscal);
-        rdNoImprimirCuadreFiscal.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoImprimirCuadreFiscal.setText("No");
-        rdNoImprimirCuadreFiscal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoImprimirCuadreFiscalActionPerformed(evt);
-            }
-        });
-
-        mostrarRetencionesSi.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarRetenciones.add(mostrarRetencionesSi);
-        mostrarRetencionesSi.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        mostrarRetencionesSi.setSelected(true);
-        mostrarRetencionesSi.setText("Si");
-
-        mostrarRetencionesNo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarRetenciones.add(mostrarRetencionesNo);
-        mostrarRetencionesNo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        mostrarRetencionesNo.setText("No");
-        mostrarRetencionesNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mostrarRetencionesNoActionPerformed(evt);
-            }
-        });
-
-        mostrarImpoconsumoSi.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarImpoconsumo.add(mostrarImpoconsumoSi);
-        mostrarImpoconsumoSi.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        mostrarImpoconsumoSi.setSelected(true);
-        mostrarImpoconsumoSi.setText("Si");
-
-        mostrarImpoconsumoNo.setBackground(new java.awt.Color(255, 255, 255));
-        grupoMostrarImpoconsumo.add(mostrarImpoconsumoNo);
-        mostrarImpoconsumoNo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        mostrarImpoconsumoNo.setText("No");
-        mostrarImpoconsumoNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mostrarImpoconsumoNoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel32Layout = new javax.swing.GroupLayout(jPanel32);
-        jPanel32.setLayout(jPanel32Layout);
-        jPanel32Layout.setHorizontalGroup(
-            jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel32Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel32Layout.createSequentialGroup()
-                        .addComponent(ubicacionSi, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(ubicacionNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel32Layout.createSequentialGroup()
-                        .addComponent(mostrarRetencionesSi)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(mostrarRetencionesNo, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel32Layout.createSequentialGroup()
-                        .addComponent(mostrarImpoconsumoSi, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(mostrarImpoconsumoNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel32Layout.createSequentialGroup()
-                        .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(horaSi)
-                            .addGroup(jPanel32Layout.createSequentialGroup()
-                                .addGap(42, 42, 42)
-                                .addComponent(horaNo))
-                            .addGroup(jPanel32Layout.createSequentialGroup()
-                                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(recogidaSi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rdSiImprimirCuadreFiscal))
-                                .addGap(7, 7, 7)
-                                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(rdNoImprimirCuadreFiscal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(recogidaNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel32Layout.setVerticalGroup(
-            jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel32Layout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ubicacionSi, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
-                    .addComponent(ubicacionNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(6, 6, 6)
-                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(horaSi)
-                    .addComponent(horaNo))
-                .addGap(10, 10, 10)
-                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mostrarRetencionesNo, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(mostrarRetencionesSi, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
-                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mostrarImpoconsumoSi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(mostrarImpoconsumoNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(15, 15, 15)
-                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(recogidaSi)
-                    .addComponent(recogidaNo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdSiImprimirCuadreFiscal)
-                    .addComponent(rdNoImprimirCuadreFiscal))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel30Layout = new javax.swing.GroupLayout(jPanel30);
-        jPanel30.setLayout(jPanel30Layout);
-        jPanel30Layout.setHorizontalGroup(
-            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel30Layout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel32, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel30Layout.setVerticalGroup(
-            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel30Layout.createSequentialGroup()
-                .addGap(2, 2, 2)
-                .addGroup(jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, 225, Short.MAX_VALUE)
-                    .addComponent(jPanel32, javax.swing.GroupLayout.PREFERRED_SIZE, 225, Short.MAX_VALUE))
-                .addGap(5, 5, 5))
-        );
-
-        pnlPrevisualizar.setBackground(new java.awt.Color(255, 255, 255));
-        pnlPrevisualizar.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Previsualizar", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12))); // NOI18N
-
-        jPanel24.setBackground(new java.awt.Color(255, 255, 255));
-
-        rdPrevisualizarFacturaNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarFactura.add(rdPrevisualizarFacturaNO);
-        rdPrevisualizarFacturaNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarFacturaNO.setText("No");
-        rdPrevisualizarFacturaNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarFacturaNOActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarOServicioNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarOServicio.add(rdPrevisualizarOServicioNO);
-        rdPrevisualizarOServicioNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarOServicioNO.setText("No");
-        rdPrevisualizarOServicioNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarOServicioNOActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarCotizacionNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarCotizacion.add(rdPrevisualizarCotizacionNO);
-        rdPrevisualizarCotizacionNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarCotizacionNO.setText("No");
-        rdPrevisualizarCotizacionNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarCotizacionNOActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarPlanSepareNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarPlanSepare.add(rdPrevisualizarPlanSepareNO);
-        rdPrevisualizarPlanSepareNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarPlanSepareNO.setText("No");
-        rdPrevisualizarPlanSepareNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarPlanSepareNOActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarPedidosNO.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarPedidos.add(rdPrevisualizarPedidosNO);
-        rdPrevisualizarPedidosNO.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarPedidosNO.setText("No");
-        rdPrevisualizarPedidosNO.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarPedidosNOActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarFacturaSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarFactura.add(rdPrevisualizarFacturaSI);
-        rdPrevisualizarFacturaSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarFacturaSI.setText("Si");
-        rdPrevisualizarFacturaSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarFacturaSIActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarOServicioSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarOServicio.add(rdPrevisualizarOServicioSI);
-        rdPrevisualizarOServicioSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarOServicioSI.setText("Si");
-        rdPrevisualizarOServicioSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarOServicioSIActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarCotizacionSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarCotizacion.add(rdPrevisualizarCotizacionSI);
-        rdPrevisualizarCotizacionSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarCotizacionSI.setText("Si");
-        rdPrevisualizarCotizacionSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarCotizacionSIActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarPlanSepareSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarPlanSepare.add(rdPrevisualizarPlanSepareSI);
-        rdPrevisualizarPlanSepareSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarPlanSepareSI.setText("Si");
-        rdPrevisualizarPlanSepareSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarPlanSepareSIActionPerformed(evt);
-            }
-        });
-
-        rdPrevisualizarPedidosSI.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarPedidos.add(rdPrevisualizarPedidosSI);
-        rdPrevisualizarPedidosSI.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdPrevisualizarPedidosSI.setText("Si");
-        rdPrevisualizarPedidosSI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdPrevisualizarPedidosSIActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
-        jPanel24.setLayout(jPanel24Layout);
-        jPanel24Layout.setHorizontalGroup(
-            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel24Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel24Layout.createSequentialGroup()
-                        .addComponent(rdPrevisualizarFacturaSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(2, 2, 2))
-                    .addGroup(jPanel24Layout.createSequentialGroup()
-                        .addComponent(rdPrevisualizarOServicioSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel24Layout.createSequentialGroup()
-                        .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(rdPrevisualizarPlanSepareSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdPrevisualizarCotizacionSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(jPanel24Layout.createSequentialGroup()
-                        .addComponent(rdPrevisualizarPedidosSI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(rdPrevisualizarPedidosNO, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPrevisualizarFacturaNO, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPrevisualizarOServicioNO, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPrevisualizarCotizacionNO, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rdPrevisualizarPlanSepareNO, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel24Layout.setVerticalGroup(
-            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel24Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPrevisualizarFacturaNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPrevisualizarFacturaSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPrevisualizarOServicioNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPrevisualizarOServicioSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPrevisualizarCotizacionNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPrevisualizarCotizacionSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPrevisualizarPlanSepareNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPrevisualizarPlanSepareSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rdPrevisualizarPedidosNO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdPrevisualizarPedidosSI, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel25.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbTelefono53.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono53.setText("Factura:");
-
-        lbTelefono54.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono54.setText("O.Servicio:");
-
-        lbTelefono55.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono55.setText("Cotización:");
-
-        lbTelefono56.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono56.setText("Plan Separe:");
-
-        lbTelefono57.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono57.setText("Pedidos:");
-
-        javax.swing.GroupLayout jPanel25Layout = new javax.swing.GroupLayout(jPanel25);
-        jPanel25.setLayout(jPanel25Layout);
-        jPanel25Layout.setHorizontalGroup(
-            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel25Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbTelefono57, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono56, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono55, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono54, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbTelefono53, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel25Layout.setVerticalGroup(
-            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel25Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(lbTelefono53, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(lbTelefono54)
-                .addGap(5, 5, 5)
-                .addComponent(lbTelefono55)
-                .addGap(4, 4, 4)
-                .addComponent(lbTelefono56)
-                .addGap(4, 4, 4)
-                .addComponent(lbTelefono57)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout pnlPrevisualizarLayout = new javax.swing.GroupLayout(pnlPrevisualizar);
-        pnlPrevisualizar.setLayout(pnlPrevisualizarLayout);
-        pnlPrevisualizarLayout.setHorizontalGroup(
-            pnlPrevisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPrevisualizarLayout.createSequentialGroup()
-                .addComponent(jPanel25, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        pnlPrevisualizarLayout.setVerticalGroup(
-            pnlPrevisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        pnlImpresorasPorDocumento.setBackground(new java.awt.Color(255, 255, 255));
-        pnlImpresorasPorDocumento.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Impresoras", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 10))); // NOI18N
-
-        cmbTipoCarta.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-
-        cmbTipoMediaCarta.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        cmbTipoMediaCarta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbTipoMediaCartaActionPerformed(evt);
-            }
-        });
-
-        cmbTipoPos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-
-        carta.setBackground(new java.awt.Color(255, 255, 255));
-        grupoTipoImpresion.add(carta);
-        carta.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        carta.setText("Carta");
-        carta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cartaActionPerformed(evt);
-            }
-        });
-
-        mediaCarta.setBackground(new java.awt.Color(255, 255, 255));
-        grupoTipoImpresion.add(mediaCarta);
-        mediaCarta.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
-        mediaCarta.setText("M. Carta");
-        mediaCarta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mediaCartaActionPerformed(evt);
-            }
-        });
-
-        pos.setBackground(new java.awt.Color(255, 255, 255));
-        grupoTipoImpresion.add(pos);
-        pos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        pos.setText("Pos");
-        pos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                posActionPerformed(evt);
-            }
-        });
-
-        cmbComanda.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-
-        cmbPrefactura.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-
-        lbComanda.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        lbComanda.setText("Comanda:");
-
-        lbPrefactura.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        lbPrefactura.setText("Prefactura:");
-
-        javax.swing.GroupLayout pnlImpresorasPorDocumentoLayout = new javax.swing.GroupLayout(pnlImpresorasPorDocumento);
-        pnlImpresorasPorDocumento.setLayout(pnlImpresorasPorDocumentoLayout);
-        pnlImpresorasPorDocumentoLayout.setHorizontalGroup(
-            pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
-                        .addComponent(mediaCarta)
-                        .addGap(6, 6, 6))
-                    .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
-                        .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(carta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbComanda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
-                                .addComponent(lbPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbPrefactura, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmbComanda, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
-                        .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cmbTipoMediaCarta, 0, 312, Short.MAX_VALUE)
-                            .addComponent(cmbTipoCarta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cmbTipoPos, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        pnlImpresorasPorDocumentoLayout.setVerticalGroup(
-            pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlImpresorasPorDocumentoLayout.createSequentialGroup()
-                .addGap(1, 1, 1)
-                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cmbTipoCarta)
-                    .addComponent(carta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(2, 2, 2)
-                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mediaCarta)
-                    .addComponent(cmbTipoMediaCarta, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbTipoPos, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pos))
-                .addGap(3, 3, 3)
-                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cmbComanda, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                    .addComponent(lbComanda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(3, 3, 3)
-                .addGroup(pnlImpresorasPorDocumentoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cmbPrefactura)
-                    .addComponent(lbPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2))
-        );
-
-        pnlRestaurante.setBackground(new java.awt.Color(255, 255, 255));
-        pnlRestaurante.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Impresiones restaurante", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 10))); // NOI18N
-
-        lbTelefono68.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono68.setText("Previsualizar comanda:");
-
-        lbTelefono70.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono70.setText("Previsualizar prefactura:");
-
-        rdSiPrevisualizarComanda.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarComanda.add(rdSiPrevisualizarComanda);
-        rdSiPrevisualizarComanda.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiPrevisualizarComanda.setSelected(true);
-        rdSiPrevisualizarComanda.setText("Si");
-        rdSiPrevisualizarComanda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiPrevisualizarComandaActionPerformed(evt);
-            }
-        });
-
-        rdNoPrevisualizarComanda.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarComanda.add(rdNoPrevisualizarComanda);
-        rdNoPrevisualizarComanda.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoPrevisualizarComanda.setText("No");
-        rdNoPrevisualizarComanda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoPrevisualizarComandaActionPerformed(evt);
-            }
-        });
-
-        lbTelefono71.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono71.setText("Número copias:");
-
-        txtCantCopiasComanda.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtCantCopiasComanda.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtCantCopiasComanda.setText("0");
-        txtCantCopiasComanda.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtCantCopiasComandaKeyTyped(evt);
-            }
-        });
-
-        rdSiPrevisualizarPrefactura.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarPrefactura.add(rdSiPrevisualizarPrefactura);
-        rdSiPrevisualizarPrefactura.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdSiPrevisualizarPrefactura.setSelected(true);
-        rdSiPrevisualizarPrefactura.setText("Si");
-        rdSiPrevisualizarPrefactura.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdSiPrevisualizarPrefacturaActionPerformed(evt);
-            }
-        });
-
-        rdNoPrevisualizarPrefactura.setBackground(new java.awt.Color(255, 255, 255));
-        grupoPrevisualizarPrefactura.add(rdNoPrevisualizarPrefactura);
-        rdNoPrevisualizarPrefactura.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        rdNoPrevisualizarPrefactura.setText("No");
-        rdNoPrevisualizarPrefactura.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdNoPrevisualizarPrefacturaActionPerformed(evt);
-            }
-        });
-
-        lbTelefono72.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        lbTelefono72.setText("Número copias:");
-
-        txtCantCopiasPrefactura.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtCantCopiasPrefactura.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtCantCopiasPrefactura.setText("0");
-        txtCantCopiasPrefactura.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtCantCopiasPrefacturaKeyTyped(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnlRestauranteLayout = new javax.swing.GroupLayout(pnlRestaurante);
-        pnlRestaurante.setLayout(pnlRestauranteLayout);
-        pnlRestauranteLayout.setHorizontalGroup(
-            pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlRestauranteLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlRestauranteLayout.createSequentialGroup()
-                        .addComponent(lbTelefono68, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rdSiPrevisualizarComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)
-                        .addComponent(rdNoPrevisualizarComanda, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                        .addGap(27, 27, 27)
-                        .addComponent(lbTelefono71, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCantCopiasComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlRestauranteLayout.createSequentialGroup()
-                        .addComponent(lbTelefono70, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rdSiPrevisualizarPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)
-                        .addComponent(rdNoPrevisualizarPrefactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(27, 27, 27)
-                        .addComponent(lbTelefono72, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCantCopiasPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        pnlRestauranteLayout.setVerticalGroup(
-            pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlRestauranteLayout.createSequentialGroup()
-                .addGap(1, 1, 1)
-                .addGroup(pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbTelefono71, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(rdSiPrevisualizarComanda, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbTelefono68)
-                        .addComponent(rdNoPrevisualizarComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtCantCopiasComanda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(2, 2, 2)
-                .addGroup(pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lbTelefono72, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(rdSiPrevisualizarPrefactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(pnlRestauranteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(rdNoPrevisualizarPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCantCopiasPrefactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(lbTelefono70))
-                .addGap(2, 2, 2))
-        );
-
-        javax.swing.GroupLayout pnlImpresionesLayout = new javax.swing.GroupLayout(pnlImpresiones);
-        pnlImpresiones.setLayout(pnlImpresionesLayout);
-        pnlImpresionesLayout.setHorizontalGroup(
-            pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlImpresionesLayout.createSequentialGroup()
-                .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pnlNumeroDeCopias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlImpresorasPorDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlImpresionesLayout.createSequentialGroup()
-                        .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlPrevisualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlRestaurante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        pnlImpresionesLayout.setVerticalGroup(
-            pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlImpresionesLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(pnlImpresionesLayout.createSequentialGroup()
-                        .addComponent(pnlNumeroDeCopias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlImpresorasPorDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlImpresionesLayout.createSequentialGroup()
-                        .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(pnlPrevisualizar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(4, 4, 4)
-                        .addComponent(pnlRestaurante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(5, 5, 5))
-        );
-
-        btnOcultarImpresiones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/boton-resta.png"))); // NOI18N
-        btnOcultarImpresiones.setToolTipText("Ctrl+M");
-        btnOcultarImpresiones.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOcultarImpresionesActionPerformed(evt);
-            }
-        });
 
         btnOcultarImpresiones1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/boton-resta.png"))); // NOI18N
         btnOcultarImpresiones1.setToolTipText("Ctrl+M");
@@ -4201,6 +2110,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
+        tblImpresionDocumentos.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         tblImpresionDocumentos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"Factura", null, null, null},
@@ -4212,7 +2122,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 {"Prefactura", null, null, null}
             },
             new String [] {
-                "Tipo Documento", "Previsualizar", "Preguntar copias", "Número copias"
+                "Tipo Documento", "Previsualizar en pantalla", "Preguntar copias", "# copias"
             }
         ) {
             Class[] types = new Class [] {
@@ -4223,75 +2133,153 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 return types [columnIndex];
             }
         });
+        tblImpresionDocumentos.setRowHeight(24);
         jScrollPane16.setViewportView(tblImpresionDocumentos);
         if (tblImpresionDocumentos.getColumnModel().getColumnCount() > 0) {
-            tblImpresionDocumentos.getColumnModel().getColumn(0).setMinWidth(120);
-            tblImpresionDocumentos.getColumnModel().getColumn(0).setPreferredWidth(120);
-            tblImpresionDocumentos.getColumnModel().getColumn(0).setMaxWidth(120);
+            tblImpresionDocumentos.getColumnModel().getColumn(0).setMinWidth(140);
+            tblImpresionDocumentos.getColumnModel().getColumn(0).setPreferredWidth(140);
+            tblImpresionDocumentos.getColumnModel().getColumn(0).setMaxWidth(140);
+            tblImpresionDocumentos.getColumnModel().getColumn(2).setMinWidth(120);
+            tblImpresionDocumentos.getColumnModel().getColumn(2).setPreferredWidth(120);
+            tblImpresionDocumentos.getColumnModel().getColumn(2).setMaxWidth(120);
+            tblImpresionDocumentos.getColumnModel().getColumn(3).setMinWidth(70);
+            tblImpresionDocumentos.getColumnModel().getColumn(3).setPreferredWidth(70);
+            tblImpresionDocumentos.getColumnModel().getColumn(3).setMaxWidth(70);
         }
 
+        tblImpresoraPorTipo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         tblImpresoraPorTipo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Carta", null},
-                {"Media carta", null},
-                {"Pos", null},
-                {"Comanda", null},
-                {"Prefactura", null}
+                {"Carta", null, null},
+                {"Media carta", null, null},
+                {"Pos", null, null},
+                {"Comanda", null, null},
+                {"Prefactura", null, null}
             },
             new String [] {
-                "Tipo Documento", "Impresora"
+                "Tipo Documento", "Impresora por defecto", "Pretederminado"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tblImpresoraPorTipo.setRowHeight(24);
         jScrollPane17.setViewportView(tblImpresoraPorTipo);
         if (tblImpresoraPorTipo.getColumnModel().getColumnCount() > 0) {
             tblImpresoraPorTipo.getColumnModel().getColumn(0).setMinWidth(120);
             tblImpresoraPorTipo.getColumnModel().getColumn(0).setPreferredWidth(120);
             tblImpresoraPorTipo.getColumnModel().getColumn(0).setMaxWidth(120);
+            tblImpresoraPorTipo.getColumnModel().getColumn(2).setMinWidth(90);
+            tblImpresoraPorTipo.getColumnModel().getColumn(2).setPreferredWidth(90);
+            tblImpresoraPorTipo.getColumnModel().getColumn(2).setMaxWidth(90);
         }
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
+        tblOpcionesImpresiones.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblOpcionesImpresiones.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Imprimir ubicación en factura", null},
+                {"Imprimir hora en factura", null},
+                {"Imprimir retenciones en factura", null},
+                {"Imprimir impoconsumo en factura", null},
+                {"Imprimir recodiga en cuadre de caja", null},
+                {"Imprimir cuadre fiscal en cuadre de caja", null}
+            },
+            new String [] {
+                "Opción", "Valor"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tblOpcionesImpresiones.setRowHeight(24);
+        jScrollPane18.setViewportView(tblOpcionesImpresiones);
+        if (tblOpcionesImpresiones.getColumnModel().getColumnCount() > 0) {
+            tblOpcionesImpresiones.getColumnModel().getColumn(1).setMinWidth(80);
+            tblOpcionesImpresiones.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblOpcionesImpresiones.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        tblInformacionImpresion.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblInformacionImpresion.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Pie de página", null},
+                {"Información legal", null},
+                {"Anexo factura", null},
+                {"Anexo orden de servicio", null}
+            },
+            new String [] {
+                "Información impresión", "Valor"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tblInformacionImpresion.setRowHeight(24);
+        jScrollPane20.setViewportView(tblInformacionImpresion);
+        if (tblInformacionImpresion.getColumnModel().getColumnCount() > 0) {
+            tblInformacionImpresion.getColumnModel().getColumn(0).setMinWidth(180);
+            tblInformacionImpresion.getColumnModel().getColumn(0).setPreferredWidth(180);
+            tblInformacionImpresion.getColumnModel().getColumn(0).setMaxWidth(180);
+        }
+
+        javax.swing.GroupLayout pnlImpresionesLayout = new javax.swing.GroupLayout(pnlImpresiones);
+        pnlImpresiones.setLayout(pnlImpresionesLayout);
+        pnlImpresionesLayout.setHorizontalGroup(
+            pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlImpresionesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(pnlImpresionesGrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pnlImpresiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlImpresionesLayout.createSequentialGroup()
+                        .addComponent(pnlImpresionesGrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnOcultarImpresiones)
-                            .addComponent(btnOcultarImpresiones1)))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnOcultarImpresiones1))
+                    .addGroup(pnlImpresionesLayout.createSequentialGroup()
+                        .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(pnlImpresionesLayout.createSequentialGroup()
+                        .addComponent(jScrollPane18, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane20, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
+        pnlImpresionesLayout.setVerticalGroup(
+            pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlImpresionesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlImpresiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnOcultarImpresiones))
+                .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane16, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                    .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane18, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane20, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlImpresionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlImpresionesGrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
+                    .addGroup(pnlImpresionesLayout.createSequentialGroup()
                         .addComponent(btnOcultarImpresiones1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        tabPanel.addTab("Impresión", jPanel8);
+        tabPanel.addTab("Manejo de impresiones", pnlImpresiones);
 
         jPanel15.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -4369,7 +2357,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1017, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1026, Short.MAX_VALUE)
                     .addComponent(lbTelefono38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -4379,7 +2367,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(lbTelefono38, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1180, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -4603,7 +2591,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel29Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jScrollPane8)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -4920,7 +2908,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                                 .addGap(37, 37, 37)
                                 .addComponent(btnGenerarTabla))
                             .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
                         .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmbDoctores2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -4952,7 +2940,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel34Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 1025, Short.MAX_VALUE)
+                        .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNumMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -5096,7 +3084,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(451, Short.MAX_VALUE))
+                .addContainerGap(470, Short.MAX_VALUE))
         );
         jPanel35Layout.setVerticalGroup(
             jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -5110,7 +3098,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(pnlAgenda1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(103, 103, 103)
                 .addComponent(cmbDoctores3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1007, Short.MAX_VALUE))
+                .addContainerGap(386, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Veterinario", jPanel35);
@@ -5210,7 +3198,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnGuardar6.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
         btnGuardar6.setText("GUARDAR");
-        btnGuardar6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar6.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar6.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnGuardar6.addActionListener(new java.awt.event.ActionListener() {
@@ -5229,7 +3217,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addGroup(jPanel47Layout.createSequentialGroup()
                         .addComponent(jPanel48, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(1, 1, 1))
-                    .addComponent(jScrollPane13, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+                    .addComponent(jScrollPane13, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
                     .addGroup(jPanel47Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnGuardar6, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -5352,7 +3340,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
         btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBusProd.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBusProd.addActionListener(new java.awt.event.ActionListener() {
@@ -5370,7 +3358,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane14)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel49Layout.createSequentialGroup()
-                        .addGap(0, 496, Short.MAX_VALUE)
+                        .addGap(0, 515, Short.MAX_VALUE)
                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCodProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -5382,7 +3370,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel49Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jScrollPane14, javax.swing.GroupLayout.DEFAULT_SIZE, 706, Short.MAX_VALUE)
+                .addComponent(jScrollPane14, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
                 .addGap(5, 5, 5)
                 .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -5624,119 +3612,15 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addComponent(jPanel49, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlFormulario1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel50, javax.swing.GroupLayout.PREFERRED_SIZE, 473, Short.MAX_VALUE)
+                    .addComponent(jPanel50, javax.swing.GroupLayout.PREFERRED_SIZE, 510, Short.MAX_VALUE)
                     .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         tabPanel.addTab("Parqueadero", pnlFormulario1);
 
-        tblBodegasInternas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Codigo", "Nombre bodega", "Estado"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane15.setViewportView(tblBodegasInternas);
-
-        btnAgregarBodega.setBackground(new java.awt.Color(46, 204, 113));
-        btnAgregarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnAgregarBodega.setText("Agregar bodega");
-        btnAgregarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAgregarBodega.setEnabled(false);
-        btnAgregarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnAgregarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnAgregarBodega.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarBodegaActionPerformed(evt);
-            }
-        });
-
-        btnModificarBodega.setBackground(new java.awt.Color(93, 173, 226));
-        btnModificarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnModificarBodega.setText("Modificar bodega");
-        btnModificarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnModificarBodega.setEnabled(false);
-        btnModificarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnModificarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnModificarBodega.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarBodegaActionPerformed(evt);
-            }
-        });
-
-        btnCambiarEstadoBodega.setBackground(new java.awt.Color(241, 148, 138));
-        btnCambiarEstadoBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnCambiarEstadoBodega.setText("Inactivar bodega");
-        btnCambiarEstadoBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCambiarEstadoBodega.setEnabled(false);
-        btnCambiarEstadoBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnCambiarEstadoBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnCambiarEstadoBodega.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCambiarEstadoBodegaActionPerformed(evt);
-            }
-        });
-
-        jLabel13.setText("Bodega seleccionada por defecto:");
-
-        javax.swing.GroupLayout pnlBodegasLayout = new javax.swing.GroupLayout(pnlBodegas);
-        pnlBodegas.setLayout(pnlBodegasLayout);
-        pnlBodegasLayout.setHorizontalGroup(
-            pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlBodegasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlBodegasLayout.createSequentialGroup()
-                        .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlBodegasLayout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cmbBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(504, Short.MAX_VALUE))
-        );
-        pnlBodegasLayout.setVerticalGroup(
-            pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlBodegasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
-                .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cmbBodegas)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(702, Short.MAX_VALUE))
-        );
-
-        tabPanel.addTab("Bodegas", pnlBodegas);
-
         jPanel12.setBackground(new java.awt.Color(255, 255, 255));
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        lbTelefono7.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbTelefono7.setText("Dias Alerta Resolucion: ");
-
-        txtDiasAlerta1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtDiasAlerta1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel1.setBackground(new java.awt.Color(102, 204, 255));
         jLabel1.setText("1");
@@ -5752,13 +3636,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbTelefono7)
-                .addGap(18, 18, 18)
-                .addComponent(txtDiasAlerta1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(262, 262, 262)
                 .addComponent(txtIdProd, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 708, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -5769,8 +3649,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbTelefono7)
-                    .addComponent(txtDiasAlerta1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(txtIdProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -5783,7 +3661,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         btnGuardar2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/usuarios.png"))); // NOI18N
         btnGuardar2.setText("USUARIOS");
-        btnGuardar2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar2.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnGuardar2.addActionListener(new java.awt.event.ActionListener() {
@@ -5792,16 +3670,16 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         });
 
-        btnGuardar1.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        btnGuardar1.setText("GUARDAR");
-        btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnGuardar1.setMargin(new java.awt.Insets(2, 14, 2, 5));
-        btnGuardar1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardarMaestra.setBackground(new java.awt.Color(46, 204, 113));
+        btnGuardarMaestra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnGuardarMaestra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarMaestra.setText("GUARDAR");
+        btnGuardarMaestra.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnGuardarMaestra.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGuardarMaestra.setMargin(new java.awt.Insets(2, 14, 2, 5));
+        btnGuardarMaestra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardar1ActionPerformed(evt);
+                btnGuardarMaestraActionPerformed(evt);
             }
         });
 
@@ -5837,13 +3715,13 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(btnGuardar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnGuardar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnGuardarMaestra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(btnGuardar1)
+                .addComponent(btnGuardarMaestra)
                 .addGap(5, 5, 5)
                 .addComponent(jButton1)
                 .addGap(5, 5, 5)
@@ -5863,8 +3741,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnlFormularioLayout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(8, 8, 8)
-                        .addComponent(tabPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tabPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(2, 2, 2)))
                 .addContainerGap())
         );
         pnlFormularioLayout.setVerticalGroup(
@@ -5874,7 +3753,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 .addGroup(pnlFormularioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tabPanel)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0)
+                .addGap(10, 10, 10)
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
@@ -5889,56 +3768,17 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scrFormulario, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(scrFormulario)
                 .addGap(0, 0, 0))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtL1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtL1KeyTyped
-        metodos.soloNum(evt);
-    }//GEN-LAST:event_txtL1KeyTyped
 
-    private void txtL1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtL1KeyReleased
-
-    }//GEN-LAST:event_txtL1KeyReleased
-
-    private void txtRegimenKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRegimenKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRegimenKeyReleased
-
-    private void txtRegimenKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRegimenKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRegimenKeyTyped
-
-    private void txtNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreKeyReleased
-
-    private void txtNitKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNitKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNitKeyReleased
-
-    private void txtNitKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNitKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNitKeyTyped
-
-    private void txtDireccionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDireccionKeyReleased
-
-    private void txtTelefonoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTelefonoKeyReleased
-
-    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTelefonoKeyTyped
-
-    private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
+    private void btnGuardarMaestraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarMaestraActionPerformed
         boolean registrar = false;
 
         if (ControladorAlertas.option("¿Desea continuar?")) {
@@ -5957,92 +3797,106 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                     }
                 }
 
-//                if (rdNoGenerarOrden.isSelected()) {
-//                    ndCamposOrdenPredeterminada nodo = instancias.getSql().getDatosCamposOrdenPredeterminada("1");
-//                    if (nodo.getId() == null) {
-//                        ControladorAlertas.alertFail("No ha predeterminado los campos de la orden");
-//                        return;
-//                    }
-//                }
+                if (rdNoGenerarOrden.isSelected()) {
+                    ndCamposOrdenPredeterminada nodo = instancias.getSql().getDatosCamposOrdenPredeterminada("1");
+                    if (nodo.getId() == null) {
+                        ControladorAlertas.alertFail("No ha predeterminado los campos de la orden");
+                        return;
+                    }
+                }
             }
 
-            String vendedores = "", regimen = "", utilidad = "SI", descuento = "porcentaje", ubicacion = "SI", impresion = "", cantCopias = "", tituloFactura = "Factura de venta No.";
+            String regimen = "", utilidad = "SI", descuento = "porcentaje", ubicacion = "SI", impresion = "", tituloFactura = "Factura de venta No.";
 
-//                if (simplificado.isSelected()) {
-//                    regimen = "SinIva";
-//                }
-            lbTelefono2.requestFocus();
-            if (utilidadNo.isSelected()) {
+            tblInformacionEmpresa.requestFocus();
+
+            if (!getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1)) {
                 utilidad = "NO";
             }
 
-            if (descuentoPeso.isSelected()) {
+            if ("Valor".equals(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Tipo de descuento", 1))) {
                 descuento = "peso";
             }
 
-            if (ubicacionNo.isSelected()) {
+            if (!getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1)) {
                 ubicacion = "NO";
             }
 
-            try {
-                cantCopias = Integer.parseInt(txtCantFactura.getText()) + "";
-            } catch (Exception e) {
-            }
-
-            if (pos.isSelected()) {
+            if (getCeldaBooleanaPorEtiqueta(tblImpresoraPorTipo, "Pos", 2)) {
                 impresion = "pos";
-            } else if (carta.isSelected()) {
+            } else if (getCeldaBooleanaPorEtiqueta(tblImpresoraPorTipo, "Carta", 2)) {
                 impresion = "facturaCompleta";
             } else {
                 impresion = "factura";
             }
 
-            if (!txtTituloFactura.getText().equals("")) {
-                tituloFactura = txtTituloFactura.getText();
+            String tituloTabla = getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Título en la factura", 1);
+            if (!tituloTabla.equals("")) {
+                tituloFactura = tituloTabla;
             }
-
-            ndMaestra nodo2 = new DaoMaestra().obtenerMaestra();
 
             String impresionPos = getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Pos", 1).toLowerCase();
 
-            String responsabilidades = "";
-            for (int i = 0; i < cmbMisResponsabilidades.getItemCount(); i++) {
-                responsabilidades = responsabilidades + cmbMisResponsabilidades.getItemAt(i) + ", ";
+            StringBuilder sbResp = new StringBuilder();
+            for (int i = 5; i < tblInformacionEmpresa.getRowCount(); i++) {
+                Object checked = tblInformacionEmpresa.getValueAt(i, 1);
+                if (Boolean.TRUE.equals(checked)) {
+                    if (sbResp.length() > 0) {
+                        sbResp.append(", ");
+                    }
+                    sbResp.append(tblInformacionEmpresa.getValueAt(i, 0).toString());
+                }
+            }
+            String responsabilidades = sbResp.toString();
+
+            ModeloMaestraGeneral general = construirModeloGeneral(regimen, utilidad, descuento, tituloFactura, responsabilidades);
+            if (general == null) {
+                ControladorAlertas.alertFail("No se pudo cargar la configuración actual");
+                return;
             }
 
-            if (!responsabilidades.equals("")) {
-                responsabilidades = responsabilidades.substring(0, responsabilidades.length() - 2);
-            }
+            ModeloMaestraImpresiones impresiones = new ModeloMaestraImpresiones();
+            impresiones.setPrevisualizarFactura(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Factura", 1));
+            impresiones.setPrevisualizarOServicio(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 1));
+            impresiones.setPrevisualizarCotizacion(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Cotización", 1));
+            impresiones.setPrevisualizarPlanSepare(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Plan separe", 1));
+            impresiones.setPrevisualizarPedido(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Pedido", 1));
+            impresiones.setPrevisualizarComanda(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Comanda", 1));
+            impresiones.setPrevisualizarPrefactura(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Prefactura", 1));
+            impresiones.setPreguntarCopiasFactura(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Factura", 2));
+            impresiones.setPreguntarCopiasOServicio(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 2));
+            impresiones.setPreguntarCopiasCotizacion(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Cotización", 2));
+            impresiones.setPreguntarCopiasPlanSepare(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Plan separe", 2));
+            impresiones.setPreguntarCopiasPedido(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Pedido", 2));
+            impresiones.setPreguntarCopiasComanda(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Comanda", 2));
+            impresiones.setPreguntarCopiasPrefactura(getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Prefactura", 2));
+            impresiones.setNumeroCopiasFactura(getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Factura", 3));
+            impresiones.setNumeroCopiasOrdenServicio(getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 3));
+            impresiones.setNumeroCopiasCotizacion(getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Cotización", 3));
+            impresiones.setNumeroCopiasPlanSepare(getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Plan separe", 3));
+            impresiones.setNumeroCopiasPedido(getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Pedido", 3));
+            impresiones.setNumeroCopiasComanda(getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Comanda", 3));
+            impresiones.setNumeroCopiasPrefactura(getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Prefactura", 3));
+            impresiones.setImpresoraPos(impresionPos);
+            impresiones.setImpresoraMediaCarta(getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Media carta", 1));
+            impresiones.setImpresoraCarta(getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Carta", 1));
+            impresiones.setImpresoraComanda(getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Comanda", 1));
+            impresiones.setImpresoraPrefactura(getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Prefactura", 1));
+            impresiones.setTipoPredeterminado(impresion);
+            impresiones.setMostrarUbicacion(ubicacion);
+            impresiones.setImprimirHora(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir hora en factura", 1));
+            impresiones.setImprimirRetenciones(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir retenciones en factura", 1));
+            impresiones.setImprimirImpoconsumo(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir impoconsumo en factura", 1));
+            impresiones.setImprimirRecodiga(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir recodiga en cuadre de caja", 1));
+            impresiones.setImprimirCuadreFiscal(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir cuadre fiscal en cuadre de caja", 1));
+            impresiones.setImpresionPorGrupo(rdImpresionPorGrupo.isSelected());
+            impresiones.setFormatoImpresion(txtNombreFormato.getText());
+            impresiones.setPiePagina(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Pie de página", 1));
+            impresiones.setInformacionLegal(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Información legal", 1));
+            impresiones.setAnexoFactura(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Anexo factura", 1));
+            impresiones.setAnexoOrdenServicio(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Anexo orden de servicio", 1));
 
-            Object[] vector = {txtL1.getText(), impresion, cantCopias, vendedores, regimen, utilidad, descuento, txtContra.getText(), txtNit.getText().toUpperCase(),
-                txtNombre.getText().toUpperCase(), txtRegimen.getText().toUpperCase(), nodo2.getD4(), nodo2.getD5(), txtDireccion.getText().toUpperCase(),
-                txtTelefono.getText().toUpperCase(), txtPiePagina.getText(), txtLegal.getText(), ubicacion, txtDiasAlerta.getText(), recogidaSi.isSelected(),
-                lectorSi.isSelected(), tituloFactura, rdSiPvpIva.isSelected(), rdSiCostoIva.isSelected(), rdSiVentasPredeterminado.isSelected(),
-                rdSiMensajeUtilidad.isSelected(), nodo2.isConsecutivosDiferentes(), nodo2.isResolucionIgual(), txtDiasAlerta1.getText(), nodo2.getAlertaFechaDias(),
-                nodo2.getAlertaCantidadNumeracion(), nodo2.getAlertaPromedioDias(), txtDiasCobrarMora.getText(), txtPorcentajeMora.getText(), rdSiGenerarOrden.isSelected(),
-                rdSiImprimirOrden.isSelected(), rdSiImprimirFactura.isSelected(), cmbHoraInicio.getSelectedItem(), cmbHoraFin.getSelectedItem(), cmbIntervalo.getSelectedItem(),
-                txtCodigoPrestadorServico.getText(), rdSiImprimirCuadreFiscal.isSelected(), rdSiCupoCredito.isSelected(), rdCopiasSi.isSelected(),
-                false, txtDescuentoMaximo.getText().replace(",", "."), cmbTipoPrestador.getSelectedItem(), "0",
-                "6", txtLimite.getText(), rdSiCombinar.isSelected(), rdSiModificarNombre.isSelected(), rdSiBolsa.isSelected(), txtValor.getText(),
-                rdTurnoSi.isSelected(), txtTurno.getText(), txtAnexoFactura.getText(), rdSiConsecutivo.isSelected(), horaSi.isSelected(), rdSiPondNegativo.isSelected(),
-                txtAnexoOrden.getText(), rdSiModificarPrecio.isSelected(), rdSiBorrarProdMesas.isSelected(), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Factura", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 2),
-                getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Cotización", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Plan separe", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Pedido", 2), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Factura", 1),
-                getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Cotización", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Plan separe", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Pedido", 1),
-                getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Factura", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Orden de servicio", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Cotización", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Plan separe", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Pedido", 3), rdSiPagoTerceros.isSelected(),
-                rdSiFacturarSinInventario.isSelected(), true, impresionPos, getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Media carta", 1), getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Carta", 1),
-                mostrarImpoconsumoSi.isSelected(), mostrarRetencionesSi.isSelected(), txtNombreFormato.getText(), txtCantidadEstablecida.getText(),
-                txtFilas.getText(), txtColumnas.getText(), txtPorcPropina.getText(), rdSiDevuelta.isSelected(), cmbHoraInicio1.getSelectedItem(),
-                cmbHoraFin1.getSelectedItem(), cmbIntervalo1.getSelectedItem(), rdSiDiasAutomaticos.isSelected(), rdSiSolicitudesPermisos.isSelected(),
-                cmbFoco.getSelectedItem(), rdSiPvpImpo.isSelected(), rdSiCostoImpo.isSelected(), rdImpresionPorGrupo.isSelected(),
-                getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Comanda", 3), getCeldaTextoPorEtiqueta(tblImpresionDocumentos, "Prefactura", 3), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Comanda", 1), getCeldaBooleanaPorEtiqueta(tblImpresionDocumentos, "Prefactura", 1),
-                getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Comanda", 1), getCeldaTextoPorEtiqueta(tblImpresoraPorTipo, "Prefactura", 1), rdSiFacturarMesas.isSelected(), rdSiSoloVisibleMesas.isSelected(),
-                rdSiBorrarMesas.isSelected(), "", "", txtNumFactIncremento.getText(), responsabilidades,
-                "", ""
-            };
-
-            ndMaestra nodo = metodos.llenarMaestra(vector);
-
-            if (!instancias.getSql().modificarMaestra(nodo)) {
+            if (!daoMaestra.guardar(general, impresiones)) {
                 ControladorAlertas.alertFail("Hubo un problema al guardar los cambios");
                 return;
             }
@@ -6277,7 +4131,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             llenarDatos();
 
             /* ACTUALIZAMOS MAESTROS EN EL MODULO DE FACTURACION */
-            DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
+            DaoMaestra _daoM = new DaoMaestra();
+        DatosMaestra.setearDatosMaestra(_daoM.obtenerGeneral(), _daoM.obtenerImpresiones());
 
             instancias.getVistaAjusteInventario().consultarMaestros();
             instancias.getTrasladosInternos().consultarMaestros();
@@ -6296,7 +4151,74 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 instancias.getHistoriaLaboratorio().actualizarExamenes();
             }
         }
-    }//GEN-LAST:event_btnGuardar1ActionPerformed
+    }//GEN-LAST:event_btnGuardarMaestraActionPerformed
+
+    private int parseIntSafe(String valor) {
+        try {
+            return Integer.parseInt(valor == null ? "0" : valor.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private ModeloMaestraGeneral construirModeloGeneral(String regimen, String utilidad, String descuento, String tituloFactura, String responsabilidades) {
+        ModeloMaestraGeneral general = daoMaestra.obtenerGeneral();
+        if (general == null) return null;
+        general.setConfiguracionRegimen(regimen);
+        general.setAlertaUtilidad(utilidad);
+        general.setTipoDescuento(descuento);
+        general.setContrasena(txtContra.getText());
+        general.setDiasAlertaCuadre(parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Días para alerta de cartera", 1)));
+        general.setNitEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "NIT", 1).toUpperCase());
+        general.setNombreEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "Nombre", 1).toUpperCase());
+        general.setRegimenEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "Régimen", 1).toUpperCase());
+        general.setDireccionEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "Dirección", 1).toUpperCase());
+        general.setTelefonoEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "Teléfono", 1).toUpperCase());
+        general.setUsarLector(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Usar lector", 1));
+        general.setTituloFactura(tituloFactura);
+        general.setPreciosConImpuesto(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Precios con impuestos", 1));
+        general.setVentasPredeterminado(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Ventas Contado Predeterminado", 1));
+        general.setMensajeUtilidad(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Alertar Utilidad Sobrepasada", 1));
+        general.setDiasCobroMora(parseIntSafe(instancias.getConfiguraciones().isCreditos() ? getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Días para cobrar mora en créditos", 1) : "0"));
+        general.setPorcentajeMora(instancias.getConfiguraciones().isCreditos() ? getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Porcentaje de mora en créditos", 1) : "0");
+        general.setGeneraOrdenMedica(rdSiGenerarOrden.isSelected());
+        general.setImprimirOrdenMedica(rdSiImprimirOrden.isSelected());
+        general.setImprimirFacturaOrdenMedica(rdSiImprimirFactura.isSelected());
+        general.setHoraInicioAgenda(String.valueOf(cmbHoraInicio.getSelectedItem()));
+        general.setHoraFinAgenda(String.valueOf(cmbHoraFin.getSelectedItem()));
+        general.setIntervaloAgenda(String.valueOf(cmbIntervalo.getSelectedItem()));
+        general.setCodPrestadorServicio(txtCodigoPrestadorServico.getText());
+        general.setOcultarInformacionCliente(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Validar el cupo del credito", 1));
+        general.setMostrarInformacionCuadre(false);
+        general.setDescuentoMaximoVentas(parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Descuento máximo para aplicar", 1)));
+        general.setTipoIdPrestadorServicio(String.valueOf(cmbTipoPrestador.getSelectedItem()));
+        general.setLimiteProductosPorFactura(parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Límite de productos (carta/media carta)", 1)));
+        general.setCombinarProductos(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Combinar productos iguales", 1));
+        general.setModificarNombre(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Modificar nombre de productos", 1));
+        general.setTurno(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Activar turnos", 1));
+        general.setTurnoConsecutivo(parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Número de turno", 1)));
+        general.setConsecutivoAdicional(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Consecutivo adicional en factura", 1));
+        general.setModificarPrecio(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Modificar precio de productos", 1));
+        general.setBorrarCongelada(instancias.getConfiguraciones().isRestaurante() && getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Borrar productos en mesas", 1));
+        general.setFacturarSinInventario(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Facturar sin inventario", 1));
+        general.setCantidadEstablecida(parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Cantidad al cargar un producto", 1)));
+        general.setFilas(parseIntSafe(txtFilas.getText()));
+        general.setColumnas(parseIntSafe(txtColumnas.getText()));
+        general.setPorcPropina(parseIntSafe(instancias.getConfiguraciones().isRestaurante() ? getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Porcentaje de propina en pre-factura", 1) : "0"));
+        general.setMostrarDevuelta(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Mostrar devuelta en factura", 1));
+        general.setInicioHosp(String.valueOf(cmbHoraInicio1.getSelectedItem()));
+        general.setFinHosp(String.valueOf(cmbHoraFin1.getSelectedItem()));
+        general.setIntervalosHosp(String.valueOf(cmbIntervalo1.getSelectedItem()));
+        general.setDiasAutomaticos(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Días de plazo automaticos", 1));
+        general.setCiudadBuscador(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Módulo de solicitudes de permisos", 1));
+        general.setFoco(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Foco después de cargar el producto", 1));
+        general.setFacturarMesas(rdSiFacturarMesas.isSelected());
+        general.setSoloMesas(rdSiSoloVisibleMesas.isSelected());
+        general.setBorrarMesas(instancias.getConfiguraciones().isRestaurante() && getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Borrar mesas", 1));
+        general.setPassword("");
+        general.setResponsabilidadesFiscales(responsabilidades);
+        return general;
+    }
 
     private void btnGuardar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar2ActionPerformed
         try {
@@ -6315,26 +4237,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private void txtDiasAlertaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDiasAlertaKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDiasAlertaKeyTyped
-
-    private void utilidadNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilidadNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_utilidadNoActionPerformed
-
-    private void recogidaNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recogidaNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_recogidaNoActionPerformed
-
-    private void mediaCartaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mediaCartaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mediaCartaActionPerformed
-
-    private void posActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_posActionPerformed
-
-    }//GEN-LAST:event_posActionPerformed
-
-    private void cartaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartaActionPerformed
-
-    }//GEN-LAST:event_cartaActionPerformed
 
     private void lectorNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lectorNoActionPerformed
         // TODO add your handling code here:
@@ -6373,30 +4275,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             System.out.println(e);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void rdNoVentasPredeterminadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoVentasPredeterminadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoVentasPredeterminadoActionPerformed
-
-    private void rdNoMensajeUtilidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoMensajeUtilidadActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoMensajeUtilidadActionPerformed
-
-    private void utilidadNoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_utilidadNoItemStateChanged
-        if (utilidadNo.isSelected()) {
-            rdSiMensajeUtilidad.setSelected(true);
-        } else {
-            rdNoMensajeUtilidad.setSelected(true);
-        }
-    }//GEN-LAST:event_utilidadNoItemStateChanged
-
-    private void utilidadSiItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_utilidadSiItemStateChanged
-        if (utilidadNo.isSelected()) {
-            rdSiMensajeUtilidad.setSelected(true);
-        } else {
-            rdNoMensajeUtilidad.setSelected(true);
-        }
-    }//GEN-LAST:event_utilidadSiItemStateChanged
 
     private void btnResolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResolucionActionPerformed
         vistaResoluciones resoluciones = new vistaResoluciones(null, true);
@@ -6459,10 +4337,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_rdNoImprimirOrdenActionPerformed
 
-    private void rdNoImprimirCuadreFiscalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoImprimirCuadreFiscalActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoImprimirCuadreFiscalActionPerformed
-
     private void txtCodigoPrestadorServicoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoPrestadorServicoKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCodigoPrestadorServicoKeyTyped
@@ -6472,14 +4346,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtDescuentoMaximoKeyTyped
 
     private void btnGuardar3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar3ActionPerformed
-        cmbTipoCarta.removeAllItems();
-        cmbTipoMediaCarta.removeAllItems();
-        cmbTipoPos.removeAllItems();
-
-        cmbTipoCarta.addItem("Predeterminada");
-        cmbTipoMediaCarta.addItem("Predeterminada");
-        cmbTipoPos.addItem("Predeterminada");
-
         PrintService[] impresoras = PrintServiceLookup.lookupPrintServices(null, null);
         DefaultTableModel model = (DefaultTableModel) tblImpresoras.getModel();
 
@@ -6487,31 +4353,19 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             model.removeRow(0);
         }
 
-        System.out.println("impresorassss " + impresoras.length);
         if (impresoras.length > 0) {
             for (int i = 0; i < impresoras.length; i++) {
                 if (!impresoras[i].toString().split(" : ")[1].equals("Fax")) {
                     model.addRow(new Object[]{impresoras[i].toString().split(" : ")[1]});
                 }
             }
-
-            for (int i = 0; i < impresoras.length; i++) {
-                if (!impresoras[i].toString().split(" : ")[1].equals("Fax")) {
-                    cmbTipoCarta.addItem(impresoras[i].toString().split(" : ")[1]);
-                    cmbTipoMediaCarta.addItem(impresoras[i].toString().split(" : ")[1]);
-                    cmbTipoPos.addItem(impresoras[i].toString().split(" : ")[1]);
-                }
-            }
         }
 
-        DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
+        DaoMaestra _daoM = new DaoMaestra();
+        DatosMaestra.setearDatosMaestra(_daoM.obtenerGeneral(), _daoM.obtenerImpresiones());
         String impresionPos = DatosMaestra.getImpresoraPos() != null ? DatosMaestra.getImpresoraPos() : "";
         String impresionMediaCarta = DatosMaestra.getImpresoraMediaCarta() != null ? DatosMaestra.getImpresoraMediaCarta() : "";
         String impresionCarta = DatosMaestra.getImpresoraCarta() != null ? DatosMaestra.getImpresoraCarta() : "";
-
-        cmbTipoPos.setSelectedItem(impresionPos);
-        cmbTipoMediaCarta.setSelectedItem(impresionMediaCarta);
-        cmbTipoCarta.setSelectedItem(impresionCarta);
 
         inicializarTablaImpresoraPorTipo();
         setFilaTabla(tblImpresoraPorTipo, "Carta", 1, impresionCarta);
@@ -6519,6 +4373,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         setFilaTabla(tblImpresoraPorTipo, "Pos", 1, impresionPos);
         setFilaTabla(tblImpresoraPorTipo, "Comanda", 1, DatosMaestra.getImpresoraComanda() != null ? DatosMaestra.getImpresoraComanda() : "");
         setFilaTabla(tblImpresoraPorTipo, "Prefactura", 1, DatosMaestra.getImpresoraPrefactura() != null ? DatosMaestra.getImpresoraPrefactura() : "");
+        String l2 = DatosMaestra.getL2() != null ? DatosMaestra.getL2() : "";
+        if ("pos".equals(l2)) {
+            setFilaTabla(tblImpresoraPorTipo, "Pos", 2, true);
+        } else if ("facturaCompleta".equals(l2)) {
+            setFilaTabla(tblImpresoraPorTipo, "Carta", 2, true);
+        } else {
+            setFilaTabla(tblImpresoraPorTipo, "Media carta", 2, true);
+        }
     }//GEN-LAST:event_btnGuardar3ActionPerformed
 
     private void btnGuardar4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar4ActionPerformed
@@ -6616,38 +4478,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         metodos.soloNum(evt);
     }//GEN-LAST:event_txtLimiteKeyTyped
 
-    private void rdSiCombinarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiCombinarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiCombinarActionPerformed
-
-    private void rdNoCombinarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoCombinarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoCombinarActionPerformed
-
-    private void rdSiModificarNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiModificarNombreActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiModificarNombreActionPerformed
-
-    private void rdNoModificarNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoModificarNombreActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoModificarNombreActionPerformed
-
-    private void rdSiBolsaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiBolsaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiBolsaActionPerformed
-
-    private void rdNoBolsaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoBolsaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoBolsaActionPerformed
-
-    private void txtValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyTyped
-        metodos.soloNum(evt);
-    }//GEN-LAST:event_txtValorKeyTyped
-
-    private void txtValorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyReleased
-
-    }//GEN-LAST:event_txtValorKeyReleased
-
     private void rdTurnoNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdTurnoNoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rdTurnoNoActionPerformed
@@ -6661,19 +4491,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtTurnoKeyTyped
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        instancias.getSql().aumentarTurno(txtTurno.getText());
+        instancias.getSql().aumentarTurno(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Número de turno", 1));
         ControladorAlertas.alertSuccess("¡Turno actualizado correctamente!");
         instancias.getFactura().actualizarVistaConsecutivo();
         instancias.getPedido().actualizarVistaConsecutivo();
     }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void rdSiConsecutivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiConsecutivoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiConsecutivoActionPerformed
-
-    private void rdNoConsecutivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoConsecutivoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoConsecutivoActionPerformed
 
     private void tblExamenesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblExamenesKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -6688,14 +4510,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_tblExamenesKeyReleased
-
-    private void ubicacionNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubicacionNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ubicacionNoActionPerformed
-
-    private void horaNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horaNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_horaNoActionPerformed
 
     private void btnGuardar5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar5ActionPerformed
         if (txtFranquisia.getText().equals("")) {
@@ -6765,22 +4579,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_popBorrar1ActionPerformed
 
-    private void rdSiPondNegativoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiPondNegativoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiPondNegativoActionPerformed
-
-    private void rdNoPondNegativoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoPondNegativoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoPondNegativoActionPerformed
-
-    private void rdSiModificarPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiModificarPrecioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiModificarPrecioActionPerformed
-
-    private void rdNoModificarPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoModificarPrecioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoModificarPrecioActionPerformed
-
     private void rdSiBorrarProdMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiBorrarProdMesasActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rdSiBorrarProdMesasActionPerformed
@@ -6788,98 +4586,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private void rdNoBorrarProdMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoBorrarProdMesasActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rdNoBorrarProdMesasActionPerformed
-
-    private void rdPreguntaFacturaNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaFacturaNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaFacturaNOActionPerformed
-
-    private void rdPreguntaOServicioNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaOServicioNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaOServicioNOActionPerformed
-
-    private void rdPreguntaCotizacionNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaCotizacionNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaCotizacionNOActionPerformed
-
-    private void rdPreguntaPlanSepareNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaPlanSepareNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaPlanSepareNOActionPerformed
-
-    private void txtCantCotizacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantCotizacionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCantCotizacionActionPerformed
-
-    private void rdPreguntaPedidosNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaPedidosNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaPedidosNOActionPerformed
-
-    private void rdPreguntaFacturaSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaFacturaSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaFacturaSIActionPerformed
-
-    private void rdPreguntaOServicioSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaOServicioSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaOServicioSIActionPerformed
-
-    private void rdPreguntaCotizacionSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaCotizacionSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaCotizacionSIActionPerformed
-
-    private void rdPreguntaPlanSepareSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaPlanSepareSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaPlanSepareSIActionPerformed
-
-    private void rdPreguntaPedidosSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPreguntaPedidosSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPreguntaPedidosSIActionPerformed
-
-    private void rdPrevisualizarFacturaNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarFacturaNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarFacturaNOActionPerformed
-
-    private void rdPrevisualizarOServicioNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarOServicioNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarOServicioNOActionPerformed
-
-    private void rdPrevisualizarCotizacionNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarCotizacionNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarCotizacionNOActionPerformed
-
-    private void rdPrevisualizarPlanSepareNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarPlanSepareNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarPlanSepareNOActionPerformed
-
-    private void rdPrevisualizarPedidosNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarPedidosNOActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarPedidosNOActionPerformed
-
-    private void rdPrevisualizarFacturaSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarFacturaSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarFacturaSIActionPerformed
-
-    private void rdPrevisualizarOServicioSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarOServicioSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarOServicioSIActionPerformed
-
-    private void rdPrevisualizarCotizacionSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarCotizacionSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarCotizacionSIActionPerformed
-
-    private void rdPrevisualizarPlanSepareSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarPlanSepareSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarPlanSepareSIActionPerformed
-
-    private void rdPrevisualizarPedidosSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdPrevisualizarPedidosSIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdPrevisualizarPedidosSIActionPerformed
-
-    private void rdSiPagoTercerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiPagoTercerosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiPagoTercerosActionPerformed
-
-    private void rdNoPagoTercerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoPagoTercerosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoPagoTercerosActionPerformed
 
     private void tblHorasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHorasMouseClicked
         // TODO add your handling code here:
@@ -6910,26 +4616,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             tblHoras.setValueAt(false, i, 1);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void rdSiFacturarSinInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiFacturarSinInventarioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiFacturarSinInventarioActionPerformed
-
-    private void rdNoFacturarSinInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoFacturarSinInventarioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoFacturarSinInventarioActionPerformed
-
-    private void cmbTipoMediaCartaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTipoMediaCartaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbTipoMediaCartaActionPerformed
-
-    private void mostrarImpoconsumoNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarImpoconsumoNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mostrarImpoconsumoNoActionPerformed
-
-    private void mostrarRetencionesNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarRetencionesNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mostrarRetencionesNoActionPerformed
 
     private void txtColumnasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColumnasKeyReleased
 
@@ -6986,37 +4672,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtContraActionPerformed
 
-    private void rdSiDevueltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiDevueltaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiDevueltaActionPerformed
-
-    private void rdNoDevueltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoDevueltaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoDevueltaActionPerformed
-
-    private void txtValorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtValorActionPerformed
-
-    private void rdSiDiasAutomaticosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiDiasAutomaticosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiDiasAutomaticosActionPerformed
-
-    private void rdNoDiasAutomaticosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoDiasAutomaticosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoDiasAutomaticosActionPerformed
-
     private void rdNoSolicitudesPermisosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoSolicitudesPermisosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rdNoSolicitudesPermisosActionPerformed
-
-    private void rdSiCupoCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiCupoCreditoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiCupoCreditoActionPerformed
-
-    private void rdNoCupoCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoCupoCreditoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoCupoCreditoActionPerformed
 
     private void cmbConceptoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbConceptoKeyReleased
 
@@ -7127,40 +4785,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreFormatoKeyTyped
 
-    private void rdSiPrevisualizarComandaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiPrevisualizarComandaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiPrevisualizarComandaActionPerformed
-
-    private void rdNoPrevisualizarComandaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoPrevisualizarComandaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoPrevisualizarComandaActionPerformed
-
-    private void rdSiPrevisualizarPrefacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdSiPrevisualizarPrefacturaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdSiPrevisualizarPrefacturaActionPerformed
-
-    private void rdNoPrevisualizarPrefacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoPrevisualizarPrefacturaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdNoPrevisualizarPrefacturaActionPerformed
-
-    private void txtCantCopiasComandaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantCopiasComandaKeyTyped
-        metodos.soloNum(evt);
-    }//GEN-LAST:event_txtCantCopiasComandaKeyTyped
-
-    private void txtCantCopiasPrefacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantCopiasPrefacturaKeyTyped
-        metodos.soloNum(evt);
-    }//GEN-LAST:event_txtCantCopiasPrefacturaKeyTyped
-
-    private void btnOcultarImpresionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOcultarImpresionesActionPerformed
-        if (pnlImpresiones.isVisible()) {
-            pnlImpresiones.setVisible(false);
-            btnOcultarImpresiones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/boton-de-suma.png")));
-        } else {
-            pnlImpresiones.setVisible(true);
-            btnOcultarImpresiones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/boton-resta.png")));
-        }
-    }//GEN-LAST:event_btnOcultarImpresionesActionPerformed
-
     private void btnOcultarImpresiones1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOcultarImpresiones1ActionPerformed
         if (pnlImpresionesGrupo.isVisible()) {
             pnlImpresionesGrupo.setVisible(false);
@@ -7217,14 +4841,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             modelo.addRow(new Object[]{mesas[i][0], mesas[i][1]});
         }
     }//GEN-LAST:event_btnActualizarMesasActionPerformed
-
-    private void rdCopiasNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdCopiasNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rdCopiasNoActionPerformed
-
-    private void txtNumFactIncrementoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumFactIncrementoKeyTyped
-        metodos.soloNum(evt);
-    }//GEN-LAST:event_txtNumFactIncrementoKeyTyped
 
     private void txtColumnas1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColumnas1KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -7511,7 +5127,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             String codigo = txtCodProducto.getText().replace("'", "//");
             cargarProducto1(codigo);
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
-            btnGuardar1.requestFocus();
+            btnGuardarMaestra.requestFocus();
         }
     }//GEN-LAST:event_txtCodProductoKeyReleased
 
@@ -7609,27 +5225,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_popBorrar2ActionPerformed
 
-    private void btnAggResponsabilidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggResponsabilidadesActionPerformed
-        if (cmbResponsabilidades.getSelectedIndex() == 0) {
-            ControladorAlertas.alert("Seleccione una responsabilidad");
-            return;
-        }
-
-        for (int i = 0; i < cmbMisResponsabilidades.getItemCount(); i++) {
-            if (cmbMisResponsabilidades.getItemAt(i).equals(cmbResponsabilidades.getSelectedItem())) {
-                ControladorAlertas.alert("Ya cargó esta responsabilidad");
-                break;
-            }
-        }
-
-        cmbMisResponsabilidades.addItem(cmbResponsabilidades.getSelectedItem());
-        cmbResponsabilidades.setSelectedIndex(0);
-        cmbMisResponsabilidades.setSelectedIndex(cmbMisResponsabilidades.getItemCount() - 1);
-    }//GEN-LAST:event_btnAggResponsabilidadesActionPerformed
-
-    private void btnAggResponsabilidades1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAggResponsabilidades1ActionPerformed
-        cmbMisResponsabilidades.removeItem(cmbMisResponsabilidades.getSelectedItem());
-    }//GEN-LAST:event_btnAggResponsabilidades1ActionPerformed
 
     private void lbOtroConsecutivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbOtroConsecutivoActionPerformed
         // TODO add your handling code here:
@@ -7652,19 +5247,11 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtNumeroFactosElectronicasKeyTyped
 
     private void rdSiPvpIvaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rdSiPvpIvaItemStateChanged
-        if (rdSiPvpIva.isSelected()) {
-            rdSiPvpImpo.setSelected(true);
-            rdSiCostoIva.setSelected(true);
-            rdSiCostoImpo.setSelected(true);
-        }
+
     }//GEN-LAST:event_rdSiPvpIvaItemStateChanged
 
     private void rdNoPvpIvaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rdNoPvpIvaItemStateChanged
-        if (rdNoPvpIva.isSelected()) {
-            rdNoPvpImpo.setSelected(true);
-            rdNoCostoIva.setSelected(true);
-            rdNoCostoImpo.setSelected(true);
-        }
+
     }//GEN-LAST:event_rdNoPvpIvaItemStateChanged
 
     private void btnAgregarBodegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarBodegaActionPerformed
@@ -7684,8 +5271,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCambiarEstadoBodegaActionPerformed
 
     /**
-     * Las bodegas internas son de la empresa: no cuelgan de ningún contacto y esta pestaña no tiene un Guardar propio,
-     * así que se escriben apenas se acepta el modal.
+     * Las bodegas internas son de la empresa: no cuelgan de ningún contacto y
+     * esta pestaña no tiene un Guardar propio, así que se escriben apenas se
+     * acepta el modal.
      */
     private void capturarBodega(int fila) {
         VistaBodegaContacto modal = new VistaBodegaContacto(instancias.getMenu(), true);
@@ -7799,8 +5387,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }
 
     /**
-     * Al cambiar la bodega predeterminada se refresca la maestra en memoria, para que el resto del sistema empiece a
-     * mover inventario sobre ella sin reiniciar.
+     * Al cambiar la bodega predeterminada se refresca la maestra en memoria,
+     * para que el resto del sistema empiece a mover inventario sobre ella sin
+     * reiniciar.
      */
     private void guardarBodegaPredeterminada() {
         int indice = cmbBodegas.getSelectedIndex();
@@ -7820,12 +5409,14 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             return;
         }
 
-        DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
+        DaoMaestra _daoM = new DaoMaestra();
+        DatosMaestra.setearDatosMaestra(_daoM.obtenerGeneral(), _daoM.obtenerImpresiones());
         ControladorAlertas.alertSuccess("El sistema trabajará con la bodega " + codigo);
     }
 
     /**
-     * La columna de estado muestra una etiqueta, pero el modelo viaja con el 1/0 que guarda la base de datos.
+     * La columna de estado muestra una etiqueta, pero el modelo viaja con el
+     * 1/0 que guarda la base de datos.
      */
     private ModeloBodega bodegaDeLaFila(int fila) {
         return new ModeloBodega(valorCeldaBodega(fila, 0), "", valorCeldaBodega(fila, 1),
@@ -7903,7 +5494,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
             if (instancias.getSql().getProdActivo(nodo.getCodigo())) {
                 ControladorAlertas.alertFail("Este producto esta inactivo");
-                btnGuardar1.requestFocus();
+                btnGuardarMaestra.requestFocus();
                 return;
             }
 
@@ -8124,143 +5715,81 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     }
 
     public void actualizarTurno() {
-        txtTurno.setText(turno);
+        setFilaTabla(tblConfiguraciones1, "Número de turno", 1, turno);
     }
 
     public void llenarDatos() {
+        DaoMaestra _lDao = new DaoMaestra();
+        DatosMaestra.setearDatosMaestra(_lDao.obtenerGeneral(), _lDao.obtenerImpresiones());
 
-        ndMaestra datos = new DaoMaestra().obtenerMaestra();
+        inicializarTablaConfiguracionesFacturacion();
+        inicializarTablaConfiguraciones1(instancias.getConfiguraciones().isRestaurante(), instancias.getConfiguraciones().isCreditos());
 
-        cmbMisResponsabilidades.removeAllItems();
-
-        if (datos.getResponsabilidadesFiscales() != null) {
-            String[] responsabilidades = datos.getResponsabilidadesFiscales().split(", ");
-            for (int i = 0; i < responsabilidades.length; i++) {
-                if (!"".equals(responsabilidades[i])) {
-                    cmbMisResponsabilidades.addItem(responsabilidades[i]);
+        if (DatosMaestra.getResponsabilidadesRaw() != null && !DatosMaestra.getResponsabilidadesRaw().isEmpty()) {
+            String[] responsabilidades = DatosMaestra.getResponsabilidadesRaw().split(", ");
+            for (String resp : responsabilidades) {
+                if (!resp.isEmpty()) {
+                    setFilaTabla(tblInformacionEmpresa, resp.trim(), 1, Boolean.TRUE);
                 }
             }
         }
 
-        if (datos.isBorrarMesas()) {
-            rdSiBorrarMesas.setSelected(true);
-        } else {
-            rdNoBorrarMesas.setSelected(true);
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            setFilaTabla(tblConfiguraciones, "Borrar mesas", 1, DatosMaestra.isBorrarMesas());
         }
 
-        if (datos.isSoloMesas()) {
+        if (DatosMaestra.isSoloMesas()) {
             rdSiSoloVisibleMesas.setSelected(true);
         } else {
             rdNoSoloVisibleMesas.setSelected(true);
         }
 
-        if (datos.isFacturarMesas()) {
+        if (DatosMaestra.isFacturarMesas()) {
             rdSiFacturarMesas.setSelected(true);
         } else {
             rdNoFacturarMesas.setSelected(true);
         }
 
-        String impresoraPrefactura;
-        try {
-            impresoraPrefactura = datos.getImpresoraPrefactura() != null ? datos.getImpresoraPrefactura() : "";
-        } catch (Exception e) {
-            impresoraPrefactura = "";
-        }
-        cmbPrefactura.setSelectedItem(impresoraPrefactura);
-
-        String impresoraComanda;
-        try {
-            impresoraComanda = datos.getImpresoraComanda() != null ? datos.getImpresoraComanda() : "";
-        } catch (Exception e) {
-            impresoraComanda = "";
-        }
-        cmbComanda.setSelectedItem(impresoraComanda);
-
-        if (datos.isPrevisualizarPrefactura()) {
-            rdSiPrevisualizarPrefactura.setSelected(true);
-        } else {
-            rdNoPrevisualizarPrefactura.setSelected(true);
-        }
-
-        if (datos.isPrevisualizarComanda()) {
-            rdSiPrevisualizarComanda.setSelected(true);
-        } else {
-            rdNoPrevisualizarComanda.setSelected(true);
-        }
-
-        txtCantCopiasPrefactura.setText(datos.getCopiasPrefactura() != null ? datos.getCopiasPrefactura() : "");
-        txtCantCopiasComanda.setText(datos.getCopiasComanda() != null ? datos.getCopiasComanda() : "0");
-        txtNumFactIncremento.setText(datos.getNumFacturaIncremento() != null ? datos.getNumFacturaIncremento() : "0");
-
         // Cargar tblImpresoraPorTipo
         inicializarTablaImpresoraPorTipo();
-        setFilaTabla(tblImpresoraPorTipo, "Carta", 1, datos.getImpresoraCarta() != null ? datos.getImpresoraCarta() : "");
-        setFilaTabla(tblImpresoraPorTipo, "Media carta", 1, datos.getImpresoraMediaCarta() != null ? datos.getImpresoraMediaCarta() : "");
-        setFilaTabla(tblImpresoraPorTipo, "Pos", 1, datos.getImpresoraPos() != null ? datos.getImpresoraPos() : "");
-        setFilaTabla(tblImpresoraPorTipo, "Comanda", 1, impresoraComanda);
-        setFilaTabla(tblImpresoraPorTipo, "Prefactura", 1, impresoraPrefactura);
+        setFilaTabla(tblImpresoraPorTipo, "Carta", 1, DatosMaestra.getImpresoraCarta());
+        setFilaTabla(tblImpresoraPorTipo, "Media carta", 1, DatosMaestra.getImpresoraMediaCarta());
+        setFilaTabla(tblImpresoraPorTipo, "Pos", 1, DatosMaestra.getImpresoraPos());
+        setFilaTabla(tblImpresoraPorTipo, "Comanda", 1, DatosMaestra.getImpresoraComanda());
+        setFilaTabla(tblImpresoraPorTipo, "Prefactura", 1, DatosMaestra.getImpresoraPrefactura());
 
-        rdImpresionPorGrupo.setSelected(datos.isImpresionPorGrupo());
-
-        if (datos.isCostoImpoconsumo()) {
-            instancias.setCostoConImpoconsumo(true);
-            rdSiCostoImpo.setSelected(true);
+        if ("pos".equals(DatosMaestra.getL2())) {
+            setFilaTabla(tblImpresoraPorTipo, "Pos", 2, true);
+        } else if ("facturaCompleta".equals(DatosMaestra.getL2())) {
+            setFilaTabla(tblImpresoraPorTipo, "Carta", 2, true);
         } else {
-            instancias.setCostoConImpoconsumo(false);
-            rdNoCostoImpo.setSelected(true);
+            setFilaTabla(tblImpresoraPorTipo, "Media carta", 2, true);
         }
 
-        if (datos.isPvpImpoconsumo()) {
-            instancias.setPvpConImpoconsumo(true);
-            rdSiPvpImpo.setSelected(true);
-        } else {
-            instancias.setPvpConImpoconsumo(false);
-            rdNoPvpImpo.setSelected(true);
+        rdImpresionPorGrupo.setSelected(DatosMaestra.isImpresionPorGrupo());
+
+        setFilaTabla(tblConfiguraciones1, "Foco después de cargar el producto", 1, DatosMaestra.getFocoDespuesDeCargarProducto());
+
+        setFilaTabla(tblConfiguraciones, "Validar el cupo del credito", 1, DatosMaestra.isOcultarInformacionCliente());
+        setFilaTabla(tblConfiguraciones, "Días de plazo automaticos", 1, DatosMaestra.isCargarDiasPlazoAutomaticamente());
+
+        setFilaTabla(tblConfiguraciones, "Módulo de solicitudes de permisos", 1, DatosMaestra.isCiudadBuscador());
+
+        cmbHoraInicio1.setSelectedItem(DatosMaestra.getInicioHosp());
+        cmbHoraFin1.setSelectedItem(DatosMaestra.getFinHosp());
+        cmbIntervalo1.setSelectedItem(DatosMaestra.getIntervalosHosp());
+
+        setFilaTabla(tblConfiguraciones, "Mostrar devuelta en factura", 1, DatosMaestra.isMostrarDevuelta());
+
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            setFilaTabla(tblConfiguraciones1, "Porcentaje de propina en pre-factura", 1, DatosMaestra.getPorcPropina());
         }
+        txtNombreFormato.setText(DatosMaestra.getImprimirCada());
 
-        cmbFoco.setSelectedItem(datos.getFoco());
-
-        if (datos.isOcultarInformacionCliente()) {
-            rdSiCupoCredito.setSelected(true);
-        } else {
-            rdNoCupoCredito.setSelected(true);
-        }
-
-        if (datos.isDiasAutomaticos()) {
-            rdSiDiasAutomaticos.setSelected(true);
-        } else {
-            rdNoDiasAutomaticos.setSelected(true);
-        }
-
-        if (datos.isCiudadBuscador()) {
-            rdSiSolicitudesPermisos.setSelected(true);
-        } else {
-            rdNoSolicitudesPermisos.setSelected(true);
-        }
-
-        cmbHoraInicio1.setSelectedItem(datos.getInicioHosp());
-        cmbHoraFin1.setSelectedItem(datos.getFinHosp());
-        cmbIntervalo1.setSelectedItem(datos.getIntervalosHosp());
-
-        if (datos.isVisualizarTodasLasFacturas()) {
-            rdCopiasSi.setSelected(true);
-        } else {
-            rdCopiasNo.setSelected(true);
-        }
-
-        if (datos.isMostrarDevuelta()) {
-            rdSiDevuelta.setSelected(true);
-        } else {
-            rdNoDevuelta.setSelected(true);
-        }
-
-        txtPorcPropina.setText(datos.getPorcPropina() != null ? datos.getPorcPropina() : "");
-        txtNombreFormato.setText(datos.getImprimirCada() != null ? datos.getImprimirCada() : "");
-
-        String columnas = datos.getColumnas() != null ? datos.getColumnas() : "";
+        String columnas = DatosMaestra.getColumnas();
         txtColumnas.setText(columnas);
 
-        String filas = datos.getFilas() != null ? datos.getFilas() : "";
+        String filas = DatosMaestra.getFilas();
         txtFilas.setText(filas);
 
         if (!columnas.equals("") && !filas.equals("")) {
@@ -8311,31 +5840,33 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             tabPanel.setEnabledAt(5, false);
         }
 
-        if (instancias.getConfiguraciones().isRestaurante()) {
-            jPanel13.setVisible(true);
-//            
-//            lbTelefono37.setVisible(false);
-//            rdSiConsecutivo.setVisible(false);
-//            rdNoConsecutivo.setVisible(false);
-        } else {
-            jPanel13.setVisible(false);
-//            lbTelefono37.setVisible(true);
-//            rdSiConsecutivo.setVisible(true);
-//            rdNoConsecutivo.setVisible(true);
-        }
+        jPanel13.setVisible(false);
+        jPanel37.setVisible(false);
+        jPanel42.setVisible(false);
+        pnlCredito.setVisible(false);
 
         String infoEmpresa = "";
-        if (datos.getD1() != null && !datos.getD1().equals("")) infoEmpresa += datos.getD1();
-        if (datos.getD2() != null && !datos.getD2().equals("")) infoEmpresa += "\n" + datos.getD2();
-        if (datos.getD3() != null && !datos.getD3().equals("")) infoEmpresa += "\n" + datos.getD3();
-        if (datos.getD6() != null && !datos.getD6().equals("")) infoEmpresa += "\n" + datos.getD6();
-        if (datos.getD7() != null && !datos.getD7().equals("")) infoEmpresa += "\n" + datos.getD7();
+        if (!DatosMaestra.getD1().equals("")) {
+            infoEmpresa += DatosMaestra.getD1();
+        }
+        if (!DatosMaestra.getD2().equals("")) {
+            infoEmpresa += "\n" + DatosMaestra.getD2();
+        }
+        if (!DatosMaestra.getD3().equals("")) {
+            infoEmpresa += "\n" + DatosMaestra.getD3();
+        }
+        if (!DatosMaestra.getD6().equals("")) {
+            infoEmpresa += "\n" + DatosMaestra.getD6();
+        }
+        if (!DatosMaestra.getD7().equals("")) {
+            infoEmpresa += "\n" + DatosMaestra.getD7();
+        }
 
         if (!instancias.getRegimen().equals("")) {
             String datosEmpresa = metodosGenerales.convertToMultiline(infoEmpresa);
             String datosEmpresaReimpresion = infoEmpresa;
             String datosEmpresaCompleto = metodosGenerales.convertToMultiline(infoEmpresa);
-            instancias.setDatosEmpresa(datosEmpresa, datos.getLegal(), datos.getPie(), datosEmpresaCompleto, datosEmpresaReimpresion);
+            instancias.setDatosEmpresa(datosEmpresa, DatosMaestra.getLegal(), DatosMaestra.getPie(), datosEmpresaCompleto, datosEmpresaReimpresion);
         }
 
         Object[][] grupos = instancias.getSql().getGruposFactura();
@@ -8361,9 +5892,9 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         int contador = 0;
 
         try {
-            horaIni = Integer.parseInt(datos.getHoraInicioAgenda());
-            horaFin = Integer.parseInt(datos.getHoraFinAgenda());
-            intervalo = Integer.parseInt(datos.getIntervaloAgenda());
+            horaIni = Integer.parseInt(DatosMaestra.getHoraInicioAgenda());
+            horaFin = Integer.parseInt(DatosMaestra.getHoraFinAgenda());
+            intervalo = Integer.parseInt(DatosMaestra.getIntervaloAgenda());
         } catch (Exception e) {
         }
 
@@ -8451,215 +5982,72 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             }
         }
 
-        if (instancias.getConfiguraciones().isRestaurante()) {
-            lbNit.setVisible(false);
-            txtL1.setVisible(false);
-        } else {
-            lbNit.setVisible(true);
-            txtL1.setVisible(true);
-            lbNit.setText("Número de congeladas");
-        }
-
-        /* CARGAMOS LA IMPRESORA SEGUN EL TIPO */
-        cmbTipoPos.setSelectedItem(datos.getImpresoraPos() != null ? datos.getImpresoraPos() : "");
-        cmbTipoMediaCarta.setSelectedItem(datos.getImpresoraMediaCarta() != null ? datos.getImpresoraMediaCarta() : "");
-        cmbTipoCarta.setSelectedItem(datos.getImpresoraCarta() != null ? datos.getImpresoraCarta() : "");
         /* FIN ANEXO */
+        setFilaTabla(tblConfiguraciones1, "Cantidad al cargar un producto", 1, DatosMaestra.getCantidadEstablecidaAlCargar());
+        setFilaTabla(tblConfiguraciones1, "Número de turno", 1, DatosMaestra.getNumeroTurno());
 
-        /* ANEXO DE LA ORDEN DE SERVICIO */
-        txtAnexoOrden.setText(datos.getAnexoOrdenServicio() != null ? datos.getAnexoOrdenServicio() : "");
-        /* FIN ANEXO */
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir impoconsumo en factura", 1, DatosMaestra.isMostrarImpoconsumo());
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir retenciones en factura", 1, DatosMaestra.isMostrarRetenciones());
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir hora en factura", 1, DatosMaestra.isHora());
 
-        txtDiasAlerta1.setText(datos.getDiasAlertaResolucion() != null ? datos.getDiasAlertaResolucion() : "");
-        txtAnexoFactura.setText(datos.getAnexoFacturacion() != null ? datos.getAnexoFacturacion() : "");
-        txtCantidadEstablecida.setText(datos.getCantidadEstablecida() != null ? datos.getCantidadEstablecida() : "");
-        txtTurno.setText(datos.getTurno1() != null ? datos.getTurno1() : "1");
-
-        if (datos.isMostrarImpoconsumo()) {
-            mostrarImpoconsumoSi.setSelected(true);
-        } else {
-            mostrarImpoconsumoNo.setSelected(true);
-        }
-
-        if (datos.isMostrarRetenciones()) {
-            mostrarRetencionesSi.setSelected(true);
-        } else {
-            mostrarRetencionesNo.setSelected(true);
-        }
-
-        if (datos.isFacturarSeparado()) {
-            rdSiFacturarSinInventario.setSelected(true);
-        } else {
-            rdNoFacturarSinInventario.setSelected(true);
-        }
-
-        if (datos.isPagosTerceros()) {
-            rdSiPagoTerceros.setSelected(true);
-        } else {
-            rdNoPagoTerceros.setSelected(true);
-        }
-
-        //IMPRIMIR
-        if (datos.isCopiasFactura()) {
-            rdPreguntaFacturaSI.setSelected(true);
-        } else {
-            rdPreguntaFacturaNO.setSelected(true);
-        }
-
-        if (datos.isCopiasOServicio()) {
-            rdPreguntaOServicioSI.setSelected(true);
-        } else {
-            rdPreguntaOServicioNO.setSelected(true);
-        }
-
-        if (datos.isCopiasCotizacion()) {
-            rdPreguntaCotizacionSI.setSelected(true);
-        } else {
-            rdPreguntaCotizacionNO.setSelected(true);
-        }
-
-        if (datos.isCopiasPlanSepare()) {
-            rdPreguntaPlanSepareSI.setSelected(true);
-        } else {
-            rdPreguntaPlanSepareNO.setSelected(true);
-        }
-
-        rdPreguntaPedidosSI.setSelected(datos.isCopiasPedido());
-        // FIN DEL IMPRIMIR
-
-        // PREVISUALIZAR
-        if (datos.isPrevisualizarFactura()) {
-            rdPrevisualizarFacturaSI.setSelected(true);
-        } else {
-            rdPrevisualizarFacturaNO.setSelected(true);
-        }
-
-        if (datos.isPrevisualizarOServicio()) {
-            rdPrevisualizarOServicioSI.setSelected(true);
-        } else {
-            rdPrevisualizarOServicioNO.setSelected(true);
-        }
-
-        if (datos.isPrevisualizarCotizacion()) {
-            rdPrevisualizarCotizacionSI.setSelected(true);
-        } else {
-            rdPrevisualizarCotizacionNO.setSelected(true);
-        }
-
-        if (datos.isPrevisualizarPlanSepare()) {
-            rdPrevisualizarPlanSepareSI.setSelected(true);
-        } else {
-            rdPrevisualizarPlanSepareNO.setSelected(true);
-        }
-
-        if (datos.isPrevisualizarPedido()) {
-            rdPrevisualizarPedidosSI.setSelected(true);
-        } else {
-            rdPrevisualizarPedidosNO.setSelected(true);
-        }
-        // FIN DEL PREVISUALIZAR
-
-        // COPIAS
-        txtCantFactura.setText(datos.getNumFactura() != null ? datos.getNumFactura() : "0");
-        txtCantOServicio.setText(datos.getNumOServicio() != null ? datos.getNumOServicio() : "0");
-        txtCantCotizacion.setText(datos.getNumCotizacion() != null ? datos.getNumCotizacion() : "0");
-        txtCantPlanSepare.setText(datos.getNumPlanSepare() != null ? datos.getNumPlanSepare() : "0");
-        txtCantPedidos.setText(datos.getNumPedido() != null ? datos.getNumPedido() : "0");
-        //FIN COPIAS
+        setFilaTabla(tblConfiguraciones, "Facturar sin inventario", 1, DatosMaestra.isFacturarSinInventario());
 
         // Cargar tblImpresionDocumentos
         inicializarTablaImpresionDocumentos();
-        setFilaTabla(tblImpresionDocumentos, "Factura", 1, datos.isPrevisualizarFactura());
-        setFilaTabla(tblImpresionDocumentos, "Factura", 2, datos.isCopiasFactura());
-        setFilaTabla(tblImpresionDocumentos, "Factura", 3, datos.getNumFactura() != null ? datos.getNumFactura() : "0");
+        setFilaTabla(tblImpresionDocumentos, "Factura", 1, DatosMaestra.isPrevisualizarFactura());
+        setFilaTabla(tblImpresionDocumentos, "Factura", 2, DatosMaestra.isCopiasFactura());
+        setFilaTabla(tblImpresionDocumentos, "Factura", 3, DatosMaestra.getNumFactura());
 
-        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 1, datos.isPrevisualizarOServicio());
-        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 2, datos.isCopiasOServicio());
-        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 3, datos.getNumOServicio() != null ? datos.getNumOServicio() : "0");
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 1, DatosMaestra.isPrevisualizarOServicio());
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 2, DatosMaestra.isCopiasOServicio());
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 3, DatosMaestra.getNumOServicio());
 
-        setFilaTabla(tblImpresionDocumentos, "Cotización", 1, datos.isPrevisualizarCotizacion());
-        setFilaTabla(tblImpresionDocumentos, "Cotización", 2, datos.isCopiasCotizacion());
-        setFilaTabla(tblImpresionDocumentos, "Cotización", 3, datos.getNumCotizacion() != null ? datos.getNumCotizacion() : "0");
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 1, DatosMaestra.isPrevisualizarCotizacion());
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 2, DatosMaestra.isCopiasCotizacion());
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 3, DatosMaestra.getNumCotizacion());
 
-        setFilaTabla(tblImpresionDocumentos, "Plan separe", 1, datos.isPrevisualizarPlanSepare());
-        setFilaTabla(tblImpresionDocumentos, "Plan separe", 2, datos.isCopiasPlanSepare());
-        setFilaTabla(tblImpresionDocumentos, "Plan separe", 3, datos.getNumPlanSepare() != null ? datos.getNumPlanSepare() : "0");
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 1, DatosMaestra.isPrevisualizarPlanSepare());
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 2, DatosMaestra.isCopiasPlanSepare());
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 3, DatosMaestra.getNumPlanSepare());
 
-        setFilaTabla(tblImpresionDocumentos, "Pedido", 1, datos.isPrevisualizarPedido());
-        setFilaTabla(tblImpresionDocumentos, "Pedido", 2, datos.isCopiasPedido());
-        setFilaTabla(tblImpresionDocumentos, "Pedido", 3, datos.getNumPedido() != null ? datos.getNumPedido() : "0");
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 1, DatosMaestra.isPrevisualizarPedido());
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 2, DatosMaestra.isCopiasPedido());
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 3, DatosMaestra.getNumPedido());
 
-        setFilaTabla(tblImpresionDocumentos, "Comanda", 1, datos.isPrevisualizarComanda());
-        setFilaTabla(tblImpresionDocumentos, "Comanda", 3, datos.getCopiasComanda() != null ? datos.getCopiasComanda() : "0");
+        setFilaTabla(tblImpresionDocumentos, "Comanda", 1, DatosMaestra.isPrevisualizarComanda());
+        setFilaTabla(tblImpresionDocumentos, "Comanda", 2, DatosMaestra.isPreguntarCopiasComanda());
+        setFilaTabla(tblImpresionDocumentos, "Comanda", 3, DatosMaestra.getCopiasComanda());
 
-        setFilaTabla(tblImpresionDocumentos, "Prefactura", 1, datos.isPrevisualizarPrefactura());
-        setFilaTabla(tblImpresionDocumentos, "Prefactura", 3, datos.getCopiasPrefactura() != null ? datos.getCopiasPrefactura() : "");
+        setFilaTabla(tblImpresionDocumentos, "Prefactura", 1, DatosMaestra.isPrevisualizarPrefactura());
+        setFilaTabla(tblImpresionDocumentos, "Prefactura", 2, DatosMaestra.isPreguntarCopiasPrefactura());
+        setFilaTabla(tblImpresionDocumentos, "Prefactura", 3, DatosMaestra.getCopiasPrefactura());
 
-        if (datos.isBorrarCongelada()) {
-            rdSiBorrarProdMesas.setSelected(true);
-        } else {
-            rdNoBorrarProdMesas.setSelected(true);
+        if (instancias.getConfiguraciones().isRestaurante()) {
+            setFilaTabla(tblConfiguraciones, "Borrar productos en mesas", 1, DatosMaestra.isBorrarCongelada());
         }
 
-        if (datos.isModificarPrecio()) {
-            rdSiModificarPrecio.setSelected(true);
+        setFilaTabla(tblConfiguraciones, "Modificar precio de productos", 1, DatosMaestra.isModificarPrecio());
+        setFilaTabla(tblConfiguraciones, "Consecutivo adicional en factura", 1, DatosMaestra.isConsecutivoAdicional());
+
+        setFilaTabla(tblConfiguraciones, "Activar turnos", 1, DatosMaestra.isTurnoActivo());
+
+        setFilaTabla(tblConfiguraciones, "Modificar nombre de productos", 1, DatosMaestra.isModificarNombre());
+        setFilaTabla(tblConfiguraciones, "Combinar productos iguales", 1, DatosMaestra.isCombinarProductos());
+
+        setFilaTabla(tblConfiguraciones1, "Límite de productos (carta/media carta)", 1, DatosMaestra.getLimite());
+
+        String tipoImpresion = DatosMaestra.getL2();
+        if ("pos".equals(tipoImpresion)) {
+            instancias.setTipoImpresion("Pos");
         } else {
-            rdNoModificarPrecio.setSelected(true);
-        }
-
-        if (datos.isConsecutivo()) {
-            rdSiConsecutivo.setSelected(true);
-        } else {
-            rdNoConsecutivo.setSelected(true);
-        }
-
-        if (datos.isHora()) {
-            horaSi.setSelected(true);
-        } else {
-            horaNo.setSelected(true);
-        }
-
-        if (datos.isTurno()) {
-            rdTurnoSi.setSelected(true);
-        } else {
-            rdTurnoNo.setSelected(true);
-        }
-
-        rdSiPondNegativo.setSelected(datos.isPondNegativo());
-        if (!datos.isPondNegativo()) rdNoPondNegativo.setSelected(true);
-
-        txtValor.setText(datos.getValorBolsa() != null ? datos.getValorBolsa() : "0");
-        rdSiBolsa.setSelected(datos.isImpBolsa());
-        if (!datos.isImpBolsa()) rdNoBolsa.setSelected(true);
-
-        rdSiModificarNombre.setSelected(datos.isModificarNombre());
-        if (!datos.isModificarNombre()) rdNoModificarNombre.setSelected(true);
-
-        rdSiCombinar.setSelected(datos.isCombinarProductos());
-        if (!datos.isCombinarProductos()) rdNoCombinar.setSelected(true);
-
-        txtLimite.setText(datos.getLimite());
-        txtL1.setText(datos.getL1());
-        try {
-            if (datos.getL2().equals("pos")) {
-                pos.setSelected(true);
-                instancias.setTipoImpresion("Pos");
-            } else if (datos.getL2().equals("facturaCompleta")) {
-                carta.setSelected(true);
-                instancias.setTipoImpresion("");
-            } else {
-                mediaCarta.setSelected(true);
-                instancias.setTipoImpresion("");
-            }
-            instancias.setImpresion(datos.getL2());
-        } catch (Exception e) {
             instancias.setTipoImpresion("");
-            instancias.setImpresion("factura");
         }
+        instancias.setImpresion(tipoImpresion);
+
         instancias.getMenu().abrirCaja();
 
         try {
-            if (datos.getL4().equals("NO")) {
+            if (DatosMaestra.getL4().equals("NO")) {
                 instancias.setCopias(false);
             } else {
                 instancias.setCopias(true);
@@ -8671,123 +6059,74 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         instancias.getMenu().actualizarUsuario(instancias.getUsuario());
 
         try {
-            if (datos.getC3().equals("NO")) {
-                utilidadNo.setSelected(true);
-            } else {
-                utilidadSi.setSelected(true);
-            }
+            setFilaTabla(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1, !"NO".equals(DatosMaestra.getC3()));
         } catch (Exception e) {
-            utilidadSi.setSelected(true);
+            setFilaTabla(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1, true);
         }
         try {
-            if (datos.getC4().equals("peso")) {
-                descuentoPeso.setSelected(true);
-            } else {
-                descuentoPorcentaje.setSelected(true);
-            }
+            setFilaTabla(tblConfiguraciones1, "Tipo de descuento", 1, "peso".equals(DatosMaestra.getC4()) ? "Valor" : "Porcentaje");
         } catch (Exception e) {
-            descuentoPorcentaje.setSelected(true);
+            setFilaTabla(tblConfiguraciones1, "Tipo de descuento", 1, "Porcentaje");
         }
 
-        instancias.setSegundaClave(datos.getC5());
-        txtContra.setText(datos.getC5());
-        txtContra2.setText(datos.getC5());
+        instancias.setSegundaClave(DatosMaestra.getC5());
+        txtContra.setText(DatosMaestra.getC5());
+        txtContra2.setText(DatosMaestra.getC5());
 
-        txtNit.setText(datos.getD1());
-        txtNombre.setText(datos.getD2());
-        txtRegimen.setText(datos.getD3());
-        txtDireccion.setText(datos.getD6());
-        txtTelefono.setText(datos.getD7());
-        txtPiePagina.setText(datos.getPie());
-        txtLegal.setText(datos.getLegal());
+        inicializarTablaInformacionEmpresa();
+        setFilaTabla(tblInformacionEmpresa, "Nombre", 1, DatosMaestra.getD2());
+        setFilaTabla(tblInformacionEmpresa, "NIT", 1, DatosMaestra.getD1());
+        setFilaTabla(tblInformacionEmpresa, "Teléfono", 1, DatosMaestra.getD7());
+        setFilaTabla(tblInformacionEmpresa, "Régimen", 1, DatosMaestra.getD3());
+        setFilaTabla(tblInformacionEmpresa, "Dirección", 1, DatosMaestra.getD6());
+        inicializarTablaInformacionImpresion();
+        setFilaTabla(tblInformacionImpresion, "Pie de página", 1, DatosMaestra.getPie());
+        setFilaTabla(tblInformacionImpresion, "Información legal", 1, DatosMaestra.getLegal());
+        setFilaTabla(tblInformacionImpresion, "Anexo factura", 1, DatosMaestra.getAnexoFacturacion());
+        setFilaTabla(tblInformacionImpresion, "Anexo orden de servicio", 1, DatosMaestra.getAnexoOrdenServicio());
+        javax.swing.SwingUtilities.invokeLater(() -> ajustarAlturaFilas(tblInformacionImpresion));
 
         try {
-            if (datos.getC6().equals("NO")) {
-                ubicacionNo.setSelected(true);
-            } else {
-                ubicacionSi.setSelected(true);
-            }
+            setFilaTabla(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1, !"NO".equals(DatosMaestra.getC6()));
         } catch (Exception e) {
-            ubicacionSi.setSelected(true);
+            setFilaTabla(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1, true);
         }
 
-        txtDiasAlerta.setText(datos.getC7());
+        setFilaTabla(tblConfiguraciones1, "Días para alerta de cartera", 1, DatosMaestra.getC7());
 
-        if (datos.isRecogida()) {
-            recogidaSi.setSelected(true);
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir recodiga en cuadre de caja", 1, DatosMaestra.isRecogida());
+        if (DatosMaestra.isRecogida()) {
             instancias.setImprimirRecogida(true);
         } else {
-            recogidaNo.setSelected(true);
             instancias.setImprimirRecogida(false);
         }
 
-        if (datos.isLector()) {
-            lectorSi.setSelected(true);
-            instancias.setLector(true);
-        } else {
-            lectorNo.setSelected(true);
-            instancias.setLector(false);
-        }
+        setFilaTabla(tblConfiguraciones, "Usar lector", 1, DatosMaestra.isLector());
+        instancias.setLector(DatosMaestra.isLector());
 
-        txtTituloFactura.setText(datos.getTituloFactura());
-        instancias.setTituloFactura(datos.getTituloFactura());
+        setFilaTabla(tblConfiguraciones1, "Título en la factura", 1, DatosMaestra.getTituloFactura());
+        instancias.setTituloFactura(DatosMaestra.getTituloFactura());
 
-        if (datos.isPvpSinIva()) {
-            rdSiPvpIva.setSelected(true);
-            instancias.setPvpConIva(true);
-        } else {
-            rdNoPvpIva.setSelected(true);
-            instancias.setPvpConIva(false);
-        }
+        setFilaTabla(tblConfiguraciones, "Precios con impuestos", 1, DatosMaestra.isPvpSinIva());
+        instancias.setPvpConIva(DatosMaestra.isPvpSinIva());
+        instancias.setCostoConIva(DatosMaestra.isPvpSinIva());
 
-        if (datos.isCostoSinIva()) {
-            rdSiCostoIva.setSelected(true);
-            instancias.setCostoConIva(true);
-        } else {
-            rdNoCostoIva.setSelected(true);
-            instancias.setCostoConIva(false);
-        }
+        setFilaTabla(tblConfiguraciones, "Ventas Contado Predeterminado", 1, DatosMaestra.isVentasPredeterminado());
+        instancias.setVentasPredeterminado(DatosMaestra.isVentasPredeterminado());
+        setFilaTabla(tblConfiguraciones, "Alertar Utilidad Sobrepasada", 1, DatosMaestra.isMensajeUtilidad());
+        instancias.setMensajeUtilidad(DatosMaestra.isMensajeUtilidad());
 
-        if (datos.isVentasPredeterminado()) {
-            rdSiVentasPredeterminado.setSelected(true);
-            instancias.setVentasPredeterminado(true);
-        } else {
-            rdNoVentasPredeterminado.setSelected(true);
-            instancias.setVentasPredeterminado(false);
-        }
-
-        if (datos.isMensajeUtilidad()) {
-            rdSiMensajeUtilidad.setSelected(true);
-            instancias.setMensajeUtilidad(true);
-        } else {
-            rdNoMensajeUtilidad.setSelected(true);
-            instancias.setMensajeUtilidad(false);
-        }
-
-        instancias.setDiasAlertaResolucion(datos.getDiasAlertaResolucion());
-        instancias.setAlertaFechaDias(datos.getAlertaFechaDias() != null ? datos.getAlertaFechaDias() : "0");
-        instancias.setAlertaCantidadDias(datos.getAlertaCantidadNumeracion() != null ? datos.getAlertaCantidadNumeracion() : "0");
-        instancias.setAlertaPromedioDias(datos.getAlertaPromedioDias() != null ? datos.getAlertaPromedioDias() : "0");
+        instancias.setDiasAlertaResolucion(DatosMaestra.getDiasAlertaResolucion());
+        instancias.setAlertaFechaDias(DatosMaestra.getAlertaFechaDias().isEmpty() ? "0" : DatosMaestra.getAlertaFechaDias());
+        instancias.setAlertaCantidadDias(DatosMaestra.getAlertaCantidadNumeracion().isEmpty() ? "0" : DatosMaestra.getAlertaCantidadNumeracion());
+        instancias.setAlertaPromedioDias(DatosMaestra.getAlertaPromedioDias().isEmpty() ? "0" : DatosMaestra.getAlertaPromedioDias());
 
 //        //TERMINALES
 //        instancias.getFactura().actualizarResolucion();
-        if (utilidadSi.isSelected()) {
-            instancias.setUtilidad(true);
-        } else {
-            instancias.setUtilidad(false);
-        }
+        instancias.setUtilidad(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1));
 
-        if (ubicacionSi.isSelected()) {
-            instancias.setUbicacion(true);
-        } else {
-            instancias.setUbicacion(false);
-        }
-
-        if (horaSi.isSelected()) {
-            instancias.setHora(true);
-        } else {
-            instancias.setHora(false);
-        }
+        instancias.setUbicacion(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1));
+        instancias.setHora(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir hora en factura", 1));
 
         if (descuentoPorcentaje.isSelected()) {
             instancias.setDescuento("porcentaje");
@@ -8795,22 +6134,26 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setDescuento("peso");
         }
 
-        String diasCobrarMora = datos.getDiasCobrarMora() != null && !datos.getDiasCobrarMora().isEmpty() ? datos.getDiasCobrarMora() : "0";
+        String diasCobrarMora = DatosMaestra.getDiasCobrarMora().isEmpty() ? "0" : DatosMaestra.getDiasCobrarMora();
         instancias.setDiasCobrarMora(diasCobrarMora);
-        txtDiasCobrarMora.setText(diasCobrarMora);
+        if (instancias.getConfiguraciones().isCreditos()) {
+            setFilaTabla(tblConfiguraciones1, "Días para cobrar mora en créditos", 1, diasCobrarMora);
+        }
 
-        String porcentajeMora = datos.getPorcentajeMora() != null && !datos.getPorcentajeMora().isEmpty() ? datos.getPorcentajeMora() : "0";
+        String porcentajeMora = DatosMaestra.getPorcentajeMora().isEmpty() ? "0" : DatosMaestra.getPorcentajeMora();
         instancias.setPorcentajeMora(porcentajeMora);
-        txtPorcentajeMora.setText(porcentajeMora);
+        if (instancias.getConfiguraciones().isCreditos()) {
+            setFilaTabla(tblConfiguraciones1, "Porcentaje de mora en créditos", 1, porcentajeMora);
+        }
 
-        if (datos.isGeneraOrdenMedica()) {
+        if (DatosMaestra.isGeneraOrdenMedica()) {
             rdSiGenerarOrden.setSelected(true);
             instancias.setGeneraOrdenMedica(true);
         } else {
             rdNoGenerarOrden.setSelected(true);
             instancias.setGeneraOrdenMedica(false);
         }
-        if (datos.isImprimirOrdenMedica()) {
+        if (DatosMaestra.isImprimirOrdenMedica()) {
             rdSiImprimirOrden.setSelected(true);
             instancias.setImprimirOrdenMedica(true);
         } else {
@@ -8850,7 +6193,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             tabPanel.setEnabledAt(3, false);
         }
 
-        if (datos.isImprimirFacturaOrdenMedica()) {
+        if (DatosMaestra.isImprimirFacturaOrdenMedica()) {
             rdSiImprimirFactura.setSelected(true);
             instancias.setImprimirFacturaOrdenMedica(true);
         } else {
@@ -8858,25 +6201,24 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             instancias.setImprimirFacturaOrdenMedica(false);
         }
 
-        cmbHoraInicio.setSelectedItem(datos.getHoraInicioAgenda());
-        cmbHoraFin.setSelectedItem(datos.getHoraFinAgenda());
-        cmbIntervalo.setSelectedItem(datos.getIntervaloAgenda());
-        String[] configAgenda = {datos.getHoraInicioAgenda(), datos.getHoraFinAgenda(), datos.getIntervaloAgenda()};
+        cmbHoraInicio.setSelectedItem(DatosMaestra.getHoraInicioAgenda());
+        cmbHoraFin.setSelectedItem(DatosMaestra.getHoraFinAgenda());
+        cmbIntervalo.setSelectedItem(DatosMaestra.getIntervaloAgenda());
+        String[] configAgenda = {DatosMaestra.getHoraInicioAgenda(), DatosMaestra.getHoraFinAgenda(), DatosMaestra.getIntervaloAgenda()};
         instancias.setConfigAgenda(configAgenda);
 
-        txtCodigoPrestadorServico.setText(datos.getCodigoPrestadorServicio() != null ? datos.getCodigoPrestadorServicio() : "");
+        txtCodigoPrestadorServico.setText(DatosMaestra.getCodigoPrestadorServicio());
 
         try {
-            cmbTipoPrestador.setSelectedItem(datos.getTipoPrestadorServicio());
+            cmbTipoPrestador.setSelectedItem(DatosMaestra.getTipoPrestadorServicio());
         } catch (Exception e) {
             cmbTipoPrestador.setSelectedIndex(0);
         }
 
-        if (datos.isImprimirCuadreFiscal()) {
-            rdSiImprimirCuadreFiscal.setSelected(true);
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir cuadre fiscal en cuadre de caja", 1, DatosMaestra.isImprimirCuadreFiscal());
+        if (DatosMaestra.isImprimirCuadreFiscal()) {
             instancias.setImprimirCuadreFiscal(true);
         } else {
-            rdNoImprimirCuadreFiscal.setSelected(true);
             instancias.setImprimirCuadreFiscal(false);
         }
 
@@ -8901,9 +6243,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 //            instancias.setMostrarInformacionCuadre(false);
 //            rdNoMostrarInformacionCuadre.setSelected(true);
 //        }
-        if (!instancias.getConfiguraciones().isCreditos()) {
-            pnlCredito.setVisible(false);
-        }
+        // pnlCredito oculto: contenido migrado a tblConfiguraciones1
 
         if (!instancias.getConfiguraciones().isAgenda()) {
             pnlAgenda.setVisible(false);
@@ -8923,12 +6263,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
         }
 
         try {
-            String descMax = datos.getDescuentoMaximoVentas();
-            if (descMax == null || descMax.equals("")) {
+            String descMax = DatosMaestra.getDescuentoMaximoVentas();
+            if (descMax.equals("") || descMax.equals("0")) {
                 instancias.setDescuentoMaximoVentas(big.getBigDecimal("100"));
             } else {
                 instancias.setDescuentoMaximoVentas(big.getBigDecimal(descMax));
-                txtDescuentoMaximo.setText(descMax);
+                setFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar", 1, descMax);
             }
         } catch (Exception e) {
             instancias.setDescuentoMaximoVentas(big.getBigDecimal("100"));
@@ -9107,19 +6447,357 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     }
 
+    private void inicializarTablaInformacionEmpresa() {
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                new String[]{"Campo", "Valor"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return col == 1;
+            }
+        };
+        modelo.addRow(new Object[]{"Nombre", ""});
+        modelo.addRow(new Object[]{"NIT", ""});
+        modelo.addRow(new Object[]{"Teléfono", ""});
+        modelo.addRow(new Object[]{"Régimen", ""});
+        modelo.addRow(new Object[]{"Dirección", ""});
+        modelo.addRow(new Object[]{"ZZ /No aplica", Boolean.FALSE});
+        modelo.addRow(new Object[]{"O-13 /Gran contribuyente", Boolean.FALSE});
+        modelo.addRow(new Object[]{"O-15 /Autorretenedor", Boolean.FALSE});
+        modelo.addRow(new Object[]{"O-23 /Agente de retención en el impuesto sobre las ventas", Boolean.FALSE});
+        modelo.addRow(new Object[]{"O-47 /Régimen Simple de Tributación – SIMPLE", Boolean.FALSE});
+
+        tblInformacionEmpresa = new javax.swing.JTable(modelo) {
+            @Override
+            public javax.swing.table.TableCellRenderer getCellRenderer(int row, int column) {
+                if (column == 1 && row >= 5) {
+                    return getDefaultRenderer(Boolean.class);
+                }
+                return super.getCellRenderer(row, column);
+            }
+
+            @Override
+            public javax.swing.table.TableCellEditor getCellEditor(int row, int column) {
+                if (column == 1 && row >= 5) {
+                    return getDefaultEditor(Boolean.class);
+                }
+                return super.getCellEditor(row, column);
+            }
+        };
+        tblInformacionEmpresa.setFont(new java.awt.Font("Arial", 0, 16));
+        tblInformacionEmpresa.setRowHeight(24);
+        jScrollPane19.setViewportView(tblInformacionEmpresa);
+    }
+
+    private void inicializarTablaInformacionImpresion() {
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                new String[]{"Información impresión", "Valor"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return col == 1;
+            }
+        };
+        modelo.addRow(new Object[]{"Pie de página", ""});
+        modelo.addRow(new Object[]{"Información legal", ""});
+        if (instancias.getConfiguraciones().isProductosDetallados()) {
+            modelo.addRow(new Object[]{"Anexo factura", ""});
+        }
+        if (instancias.getConfiguraciones().isOrdenServicio()) {
+            modelo.addRow(new Object[]{"Anexo orden de servicio", ""});
+        }
+
+        final javax.swing.JTextArea taRend = new javax.swing.JTextArea();
+        taRend.setLineWrap(true);
+        taRend.setWrapStyleWord(true);
+        taRend.setFont(new java.awt.Font("Century Gothic", 0, 14));
+        taRend.setOpaque(true);
+
+        javax.swing.table.TableCellRenderer renderer = (table, value, isSelected, hasFocus, row, col) -> {
+            taRend.setText(value != null ? value.toString() : "");
+            taRend.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            taRend.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+            return taRend;
+        };
+
+        final javax.swing.JTextArea taEdit = new javax.swing.JTextArea();
+        taEdit.setLineWrap(true);
+        taEdit.setWrapStyleWord(true);
+        taEdit.setFont(new java.awt.Font("Century Gothic", 0, 14));
+
+        javax.swing.table.TableCellEditor editor = new javax.swing.DefaultCellEditor(new javax.swing.JTextField()) {
+            @Override
+            public java.awt.Component getTableCellEditorComponent(javax.swing.JTable table, Object value,
+                    boolean isSelected, int row, int column) {
+                taEdit.setText(value != null ? value.toString() : "");
+                return taEdit;
+            }
+
+            @Override
+            public Object getCellEditorValue() {
+                return taEdit.getText();
+            }
+
+            @Override
+            public boolean stopCellEditing() {
+                fireEditingStopped();
+                return true;
+            }
+        };
+
+        tblInformacionImpresion = new javax.swing.JTable(modelo) {
+            @Override
+            public javax.swing.table.TableCellRenderer getCellRenderer(int row, int column) {
+                if (column == 1) {
+                    return renderer;
+                }
+                return super.getCellRenderer(row, column);
+            }
+
+            @Override
+            public javax.swing.table.TableCellEditor getCellEditor(int row, int column) {
+                if (column == 1) {
+                    return editor;
+                }
+                return super.getCellEditor(row, column);
+            }
+        };
+        tblInformacionImpresion.setFont(new java.awt.Font("Arial", 0, 16));
+        tblInformacionImpresion.setRowHeight(70);
+        if (tblInformacionImpresion.getColumnModel().getColumnCount() > 0) {
+            tblInformacionImpresion.getColumnModel().getColumn(0).setMinWidth(180);
+            tblInformacionImpresion.getColumnModel().getColumn(0).setPreferredWidth(180);
+            tblInformacionImpresion.getColumnModel().getColumn(0).setMaxWidth(180);
+        }
+        jScrollPane20.setViewportView(tblInformacionImpresion);
+    }
+
+    private void inicializarTablaConfiguracionesFacturacion() {
+        inicializarTablaConfiguracionesFacturacion(instancias.getConfiguraciones().isRestaurante());
+    }
+
+    private void inicializarTablaConfiguracionesFacturacion(boolean esRestaurante) {
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                new String[]{"Configuración", "Valor"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return col == 1;
+            }
+
+            @Override
+            public Class getColumnClass(int col) {
+                return col == 1 ? Boolean.class : Object.class;
+            }
+        };
+        modelo.addRow(new Object[]{"Consecutivo adicional en factura", false});
+        modelo.addRow(new Object[]{"Ventas Contado Predeterminado", false});
+        modelo.addRow(new Object[]{"Modificar nombre de productos", false});
+        modelo.addRow(new Object[]{"Modificar precio de productos", false});
+        modelo.addRow(new Object[]{"Combinar productos iguales", false});
+        modelo.addRow(new Object[]{"Días de plazo automaticos", false});
+        modelo.addRow(new Object[]{"Facturar Utilidad Sobrepasada", false});
+        modelo.addRow(new Object[]{"Alertar Utilidad Sobrepasada", false});
+        modelo.addRow(new Object[]{"Facturar sin inventario", false});
+        modelo.addRow(new Object[]{"Mostrar devuelta en factura", false});
+        modelo.addRow(new Object[]{"Validar el cupo del credito", false});
+        modelo.addRow(new Object[]{"Activar turnos", false});
+        if (esRestaurante) {
+            modelo.addRow(new Object[]{"Borrar productos en mesas", false});
+            modelo.addRow(new Object[]{"Borrar mesas", false});
+        }
+        modelo.addRow(new Object[]{"Módulo de solicitudes de permisos", false});
+        modelo.addRow(new Object[]{"Usar lector", false});
+        modelo.addRow(new Object[]{"Precios con impuestos", false});
+
+        final int facturarRow = 6, alertarRow = 7;
+        modelo.addTableModelListener(e -> {
+            if (e.getColumn() == 1 && e.getFirstRow() == facturarRow) {
+                boolean facturar = Boolean.TRUE.equals(modelo.getValueAt(facturarRow, 1));
+                modelo.setValueAt(!facturar, alertarRow, 1);
+            }
+        });
+
+        tblConfiguraciones = new javax.swing.JTable(modelo);
+        tblConfiguraciones.setFont(new java.awt.Font("Arial", 0, 16));
+        tblConfiguraciones.setRowHeight(24);
+        if (tblConfiguraciones.getColumnModel().getColumnCount() > 0) {
+            tblConfiguraciones.getColumnModel().getColumn(0).setMinWidth(230);
+            tblConfiguraciones.getColumnModel().getColumn(0).setPreferredWidth(260);
+            tblConfiguraciones.getColumnModel().getColumn(0).setMaxWidth(320);
+        }
+        jScrollPane21.setViewportView(tblConfiguraciones);
+    }
+
+    private void inicializarTablaConfiguraciones1(boolean esRestaurante, boolean esCreditos) {
+        final java.util.List<String> etiquetas = new java.util.ArrayList<>();
+        final java.util.List<String> tipos = new java.util.ArrayList<>();
+
+        etiquetas.add("Número de turno");                       tipos.add("num");
+        etiquetas.add("Título en la factura");                  tipos.add("text");
+        etiquetas.add("Límite de productos (carta/media carta)"); tipos.add("num");
+        etiquetas.add("Tipo de descuento");                     tipos.add("combo_descuento");
+        etiquetas.add("Descuento máximo para aplicar");         tipos.add("int");
+        etiquetas.add("Foco después de cargar el producto");    tipos.add("combo_foco");
+        etiquetas.add("Cantidad al cargar un producto");        tipos.add("num");
+        etiquetas.add("Días para alerta de cartera");           tipos.add("num");
+        if (esRestaurante) {
+            etiquetas.add("Porcentaje de propina en pre-factura"); tipos.add("num");
+        }
+        if (esCreditos) {
+            etiquetas.add("Días para cobrar mora en créditos"); tipos.add("num");
+            etiquetas.add("Porcentaje de mora en créditos");    tipos.add("num");
+        }
+
+        final int TIPO_DESC_ROW = 3;
+        final int DESC_MAX_ROW  = 4;
+
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                new String[]{"Configuración", "Valor"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                if (col == 0) return false;
+                if (row == DESC_MAX_ROW) {
+                    Object tipo = getValueAt(TIPO_DESC_ROW, 1);
+                    return !"Valor".equals(tipo);
+                }
+                return true;
+            }
+        };
+
+        for (String et : etiquetas) {
+            modelo.addRow(new Object[]{et, ""});
+        }
+
+        modelo.addTableModelListener(e -> {
+            if (e.getColumn() == 1 && e.getFirstRow() == TIPO_DESC_ROW) {
+                modelo.fireTableRowsUpdated(DESC_MAX_ROW, DESC_MAX_ROW);
+            }
+        });
+
+        tblConfiguraciones1 = new javax.swing.JTable(modelo) {
+            @Override
+            public javax.swing.table.TableCellEditor getCellEditor(int row, int col) {
+                if (col == 1 && row < tipos.size()) {
+                    switch (tipos.get(row)) {
+                        case "combo_descuento":
+                            return new javax.swing.DefaultCellEditor(
+                                new javax.swing.JComboBox<>(new String[]{"Porcentaje", "Valor"}));
+                        case "combo_foco":
+                            return new javax.swing.DefaultCellEditor(
+                                new javax.swing.JComboBox<>(new String[]{"Cant", "Valor"}));
+                        case "num": {
+                            javax.swing.JTextField tf = new javax.swing.JTextField();
+                            tf.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+                            tf.addKeyListener(new java.awt.event.KeyAdapter() {
+                                @Override
+                                public void keyTyped(java.awt.event.KeyEvent e) {
+                                    char c = e.getKeyChar();
+                                    if (!Character.isDigit(c) && c != java.awt.event.KeyEvent.VK_BACK_SPACE && c != '.') {
+                                        e.consume();
+                                    }
+                                }
+                            });
+                            return new javax.swing.DefaultCellEditor(tf);
+                        }
+                        case "int": {
+                            javax.swing.JTextField tf = new javax.swing.JTextField();
+                            tf.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+                            tf.addKeyListener(new java.awt.event.KeyAdapter() {
+                                @Override
+                                public void keyTyped(java.awt.event.KeyEvent e) {
+                                    char c = e.getKeyChar();
+                                    if (!Character.isDigit(c) && c != java.awt.event.KeyEvent.VK_BACK_SPACE) {
+                                        e.consume();
+                                    }
+                                }
+                            });
+                            return new javax.swing.DefaultCellEditor(tf);
+                        }
+                        default:
+                            return super.getCellEditor(row, col);
+                    }
+                }
+                return super.getCellEditor(row, col);
+            }
+        };
+
+        tblConfiguraciones1.setFont(new java.awt.Font("Arial", 0, 16));
+        tblConfiguraciones1.setRowHeight(28);
+        if (tblConfiguraciones1.getColumnModel().getColumnCount() > 0) {
+            tblConfiguraciones1.getColumnModel().getColumn(0).setMinWidth(260);
+            tblConfiguraciones1.getColumnModel().getColumn(0).setPreferredWidth(300);
+            tblConfiguraciones1.getColumnModel().getColumn(0).setMaxWidth(400);
+        }
+        jScrollPane22.setViewportView(tblConfiguraciones1);
+    }
+
+    private void ajustarAlturaFilas(javax.swing.JTable tabla) {
+        java.awt.Container viewport = tabla.getParent();
+        int tableWidth = (viewport != null && viewport.getWidth() > 0)
+                ? viewport.getWidth() : tabla.getWidth();
+        int labelWidth = tabla.getColumnModel().getColumn(0).getPreferredWidth();
+        if (labelWidth <= 0) {
+            labelWidth = 180;
+        }
+        int valueWidth = tableWidth - labelWidth;
+        if (valueWidth < 100) {
+            valueWidth = 500;
+        }
+
+        javax.swing.JTextArea measure = new javax.swing.JTextArea();
+        measure.setLineWrap(true);
+        measure.setWrapStyleWord(true);
+        measure.setFont(new java.awt.Font("Century Gothic", 0, 14));
+        measure.setSize(valueWidth, 1);
+
+        for (int row = 0; row < tabla.getRowCount(); row++) {
+            Object val = tabla.getValueAt(row, 1);
+            measure.setText(val != null ? val.toString() : "");
+            int height = Math.max(measure.getPreferredSize().height, 24);
+            tabla.setRowHeight(row, height + 6);
+        }
+    }
 
     private void inicializarTablaImpresoraPorTipo() {
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-            new String[]{"Tipo Documento", "Impresora"}, 0
+                new String[]{"Tipo Documento", "Impresora", "Predeterminada"}, 0
         ) {
-            public boolean isCellEditable(int row, int col) { return col == 1; }
+            Class[] types = new Class[]{Object.class, Object.class, Boolean.class};
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+
+            public boolean isCellEditable(int row, int col) {
+                if (col == 0) {
+                    return false;
+                }
+                if (col == 2) {
+                    Object tipo = getValueAt(row, 0);
+                    return "Carta".equals(tipo) || "Media carta".equals(tipo) || "Pos".equals(tipo);
+                }
+                return true;
+            }
+
+            @Override
+            public void setValueAt(Object valor, int fila, int columna) {
+                super.setValueAt(valor, fila, columna);
+                if (columna == 2 && Boolean.TRUE.equals(valor)) {
+                    for (int i = 0; i < getRowCount(); i++) {
+                        if (i != fila) {
+                            super.setValueAt(false, i, 2);
+                        }
+                    }
+                    fireTableDataChanged();
+                }
+            }
         };
-        modelo.addRow(new Object[]{"Carta", null});
-        modelo.addRow(new Object[]{"Media carta", null});
-        modelo.addRow(new Object[]{"Pos", null});
+        modelo.addRow(new Object[]{"Carta", null, false});
+        modelo.addRow(new Object[]{"Media carta", null, false});
+        modelo.addRow(new Object[]{"Pos", null, false});
         if (instancias.getConfiguraciones().isRestaurante()) {
-            modelo.addRow(new Object[]{"Comanda", null});
-            modelo.addRow(new Object[]{"Prefactura", null});
+            modelo.addRow(new Object[]{"Comanda", null, null});
+            modelo.addRow(new Object[]{"Prefactura", null, null});
         }
         tblImpresoraPorTipo.setModel(modelo);
         tblImpresoraPorTipo.getColumnModel().getColumn(0).setMinWidth(120);
@@ -9130,11 +6808,17 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     private void inicializarTablaImpresionDocumentos() {
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-            new String[]{"Tipo Documento", "Previsualizar", "Preguntar copias", "Número copias"}, 0
+                new String[]{"Tipo Documento", "Previsualizar", "Preguntar copias", "# copias"}, 0
         ) {
             Class[] types = new Class[]{Object.class, Boolean.class, Boolean.class, Object.class};
-            public Class getColumnClass(int columnIndex) { return types[columnIndex]; }
-            public boolean isCellEditable(int row, int col) { return col != 0; }
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+
+            public boolean isCellEditable(int row, int col) {
+                return col != 0;
+            }
         };
         modelo.addRow(new Object[]{"Factura", null, null, null});
         if (instancias.getConfiguraciones().isOrdenServicio()) {
@@ -9152,9 +6836,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
             modelo.addRow(new Object[]{"Prefactura", null, null, null});
         }
         tblImpresionDocumentos.setModel(modelo);
-        tblImpresionDocumentos.getColumnModel().getColumn(0).setMinWidth(120);
-        tblImpresionDocumentos.getColumnModel().getColumn(0).setPreferredWidth(120);
-        tblImpresionDocumentos.getColumnModel().getColumn(0).setMaxWidth(120);
+        tblImpresionDocumentos.getColumnModel().getColumn(0).setMinWidth(130);
+        tblImpresionDocumentos.getColumnModel().getColumn(0).setPreferredWidth(130);
+        tblImpresionDocumentos.getColumnModel().getColumn(0).setMaxWidth(130);
+        tblImpresionDocumentos.getColumnModel().getColumn(3).setMinWidth(70);
+        tblImpresionDocumentos.getColumnModel().getColumn(3).setPreferredWidth(70);
+        tblImpresionDocumentos.getColumnModel().getColumn(3).setMaxWidth(70);
     }
 
     private void refrescarEditorImpresoraPorTipo() {
@@ -9167,7 +6854,8 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
                 if (!nombre.equals("Fax")) {
                     cmbImpresora.addItem(nombre);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         tblImpresoraPorTipo.getColumnModel().getColumn(1).setCellEditor(new javax.swing.DefaultCellEditor(cmbImpresora));
     }
@@ -9175,14 +6863,18 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private int getFilaTabla(javax.swing.JTable tabla, String etiqueta) {
         for (int i = 0; i < tabla.getRowCount(); i++) {
             Object val = tabla.getValueAt(i, 0);
-            if (etiqueta.equals(val)) return i;
+            if (etiqueta.equals(val)) {
+                return i;
+            }
         }
         return -1;
     }
 
     private void setFilaTabla(javax.swing.JTable tabla, String etiqueta, int columna, Object valor) {
         int fila = getFilaTabla(tabla, etiqueta);
-        if (fila >= 0) tabla.setValueAt(valor, fila, columna);
+        if (fila >= 0) {
+            tabla.setValueAt(valor, fila, columna);
+        }
     }
 
     private boolean getCeldaBooleana(javax.swing.JTable tabla, int fila, int columna) {
@@ -9205,41 +6897,40 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
 
     private boolean getCeldaBooleanaPorEtiqueta(javax.swing.JTable tabla, String etiqueta, int columna) {
         int fila = getFilaTabla(tabla, etiqueta);
-        if (fila < 0) return false;
+        if (fila < 0) {
+            return false;
+        }
         return getCeldaBooleana(tabla, fila, columna);
     }
 
     private String getCeldaTextoPorEtiqueta(javax.swing.JTable tabla, String etiqueta, int columna) {
         int fila = getFilaTabla(tabla, etiqueta);
-        if (fila < 0) return "";
+        if (fila < 0) {
+            return "";
+        }
         return getCeldaTexto(tabla, fila, columna);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizarMesas;
-    private javax.swing.JButton btnAggResponsabilidades;
-    private javax.swing.JButton btnAggResponsabilidades1;
     private javax.swing.JButton btnAgregarBodega;
     private javax.swing.JButton btnBusProd;
     private javax.swing.JButton btnCambiarEstadoBodega;
     private javax.swing.JButton btnGenerarTabla;
-    private javax.swing.JButton btnGuardar1;
     private javax.swing.JButton btnGuardar2;
     private javax.swing.JButton btnGuardar3;
     private javax.swing.JButton btnGuardar4;
     private javax.swing.JButton btnGuardar5;
     private javax.swing.JButton btnGuardar6;
+    private javax.swing.JButton btnGuardarMaestra;
     private javax.swing.JButton btnModificarBodega;
-    private javax.swing.JButton btnOcultarImpresiones;
     private javax.swing.JButton btnOcultarImpresiones1;
     private javax.swing.JButton btnResolucion;
-    private javax.swing.JRadioButton carta;
     private javax.swing.JComboBox cmbActoQuirurgico;
     private javax.swing.JComboBox cmbAmbito;
     private javax.swing.JComboBox cmbBodegas;
     private javax.swing.JComboBox cmbCausa;
     private javax.swing.JComboBox cmbCodigoConsulta;
-    private javax.swing.JComboBox cmbComanda;
     private javax.swing.JComboBox cmbConcepto;
     private javax.swing.JComboBox cmbDoctores;
     private javax.swing.JComboBox cmbDoctores1;
@@ -9254,13 +6945,7 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox cmbHoraInicio1;
     private javax.swing.JComboBox cmbIntervalo;
     private javax.swing.JComboBox cmbIntervalo1;
-    private javax.swing.JComboBox cmbMisResponsabilidades;
     private javax.swing.JComboBox cmbPersonal;
-    private javax.swing.JComboBox cmbPrefactura;
-    private javax.swing.JComboBox cmbResponsabilidades;
-    private javax.swing.JComboBox cmbTipoCarta;
-    private javax.swing.JComboBox cmbTipoMediaCarta;
-    private javax.swing.JComboBox cmbTipoPos;
     private javax.swing.JComboBox cmbTipoPrestador;
     private javax.swing.JRadioButton descuentoPeso;
     private javax.swing.JRadioButton descuentoPorcentaje;
@@ -9321,8 +7006,6 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup grupoValorConIva;
     private javax.swing.ButtonGroup grupoVentasContado;
     private javax.swing.ButtonGroup grupoVisualizarFacturas;
-    private javax.swing.JRadioButton horaNo;
-    private javax.swing.JRadioButton horaSi;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
@@ -9348,46 +7031,29 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel20;
-    private javax.swing.JPanel jPanel21;
-    private javax.swing.JPanel jPanel22;
-    private javax.swing.JPanel jPanel23;
-    private javax.swing.JPanel jPanel24;
-    private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel30;
-    private javax.swing.JPanel jPanel31;
-    private javax.swing.JPanel jPanel32;
     private javax.swing.JPanel jPanel34;
     private javax.swing.JPanel jPanel35;
     private javax.swing.JPanel jPanel37;
     private javax.swing.JPanel jPanel38;
     private javax.swing.JPanel jPanel39;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel40;
-    private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel42;
     private javax.swing.JPanel jPanel43;
     private javax.swing.JPanel jPanel44;
     private javax.swing.JPanel jPanel47;
     private javax.swing.JPanel jPanel48;
     private javax.swing.JPanel jPanel49;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel50;
     private javax.swing.JPanel jPanel51;
     private javax.swing.JPanel jPanel52;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JPopupMenu jPopupMenu2;
     private javax.swing.JPopupMenu jPopupMenu3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
@@ -9396,17 +7062,16 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane15;
     private javax.swing.JScrollPane jScrollPane16;
     private javax.swing.JScrollPane jScrollPane17;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane18;
+    private javax.swing.JScrollPane jScrollPane19;
+    private javax.swing.JScrollPane jScrollPane20;
+    private javax.swing.JScrollPane jScrollPane21;
+    private javax.swing.JScrollPane jScrollPane22;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
-    private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JLabel lbAnexo;
-    private javax.swing.JLabel lbAnexo1;
     private javax.swing.JLabel lbCelular10;
     private javax.swing.JLabel lbCelular11;
     private javax.swing.JLabel lbCelular13;
@@ -9418,133 +7083,64 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbCelular6;
     private javax.swing.JLabel lbCelular8;
     private javax.swing.JLabel lbCelular9;
-    private javax.swing.JLabel lbComanda;
-    private javax.swing.JLabel lbMisResponsabilidades;
-    private javax.swing.JLabel lbNit;
-    private javax.swing.JLabel lbNit1;
     private javax.swing.JLabel lbNit11;
     private javax.swing.JLabel lbNit12;
     private javax.swing.JLabel lbNit13;
     private javax.swing.JLabel lbNit14;
     private javax.swing.JLabel lbNit3;
     private javax.swing.JLabel lbNit4;
-    private javax.swing.JLabel lbNit6;
-    private javax.swing.JLabel lbNit7;
-    private javax.swing.JLabel lbNit8;
     private javax.swing.JTextField lbOtroConsecutivo;
-    private javax.swing.JLabel lbPrefactura;
     private javax.swing.JLabel lbRazon;
-    private javax.swing.JLabel lbRazon1;
     private javax.swing.JLabel lbRazon11;
     private javax.swing.JLabel lbRazon13;
     private javax.swing.JLabel lbRazon14;
     private javax.swing.JLabel lbRazon15;
     private javax.swing.JLabel lbRazon19;
-    private javax.swing.JLabel lbRazon2;
     private javax.swing.JLabel lbRazon23;
     private javax.swing.JLabel lbRazon25;
     private javax.swing.JLabel lbRazon28;
     private javax.swing.JLabel lbRazon4;
     private javax.swing.JLabel lbRazon5;
-    private javax.swing.JLabel lbResponsabilidades;
-    private javax.swing.JLabel lbTelefono1;
     private javax.swing.JLabel lbTelefono10;
-    private javax.swing.JLabel lbTelefono11;
     private javax.swing.JLabel lbTelefono13;
     private javax.swing.JLabel lbTelefono14;
-    private javax.swing.JLabel lbTelefono15;
-    private javax.swing.JLabel lbTelefono16;
-    private javax.swing.JLabel lbTelefono17;
     private javax.swing.JLabel lbTelefono18;
     private javax.swing.JLabel lbTelefono19;
-    private javax.swing.JLabel lbTelefono2;
     private javax.swing.JLabel lbTelefono20;
     private javax.swing.JLabel lbTelefono21;
-    private javax.swing.JLabel lbTelefono22;
-    private javax.swing.JLabel lbTelefono23;
     private javax.swing.JLabel lbTelefono24;
-    private javax.swing.JLabel lbTelefono25;
-    private javax.swing.JLabel lbTelefono26;
     private javax.swing.JLabel lbTelefono27;
-    private javax.swing.JLabel lbTelefono28;
     private javax.swing.JLabel lbTelefono29;
-    private javax.swing.JLabel lbTelefono30;
-    private javax.swing.JLabel lbTelefono31;
-    private javax.swing.JLabel lbTelefono32;
-    private javax.swing.JLabel lbTelefono33;
     private javax.swing.JLabel lbTelefono35;
-    private javax.swing.JLabel lbTelefono36;
-    private javax.swing.JLabel lbTelefono37;
     private javax.swing.JLabel lbTelefono38;
-    private javax.swing.JLabel lbTelefono39;
-    private javax.swing.JLabel lbTelefono4;
-    private javax.swing.JLabel lbTelefono40;
-    private javax.swing.JLabel lbTelefono41;
-    private javax.swing.JLabel lbTelefono42;
     private javax.swing.JLabel lbTelefono43;
-    private javax.swing.JLabel lbTelefono44;
-    private javax.swing.JLabel lbTelefono45;
-    private javax.swing.JLabel lbTelefono46;
-    private javax.swing.JLabel lbTelefono47;
     private javax.swing.JLabel lbTelefono48;
-    private javax.swing.JLabel lbTelefono49;
     private javax.swing.JLabel lbTelefono5;
-    private javax.swing.JLabel lbTelefono50;
-    private javax.swing.JLabel lbTelefono51;
-    private javax.swing.JLabel lbTelefono52;
-    private javax.swing.JLabel lbTelefono53;
-    private javax.swing.JLabel lbTelefono54;
-    private javax.swing.JLabel lbTelefono55;
-    private javax.swing.JLabel lbTelefono56;
-    private javax.swing.JLabel lbTelefono57;
-    private javax.swing.JLabel lbTelefono58;
     private javax.swing.JLabel lbTelefono59;
     private javax.swing.JLabel lbTelefono6;
-    private javax.swing.JLabel lbTelefono60;
-    private javax.swing.JLabel lbTelefono61;
-    private javax.swing.JLabel lbTelefono62;
-    private javax.swing.JLabel lbTelefono63;
-    private javax.swing.JLabel lbTelefono64;
     private javax.swing.JLabel lbTelefono65;
-    private javax.swing.JLabel lbTelefono66;
     private javax.swing.JLabel lbTelefono67;
-    private javax.swing.JLabel lbTelefono68;
     private javax.swing.JLabel lbTelefono69;
-    private javax.swing.JLabel lbTelefono7;
-    private javax.swing.JLabel lbTelefono70;
-    private javax.swing.JLabel lbTelefono71;
-    private javax.swing.JLabel lbTelefono72;
     private javax.swing.JLabel lbTelefono73;
-    private javax.swing.JLabel lbTelefono74;
-    private javax.swing.JLabel lbTelefono75;
-    private javax.swing.JLabel lbTelefono8;
     private javax.swing.JLabel lbTelefono9;
     private javax.swing.JRadioButton lectorNo;
     private javax.swing.JRadioButton lectorSi;
-    private javax.swing.JRadioButton mediaCarta;
-    private javax.swing.JRadioButton mostrarImpoconsumoNo;
-    private javax.swing.JRadioButton mostrarImpoconsumoSi;
-    private javax.swing.JRadioButton mostrarRetencionesNo;
-    private javax.swing.JRadioButton mostrarRetencionesSi;
     private javax.swing.JPanel pnlAgenda;
     private javax.swing.JPanel pnlAgenda1;
     private javax.swing.JPanel pnlBodegas;
     private javax.swing.JPanel pnlCredito;
+    private javax.swing.JPanel pnlDatosEmpresa;
     private javax.swing.JPanel pnlFormulario;
     private javax.swing.JPanel pnlFormulario1;
     private javax.swing.JPanel pnlImpresiones;
     private javax.swing.JPanel pnlImpresionesGrupo;
-    private javax.swing.JPanel pnlImpresorasPorDocumento;
     private javax.swing.JPanel pnlInformacionMedico1;
     private javax.swing.JPanel pnlInformacionMedico2;
-    private javax.swing.JPanel pnlNumeroDeCopias;
     private javax.swing.JPanel pnlOrdenMedica;
-    private javax.swing.JPanel pnlPrevisualizar;
-    private javax.swing.JPanel pnlRestaurante;
+    private javax.swing.JPanel pnlVariablesYConf;
     private javax.swing.JMenuItem popBorrar;
     private javax.swing.JMenuItem popBorrar1;
     private javax.swing.JMenuItem popBorrar2;
-    private javax.swing.JRadioButton pos;
     private javax.swing.JRadioButton rbtNo;
     private javax.swing.JRadioButton rbtNo1;
     private javax.swing.JRadioButton rbtNo2;
@@ -9556,96 +7152,36 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton rbtSi3;
     private javax.swing.JRadioButton rbtSiModificarValor;
     private javax.swing.JRadioButton rdConsulta;
-    private javax.swing.JRadioButton rdCopiasNo;
-    private javax.swing.JRadioButton rdCopiasSi;
     private javax.swing.JRadioButton rdImpresionPorGrupo;
-    private javax.swing.JRadioButton rdNoBolsa;
     private javax.swing.JRadioButton rdNoBorrarMesas;
     private javax.swing.JRadioButton rdNoBorrarProdMesas;
-    private javax.swing.JRadioButton rdNoCombinar;
-    private javax.swing.JRadioButton rdNoConsecutivo;
-    private javax.swing.JRadioButton rdNoCostoImpo;
-    private javax.swing.JRadioButton rdNoCostoIva;
-    private javax.swing.JRadioButton rdNoCupoCredito;
-    private javax.swing.JRadioButton rdNoDevuelta;
-    private javax.swing.JRadioButton rdNoDiasAutomaticos;
     private javax.swing.JRadioButton rdNoFacturarMesas;
-    private javax.swing.JRadioButton rdNoFacturarSinInventario;
     private javax.swing.JRadioButton rdNoGenerarOrden;
-    private javax.swing.JRadioButton rdNoImprimirCuadreFiscal;
     private javax.swing.JRadioButton rdNoImprimirFactura;
     private javax.swing.JRadioButton rdNoImprimirOrden;
-    private javax.swing.JRadioButton rdNoMensajeUtilidad;
-    private javax.swing.JRadioButton rdNoModificarNombre;
-    private javax.swing.JRadioButton rdNoModificarPrecio;
-    private javax.swing.JRadioButton rdNoPagoTerceros;
-    private javax.swing.JRadioButton rdNoPondNegativo;
-    private javax.swing.JRadioButton rdNoPrevisualizarComanda;
-    private javax.swing.JRadioButton rdNoPrevisualizarPrefactura;
-    private javax.swing.JRadioButton rdNoPvpImpo;
     private javax.swing.JRadioButton rdNoPvpIva;
     private javax.swing.JRadioButton rdNoSolicitudesPermisos;
     private javax.swing.JRadioButton rdNoSoloVisibleMesas;
-    private javax.swing.JRadioButton rdNoVentasPredeterminado;
-    private javax.swing.JRadioButton rdPreguntaCotizacionNO;
-    private javax.swing.JRadioButton rdPreguntaCotizacionSI;
-    private javax.swing.JRadioButton rdPreguntaFacturaNO;
-    private javax.swing.JRadioButton rdPreguntaFacturaSI;
-    private javax.swing.JRadioButton rdPreguntaOServicioNO;
-    private javax.swing.JRadioButton rdPreguntaOServicioSI;
-    private javax.swing.JRadioButton rdPreguntaPedidosNO;
-    private javax.swing.JRadioButton rdPreguntaPedidosSI;
-    private javax.swing.JRadioButton rdPreguntaPlanSepareNO;
-    private javax.swing.JRadioButton rdPreguntaPlanSepareSI;
-    private javax.swing.JRadioButton rdPrevisualizarCotizacionNO;
-    private javax.swing.JRadioButton rdPrevisualizarCotizacionSI;
-    private javax.swing.JRadioButton rdPrevisualizarFacturaNO;
-    private javax.swing.JRadioButton rdPrevisualizarFacturaSI;
-    private javax.swing.JRadioButton rdPrevisualizarOServicioNO;
-    private javax.swing.JRadioButton rdPrevisualizarOServicioSI;
-    private javax.swing.JRadioButton rdPrevisualizarPedidosNO;
-    private javax.swing.JRadioButton rdPrevisualizarPedidosSI;
-    private javax.swing.JRadioButton rdPrevisualizarPlanSepareNO;
-    private javax.swing.JRadioButton rdPrevisualizarPlanSepareSI;
     private javax.swing.JRadioButton rdProcedimiento;
     private javax.swing.JRadioButton rdRedondearCantidades;
-    private javax.swing.JRadioButton rdSiBolsa;
     private javax.swing.JRadioButton rdSiBorrarMesas;
     private javax.swing.JRadioButton rdSiBorrarProdMesas;
-    private javax.swing.JRadioButton rdSiCombinar;
-    private javax.swing.JRadioButton rdSiConsecutivo;
-    private javax.swing.JRadioButton rdSiCostoImpo;
-    private javax.swing.JRadioButton rdSiCostoIva;
-    private javax.swing.JRadioButton rdSiCupoCredito;
-    private javax.swing.JRadioButton rdSiDevuelta;
-    private javax.swing.JRadioButton rdSiDiasAutomaticos;
     private javax.swing.JRadioButton rdSiFacturarMesas;
-    private javax.swing.JRadioButton rdSiFacturarSinInventario;
     private javax.swing.JRadioButton rdSiGenerarOrden;
-    private javax.swing.JRadioButton rdSiImprimirCuadreFiscal;
     private javax.swing.JRadioButton rdSiImprimirFactura;
     private javax.swing.JRadioButton rdSiImprimirOrden;
-    private javax.swing.JRadioButton rdSiMensajeUtilidad;
-    private javax.swing.JRadioButton rdSiModificarNombre;
-    private javax.swing.JRadioButton rdSiModificarPrecio;
-    private javax.swing.JRadioButton rdSiPagoTerceros;
-    private javax.swing.JRadioButton rdSiPondNegativo;
-    private javax.swing.JRadioButton rdSiPrevisualizarComanda;
-    private javax.swing.JRadioButton rdSiPrevisualizarPrefactura;
-    private javax.swing.JRadioButton rdSiPvpImpo;
     private javax.swing.JRadioButton rdSiPvpIva;
     private javax.swing.JRadioButton rdSiSolicitudesPermisos;
     private javax.swing.JRadioButton rdSiSoloVisibleMesas;
-    private javax.swing.JRadioButton rdSiVentasPredeterminado;
     private javax.swing.JRadioButton rdTurnoNo;
     private javax.swing.JRadioButton rdTurnoSi;
-    private javax.swing.JRadioButton recogidaNo;
-    private javax.swing.JRadioButton recogidaSi;
     private javax.swing.JScrollPane scrFormulario;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JTable tblBodegasInternas;
     private javax.swing.JTable tblCascos;
     private javax.swing.JTable tblConfig;
+    private javax.swing.JTable tblConfiguraciones;
+    private javax.swing.JTable tblConfiguraciones1;
     private javax.swing.JTable tblDiasBloqueo;
     private javax.swing.JTable tblExamenes;
     private javax.swing.JTable tblHoras;
@@ -9653,18 +7189,12 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JTable tblImpresoraPorTipo;
     private javax.swing.JTable tblImpresoras;
     private javax.swing.JTable tblImpresoras1;
+    private javax.swing.JTable tblInformacionEmpresa;
+    private javax.swing.JTable tblInformacionImpresion;
     private javax.swing.JTable tblMesas;
+    private javax.swing.JTable tblOpcionesImpresiones;
     private javax.swing.JTable tblRestaurante;
     private javax.swing.JTable tblTarjetas;
-    private javax.swing.JTextArea txtAnexoFactura;
-    private javax.swing.JTextArea txtAnexoOrden;
-    private javax.swing.JTextField txtCantCopiasComanda;
-    private javax.swing.JTextField txtCantCopiasPrefactura;
-    private javax.swing.JTextField txtCantCotizacion;
-    private javax.swing.JTextField txtCantFactura;
-    private javax.swing.JTextField txtCantOServicio;
-    private javax.swing.JTextField txtCantPedidos;
-    private javax.swing.JTextField txtCantPlanSepare;
     private javax.swing.JTextField txtCantidadEstablecida;
     private javax.swing.JTextField txtCodProducto;
     private javax.swing.JTextField txtCodigoPrestadorServico;
@@ -9676,36 +7206,21 @@ public class vistaMaestra extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtCosto;
     private javax.swing.JTextField txtDescuentoMaximo;
     private javax.swing.JTextField txtDiasAlerta;
-    private javax.swing.JTextField txtDiasAlerta1;
     private javax.swing.JTextField txtDiasCobrarMora;
-    private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtFilas;
     private javax.swing.JTextField txtFilas1;
     private javax.swing.JTextField txtFranquisia;
     private javax.swing.JTextField txtIdProd;
-    private javax.swing.JTextField txtL1;
-    private javax.swing.JTextArea txtLegal;
     private javax.swing.JTextField txtLimite;
-    private javax.swing.JTextField txtNit;
-    private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtNombreFormato;
-    private javax.swing.JTextField txtNumFactIncremento;
     private javax.swing.JLabel txtNumMesas;
     private javax.swing.JTextField txtNumeroFactosElectronicas;
-    private javax.swing.JTextArea txtPiePagina;
     private javax.swing.JTextField txtPorcPropina;
     private javax.swing.JTextField txtPorcentajeMora;
-    private javax.swing.JTextField txtRegimen;
-    private javax.swing.JTextField txtTelefono;
     private javax.swing.JTextField txtTituloFactura;
     private javax.swing.JTextField txtTurno;
-    private javax.swing.JTextField txtValor;
     private javax.swing.JTextField txtValor1;
     private javax.swing.JTextField txtaCobrar;
     private javax.swing.JTextField txtaCobrar1;
-    private javax.swing.JRadioButton ubicacionNo;
-    private javax.swing.JRadioButton ubicacionSi;
-    private javax.swing.JRadioButton utilidadNo;
-    private javax.swing.JRadioButton utilidadSi;
     // End of variables declaration//GEN-END:variables
 }

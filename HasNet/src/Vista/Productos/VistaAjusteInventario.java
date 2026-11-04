@@ -58,7 +58,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     Boolean preguntaLimpiar = true;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
-    Object[] datos;
 
     //Barra de titulo
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
@@ -142,7 +141,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
     private ActionListener accion(final String opc) {
@@ -751,7 +749,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
         preguntaLimpiar = true;
 
-        txtCantidad.setText(datos[87].toString());
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         eliminarRegistrosTablas();
 
         txtValor.setText(this.simbolo + " 0");

@@ -26,6 +26,7 @@ import clases.Cartera.ndNc;
 import clases.Instancias;
 import Modelo.Contactos.ModeloContacto;
 import Procesos.Inventario.Servicio.ServicioInventario;
+import Utilidades.DatosMaestra;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
 import clases.Ventas.ndFactura;
@@ -73,7 +74,6 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
     Instancias instancias;
     TableRowSorter modeloOrdenado;
     ndFactura nodo;
-    Object[] datos;
     DecimalFormat df = new DecimalFormat("#.00");
     String simbolo = "";
 
@@ -1824,7 +1824,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
     }
 
     private String obtenerResponsabilidadesFiscales() {
-        String[] responsabilidades = datos[113].toString().split(", ");
+        String[] responsabilidades = DatosMaestra.getResponsabilidadesRaw().split(", ");
         String responsabilidadesFiscales = "";
         for (int i = 0; i < responsabilidades.length; i++) {
             responsabilidadesFiscales = responsabilidadesFiscales + responsabilidades[i].split(" /")[0] + ";";
@@ -2436,7 +2436,6 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
     public void setVendedores(String[] Vendedores) {

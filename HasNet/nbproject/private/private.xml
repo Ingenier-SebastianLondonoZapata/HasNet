@@ -3,18 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/EstrategiaInventario/AbstractProcesadorMovimiento.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/EstrategiaInventario/ProcesadorMovimiento.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/EstrategiaInventario/ProcesadorAjusteEntrada.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/FabricaInventario/FabricaProcesadores.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/EstrategiaInventario/ProcesadorAjusteSalida.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/EstrategiaInventario/ProcesadorFacturacion.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/Servicio/Inventario/ServicioInventario.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/Vista/Ventas/VistaFactura.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/Vista/Productos/VistaIngreso.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/EstrategiaInventario/ProcesadorInventarioInicial.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/EstrategiaInventario/ProcesadorAnularAjusteSalida.java</file>
-            <file>file:/C:/Users/sebastian.londono/Desktop/Sistema%20Millonario/HasNet/HasNet/src/Vista/Productos/VistaInventarioInicial.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Utilidades/BaseDatos/SQL.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Utilidades/DocumentosElectronicos.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Modelo/Maestra/ModeloMaestraImpresiones.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Controlador/InicioSesion/controladorInicioSesion.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Vista/Documentos/VistaDocumentos.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/formularios/Veterinario/infHospitalizacion.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Dao/Configuraciones/DaoMaestra.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Vista/Aterrizaje/VistaMenu.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/clases/iFactura.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Utilidades/DatosMaestra.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/formularios/productos/infTrasladosInternos.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/clases/metodosGenerales.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Vista/Configuraciones/vistaMaestra.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Dao/Configuraciones/migration_bdMaestra_renombrar.sql</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/clases/Instancias.java</file>
+            <file>file:/C:/Proyectos/Sistema%20Millonario/HasNet/src/Vista/Configuraciones/vistaResoluciones.java</file>
         </group>
     </open-files>
 </project-private>

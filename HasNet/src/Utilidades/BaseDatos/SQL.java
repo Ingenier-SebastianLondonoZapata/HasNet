@@ -1,4 +1,4 @@
-package Utilidades.BaseDatos;
+﻿package Utilidades.BaseDatos;
 
 import Utilidades.Contactos.Bodegas;
 
@@ -17,7 +17,6 @@ import clases.Veterinario.*;
 import clases.big;
 import clases.credito.*;
 import clases.metodosGenerales;
-import clases.ndMaestra;
 import clases.ndUsuario;
 import clases.productos.*;
 import clases.recordatorios.*;
@@ -6531,68 +6530,7 @@ public class SQL {
         return dtDatos;
     }
 
-    public boolean modificarMaestra(ndMaestra nodo) {
-        boolean ok = false;
-        String instruccion_sql = "update bdMaestra set l1=?, l2=?, l4=?, c1=?, c2=?, c3=?, c4=?, c5=?, d1=?, d2=?, d3=?, d4=?, d5=?, d6=?, d7=?, pie=?, "
-                + "legal=?,c6=?,c7=?,recogida=?,lector=?,tituloFactura=?, pvpSinIva=?, costoSinIva=?, ventasPredeterminado=?, mensajeUtilidad=?,consecutivosDiferentes=?,"
-                + "resolucionIgual=?,diasAlertaResolucion=?,alertaFechaDias=?,alertaCantidadNumeracion=?,alertaPromedioDias=?, diasCobroMora=?, "
-                + "porcentajeMora=?, generaOrdenMedica=?, imprimirOrdenMedica=?, imprimirFacturaOrdenMedica=?, horaInicioAgenda=?,horaFinAgenda=?, "
-                + "intervaloAgenda=?, codPrestadorServicio=?, imprimirCuadreFiscal=?, ocultarInformacionCliente=?, visualizarTodasLasFacturas=?, "
-                + "mostrarInformacionCuadre=?, descuentoMaximoVentas=?, tipoIdPrestadorServicio=?, otros=?, domicilios=?, limite=?, combinarProductos=?,"
-                + "modificarNombre=?, impBolsa=?, valorBolsa=?, turno=?, turno1=?, anexoFacturacion=?, consecutivo=?, hora=?, pondNegativo=?, "
-                + "anexoOrdenServicio=?, modificarPrecio=?, borrarCongelada=?, copiasFactura=?, copiasOServicio=?, copiasCotizacion=?, copiasPlanSepare=?, copiasPedido=?, "
-                + "previsualizarFactura=?, previsualizarOServicio=?, previsualizarCotizacion=?, previsualizarPlanSepare=?, previsualizarPedido=?, numFactura=?, "
-                + "numOServicio=?, numCotizacion=?, numPlanSepare=?, numPedido=?, pagoTerceros=?, facturarSinInventario=?, reimpresion=?, impresoraPos=?,"
-                + "impresoraMediaCarta=?, impresoraCarta=?, verImpoconsumo=?, verRetenciones=?, imprimirCada=?, cantidadEstablecida=?, filas=?, "
-                + "columnas=?, porcPropina=?, mostrarDevuelta=?, inicioHosp=?, finHosp=?, intervalosHosp=?, diasAutomaticos=?, ciudadBuscador=?, foco=?,"
-                + "pvpImpoconsumo=?, costoImpoconsumo=?, impresionPorGrupo=?, copiasComanda=?, copiasPrefactura=?, previsualizarComanda=?, previsualizarPrefactura=?,"
-                + "impresoraComanda=?, impresoraPrefactura=?, meserosFacturarMesas=?, soloMesas=?, borrarMesas=?, idUsuario=?, password=?, numFacturaIncremento=?,"
-                + "responsabilidades=?, gmail=?, passGmail=? where Id=1;";
-        ok = Actualizar_Registro(metodos.pasarDatosMaestra(nodo), null, instruccion_sql);
-        return ok;
-    }
 
-    public Object[] getDatosMaestra() {
-        String instruccion_sql = "select l1, l2, l4, c1, c2, c3, c4, c5, "
-                + " d1, d2, d3, d4, d5, d6, d7, pie, legal,c6,c7,recogida,lector,tituloFactura, pvpSinIva, costoSinIva, ventasPredeterminado, mensajeUtilidad,"
-                + "consecutivosDiferentes,resolucionIgual,diasAlertaResolucion, alertaFechaDias,alertaCantidadNumeracion,alertaPromedioDias,diasCobroMora, porcentajeMora, "
-                + "generaOrdenMedica, imprimirOrdenMedica, imprimirFacturaOrdenMedica, horaInicioAgenda, horaFinAgenda, intervaloAgenda, codPrestadorServicio, "
-                + "previsualizarFactura, imprimirCuadreFiscal, ocultarInformacionCliente, visualizarTodasLasFacturas,mostrarInformacionCuadre, descuentoMaximoVentas,"
-                + "tipoIdPrestadorServicio, otros, domicilios, limite, combinarProductos, modificarNombre, impBolsa, valorBolsa, turno, turno1, anexoFacturacion, "
-                + "copiasCotizacion, consecutivo, hora, pondNegativo, anexoOrdenServicio, modificarPrecio, borrarCongelada, copiasFactura, copiasOServicio, copiasCotizacion, "
-                + "copiasPlanSepare, copiasPedido, previsualizarFactura, previsualizarOServicio, previsualizarCotizacion, previsualizarPlanSepare, previsualizarPedido, numFactura, "
-                + "numOServicio, numCotizacion, numPlanSepare, numPedido, pagoTerceros, facturarSinInventario, reimpresion, impresoraPos, impresoraMediaCarta, impresoraCarta, "
-                + "verImpoconsumo, verRetenciones, imprimirCada, cantidadEstablecida, filas, columnas, porcPropina, mostrarDevuelta, inicioHosp, finHosp,"
-                + "intervalosHosp, diasAutomaticos, ciudadBuscador, foco, pvpImpoconsumo, costoImpoconsumo, impresionPorGrupo, copiasComanda, copiasPrefactura,"
-                + "previsualizarComanda, previsualizarPrefactura, impresoraComanda, impresoraPrefactura, meserosFacturarMesas, soloMesas, borrarMesas,"
-                + "idUsuario, password, numFacturaIncremento, responsabilidades, gmail, passGmail from bdMaestra where Id=1; ";
-        //columnas de la tabla que se
-        String[] colName = {"l1", "l2", "l4", "c1", "c2", "c3", "c4", "c5", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "pie", "legal", "c6", "c7",
-            "recogida", "lector", "tituloFactura", "pvpSinIva", "costoSinIva", "ventasPredeterminado", "mensajeUtilidad", "consecutivosDiferentes",
-            "resolucionIgual", "diasAlertaResolucion", "alertaFechaDias", "alertaCantidadNumeracion", "alertaPromedioDias", "diasCobroMora", "porcentajeMora",
-            "generaOrdenMedica", "imprimirOrdenMedica", "imprimirFacturaOrdenMedica", "horaInicioAgenda", "horaFinAgenda", "intervaloAgenda",
-            "codPrestadorServicio", "imprimirCuadreFiscal", "ocultarInformacionCliente", "visualizarTodasLasFacturas",
-            "mostrarInformacionCuadre", "descuentoMaximoVentas", "tipoIdPrestadorServicio", "otros", "domicilios", "limite", "combinarProductos",
-            "modificarNombre", "impBolsa", "valorBolsa", "turno", "turno1", "anexoFacturacion", "consecutivo", "hora", "pondNegativo",
-            "anexoOrdenServicio", "modificarPrecio", "borrarCongelada", "copiasFactura", "copiasOServicio", "copiasCotizacion", "copiasPlanSepare", "copiasPedido",
-            "previsualizarFactura", "previsualizarOServicio", "previsualizarCotizacion", "previsualizarPlanSepare", "previsualizarPedido", "numFactura", "numOServicio",
-            "numCotizacion", "numPlanSepare", "numPedido", "pagoTerceros", "facturarSinInventario", "reimpresion", "impresoraPos", "impresoraMediaCarta", "impresoraCarta",
-            "verImpoconsumo", "verRetenciones", "imprimirCada", "cantidadEstablecida", "filas", "columnas", "porcPropina", "mostrarDevuelta",
-            "inicioHosp", "finHosp", "intervalosHosp", "diasAutomaticos", "ciudadBuscador", "foco", "pvpImpoconsumo", "costoImpoconsumo", "impresionPorGrupo",
-            "copiasComanda", "copiasPrefactura", "previsualizarComanda", "previsualizarPrefactura", "impresoraComanda", "impresoraPrefactura", "meserosFacturarMesas",
-            "soloMesas", "borrarMesas", "idUsuario", "password", "numFacturaIncremento", "responsabilidades", "gmail", "passGmail"
-        };
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, false, false, true, false, false, false, false, false, false, true, true, true, true, true, true, false, false, false, true,
-            true, true, true, false, false, false, false, true, true, true, true, true, false, false, false, true, false, true, true, false,
-            false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true,
-            false, false, false, true, true, true, false, false, true, true, true, true, true, false, true, true, true, false, false, true, false, false, false,
-            true, true, false, false, true, true, false, false, false, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        return data;
-    }
 
     public boolean actualizarPermisos(String id, String regimen, String impoconsumo, String dispositivoUSB,
             String ordenesServicio, String tipoOrden, String creditos, String planSepare, String pedidos,

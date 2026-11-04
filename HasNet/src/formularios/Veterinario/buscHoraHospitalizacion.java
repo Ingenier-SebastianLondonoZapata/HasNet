@@ -1,6 +1,7 @@
 package formularios.Veterinario;
 
 import formularios.Agenda.*;
+import Utilidades.DatosMaestra;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
@@ -21,8 +22,6 @@ public class buscHoraHospitalizacion extends javax.swing.JDialog {
     TableRowSorter modeloOrdenado;
     Instancias instancias;
 
-    Object[] datos = null;
-
     public buscHoraHospitalizacion(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -35,7 +34,6 @@ public class buscHoraHospitalizacion extends javax.swing.JDialog {
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
     private ActionListener accion(final String opc, final JDialog ventana) {
@@ -224,16 +222,16 @@ public class buscHoraHospitalizacion extends javax.swing.JDialog {
         int intervalo = 10;
         int contador = 0;
 
-        if (datos[92] != null) {
-            horaIni = Integer.parseInt(datos[92].toString());
+        if (!DatosMaestra.getInicioHosp().isEmpty()) {
+            horaIni = Integer.parseInt(DatosMaestra.getInicioHosp());
         }
 
-        if (datos[93] != null) {
-            horaFin = Integer.parseInt(datos[93].toString());
+        if (!DatosMaestra.getFinHosp().isEmpty()) {
+            horaFin = Integer.parseInt(DatosMaestra.getFinHosp());
         }
 
-        if (datos[94] != null) {
-            intervalo = Integer.parseInt(datos[94].toString());
+        if (!DatosMaestra.getIntervalosHosp().isEmpty()) {
+            intervalo = Integer.parseInt(DatosMaestra.getIntervalosHosp());
         }
 
         modelo = (DefaultTableModel) tblRegistros.getModel();

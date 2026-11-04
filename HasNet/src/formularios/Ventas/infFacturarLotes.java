@@ -7,6 +7,7 @@ import Controlador.BarraProceso.jcThread;
 import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
 import Vista.BarraProceso.vistaBarraProceso;
 import formularios.terceros.*;
+import Utilidades.DatosMaestra;
 import clases.Instancias;
 import clases.Ventas.ndFactura;
 import clases.big;
@@ -30,7 +31,6 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
     DefaultTableModel clientes;
-    Object[] datos;
     String simbolo = "";
 
     public infFacturarLotes() {
@@ -52,7 +52,6 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
         tblClientes.setRowSorter(modeloOrdenado);
 
         clientes = (DefaultTableModel) tblClientes.getModel();
-        datos = instancias.getSql().getDatosMaestra();
 
         txtFechaFactura.setFormat(2);
         txtFechaFactura.setText(metodosGenerales.fecha());
@@ -654,7 +653,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                     aumentos[ser][1] = tblClientes.getValueAt(i, 1);
                     aumentos[ser][2] = tblClientes.getValueAt(i, 2);
                     aumentos[ser][3] = tblClientes.getValueAt(i, 6);
-                    aumentos[ser][4] = big.getBigDecimal(datos[112].toString());
+                    aumentos[ser][4] = big.getBigDecimal(DatosMaestra.getNumFacturaIncremento());
                     ser++;
                 }
             }
@@ -821,23 +820,23 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
                 String titulo;
                 if (instancias.getConfiguraciones().isRestaurante()) {
-                    if ((Boolean) datos[54]) {
+                    if (DatosMaestra.isTurnoActivo()) {
                         titulo = "Turno";
                     } else {
                         titulo = "";
                     }
-                } else if ((Boolean) datos[57]) {
+                } else if (DatosMaestra.isConsecutivoAdicional()) {
                     titulo = "Num Fact2";
                 } else {
                     titulo = "";
                 }
 
-                String impresora = datos[82].toString();
-                String impoconsumo = datos[84].toString();
-                String retenciones = datos[85].toString();
+                String impresora = DatosMaestra.getImpresoraMediaCarta();
+                String impoconsumo = String.valueOf(DatosMaestra.isMostrarImpoconsumo());
+                String retenciones = String.valueOf(DatosMaestra.isMostrarRetenciones());
 
                 String condicion;
-                if ((Boolean) datos[50] && instancias.getConfiguraciones().isRestaurante()) {
+                if (DatosMaestra.isCombinarProductos() && instancias.getConfiguraciones().isRestaurante()) {
                     condicion = sentenciaImpresionFactura("agrupada", " WHERE bdFactura.factura = '" + factura[0].toString() + "' ");
                 } else {
                     if (instancias.getConfiguraciones().isRestaurante()) {
@@ -848,7 +847,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                 }
 
                 String encabezado = "Reimpresion";
-                if (!(Boolean) datos[80]) {
+                if (!DatosMaestra.isReimpresion()) {
                     encabezado = "";
                 }
 

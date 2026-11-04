@@ -18,7 +18,6 @@ public class msgGenerarCopia extends javax.swing.JDialog {
 
     Instancias instancias;
     metodosGenerales metodos;
-    Object[] datos;
 
     public msgGenerarCopia(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -28,8 +27,6 @@ public class msgGenerarCopia extends javax.swing.JDialog {
         metodos = new metodosGenerales();
         instancias = Instancias.getInstancias();
         jLabel3.requestFocus();
-
-        datos = instancias.getSql().getDatosMaestra();
 
         this.getRootPane().registerKeyboardAction(accion("cerrar", this), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
     }

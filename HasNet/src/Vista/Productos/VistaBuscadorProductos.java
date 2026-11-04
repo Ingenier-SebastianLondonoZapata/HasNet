@@ -46,7 +46,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     private TextAutoCompleter autoCompletar;
     private String claseBuscador = "";
     int pos = 0;
-    Object[] datos;
 
     public String getClaseBuscador() {
         return claseBuscador;
@@ -64,7 +63,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
         tblRegistros.setDefaultRenderer(Object.class, new IconCellRenderer());
         instancias = Instancias.getInstancias();
-        datos = instancias.getSql().getDatosMaestra();
 
         TIPO_BUSQUEDA = tipoBusqueda;
         autoCompletar = new TextAutoCompleter(txtGrupo);

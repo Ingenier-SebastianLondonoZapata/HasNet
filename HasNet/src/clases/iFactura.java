@@ -2,6 +2,7 @@ package clases;
 
 import Controlador.Alertas.ControladorAlertas;
 
+import Utilidades.DatosMaestra;
 import Impresiones.IniciarReporte;
 import Vista.BarraProceso.vistaBarraProceso;
 import java.io.File;
@@ -39,10 +40,7 @@ public class iFactura {
     private Instancias instancia;
     public String informacionLegalReportes = "";
     metodosGenerales metodos = new metodosGenerales();
-    Object[] datos = null;
-
     public void consultarMaestros() {
-        datos = instancia.getSql().getDatosMaestra();
     }
 
     public void setInformacionLegalClick(String informacionLegalClick) {
@@ -1023,10 +1021,10 @@ public class iFactura {
             //Se crea un objeto HashMap
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
-            parametros.put("vehiculo", datos[0]);
-            parametros.put("dia", datos[1]);
-            parametros.put("mes", datos[2]);
-            parametros.put("anho", datos[3]);
+            parametros.put("vehiculo", "");
+            parametros.put("dia", DatosMaestra.getL2());
+            parametros.put("mes", DatosMaestra.getL4());
+            parametros.put("anho", "");
 
             IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
@@ -1583,7 +1581,7 @@ public class iFactura {
         JasperReport reporte;
 
         String conseManual = "";
-        if ((Boolean) datos[57]) {
+        if (DatosMaestra.isConsecutivoAdicional()) {
             conseManual = "SI";
         } else {
             conseManual = "NO";
@@ -1870,7 +1868,7 @@ public class iFactura {
 
         String conseManual = "";
 
-        if ((Boolean) datos[57]) {
+        if (DatosMaestra.isConsecutivoAdicional()) {
             conseManual = "SI";
         } else {
             conseManual = "NO";

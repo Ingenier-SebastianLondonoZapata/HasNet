@@ -17,6 +17,7 @@ import Modelo.Productos.LineaArmado;
 import Modelo.Productos.ModeloArmado;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Procesos.Inventario.Servicio.ServicioArmado;
+import Utilidades.DatosMaestra;
 import clases.Instancias;
 import Modelo.Productos.ModeloProducto;
 import clases.big;
@@ -60,7 +61,6 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
     Object[][] grupos;
-    Object[] datos;
 
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private boolean plu = false;
@@ -90,8 +90,6 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         actualizarGrupos();
 
         simbolo = instancias.getSimbolo();
-
-        datos = instancias.getSql().getDatosMaestra();
 
         if (instancias.getConfiguraciones().isRestaurante()) {
             tblProductos.getColumnModel().getColumn(5).setMinWidth(50);
@@ -2447,7 +2445,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             String codigo = productos[i][0].toString();
             String cantidad = productos[i][1].toString();
             if (cantidad.equals("0")) {
-                cantidad = datos[87].toString();
+                cantidad = DatosMaestra.getCantidadEstablecidaAlCargar();
             }
             cargarProducto(codigo, cantidad, 1);
             KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);

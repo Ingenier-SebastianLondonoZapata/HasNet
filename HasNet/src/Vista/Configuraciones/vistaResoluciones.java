@@ -9,7 +9,6 @@ import Utilidades.Fechas;
 import Validaciones.Configuraciones.squemaResoluciones;
 import clases.Instancias;
 import clases.metodosGenerales;
-import clases.ndMaestra;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -31,17 +30,12 @@ public class vistaResoluciones extends javax.swing.JDialog {
 
     private metodosGenerales metodos;
     private Instancias instancias;
-    private ndMaestra nodo;
-
     public vistaResoluciones(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
         metodos = new metodosGenerales();
         instancias = Instancias.getInstancias();
-
-        Object[] datos = instancias.getSql().getDatosMaestra();
-        nodo = metodos.llenarMaestra(datos);
 
         cargarPrefijos();
         cargarTablaResoluciones();

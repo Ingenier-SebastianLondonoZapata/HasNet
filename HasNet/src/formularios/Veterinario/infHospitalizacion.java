@@ -6,6 +6,7 @@ import Utilidades.Contactos.Bodegas;
 
 import Dao.Productos.DaoProducto;
 
+import Utilidades.DatosMaestra;
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndHistoria;
@@ -35,7 +36,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
     String idHospitalizacion = "", simbolo = "";
     DefaultTableModel modelo;
     DefaultTableModel modeloPro;
-    Object[] datos, posologias;
+    Object[] posologias;
 
     public infHospitalizacion() {
         initComponents();
@@ -1676,7 +1677,6 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
     public void cargarProductos(String codigo, String cantidad) {
@@ -1730,16 +1730,16 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
         int intervalo = 10;
         int contador = 0;
 
-        if (datos[92] != null) {
-            horaIni = Integer.parseInt(datos[92].toString());
+        if (!DatosMaestra.getInicioHosp().isEmpty()) {
+            horaIni = Integer.parseInt(DatosMaestra.getInicioHosp());
         }
 
-        if (datos[93] != null) {
-            horaFin = Integer.parseInt(datos[93].toString());
+        if (!DatosMaestra.getFinHosp().isEmpty()) {
+            horaFin = Integer.parseInt(DatosMaestra.getFinHosp());
         }
 
-        if (datos[94] != null) {
-            intervalo = Integer.parseInt(datos[94].toString());
+        if (!DatosMaestra.getIntervalosHosp().isEmpty()) {
+            intervalo = Integer.parseInt(DatosMaestra.getIntervalosHosp());
         }
 
         modeloPro.addRow(posologias);

@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
+import Utilidades.DatosMaestra;
 import javax.swing.table.DefaultTableModel;
 
 public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
@@ -36,7 +37,6 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
 
     private ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
 
-    Object[] datos;
     private Instancias instancias;
     metodosGenerales metodos = new metodosGenerales();
     DefaultTableModel modeloPro;
@@ -1211,7 +1211,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
 
                 cargarTotales();
                 txtCodProducto.setText("");
-                txtCant.setText(datos[87].toString());
+                txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
                 return;
             }
         }
@@ -1383,7 +1383,7 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
 
                 cargarTotales();
                 txtCodProducto.setText("");
-                txtCant.setText(datos[87].toString());
+                txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
                 return;
             }
         }
@@ -1424,7 +1424,6 @@ public class dlgAgregarProductosHistorial extends javax.swing.JDialog {
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
     public static void main(String args[]) {

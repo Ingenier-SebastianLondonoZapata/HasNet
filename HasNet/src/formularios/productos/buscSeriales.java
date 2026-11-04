@@ -22,7 +22,6 @@ public final class buscSeriales extends javax.swing.JDialog {
     private String opc, tipo;
     private String claseBuscador = "";
     int pos = 1;
-    Object[] datos;
 
     public String getClaseBuscador() {
         return claseBuscador;
@@ -38,7 +37,6 @@ public final class buscSeriales extends javax.swing.JDialog {
 
         tblRegistros.setDefaultRenderer(Object.class, new IconCellRenderer());
         instancias = Instancias.getInstancias();
-        datos = instancias.getSql().getDatosMaestra();
         tipo = lugar;
 
         cargarTablaProductos(buscarInactivos);

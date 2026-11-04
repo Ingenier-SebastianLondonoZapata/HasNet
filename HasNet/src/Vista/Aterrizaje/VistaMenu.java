@@ -194,7 +194,8 @@ public class VistaMenu extends javax.swing.JFrame {
 
         pnlMiniaturas.setVisible(false);
 
-        DatosMaestra.setearDatosMaestra(new DaoMaestra().obtenerMaestra());
+        DaoMaestra _daoMaestra = new DaoMaestra();
+        DatosMaestra.setearDatosMaestra(_daoMaestra.obtenerGeneral(), _daoMaestra.obtenerImpresiones());
     }
 
     private void configurarAtajos() {

@@ -7,6 +7,7 @@ import Procesos.Facturacion.Vista.SelectorComprobanteFacturacion;
 import Procesos.Facturacion.Servicio.ServicioFacturacionDocumentos;
 import Impresiones.ImpresionesAbonos.GeneradorReporteAbono;
 import clases.Cartera.ndCxc;
+import Utilidades.DatosMaestra;
 import clases.Instancias;
 import clases.Ventas.ndGarantia;
 import clases.big;
@@ -37,7 +38,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     Instancias instancias;
     TableRowSorter modeloOrdenado;
     ndGarantia nodo1;
-    Object datos[];
     String tipoProceso, simbolo = "";
     Boolean credito = false, saltarPasos = false;
 
@@ -73,7 +73,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         consultarMaestros();
 //        cargarTabla();
 
-        if ((Boolean) datos[57]) {
+        if (DatosMaestra.isConsecutivoAdicional()) {
             txtConseManual.setVisible(true);
             lbNit7.setVisible(true);
         } else {
@@ -3029,7 +3029,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         consultarMaestros();
 
         try {
-            if ((Boolean) datos[61]) {
+            if (DatosMaestra.isModificarPrecio()) {
                 txtConseManual.setVisible(true);
                 lbNit7.setVisible(true);
                 tblRegistros.getColumnModel().getColumn(11).setMaxWidth(100);
@@ -3077,7 +3077,6 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
     private BigDecimal getValorCampo(JTextField campo) {

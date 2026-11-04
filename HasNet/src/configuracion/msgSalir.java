@@ -2,6 +2,7 @@ package configuracion;
 
 import Controlador.Alertas.ControladorAlertas;
 
+import Utilidades.DatosMaestra;
 import Vista.BarraProceso.vistaBarraProceso;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -21,7 +22,6 @@ public class msgSalir extends javax.swing.JDialog {
     Instancias instancias;
     metodosGenerales metodos;
 //    String url = "";
-    Object[] datos;
 
     public msgSalir(java.awt.Frame parent, boolean modal, String mensaje) {
         super(parent, modal);
@@ -31,8 +31,6 @@ public class msgSalir extends javax.swing.JDialog {
         metodos = new metodosGenerales();
         instancias = Instancias.getInstancias();
         jLabel3.requestFocus();
-
-        datos = instancias.getSql().getDatosMaestra();
 
         this.getRootPane().registerKeyboardAction(accion("cerrar", this), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
@@ -179,10 +177,7 @@ public class msgSalir extends javax.swing.JDialog {
             System.exit(0);
         }
 
-        Boolean preguntar = false;
-        if ((Boolean) datos[43]) {
-            preguntar = true;
-        }
+        Boolean preguntar = DatosMaestra.isVisualizarTodasLasFacturas();
 
         if (preguntar) {
 

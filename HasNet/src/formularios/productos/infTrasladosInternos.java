@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import Utilidades.DatosMaestra;
 import javax.swing.table.DefaultTableModel;
 
 public class infTrasladosInternos extends javax.swing.JInternalFrame implements Vista.Productos.ReceptorProductoSalida {
@@ -55,7 +56,6 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
     DefaultTableModel modeloPro;
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
-    Object[] datos;
     DecimalFormat df = new DecimalFormat("#.00");
 
     //Barra de titulo
@@ -105,7 +105,6 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
     private ActionListener accion(final String opc) {
@@ -1142,7 +1141,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        txtCant.setText(datos[87].toString());
+        txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         btnAnular.setEnabled(true);
         txtCodProducto.setEnabled(true);
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png")));
@@ -1704,7 +1703,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
                 calcularFila(tblProductos.getRowCount() - 1);
                 cargarTotales();
                 txtCodProducto.setText("");
-                txtCant.setText(datos[87].toString());
+                txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
                 return;
             }
         }

@@ -18,6 +18,7 @@ import Modelo.Contactos.ModeloContacto;
 import Modelo.Contactos.ModeloDatosVehiculo;
 import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
+import Utilidades.DatosMaestra;
 import Utilidades.CambiarColorTablaReimpresionYAnulacion;
 import Utilidades.Constantes;
 import Utilidades.Fechas;
@@ -69,7 +70,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
     DecimalFormat df = new DecimalFormat("#.00");
 
-    private Object[] datosMaestra;
     private String NUMERO_DOCUMENTO_SELECCIONADO = "";
     private String BODEGA_SELECCIONADA = "";
     private String CORREO_ELECTRONICO = "";
@@ -152,9 +152,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }
 
     public void consultarMaestros() {
-        datosMaestra = instancias.getSql().getDatosMaestra();
-
-        if ((Boolean) datosMaestra[57]) {
+        if (DatosMaestra.isConsecutivoAdicional()) {
             txtConseManual.setVisible(true);
             lbNit7.setVisible(true);
             tblDocumentos.getColumnModel().getColumn(8).setMinWidth(100);
@@ -1436,8 +1434,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
         boolean esServicioAutomotor = instancias.getConfiguraciones().isServicioAutomotor();
 
-        boolean usaTurno = Boolean.TRUE.equals(datosMaestra[54]);
-        boolean usaSegundoNumeroFactura = Boolean.TRUE.equals(datosMaestra[57]);
+        boolean usaTurno = DatosMaestra.isTurnoActivo();
+        boolean usaSegundoNumeroFactura = DatosMaestra.isConsecutivoAdicional();
 
         String titulo = "";
         if (esRestaurante && usaTurno) {
@@ -1446,7 +1444,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             titulo = "Num Fact2";
         }
 
-        boolean mantenerEncabezado = Boolean.TRUE.equals(datosMaestra[80]);
+        boolean mantenerEncabezado = DatosMaestra.isReimpresion();
         String encabezado = datosDocumento.isEsAnulado() ? "Reimpresión (Anulada)" : "Reimpresión";
         encabezado = mantenerEncabezado ? encabezado : "";
         String impresoraEstablecida = obtenerImpresoraEstablecida();
@@ -1463,10 +1461,10 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 String documento = prefijoPorDocumento + NUMERO_DOCUMENTO_SELECCIONADO;
                 
                 Boolean notaDebito = cmbTipoDocumento.getSelectedItem().equals("NOTA DÉBITO");
-                String verImpoconsumoEnImpresion = datosMaestra[84].toString();
-                String verRetencionesEnImpresion = datosMaestra[85].toString();
+                String verImpoconsumoEnImpresion = String.valueOf(DatosMaestra.isMostrarImpoconsumo());
+                String verRetencionesEnImpresion = String.valueOf(DatosMaestra.isMostrarRetenciones());
 
-                boolean usaAgrupada = esRestaurante && Boolean.TRUE.equals(datosMaestra[50]);
+                boolean usaAgrupada = esRestaurante && DatosMaestra.isCombinarProductos();
                 String condicion = usaAgrupada || esRestaurante ? metodos.sentenciaImpresionFactura("agrupada", " WHERE bdFactura.factura = '" + documento + "' ")
                         : metodos.sentenciaImpresionFactura("", " WHERE bdFactura.factura = '" + documento + "' ");
 
@@ -1483,14 +1481,14 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
 
             case "COTIZACIÓN": {
-                boolean previsualizarCotizacion = (Boolean) datosMaestra[70];
+                boolean previsualizarCotizacion = DatosMaestra.isPrevisualizarCotizacion();
                 String documento = "COTI-" + NUMERO_DOCUMENTO_SELECCIONADO;
                 new GeneradorReporteCotizacion(instancias).ver_Cotiza(documento, txtObservaciones.getText(), instancias.getInformacionEmpresa(), informacionLegal, tipoImpresion, previsualizarCotizacion);
                 break;
             }
 
             case "PEDIDOS": {
-                boolean previsualizarPedidos = (Boolean) datosMaestra[72];
+                boolean previsualizarPedidos = DatosMaestra.isPrevisualizarPlanSepare();
                 String documento = "PEDIDO-" + NUMERO_DOCUMENTO_SELECCIONADO;
                 GeneradorReportePedido reportes = new GeneradorReportePedido(instancias);
                 reportes.ver_Pedido(documento, txtObservaciones.getText(), infoEmpresa, "", tipoImpresion, previsualizarPedidos);
@@ -1929,11 +1927,11 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         Object valor = null;
 
         if (pos.isSelected()) {
-            valor = datosMaestra[81];
+            valor = DatosMaestra.getImpresoraPos();
         } else if (mediaCarta.isSelected()) {
-            valor = datosMaestra[82];
+            valor = DatosMaestra.getImpresoraMediaCarta();
         } else if (carta.isSelected()) {
-            valor = datosMaestra[83];
+            valor = DatosMaestra.getImpresoraCarta();
         }
 
         return valor != null ? valor.toString() : "";

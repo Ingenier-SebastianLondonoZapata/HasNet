@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 
+import Utilidades.DatosMaestra;
 import javax.swing.table.DefaultTableModel;
 
 public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
@@ -38,7 +39,6 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
     private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
     private Dimension dimBarra = null;
     DefaultTableModel modelo;
-    Object[] datos;
 
     private boolean plu = false;
 
@@ -635,7 +635,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
 
                 cargarTotales();
                 txtCodProducto.setText("");
-                txtCant.setText(datos[87].toString());
+                txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
                 return;
             }
         }
@@ -652,7 +652,6 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
     }
 
     public void consultarMaestros() {
-        datos = instancias.getSql().getDatosMaestra();
     }
 
 

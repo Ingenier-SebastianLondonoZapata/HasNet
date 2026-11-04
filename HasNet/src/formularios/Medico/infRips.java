@@ -7,6 +7,7 @@ import Utilidades.Contactos.Bodegas;
 import Dao.Productos.DaoProducto;
 
 import formularios.Medico.*;
+import Utilidades.DatosMaestra;
 import clases.Instancias;
 import clases.Medico.ndEpsPrecargados;
 import clases.big;
@@ -1124,9 +1125,8 @@ public class infRips extends javax.swing.JInternalFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         instancias.setRutaAguardar(metodos.obtenerRuta(this, "Detalle de cargo FACT-" + txtNumFacturas.getText()));
-        Object[] datosEmpresa = instancias.getSql().getDatosMaestra();
         System.out.println("llenar datos maestra desde INF RIPS");
-        instancias.getReporte().detalleCargo(condicionOrden(), datosEmpresa[8].toString(), datosEmpresa[9].toString(), datosEmpresa[13].toString(), txtNumFacturas.getText());
+        instancias.getReporte().detalleCargo(condicionOrden(), DatosMaestra.getD1(), DatosMaestra.getD2(), DatosMaestra.getD6(), txtNumFacturas.getText());
         System.out.println("select * from detalleCargo " + condicionOrden());
 
         instancias.setRutaAguardar(metodos.obtenerRuta(this, "Plano FACT-" + txtNumFacturas.getText()));
