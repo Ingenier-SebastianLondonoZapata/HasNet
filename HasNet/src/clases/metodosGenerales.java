@@ -1,5 +1,6 @@
 package clases;
 
+import Utilidades.DatosMaestra;
 import clases.Cartera.ndCxc;
 import clases.Cartera.ndCxp;
 import clases.Cartera.ndNc;
@@ -4464,7 +4465,7 @@ public class metodosGenerales {
             }
 
             if (i != 8) {
-                if (instancias.isDescuentoValor()) {
+                if (DatosMaestra.isDescuentoValor()) {
                     if (tablaFactura != null) {
                         tablaFactura.getColumnModel().getColumn(6).setMinWidth(100);
                         tablaFactura.getColumnModel().getColumn(6).setPreferredWidth(100);
@@ -4484,7 +4485,7 @@ public class metodosGenerales {
                     }
                 }
 
-                if (instancias.isPrecioConImpuestos()) {
+                if (DatosMaestra.isPreciosConImpuestos()) {
                     if (tablaFactura != null) {
                         tablaFactura.getColumnModel().getColumn(8).setMinWidth(0);
                         tablaFactura.getColumnModel().getColumn(8).setPreferredWidth(0);

@@ -147,7 +147,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         }
 
         try {
-            if (DatosMaestra.getC6().equals("SI")) {
+            if (DatosMaestra.getMostrarUbicacion().equals("SI")) {
                 if (tblProductos.getColumnModel().getColumnCount() > 0) {
                     tblProductos.getColumnModel().getColumn(10).setMinWidth(50);
 //                    tblProductos.getColumnModel().getColumn(10).setPreferredWidth(150);
@@ -1914,7 +1914,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 fila = fila - 1;
             }
 
-            if (instancias.isLector()) {
+            if (DatosMaestra.isUsarLector()) {
                 if (tblProductos.getSelectedColumn() == 1) {
                     if (!DatosMaestra.isModificarNombre()) {
                         ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(fila, 32).toString(), idBodega);
@@ -2165,7 +2165,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 
         try {
             if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                if (instancias.isLector()) {
+                if (DatosMaestra.isUsarLector()) {
 
                     if (tblProductos.getSelectedColumn() == 2) {
                         if (tblProductos.getValueAt(fila, 2).toString().equalsIgnoreCase("")) {
@@ -2940,7 +2940,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                                     tblProductos.setRowSelectionInterval(j, j);
                                     KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
                                     tblProductosKeyReleased(x);
-                                    if (instancias.isLector()) {
+                                    if (DatosMaestra.isUsarLector()) {
                                         txtCodProducto.requestFocus();
                                     } else {
                                         tblProductos.editCellAt(0, 3);
@@ -2970,7 +2970,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                                     KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
                                     tblProductosKeyReleased(x);
 
-                                    if (instancias.isLector()) {
+                                    if (DatosMaestra.isUsarLector()) {
                                         txtCodProducto.requestFocus();
                                     } else {
                                         tblProductos.editCellAt(0, 3);
@@ -3231,7 +3231,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             calcularTabla(modeloPro.getRowCount() - 1, false);
             txtCant.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
 
-            if (instancias.isLector()) {
+            if (DatosMaestra.isUsarLector()) {
                 txtCodProducto.requestFocus();
             } else {
                 if (DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor")) {
@@ -3332,7 +3332,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         BigDecimal porcentaje = big.getBigDecimal("0");
         BigDecimal porcentaje2 = big.getBigDecimal("0");
 
-        switch (DatosMaestra.normalizarTipoDescuento(instancias.getDescuento())) {
+        switch (DatosMaestra.normalizarTipoDescuento(DatosMaestra.getTipoDescuento())) {
             case DatosMaestra.DESCUENTO_PORCENTAJE:
                 if (!tblProductos.getValueAt(fila, 5).toString().equals("0.0") && !tblProductos.getValueAt(fila, 5).toString().equals("0")) {
                     if ((boolean) tblProductos.getValueAt(fila, 18)) {
@@ -3894,7 +3894,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
 //        if (imprimir) {
 //            imprimir(factura, factura2);
 //        }
-        if (instancias.isUbicacion()) {
+        if (DatosMaestra.isImprimirUbicacion()) {
             try {
                 if (ControladorAlertas.option("¿Desea imprimir ubicación?")) {
                     new GeneradorReporteFactura(instancias).ver_Ubicacion(factura2, false);

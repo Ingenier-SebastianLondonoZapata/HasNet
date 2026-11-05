@@ -2802,7 +2802,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             return;
         }
 
-        String tipo = "pos".equals(instancias.getImpresion()) ? "Pos" : "";
+        String tipo = "pos".equals(DatosMaestra.getTipoImpresionPredeterminado()) ? "Pos" : "";
         new GeneradorReporteArmado(instancias).ver_Armado(documento, tipo);
     }
 

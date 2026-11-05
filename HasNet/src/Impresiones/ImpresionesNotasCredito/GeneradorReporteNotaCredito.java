@@ -1,5 +1,6 @@
 package Impresiones.ImpresionesNotasCredito;
 
+import Utilidades.DatosMaestra;
 import Impresiones.GeneradorReporteBase;
 import clases.Instancias;
 import java.util.HashMap;
@@ -22,6 +23,6 @@ public class GeneradorReporteNotaCredito extends GeneradorReporteBase {
         parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());
-        ejecutar("nc" + instancias.getTipoImpresion(), parametros);
+        ejecutar("nc" + DatosMaestra.getSufijoReporteImpresion(), parametros);
     }
 }

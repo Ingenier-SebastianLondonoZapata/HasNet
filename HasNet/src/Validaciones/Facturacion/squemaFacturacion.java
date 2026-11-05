@@ -1,5 +1,6 @@
 package Validaciones.Facturacion;
 
+import Utilidades.DatosMaestra;
 import Utilidades.Utilidades;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
@@ -244,7 +245,7 @@ public class squemaFacturacion extends javax.swing.JPanel {
                 errores_validacion.add("No se pudo consultar el último ponderado del producto '" + descripcionProducto + "'");
             }
 
-            if (instancias.isMensajeUtilidad() && !saltarPasosFactura) {
+            if (DatosMaestra.isAlertarUtilidadSobrepasada() && !saltarPasosFactura) {
                 Object marcaUtilidad = tablaProductos.getValueAt(i, COLUMNA_MARCA_UTILIDAD);
                 if (marcaUtilidad != null) {
                     String mensaje = null;
@@ -254,7 +255,7 @@ public class squemaFacturacion extends javax.swing.JPanel {
                         mensaje = "El producto '" + descripcionProducto + "' tiene utilidad máxima sobrepasada";
                     }
                     if (mensaje != null) {
-                        if (instancias.isUtilidad()) {
+                        if (DatosMaestra.isFacturarUtilidadSobrepasada()) {
                             errores_validacion.add(mensaje);
                         } else {
                             alertas_validacion.add(mensaje);

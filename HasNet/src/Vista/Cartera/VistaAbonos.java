@@ -3597,14 +3597,14 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
                         fecha = fecha * -1;
                         diasMora = fecha;
                         diasMora2 = fecha;
-                        while (diasMora > Long.valueOf(instancias.getDiasCobrarMora())) {
+                        while (diasMora > Long.valueOf(DatosMaestra.getDiasCobrarMora())) {
                             miFecha = metodos.sumarMeses(miFecha, -1);
                             fecha = metodos.restarFecha(miFecha, metodosGenerales.fecha());
                             diasMora = diasMora2 - fecha;
                             j++;
                         }
                         if (j > 0) {
-                            dato[5] = big.setMonedaExacta((big.getMoneda(dato[7].toString()).multiply(big.getBigDecimal(instancias.getPorcentajeMora()))).divide(big.getBigDecimal("100")));
+                            dato[5] = big.setMonedaExacta((big.getMoneda(dato[7].toString()).multiply(big.getBigDecimal(DatosMaestra.getPorcentajeMora()))).divide(big.getBigDecimal("100")));
                             dato[5] = big.setMonedaExacta(big.getMoneda(dato[5].toString()).subtract(big.getMoneda(dato[8].toString())));
                             dato[5] = big.setMonedaExacta(big.getMoneda(dato[5].toString()).multiply(big.getBigDecimal(j)));
                         }

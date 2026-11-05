@@ -153,28 +153,28 @@ public class Instancias {
     private buscSubGrupos buscSubGrupos;
     private String regimen;
     private String terminal;
-    private String descuento;
 
-    private String segundaClave;
+
+
     private BigDecimal devuelta = BigDecimal.ZERO;
     private String informacionEmpresa;
 
-    private String tipoImpresion;
-    private String impresion;
+
+
 
     private Vista.Ventas.ordenServicio ordenServicio;
-    private String tituloFactura;
+
 
     public String resolucion;
     private String informacionEmpresaCompleto;
     private String informacionEmpresaReimpresion;
 
     private infAlertasCumpleanos alertas;
-    private String diasCobrarMora;
-    private String porcentajeMora;
+
+
     private buscReporteFacturaPedido reporteFacturaPedido;
     private buscHorasAgenda buscarHorasAgenda;
-    private String[] configAgenda;
+
     private infInfoAgenda infoAgenda;
     private infRepAgenda repAgenda;
     private infRepFormulas repFormulaMedica;
@@ -211,10 +211,8 @@ public class Instancias {
             propina = big.getBigDecimal("0");
 
     /* OPCIONES DE MAESTRA */
-    private BigDecimal descuentoMaximoVentas;
+
     private String porcPropina = "", pie, legal;
-    private boolean imprimirCuadreFiscal, ocultarInformacionCliente, visualizarTodasLasFacturas, mostrarInformacionCuadre, generaOrdenMedica, imprimirOrdenMedica,
-            imprimirFacturaOrdenMedica, copias, lector, ventasPredeterminado, mensajeUtilidad, precioConImpuestos, imprimirRecogida, utilidad, ubicacion, hora;
 
     /* PREFIJOS DOCUMENTOS */
     private String idAbono, idEgreso, idNC, idND;
@@ -401,14 +399,6 @@ public class Instancias {
     private int canalFacturacion;
     private boolean pruebasFacturacionElectronica = false;
     private boolean validacionesCorrectas = false;
-
-    public boolean isPrecioConImpuestos() {
-        return precioConImpuestos;
-    }
-
-    public void setPrecioConImpuestos(boolean precioConImpuestos) {
-        this.precioConImpuestos = precioConImpuestos;
-    }
 
     public String getTipoDocumentoEmisor() {
         return tipoDocumentoEmisor;
@@ -1375,30 +1365,6 @@ public class Instancias {
     }
 
     /* FIN PARQUEADERO */
-    public BigDecimal getDescuentoMaximoVentas() {
-        return descuentoMaximoVentas;
-    }
-
-    public void setDescuentoMaximoVentas(BigDecimal descuentoMaximoVentas) {
-        this.descuentoMaximoVentas = descuentoMaximoVentas;
-    }
-
-    public boolean isVisualizarTodasLasFacturas() {
-        return visualizarTodasLasFacturas;
-    }
-
-    public boolean isMostrarInformacionCuadre() {
-        return mostrarInformacionCuadre;
-    }
-
-    public void setMostrarInformacionCuadre(boolean mostrarInformacionCuadre) {
-        this.mostrarInformacionCuadre = mostrarInformacionCuadre;
-    }
-
-    public void setVisualizarTodasLasFacturas(boolean visualizarTodasLasFacturas) {
-        this.visualizarTodasLasFacturas = visualizarTodasLasFacturas;
-    }
-
     public buscUsuarios getBuscarUsuarios() {
         return buscarUsuarios;
     }
@@ -1411,20 +1377,8 @@ public class Instancias {
         return inventarioInicial;
     }
 
-    public boolean isOcultarInformacionCliente() {
-        return ocultarInformacionCliente;
-    }
-
-    public void setOcultarInformacionCliente(boolean ocultarInformacionCliente) {
-        this.ocultarInformacionCliente = ocultarInformacionCliente;
-    }
-
     public void setInventarioInicial(VistaInventarioInicial inventarioInicial) {
         this.inventarioInicial = inventarioInicial;
-    }
-
-    public boolean isImprimirCuadreFiscal() {
-        return imprimirCuadreFiscal;
     }
 
     public infCoprograma getCoprograma() {
@@ -1433,10 +1387,6 @@ public class Instancias {
 
     public void setCoprograma(infCoprograma coprograma) {
         this.coprograma = coprograma;
-    }
-
-    public void setImprimirCuadreFiscal(boolean imprimirCuadreFiscal) {
-        this.imprimirCuadreFiscal = imprimirCuadreFiscal;
     }
 
     public buscEgresos getBuscarEgresos() {
@@ -1493,14 +1443,6 @@ public class Instancias {
 
     public void setBuscarOcupaciones(buscOcupaciones buscarOcupaciones) {
         this.buscarOcupaciones = buscarOcupaciones;
-    }
-
-    public boolean isImprimirFacturaOrdenMedica() {
-        return imprimirFacturaOrdenMedica;
-    }
-
-    public void setImprimirFacturaOrdenMedica(boolean imprimirFacturaOrdenMedica) {
-        this.imprimirFacturaOrdenMedica = imprimirFacturaOrdenMedica;
     }
 
     public VistaContactos getPaciente() {
@@ -1581,22 +1523,6 @@ public class Instancias {
 
     public void setAutorizacionServicios(infAutorizacionServicios autorizacionServicios) {
         this.autorizacionServicios = autorizacionServicios;
-    }
-
-    public boolean isGeneraOrdenMedica() {
-        return generaOrdenMedica;
-    }
-
-    public boolean isImprimirOrdenMedica() {
-        return imprimirOrdenMedica;
-    }
-
-    public void setImprimirOrdenMedica(boolean imprimirOrdenMedica) {
-        this.imprimirOrdenMedica = imprimirOrdenMedica;
-    }
-
-    public void setGeneraOrdenMedica(boolean generaOrdenMedica) {
-        this.generaOrdenMedica = generaOrdenMedica;
     }
 
     public buscAntecedentes getBuscAntecedentes() {
@@ -1696,20 +1622,12 @@ public class Instancias {
         this.repAgenda = repAgenda;
     }
 
-    public String[] getConfigAgenda() {
-        return configAgenda;
-    }
-
     public infInfoAgenda getInfoAgenda() {
         return infoAgenda;
     }
 
     public void setInfoAgenda(infInfoAgenda infoAgenda) {
         this.infoAgenda = infoAgenda;
-    }
-
-    public void setConfigAgenda(String[] configAgenda) {
-        this.configAgenda = configAgenda;
     }
 
     public buscHorasPeluqueria getBuscarHorasPeluqueria() {
@@ -1808,22 +1726,6 @@ public class Instancias {
         this.reporteFacturaPedido = reporteFacturaPedido;
     }
 
-    public String getDiasCobrarMora() {
-        return diasCobrarMora;
-    }
-
-    public void setDiasCobrarMora(String diasCobrarMora) {
-        this.diasCobrarMora = diasCobrarMora;
-    }
-
-    public String getPorcentajeMora() {
-        return porcentajeMora;
-    }
-
-    public void setPorcentajeMora(String porcentajeMora) {
-        this.porcentajeMora = porcentajeMora;
-    }
-
     public infAlertasCumpleanos getAlertas() {
         return alertas;
     }
@@ -1916,30 +1818,6 @@ public class Instancias {
         this.repOrden = repOrden;
     }
 
-    public boolean isVentasPredeterminado() {
-        return ventasPredeterminado;
-    }
-
-    public void setVentasPredeterminado(boolean ventasPredeterminado) {
-        this.ventasPredeterminado = ventasPredeterminado;
-    }
-
-    public boolean isMensajeUtilidad() {
-        return mensajeUtilidad;
-    }
-
-    public void setMensajeUtilidad(boolean mensajeUtilidad) {
-        this.mensajeUtilidad = mensajeUtilidad;
-    }
-
-    public String getTituloFactura() {
-        return tituloFactura;
-    }
-
-    public void setTituloFactura(String tituloFactura) {
-        this.tituloFactura = tituloFactura;
-    }
-
     public Vista.Ventas.ordenServicio getOrdenServicioContenedor() {
         return ordenServicio;
     }
@@ -1960,14 +1838,6 @@ public class Instancias {
         this.ordenServicio = ordenServicio;
     }
 
-    public boolean isLector() {
-        return lector;
-    }
-
-    public void setLector(boolean lector) {
-        this.lector = lector;
-    }
-
     public String getPie() {
         return pie;
     }
@@ -1984,38 +1854,6 @@ public class Instancias {
         this.legal = legal;
     }
 
-    public boolean isCopias() {
-        return copias;
-    }
-
-    public void setCopias(boolean copias) {
-        this.copias = copias;
-    }
-
-    public String getImpresion() {
-        return impresion;
-    }
-
-    public void setImpresion(String impresion) {
-        this.impresion = impresion;
-    }
-
-    public String getTipoImpresion() {
-        return tipoImpresion;
-    }
-
-    public void setTipoImpresion(String tipoImpresion) {
-        this.tipoImpresion = tipoImpresion;
-    }
-
-    public boolean isImprimirRecogida() {
-        return imprimirRecogida;
-    }
-
-    public void setImprimirRecogida(boolean imprimirRecogida) {
-        this.imprimirRecogida = imprimirRecogida;
-    }
-
     public String getInformacionEmpresa() {
         return informacionEmpresa;
     }
@@ -2024,60 +1862,12 @@ public class Instancias {
         this.informacionEmpresa = infomacionEmpresa;
     }
 
-    public boolean isHora() {
-        return hora;
-    }
-
-    public void setHora(boolean hora) {
-        this.hora = hora;
-    }
-
-    public boolean isUbicacion() {
-        return ubicacion;
-    }
-
-    public void setUbicacion(boolean ubicacion) {
-        this.ubicacion = ubicacion;
-    }
-
     public BigDecimal getDevuelta() {
         return devuelta;
     }
 
     public void setDevuelta(BigDecimal devuelta) {
         this.devuelta = devuelta;
-    }
-
-    public String getSegundaClave() {
-        return segundaClave;
-    }
-
-    public void setSegundaClave(String segundaClave) {
-        this.segundaClave = segundaClave;
-    }
-
-    public String getDescuento() {
-        return descuento;
-    }
-
-    public void setDescuento(String descuento) {
-        this.descuento = Utilidades.DatosMaestra.normalizarTipoDescuento(descuento);
-    }
-
-    public boolean isDescuentoPorcentaje() {
-        return Utilidades.DatosMaestra.DESCUENTO_PORCENTAJE.equals(descuento);
-    }
-
-    public boolean isDescuentoValor() {
-        return Utilidades.DatosMaestra.DESCUENTO_VALOR.equals(descuento);
-    }
-
-    public boolean isUtilidad() {
-        return utilidad;
-    }
-
-    public void setUtilidad(boolean utilidad) {
-        this.utilidad = utilidad;
     }
 
     public String getTerminal() {

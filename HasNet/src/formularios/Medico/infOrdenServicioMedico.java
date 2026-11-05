@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -1601,7 +1602,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
          return;
          }*/
 
-        if (instancias.isImprimirOrdenMedica()) {
+        if (DatosMaestra.isImprimirOrdenMedica()) {
             if (ControladorAlertas.option("¿Desea imprimir la orden Nro." + orden + "?")) {
                 new GeneradorReporteMedico(instancias).verOrdenServicio(txtId.getText());
             }

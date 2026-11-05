@@ -1,5 +1,6 @@
 package Impresiones.ImpresionesCreditos;
 
+import Utilidades.DatosMaestra;
 import Impresiones.GeneradorReporteBase;
 import clases.Instancias;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class GeneradorReporteCredito extends GeneradorReporteBase {
     }
 
     public void verCredito(String contrato) {
-        String nombreReporte = "credito" + Instancias.getInstancias().getTipoImpresion();
+        String nombreReporte = "credito" + DatosMaestra.getSufijoReporteImpresion();
 
         Map<String, String> parametros = new HashMap<>();
         parametros.put("id", contrato);

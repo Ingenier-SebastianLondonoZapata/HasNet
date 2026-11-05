@@ -1,5 +1,6 @@
 package Vista.ReportesVentas;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -983,7 +984,7 @@ public class VistaReporteVentas extends javax.swing.JPanel {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!instancias.isVisualizarTodasLasFacturas()) {
+                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
                     sql = sql + " bdfactura.terminal='" + instancias.getTerminal() + "' AND";
                 }
 
@@ -1116,7 +1117,7 @@ public class VistaReporteVentas extends javax.swing.JPanel {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!instancias.isVisualizarTodasLasFacturas()) {
+                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
                     sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
                 }
             }

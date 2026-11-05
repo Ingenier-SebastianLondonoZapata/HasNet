@@ -1,5 +1,6 @@
 package Vista.Solicitudes;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Controlador.BarraProceso.controladorBarraProceso;
@@ -443,7 +444,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
             return;
         }
 
-        if (instancias.getSegundaClave().equals(jPasswordField1.getText())) {
+        if (DatosMaestra.getContrasenaPermisos().equals(jPasswordField1.getText())) {
             String consecutivo = instancias.getSql().getNumConsecutivo("PERMISO")[0].toString();
             if (!instancias.getSql().agregarPermiso("PERMISO-" + consecutivo, txtTipo.getText(), txtValor.getText(),
                     txtNota.getText(), metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), "AUTO-CONFIRMADO", instancias.getUsuario())) {

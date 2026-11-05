@@ -1,5 +1,6 @@
 package Impresiones;
 
+import Utilidades.DatosMaestra;
 import Vista.BarraProceso.vistaBarraProceso;
 import clases.Instancias;
 import java.io.File;
@@ -23,7 +24,7 @@ public abstract class GeneradorReporteBase {
     }
 
     protected boolean esTipoImpresionPos() {
-        return instancias.getImpresion().equals("pos");
+        return DatosMaestra.getTipoImpresionPredeterminado().equals("pos");
     }
 
     protected void ejecutar(String nombreReporte, Map<String, ?> parametros) {

@@ -1,5 +1,6 @@
 package Vista.Contactos;
 
+import Utilidades.DatosMaestra;
 import Consumidor.Contactos.ConsumidorContactos;
 import Controlador.Alertas.ControladorAlertas;
 
@@ -3393,7 +3394,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         try {
             if (esPaciente()) {
-                if (instancias.isGeneraOrdenMedica()) {
+                if (DatosMaestra.isGeneraOrdenMedica()) {
                     instancias.getOrdenMedica().cargarClienteDesdeAgenda(cliente, medico);
                     instancias.getOrdenMedica().setSelected(true);
                 } else {

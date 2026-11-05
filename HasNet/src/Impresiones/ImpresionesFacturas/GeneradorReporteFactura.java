@@ -1,5 +1,6 @@
 package Impresiones.ImpresionesFacturas;
 
+import Utilidades.DatosMaestra;
 import Impresiones.GeneradorReporteBase;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -34,8 +35,8 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
         parametros.put("pie", pie);
         parametros.put("ordenServicio", usaOrdenServicioAutomotor() ? "SI" : "NO");
         parametros.put("titulo2", titulo);
-        parametros.put("hora", instancias.isHora() ? "SI" : "NO");
-        parametros.put("titulo", notaDebito ? "Nota Debito No." : instancias.getTituloFactura());
+        parametros.put("hora", DatosMaestra.isImprimirHora() ? "SI" : "NO");
+        parametros.put("titulo", notaDebito ? "Nota Debito No." : DatosMaestra.getTituloFactura());
         parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
         parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + instancias.getUsuario() + ".jpg");
         parametros.put("impoconsumo", verImpo);

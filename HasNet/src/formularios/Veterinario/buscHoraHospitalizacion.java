@@ -222,16 +222,16 @@ public class buscHoraHospitalizacion extends javax.swing.JDialog {
         int intervalo = 10;
         int contador = 0;
 
-        if (!DatosMaestra.getInicioHosp().isEmpty()) {
-            horaIni = Integer.parseInt(DatosMaestra.getInicioHosp());
+        if (!DatosMaestra.getHoraInicioHospitalizacion().isEmpty()) {
+            horaIni = Integer.parseInt(DatosMaestra.getHoraInicioHospitalizacion());
         }
 
-        if (!DatosMaestra.getFinHosp().isEmpty()) {
-            horaFin = Integer.parseInt(DatosMaestra.getFinHosp());
+        if (!DatosMaestra.getHoraFinHospitalizacion().isEmpty()) {
+            horaFin = Integer.parseInt(DatosMaestra.getHoraFinHospitalizacion());
         }
 
-        if (!DatosMaestra.getIntervalosHosp().isEmpty()) {
-            intervalo = Integer.parseInt(DatosMaestra.getIntervalosHosp());
+        if (!DatosMaestra.getIntervaloHospitalizacion().isEmpty()) {
+            intervalo = Integer.parseInt(DatosMaestra.getIntervaloHospitalizacion());
         }
 
         modelo = (DefaultTableModel) tblRegistros.getModel();

@@ -225,7 +225,7 @@ public class VistaImpresionComanda extends javax.swing.JDialog {
 
         String copias = "";
         try {
-            copias = DatosMaestra.getCopiasComanda();
+            copias = DatosMaestra.getNumeroCopiasComanda();
         } catch (Exception e) {
         }
 

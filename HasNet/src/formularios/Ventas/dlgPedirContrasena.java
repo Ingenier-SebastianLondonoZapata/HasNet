@@ -1,5 +1,6 @@
 package formularios.Ventas;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
@@ -93,7 +94,7 @@ public class dlgPedirContrasena extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (Instancias.getInstancias().getSegundaClave().equals(jPasswordField1.getText())) {
+        if (DatosMaestra.getContrasenaPermisos().equals(jPasswordField1.getText())) {
             switch (opc) {
                 case "caja":
                     dlgRecogidaParcial parcial = new dlgRecogidaParcial(null, true, opc);

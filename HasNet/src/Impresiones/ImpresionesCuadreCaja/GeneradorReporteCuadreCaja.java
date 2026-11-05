@@ -1,5 +1,6 @@
 package Impresiones.ImpresionesCuadreCaja;
 
+import Utilidades.DatosMaestra;
 import Impresiones.GeneradorReporteBase;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -25,7 +26,7 @@ public class GeneradorReporteCuadreCaja extends GeneradorReporteBase {
     public void verCuadreCaja(String factura, String tipo, String info) {
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("idCuadre", factura);
-        parametros.put("hora", instancias.isHora() ? "SI" : "NO");
+        parametros.put("hora", DatosMaestra.isImprimirHora() ? "SI" : "NO");
         parametros.put("urlImagen", logo());
         parametros.put("info", info);
         parametros.put("simbolo", instancias.getSimbolo());

@@ -1398,7 +1398,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             return;
         }
 
-        if (instancias.isLector()) {
+        if (DatosMaestra.isUsarLector()) {
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             txtCodigoProducto.requestFocus();
         } else {

@@ -1,5 +1,6 @@
 package formularios.Oftalmologia;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -2839,7 +2840,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
             if (ControladorAlertas.option("¿Desea continuar?")) {
 
-                if (!instancias.isGeneraOrdenMedica()) {
+                if (!DatosMaestra.isGeneraOrdenMedica()) {
                     guardarOrden();
                 }
 
@@ -2916,7 +2917,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
                 int i = 0;
 //                String consecutivo = "";
 //                if (lista.getSelectedIndex() == 0) {
-//                    if (!instancias.isGeneraOrdenMedica()) {
+//                    if (!DatosMaestra.isGeneraOrdenMedica()) {
 //                        guardarOrden();
 //                    }
 //                }

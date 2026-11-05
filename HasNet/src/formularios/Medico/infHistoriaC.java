@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Impresiones.ImpresionesMedico.GeneradorReporteMedico;
@@ -929,7 +930,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
         if (!paciente.getId().equals("")) {
             boolean vacio = false;
 
-            if (!instancias.isGeneraOrdenMedica()) {
+            if (!DatosMaestra.isGeneraOrdenMedica()) {
                 instancias.getHistoriaClinica().cargar(paciente.getId(), null);
                 String cita = "";
                 String cliente = txtId.getText();
@@ -1095,7 +1096,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
             txtHistoriaClinica.setText(historia.getId());
             txtOrden.setText("");
 
-            if (instancias.isGeneraOrdenMedica()) {
+            if (DatosMaestra.isGeneraOrdenMedica()) {
                 btnOrdenesPendientes.setEnabled(true);
             }
 
@@ -1105,7 +1106,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
 
     private void limpiar() {
 
-        if (!instancias.isGeneraOrdenMedica()) {
+        if (!DatosMaestra.isGeneraOrdenMedica()) {
             btnOrdenesPendientes.setEnabled(false);
         } else {
             btnOrdenesPendientes.setEnabled(true);

@@ -1126,7 +1126,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
 
                 btnLimpiarActionPerformed(evt);
 
-                String tipo = instancias.getImpresion();
+                String tipo = DatosMaestra.getTipoImpresionPredeterminado();
                 if (tipo.equals("pos")) {
                     tipo = "posTraslados";
                 } else {
@@ -1187,7 +1187,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
             return;
         }
 
-        String tipo = instancias.getImpresion();
+        String tipo = DatosMaestra.getTipoImpresionPredeterminado();
         if (tipo.equals("pos")) {
             tipo = "posTraslados";
         } else {

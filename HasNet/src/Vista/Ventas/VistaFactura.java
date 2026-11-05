@@ -306,7 +306,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             establecerPropiedadTabla(27, 0, 0, 0);
         }
 
-        if (DatosMaestra.getMostrarUbicacionProductos().equals("SI")) {
+        if (DatosMaestra.getMostrarUbicacion().equals("SI")) {
             establecerPropiedadTabla(10, 50, 125, 155);
         } else {
             establecerPropiedadTabla(10, 0, 0, 0);
@@ -504,7 +504,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 break;
             case "facturacion":
                 lbTitulo.setText("FACTURACIÓN");
-                lbNumeroDocumento.setText(instancias.getTituloFactura());
+                lbNumeroDocumento.setText(DatosMaestra.getTituloFactura());
                 jtblComprobantes.setVisible(true);
                 break;
             case "cotizacion":
@@ -585,7 +585,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 break;
         }
 
-        if (instancias.isVentasPredeterminado()) {
+        if (DatosMaestra.isVentasContadoPredeterminado()) {
             cargar1010();
         }
 
@@ -745,10 +745,10 @@ public final class VistaFactura extends javax.swing.JPanel {
                 Object[] datosReporte = funcionalidadVentas.construirDatosReporteFactura(instancias, rdMediaCarta.isSelected(), rdCarta.isSelected(), rdPos.isSelected());
 
                 //VALIDACIÓN PARA VER IMPOCONSUMO EN LA IMPRESION
-                String impoconsumo = String.valueOf(DatosMaestra.isMostrarImpoconsumo());
+                String impoconsumo = String.valueOf(DatosMaestra.isImprimirImpoconsumo());
 
                 //VALIDACIÓN PARA VER RETENCIONES EN LA IMPRESION
-                String retenciones = String.valueOf(DatosMaestra.isMostrarRetenciones());
+                String retenciones = String.valueOf(DatosMaestra.isImprimirRetenciones());
 
                 Object[] grupos = new Object[tblProductos.getRowCount()];
                 int cantidadGrupos = 0;
@@ -774,7 +774,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                         impoconsumo, retenciones, "Original", porGrupo, grupos, cantidadGrupos);
                 funcionalidadVentas.pausarImpresora();
 
-                if (DatosMaestra.isCopiasFactura()) {
+                if (DatosMaestra.isPreguntarCopiasFactura()) {
                     String copias = "1";
                     try {
                         copias = metodos.msgIngresarEnter(null, "Cantidad de copias");
@@ -789,7 +789,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                         }
                     }
                 } else {
-                    int cantidad = Integer.parseInt(DatosMaestra.getNumFactura());
+                    int cantidad = Integer.parseInt(DatosMaestra.getNumeroCopiasFactura());
                     for (int i = 0; i < cantidad; i++) {
                         funcionalidadVentas.imprimirPasadaFactura(instancias, factura2, datosReporte[0].toString(),
                                 observaciones, legal, pie, datosReporte[2].toString(), datosReporte[1].toString(), impoconsumo,
@@ -813,7 +813,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 } catch (InterruptedException e) {
                 }
 
-                if (DatosMaestra.isCopiasCotizacion()) {
+                if (DatosMaestra.isPreguntarCopiasCotizacion()) {
                     String copias = JOptionPane.showInputDialog("Cantidad de copias");
                     try {
                         if (copias != null || !copias.equals("")) {
@@ -825,7 +825,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     }
                 } else {
 
-                    int cantidad = Integer.parseInt(DatosMaestra.getNumCotizacion());
+                    int cantidad = Integer.parseInt(DatosMaestra.getNumeroCopiasCotizacion());
                     if (cantidad > 0) {
                         for (int i = 0; i < cantidad; i++) {
                             new GeneradorReporteCotizacion(instancias).ver_Cotiza(factura, observaciones, instancias.getInformacionEmpresa(), legal, getTipo(), !DatosMaestra.isPrevisualizarCotizacion());
@@ -836,30 +836,30 @@ public final class VistaFactura extends javax.swing.JPanel {
             case "orden":
 
                 if (instancias.getConfiguraciones().isServicioAutomotor()) {
-                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOServicio(), txtTipoVehiculo.getText(), "");
+                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOrdenServicio(), txtTipoVehiculo.getText(), "");
 
                     try {
                         Thread.sleep(500);
                     } catch (Exception e) {
                     }
 
-                    if (DatosMaestra.isCopiasOServicio()) {
+                    if (DatosMaestra.isPreguntarCopiasOrdenServicio()) {
                         String copias = JOptionPane.showInputDialog("Cantidad de copias");
 
                         try {
                             if (copias != null || !copias.equals("")) {
                                 for (int i = 0; i < Integer.parseInt(copias); i++) {
-                                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOServicio(), txtTipoVehiculo.getText(), "");
+                                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOrdenServicio(), txtTipoVehiculo.getText(), "");
                                 }
                             }
                         } catch (Exception e) {
                         }
                     } else {
 
-                        int cantidad = Integer.parseInt(DatosMaestra.getNumOServicio());
+                        int cantidad = Integer.parseInt(DatosMaestra.getNumeroCopiasOrdenServicio());
                         if (cantidad > 0) {
                             for (int i = 0; i < cantidad; i++) {
-                                new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOServicio(), txtTipoVehiculo.getText(), "");
+                                new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOrdenServicio(), txtTipoVehiculo.getText(), "");
                             }
                         }
                     }
@@ -874,29 +874,29 @@ public final class VistaFactura extends javax.swing.JPanel {
                         tipoImp = "OrdenPos";
                     }
 
-                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOServicio(), "", tipoImp);
+                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOrdenServicio(), "", tipoImp);
 
                     try {
                         Thread.sleep(500);
                     } catch (Exception e) {
                     }
 
-                    if (DatosMaestra.isCopiasOServicio()) {
+                    if (DatosMaestra.isPreguntarCopiasOrdenServicio()) {
                         String copias = JOptionPane.showInputDialog("Cantidad de copias");
 
                         try {
                             if (copias != null || !copias.equals("")) {
                                 for (int i = 0; i < Integer.parseInt(copias); i++) {
-                                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOServicio(), "", "OrdenNormal");
+                                    new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOrdenServicio(), "", "OrdenNormal");
                                 }
                             }
                         } catch (Exception e) {
                         }
                     } else {
-                        int cantidad = Integer.parseInt(DatosMaestra.getNumOServicio());
+                        int cantidad = Integer.parseInt(DatosMaestra.getNumeroCopiasOrdenServicio());
                         if (cantidad > 0) {
                             for (int i = 0; i < cantidad; i++) {
-                                new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOServicio(), "", "OrdenNormal");
+                                new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones, !DatosMaestra.isPrevisualizarOrdenServicio(), "", "OrdenNormal");
                             }
                         }
                     }
@@ -913,7 +913,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 } catch (Exception e) {
                 }
 
-                if (DatosMaestra.isCopiasPedido()) {
+                if (DatosMaestra.isPreguntarCopiasPedido()) {
                     String copias = JOptionPane.showInputDialog("Cantidad de copias");
                     try {
                         if (copias != null || !copias.equals("")) {
@@ -924,7 +924,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     } catch (NumberFormatException e) {
                     }
                 } else {
-                    int cantidad = Integer.parseInt(DatosMaestra.getNumPedido());
+                    int cantidad = Integer.parseInt(DatosMaestra.getNumeroCopiasPedido());
                     if (cantidad > 0) {
                         for (int i = 0; i < cantidad; i++) {
                             reportes.ver_Pedido(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "Copia " + (i + 1), this.getTipo(), !DatosMaestra.isPrevisualizarPedido());
@@ -936,7 +936,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 GeneradorReporteSepare reportesSepare = new GeneradorReporteSepare(instancias);
                 reportesSepare.ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "", this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
 
-                if (DatosMaestra.isCopiasPlanSepare()) {
+                if (DatosMaestra.isPreguntarCopiasPlanSepare()) {
                     String copias = JOptionPane.showInputDialog("Cantidad de copias");
                     try {
                         if (copias != null || !copias.equals("")) {
@@ -947,7 +947,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     } catch (NumberFormatException e) {
                     }
                 } else {
-                    int cantidad = Integer.parseInt(DatosMaestra.getNumPlanSepare());
+                    int cantidad = Integer.parseInt(DatosMaestra.getNumeroCopiasPlanSepare());
                     if (cantidad > 0) {
                         for (int i = 0; i < cantidad; i++) {
                             reportesSepare.ver_Separe(factura2, observaciones, instancias.getInformacionEmpresaCompleto(), "", this.getTipo(), !DatosMaestra.isPrevisualizarPlanSepare());
@@ -959,9 +959,9 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     public void setTipo() {
-        if (instancias.getImpresion().equals("pos")) {
+        if (DatosMaestra.getTipoImpresionPredeterminado().equals("pos")) {
             rdPos.setSelected(true);
-        } else if (instancias.getImpresion().equals("facturaCompleta")) {
+        } else if (DatosMaestra.getTipoImpresionPredeterminado().equals("facturaCompleta")) {
             rdCarta.setSelected(true);
         } else {
             rdMediaCarta.setSelected(true);
@@ -3289,7 +3289,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         BigDecimal porcentaje = big.getBigDecimal("0");
         BigDecimal porcentaje2 = big.getBigDecimal("0");
 
-        switch (DatosMaestra.normalizarTipoDescuento(instancias.getDescuento())) {
+        switch (DatosMaestra.normalizarTipoDescuento(DatosMaestra.getTipoDescuento())) {
             case DatosMaestra.DESCUENTO_PORCENTAJE:
                 if (!tblProductos.getValueAt(fila, 5).toString().equals("0.0") && !tblProductos.getValueAt(fila, 5).toString().equals("0")) {
                     if ((boolean) tblProductos.getValueAt(fila, 18)) {
@@ -3693,7 +3693,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
         actualizarConsecutivo(fila);
 
-        if (instancias.isVentasPredeterminado()
+        if (DatosMaestra.isVentasContadoPredeterminado()
                 && !(this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor()) && this.tipoProceso.equals(TipoDocumento.PLAN_SEPARE.getValor()))) {
             cargar1010();
         }
@@ -4204,7 +4204,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 BigDecimal porcPropina = BigDecimal.ZERO, totalPropina = BigDecimal.ZERO;
 
                 try {
-                    porcPropina = big.getBigDecimal(DatosMaestra.getPorcPropina());
+                    porcPropina = big.getBigDecimal(DatosMaestra.getPorcentajePropina());
                 } catch (Exception e) {
                 }
 
@@ -4225,7 +4225,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
                 String copias = "";
                 try {
-                    copias = DatosMaestra.getCopiasPrefactura();
+                    copias = DatosMaestra.getNumeroCopiasPrefactura();
                 } catch (Exception e) {
                 }
 
@@ -4707,7 +4707,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void btnBusProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusProdActionPerformed
         try {
-            int num = Integer.parseInt(DatosMaestra.getLimite());
+            int num = Integer.parseInt(DatosMaestra.getLimiteProductosPorFactura());
             if (!rdPos.isSelected()) {
                 if (num > 0) {
                     if (tblProductos.getRowCount() >= num) {
@@ -4930,7 +4930,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void txtPorcentajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseClicked
         if (instancias.getConfiguraciones().isFacturaElectronica() && tblProductos.getRowCount() > 0) {
-            if (instancias.isDescuentoValor()) {
+            if (DatosMaestra.isDescuentoValor()) {
                 ControladorAlertas.alert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
                         + "Debes asignar el descuento directamente al producto específico.");
                 txtCodigoProducto.requestFocus();
@@ -5031,7 +5031,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         if (Constantes.FACTURACION_ELECTRONICA_POS.equals(tblComprobantes.getValueAt(fila, 7))) {
             rdPos.setSelected(true);
         } else if (Constantes.FACTURACION_ELECTRONICA.equals(tblComprobantes.getValueAt(fila, 7))) {
-            if (instancias.getImpresion().equals("facturaCompleta")) {
+            if (DatosMaestra.getTipoImpresionPredeterminado().equals("facturaCompleta")) {
                 rdCarta.setSelected(true);
             } else {
                 rdMediaCarta.setSelected(true);
@@ -5040,33 +5040,33 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         String resolucion = "", numeracion = "", infoResolucion = "", infoEmpresa = "";
 
-        if (DatosMaestra.getD1() != null) {
-            infoEmpresa = infoEmpresa + "" + DatosMaestra.getD1() + "";
+        if (DatosMaestra.getNitEmpresa() != null) {
+            infoEmpresa = infoEmpresa + "" + DatosMaestra.getNitEmpresa() + "";
         }
 
-        if (DatosMaestra.getD2() != null) {
-            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getD2();
+        if (DatosMaestra.getNombreEmpresa() != null) {
+            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getNombreEmpresa();
         }
 
-        if (DatosMaestra.getD3() != null) {
-            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getD3();
+        if (DatosMaestra.getRegimenEmpresa() != null) {
+            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getRegimenEmpresa();
         }
 
-        if (DatosMaestra.getD6() != null) {
-            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getD6();
+        if (DatosMaestra.getDireccionEmpresa() != null) {
+            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getDireccionEmpresa();
         }
 
-        if (DatosMaestra.getD7() != null) {
-            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getD7();
+        if (DatosMaestra.getTelefonoEmpresa() != null) {
+            infoEmpresa = infoEmpresa + "\n" + DatosMaestra.getTelefonoEmpresa();
         }
 
         String dato1 = "", dato2 = "";
-        if (DatosMaestra.getLegal() != null) {
-            dato1 = DatosMaestra.getLegal();
+        if (DatosMaestra.getInformacionLegal() != null) {
+            dato1 = DatosMaestra.getInformacionLegal();
         }
 
-        if (DatosMaestra.getPie() != null) {
-            dato2 = DatosMaestra.getPie();
+        if (DatosMaestra.getPiePagina() != null) {
+            dato2 = DatosMaestra.getPiePagina();
         }
 
         if (instancias.getRegimen().equals("")) {
@@ -5309,7 +5309,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 instancias.setTitulo("DOMICILIO");
                 break;
         }
-        if (instancias.getTipoImpresion().equals("Pos")) {
+        if (DatosMaestra.getSufijoReporteImpresion().equals("Pos")) {
             rdPos.setSelected(true);
         }
         mesaCongelada = true;
@@ -6031,7 +6031,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 factura, titulo, DatosMaestra.isPrevisualizarComanda(), impresoraComanda, cmbVendedor.getSelectedItem().toString());
         String copias = "";
         try {
-            copias = DatosMaestra.getCopiasComanda();
+            copias = DatosMaestra.getNumeroCopiasComanda();
         } catch (Exception e) {
         }
         try {
@@ -6814,7 +6814,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
         }
 
-        int limiteProductos = Integer.parseInt(DatosMaestra.getLimite());
+        int limiteProductos = Integer.parseInt(DatosMaestra.getLimiteProductosPorFactura());
         if (!rdPos.isSelected() && limiteProductos > 0) {
             if (tblProductos.getRowCount() >= limiteProductos) {
                 if (!ControladorAlertas.option("Limite de productos, ¿Desea continuar?")) {
@@ -7046,7 +7046,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             return;
         }
 
-        if (instancias.isLector()) {
+        if (DatosMaestra.isUsarLector()) {
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             txtCodigoProducto.requestFocus();
         } else {
@@ -7880,7 +7880,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(filaSelecciona, 3).toString().replace(".", "").replace(",", "."));
         BigDecimal subtotal = valorProducto.multiply(cantidad);
 
-        if (instancias.isDescuentoValor()) {
+        if (DatosMaestra.isDescuentoValor()) {
             descuento = tblProductos.getValueAt(filaSelecciona, 6).toString();
         } else {
             porcentajeDescuento = tblProductos.getValueAt(filaSelecciona, 5).toString();
@@ -8710,7 +8710,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         //SI LA GENERA DESDE LA ORDEN MEDICA SACARA ESTE MENSAJE
         if (desde.equals("ordenMedica")) {
 
-            if (instancias.isImprimirFacturaOrdenMedica()) {
+            if (DatosMaestra.isImprimirFacturaOrdenMedica()) {
                 if (ControladorAlertas.option("¿Desea imprimir la fact Nro." + factura.replace("FACT-", "") + "?")) {
 
                     String observaciones = txtObservaciones.getText();
@@ -8741,8 +8741,8 @@ public final class VistaFactura extends javax.swing.JPanel {
                         impresora = DatosMaestra.getImpresoraPos();
                     }
 
-                    String impoconsumo = String.valueOf(DatosMaestra.isMostrarImpoconsumo());
-                    String retenciones = String.valueOf(DatosMaestra.isMostrarRetenciones());
+                    String impoconsumo = String.valueOf(DatosMaestra.isImprimirImpoconsumo());
+                    String retenciones = String.valueOf(DatosMaestra.isImprimirRetenciones());
                     String condicion = funcionalidadVentas.condicionFactura(instancias, factura2);
 
                     // Original
@@ -8753,7 +8753,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     // Copias configuradas
                     int cantidad = 0;
                     try {
-                        cantidad = Integer.parseInt(DatosMaestra.getNumFactura());
+                        cantidad = Integer.parseInt(DatosMaestra.getNumeroCopiasFactura());
                     } catch (NumberFormatException ignored) {
                     }
                     for (int i = 0; i < cantidad; i++) {
@@ -8771,7 +8771,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor())) {
-            if (instancias.isUbicacion()) {
+            if (DatosMaestra.isImprimirUbicacion()) {
                 try {
                     if (ControladorAlertas.option("¿Desea imprimir ubicación?")) {
                         new GeneradorReporteFactura(instancias).ver_Ubicacion(factura2, false);
@@ -8933,7 +8933,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         if (!instancias.getUsuario().equals("ADMIN")) {
-            if (porcentaje2.compareTo(big.getBigDecimal(instancias.getDescuentoMaximoVentas())) == 1) {
+            if (porcentaje2.compareTo(big.getBigDecimal(DatosMaestra.getDescuentoMaximoPermitido())) == 1) {
 
                 Boolean solicitudPermisos = Boolean.parseBoolean(String.valueOf(DatosMaestra.isModuloPermisos()));
                 if (solicitudPermisos) {
@@ -8967,7 +8967,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     } else {
                         AccionesPermisos accion = new AccionesPermisos(false, true, false);
                         VistaSolicitarPermisos permisos = new VistaSolicitarPermisos(null, this.tipoProceso, accion,
-                                big.setNumero(porcentaje2), instancias.getDescuentoMaximoVentas());
+                                big.setNumero(porcentaje2), DatosMaestra.getDescuentoMaximoPermitido());
                         permisos.setLocationRelativeTo(null);
                         permisos.setVisible(true);
 

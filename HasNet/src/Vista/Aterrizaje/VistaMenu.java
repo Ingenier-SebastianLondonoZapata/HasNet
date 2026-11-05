@@ -15,7 +15,6 @@ import Vista.Configuraciones.vistaSuperMaestra;
 import Vista.Productos.VistaProductos;
 import configuracion.dlgPermisos;
 import configuracion.infPlantillas;
-import configuracion.msgSalir;
 import formularios.Agenda.infAgendaConsulta;
 import formularios.Agenda.infRepAgenda;
 
@@ -185,7 +184,7 @@ public class VistaMenu extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                cerrar();
+                cerrarAplicacion();
             }
         });
 
@@ -366,9 +365,21 @@ public class VistaMenu extends javax.swing.JFrame {
         setTitle("HasNet - " + metodosGenerales.fecha() + " - " + usuario);
     }
 
-    private void cerrar() {
-        msgSalir salir = new msgSalir(this, seVeElMenu, "");
-        salir.setVisible(true);
+    private void cerrarAplicacion() {
+        Vista.Alertas.Option confirmar = new Vista.Alertas.Option(this, true, "¿Desea salir del sistema?");
+        confirmar.setVisible(true);
+
+        if (!Boolean.TRUE.equals(confirmar.answer)) {
+            return;
+        }
+
+        try {
+            instancias.getSql().usuarioActivo("OFF", "");
+        } catch (Exception e) {
+            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, "No se pudo cerrar la sesión del usuario", e);
+        }
+
+        System.exit(0);
     }
 
     @SuppressWarnings("unchecked")
@@ -1872,7 +1883,7 @@ public class VistaMenu extends javax.swing.JFrame {
             case "medico":
                 textos[0] = "PACIENTES";
 
-                if (instancias.isGeneraOrdenMedica()) {
+                if (DatosMaestra.isGeneraOrdenMedica()) {
                     textos[1] = "ORDEN.SERV";
                 } else {
                     textos[1] = null;
@@ -1892,7 +1903,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
                 forms[0] = instancias.getPaciente();
 
-                if (instancias.isGeneraOrdenMedica()) {
+                if (DatosMaestra.isGeneraOrdenMedica()) {
                     forms[1] = instancias.getOrdenMedica();
                 } else {
                     forms[1] = null;
@@ -4466,7 +4477,7 @@ public class VistaMenu extends javax.swing.JFrame {
     }
 
     public void abrirCaja() {
-        if (instancias.getImpresion().equals("pos")) {
+        if (DatosMaestra.getTipoImpresionPredeterminado().equals("pos")) {
             btnAbrirCaja.setVisible(false);
         } else {
             btnAbrirCaja.setVisible(false);

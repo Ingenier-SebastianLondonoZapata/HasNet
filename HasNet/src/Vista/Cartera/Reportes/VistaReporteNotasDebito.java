@@ -1,5 +1,6 @@
 package Vista.Cartera.Reportes;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Dao.InicioSesion.DaoInicioSesion;
@@ -548,7 +549,7 @@ public class VistaReporteNotasDebito extends javax.swing.JPanel {
                 sql = sql.substring(0, sql.length() - 2) + ") AND";
             }
         } else {
-            if (!instancias.isVisualizarTodasLasFacturas()) {
+            if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
                 sql = sql + " bdfactura.terminal='" + instancias.getTerminal() + "' AND";
             }
         }

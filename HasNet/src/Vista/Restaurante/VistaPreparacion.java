@@ -1,5 +1,6 @@
 package Vista.Restaurante;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -822,7 +823,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     public void cargarTablas() {
 
         boolean conImpuestos = false;
-        if (instancias.isPrecioConImpuestos()) {
+        if (DatosMaestra.isPreciosConImpuestos()) {
             conImpuestos = true;
         }
 

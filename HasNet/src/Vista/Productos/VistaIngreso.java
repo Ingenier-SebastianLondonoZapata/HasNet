@@ -188,7 +188,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
         }
 
-        if (instancias.isDescuentoValor()) {
+        if (DatosMaestra.isDescuentoValor()) {
             tblProductos.getColumnModel().getColumn(5).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(5).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(5).setMaxWidth(0);
@@ -2212,7 +2212,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseClicked
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.isDescuentoValor()) {
+            if (DatosMaestra.isDescuentoValor()) {
                 alertas.alert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
                         + "Debes asignar el descuento directamente al producto específico.");
                 txtCodigoProducto.requestFocus();
@@ -2226,7 +2226,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseEntered
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.isDescuentoValor()) {
+            if (DatosMaestra.isDescuentoValor()) {
                 txtCodigoProducto.requestFocus();
             }
         }
@@ -2234,7 +2234,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseExited
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.isDescuentoValor()) {
+            if (DatosMaestra.isDescuentoValor()) {
                 txtCodigoProducto.requestFocus();
             }
         }
@@ -2242,7 +2242,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPorcentajeFocusGained
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.isDescuentoValor()) {
+            if (DatosMaestra.isDescuentoValor()) {
                 txtCodigoProducto.requestFocus();
             } else {
                 txtCodigoProducto.requestFocus();
@@ -2865,7 +2865,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             return;
         }
 
-        if (instancias.isLector()) {
+        if (DatosMaestra.isUsarLector()) {
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             txtCodigoProducto.requestFocus();
         } else {
@@ -3211,7 +3211,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         BigDecimal porcentajeDescuento = BigDecimal.ZERO;
 
         if (subtotal.compareTo(BigDecimal.ZERO) > 0) {
-            if (instancias.isDescuentoValor()) {
+            if (DatosMaestra.isDescuentoValor()) {
                 porcentajeDescuento = big.getBigDecimal(descuento.multiply(big.getBigDecimal("100")).divide(subtotal, 2, RoundingMode.HALF_DOWN));
             } else {
                 porcentajeDescuento = big.getBigDecimal(tblProductos.getValueAt(fila, 5).toString().replace(".", "").replace(",", "."));
@@ -3513,7 +3513,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(filaSelecciona, 3).toString().replace(".", "").replace(",", "."));
         BigDecimal subtotal = valorProducto.multiply(cantidad);
 
-        if (instancias.isDescuentoValor()) {
+        if (DatosMaestra.isDescuentoValor()) {
             descuento = tblProductos.getValueAt(filaSelecciona, 6).toString();
         } else {
             porcentajeDescuento = tblProductos.getValueAt(filaSelecciona, 5).toString();

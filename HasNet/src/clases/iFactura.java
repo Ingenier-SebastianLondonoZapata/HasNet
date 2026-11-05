@@ -1022,8 +1022,8 @@ public class iFactura {
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
             parametros.put("vehiculo", "");
-            parametros.put("dia", DatosMaestra.getL2());
-            parametros.put("mes", DatosMaestra.getL4());
+            parametros.put("dia", DatosMaestra.getTipoImpresionPredeterminado());
+            parametros.put("mes", DatosMaestra.getNumeroCopiasFactura());
             parametros.put("anho", "");
 
             IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
@@ -1469,7 +1469,7 @@ public class iFactura {
 
         try {
             //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportes/ejemplo/caja" + Instancias.getInstancias().getTipoImpresion() + ".jasper");
+            URL in = this.getClass().getResource("/reportes/ejemplo/caja" + DatosMaestra.getSufijoReporteImpresion() + ".jasper");
             reporte = (JasperReport) JRLoader.loadObject(in);
             //Se crea un objeto HashMap
             Map parametros = new HashMap();

@@ -1,5 +1,6 @@
 package Vista.Tesoreria;
 
+import Utilidades.DatosMaestra;
 import Consumidor.DocumentoSoporte.ConsumidorDocumentoSoporte;
 import Controlador.Alertas.ControladorAlertas;
 import Impresiones.ImpresionesEgresos.GeneradorReporteEgreso;
@@ -1978,8 +1979,8 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
     }
 
     private void establecerTipoImpresion() {
-        if (instancias.getTipoImpresion() != null) {
-            if (instancias.getTipoImpresion().equals("Pos")) {
+        if (DatosMaestra.getSufijoReporteImpresion() != null) {
+            if (DatosMaestra.getSufijoReporteImpresion().equals("Pos")) {
                 cmbTipoImpresion.setSelectedIndex(1);
             } else {
                 cmbTipoImpresion.setSelectedIndex(0);

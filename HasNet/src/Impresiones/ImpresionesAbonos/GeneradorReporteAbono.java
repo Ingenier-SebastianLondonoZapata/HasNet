@@ -1,5 +1,6 @@
 package Impresiones.ImpresionesAbonos;
 
+import Utilidades.DatosMaestra;
 import Impresiones.GeneradorReporteBase;
 import clases.Instancias;
 import java.util.HashMap;
@@ -12,11 +13,11 @@ public class GeneradorReporteAbono extends GeneradorReporteBase {
     }
 
     public void verAbono(String abono, String tipo, String info) {
-        ejecutar("abonoNuevo" + instancias.getTipoImpresion(), parametrosAbono(abono, tipo, info));
+        ejecutar("abonoNuevo" + DatosMaestra.getSufijoReporteImpresion(), parametrosAbono(abono, tipo, info));
     }
 
     public void verAbonoGeneral(String abono, String tipo, String info) {
-        ejecutar("abonoNuevo" + instancias.getTipoImpresion(), parametrosAbono(abono, tipo, info));
+        ejecutar("abonoNuevo" + DatosMaestra.getSufijoReporteImpresion(), parametrosAbono(abono, tipo, info));
     }
 
     private Map<String, Object> parametrosAbono(String abono, String tipo, String info) {

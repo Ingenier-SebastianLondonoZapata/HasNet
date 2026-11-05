@@ -1126,7 +1126,7 @@ public class infRips extends javax.swing.JInternalFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         instancias.setRutaAguardar(metodos.obtenerRuta(this, "Detalle de cargo FACT-" + txtNumFacturas.getText()));
         System.out.println("llenar datos maestra desde INF RIPS");
-        instancias.getReporte().detalleCargo(condicionOrden(), DatosMaestra.getD1(), DatosMaestra.getD2(), DatosMaestra.getD6(), txtNumFacturas.getText());
+        instancias.getReporte().detalleCargo(condicionOrden(), DatosMaestra.getNitEmpresa(), DatosMaestra.getNombreEmpresa(), DatosMaestra.getDireccionEmpresa(), txtNumFacturas.getText());
         System.out.println("select * from detalleCargo " + condicionOrden());
 
         instancias.setRutaAguardar(metodos.obtenerRuta(this, "Plano FACT-" + txtNumFacturas.getText()));

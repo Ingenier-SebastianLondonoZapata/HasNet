@@ -833,8 +833,8 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                 }
 
                 String impresora = DatosMaestra.getImpresoraMediaCarta();
-                String impoconsumo = String.valueOf(DatosMaestra.isMostrarImpoconsumo());
-                String retenciones = String.valueOf(DatosMaestra.isMostrarRetenciones());
+                String impoconsumo = String.valueOf(DatosMaestra.isImprimirImpoconsumo());
+                String retenciones = String.valueOf(DatosMaestra.isImprimirRetenciones());
 
                 String condicion;
                 if (DatosMaestra.isCombinarProductos() && instancias.getConfiguraciones().isRestaurante()) {

@@ -6409,9 +6409,9 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         setFilaTabla(tblImpresoraPorTipo, "Comanda", 1, DatosMaestra.getImpresoraComanda());
         setFilaTabla(tblImpresoraPorTipo, "Prefactura", 1, DatosMaestra.getImpresoraPrefactura());
 
-        if ("pos".equals(DatosMaestra.getL2())) {
+        if ("pos".equals(DatosMaestra.getTipoImpresionPredeterminado())) {
             setFilaTabla(tblImpresoraPorTipo, "Pos", 2, true);
-        } else if ("facturaCompleta".equals(DatosMaestra.getL2())) {
+        } else if ("facturaCompleta".equals(DatosMaestra.getTipoImpresionPredeterminado())) {
             setFilaTabla(tblImpresoraPorTipo, "Carta", 2, true);
         } else {
             setFilaTabla(tblImpresoraPorTipo, "Media carta", 2, true);
@@ -6426,16 +6426,16 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         setFilaTabla(tblConfiguraciones, "Módulo de solicitudes de permisos", 1, DatosMaestra.isModuloPermisos());
 
-        cmbHoraInicio1.setSelectedItem(DatosMaestra.getInicioHosp());
-        cmbHoraFin1.setSelectedItem(DatosMaestra.getFinHosp());
-        cmbIntervalo1.setSelectedItem(DatosMaestra.getIntervalosHosp());
+        cmbHoraInicio1.setSelectedItem(DatosMaestra.getHoraInicioHospitalizacion());
+        cmbHoraFin1.setSelectedItem(DatosMaestra.getHoraFinHospitalizacion());
+        cmbIntervalo1.setSelectedItem(DatosMaestra.getIntervaloHospitalizacion());
 
         setFilaTabla(tblConfiguraciones, "Mostrar devuelta en factura", 1, DatosMaestra.isMostrarDevuelta());
 
         if (instancias.getConfiguraciones().isRestaurante()) {
-            setFilaTabla(tblConfiguraciones1, "Porcentaje de propina en pre-factura", 1, DatosMaestra.getPorcPropina());
+            setFilaTabla(tblConfiguraciones1, "Porcentaje de propina en pre-factura", 1, DatosMaestra.getPorcentajePropina());
         }
-        txtNombreFormato.setText(DatosMaestra.getImprimirCada());
+        txtNombreFormato.setText(DatosMaestra.getFormatoImpresion());
 
         String columnas = DatosMaestra.getColumnas();
         txtColumnas.setText(columnas);
@@ -6591,41 +6591,41 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         setFilaTabla(tblConfiguraciones1, "Cantidad al cargar un producto", 1, DatosMaestra.getCantidadEstablecidaAlCargar());
         setFilaTabla(tblConfiguraciones1, "Número de turno", 1, DatosMaestra.getNumeroTurno());
 
-        setFilaTabla(tblOpcionesImpresiones, "Imprimir impoconsumo en factura", 1, DatosMaestra.isMostrarImpoconsumo());
-        setFilaTabla(tblOpcionesImpresiones, "Imprimir retenciones en factura", 1, DatosMaestra.isMostrarRetenciones());
-        setFilaTabla(tblOpcionesImpresiones, "Imprimir hora en factura", 1, DatosMaestra.isHora());
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir impoconsumo en factura", 1, DatosMaestra.isImprimirImpoconsumo());
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir retenciones en factura", 1, DatosMaestra.isImprimirRetenciones());
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir hora en factura", 1, DatosMaestra.isImprimirHora());
 
         setFilaTabla(tblConfiguraciones, "Facturar sin inventario", 1, DatosMaestra.isFacturarSinInventario());
 
         // Cargar tblImpresionDocumentos
         inicializarTablaImpresionDocumentos();
         setFilaTabla(tblImpresionDocumentos, "Factura", 1, DatosMaestra.isPrevisualizarFactura());
-        setFilaTabla(tblImpresionDocumentos, "Factura", 2, DatosMaestra.isCopiasFactura());
-        setFilaTabla(tblImpresionDocumentos, "Factura", 3, DatosMaestra.getNumFactura());
+        setFilaTabla(tblImpresionDocumentos, "Factura", 2, DatosMaestra.isPreguntarCopiasFactura());
+        setFilaTabla(tblImpresionDocumentos, "Factura", 3, DatosMaestra.getNumeroCopiasFactura());
 
-        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 1, DatosMaestra.isPrevisualizarOServicio());
-        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 2, DatosMaestra.isCopiasOServicio());
-        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 3, DatosMaestra.getNumOServicio());
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 1, DatosMaestra.isPrevisualizarOrdenServicio());
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 2, DatosMaestra.isPreguntarCopiasOrdenServicio());
+        setFilaTabla(tblImpresionDocumentos, "Orden de servicio", 3, DatosMaestra.getNumeroCopiasOrdenServicio());
 
         setFilaTabla(tblImpresionDocumentos, "Cotización", 1, DatosMaestra.isPrevisualizarCotizacion());
-        setFilaTabla(tblImpresionDocumentos, "Cotización", 2, DatosMaestra.isCopiasCotizacion());
-        setFilaTabla(tblImpresionDocumentos, "Cotización", 3, DatosMaestra.getNumCotizacion());
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 2, DatosMaestra.isPreguntarCopiasCotizacion());
+        setFilaTabla(tblImpresionDocumentos, "Cotización", 3, DatosMaestra.getNumeroCopiasCotizacion());
 
         setFilaTabla(tblImpresionDocumentos, "Plan separe", 1, DatosMaestra.isPrevisualizarPlanSepare());
-        setFilaTabla(tblImpresionDocumentos, "Plan separe", 2, DatosMaestra.isCopiasPlanSepare());
-        setFilaTabla(tblImpresionDocumentos, "Plan separe", 3, DatosMaestra.getNumPlanSepare());
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 2, DatosMaestra.isPreguntarCopiasPlanSepare());
+        setFilaTabla(tblImpresionDocumentos, "Plan separe", 3, DatosMaestra.getNumeroCopiasPlanSepare());
 
         setFilaTabla(tblImpresionDocumentos, "Pedido", 1, DatosMaestra.isPrevisualizarPedido());
-        setFilaTabla(tblImpresionDocumentos, "Pedido", 2, DatosMaestra.isCopiasPedido());
-        setFilaTabla(tblImpresionDocumentos, "Pedido", 3, DatosMaestra.getNumPedido());
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 2, DatosMaestra.isPreguntarCopiasPedido());
+        setFilaTabla(tblImpresionDocumentos, "Pedido", 3, DatosMaestra.getNumeroCopiasPedido());
 
         setFilaTabla(tblImpresionDocumentos, "Comanda", 1, DatosMaestra.isPrevisualizarComanda());
         setFilaTabla(tblImpresionDocumentos, "Comanda", 2, DatosMaestra.isPreguntarCopiasComanda());
-        setFilaTabla(tblImpresionDocumentos, "Comanda", 3, DatosMaestra.getCopiasComanda());
+        setFilaTabla(tblImpresionDocumentos, "Comanda", 3, DatosMaestra.getNumeroCopiasComanda());
 
         setFilaTabla(tblImpresionDocumentos, "Prefactura", 1, DatosMaestra.isPrevisualizarPrefactura());
         setFilaTabla(tblImpresionDocumentos, "Prefactura", 2, DatosMaestra.isPreguntarCopiasPrefactura());
-        setFilaTabla(tblImpresionDocumentos, "Prefactura", 3, DatosMaestra.getCopiasPrefactura());
+        setFilaTabla(tblImpresionDocumentos, "Prefactura", 3, DatosMaestra.getNumeroCopiasPrefactura());
 
         String nombreBorrarDocumento = instancias.getConfiguraciones().isRestaurante() ? "Borrar mesas" : "Borrar congeladas";
         setFilaTabla(tblConfiguraciones, nombreBorrarDocumento, 1, DatosMaestra.isBorrarMesas());
@@ -6639,93 +6639,52 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         aplicarEstadoNumeroTurno();
         setFilaTabla(tblConfiguraciones, "Modificar nombre de productos", 1, DatosMaestra.isModificarNombre());
         setFilaTabla(tblConfiguraciones, "Combinar productos iguales", 1, DatosMaestra.isCombinarProductos());
-        setFilaTabla(tblConfiguraciones1, "Límite de productos (carta/media carta)", 1, DatosMaestra.getLimite());
-
-        String tipoImpresion = DatosMaestra.getL2();
-        if ("pos".equals(tipoImpresion)) {
-            instancias.setTipoImpresion("Pos");
-        } else {
-            instancias.setTipoImpresion("");
-        }
-        instancias.setImpresion(tipoImpresion);
+        setFilaTabla(tblConfiguraciones1, "Límite de productos (carta/media carta)", 1, DatosMaestra.getLimiteProductosPorFactura());
 
         instancias.getMenu().abrirCaja();
-
-        try {
-            if (DatosMaestra.getL4().equals("NO")) {
-                instancias.setCopias(false);
-            } else {
-                instancias.setCopias(true);
-            }
-        } catch (Exception e) {
-            instancias.setCopias(true);
-        }
 
         instancias.getMenu().actualizarUsuario(instancias.getUsuario());
 
         try {
-            setFilaTabla(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1, !"NO".equals(DatosMaestra.getC3()));
+            setFilaTabla(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1, !"NO".equals(DatosMaestra.getAlertaUtilidad()));
         } catch (Exception e) {
             setFilaTabla(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1, true);
         }
 
         setFilaTabla(tblConfiguraciones1, "Tipo de descuento", 1, DatosMaestra.getTipoDescuento());
-        instancias.setDescuento(DatosMaestra.getTipoDescuento());
 
-        instancias.setSegundaClave(DatosMaestra.getC5());
-        setFilaTabla(tblConfiguraciones1, "Contraseña para control y permisos", 1, DatosMaestra.getC5());
+        setFilaTabla(tblConfiguraciones1, "Contraseña para control y permisos", 1, DatosMaestra.getContrasenaPermisos());
 
         inicializarTablaInformacionEmpresa();
-        setFilaTabla(tblInformacionEmpresa, "Nombre", 1, DatosMaestra.getD2());
-        setFilaTabla(tblInformacionEmpresa, "NIT", 1, DatosMaestra.getD1());
-        setFilaTabla(tblInformacionEmpresa, "Teléfono", 1, DatosMaestra.getD7());
-        setFilaTabla(tblInformacionEmpresa, "Régimen", 1, DatosMaestra.getD3());
-        setFilaTabla(tblInformacionEmpresa, "Dirección", 1, DatosMaestra.getD6());
+        setFilaTabla(tblInformacionEmpresa, "Nombre", 1, DatosMaestra.getNombreEmpresa());
+        setFilaTabla(tblInformacionEmpresa, "NIT", 1, DatosMaestra.getNitEmpresa());
+        setFilaTabla(tblInformacionEmpresa, "Teléfono", 1, DatosMaestra.getTelefonoEmpresa());
+        setFilaTabla(tblInformacionEmpresa, "Régimen", 1, DatosMaestra.getRegimenEmpresa());
+        setFilaTabla(tblInformacionEmpresa, "Dirección", 1, DatosMaestra.getDireccionEmpresa());
         inicializarTablaInformacionImpresion();
-        setFilaTabla(tblInformacionImpresion, "Pie de página", 1, DatosMaestra.getPie());
-        setFilaTabla(tblInformacionImpresion, "Información legal", 1, DatosMaestra.getLegal());
-        setFilaTabla(tblInformacionImpresion, "Anexo factura", 1, DatosMaestra.getAnexoFacturacion());
+        setFilaTabla(tblInformacionImpresion, "Pie de página", 1, DatosMaestra.getPiePagina());
+        setFilaTabla(tblInformacionImpresion, "Información legal", 1, DatosMaestra.getInformacionLegal());
+        setFilaTabla(tblInformacionImpresion, "Anexo factura", 1, DatosMaestra.getAnexoFactura());
         setFilaTabla(tblInformacionImpresion, "Anexo orden de servicio", 1, DatosMaestra.getAnexoOrdenServicio());
         javax.swing.SwingUtilities.invokeLater(() -> ajustarAlturaFilas(tblInformacionImpresion));
 
         try {
-            setFilaTabla(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1, !"NO".equals(DatosMaestra.getC6()));
+            setFilaTabla(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1, !"NO".equals(DatosMaestra.getMostrarUbicacion()));
         } catch (Exception e) {
             setFilaTabla(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1, true);
         }
 
-        setFilaTabla(tblConfiguraciones1, "Días para alerta de cartera", 1, DatosMaestra.getC7());
+        setFilaTabla(tblConfiguraciones1, "Días para alerta de cartera", 1, DatosMaestra.getDiasAlertaCuadre());
 
-        setFilaTabla(tblOpcionesImpresiones, "Imprimir recodiga en cuadre de caja", 1, DatosMaestra.isRecogida());
-        if (DatosMaestra.isRecogida()) {
-            instancias.setImprimirRecogida(true);
-        } else {
-            instancias.setImprimirRecogida(false);
-        }
-
-        setFilaTabla(tblConfiguraciones, "Usar lector", 1, DatosMaestra.isLector());
-        instancias.setLector(DatosMaestra.isLector());
-
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir recodiga en cuadre de caja", 1, DatosMaestra.isImprimirRecogida());
+        setFilaTabla(tblConfiguraciones, "Usar lector", 1, DatosMaestra.isUsarLector());
         setFilaTabla(tblConfiguraciones1, "Título en la factura", 1, DatosMaestra.getTituloFactura());
-        instancias.setTituloFactura(DatosMaestra.getTituloFactura());
+        setFilaTabla(tblConfiguraciones, "Precios con impuestos", 1, DatosMaestra.isPreciosConImpuestos());
+        setFilaTabla(tblConfiguraciones, "Ventas Contado Predeterminado", 1, DatosMaestra.isVentasContadoPredeterminado());
+        setFilaTabla(tblConfiguraciones, "Alertar Utilidad Sobrepasada", 1, DatosMaestra.isAlertarUtilidadSobrepasada());
 
-        setFilaTabla(tblConfiguraciones, "Precios con impuestos", 1, DatosMaestra.isPvpSinIva());
-        instancias.setPrecioConImpuestos(DatosMaestra.isPvpSinIva());
-
-        setFilaTabla(tblConfiguraciones, "Ventas Contado Predeterminado", 1, DatosMaestra.isVentasPredeterminado());
-        instancias.setVentasPredeterminado(DatosMaestra.isVentasPredeterminado());
-        setFilaTabla(tblConfiguraciones, "Alertar Utilidad Sobrepasada", 1, DatosMaestra.isMensajeUtilidad());
-        instancias.setMensajeUtilidad(DatosMaestra.isMensajeUtilidad());
-
-        instancias.setUtilidad(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1));
-        instancias.setUbicacion(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1));
-        instancias.setHora(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir hora en factura", 1));
-
-        String diasCobrarMora = DatosMaestra.getDiasCobrarMora().isEmpty() ? "0" : DatosMaestra.getDiasCobrarMora();
-        String porcentajeMora = DatosMaestra.getPorcentajeMora().isEmpty() ? "0" : DatosMaestra.getPorcentajeMora();
-
-        instancias.setDiasCobrarMora(diasCobrarMora);
-        instancias.setPorcentajeMora(porcentajeMora);
+        String diasCobrarMora = DatosMaestra.getDiasCobrarMora();
+        String porcentajeMora = DatosMaestra.getPorcentajeMora();
 
         if (instancias.getConfiguraciones().isCreditos()) {
             setFilaTabla(tblConfiguraciones1, "Días para cobrar mora en créditos", 1, diasCobrarMora);
@@ -6734,17 +6693,13 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         if (DatosMaestra.isGeneraOrdenMedica()) {
             rdSiGenerarOrden.setSelected(true);
-            instancias.setGeneraOrdenMedica(true);
         } else {
             rdNoGenerarOrden.setSelected(true);
-            instancias.setGeneraOrdenMedica(false);
         }
         if (DatosMaestra.isImprimirOrdenMedica()) {
             rdSiImprimirOrden.setSelected(true);
-            instancias.setImprimirOrdenMedica(true);
         } else {
             rdNoImprimirOrden.setSelected(true);
-            instancias.setImprimirOrdenMedica(false);
         }
 
         if (instancias.getConfiguraciones().isMedico() || instancias.getConfiguraciones().isLaboratorio() || instancias.getConfiguraciones().isOftalmologia()) {
@@ -6781,17 +6736,13 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         if (DatosMaestra.isImprimirFacturaOrdenMedica()) {
             rdSiImprimirFactura.setSelected(true);
-            instancias.setImprimirFacturaOrdenMedica(true);
         } else {
             rdNoImprimirFactura.setSelected(true);
-            instancias.setImprimirFacturaOrdenMedica(false);
         }
 
         cmbHoraInicio.setSelectedItem(DatosMaestra.getHoraInicioAgenda());
         cmbHoraFin.setSelectedItem(DatosMaestra.getHoraFinAgenda());
         cmbIntervalo.setSelectedItem(DatosMaestra.getIntervaloAgenda());
-        String[] configAgenda = {DatosMaestra.getHoraInicioAgenda(), DatosMaestra.getHoraFinAgenda(), DatosMaestra.getIntervaloAgenda()};
-        instancias.setConfigAgenda(configAgenda);
 
         txtCodigoPrestadorServico.setText(DatosMaestra.getCodigoPrestadorServicio());
 
@@ -6802,13 +6753,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
 
         setFilaTabla(tblOpcionesImpresiones, "Imprimir cuadre fiscal en cuadre de caja", 1, DatosMaestra.isImprimirCuadreFiscal());
-        if (DatosMaestra.isImprimirCuadreFiscal()) {
-            instancias.setImprimirCuadreFiscal(true);
-        } else {
-            instancias.setImprimirCuadreFiscal(false);
-        }
-
-        instancias.setVisualizarTodasLasFacturas(false);
 
         if (!instancias.getConfiguraciones().isAgenda()) {
             pnlIntervalosAgenda.setVisible(false);
@@ -6827,11 +6771,9 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             rdNoGenerarOrden.setVisible(false);
         }
 
+        // El máximo efectivo (100 si no hay) lo da DatosMaestra.getDescuentoMaximoPermitido()
         String descMax = DatosMaestra.getDescuentoMaximoVentas();
-        if (descMax.equals("") || descMax.equals("0")) {
-            instancias.setDescuentoMaximoVentas(big.getBigDecimal("100"));
-        } else {
-            instancias.setDescuentoMaximoVentas(big.getBigDecimal(descMax));
+        if (!descMax.equals("") && !descMax.equals("0")) {
             setFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar", 1, descMax);
         }
         aplicarEstadoDescuentoMaximo();
@@ -6893,7 +6835,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         instancias.getIngresos().actualizarVariables();
 
-        if (instancias.isVentasPredeterminado()) {
+        if (DatosMaestra.isVentasContadoPredeterminado()) {
             instancias.getFactura().cargar1010();
             instancias.getCotiza().cargar1010();
         }

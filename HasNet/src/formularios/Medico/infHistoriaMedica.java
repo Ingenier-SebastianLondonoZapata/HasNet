@@ -1,5 +1,6 @@
 package formularios.Medico;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -4843,7 +4844,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         }
 
         int i = 0;
-        if (instancias.isGeneraOrdenMedica()) {
+        if (DatosMaestra.isGeneraOrdenMedica()) {
             if (orden == null && i == 0) {
                 ControladorAlertas.alert("No se relaciona con ninguna orden");
                 return;
@@ -4856,7 +4857,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
             return;
         }
 
-        if (!instancias.isGeneraOrdenMedica()) {
+        if (!DatosMaestra.isGeneraOrdenMedica()) {
             if (null == nodoCampos.getServicio() || "".equals(nodoCampos.getServicio())) {
                 ControladorAlertas.alert("No tiene un servicio establecido");
                 return;
@@ -4878,7 +4879,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
             if (lista.getSelectedIndex() == 0) {
 
-                if (!instancias.isGeneraOrdenMedica()) {
+                if (!DatosMaestra.isGeneraOrdenMedica()) {
                     guardarOrden(consecutivo);
                 }
 

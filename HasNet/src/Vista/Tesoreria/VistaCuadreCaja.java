@@ -1,5 +1,6 @@
 package Vista.Tesoreria;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Impresiones.ImpresionesCuadreCaja.GeneradorReporteCuadreCaja;
@@ -1063,13 +1064,13 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
             limpiarTablasCuadreCaja();
 
             String tipoImpresion = "";
-            if (instancias.getImpresion().equals("pos")) {
+            if (DatosMaestra.getTipoImpresionPredeterminado().equals("pos")) {
                 tipoImpresion = "Pos";
             }
 
             new GeneradorReporteCuadreCaja(instancias).verCuadreCaja(documento, tipoImpresion, instancias.getInformacionEmpresa());
 
-            if (instancias.isImprimirCuadreFiscal()) {
+            if (DatosMaestra.isImprimirCuadreFiscal()) {
                 new GeneradorReporteCuadreCaja(instancias).verCuadreFiscal(documento, instancias.getInformacionEmpresa());
             }
         }
@@ -1144,12 +1145,12 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
         }
 
         String tipoImpresion = "";
-        if (instancias.getImpresion().equals("pos")) {
+        if (DatosMaestra.getTipoImpresionPredeterminado().equals("pos")) {
             tipoImpresion = "Pos";
         }
         new GeneradorReporteCuadreCaja(instancias).verCuadreCaja(consecutivo, tipoImpresion, instancias.getInformacionEmpresa());
 
-        if (instancias.isImprimirCuadreFiscal()) {
+        if (DatosMaestra.isImprimirCuadreFiscal()) {
             new GeneradorReporteCuadreCaja(instancias).verCuadreFiscal(consecutivo, instancias.getInformacionEmpresa());
         }
     }//GEN-LAST:event_btnReimprimirActionPerformed
@@ -1206,7 +1207,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
     }
 
     public void calcularTotal() {
-        /*if (!instancias.getUsuario().equals("ADMIN") && !instancias.isMostrarInformacionCuadre()) {
+        /*if (!instancias.getUsuario().equals("ADMIN") && !DatosMaestra.isMostrarInformacionCuadre()) {
          return;
          }*/
 
@@ -1250,7 +1251,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
     }
 
     public void cargarTotalesCuadreCaja() {
-        /*if (!instancias.getUsuario().equals("ADMIN") && !instancias.isMostrarInformacionCuadre()) {
+        /*if (!instancias.getUsuario().equals("ADMIN") && !DatosMaestra.isMostrarInformacionCuadre()) {
          return;
          }*/
 
@@ -1372,7 +1373,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
     public void desdeRecogida(String valor) {
 
-        if (instancias.isImprimirRecogida()) {
+        if (DatosMaestra.isImprimirRecogida()) {
             new GeneradorReporteCuadreCaja(instancias).verRecogidaParcial(valor, tblValoresEsperados.getValueAt(6, 1).toString());
         }
 

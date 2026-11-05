@@ -1,5 +1,6 @@
 package formularios.Agenda;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -1768,7 +1769,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
 
     public void pasarOrden() {
 
-        if (instancias.isGeneraOrdenMedica()) {
+        if (DatosMaestra.isGeneraOrdenMedica()) {
             instancias.getOrdenMedica().cargarClienteDesdeAgenda(txtId.getText(), txtEncargado.getText());
             try {
                 instancias.getOrdenMedica().setSelected(true);
@@ -1792,7 +1793,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
         ModeloContacto nodo = instancias.getSql().getDatosTercero(txtId.getText());
 
         if (nodo.getId() != null) {
-            if (instancias.isGeneraOrdenMedica()) {
+            if (DatosMaestra.isGeneraOrdenMedica()) {
                 instancias.getOrdenMedica().cargarClienteDesdeAgenda(txtId.getText(), txtEncargado.getText());
                 try {
                     instancias.getOrdenMedica().setSelected(true);

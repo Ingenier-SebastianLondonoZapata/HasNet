@@ -1,5 +1,6 @@
 package formularios.Ventas;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.TipoDocumento;
 import clases.Instancias;
@@ -34,7 +35,7 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         btnQuitarDesc.setVisible(false);
 
-        if (instancias.isDescuentoValor()) {
+        if (DatosMaestra.isDescuentoValor()) {
             txtPorcentajeDescuento.setEnabled(false);
         } else {
             txtDescuento.setEnabled(false);
@@ -322,7 +323,7 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
         BigDecimal porcentajeDescuento = null;
         BigDecimal descuento = null;
 
-        if (instancias.isDescuentoValor()) {
+        if (DatosMaestra.isDescuentoValor()) {
             descuento = big.getMoneda(txtDescuento.getText());
             BigDecimal porcentajeAplicado = descuento.multiply(big.getBigDecimal("100")).divide(subtotalProductoSeleccionado, 2, RoundingMode.HALF_DOWN);
             if (porcentajeAplicado.compareTo(big.getBigDecimal("100")) >= 0) {
@@ -435,14 +436,14 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
     }//GEN-LAST:event_txtDescuentoKeyReleased
 
     private boolean validarDatosEnCero() {
-        if (instancias.isDescuentoValor()
+        if (DatosMaestra.isDescuentoValor()
                 &&("".equals(txtDescuento.getText()) || "$ 0".equals(txtDescuento.getText()))) {
 
             ControladorAlertas.alert("Debe ingresar el valor del descuento");
             txtDescuento.requestFocus();
             return false;
 
-        } else if (instancias.isDescuentoPorcentaje()
+        } else if (DatosMaestra.isDescuentoPorcentaje()
                 && ("".equals(txtPorcentajeDescuento.getText()) || "0".equals(txtPorcentajeDescuento.getText()))) {
 
             ControladorAlertas.alert("Debe ingresar el procentaje del descuento");

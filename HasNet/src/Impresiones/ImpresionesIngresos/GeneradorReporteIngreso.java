@@ -1,5 +1,6 @@
 package Impresiones.ImpresionesIngresos;
 
+import Utilidades.DatosMaestra;
 import Impresiones.GeneradorReporteBase;
 import clases.Instancias;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class GeneradorReporteIngreso extends GeneradorReporteBase {
     }
 
     public void verIngreso(String factura, String tipoCompra) {
-        String sufijo = instancias.getTipoImpresion();
+        String sufijo = DatosMaestra.getSufijoReporteImpresion();
         if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
             sufijo = sufijo + "1";
         }

@@ -1,5 +1,6 @@
 package formularios.Agenda;
 
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.IconCellRenderer;
@@ -413,9 +414,9 @@ public class infAgendaConsulta extends javax.swing.JInternalFrame {
         int contador = 0;
 
         try {
-            horaIni = Integer.parseInt(instancias.getConfigAgenda()[0]);
-            horaFin = Integer.parseInt(instancias.getConfigAgenda()[1]);
-            intervalo = Integer.parseInt(instancias.getConfigAgenda()[2]);
+            horaIni = Integer.parseInt(DatosMaestra.getHoraInicioAgenda());
+            horaFin = Integer.parseInt(DatosMaestra.getHoraFinAgenda());
+            intervalo = Integer.parseInt(DatosMaestra.getIntervaloAgenda());
         } catch (Exception e) {
         }
 
@@ -701,9 +702,9 @@ public class infAgendaConsulta extends javax.swing.JInternalFrame {
             int contador = 0;
 
             try {
-                horaIni = Integer.parseInt(instancias.getConfigAgenda()[0]);
-                horaFin = Integer.parseInt(instancias.getConfigAgenda()[1]);
-                intervalo = Integer.parseInt(instancias.getConfigAgenda()[2]);
+                horaIni = Integer.parseInt(DatosMaestra.getHoraInicioAgenda());
+                horaFin = Integer.parseInt(DatosMaestra.getHoraFinAgenda());
+                intervalo = Integer.parseInt(DatosMaestra.getIntervaloAgenda());
             } catch (Exception e) {
             }
 

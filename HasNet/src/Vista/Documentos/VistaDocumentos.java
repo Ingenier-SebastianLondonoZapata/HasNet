@@ -169,9 +169,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }
 
     public void setTipo() {
-        if (instancias.getImpresion().equals("pos")) {
+        if (DatosMaestra.getTipoImpresionPredeterminado().equals("pos")) {
             pos.setSelected(true);
-        } else if (instancias.getImpresion().equals("facturaCompleta")) {
+        } else if (DatosMaestra.getTipoImpresionPredeterminado().equals("facturaCompleta")) {
             carta.setSelected(true);
         } else {
             mediaCarta.setSelected(true);
@@ -307,7 +307,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }
 
     private void agregarCondicionPorTerminal(StringBuilder builder) {
-        if (instancias.isVisualizarTodasLasFacturas()) {
+        if (DatosMaestra.isVisualizarTodasLasFacturas()) {
             return;
         }
 
@@ -1459,8 +1459,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 String documento = prefijoPorDocumento + NUMERO_DOCUMENTO_SELECCIONADO;
                 
                 Boolean notaDebito = cmbTipoDocumento.getSelectedItem().equals("NOTA DÉBITO");
-                String verImpoconsumoEnImpresion = String.valueOf(DatosMaestra.isMostrarImpoconsumo());
-                String verRetencionesEnImpresion = String.valueOf(DatosMaestra.isMostrarRetenciones());
+                String verImpoconsumoEnImpresion = String.valueOf(DatosMaestra.isImprimirImpoconsumo());
+                String verRetencionesEnImpresion = String.valueOf(DatosMaestra.isImprimirRetenciones());
 
                 boolean usaAgrupada = esRestaurante && DatosMaestra.isCombinarProductos();
                 String condicion = usaAgrupada || esRestaurante ? metodos.sentenciaImpresionFactura("agrupada", " WHERE bdFactura.factura = '" + documento + "' ")
