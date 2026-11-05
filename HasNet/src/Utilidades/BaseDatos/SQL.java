@@ -1,6 +1,4 @@
-﻿package Utilidades.BaseDatos;
-
-import Utilidades.Contactos.Bodegas;
+package Utilidades.BaseDatos;
 
 import Modelo.Egresos.ModeloDetalleEgreso;
 import Modelo.Contactos.ModeloContacto;
@@ -1354,20 +1352,6 @@ public class SQL {
         String colName[] = {"idSistema"};
         String origen = " bdTerceros";
         Object dtDatos[][] = getDatos(colName, origen, "select idSistema FROM bdTerceros where nombre = '" + id + "'; ", " where nombre = '" + id + "' ");
-        return dtDatos[0][0].toString();
-    }
-
-    public String getComisionTarjeta(String nombre) {
-        String colName[] = {"comision"};
-        String origen = " bdTarjetas";
-        Object dtDatos[][] = getDatos(colName, origen, "select comision FROM bdTarjetas where franquisia = '" + nombre + "';", " where franquisia = '" + nombre + "' ");
-        return dtDatos[0][0].toString();
-    }
-
-    public String getTurno() {
-        String colName[] = {"turno1"};
-        String origen = " bdMaestra";
-        Object dtDatos[][] = getDatos(colName, origen, "select turno1 FROM bdMaestra ", "");
         return dtDatos[0][0].toString();
     }
 
@@ -4023,13 +4007,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarTarjetas(String nombre, String comision) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdTarjetas(franquisia, comision) values (?,?);";
-        ok = Agregar_Registro(new Object[]{nombre, comision}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarDetalleOrdenServicioLaboratorio(String id, String cup, String nombre, BigDecimal precio) {
         boolean ok = false;
         String instruccion_sql = "insert into bdDetalleOrdenServicioLaboratorio(IdConsultaLaboratorio, cup, nombre, precio) values (?,?,?,?);";
@@ -4356,15 +4333,6 @@ public class SQL {
                 + "1000pesos, 500pesos, 200pesos, 100pesos, 50pesos, total) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
         ok = Agregar_Registro(datos, valores, instruccion_sql);
         return ok;
-    }
-
-    public Object[][] getTarjetas() {
-        String colName[] = {
-            "franquisia", "comision"};
-        String origen = " bdTarjetas";
-        Object dtDatos[][] = getDatos(colName, origen, "select franquisia, comision from bdTarjetas", "");
-
-        return dtDatos;
     }
 
     public DefaultTableModel getRegistrosCargos() {
@@ -6310,13 +6278,6 @@ public class SQL {
         return true;
     }
 
-    public boolean aumentarTurno(String turno) {
-        boolean ok = false;
-        String instruccion_sql = "update bdMaestra set turno1 = ? ";
-        ok = Actualizar_Registro(new Object[]{"", turno}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean modificarCampoTercero(String id, String nombre, String campo) {
         boolean ok = false;
         String instruccion_sql = "update bdTerceros set " + campo + "=? where idSistema = '" + id + "' ;";
@@ -7537,75 +7498,24 @@ public class SQL {
         return data;
     }
 
+    // Usuarios: las columnas de permisos salen del catálogo PermisoUsuario
+    // (DaoUsuarios), así una columna depurada solo se quita en un lugar.
     public boolean modificarUsuario(ndUsuario nodo) {
-        boolean ok = false;
-        String instruccion_sql = "update bdUsuario set nombre=?, contra=?, facturas=?, congeladas=?, cotizaciones=?, planSepares=?, creditos=?, pedidos=?, "
-                + "ordenesServicio=?, anulaciones=?, reimpresion=?, reportesVentas=?, reporteVentasAnuladas=?, reporteCotizaciones=?, reportePlanSepares=?, reporteCreditos=?, "
-                + "reporteOrdenesServicio=?, reporteIvasVentas=?, reporteDia=?, creacionProductos=?, ordenesCompras=?, compras=?, trasladosExternos=?, trasladosInternos=?, "
-                + "ajustesEntrada=?, ajustesSalida=?, grupos=?, disenos=?, armados=?, inventarioInicial=?, trasladoDetalle=?, kardex=?, reporteProductos=?, reportePrestamos=?, "
-                + "reporteCompras=?, reporteAjustes=?, reporteOrdenCompras=?, reporteInventario=?, reporteTrasladoInterno=?, reporteIvasCompras=?, reporteMovimientoSerial=?, "
-                + "crearClientes=?, crearProveedor=?, crearEmpleado=?, bodegasInternas=?, clientesPrestamos=?, showRoom=?, reporteClientes=?, reporteProveedor=?, "
-                + "reporteEmpleados=?, abonosCxC=?, abonosCxP=?, notasCredito=?, reporteCarteraCxC=?, reporteAbonosCxC=?, reporteCarteraCxP=?, reporteAbonosCxP=?, "
-                + "reporteNotasCredito=?, codigos=?, egresos=?, bancos=?, cuadreCaja=?, reporteEgresos=?, reporteBancos=?, reporteCuadreCaja=?, registrarAgenda=?, "
-                + "reportesAgenda=?, mascotas=?, historiaClinica=?, guarderia=?, peluqueria=?, hospitalizacion=?, alertas=?, reporteMascotas=?, reporteGuarderia=?, "
-                + "reportePeluqueria=?, reporteHospitalizacion=?, formatos=?, ordenServicioMedico=?, historiaClinicaMedico=?, formatosMedico=?, convenio=?, notaEnfermeria=?, "
-                + "medicamentos=?, reporteOrdenesMedicas=?, reporteFormulas=?, certificadoEstudiante=?, certificadoMedico=?, certificadoOyS=? "
-                + "where usuario = '" + nodo.getUsuario() + "' ;";
-        ok = Actualizar_Registro(metodos.pasarModUsuario(nodo), null, instruccion_sql);
-        return ok;
+        return new Dao.Configuraciones.DaoUsuarios().modificar(Modelo.Usuarios.ConversorUsuario.desdeNodo(nodo));
     }
 
     public boolean agregarUsuario(ndUsuario nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdUsuario(nombre, usuario, contra, facturas, congeladas, cotizaciones, planSepares, creditos, pedidos, ordenesServicio, anulaciones, reimpresion, reportesVentas, "
-                + "reporteVentasAnuladas, reporteCotizaciones, reportePlanSepares, reporteCreditos, reporteOrdenesServicio, reporteIvasVentas, reporteDia, creacionProductos, "
-                + "ordenesCompras, compras, trasladosExternos, trasladosInternos, ajustesEntrada, ajustesSalida, grupos, disenos, armados, inventarioInicial, trasladoDetalle, "
-                + "kardex, reporteProductos, reportePrestamos, reporteCompras, reporteAjustes, reporteOrdenCompras, reporteInventario, reporteTrasladoInterno, reporteIvasCompras, "
-                + "reporteMovimientoSerial, crearClientes, crearProveedor, crearEmpleado, bodegasInternas, clientesPrestamos, showRoom, reporteClientes, reporteProveedor, "
-                + "reporteEmpleados, abonosCxC, abonosCxP, notasCredito, reporteCarteraCxC, reporteAbonosCxC, reporteCarteraCxP, reporteAbonosCxP, reporteNotasCredito, codigos, "
-                + "egresos, bancos, cuadreCaja, reporteEgresos, reporteBancos, reporteCuadreCaja, registrarAgenda, reportesAgenda, mascotas, historiaClinica, guarderia, "
-                + "peluqueria, hospitalizacion, alertas, reporteMascotas, reporteGuarderia, reportePeluqueria, reporteHospitalizacion, formatos, ordenServicioMedico,"
-                + "historiaClinicaMedico, formatosMedico, convenio, notaEnfermeria, medicamentos, reporteOrdenesMedicas, reporteFormulas, certificadoEstudiante, "
-                + "certificadoMedico, certificadoOyS)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
-                + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosUsuario(nodo), null, instruccion_sql);
-        return ok;
+        return new Dao.Configuraciones.DaoUsuarios().guardar(Modelo.Usuarios.ConversorUsuario.desdeNodo(nodo));
     }
 
+    /**
+     * @return el usuario con sus permisos; si no existe, un ndUsuario vacío
+     * (getUsuario() == null), como esperan el inicio de sesión y demás
+     * llamadores.
+     */
     public ndUsuario getDatosUsuario(String usuario) {
-
-        String instruccion_sql = "select nombre, usuario, contra, facturas, congeladas, cotizaciones, planSepares, creditos, pedidos, ordenesServicio, anulaciones, reimpresion, reportesVentas, "
-                + "reporteVentasAnuladas, reporteCotizaciones, reportePlanSepares, reporteCreditos, reporteOrdenesServicio, reporteIvasVentas, reporteDia, creacionProductos, "
-                + "ordenesCompras, compras, trasladosExternos, trasladosInternos, ajustesEntrada, ajustesSalida, grupos, disenos, armados, inventarioInicial, trasladoDetalle, "
-                + "kardex, reporteProductos, reportePrestamos, reporteCompras, reporteAjustes, reporteOrdenCompras, reporteInventario, reporteTrasladoInterno, reporteIvasCompras, "
-                + "reporteMovimientoSerial, crearClientes, crearProveedor, crearEmpleado, bodegasInternas, clientesPrestamos, showRoom, reporteClientes, reporteProveedor, "
-                + "reporteEmpleados, abonosCxC, abonosCxP, notasCredito, reporteCarteraCxC, reporteAbonosCxC, reporteCarteraCxP, reporteAbonosCxP, reporteNotasCredito, codigos, "
-                + "egresos, bancos, cuadreCaja, reporteEgresos, reporteBancos, reporteCuadreCaja, registrarAgenda, reportesAgenda, mascotas, historiaClinica, guarderia, peluqueria,"
-                + "hospitalizacion, alertas, reporteMascotas, reporteGuarderia, reportePeluqueria, reporteHospitalizacion, formatos, ordenServicioMedico, historiaClinicaMedico,"
-                + "formatosMedico, convenio, notaEnfermeria, medicamentos, reporteOrdenesMedicas, reporteFormulas, certificadoEstudiante, certificadoMedico, certificadoOyS "
-                + "from bdUsuario where usuario = '" + usuario + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"nombre", "usuario", "contra", "facturas", "congeladas", "cotizaciones", "planSepares", "creditos", "pedidos", "ordenesServicio", "anulaciones",
-            "reimpresion", "reportesVentas", "reporteVentasAnuladas", "reporteCotizaciones", "reportePlanSepares", "reporteCreditos", "reporteOrdenesServicio", "reporteIvasVentas",
-            "reporteDia", "creacionProductos", "ordenesCompras", "compras", "trasladosExternos", "trasladosInternos", "ajustesEntrada", "ajustesSalida", "grupos", "disenos", "armados",
-            "inventarioInicial", "trasladoDetalle", "kardex", "reporteProductos", "reportePrestamos", "reporteCompras", "reporteAjustes", "reporteOrdenCompras", "reporteInventario",
-            "reporteTrasladoInterno", "reporteIvasCompras", "reporteMovimientoSerial", "crearClientes", "crearProveedor", "crearEmpleado", "bodegasInternas", "clientesPrestamos",
-            "showRoom", "reporteClientes", "reporteProveedor", "reporteEmpleados", "abonosCxC", "abonosCxP", "notasCredito", "reporteCarteraCxC", "reporteAbonosCxC", "reporteCarteraCxP",
-            "reporteAbonosCxP", "reporteNotasCredito", "codigos", "egresos", "bancos", "cuadreCaja", "reporteEgresos", "reporteBancos", "reporteCuadreCaja", "registrarAgenda",
-            "reportesAgenda", "mascotas", "historiaClinica", "guarderia", "peluqueria", "hospitalizacion", "alertas", "reporteMascotas", "reporteGuarderia", "reportePeluqueria",
-            "reporteHospitalizacion", "formatos", "ordenServicioMedico", "historiaClinicaMedico", "formatosMedico", "convenio", "notaEnfermeria", "medicamentos",
-            "reporteOrdenesMedicas", "reporteFormulas", "certificadoEstudiante", "certificadoMedico", "certificadoOyS"};
-        boolean[] cadena = {true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndUsuario nodo = metodos.llenarUsuario(data);
-
-        return nodo;
+        Modelo.Usuarios.ModeloUsuario modelo = new Dao.Configuraciones.DaoUsuarios().consultar(usuario);
+        return modelo == null ? new ndUsuario() : Modelo.Usuarios.ConversorUsuario.aNodo(modelo);
     }
 
     public Object[] obtenerDatosUsuarioIniciado(String usuario) {

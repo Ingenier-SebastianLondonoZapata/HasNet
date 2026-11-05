@@ -14,7 +14,7 @@ public class DaoMaestra {
     private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
 
     /**
-     * La pestaña de bodegas de la maestra no tiene un Guardar propio, así que el cambio se escribe al seleccionarlo.
+     * Guarda la bodega por defecto (se llama al GUARDAR la maestra).
      */
     public boolean actualizarBodega(String codigo) {
         try (PreparedStatement stmt = conexion.prepareStatement("UPDATE bdMaestra SET bodega = ? WHERE Id = 1")) {
@@ -23,6 +23,31 @@ public class DaoMaestra {
             return true;
         } catch (SQLException e) {
             System.err.println("Error al guardar la bodega predeterminada: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Número de turno actual (restaurante). Antes se leía de la columna
+     * turno1, que se renombró a turnoConsecutivo.
+     */
+    public int obtenerTurnoConsecutivo() {
+        try (PreparedStatement stmt = conexion.prepareStatement("SELECT turnoConsecutivo FROM bdMaestra WHERE Id = 1");
+                ResultSet rs = stmt.executeQuery()) {
+            return rs.next() ? rs.getInt("turnoConsecutivo") : 0;
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el turno: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    public boolean actualizarTurnoConsecutivo(int turno) {
+        try (PreparedStatement stmt = conexion.prepareStatement("UPDATE bdMaestra SET turnoConsecutivo = ? WHERE Id = 1")) {
+            stmt.setInt(1, turno);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar el turno: " + e.getMessage());
             return false;
         }
     }
@@ -43,19 +68,16 @@ public class DaoMaestra {
         String sql = "UPDATE bdMaestra SET "
                 + "configuracionRegimen=?, alertaUtilidad=?, tipoDescuento=?, contrasena=?, diasAlertaCuadre=?, "
                 + "nitEmpresa=?, nombreEmpresa=?, regimenEmpresa=?, direccionEmpresa=?, telefonoEmpresa=?, "
-                + "usarLector=?, tituloFactura=?, preciosConImpuesto=?, "
-                + "ventasPredeterminado=?, mensajeUtilidad=?, consecutivosDiferentes=?, "
-                + "alertaFechaDias=?, alertaCantidadNumeracion=?, alertaPromedioDias=?, "
+                + "usarLector=?, tituloFactura=?, preciosConImpuesto=?, ventasPredeterminado=?, mensajeUtilidad=?, "
                 + "diasCobroMora=?, porcentajeMora=?, "
                 + "generaOrdenMedica=?, imprimirOrdenMedica=?, imprimirFacturaOrdenMedica=?, "
                 + "horaInicioAgenda=?, horaFinAgenda=?, intervaloAgenda=?, codPrestadorServicio=?, "
-                + "ocultarInformacionCliente=?, visualizarTodasLasFacturas=?, "
-                + "mostrarInformacionCuadre=?, descuentoMaximoVentas=?, tipoIdPrestadorServicio=?, "
+                + "validarCupoCredito=?, mostrarInformacionCuadre=?, descuentoMaximoVentas=?, tipoIdPrestadorServicio=?, "
                 + "limiteProductosPorFactura=?, combinarProductos=?, modificarNombre=?, "
                 + "turno=?, turnoConsecutivo=?, consecutivoAdicional=?, "
-                + "modificarPrecio=?, borrarCongelada=?, facturarSinInventario=?, "
+                + "modificarPrecio=?, borrarProductos=?, facturarSinInventario=?, "
                 + "cantidadEstablecida=?, filas=?, columnas=?, porcPropina=?, mostrarDevuelta=?, "
-                + "inicioHosp=?, finHosp=?, intervalosHosp=?, diasAutomaticos=?, ciudadBuscador=?, foco=?, "
+                + "inicioHosp=?, finHosp=?, intervalosHosp=?, diasAutomaticos=?, moduloPermisos=?, foco=?, "
                 + "facturarMesas=?, soloMesas=?, borrarMesas=?, "
                 + "password=?, responsabilidadesFiscales=? "
                 + "WHERE Id = 1";
@@ -76,10 +98,6 @@ public class DaoMaestra {
             stmt.setBoolean(i++, g.isPreciosConImpuesto());
             stmt.setBoolean(i++, g.isVentasPredeterminado());
             stmt.setBoolean(i++, g.isMensajeUtilidad());
-            stmt.setBoolean(i++, g.isConsecutivosDiferentes());
-            stmt.setString(i++, g.getAlertaFechaDias());
-            stmt.setString(i++, g.getAlertaCantidadNumeracion());
-            stmt.setString(i++, g.getAlertaPromedioDias());
             stmt.setInt(i++, g.getDiasCobroMora());
             stmt.setString(i++, g.getPorcentajeMora());
             stmt.setBoolean(i++, g.isGeneraOrdenMedica());
@@ -89,8 +107,7 @@ public class DaoMaestra {
             stmt.setString(i++, g.getHoraFinAgenda());
             stmt.setString(i++, g.getIntervaloAgenda());
             stmt.setString(i++, g.getCodPrestadorServicio());
-            stmt.setBoolean(i++, g.isOcultarInformacionCliente());
-            stmt.setBoolean(i++, g.isVisualizarTodasLasFacturas());
+            stmt.setBoolean(i++, g.isValidarCupoCredito());
             stmt.setBoolean(i++, g.isMostrarInformacionCuadre());
             stmt.setInt(i++, g.getDescuentoMaximoVentas());
             stmt.setString(i++, g.getTipoIdPrestadorServicio());
@@ -101,7 +118,7 @@ public class DaoMaestra {
             stmt.setInt(i++, g.getTurnoConsecutivo());
             stmt.setBoolean(i++, g.isConsecutivoAdicional());
             stmt.setBoolean(i++, g.isModificarPrecio());
-            stmt.setBoolean(i++, g.isBorrarCongelada());
+            stmt.setBoolean(i++, g.isBorrarProductos());
             stmt.setBoolean(i++, g.isFacturarSinInventario());
             stmt.setInt(i++, g.getCantidadEstablecida());
             stmt.setInt(i++, g.getFilas());
@@ -112,7 +129,7 @@ public class DaoMaestra {
             stmt.setString(i++, g.getFinHosp());
             stmt.setString(i++, g.getIntervalosHosp());
             stmt.setBoolean(i++, g.isDiasAutomaticos());
-            stmt.setBoolean(i++, g.isCiudadBuscador());
+            stmt.setBoolean(i++, g.isModuloPermisos());
             stmt.setString(i++, g.getFoco());
             stmt.setBoolean(i++, g.isFacturarMesas());
             stmt.setBoolean(i++, g.isSoloMesas());
@@ -217,22 +234,23 @@ public class DaoMaestra {
         String sql = "SELECT configuracionRegimen, alertaUtilidad, tipoDescuento, contrasena, diasAlertaCuadre, "
                 + "nitEmpresa, nombreEmpresa, regimenEmpresa, direccionEmpresa, telefonoEmpresa, "
                 + "usarLector, tituloFactura, preciosConImpuesto, ventasPredeterminado, mensajeUtilidad, "
-                + "consecutivosDiferentes, alertaFechaDias, alertaCantidadNumeracion, alertaPromedioDias, "
                 + "diasCobroMora, porcentajeMora, "
                 + "generaOrdenMedica, imprimirOrdenMedica, imprimirFacturaOrdenMedica, "
                 + "horaInicioAgenda, horaFinAgenda, intervaloAgenda, codPrestadorServicio, "
-                + "ocultarInformacionCliente, visualizarTodasLasFacturas, mostrarInformacionCuadre, "
+                + "validarCupoCredito, mostrarInformacionCuadre, "
                 + "descuentoMaximoVentas, tipoIdPrestadorServicio, limiteProductosPorFactura, "
                 + "combinarProductos, modificarNombre, "
-                + "turno, turnoConsecutivo, consecutivoAdicional, modificarPrecio, borrarCongelada, "
+                + "turno, turnoConsecutivo, consecutivoAdicional, modificarPrecio, borrarProductos, "
                 + "facturarSinInventario, cantidadEstablecida, filas, columnas, porcPropina, mostrarDevuelta, "
-                + "inicioHosp, finHosp, intervalosHosp, diasAutomaticos, ciudadBuscador, foco, "
+                + "inicioHosp, finHosp, intervalosHosp, diasAutomaticos, moduloPermisos, foco, "
                 + "facturarMesas, soloMesas, borrarMesas, "
-                + "password, responsabilidadesFiscales "
+                + "password, responsabilidadesFiscales, bodega "
                 + "FROM bdMaestra WHERE Id = 1";
         try (PreparedStatement stmt = conexion.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
-            if (!rs.next()) return null;
+            if (!rs.next()) {
+                return null;
+            }
             ModeloMaestraGeneral g = new ModeloMaestraGeneral();
             g.setConfiguracionRegimen(rs.getString("configuracionRegimen"));
             g.setAlertaUtilidad(rs.getString("alertaUtilidad"));
@@ -249,10 +267,6 @@ public class DaoMaestra {
             g.setPreciosConImpuesto(rs.getBoolean("preciosConImpuesto"));
             g.setVentasPredeterminado(rs.getBoolean("ventasPredeterminado"));
             g.setMensajeUtilidad(rs.getBoolean("mensajeUtilidad"));
-            g.setConsecutivosDiferentes(rs.getBoolean("consecutivosDiferentes"));
-            g.setAlertaFechaDias(rs.getString("alertaFechaDias"));
-            g.setAlertaCantidadNumeracion(rs.getString("alertaCantidadNumeracion"));
-            g.setAlertaPromedioDias(rs.getString("alertaPromedioDias"));
             g.setDiasCobroMora(rs.getInt("diasCobroMora"));
             g.setPorcentajeMora(rs.getString("porcentajeMora"));
             g.setGeneraOrdenMedica(rs.getBoolean("generaOrdenMedica"));
@@ -262,8 +276,7 @@ public class DaoMaestra {
             g.setHoraFinAgenda(rs.getString("horaFinAgenda"));
             g.setIntervaloAgenda(rs.getString("intervaloAgenda"));
             g.setCodPrestadorServicio(rs.getString("codPrestadorServicio"));
-            g.setOcultarInformacionCliente(rs.getBoolean("ocultarInformacionCliente"));
-            g.setVisualizarTodasLasFacturas(rs.getBoolean("visualizarTodasLasFacturas"));
+            g.setValidarCupoCredito(rs.getBoolean("validarCupoCredito"));
             g.setMostrarInformacionCuadre(rs.getBoolean("mostrarInformacionCuadre"));
             g.setDescuentoMaximoVentas(rs.getInt("descuentoMaximoVentas"));
             g.setTipoIdPrestadorServicio(rs.getString("tipoIdPrestadorServicio"));
@@ -274,7 +287,7 @@ public class DaoMaestra {
             g.setTurnoConsecutivo(rs.getInt("turnoConsecutivo"));
             g.setConsecutivoAdicional(rs.getBoolean("consecutivoAdicional"));
             g.setModificarPrecio(rs.getBoolean("modificarPrecio"));
-            g.setBorrarCongelada(rs.getBoolean("borrarCongelada"));
+            g.setBorrarProductos(rs.getBoolean("borrarProductos"));
             g.setFacturarSinInventario(rs.getBoolean("facturarSinInventario"));
             g.setCantidadEstablecida(rs.getInt("cantidadEstablecida"));
             g.setFilas(rs.getInt("filas"));
@@ -285,13 +298,14 @@ public class DaoMaestra {
             g.setFinHosp(rs.getString("finHosp"));
             g.setIntervalosHosp(rs.getString("intervalosHosp"));
             g.setDiasAutomaticos(rs.getBoolean("diasAutomaticos"));
-            g.setCiudadBuscador(rs.getBoolean("ciudadBuscador"));
+            g.setModuloPermisos(rs.getBoolean("moduloPermisos"));
             g.setFoco(rs.getString("foco"));
             g.setFacturarMesas(rs.getBoolean("facturarMesas"));
             g.setSoloMesas(rs.getBoolean("soloMesas"));
             g.setBorrarMesas(rs.getBoolean("borrarMesas"));
             g.setPassword(rs.getString("password"));
             g.setResponsabilidadesFiscales(rs.getString("responsabilidadesFiscales"));
+            g.setBodega(rs.getString("bodega"));
             return g;
         } catch (SQLException e) {
             System.err.println("Error al obtener datos generales maestros: " + e.getMessage());
@@ -315,7 +329,9 @@ public class DaoMaestra {
                 + "FROM bdMaestraImpresiones WHERE Id = 1";
         try (PreparedStatement stmt = conexion.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
-            if (!rs.next()) return new ModeloMaestraImpresiones();
+            if (!rs.next()) {
+                return new ModeloMaestraImpresiones();
+            }
             ModeloMaestraImpresiones imp = new ModeloMaestraImpresiones();
             imp.setPrevisualizarFactura(rs.getBoolean("previsualizarFactura"));
             imp.setPrevisualizarOServicio(rs.getBoolean("previsualizarOServicio"));

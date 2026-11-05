@@ -15,35 +15,30 @@ public class DatosMaestra {
         responsabilidadesFiscales = procesarResponsabilidades(g != null ? g.getResponsabilidadesFiscales() : null);
     }
 
+    public static final String RESPONSABILIDAD_NO_APLICA = "ZZ";
+
     private static String procesarResponsabilidades(String texto) {
-        if (texto == null || texto.trim().isEmpty()) {
-            return "";
-        }
-        String[] partes = texto.trim().split(", ");
-        StringBuilder sb = new StringBuilder();
-        for (String parte : partes) {
-            String codigo = parte.split("\\s*/")[0].trim();
-            if (!codigo.isEmpty()) {
-                if (sb.length() > 0) {
-                    sb.append(';');
+        java.util.LinkedHashSet<String> codigos = new java.util.LinkedHashSet<>();
+        if (texto != null) {
+            for (String parte : texto.split(",")) {
+                String codigo = parte.split("\\s*/")[0].trim().toUpperCase();
+                if (!codigo.isEmpty()) {
+                    codigos.add(codigo);
                 }
-                sb.append(codigo);
             }
         }
-        return sb.toString();
+        if (codigos.size() > 1) {
+            codigos.remove(RESPONSABILIDAD_NO_APLICA);
+        }
+        if (codigos.isEmpty()) {
+            return RESPONSABILIDAD_NO_APLICA;
+        }
+        return String.join(";", codigos);
     }
 
     private static String s(String value) {
         return value != null ? value : "";
     }
-
-    // ── Bodega ──────────────────────────────────────────────────────────────
-    public static String getBodega() {
-        return "";
-    }
-
-    // ── Encabezado empresa (campos crípticos originales, mantenidos por compatibilidad) ─
-    public static String getL1() { return ""; }
 
     public static String getL2() {
         return impresiones != null ? s(impresiones.getTipoPredeterminado()) : "";
@@ -52,8 +47,6 @@ public class DatosMaestra {
     public static String getL4() {
         return impresiones != null ? String.valueOf(impresiones.getNumeroCopiasFactura()) : "0";
     }
-
-    public static String getC1() { return ""; }
 
     public static String getC2() {
         return general != null ? s(general.getConfiguracionRegimen()) : "";
@@ -83,10 +76,6 @@ public class DatosMaestra {
         return general != null ? s(general.getRegimenEmpresa()) : "";
     }
 
-    public static String getD4() { return ""; }
-
-    public static String getD5() { return ""; }
-
     public static String getD6() {
         return general != null ? s(general.getDireccionEmpresa()) : "";
     }
@@ -112,8 +101,23 @@ public class DatosMaestra {
     }
 
     // ── Alias semánticos ────────────────────────────────────────────────────
+    public static final String DESCUENTO_PORCENTAJE = "Porcentaje";
+    public static final String DESCUENTO_VALOR = "Valor";
+
+    public static String normalizarTipoDescuento(String tipo) {
+        String t = tipo == null ? "" : tipo.trim();
+        if (t.equalsIgnoreCase(DESCUENTO_VALOR) || t.equalsIgnoreCase("peso")) {
+            return DESCUENTO_VALOR;
+        }
+        return DESCUENTO_PORCENTAJE;
+    }
+
     public static String getTipoDescuento() {
-        return general != null ? s(general.getTipoDescuento()) : "";
+        return normalizarTipoDescuento(general != null ? general.getTipoDescuento() : "");
+    }
+
+    public static boolean isDescuentoPorcentaje() {
+        return DESCUENTO_PORCENTAJE.equals(getTipoDescuento());
     }
 
     public static String getMostrarUbicacionProductos() {
@@ -124,7 +128,9 @@ public class DatosMaestra {
         return general != null ? s(general.getNitEmpresa()) : "";
     }
 
-    public static String getNitEmpresa() { return ""; }
+    public static String getNitEmpresa() {
+        return "";
+    }
 
     // ── Factura / POS ───────────────────────────────────────────────────────
     public static boolean isRecogida() {
@@ -143,7 +149,53 @@ public class DatosMaestra {
         return general != null && general.isPreciosConImpuesto();
     }
 
-    public static boolean isCostoSinIva() { return false; }
+    // ── Impuestos incluidos en precios y costos ─────────────────────────────
+    // La opción general "Precios con impuestos" indica que los precios de
+    // venta y los costos ya traen incluidos el IVA y el impoconsumo.
+    /**
+     * Opción general "Precios con impuestos": el valor ya incluye IVA e
+     * impoconsumo.
+     */
+    public static boolean isPreciosConImpuestos() {
+        return general != null && general.isPreciosConImpuesto();
+    }
+
+    /**
+     * El precio de venta ya incluye el IVA.
+     */
+    public static boolean isPrecioVentaConIva() {
+        return isPreciosConImpuestos();
+    }
+
+    /**
+     * El costo de compra ya incluye el IVA.
+     */
+    public static boolean isCostoConIva() {
+        return isPreciosConImpuestos();
+    }
+
+    /**
+     * El precio de venta ya incluye el impoconsumo.
+     */
+    public static boolean isPrecioVentaConImpoconsumo() {
+        return isPreciosConImpuestos();
+    }
+
+    /**
+     * El costo de compra ya incluye el impoconsumo.
+     */
+    public static boolean isCostoConImpoconsumo() {
+        return isPreciosConImpuestos();
+    }
+
+    // ── Bodega ──────────────────────────────────────────────────────────────
+    /**
+     * Código de la bodega con la que trabaja el inventario; vacío si no hay
+     * una configurada (Bodegas.predeterminada usa entonces la principal).
+     */
+    public static String getBodega() {
+        return general != null ? s(general.getBodega()) : "";
+    }
 
     public static boolean isVentasPredeterminado() {
         return general != null && general.isVentasPredeterminado();
@@ -153,12 +205,6 @@ public class DatosMaestra {
         return general != null && general.isMensajeUtilidad();
     }
 
-    public static boolean isConsecutivosDiferentes() {
-        return general != null && general.isConsecutivosDiferentes();
-    }
-
-    public static boolean isResolucionIgual() { return false; }
-
     public static boolean isPrevisualizarFactura() {
         return impresiones != null && impresiones.isPrevisualizarFactura();
     }
@@ -167,12 +213,12 @@ public class DatosMaestra {
         return impresiones != null && impresiones.isImprimirCuadreFiscal();
     }
 
-    public static boolean isOcultarInformacionTercero() {
-        return general != null && general.isOcultarInformacionCliente();
-    }
-
-    public static boolean isOcultarInformacionCliente() {
-        return general != null && general.isOcultarInformacionCliente();
+    /**
+     * "Validar el cupo del crédito": al facturar a crédito se valida el cupo y
+     * el plazo del cliente contra su cartera pendiente.
+     */
+    public static boolean isValidarCupoCredito() {
+        return general != null && general.isValidarCupoCredito();
     }
 
     public static boolean isVisualizarTodasLasFacturas() {
@@ -199,15 +245,9 @@ public class DatosMaestra {
         return general != null && general.isCombinarProductos();
     }
 
-    public static boolean isImpBolsa() { return false; }
-
-    public static String getValorBolsa() { return ""; }
-
-    public static boolean isBorrarCongelada() {
-        return general != null && general.isBorrarCongelada();
+    public static boolean isBorrarProductos() {
+        return general != null && general.isBorrarProductos();
     }
-
-    public static boolean isPondNegativo() { return false; }
 
     public static boolean isHora() {
         return impresiones != null && impresiones.isImprimirHora();
@@ -227,7 +267,9 @@ public class DatosMaestra {
     }
 
     public static String getNumeroTurno() {
-        if (general == null) return "1";
+        if (general == null) {
+            return "1";
+        }
         int n = general.getTurnoConsecutivo();
         return n > 0 ? String.valueOf(n) : "1";
     }
@@ -241,27 +283,23 @@ public class DatosMaestra {
         return general != null && general.isFacturarSinInventario();
     }
 
-    public static boolean isPagosTerceros() { return false; }
-
-    public static boolean isReimpresion() { return true; }
-
-    public static String getOtros() { return "0"; }
-
-    public static String getDomicilios() { return "6"; }
-
     public static String getLimite() {
         return general != null ? String.valueOf(general.getLimiteProductosPorFactura()) : "0";
     }
 
     // ── Cantidades / Foco ───────────────────────────────────────────────────
     public static String getCantidadEstablecidaAlCargar() {
-        if (general == null) return "1";
+        if (general == null) {
+            return "1";
+        }
         int c = general.getCantidadEstablecida();
         return c > 0 ? String.valueOf(c) : "1";
     }
 
     public static String getFocoDespuesDeCargarProducto() {
-        if (general == null || general.getFoco() == null) return "Cant";
+        if (general == null || general.getFoco() == null) {
+            return "Cantidad";
+        }
         return general.getFoco();
     }
 
@@ -269,23 +307,8 @@ public class DatosMaestra {
         return general != null && general.isDiasAutomaticos();
     }
 
-    public static boolean isCiudadBuscador() {
-        return general != null && general.isCiudadBuscador();
-    }
-
-    // ── Alertas resolución ──────────────────────────────────────────────────
-    public static String getDiasAlertaResolucion() { return ""; }
-
-    public static String getAlertaFechaDias() {
-        return general != null ? s(general.getAlertaFechaDias()) : "";
-    }
-
-    public static String getAlertaCantidadNumeracion() {
-        return general != null ? s(general.getAlertaCantidadNumeracion()) : "";
-    }
-
-    public static String getAlertaPromedioDias() {
-        return general != null ? s(general.getAlertaPromedioDias()) : "";
+    public static boolean isModuloPermisos() {
+        return general != null && general.isModuloPermisos();
     }
 
     // ── Cartera / Mora ──────────────────────────────────────────────────────
@@ -390,8 +413,6 @@ public class DatosMaestra {
         return impresiones != null ? String.valueOf(impresiones.getNumeroCopiasPedido()) : "0";
     }
 
-    public static String getNumFacturaIncremento() { return ""; }
-
     // ── Impresoras ──────────────────────────────────────────────────────────
     public static String getImpresoraPos() {
         return impresiones != null ? s(impresiones.getImpresoraPos()) : "";
@@ -441,10 +462,6 @@ public class DatosMaestra {
     public static boolean isMostrarDevuelta() {
         return general != null && general.isMostrarDevuelta();
     }
-
-    public static boolean isPvpImpoconsumo() { return false; }
-
-    public static boolean isCostoImpoconsumo() { return false; }
 
     public static boolean isImpresionPorGrupo() {
         return impresiones != null && impresiones.isImpresionPorGrupo();
@@ -502,15 +519,9 @@ public class DatosMaestra {
     }
 
     // ── Credenciales / Notificaciones ───────────────────────────────────────
-    public static String getIdUsuario() { return ""; }
-
     public static String getPassword() {
         return general != null ? s(general.getPassword()) : "";
     }
-
-    public static String getGmail() { return ""; }
-
-    public static String getPassGmail() { return ""; }
 
     // ── Responsabilidades fiscales ──────────────────────────────────────────
     public static String getResponsabilidadesFiscales() {

@@ -312,7 +312,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             establecerPropiedadTabla(10, 0, 0, 0);
         }
 
-        if (DatosMaestra.getTipoDescuento().equals("porcentaje")) {
+        if (DatosMaestra.isDescuentoPorcentaje()) {
             establecerPropiedadTabla(5, 45, 45, 45);
             establecerPropiedadTabla(6, 0, 0, 0);
         } else {
@@ -3289,8 +3289,8 @@ public final class VistaFactura extends javax.swing.JPanel {
         BigDecimal porcentaje = big.getBigDecimal("0");
         BigDecimal porcentaje2 = big.getBigDecimal("0");
 
-        switch (instancias.getDescuento()) {
-            case "porcentaje":
+        switch (DatosMaestra.normalizarTipoDescuento(instancias.getDescuento())) {
+            case DatosMaestra.DESCUENTO_PORCENTAJE:
                 if (!tblProductos.getValueAt(fila, 5).toString().equals("0.0") && !tblProductos.getValueAt(fila, 5).toString().equals("0")) {
                     if ((boolean) tblProductos.getValueAt(fila, 18)) {
 
@@ -3314,7 +3314,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                     descuento = big.getMoneda("0");
                 }
                 break;
-            case "peso":
+            case DatosMaestra.DESCUENTO_VALOR:
                 if (!tblProductos.getValueAt(fila, 6).toString().equals(this.simbolo + " 0")) {
                     if ((boolean) tblProductos.getValueAt(fila, 18)) {
                         descuento = big.getMoneda(tblProductos.getValueAt(fila, 6).toString());
@@ -3410,7 +3410,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         datosValidacion.setNit(txtNit.getText());
         datosValidacion.setCantIncremento(txtCantIncremento.getText());
         datosValidacion.setSaltarPasos(this.saltarPasosFactura);
-        datosValidacion.setCheckCupo(DatosMaestra.isOcultarInformacionTercero());
+        datosValidacion.setCheckCupo(DatosMaestra.isValidarCupoCredito());
         datosValidacion.setDiasPlazo(txtDiasPlazo.getText());
         datosValidacion.setCupo(txtCupo.getText());
         datosValidacion.setServicioAutomotor(instancias.getConfiguraciones().isServicioAutomotor());
@@ -3473,27 +3473,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         tblProductos.removeEditor();
 
         if (!saltarPasosFactura) {
-            if (instancias.getRegimen().equals("")) {
-                if (tipoProceso.equals(TipoDocumento.FACTURACION.getValor()) || (tipoProceso.equals(TipoDocumento.MESA.getValor()) && lbTitulo.getText().equals("DOMICILIO"))) {
-                    if (resultadoValidacion != null && !resultadoValidacion.tieneBolsa()) {
-                        if (!instancias.getConfiguraciones().isParqueadero()) {
-                            if (DatosMaestra.isImpBolsa()) {
-                                BigDecimal num = BigDecimal.ZERO;
-                                try {
-                                    num = Utilidades.convertirBigDecimal(metodos.msgIngresarEnter(null, "Ingrese # de bolsas"));
-                                } catch (NumberFormatException e) {
-                                    borrarAdiciones();
-                                    ControladorAlertas.alert("Número no válido!");
-                                    return "";
-                                }
-                                if (num.compareTo(BigDecimal.ZERO) > 0) {
-                                    cargarProducto("IMP01", num, 1, "", "", "", true, "", "", "", "", "");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         DATOS_CLIENTE_CARGADO = datosCliente;
@@ -3645,7 +3624,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void sincronizarTurno() {
         String turno = "";
         if (txtTurno.isVisible() && instancias.getConfiguraciones().isRestaurante()) {
-            turno = instancias.getSql().getTurno();
+            turno = String.valueOf(new Dao.Configuraciones.DaoMaestra().obtenerTurnoConsecutivo());
             txtTurno.setText(turno);
         } else {
             txtTurno.setText("");
@@ -3723,10 +3702,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void reiniciarInstanciasPagos() {
         instancias.setDevuelta(BigDecimal.ZERO);
         instancias.setEfectivoDevuelta(big.getBigDecimal("0"));
-        instancias.setFranquisia("");
-        instancias.setComision("");
-        instancias.setValorComision(big.getBigDecimal("0"));
-        instancias.setTotalFacturaComision(big.getBigDecimal("0"));
         instancias.setNcDevuelta(big.getBigDecimal("0"));
         instancias.setTarjetaDevuelta(big.getBigDecimal("0"));
         instancias.setChequeDevuelta(big.getBigDecimal("0"));
@@ -3824,7 +3799,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 return;
             }
 
-            if (!DatosMaestra.isBorrarCongelada()
+            if (!DatosMaestra.isBorrarProductos()
                     && (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) || this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()))
                     && !instancias.getUsuario().equals("ADMIN")) {
                 if (ControladorAlertas.option("No se puede borrar ¿Pedir permiso?")) {
@@ -4955,7 +4930,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void txtPorcentajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseClicked
         if (instancias.getConfiguraciones().isFacturaElectronica() && tblProductos.getRowCount() > 0) {
-            if (instancias.getDescuento().equals("peso")) {
+            if (instancias.isDescuentoValor()) {
                 ControladorAlertas.alert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
                         + "Debes asignar el descuento directamente al producto específico.");
                 txtCodigoProducto.requestFocus();
@@ -5133,19 +5108,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             instancias.setDatosEmpresa(datosEmpresa, dato1, dato2, datosEmpresaCompleto, datosEmpresaReimpresion);
             instancias.setResolucion(resolucion + "\n" + numeracion);
         } else {
-            if (DatosMaestra.getD4() != null) {
-                resolucion = DatosMaestra.getD4();
-            }
-
-            if (DatosMaestra.getD5() != null) {
-                numeracion = DatosMaestra.getD5();
-            }
-
-            if (resolucion.equals("") || numeracion.equals("")) {
-            } else {
-                infoResolucion = infoResolucion + "\n" + resolucion + "\n" + numeracion;
-            }
-
+            // Sin resolución seleccionada no se agrega información de resolución
             String datosEmpresa = metodosGenerales.convertToMultiline(infoEmpresa);
             String datosEmpresaReimpresion = infoEmpresa;
             String datosEmpresaCompleto = metodosGenerales.convertToMultiline(infoEmpresa + "" + infoResolucion);
@@ -6479,7 +6442,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 calcularDiasPlazo(null);
             }
 
-            if (DatosMaestra.isOcultarInformacionTercero()) {
+            if (DatosMaestra.isValidarCupoCredito()) {
                 String cupo = nodo.getCupo(), plazo = nodo.getPlazo();
 
                 if (!nodo.getId().equals("1010")) {
@@ -7399,24 +7362,24 @@ public final class VistaFactura extends javax.swing.JPanel {
         BigDecimal porcentajeIva = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 7))).divide(BigDecimal.valueOf(100));
         BigDecimal porcentajeImpoconsumo = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 23))).divide(BigDecimal.valueOf(100));
         BigDecimal valorBaseProducto = BigDecimal.ONE;
-        if (instancias.isPvpConIva()) {
+        if (DatosMaestra.isPrecioVentaConIva()) {
             valorBaseProducto = valorBaseProducto.add(porcentajeIva);
         }
 
-        if (instancias.isPvpConImpoconsumo()) {
+        if (DatosMaestra.isPrecioVentaConImpoconsumo()) {
             valorBaseProducto = valorBaseProducto.add(porcentajeImpoconsumo);
         }
 
         valorBaseProducto = subtotal.divide(valorBaseProducto, 2);
 
-        if (instancias.isPvpConIva()) {
+        if (DatosMaestra.isPrecioVentaConIva()) {
             totalIva = valorBaseProducto.multiply(porcentajeIva);
             subtotal = subtotal.subtract(totalIva);
         } else {
             totalIva = subtotal.multiply(porcentajeIva);
         }
 
-        if (instancias.isPvpConImpoconsumo()) {
+        if (DatosMaestra.isPrecioVentaConImpoconsumo()) {
             totalImpoconsumo = valorBaseProducto.multiply(porcentajeImpoconsumo);
             subtotal = subtotal.subtract(totalImpoconsumo);
         } else {
@@ -7599,7 +7562,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             modeloIndividual.setUnidadMedida(tblProductos.getValueAt(i, Constantes.COLUMNA_UNIDAD_MEDIDA).toString());
 
             BigDecimal valorTotalBruto = big.getMoneda(tblProductos.getValueAt(i, 2).toString()).multiply(big.getBigDecimal(tblProductos.getValueAt(i, 3).toString()));
-            if (instancias.isPvpConIva()) {
+            if (DatosMaestra.isPrecioVentaConIva()) {
                 valorTotalBruto = valorTotalBruto.subtract(totalIva).subtract(totalImpoconsumo);
             }
 
@@ -7917,7 +7880,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(filaSelecciona, 3).toString().replace(".", "").replace(",", "."));
         BigDecimal subtotal = valorProducto.multiply(cantidad);
 
-        if (instancias.getDescuento().equals("peso")) {
+        if (instancias.isDescuentoValor()) {
             descuento = tblProductos.getValueAt(filaSelecciona, 6).toString();
         } else {
             porcentajeDescuento = tblProductos.getValueAt(filaSelecciona, 5).toString();
@@ -8080,8 +8043,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private int obtenerTurno() {
         if (DatosMaestra.isTurnoActivo() && instancias.getConfiguraciones().isRestaurante()) {
-            String turno = instancias.getSql().getTurno();
-            return turno != null ? Integer.parseInt(turno.trim()) : 0;
+            return new Dao.Configuraciones.DaoMaestra().obtenerTurnoConsecutivo();
         }
 
         if (txtTurno.isVisible()) {
@@ -8696,8 +8658,8 @@ public final class VistaFactura extends javax.swing.JPanel {
             big.getMoneda((String) tblProductos.getValueAt(fila, 4)), "", totalUtilidad, "",
             porcentajeDescuento + "", tblProductos.getValueAt(fila, 1), tblProductos.getValueAt(fila, 12) + "", tblProductos.getValueAt(fila, 13).toString().replace(",", "."),
             EstadosTipoDocumento.FACTURADA.getNombre(), tblProductos.getValueAt(fila, 7), tblProductos.getValueAt(fila, 19), big.getMoneda((String) tblProductos.getValueAt(fila, 20)),
-            preparacion, BigDecimal.ZERO, turno, big.getMoneda(txtTotalImpoconsumo.getText()), instancias.getFranquisia(),
-            instancias.getComision(), instancias.getValorComision(), instancias.getTotalFacturaComision(), imei, lote, idProd,
+            preparacion, BigDecimal.ZERO, turno, big.getMoneda(txtTotalImpoconsumo.getText()), "",
+            "", BigDecimal.ZERO, BigDecimal.ZERO, imei, lote, idProd,
             cmbMes.getSelectedItem(), instancias.getTarjetaCredito(), instancias.getTotalPropina(), instancias.getPorcPropina(),
             consecutivoCosteo, metodosGenerales.hora(), tblProductos.getValueAt(fila, 23).toString().replace(".", "").replace(",", "."),
             big.getMoneda((String) tblProductos.getValueAt(fila, 8)), chkSisteCredito.isSelected(), "", Utilidades.formatearCantidad(ponderado), tipoComprobante
@@ -8973,7 +8935,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         if (!instancias.getUsuario().equals("ADMIN")) {
             if (porcentaje2.compareTo(big.getBigDecimal(instancias.getDescuentoMaximoVentas())) == 1) {
 
-                Boolean solicitudPermisos = Boolean.parseBoolean(String.valueOf(DatosMaestra.isCiudadBuscador()));
+                Boolean solicitudPermisos = Boolean.parseBoolean(String.valueOf(DatosMaestra.isModuloPermisos()));
                 if (solicitudPermisos) {
 
                     String lineaPermisos = tblProductos.getValueAt(fila, 31).toString();

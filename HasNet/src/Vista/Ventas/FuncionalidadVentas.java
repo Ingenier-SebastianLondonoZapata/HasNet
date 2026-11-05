@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 public class FuncionalidadVentas {
 
     private final DaoResoluciones daoResoluciones = new DaoResoluciones();
+    private final Dao.Configuraciones.DaoMaestra daoMaestra = new Dao.Configuraciones.DaoMaestra();
     private final metodosGenerales metodos = new metodosGenerales();
 
     public boolean aumentarConsecutivoResolucion(int idResolucion) {
@@ -70,11 +71,11 @@ public class FuncionalidadVentas {
     }
 
     public int incrementarTurno(Instancias instancias) {
-        int nuevoTurno = Integer.parseInt(instancias.getSql().getTurno().trim()) + 1;
+        int nuevoTurno = daoMaestra.obtenerTurnoConsecutivo() + 1;
         if (nuevoTurno > 100) {
             nuevoTurno = 1;
         }
-        instancias.getSql().aumentarTurno(String.valueOf(nuevoTurno));
+        daoMaestra.actualizarTurnoConsecutivo(nuevoTurno);
         instancias.getMaestra().setTurno(String.valueOf(nuevoTurno));
         instancias.getMaestra().actualizarTurno();
         return nuevoTurno;

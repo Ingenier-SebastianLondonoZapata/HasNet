@@ -34,7 +34,7 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         btnQuitarDesc.setVisible(false);
 
-        if (instancias.getDescuento().equals("peso")) {
+        if (instancias.isDescuentoValor()) {
             txtPorcentajeDescuento.setEnabled(false);
         } else {
             txtDescuento.setEnabled(false);
@@ -322,7 +322,7 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
         BigDecimal porcentajeDescuento = null;
         BigDecimal descuento = null;
 
-        if (instancias.getDescuento().equals("peso")) {
+        if (instancias.isDescuentoValor()) {
             descuento = big.getMoneda(txtDescuento.getText());
             BigDecimal porcentajeAplicado = descuento.multiply(big.getBigDecimal("100")).divide(subtotalProductoSeleccionado, 2, RoundingMode.HALF_DOWN);
             if (porcentajeAplicado.compareTo(big.getBigDecimal("100")) >= 0) {
@@ -435,14 +435,14 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
     }//GEN-LAST:event_txtDescuentoKeyReleased
 
     private boolean validarDatosEnCero() {
-        if (instancias.getDescuento().equals("peso")
-                && ("".equals(txtDescuento.getText()) || "$ 0".equals(txtDescuento.getText()))) {
+        if (instancias.isDescuentoValor()
+                &&("".equals(txtDescuento.getText()) || "$ 0".equals(txtDescuento.getText()))) {
 
             ControladorAlertas.alert("Debe ingresar el valor del descuento");
             txtDescuento.requestFocus();
             return false;
 
-        } else if (instancias.getDescuento().equals("porcentaje")
+        } else if (instancias.isDescuentoPorcentaje()
                 && ("".equals(txtPorcentajeDescuento.getText()) || "0".equals(txtPorcentajeDescuento.getText()))) {
 
             ControladorAlertas.alert("Debe ingresar el procentaje del descuento");

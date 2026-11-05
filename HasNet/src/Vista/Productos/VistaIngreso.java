@@ -188,7 +188,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
         }
 
-        if (instancias.getDescuento().equals("peso")) {
+        if (instancias.isDescuentoValor()) {
             tblProductos.getColumnModel().getColumn(5).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(5).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(5).setMaxWidth(0);
@@ -2212,7 +2212,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseClicked
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.getDescuento().equals("peso")) {
+            if (instancias.isDescuentoValor()) {
                 alertas.alert("Cuando el tipo de descuento es en pesos ($), esta opción general no está disponible. "
                         + "Debes asignar el descuento directamente al producto específico.");
                 txtCodigoProducto.requestFocus();
@@ -2226,7 +2226,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseEntered
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.getDescuento().equals("peso")) {
+            if (instancias.isDescuentoValor()) {
                 txtCodigoProducto.requestFocus();
             }
         }
@@ -2234,7 +2234,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseExited
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.getDescuento().equals("peso")) {
+            if (instancias.isDescuentoValor()) {
                 txtCodigoProducto.requestFocus();
             }
         }
@@ -2242,7 +2242,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
     private void txtPorcentajeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPorcentajeFocusGained
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
-            if (instancias.getDescuento().equals("peso")) {
+            if (instancias.isDescuentoValor()) {
                 txtCodigoProducto.requestFocus();
             } else {
                 txtCodigoProducto.requestFocus();
@@ -2485,7 +2485,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             BigDecimal subtotalGeneral = big.getBigDecimal(reg[7]);
 
             if (descuentoAplicado.compareTo(BigDecimal.ZERO) > 0) {
-                if (instancias.isCostoConIva()) {
+                if (DatosMaestra.isCostoConIva()) {
                     BigDecimal totalGeneral = big.getBigDecimal(reg[10]).add(descuentoAplicado);
                     porcentajeDescuento = descuentoAplicado.multiply(big.getBigDecimal("100")).divide(totalGeneral, 2, RoundingMode.HALF_DOWN);
                 } else {
@@ -2695,7 +2695,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     }
 
     public void actualizarVariables() {
-        if (instancias.isCostoConImpoconsumo()) {
+        if (DatosMaestra.isCostoConImpoconsumo()) {
             tblProductos.getColumnModel().getColumn(9).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(9).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(9).setMaxWidth(0);
@@ -3211,7 +3211,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         BigDecimal porcentajeDescuento = BigDecimal.ZERO;
 
         if (subtotal.compareTo(BigDecimal.ZERO) > 0) {
-            if (instancias.getDescuento().equals("peso")) {
+            if (instancias.isDescuentoValor()) {
                 porcentajeDescuento = big.getBigDecimal(descuento.multiply(big.getBigDecimal("100")).divide(subtotal, 2, RoundingMode.HALF_DOWN));
             } else {
                 porcentajeDescuento = big.getBigDecimal(tblProductos.getValueAt(fila, 5).toString().replace(".", "").replace(",", "."));
@@ -3223,7 +3223,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         BigDecimal valorImpoconsumo;
         BigDecimal totalProducto;
 
-        if (instancias.isCostoConIva()) {
+        if (DatosMaestra.isCostoConIva()) {
             BigDecimal totalImpuestos = porcentajeIva.add(BigDecimal.ONE).multiply(porcentajeImpoconsumo.add(BigDecimal.ONE)).setScale(2, RoundingMode.DOWN);
             BigDecimal precioBase = subtotal.divide(totalImpuestos, 2, RoundingMode.HALF_DOWN);
             valorIva = precioBase.multiply(porcentajeIva);
@@ -3328,7 +3328,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         }
 
         BigDecimal valorBase;
-        if (instancias.isCostoConIva()) {
+        if (DatosMaestra.isCostoConIva()) {
             valorBase = big.getMoneda(txtTotal.getText().replace("Total: ", "")).add(big.getMoneda(txtTotalDescuentos.getText()));
         } else {
             valorBase = big.getMoneda(txtSubTotal.getText()).add(big.getMoneda(txtTotalDescuentos.getText()));
@@ -3513,7 +3513,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(filaSelecciona, 3).toString().replace(".", "").replace(",", "."));
         BigDecimal subtotal = valorProducto.multiply(cantidad);
 
-        if (instancias.getDescuento().equals("peso")) {
+        if (instancias.isDescuentoValor()) {
             descuento = tblProductos.getValueAt(filaSelecciona, 6).toString();
         } else {
             porcentajeDescuento = tblProductos.getValueAt(filaSelecciona, 5).toString();
@@ -3550,7 +3550,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             BigDecimal totalIva = big.getMoneda(tblProductos.getValueAt(i, 22).toString());
             BigDecimal totalImpoconsumo = big.getMoneda(tblProductos.getValueAt(i, 9).toString());
             BigDecimal valorTotalBruto = big.getMoneda(tblProductos.getValueAt(i, 2).toString()).multiply(big.getBigDecimal(tblProductos.getValueAt(i, 3).toString()));
-            if (instancias.isPvpConIva()) {
+            if (DatosMaestra.isPrecioVentaConIva()) {
                 valorTotalBruto = valorTotalBruto.subtract(totalIva).subtract(totalImpoconsumo);
             }
 
@@ -3620,7 +3620,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         BigDecimal baseProducto = BigDecimal.ZERO;
 
-        if (instancias.isCostoConIva()) {
+        if (DatosMaestra.isCostoConIva()) {
             BigDecimal cantidad = big.getBigDecimal(tblProductos.getValueAt(filaProducto, 3).toString().replace(".", "").replace(",", "."));
             BigDecimal subtotal = detalleProducto.getPrecioUnitario().multiply(cantidad);
             BigDecimal porcentajeIva = detalleProducto.getPorcentajeIva().divide(big.getBigDecimal("100"));

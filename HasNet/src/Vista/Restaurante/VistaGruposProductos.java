@@ -1,5 +1,6 @@
 package Vista.Restaurante;
 
+import Utilidades.DatosMaestra;
 import Dao.Productos.DaoProducto;
 
 import Controlador.Alertas.ControladorAlertas;
@@ -286,7 +287,7 @@ public class VistaGruposProductos extends JDialog {
             modeloProductos.removeRow(0);
         }
 
-        boolean conImpuestos = instancias.isPvpConIva();
+        boolean conImpuestos = DatosMaestra.isPrecioVentaConIva();
         Object[][] prods = daoProducto.obtenerProductosPorGrupo(codigo, conImpuestos);
 
         for (int i = 0; i < prods.length; i++) {

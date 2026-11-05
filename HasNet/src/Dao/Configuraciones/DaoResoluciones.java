@@ -32,8 +32,10 @@ public class DaoResoluciones {
     public List<ModeloResolucion> obtenerResoluciones(String tipoMovimiento) {
         List<ModeloResolucion> listaResoluciones = new ArrayList<>();
         String condicion = obtenerCondicion(tipoMovimiento);
+        // Las resoluciones inactivas no se ofrecen en los documentos
         String sql = "SELECT idResolucion, descripcionResolucion, tipoResolucion, disenho, numeroResolucion, prefijo, "
-                + "fechaInicio, fechaFinal, numeracionDel, numeracionHasta, consecutivo FROM bdResoluciones WHERE " + condicion;
+                + "fechaInicio, fechaFinal, numeracionDel, numeracionHasta, consecutivo FROM bdResoluciones WHERE estado = 1"
+                + (condicion.isEmpty() ? "" : " AND (" + condicion + ")");
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -44,10 +46,9 @@ public class DaoResoluciones {
                 resolucion.setDisenho(rs.getString("disenho"));
                 resolucion.setNumeroResolucion(rs.getString("numeroResolucion"));
                 resolucion.setPrefijo(rs.getString("prefijo"));
-                resolucion.setFechaFinal(rs.getString("fechaInicio"));
+                resolucion.setFechaInicio(rs.getString("fechaInicio"));
                 resolucion.setFechaFinal(rs.getString("fechaFinal"));
                 resolucion.setNumeracionDel(rs.getInt("numeracionDel"));
-                resolucion.setNumeracionHasta(rs.getInt("numeracionHasta"));
                 resolucion.setNumeracionHasta(rs.getInt("numeracionHasta"));
                 resolucion.setConsecutivo(rs.getInt("consecutivo"));
                 listaResoluciones.add(resolucion);
@@ -84,33 +85,126 @@ public class DaoResoluciones {
         return "tipoResolucion = 'Documento Soporte' || tipoResolucion = 'Compra Normal'";
     }
 
+    /**
+     * Listado de solo lectura para la maestra: la captura se hace en un modal,
+     * por eso ninguna celda es editable. Las fechas llegan como yyyy-MM-dd y el
+     * estado ya viene como etiqueta ACTIVA / INACTIVA.
+     */
     public DefaultTableModel obtenerResolucionesEnTabla() {
         String[] nombreColumnasBD = {
             "idResolucion", "descripcionResolucion", "tipoResolucion", "disenho", "numeroResolucion", "prefijo", "fechaInicio",
-            "fechaFinal", "numeracionDel", "numeracionHasta", "consecutivo"
+            "fechaFinal", "numeracionDel", "numeracionHasta", "consecutivo", "estado"
         };
 
         String[] nombreColumnasTabla = {
             "ID", "Descripción resolución", "Tipo de resolución", "Diseño", "Número resolución",
-            "Prefijo", "Fecha inicio", "Fecha final", "# Del", "# Hasta", "# Actual", ""
+            "Prefijo", "Fecha inicio", "Fecha final", "# Del", "# Hasta", "# Actual", "Estado"
         };
 
-        String sql = "SELECT idResolucion, descripcionResolucion, tipoResolucion, disenho, numeroResolucion, prefijo, fechaInicio, "
-                + "fechaFinal, numeracionDel, numeracionHasta, consecutivo FROM bdResoluciones";
+        String sql = "SELECT idResolucion, descripcionResolucion, tipoResolucion, disenho, numeroResolucion, prefijo, "
+                + "DATE_FORMAT(fechaInicio, '%Y-%m-%d') AS fechaInicio, DATE_FORMAT(fechaFinal, '%Y-%m-%d') AS fechaFinal, "
+                + "numeracionDel, numeracionHasta, consecutivo, "
+                + "IF(estado = 1, '" + ESTADO_ACTIVA + "', '" + ESTADO_INACTIVA + "') AS estado "
+                + "FROM bdResoluciones ORDER BY bdResoluciones.estado DESC, idResolucion";
 
         Object[][] datos = daoGenerales.obtenerDatosTabla(nombreColumnasBD, sql);
 
         return new DefaultTableModel(datos, nombreColumnasTabla) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return true;
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return (columnIndex == 6 || columnIndex == 7) ? java.util.Date.class : Object.class;
+                return false;
             }
         };
+    }
+
+    public static final String ESTADO_ACTIVA = "ACTIVA";
+    public static final String ESTADO_INACTIVA = "INACTIVA";
+
+    public boolean cambiarEstadoResolucion(int idResolucion, boolean activa) {
+        String sql = "UPDATE bdResoluciones SET estado = ? WHERE idResolucion = ?";
+
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, activa ? 1 : 0);
+            stmt.setInt(2, idResolucion);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al cambiar el estado de la resolución: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Aplica en una sola transacción los cambios hechos en la maestra:
+     * resoluciones nuevas (id &lt; 0), resoluciones modificadas (id &gt; 0) y
+     * cambios de estado. Si algo falla no se guarda nada.
+     *
+     * @param pendientes resoluciones nuevas o modificadas, con fechas dd-MM-yyyy
+     * @param estados id de la resolución -&gt; activa
+     */
+    public boolean guardarCambios(java.util.Collection<ModeloResolucion> pendientes, java.util.Map<Integer, Boolean> estados) {
+        String sqlInsertar = "INSERT INTO bdResoluciones (descripcionResolucion, tipoResolucion, disenho, numeroResolucion, "
+                + "prefijo, fechaInicio, fechaFinal, numeracionDel, numeracionHasta, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlModificar = "UPDATE bdResoluciones SET descripcionResolucion = ?, tipoResolucion = ?, disenho = ?, numeroResolucion = ?, "
+                + "prefijo = ?, fechaInicio = ?, fechaFinal = ?, numeracionDel = ?, numeracionHasta = ? WHERE idResolucion = ?";
+        String sqlEstado = "UPDATE bdResoluciones SET estado = ? WHERE idResolucion = ?";
+
+        boolean autoCommitPrevio = true;
+        try {
+            autoCommitPrevio = conexion.getAutoCommit();
+            conexion.setAutoCommit(false);
+
+            try (PreparedStatement insertar = conexion.prepareStatement(sqlInsertar);
+                    PreparedStatement modificar = conexion.prepareStatement(sqlModificar);
+                    PreparedStatement estado = conexion.prepareStatement(sqlEstado)) {
+
+                for (ModeloResolucion resolucion : pendientes) {
+                    boolean nueva = resolucion.getIdResolucion() < 0;
+                    PreparedStatement stmt = nueva ? insertar : modificar;
+                    stmt.setString(1, resolucion.getDescripcionResolucion());
+                    stmt.setString(2, resolucion.getTipoResolucion());
+                    stmt.setString(3, resolucion.getDisenho());
+                    stmt.setString(4, resolucion.getNumeroResolucion());
+                    stmt.setString(5, resolucion.getPrefijo());
+                    stmt.setDate(6, Fechas.convertirAFechaSQL(resolucion.getFechaInicio()));
+                    stmt.setDate(7, Fechas.convertirAFechaSQL(resolucion.getFechaFinal()));
+                    stmt.setInt(8, resolucion.getNumeracionDel());
+                    stmt.setInt(9, resolucion.getNumeracionHasta());
+                    if (nueva) {
+                        Boolean activa = estados.get(resolucion.getIdResolucion());
+                        stmt.setInt(10, activa == null || activa ? 1 : 0);
+                    } else {
+                        stmt.setInt(10, resolucion.getIdResolucion());
+                    }
+                    stmt.executeUpdate();
+                }
+
+                // Los estados de las nuevas ya se guardaron en el INSERT
+                for (java.util.Map.Entry<Integer, Boolean> entrada : estados.entrySet()) {
+                    if (entrada.getKey() > 0) {
+                        estado.setInt(1, entrada.getValue() ? 1 : 0);
+                        estado.setInt(2, entrada.getKey());
+                        estado.executeUpdate();
+                    }
+                }
+            }
+
+            conexion.commit();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al guardar las resoluciones: " + e.getMessage());
+            try {
+                conexion.rollback();
+            } catch (SQLException ex) {
+                System.err.println("No se pudo revertir la transacción de resoluciones: " + ex.getMessage());
+            }
+            return false;
+        } finally {
+            try {
+                conexion.setAutoCommit(autoCommitPrevio);
+            } catch (SQLException e) {
+                System.err.println("No se pudo restaurar el autocommit: " + e.getMessage());
+            }
+        }
     }
 
     public ModeloPrefijos obtenerPrefijos() {

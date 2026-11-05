@@ -1444,9 +1444,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             titulo = "Num Fact2";
         }
 
-        boolean mantenerEncabezado = DatosMaestra.isReimpresion();
         String encabezado = datosDocumento.isEsAnulado() ? "Reimpresión (Anulada)" : "Reimpresión";
-        encabezado = mantenerEncabezado ? encabezado : "";
         String impresoraEstablecida = obtenerImpresoraEstablecida();
 
         String tipoImpresion = obtenerTipoImpresion();

@@ -653,7 +653,8 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                     aumentos[ser][1] = tblClientes.getValueAt(i, 1);
                     aumentos[ser][2] = tblClientes.getValueAt(i, 2);
                     aumentos[ser][3] = tblClientes.getValueAt(i, 6);
-                    aumentos[ser][4] = big.getBigDecimal(DatosMaestra.getNumFacturaIncremento());
+                    // Ya no hay incremento configurado en la maestra: arranca en 0
+                    aumentos[ser][4] = java.math.BigDecimal.ZERO;
                     ser++;
                 }
             }
@@ -847,9 +848,6 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                 }
 
                 String encabezado = "Reimpresion";
-                if (!DatosMaestra.isReimpresion()) {
-                    encabezado = "";
-                }
 
                 ndFactura nodo = instancias.getSql().getDatosFactura(factura[0].toString());
                 String infoEmpresa = metodosGenerales.convertToMultiline(instancias.getInformacionEmpresaReimpresion() + "\n" + nodo.getResolucion());

@@ -3,7 +3,7 @@
 <project name="HasNet" default="default" basedir=".">
     
     <target name="package-for-store" depends="jar">  
-     <property name="store.jar.name" value="ClickingPos"/>  
+     <property name="store.jar.name" value="HasNet"/>  
      <property name="store.dir" value="JarCompleto"/>  
      <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>  
      <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>  

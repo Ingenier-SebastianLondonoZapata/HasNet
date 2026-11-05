@@ -47,7 +47,7 @@ import Vista.Restaurante.VistaMesas;
 import Vista.Documentos.VistaDocumentos;
 import Vista.Cartera.VistaNotaDebito;
 import Vista.Cartera.VistaNotaCredito;
-import Vista.Configuraciones.vistaMaestra;
+import Vista.Configuraciones.VistaConfiguraciones;
 import Modelo.Maestra.modeloConfiguracion;
 import Vista.Configuraciones.vistaSuperMaestra;
 import Controlador.BarraProceso.jcThread;
@@ -128,14 +128,13 @@ public class Instancias {
     private String titulo;
     private String usuario;
 
-    private vistaMaestra maestra;
+    private VistaConfiguraciones maestra;
 
     //REPORTES SIN METODOS ESPECIALES 
     private JInternalFrame repMascotas, invBodegas, repClientes, repBodegas, repEmpleados;
     private VistaReporteAbonos repAbonos;
     private VistaReportePagos repAbonosCxp;
 
-    private infUsuarios usuarios;
     private ndUsuario usuarioLog;
     private VistaDiseno costeo;
     private String tFactura;
@@ -166,11 +165,6 @@ public class Instancias {
     private Vista.Ventas.ordenServicio ordenServicio;
     private String tituloFactura;
 
-    private String diasAlertaResolucion;
-    private String diasRestantesResolucion;
-    private String alertaFechaDias;
-    private String alertaCantidadDias;
-    private String alertaPromedioDias;
     public String resolucion;
     private String informacionEmpresaCompleto;
     private String informacionEmpresaReimpresion;
@@ -212,16 +206,15 @@ public class Instancias {
 
     /* DEVOLUCIÓN DEL DINERO */
     private BigDecimal efectivoDevuelta = big.getBigDecimal("0"), tarjetaDevuelta = big.getBigDecimal("0"),
-            chequeDevuelta = big.getBigDecimal("0"), ncDevuelta = big.getBigDecimal("0"), valorComision = big.getBigDecimal("0"),
-            totalFacturaComision = big.getBigDecimal("0"), totalPropina = big.getBigDecimal("0"), tarjetaCredito = big.getBigDecimal("0"),
+            chequeDevuelta = big.getBigDecimal("0"), ncDevuelta = big.getBigDecimal("0"),
+            totalPropina = big.getBigDecimal("0"), tarjetaCredito = big.getBigDecimal("0"),
             propina = big.getBigDecimal("0");
 
     /* OPCIONES DE MAESTRA */
     private BigDecimal descuentoMaximoVentas;
-    private String franquisia = "", comision = "", porcPropina = "", pie, legal;
+    private String porcPropina = "", pie, legal;
     private boolean imprimirCuadreFiscal, ocultarInformacionCliente, visualizarTodasLasFacturas, mostrarInformacionCuadre, generaOrdenMedica, imprimirOrdenMedica,
-            imprimirFacturaOrdenMedica, copias, lector, ventasPredeterminado, mensajeUtilidad, pvpConIva, costoConIva, pvpConImpoconsumo, costoConImpoconsumo,
-            imprimirRecogida, utilidad, ubicacion, hora;
+            imprimirFacturaOrdenMedica, copias, lector, ventasPredeterminado, mensajeUtilidad, precioConImpuestos, imprimirRecogida, utilidad, ubicacion, hora;
 
     /* PREFIJOS DOCUMENTOS */
     private String idAbono, idEgreso, idNC, idND;
@@ -409,6 +402,14 @@ public class Instancias {
     private boolean pruebasFacturacionElectronica = false;
     private boolean validacionesCorrectas = false;
 
+    public boolean isPrecioConImpuestos() {
+        return precioConImpuestos;
+    }
+
+    public void setPrecioConImpuestos(boolean precioConImpuestos) {
+        this.precioConImpuestos = precioConImpuestos;
+    }
+
     public String getTipoDocumentoEmisor() {
         return tipoDocumentoEmisor;
     }
@@ -527,22 +528,6 @@ public class Instancias {
 
     public void setPlantillas(infPlantillas plantillas) {
         this.plantillas = plantillas;
-    }
-
-    public boolean isPvpConImpoconsumo() {
-        return pvpConImpoconsumo;
-    }
-
-    public void setPvpConImpoconsumo(boolean pvpConImpoconsumo) {
-        this.pvpConImpoconsumo = pvpConImpoconsumo;
-    }
-
-    public boolean isCostoConImpoconsumo() {
-        return costoConImpoconsumo;
-    }
-
-    public void setCostoConImpoconsumo(boolean costoConImpoconsumo) {
-        this.costoConImpoconsumo = costoConImpoconsumo;
     }
 
     public infRepAlertasProximas getRepAlertasProximas() {
@@ -921,7 +906,6 @@ public class Instancias {
         this.trasladosInternos = trasladosInternos;
     }
 
-    
     public infRepHistorial getRepHistorial() {
         return repHistorial;
     }
@@ -952,38 +936,6 @@ public class Instancias {
 
     public void setMedico(String medico) {
         this.medico = medico;
-    }
-
-    public BigDecimal getValorComision() {
-        return valorComision;
-    }
-
-    public void setValorComision(BigDecimal valorComision) {
-        this.valorComision = valorComision;
-    }
-
-    public BigDecimal getTotalFacturaComision() {
-        return totalFacturaComision;
-    }
-
-    public void setTotalFacturaComision(BigDecimal totalFacturaComision) {
-        this.totalFacturaComision = totalFacturaComision;
-    }
-
-    public String getFranquisia() {
-        return franquisia;
-    }
-
-    public void setFranquisia(String franquisia) {
-        this.franquisia = franquisia;
-    }
-
-    public String getComision() {
-        return comision;
-    }
-
-    public void setComision(String comision) {
-        this.comision = comision;
     }
 
     public String getCita() {
@@ -1964,62 +1916,6 @@ public class Instancias {
         this.repOrden = repOrden;
     }
 
-    public String getAlertaFechaDias() {
-        return alertaFechaDias;
-    }
-
-    public void setAlertaFechaDias(String alertaFechaDias) {
-        this.alertaFechaDias = alertaFechaDias;
-    }
-
-    public String getAlertaCantidadDias() {
-        return alertaCantidadDias;
-    }
-
-    public void setAlertaCantidadDias(String alertaCantidadDias) {
-        this.alertaCantidadDias = alertaCantidadDias;
-    }
-
-    public String getAlertaPromedioDias() {
-        return alertaPromedioDias;
-    }
-
-    public void setAlertaPromedioDias(String alertaPromedioDias) {
-        this.alertaPromedioDias = alertaPromedioDias;
-    }
-
-    public String getDiasRestantesResolucion() {
-        return diasRestantesResolucion;
-    }
-
-    public void setDiasRestantesResolucion(String diasRestantesResolucion) {
-        this.diasRestantesResolucion = diasRestantesResolucion;
-    }
-
-    public String getDiasAlertaResolucion() {
-        return diasAlertaResolucion;
-    }
-
-    public void setDiasAlertaResolucion(String diasAlertaResolucion) {
-        this.diasAlertaResolucion = diasAlertaResolucion;
-    }
-
-    public boolean isPvpConIva() {
-        return pvpConIva;
-    }
-
-    public void setPvpConIva(boolean pvpConIva) {
-        this.pvpConIva = pvpConIva;
-    }
-
-    public boolean isCostoConIva() {
-        return costoConIva;
-    }
-
-    public void setCostoConIva(boolean costoConIva) {
-        this.costoConIva = costoConIva;
-    }
-
     public boolean isVentasPredeterminado() {
         return ventasPredeterminado;
     }
@@ -2165,7 +2061,15 @@ public class Instancias {
     }
 
     public void setDescuento(String descuento) {
-        this.descuento = descuento;
+        this.descuento = Utilidades.DatosMaestra.normalizarTipoDescuento(descuento);
+    }
+
+    public boolean isDescuentoPorcentaje() {
+        return Utilidades.DatosMaestra.DESCUENTO_PORCENTAJE.equals(descuento);
+    }
+
+    public boolean isDescuentoValor() {
+        return Utilidades.DatosMaestra.DESCUENTO_VALOR.equals(descuento);
     }
 
     public boolean isUtilidad() {
@@ -2364,14 +2268,6 @@ public class Instancias {
         this.repCartera = repCartera;
     }
 
-    public infUsuarios getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(infUsuarios usuarios) {
-        this.usuarios = usuarios;
-    }
-
     public VistaReportePagos getRepAbonosCxp() {
         return repAbonosCxp;
     }
@@ -2412,11 +2308,11 @@ public class Instancias {
         this.usuarioLog = usuarioLog;
     }
 
-    public vistaMaestra getMaestra() {
+    public VistaConfiguraciones getMaestra() {
         return maestra;
     }
 
-    public void setMaestra(vistaMaestra maestra) {
+    public void setMaestra(VistaConfiguraciones maestra) {
         this.maestra = maestra;
     }
 
@@ -2697,4 +2593,3 @@ public class Instancias {
         getFacturaCreditos().inicializarPanelGruposEmbebido();
     }
 }
-

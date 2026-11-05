@@ -283,14 +283,14 @@
                                           <Component id="txtTotal" max="32767" attributes="0"/>
                                       </Group>
                                       <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="cmbTarjetas" min="-2" pref="141" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Component id="lbCheque1" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="txtTarjetaCredito" max="32767" attributes="0"/>
+                                          <Component id="txtTotalDinero" min="-2" pref="156" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="lbCheque8" alignment="0" max="32767" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                              <Component id="lbCheque8" alignment="0" max="32767" attributes="0"/>
                                               <Component id="lbCheque7" pref="138" max="32767" attributes="0"/>
                                               <Component id="lbCheque2" max="32767" attributes="0"/>
                                               <Component id="lbNC" max="32767" attributes="0"/>
@@ -299,19 +299,17 @@
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                                  <Component id="txtCheque" alignment="0" max="32767" attributes="0"/>
-                                                  <Component id="txtNC" alignment="0" max="32767" attributes="0"/>
-                                                  <Component id="txtValor" alignment="0" pref="156" max="32767" attributes="0"/>
-                                                  <Component id="txtEfectivo" alignment="1" max="32767" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                                      <Component id="txtCheque" alignment="0" max="32767" attributes="0"/>
+                                                      <Component id="txtNC" alignment="0" max="32767" attributes="0"/>
+                                                      <Component id="txtValor" alignment="0" pref="156" max="32767" attributes="0"/>
+                                                      <Component id="txtEfectivo" alignment="1" max="32767" attributes="0"/>
+                                                  </Group>
+                                                  <Component id="txtTarjetaDebito" alignment="1" min="-2" pref="156" max="-2" attributes="0"/>
                                               </Group>
-                                              <Component id="txtTarjetaDebito" alignment="1" min="-2" pref="156" max="-2" attributes="0"/>
+                                              <Component id="txtTarjetaCredito" max="32767" attributes="0"/>
                                           </Group>
-                                      </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="lbCheque1" max="32767" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="txtTotalDinero" min="-2" pref="156" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -353,13 +351,11 @@
                           <Component id="txtTarjetaDebito" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lbCheque8" min="-2" pref="30" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cmbTarjetas" alignment="3" pref="30" max="32767" attributes="0"/>
-                          <Component id="txtTarjetaCredito" alignment="3" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="lbCheque8" max="32767" attributes="0"/>
+                          <Component id="txtTarjetaCredito" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jSeparator2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -541,16 +537,6 @@
                   <Font name="Arial" size="18" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Tarjeta cr&#xe9;dito:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="cmbTarjetas">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Century Gothic" size="14" style="0"/>
-                </Property>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="0"/>
-                </Property>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtTarjetaCredito">

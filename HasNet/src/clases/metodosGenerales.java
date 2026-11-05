@@ -4464,7 +4464,7 @@ public class metodosGenerales {
             }
 
             if (i != 8) {
-                if (instancias.getDescuento().equals("peso")) {
+                if (instancias.isDescuentoValor()) {
                     if (tablaFactura != null) {
                         tablaFactura.getColumnModel().getColumn(6).setMinWidth(100);
                         tablaFactura.getColumnModel().getColumn(6).setPreferredWidth(100);
@@ -4484,7 +4484,7 @@ public class metodosGenerales {
                     }
                 }
 
-                if (instancias.isPvpConImpoconsumo()) {
+                if (instancias.isPrecioConImpuestos()) {
                     if (tablaFactura != null) {
                         tablaFactura.getColumnModel().getColumn(8).setMinWidth(0);
                         tablaFactura.getColumnModel().getColumn(8).setPreferredWidth(0);
@@ -4642,18 +4642,66 @@ public class metodosGenerales {
     /*Este método es el de la magia recibe la ruta al archivo original y la ruta donde vamos a guardar la copia*/
     public static void recortarYguardarImagen(String origen, String destino, int anchoMax, int altoMax) {
         BufferedImage imagen = cargarImagen(origen);
+
+        // Medidas finales: las mismas que producía el cálculo anterior en dos
+        // pasos, para que facturas y reportes reciban imágenes del mismo tamaño
+        int anchoFinal;
+        int altoFinal;
         if (imagen.getHeight() > imagen.getWidth()) {
-            int heigt = (imagen.getHeight() * anchoMax) / imagen.getWidth();
-            imagen = recortar(imagen, anchoMax, heigt);
-            int width = (imagen.getWidth() * altoMax) / imagen.getHeight();
-            imagen = recortar(imagen, width, altoMax);
+            int altoIntermedio = (imagen.getHeight() * anchoMax) / imagen.getWidth();
+            anchoFinal = (anchoMax * altoMax) / altoIntermedio;
+            altoFinal = altoMax;
         } else {
-            int width = (imagen.getWidth() * altoMax) / imagen.getHeight();
-            imagen = recortar(imagen, width, altoMax);
-            int heigt = (imagen.getHeight() * anchoMax) / imagen.getWidth();
-            imagen = recortar(imagen, anchoMax, heigt);
+            int anchoIntermedio = (imagen.getWidth() * altoMax) / imagen.getHeight();
+            anchoFinal = anchoMax;
+            altoFinal = (altoMax * anchoMax) / anchoIntermedio;
         }
-        guardarImagen(imagen, destino);
+
+        // Se redimensiona una sola vez desde la original (antes eran dos
+        // redimensiones bilineales seguidas, lo que degradaba la imagen)
+        boolean esPng = destino.endsWith(".png");
+        guardarImagen(redimensionarConCalidad(imagen, Math.max(1, anchoFinal), Math.max(1, altoFinal), esPng), destino);
+    }
+
+    /**
+     * Redimensiona con la mejor calidad disponible en Java2D:
+     * - Al reducir, lo hace por pasos de la mitad con interpolación bicúbica
+     * (reducir mucho en un solo paso pierde detalle y pixela el texto).
+     * - Al ampliar, usa un solo paso bicúbico.
+     * Conserva la transparencia cuando el destino es PNG; para JPG pinta el
+     * fondo blanco, ya que JPG no admite transparencia.
+     */
+    public static BufferedImage redimensionarConCalidad(BufferedImage origen, int ancho, int alto, boolean conTransparencia) {
+        int tipo = conTransparencia ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+
+        BufferedImage actual = new BufferedImage(origen.getWidth(), origen.getHeight(), tipo);
+        Graphics2D g0 = actual.createGraphics();
+        if (!conTransparencia) {
+            g0.setColor(java.awt.Color.WHITE);
+            g0.fillRect(0, 0, actual.getWidth(), actual.getHeight());
+        }
+        g0.drawImage(origen, 0, 0, null);
+        g0.dispose();
+
+        int w = actual.getWidth();
+        int h = actual.getHeight();
+        while (w != ancho || h != alto) {
+            // Si se reduce, como máximo a la mitad por paso; si se amplía, directo
+            w = (w > ancho) ? Math.max(ancho, w / 2) : ancho;
+            h = (h > alto) ? Math.max(alto, h / 2) : alto;
+
+            BufferedImage paso = new BufferedImage(w, h, tipo);
+            Graphics2D g = paso.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.drawImage(actual, 0, 0, w, h, null);
+            g.dispose();
+            actual = paso;
+        }
+        return actual;
     }
 
     /*Este método se utiliza para cargar la imagen de disco*/

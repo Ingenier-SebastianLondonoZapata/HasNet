@@ -822,7 +822,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     public void cargarTablas() {
 
         boolean conImpuestos = false;
-        if (instancias.isPvpConIva()) {
+        if (instancias.isPrecioConImpuestos()) {
             conImpuestos = true;
         }
 

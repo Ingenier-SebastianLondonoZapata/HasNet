@@ -1,5 +1,7 @@
 package formularios.productos;
 
+import Utilidades.Impuestos;
+import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -537,38 +539,26 @@ public class dlgDetalleCompra extends javax.swing.JDialog {
         subtotal = subtotal.subtract(descuento);
         subtotalGeneral = subtotal;
 
-        if (instancias.isCostoConIva() || instancias.isCostoConImpoconsumo()) {
-            BigDecimal subIva = BigDecimal.ZERO, subImpo = BigDecimal.ZERO;
-            if (instancias.isCostoConIva() && instancias.isCostoConImpoconsumo()) {
-                //CALCULAMOS EL IVA
-                subIva = subtotal.divide(iva, 2, RoundingMode.HALF_UP);
-                totalIva = subtotal.subtract(subIva);
-
-                //CALCULAMOS EL IMPOCONSUMO
-                subImpo = subtotal.divide(impoconsumo, 2, RoundingMode.HALF_UP);
-                totalImpoconsumo = subtotal.subtract(subImpo);
-
-                //CALCULAMOS EL SUBTOTAL
-                subtotal = subtotal.subtract(totalImpoconsumo).subtract(totalIva);
-            } else if (instancias.isCostoConIva()) {
-                subIva = subtotal.divide(iva, 2, RoundingMode.HALF_UP);
-                totalIva = subtotal.subtract(subIva);
-                subtotal = subtotal.subtract(totalIva);
-            } else if (instancias.isCostoConImpoconsumo()) {
-                subImpo = subtotal.divide(impoconsumo, 2, RoundingMode.HALF_UP);
-                totalImpoconsumo = subtotal.subtract(subImpo);
-                subtotal = subtotal.subtract(totalImpoconsumo);
+        if (DatosMaestra.isCostoConIva() || DatosMaestra.isCostoConImpoconsumo()) {
+            BigDecimal[] desglose = Impuestos.desglosarIncluidos(subtotal, iva, impoconsumo,
+                    DatosMaestra.isCostoConIva(), DatosMaestra.isCostoConImpoconsumo());
+            if (DatosMaestra.isCostoConIva()) {
+                totalIva = desglose[1];
             }
+            if (DatosMaestra.isCostoConImpoconsumo()) {
+                totalImpoconsumo = desglose[2];
+            }
+            subtotal = desglose[0];
         }
 
-        if (!instancias.isCostoConIva()) {
+        if (!DatosMaestra.isCostoConIva()) {
             iva = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 7)));
             iva = (iva.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
             totalIva = subtotalGeneral.multiply(iva);
             totalIva = totalIva.subtract(subtotalGeneral);
         }
 
-        if (!instancias.isCostoConImpoconsumo()) {
+        if (!DatosMaestra.isCostoConImpoconsumo()) {
             impoconsumo = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 8)));
             impoconsumo = (impoconsumo.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
 

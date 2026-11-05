@@ -4,7 +4,7 @@ import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.DatosMaestra;
 import Vista.Cartera.VistaNotaCredito;
-import Vista.Configuraciones.vistaMaestra;
+import Vista.Configuraciones.VistaConfiguraciones;
 import Vista.InicioSesion.vistaInicioSesion;
 import clases.Instancias;
 import clases.alertasHospitalizacionVeterinario;
@@ -127,7 +127,6 @@ import formularios.Veterinario.infRepPeluqueria;
 import Vista.Productos.VistaAjusteInventario;
 import Vista.Productos.VistaInventarioInicial;
 import Vista.Productos.ordenCompra;
-import formularios.infUsuarios;
 import formularios.productos.infTrasladosInternos;
 import formularios.recordatorios.infRecordatorios;
 
@@ -3139,7 +3138,7 @@ public class VistaMenu extends javax.swing.JFrame {
     private void activarFuncionSolicitudes() {
         solicitudesPermisos solicitudes = new solicitudesPermisos();
         if (instancias.getUsuario().equals("ADMIN")) {
-            if (DatosMaestra.isCiudadBuscador()) {
+            if (DatosMaestra.isModuloPermisos()) {
                 btnSolicitudes.setVisible(true);
                 sep4.setVisible(true);
                 solicitudes.start();
@@ -3158,7 +3157,6 @@ public class VistaMenu extends javax.swing.JFrame {
         cargarModuloMaestra();
         instancias.getMaestra().llenarDatos();
 
-        cargarModuloControlUsuarios();
         cargarModuloPlanillas();
         cargarModulosVentas();
         cargarModulosProductos();
@@ -3169,23 +3167,11 @@ public class VistaMenu extends javax.swing.JFrame {
 
     private void cargarModuloMaestra() {
         try {
-            vistaMaestra interno = new vistaMaestra();
+            VistaConfiguraciones interno = new VistaConfiguraciones();
             dkpFormularios.add(interno);
             interno.show();
             instancias.setMaestra(interno);
             interno.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void cargarModuloControlUsuarios() {
-        try {
-            infUsuarios interno14 = new infUsuarios();
-            dkpFormularios.add(interno14);
-            instancias.setUsuarios(interno14);
-            interno14.show();
-            interno14.setMaximum(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -12,7 +12,31 @@ public class ndUsuario {
             reporteAbonosCxP, reporteNotasCredito, codigos, egresos, bancos, cuadreCaja, reporteEgresos, reporteBancos, reporteCuadreCaja, registrarAgenda, reportesAgenda,
             mascotas, historiaClinica, guarderia, peluqueria, hospitalizacion, alertas, reporteMascotas, reporteGuarderia, reportePeluqueria, reporteHospitalizacion, formatos,
             ordenesServicioMedica, historia, formatosMedicas, convenio, notaEnfermaria, medicamentos, reporteOrdenes, reporteFormulas, certificadoEstudiante, certificadoMedico,
-            certificadoOyS;
+            certificadoOyS, reporteTrasladoExterno, notasDebito, reporteNotasDebito;
+
+    public boolean isReporteTrasladoExterno() {
+        return reporteTrasladoExterno;
+    }
+
+    public void setReporteTrasladoExterno(boolean reporteTrasladoExterno) {
+        this.reporteTrasladoExterno = reporteTrasladoExterno;
+    }
+
+    public boolean isNotasDebito() {
+        return notasDebito;
+    }
+
+    public void setNotasDebito(boolean notasDebito) {
+        this.notasDebito = notasDebito;
+    }
+
+    public boolean isReporteNotasDebito() {
+        return reporteNotasDebito;
+    }
+
+    public void setReporteNotasDebito(boolean reporteNotasDebito) {
+        this.reporteNotasDebito = reporteNotasDebito;
+    }
 
     public boolean isOrdenesServicioMedica() {
         return ordenesServicioMedica;

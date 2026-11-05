@@ -1,5 +1,6 @@
 package Vista.Productos;
 
+import Utilidades.DatosMaestra;
 import Dao.Productos.DaoProducto;
 
 import Procesos.Inventario.Dao.DaoInventario;
@@ -184,7 +185,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         String pvp2 = "((ROUND((" + base + ".L1 * ((" + base + ".IVA / 100) + 1)), 2) + ROUND((" + base + ".L1 * "
                 + "((" + base + ".impoconsumoVenta / 100) + 1)),2)) - " + base + ".L1)";
 
-        if (instancias.isPvpConIva()) {
+        if (DatosMaestra.isPrecioVentaConIva()) {
             pvp1 = base + ".L1 AS L1";
             pvp2 = base + ".L1";
         }
@@ -200,7 +201,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                 + "bdinventario.fisicoInventario, " + base + ".ubicacion1, campoVacio, Grupo, ultimoCosto, idSistema, campoVacio1, Usuario, manejaInventario, plu2, "
                 + "indVentas, descripcionLarga ORDER BY Descripcion ";
 
-        DefaultTableModel modelo = instancias.getSql().getRegistrosProductos(instancias.isPvpConIva(), sentenciaSQL1, from);
+        DefaultTableModel modelo = instancias.getSql().getRegistrosProductos(DatosMaestra.isPrecioVentaConIva(), sentenciaSQL1, from);
 
         tblRegistros.setModel(modelo);
 

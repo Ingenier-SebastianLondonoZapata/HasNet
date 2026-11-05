@@ -83,13 +83,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         }
 
         instancias.getSql().cambiarEstFact("ON");
-        Object[][] tarjetas = instancias.getSql().getTarjetas();
 
-        cmbTarjetas.removeAllItems();
-        cmbTarjetas.addItem("");
-        for (int i = 0; i < tarjetas.length; i++) {
-            cmbTarjetas.addItem(tarjetas[i][0]);
-        }
         calcularEfectivo();
 
         this.getRootPane().registerKeyboardAction(accion("FINALIZAR", this), KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -200,7 +194,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
             txtCheque.setText(cero);
             txtTarjetaDebito.setText(cero);
             txtTarjetaCredito.setText(cero);
-            cmbTarjetas.setSelectedIndex(0);
         }
 
         txtValor.setEnabled(habilitar);
@@ -208,7 +201,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         txtCheque.setEnabled(habilitar);
         txtTarjetaDebito.setEnabled(habilitar);
         txtTarjetaCredito.setEnabled(habilitar);
-        cmbTarjetas.setEnabled(habilitar);
         btnPagarTodo.setEnabled(habilitar);
 
         calcularEfectivo();
@@ -267,7 +259,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         lbCheque7 = new javax.swing.JLabel();
         txtTarjetaDebito = new javax.swing.JTextField();
         lbCheque8 = new javax.swing.JLabel();
-        cmbTarjetas = new javax.swing.JComboBox();
         txtTarjetaCredito = new javax.swing.JTextField();
         jSeparator2 = new javax.swing.JSeparator();
         txtTotalDinero = new javax.swing.JTextField();
@@ -475,8 +466,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         lbCheque8.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         lbCheque8.setText("Tarjeta crédito:");
 
-        cmbTarjetas.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-
         txtTarjetaCredito.setBackground(new java.awt.Color(255, 204, 204));
         txtTarjetaCredito.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         txtTarjetaCredito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
@@ -603,13 +592,13 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(txtTotal))
                                 .addComponent(jSeparator2)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(cmbTarjetas, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(lbCheque1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtTarjetaCredito))
-                                .addComponent(lbCheque8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtTotalDinero, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(lbCheque8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(lbCheque7, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
                                         .addComponent(lbCheque2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(lbNC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -617,16 +606,14 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                                         .addComponent(lbEfectivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(txtCheque, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtNC, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtValor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-                                            .addComponent(txtEfectivo))
-                                        .addComponent(txtTarjetaDebito, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                    .addComponent(lbCheque1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtTotalDinero, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(txtCheque, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtNC, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtValor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                                                .addComponent(txtEfectivo))
+                                            .addComponent(txtTarjetaDebito, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtTarjetaCredito)))))
                         .addGap(3, 3, 3)
                         .addComponent(btnPagarTodo)))
                 .addGap(5, 5, 5))
@@ -656,12 +643,10 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                     .addComponent(lbCheque7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtTarjetaDebito))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbCheque8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbTarjetas, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbCheque8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtTarjetaCredito))
-                .addGap(10, 10, 10)
+                .addGap(5, 5, 5)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -838,17 +823,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
             return;
         }
 
-        String franquisia = "";
-        try {
-            franquisia = cmbTarjetas.getSelectedItem().toString();
-        } catch (Exception e) {
-        }
-
-        if (big.getMoneda(txtTarjetaCredito.getText()).compareTo(BigDecimal.ZERO) > 0 && franquisia.equals("")) {
-            ControladorAlertas.alert("Debe seleccionar la franquisia");
-            return;
-        }
-
         if (big.getMoneda(txtCambio.getText()).compareTo(BigDecimal.ZERO) < 0) {
             ControladorAlertas.alert("Valor insuficiente");
             lbEtiqueta1.requestFocus();
@@ -880,25 +854,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         instancias.setPorcPropina(String.valueOf(porcPropina));
         instancias.setPropina(big.getMoneda(txtPropina.getText()));
         instancias.setTotalPropina(big.getMoneda(txtTotalPropina.getText()));
-
-        instancias.setFranquisia(franquisia);
-
-        String comision = "";
-        try {
-            comision = instancias.getSql().getComisionTarjeta(franquisia);
-        } catch (Exception e) {
-        }
-        instancias.setComision(comision);
-
-        BigDecimal total = BigDecimal.ZERO, valorComision = BigDecimal.ZERO, totalFinal = BigDecimal.ZERO;
-        if (!comision.equals("")) {
-            total = big.getMoneda(txtTotal.getText());
-            valorComision = big.getMoneda(txtTotal.getText()).multiply(big.getMoneda("0,0" + comision));
-            totalFinal = total.subtract(valorComision);
-        }
-
-        instancias.setValorComision(valorComision);
-        instancias.setTotalFacturaComision(totalFinal);
 
         if (big.getMoneda(txtCambio.getText()).compareTo(BigDecimal.ZERO) == - 1) {
             instancias.setDevuelta(big.getBigDecimal("0"));
@@ -1104,7 +1059,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnPagarTodo;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox cmbTarjetas;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;

@@ -3028,38 +3028,35 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         consultarMaestros();
 
-        try {
-            if (DatosMaestra.isModificarPrecio()) {
-                txtConseManual.setVisible(true);
-                lbNit7.setVisible(true);
-                tblRegistros.getColumnModel().getColumn(11).setMaxWidth(100);
-            } else {
-                txtConseManual.setVisible(false);
-                lbNit7.setVisible(false);
-                tblRegistros.getColumnModel().getColumn(11).setMinWidth(0);
-                tblRegistros.getColumnModel().getColumn(11).setPreferredWidth(0);
-                tblRegistros.getColumnModel().getColumn(11).setMaxWidth(0);
-            }
+        if (DatosMaestra.isModificarPrecio()) {
+            txtConseManual.setVisible(true);
+            lbNit7.setVisible(true);
+            tblRegistros.getColumnModel().getColumn(11).setMaxWidth(100);
+        } else {
+            txtConseManual.setVisible(false);
+            lbNit7.setVisible(false);
+            tblRegistros.getColumnModel().getColumn(11).setMinWidth(0);
+            tblRegistros.getColumnModel().getColumn(11).setPreferredWidth(0);
+            tblRegistros.getColumnModel().getColumn(11).setMaxWidth(0);
+        }
 
-            if (instancias.getConfiguraciones().isParqueadero()) {
-                txtPlaca.setVisible(true);
-                lbPlaca.setVisible(true);
-                tblRegistros.getColumnModel().getColumn(13).setMaxWidth(70);
-            } else {
-                txtPlaca.setVisible(false);
-                lbPlaca.setVisible(false);
+        if (instancias.getConfiguraciones().isParqueadero()) {
+            txtPlaca.setVisible(true);
+            lbPlaca.setVisible(true);
+            tblRegistros.getColumnModel().getColumn(13).setMaxWidth(70);
+        } else {
+            txtPlaca.setVisible(false);
+            lbPlaca.setVisible(false);
 
-                if (tipoProceso.equals("domicilio")) {
-                    tblRegistros.getColumnModel().getColumn(13).setMinWidth(30);
-                    tblRegistros.getColumnModel().getColumn(13).setPreferredWidth(30);
-                    tblRegistros.getColumnModel().getColumn(13).setMaxWidth(30);
-                } else {
-                    tblRegistros.getColumnModel().getColumn(13).setMinWidth(0);
-                    tblRegistros.getColumnModel().getColumn(13).setPreferredWidth(0);
-                    tblRegistros.getColumnModel().getColumn(13).setMaxWidth(0);
-                }
+            if (tipoProceso.equals("domicilio")) {
+                tblRegistros.getColumnModel().getColumn(13).setMinWidth(30);
+                tblRegistros.getColumnModel().getColumn(13).setPreferredWidth(30);
+                tblRegistros.getColumnModel().getColumn(13).setMaxWidth(30);
+            } else {
+                tblRegistros.getColumnModel().getColumn(13).setMinWidth(0);
+                tblRegistros.getColumnModel().getColumn(13).setPreferredWidth(0);
+                tblRegistros.getColumnModel().getColumn(13).setMaxWidth(0);
             }
-        } catch (Exception e) {
         }
 
         for (int i = 0; i < tblRegistros.getRowCount(); i++) {

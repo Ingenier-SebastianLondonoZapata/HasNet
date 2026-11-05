@@ -4,8 +4,8 @@ import Controlador.Alertas.ControladorAlertas;
 import Utilidades.Constantes;
 import clases.Instancias;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import javax.swing.JTable;
 
 public class squemaResoluciones extends javax.swing.JPanel {
 
@@ -38,68 +38,53 @@ public class squemaResoluciones extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public boolean validacionesResoluciones(JTable tablaResoluciones) {
+    /**
+     * Valida los datos capturados en el modal de resolución. Las fechas llegan
+     * como Date (null si el usuario no seleccionó ninguna) y la numeración como
+     * texto, para poder reportar si no es numérica.
+     */
+    public boolean validarResolucion(String descripcion, String tipoComprobante, String disenho, String numeroResolucion,
+            String prefijo, Date fechaInicio, Date fechaFinal, String numeracionDel, String numeracionHasta) {
 
         List<Object> errores_validacion = new ArrayList<>();
 
-        for (int i = 0; i < tablaResoluciones.getRowCount(); i++) {
-            String descripcionComprobante = tablaResoluciones.getValueAt(i, 1).toString();
-            String tipoComprobante = tablaResoluciones.getValueAt(i, 2).toString();
-            String disenho = tablaResoluciones.getValueAt(i, 3).toString();
-            String numeroResolucion = tablaResoluciones.getValueAt(i, 4).toString();
-            String prefijo = tablaResoluciones.getValueAt(i, 5).toString();
-            String fechaInicio = tablaResoluciones.getValueAt(i, 6).toString();
-            String fechaFinal = tablaResoluciones.getValueAt(i, 7).toString();
-            String numeracionDel = tablaResoluciones.getValueAt(i, 8).toString();
-            String numeracionHasta = tablaResoluciones.getValueAt(i, 9).toString();
+        if (descripcion.isEmpty()) {
+            errores_validacion.add("Debe ingresar la descripción de la resolución");
+        }
 
-            if (descripcionComprobante.equals("")) {
-                errores_validacion.add("Debe ingresar la descripción del comprobante en la fila #" + (i + 1));
-            }
+        if (tipoComprobante.isEmpty()) {
+            errores_validacion.add("Debe seleccionar un tipo de comprobante");
+        }
 
-            if (tipoComprobante.equals("")) {
-                errores_validacion.add("Debe seleccionar un tipo de comprobante en la fila #" + (i + 1));
-            }
+        if (disenho.isEmpty() && tipoComprobante.equals(Constantes.FACTURACION_ELECTRONICA)) {
+            errores_validacion.add("Debe ingresar el número del diseño");
+        }
 
-            if (disenho.equals("") && tipoComprobante.equals(Constantes.FACTURACION_ELECTRONICA)) {
-                errores_validacion.add("Debe ingresar el número del diseño en la fila #" + (i + 1));
-            }
+        if (numeroResolucion.isEmpty()) {
+            errores_validacion.add("Debe ingresar el número de resolución");
+        }
 
-            if (numeroResolucion.equals("")) {
-                errores_validacion.add("Debe ingresar el número de resolución en la fila #" + (i + 1));
-            }
+        if (prefijo.isEmpty() && instancias.getRegimen().equals("") && !esCompraVentaNormal(tipoComprobante)) {
+            errores_validacion.add("Debe ingresar el prefijo de la resolución");
+        }
 
-            if (prefijo.equals("") && instancias.getRegimen().equals("") && !esCompraVentaNormal(tipoComprobante)) {
-                errores_validacion.add("Debe ingresar el prefijo de resolución en la fila #" + (i + 1));
-            }
+        if (fechaInicio == null) {
+            errores_validacion.add("Debe seleccionar la fecha de inicio de la resolución");
+        }
 
-            if (fechaInicio.equals("")) {
-                errores_validacion.add("Debe seleccionar la fecha de inicio de la resolución en la fila #" + (i + 1));
-            }
+        if (fechaFinal == null) {
+            errores_validacion.add("Debe seleccionar la fecha de finalización de la resolución");
+        }
 
-            if (fechaFinal.equals("")) {
-                errores_validacion.add("Debe seleccionar la fecha de finalización de la resolución en la fila #" + (i + 1));
-            }
+        if (fechaInicio != null && fechaFinal != null && fechaFinal.before(fechaInicio)) {
+            errores_validacion.add("La fecha final no puede ser anterior a la fecha de inicio");
+        }
 
-            if (numeracionDel.equals("")) {
-                errores_validacion.add("Debe ingresar el inicio de la numeración del comprobante en la fila #" + (i + 1));
-            } else {
-                try {
-                    Integer.parseInt(numeracionDel);
-                } catch (NumberFormatException e) {
-                    errores_validacion.add("Debe ingresar un número en el inicio de la numeración del comprobante en la fila #" + (i + 1));
-                }
-            }
+        Integer desde = validarNumero(numeracionDel, "el inicio", errores_validacion);
+        Integer hasta = validarNumero(numeracionHasta, "el final", errores_validacion);
 
-            if (numeracionHasta.equals("")) {
-                errores_validacion.add("Debe ingresar el final de la numeración del comprobante en la fila #" + (i + 1));
-            } else {
-                try {
-                    Integer.parseInt(numeracionHasta);
-                } catch (NumberFormatException e) {
-                    errores_validacion.add("Debe ingresar un número en el final de la numeración del comprobante en la fila #" + (i + 1));
-                }
-            }
+        if (desde != null && hasta != null && hasta < desde) {
+            errores_validacion.add("El final de la numeración no puede ser menor que el inicio");
         }
 
         if (errores_validacion.size() > 0) {
@@ -108,6 +93,20 @@ public class squemaResoluciones extends javax.swing.JPanel {
         }
 
         return true;
+    }
+
+    private Integer validarNumero(String valor, String parte, List<Object> errores) {
+        if (valor.isEmpty()) {
+            errores.add("Debe ingresar " + parte + " de la numeración de la resolución");
+            return null;
+        }
+
+        try {
+            return Integer.parseInt(valor);
+        } catch (NumberFormatException e) {
+            errores.add("Debe ingresar un número en " + parte + " de la numeración de la resolución");
+            return null;
+        }
     }
 
     private boolean esCompraVentaNormal(String tipoResolucion) {

@@ -1369,19 +1369,6 @@ public class VistaPagos extends javax.swing.JInternalFrame {
             modeloCartera.addColumn("AbonadoAnterior");
 
             if (tblCartera.getColumnModel().getColumnCount() > 0) {
-//                        if (instancias.isConsecutivosDiferentes() || instancias.isPrefijo()) {
-//                            tblCartera.getColumnModel().getColumn(0).setMinWidth(0);
-//                            tblCartera.getColumnModel().getColumn(0).setPreferredWidth(0);
-//                            tblCartera.getColumnModel().getColumn(0).setMaxWidth(0);
-//                        } else {
-//                            tblCartera.getColumnModel().getColumn(1).setMinWidth(0);
-//                            tblCartera.getColumnModel().getColumn(1).setPreferredWidth(0);
-//                            tblCartera.getColumnModel().getColumn(1).setMaxWidth(0);
-//                        }
-
-//                tblCartera.getColumnModel().getColumn(8).setMinWidth(0);
-//                tblCartera.getColumnModel().getColumn(8).setPreferredWidth(0);
-//                tblCartera.getColumnModel().getColumn(8).setMaxWidth(0);
                 tblCartera.getColumnModel().getColumn(13).setMinWidth(0);
                 tblCartera.getColumnModel().getColumn(13).setPreferredWidth(0);
                 tblCartera.getColumnModel().getColumn(13).setMaxWidth(0);

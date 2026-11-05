@@ -66,6 +66,33 @@ public class DaoBodegas extends AbstractDao {
         }
     }
 
+    /**
+     * Indica si ya existe otra bodega del mismo tipo con el nombre dado (sin
+     * distinguir mayúsculas ni espacios al inicio o final).
+     *
+     * @param codigoOmitido código de la bodega que se está modificando, para
+     * no compararla consigo misma; vacío o null al crear una nueva.
+     */
+    public boolean existeNombre(String nombre, String tipoBodega, String codigoOmitido) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return false;
+        }
+
+        String sql = "SELECT 1 FROM " + TABLA
+                + " WHERE UPPER(TRIM(nombre)) = UPPER(TRIM(?)) AND tipoBodega = ? AND codigo <> ? LIMIT 1";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setString(1, nombre.trim());
+            stmt.setString(2, texto(tipoBodega));
+            stmt.setString(3, texto(codigoOmitido));
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al verificar el nombre de la bodega " + nombre, e);
+            return false;
+        }
+    }
+
     public String guardar(ModeloBodega bodega) {
         Connection conexion = getConnection();
         boolean autoCommitPrevio = true;
@@ -82,6 +109,34 @@ public class DaoBodegas extends AbstractDao {
             LOGGER.log(Level.SEVERE, "Error al guardar la bodega " + bodega.getNombre(), e);
             revertir(conexion);
             return null;
+        } finally {
+            restaurarAutoCommit(conexion, autoCommitPrevio);
+        }
+    }
+
+    /**
+     * Aplica en una sola transacción las bodegas internas nuevas (sin código)
+     * y modificadas desde la maestra. Si algo falla no se guarda nada.
+     */
+    public boolean guardarCambiosInternas(List<ModeloBodega> bodegas) {
+        if (bodegas == null || bodegas.isEmpty()) {
+            return true;
+        }
+        Connection conexion = getConnection();
+        boolean autoCommitPrevio = true;
+
+        try {
+            autoCommitPrevio = conexion.getAutoCommit();
+            conexion.setAutoCommit(false);
+
+            sincronizar(conexion, "", bodegas);
+
+            conexion.commit();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al guardar las bodegas internas", e);
+            revertir(conexion);
+            return false;
         } finally {
             restaurarAutoCommit(conexion, autoCommitPrevio);
         }

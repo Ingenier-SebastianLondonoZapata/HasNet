@@ -313,6 +313,9 @@ public class vistaInicioSesion extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
+        // Separador decimal "," y separador de miles "." en todo el sistema
+        java.util.Locale.setDefault(new java.util.Locale("es", "CO"));
+
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {

@@ -5,6 +5,20 @@ public class ModeloMaestraGeneral {
     private String nitEmpresa, nombreEmpresa, regimenEmpresa, direccionEmpresa, telefonoEmpresa, tituloFactura,
             configuracionRegimen, foco, alertaUtilidad, tipoDescuento, contrasena;
 
+    /**
+     * Código de la bodega con la que trabaja el inventario (bdMaestra.bodega).
+     * Se guarda aparte con DaoMaestra.actualizarBodega.
+     */
+    private String bodega;
+
+    public String getBodega() {
+        return bodega;
+    }
+
+    public void setBodega(String bodega) {
+        this.bodega = bodega;
+    }
+
     private String inicioHosp, finHosp, intervalosHosp, horaInicioAgenda, horaFinAgenda, intervaloAgenda, codPrestadorServicio,
             tipoIdPrestadorServicio;
 
@@ -12,14 +26,13 @@ public class ModeloMaestraGeneral {
             descuentoMaximoVentas, limiteProductosPorFactura, diasCobroMora;
 
     private boolean usarLector, preciosConImpuesto, ventasPredeterminado, mensajeUtilidad, facturarSinInventario,
-            consecutivosDiferentes, mostrarDevuelta, consecutivoAdicional, combinarProductos, modificarNombre, modificarPrecio,
-            facturarMesas, soloMesas, borrarMesas, borrarCongelada, turno, visualizarTodasLasFacturas, mostrarInformacionCuadre;
+            mostrarDevuelta, consecutivoAdicional, combinarProductos, modificarNombre, modificarPrecio,
+            facturarMesas, soloMesas, borrarMesas, borrarProductos, turno, visualizarTodasLasFacturas, mostrarInformacionCuadre;
 
-    private boolean generaOrdenMedica, imprimirOrdenMedica, imprimirFacturaOrdenMedica, diasAutomaticos, ciudadBuscador,
-            ocultarInformacionCliente;
+    private boolean generaOrdenMedica, imprimirOrdenMedica, imprimirFacturaOrdenMedica, diasAutomaticos, moduloPermisos,
+            validarCupoCredito;
 
-    private String alertaFechaDias, alertaCantidadNumeracion, alertaPromedioDias, porcentajeMora,
-            password, responsabilidadesFiscales;
+    private String porcentajeMora, password, responsabilidadesFiscales;
 
     public String getConfiguracionRegimen() {
         return configuracionRegimen;
@@ -133,44 +146,12 @@ public class ModeloMaestraGeneral {
         this.mensajeUtilidad = mensajeUtilidad;
     }
 
-    public boolean isConsecutivosDiferentes() {
-        return consecutivosDiferentes;
-    }
-
-    public void setConsecutivosDiferentes(boolean consecutivosDiferentes) {
-        this.consecutivosDiferentes = consecutivosDiferentes;
-    }
-
     public String getTituloFactura() {
         return tituloFactura;
     }
 
     public void setTituloFactura(String tituloFactura) {
         this.tituloFactura = tituloFactura;
-    }
-
-    public String getAlertaFechaDias() {
-        return alertaFechaDias;
-    }
-
-    public void setAlertaFechaDias(String alertaFechaDias) {
-        this.alertaFechaDias = alertaFechaDias;
-    }
-
-    public String getAlertaCantidadNumeracion() {
-        return alertaCantidadNumeracion;
-    }
-
-    public void setAlertaCantidadNumeracion(String alertaCantidadNumeracion) {
-        this.alertaCantidadNumeracion = alertaCantidadNumeracion;
-    }
-
-    public String getAlertaPromedioDias() {
-        return alertaPromedioDias;
-    }
-
-    public void setAlertaPromedioDias(String alertaPromedioDias) {
-        this.alertaPromedioDias = alertaPromedioDias;
     }
 
     public int getDiasCobroMora() {
@@ -333,12 +314,12 @@ public class ModeloMaestraGeneral {
         this.modificarPrecio = modificarPrecio;
     }
 
-    public boolean isBorrarCongelada() {
-        return borrarCongelada;
+    public boolean isBorrarProductos() {
+        return borrarProductos;
     }
 
-    public void setBorrarCongelada(boolean borrarCongelada) {
-        this.borrarCongelada = borrarCongelada;
+    public void setBorrarProductos(boolean borrarProductos) {
+        this.borrarProductos = borrarProductos;
     }
 
     public boolean isFacturarSinInventario() {
@@ -421,20 +402,20 @@ public class ModeloMaestraGeneral {
         this.diasAutomaticos = diasAutomaticos;
     }
 
-    public boolean isCiudadBuscador() {
-        return ciudadBuscador;
+    public boolean isModuloPermisos() {
+        return moduloPermisos;
     }
 
-    public void setCiudadBuscador(boolean ciudadBuscador) {
-        this.ciudadBuscador = ciudadBuscador;
+    public void setModuloPermisos(boolean moduloPermisos) {
+        this.moduloPermisos = moduloPermisos;
     }
 
-    public boolean isOcultarInformacionCliente() {
-        return ocultarInformacionCliente;
+    public boolean isValidarCupoCredito() {
+        return validarCupoCredito;
     }
 
-    public void setOcultarInformacionCliente(boolean ocultarInformacionCliente) {
-        this.ocultarInformacionCliente = ocultarInformacionCliente;
+    public void setValidarCupoCredito(boolean validarCupoCredito) {
+        this.validarCupoCredito = validarCupoCredito;
     }
 
     public String getFoco() {

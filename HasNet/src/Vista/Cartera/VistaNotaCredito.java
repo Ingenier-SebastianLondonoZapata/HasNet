@@ -1,5 +1,6 @@
 package Vista.Cartera;
 
+import Utilidades.Impuestos;
 import Procesos.Inventario.Dao.DaoInventario;
 
 import Dao.Productos.DaoProducto;
@@ -1224,38 +1225,26 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             subtotal = subtotal.subtract(descuento);
             subtotalGeneral = subtotal;
 
-            if (instancias.isPvpConIva() || instancias.isPvpConImpoconsumo()) {
-                BigDecimal subIva = BigDecimal.ZERO, subImpo = BigDecimal.ZERO;
-                if (instancias.isPvpConIva() && instancias.isPvpConImpoconsumo()) {
-                    //CALCULAMOS EL IVA
-                    subIva = subtotal.divide(iva, 2, RoundingMode.HALF_UP);
-                    totalIva = subtotal.subtract(subIva);
-
-                    //CALCULAMOS EL IMPOCONSUMO
-                    subImpo = subtotal.divide(impoconsumo, 2, RoundingMode.HALF_UP);
-                    totalImpoconsumo = subtotal.subtract(subImpo);
-
-                    //CALCULAMOS EL SUBTOTAL
-                    subtotal = subtotal.subtract(totalImpoconsumo).subtract(totalIva);
-                } else if (instancias.isPvpConIva()) {
-                    subIva = subtotal.divide(iva, 2, RoundingMode.HALF_UP);
-                    totalIva = subtotal.subtract(subIva);
-                    subtotal = subtotal.subtract(totalIva);
-                } else if (instancias.isPvpConImpoconsumo()) {
-                    subImpo = subtotal.divide(impoconsumo, 2, RoundingMode.HALF_UP);
-                    totalImpoconsumo = subtotal.subtract(subImpo);
-                    subtotal = subtotal.subtract(totalImpoconsumo);
+            if (DatosMaestra.isPrecioVentaConIva() || DatosMaestra.isPrecioVentaConImpoconsumo()) {
+                BigDecimal[] desglose = Impuestos.desglosarIncluidos(subtotal, iva, impoconsumo,
+                        DatosMaestra.isPrecioVentaConIva(), DatosMaestra.isPrecioVentaConImpoconsumo());
+                if (DatosMaestra.isPrecioVentaConIva()) {
+                    totalIva = desglose[1];
                 }
+                if (DatosMaestra.isPrecioVentaConImpoconsumo()) {
+                    totalImpoconsumo = desglose[2];
+                }
+                subtotal = desglose[0];
             }
 
-            if (!instancias.isPvpConIva()) {
+            if (!DatosMaestra.isPrecioVentaConIva()) {
                 iva = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 6)));
                 iva = (iva.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
                 totalIva = subtotalGeneral.multiply(iva);
                 totalIva = totalIva.subtract(subtotalGeneral);
             }
 
-            if (!instancias.isPvpConImpoconsumo()) {
+            if (!DatosMaestra.isPrecioVentaConImpoconsumo()) {
                 impoconsumo = big.getMoneda(String.valueOf(tblProductos.getValueAt(fila, 8)));
                 impoconsumo = (impoconsumo.divide(big.getBigDecimal("100"))).add(big.getBigDecimal("1"));
                 totalImpoconsumo = subtotalGeneral.multiply(impoconsumo);
@@ -1823,20 +1812,6 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         return regimenAdquirente;
     }
 
-    private String obtenerResponsabilidadesFiscales() {
-        String[] responsabilidades = DatosMaestra.getResponsabilidadesRaw().split(", ");
-        String responsabilidadesFiscales = "";
-        for (int i = 0; i < responsabilidades.length; i++) {
-            responsabilidadesFiscales = responsabilidadesFiscales + responsabilidades[i].split(" /")[0] + ";";
-        }
-
-        if (!responsabilidadesFiscales.equals("")) {
-            responsabilidadesFiscales = responsabilidadesFiscales.substring(0, responsabilidadesFiscales.length() - 1);
-        }
-
-        return responsabilidadesFiscales;
-    }
-
     private String[] obtenerDatosFactura() {
         String referenciaFactura = txtFactura.getText();
         String[] datosFactura = new String[2];
@@ -2001,10 +1976,10 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             modeloIndividual.setUnidadMedida(tblProductos.getValueAt(i, 21).toString());
 
             BigDecimal valorTotalBruto = big.getMoneda(tblProductos.getValueAt(i, 2).toString()).multiply(big.getBigDecimal(tblProductos.getValueAt(i, 3).toString()));
-            if (instancias.isPvpConIva()) {
+            if (DatosMaestra.isPrecioVentaConIva()) {
                 valorTotalBruto = valorTotalBruto.subtract(totalIva);
             }
-            if (instancias.isPvpConImpoconsumo()) {
+            if (DatosMaestra.isPrecioVentaConImpoconsumo()) {
                 valorTotalBruto = valorTotalBruto.subtract(totalImpoconsumo);
             }
 
@@ -2120,7 +2095,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         modeloFacturacionElectronica.setCdTipoPlantilla(tipoPlantilla);
 
         modeloFacturacionElectronica.setVersionDian("2");
-        modeloFacturacionElectronica.setResponsabilidadesFiscales(obtenerResponsabilidadesFiscales());
+        modeloFacturacionElectronica.setResponsabilidadesFiscales(DatosMaestra.getResponsabilidadesFiscales());
 
         modeloFacturacionElectronica.setPrefijoFacturaReferencia(obtenerDatosFactura()[0]);
         modeloFacturacionElectronica.setNumeroFacturaReferencia(obtenerDatosFactura()[1]);
