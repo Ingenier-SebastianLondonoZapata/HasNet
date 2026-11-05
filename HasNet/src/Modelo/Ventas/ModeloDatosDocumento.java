@@ -165,22 +165,22 @@ public class ModeloDatosDocumento {
 
         boolean esAnulada = obtenerValor(datos, "isAnulada");
         return new ModeloDatosDocumento(
-                String.valueOf(obtenerValor(datos, "getFactura")),
-                String.valueOf(obtenerValor(datos, "getCliente")),
-                String.valueOf(obtenerValor(datos, "getVendedor")),
+                obtenerTexto(datos, "getFactura"),
+                obtenerTexto(datos, "getCliente"),
+                obtenerTexto(datos, "getVendedor"),
                 Fechas.formatearFecha1(obtenerFecha(datos, "getFechaFactura")),
                 Fechas.formatearFecha1(obtenerFecha(datos, "getFechaVencimiento")),
-                String.valueOf(obtenerValor(datos, "getObservacion")),
-                String.valueOf(obtenerValor(datos, "getResolucion")),
+                obtenerTexto(datos, "getObservacion"),
+                obtenerTexto(datos, "getResolucion"),
                 big.getBigDecimal(obtenerNumero(datos, "getSubtotalGeneral")),
                 big.getBigDecimal(obtenerNumero(datos, "getDescuentoGeneral")),
                 big.getBigDecimal(obtenerNumero(datos, "getIvaGeneral")),
                 impoConsumo,
                 big.getBigDecimal(obtenerNumero(datos, "getTotalGeneral")),
                 esAnulada,
-                String.valueOf(obtenerValor(datos, "getBodega")),
-                String.valueOf(obtenerValor(datos, "getEstadoGeneral")),
-                String.valueOf(obtenerValor(datos, "getEstado2"))
+                obtenerTexto(datos, "getBodega"),
+                obtenerTexto(datos, "getEstadoGeneral"),
+                obtenerTexto(datos, "getEstado2")
         );
     }
 
@@ -194,7 +194,12 @@ public class ModeloDatosDocumento {
     }
 
     private static String obtenerFecha(Object obj, String metodo) {
-        return String.valueOf(obtenerValor(obj, metodo));
+        return obtenerTexto(obj, metodo);
+    }
+
+    private static String obtenerTexto(Object obj, String metodo) {
+        Object valor = obtenerValor(obj, metodo);
+        return String.valueOf(valor);
     }
 
     private static Number obtenerNumero(Object obj, String metodo) {

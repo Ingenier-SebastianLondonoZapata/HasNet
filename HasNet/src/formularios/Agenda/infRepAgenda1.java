@@ -1,6 +1,5 @@
 package formularios.Agenda;
 
-import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -779,9 +778,7 @@ public class infRepAgenda1 extends javax.swing.JPanel {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
-                    sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
-                }
+                sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
             }
 
             if (cmbProveedor.getItemCount() > 0) {
@@ -866,9 +863,7 @@ public class infRepAgenda1 extends javax.swing.JPanel {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
-                    sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
-                }
+                sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
             }
 
             if (cmbProveedor.getItemCount() > 0) {

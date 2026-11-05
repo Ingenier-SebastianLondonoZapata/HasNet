@@ -245,7 +245,10 @@ public class squemaFacturacion extends javax.swing.JPanel {
                 errores_validacion.add("No se pudo consultar el último ponderado del producto '" + descripcionProducto + "'");
             }
 
-            if (DatosMaestra.isAlertarUtilidadSobrepasada() && !saltarPasosFactura) {
+            boolean permiteUtilidadSobrepasada = DatosMaestra.isFacturarUtilidadSobrepasada();
+            boolean revisarUtilidad = !saltarPasosFactura && !esNotaCredito
+                    && (!permiteUtilidadSobrepasada || DatosMaestra.isAlertarUtilidadSobrepasada());
+            if (revisarUtilidad) {
                 Object marcaUtilidad = tablaProductos.getValueAt(i, COLUMNA_MARCA_UTILIDAD);
                 if (marcaUtilidad != null) {
                     String mensaje = null;
@@ -255,10 +258,10 @@ public class squemaFacturacion extends javax.swing.JPanel {
                         mensaje = "El producto '" + descripcionProducto + "' tiene utilidad máxima sobrepasada";
                     }
                     if (mensaje != null) {
-                        if (DatosMaestra.isFacturarUtilidadSobrepasada()) {
-                            errores_validacion.add(mensaje);
-                        } else {
+                        if (permiteUtilidadSobrepasada) {
                             alertas_validacion.add(mensaje);
+                        } else {
+                            errores_validacion.add(mensaje);
                         }
                     }
                 }

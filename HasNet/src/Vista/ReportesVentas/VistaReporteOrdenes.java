@@ -1,6 +1,5 @@
 package Vista.ReportesVentas;
 
-import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -671,9 +670,7 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
-                    sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
-                }
+                sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
             }
 
             if (cmbCientes.getItemCount() > 0) {
@@ -806,9 +803,7 @@ public class VistaReporteOrdenes extends javax.swing.JPanel {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
-                    sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
-                }
+                sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
             }
 
             if (cmbCientes.getItemCount() > 0) {

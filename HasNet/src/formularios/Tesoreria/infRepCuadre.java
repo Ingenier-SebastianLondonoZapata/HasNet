@@ -1,6 +1,5 @@
 package formularios.Tesoreria;
 
-import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Dao.InicioSesion.DaoInicioSesion;
@@ -721,9 +720,7 @@ public class infRepCuadre extends javax.swing.JInternalFrame {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
-                    sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
-                }
+                sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
             }
 
             String ini = metodos.desdeDate(dtInicio.getCurrent()), fin = metodos.desdeDate(dtFinal.getCurrent());

@@ -3815,10 +3815,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * La primera fila de tblImpresoras1 trae el nombre de cada impresora en sus
-     * columnas (la columna 0 es la del grupo).
-     */
     private void guardarImpresoras() {
         for (int columna = 1; columna < tblImpresoras1.getColumnCount(); columna++) {
             String nombre = textoCeldaOVacio(tblImpresoras1, 0, columna);
@@ -3839,12 +3835,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Guarda los campos predeterminados de la orden médica: los crea si aún no
-     * existen o los modifica si ya estaban registrados.
-     *
-     * @return false si hubo un error y se debe detener el guardado
-     */
     private boolean guardarOpcionesMedico() {
         if (!instancias.getConfiguraciones().isMedico()) {
             return true;
@@ -3872,12 +3862,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         return true;
     }
 
-    /**
-     * Guarda los servicios y la configuración del parqueadero.
-     *
-     * @return false si hubo un error o una validación falló y se debe detener
-     * el guardado
-     */
     private boolean guardarOpcionesParqueadero() {
         if (!instancias.getConfiguraciones().isParqueadero()) {
             return true;
@@ -3926,10 +3910,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Reemplaza los servicios del parqueadero por los de tblConfig. Se detiene
-     * en el primer servicio que no se pueda guardar.
-     */
     private boolean guardarServiciosParqueadero() {
         instancias.getSql().eliminarTodo("bdServicios");
         for (int i = 0; i < tblConfig.getRowCount(); i++) {
@@ -3960,11 +3940,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Asigna a cada grupo (filas desde la 1) la impresora de la columna marcada
-     * como SELECCIONADO. Si una fila tiene datos incompletos se omite el resto
-     * de esa fila.
-     */
     private void guardarImpresorasPorGrupo() {
         for (int fila = 1; fila < tblImpresoras1.getRowCount(); fila++) {
             try {
@@ -3979,10 +3954,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Refresca la maestra en memoria y en los módulos que la consultan, para
-     * que tomen los cambios sin reiniciar el sistema.
-     */
     private void actualizarMaestrosEnModulos() {
         DaoMaestra _daoM = new DaoMaestra();
         DatosMaestra.setearDatosMaestra(_daoM.obtenerGeneral(), _daoM.obtenerImpresiones());
@@ -3993,6 +3964,11 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         instancias.getReimpresion().consultarMaestros();
         instancias.getAbonos().consultarMaestros();
 
+        // Consecutivo adicional / turno (restaurante) en las vistas de facturación
+        actualizarConsecutivoEnVista(instancias::getFactura);
+        actualizarConsecutivoEnVista(instancias::getFacturaCreditos);
+        actualizarConsecutivoEnVista(instancias::getPedido);
+
         if (instancias.getConfiguraciones().isVeterinaria()) {
             instancias.getHospitalizacion().consultarMaestros();
             instancias.getFormatos().consultarMaestros();
@@ -4000,6 +3976,17 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         if (instancias.getConfiguraciones().isLaboratorio()) {
             instancias.getHistoriaLaboratorio().actualizarExamenes();
+        }
+    }
+
+    private void actualizarConsecutivoEnVista(java.util.function.Supplier<Vista.Ventas.VistaFactura> vista) {
+        try {
+            Vista.Ventas.VistaFactura factura = vista.get();
+            if (factura != null) {
+                factura.actualizarVistaConsecutivo();
+            }
+        } catch (NullPointerException e) {
+            // El módulo no está cargado: tomará la configuración al abrirse
         }
     }
 
@@ -4069,7 +4056,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         general.setModificarNombre(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Modificar nombre de productos", 1));
         general.setTurno(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Activar turnos", 1));
         general.setTurnoConsecutivo(isTurnoActivo() ? parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Número de turno", 1)) : 0);
-        general.setConsecutivoAdicional(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Consecutivo adicional en factura", 1));
+        // En restaurante la opción no se muestra ni aplica: se guarda desactivada
+        general.setConsecutivoAdicional(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, OPCION_CONSECUTIVO_ADICIONAL, 1));
         general.setModificarPrecio(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Modificar precio de productos", 1));
 
         boolean opcionBorrarProductos = instancias.getConfiguraciones().isRestaurante()
@@ -4138,9 +4126,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
     private VistaPreviaLogo vistaPreviaLogo;
 
-    /**
-     * Reemplaza el contenido vacío de pnlLogo por la vista previa del logo.
-     */
     private void inicializarVistaLogo() {
         vistaPreviaLogo = new VistaPreviaLogo();
         pnlLogo.removeAll();
@@ -4149,10 +4134,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         mostrarLogoEmpresa();
     }
 
-    /**
-     * Lee el logo guardado desde disco (sin caché, para ver siempre la versión
-     * recién montada) y lo muestra en pnlLogo.
-     */
     private void mostrarLogoEmpresa() {
         if (vistaPreviaLogo == null) {
             return;
@@ -4169,12 +4150,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         vistaPreviaLogo.setImagen(logo);
     }
 
-    /**
-     * Dibuja el logo centrado y ajustado al panel, conservando la proporción.
-     * Nunca lo amplía por encima de su tamaño real (se vería borroso) y al
-     * reducirlo lo hace por pasos con interpolación bicúbica para que el texto
-     * del logo siga siendo legible.
-     */
     private static class VistaPreviaLogo extends javax.swing.JComponent {
 
         private static final int MARGEN = 6;
@@ -4314,10 +4289,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
     private static final String OPCION_IMPRESION_POR_GRUPO = "Impresión por grupo";
 
-    /**
-     * Escucha la fila "Impresión por grupo" de tblOpcionesImpresiones y la
-     * pestaña de impresiones para mantener pnlImpresionesGrupo sincronizado.
-     */
     private void inicializarImpresionPorGrupo() {
         if (!instancias.getConfiguraciones().isRestaurante()) {
             // La impresión por grupo solo aplica para restaurante
@@ -4349,10 +4320,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         return getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, OPCION_IMPRESION_POR_GRUPO, 1);
     }
 
-    /**
-     * Muestra u oculta el panel de impresión por grupo según la opción de la
-     * tabla; al activarse actualiza las impresoras disponibles.
-     */
     private void aplicarEstadoImpresionPorGrupo() {
         boolean activa = isImpresionPorGrupoActiva();
         mostrarPanelImpresionPorGrupo(activa);
@@ -4367,11 +4334,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         pnlImpresiones.repaint();
     }
 
-    /**
-     * Pone la pestaña de impresiones dentro de un scroll para que en pantallas
-     * pequeñas se pueda bajar hasta el panel de impresión por grupo en lugar de
-     * que las tablas queden recortadas.
-     */
     private void agregarScrollPestanaImpresiones() {
         int indice = tabPanel.indexOfComponent(pnlImpresiones);
         if (indice < 0) {
@@ -4389,16 +4351,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         scroll.getHorizontalScrollBar().setUnitIncrement(16);
     }
 
-    /**
-     * Panel que ocupa todo el espacio disponible y solo muestra barras de
-     * desplazamiento cuando el contenido no cabe.
-     */
     private class PanelDesplazable extends javax.swing.JPanel implements javax.swing.Scrollable {
 
-        /**
-         * Alto adicional que se reserva para las tablas de impresión por grupo,
-         * ya que en el diseño quedan con un alto mínimo y se verían cortadas.
-         */
         private static final int ALTO_EXTRA_IMPRESION_GRUPO = 200;
 
         PanelDesplazable() {
@@ -4443,10 +4397,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Recarga tblImpresoras con las impresoras instaladas en el equipo (sin
-     * incluir "Fax").
-     */
     private void actualizarImpresorasDisponibles() {
         PrintService[] impresoras = PrintServiceLookup.lookupPrintServices(null, null);
         DefaultTableModel model = (DefaultTableModel) tblImpresoras.getModel();
@@ -5271,38 +5221,19 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         buscar.show();
     }//GEN-LAST:event_btnListarUsuariosActionPerformed
 
-    // ======================================================================
-    // Gestión de usuarios (migrado de infUsuarios)
-    // ======================================================================
     private static final String CARPETA_FIRMAS = System.getProperty("user.dir") + "\\imagenes\\firmas\\";
     private static final String FIRMA_POR_DEFECTO = CARPETA_FIRMAS + "ADMIN.jpg";
 
     private DaoUsuarios daoUsuarios;
 
-    /**
-     * Tabla de permisos de cada pestaña de tapPanelPermisos.
-     */
     private final java.util.Map<PermisoUsuario.Modulo, javax.swing.JTable> tablasPermisos
             = new java.util.EnumMap<>(PermisoUsuario.Modulo.class);
 
-    /**
-     * Permisos que se muestran en cada tabla: la fila i corresponde a
-     * permisosVisibles.get(modulo).get(i). Los permisos de opciones que la
-     * empresa no tiene activas no se muestran.
-     */
     private final java.util.Map<PermisoUsuario.Modulo, java.util.List<PermisoUsuario>> permisosVisibles
             = new java.util.EnumMap<>(PermisoUsuario.Modulo.class);
 
-    /**
-     * Usuario cargado para modificar (null si es uno nuevo). Se usa para
-     * conservar el valor de los permisos que no se muestran.
-     */
     private ModeloUsuario usuarioCargado;
 
-    /**
-     * Imagen de firma elegida por el usuario y aún no guardada; vacía si no se
-     * eligió una nueva.
-     */
     private String firmaSeleccionada = "";
 
     private void inicializarUsuarios() {
@@ -5380,10 +5311,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         columnaPermiso.setMaxWidth(80);
     }
 
-    /**
-     * Indica si el permiso aplica según las opciones activas de la empresa
-     * (configuraciones). Los que no aplican no se muestran en las tablas.
-     */
     private boolean permisoDisponible(PermisoUsuario permiso) {
         switch (permiso) {
             case CONGELADAS:
@@ -5414,9 +5341,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Deja el formulario listo para registrar un usuario nuevo.
-     */
     private void limpiarUsuario() {
         detenerEdicionPermisos();
         usuarioCargado = null;
@@ -5470,9 +5394,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         txtNombre.requestFocus();
     }
 
-    /**
-     * Registra (nuevo = true) o modifica el usuario del formulario.
-     */
     private void guardarUsuario(boolean nuevo) {
         if (!validarDatosUsuario()) {
             return;
@@ -5538,11 +5459,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Valor del permiso según la tabla. Si el permiso no se muestra, conserva
-     * el valor que ya tenía el usuario (o false si es un usuario nuevo), para
-     * no quitarle permisos al modificarlo.
-     */
     private boolean getPermiso(PermisoUsuario permiso) {
         int fila = permisosVisibles.get(permiso.getModulo()).indexOf(permiso);
         if (fila < 0) {
@@ -5582,10 +5498,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         firmaSeleccionada = ruta;
     }
 
-    /**
-     * Guarda la firma elegida; si no se eligió ninguna y el usuario aún no
-     * tiene firma, le asigna la firma por defecto (ADMIN.jpg).
-     */
     private void guardarFirmaUsuario(String usuario) {
         String destino = rutaFirma(usuario);
         if (!firmaSeleccionada.isEmpty()) {
@@ -5595,12 +5507,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Muestra la imagen en lbFoto ajustada a su tamaño y conservando la
-     * proporción. La lee desde disco cada vez (sin caché de ImageIcon).
-     *
-     * @return false si la imagen no existe o no se pudo leer.
-     */
     private boolean mostrarFirma(String ruta) {
         lbFoto.setIcon(null);
         java.io.File archivo = new java.io.File(ruta);
@@ -5636,9 +5542,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private static final String PREFIJO_NOTAS_CREDITO = "Notas crédito";
     private static final String PREFIJO_NOTAS_DEBITO = "Notas débito";
 
-    /**
-     * Guarda los prefijos de tblPrefijos (se llama al GUARDAR la maestra).
-     */
     private boolean guardarPrefijos() {
         if (tblPrefijos.isEditing()) {
             tblPrefijos.getCellEditor().stopCellEditing();
@@ -5684,17 +5587,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    // ---------------- Resoluciones: cambios pendientes ----------------
-    // Agregar, modificar e inactivar solo cambian la tabla; se escriben en la
-    // base de datos al GUARDAR la maestra (guardarCambiosResoluciones).
-    /**
-     * Resoluciones nuevas (id negativo temporal) o modificadas (id real), con
-     * las fechas en dd-MM-yyyy como las espera DaoResoluciones.
-     */
+
     private final java.util.Map<Integer, ModeloResolucion> resolucionesPendientes = new java.util.LinkedHashMap<>();
-    /**
-     * Cambios de estado pendientes: id de la resolución -> activa.
-     */
     private final java.util.Map<Integer, Boolean> estadosResolucionPendientes = new java.util.LinkedHashMap<>();
     private int siguienteIdResolucionTemporal = -1;
 
@@ -5763,10 +5657,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         actualizarBotonEstadoResolucion();
     }
 
-    /**
-     * Fila de tblComprobantes para una resolución capturada en el modal (fechas
-     * dd-MM-yyyy; en pantalla se muestran dd/MM/yyyy).
-     */
     private Object[] filaResolucion(ModeloResolucion r, String estado) {
         return new Object[]{r.getIdResolucion(), r.getDescripcionResolucion(), r.getTipoResolucion(), r.getDisenho(),
             r.getNumeroResolucion(), r.getPrefijo(), fechaPantalla(r.getFechaInicio()), fechaPantalla(r.getFechaFinal()),
@@ -5777,10 +5667,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         return fechaModal == null ? "" : fechaModal.replace('-', '/');
     }
 
-    /**
-     * El modal muestra las fechas en formato de base de datos (yyyy-MM-dd) y
-     * devuelve dd-MM-yyyy; para reabrir una resolución pendiente se convierte.
-     */
     private ModeloResolucion copiaParaModal(ModeloResolucion r) {
         ModeloResolucion copia = new ModeloResolucion(r.getIdResolucion(), r.getDescripcionResolucion(), r.getTipoResolucion(),
                 r.getDisenho(), r.getNumeroResolucion(), r.getPrefijo(), fechaBaseDatos(r.getFechaInicio()),
@@ -5846,11 +5732,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         fijarAnchoColumnaResolucion(columna, 0);
     }
 
-    /**
-     * Quita del tabPanel la pestaña del módulo que la empresa no tiene activo.
-     * Se busca por el panel (no por índice) para que no dependa del orden de
-     * las pestañas; si ya se quitó antes no hace nada.
-     */
     private void quitarPestana(java.awt.Component panel) {
         int indice = tabPanel.indexOfComponent(panel);
         if (indice >= 0) {
@@ -5858,10 +5739,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
     }
 
-    /**
-     * Oculta una columna dejando su ancho en 0; el valor sigue disponible en el
-     * modelo de la tabla.
-     */
     private void ocultarColumna(javax.swing.JTable tabla, int columna) {
         javax.swing.table.TableColumn columnaTabla = tabla.getColumnModel().getColumn(columna);
         columnaTabla.setMinWidth(0);
@@ -5876,10 +5753,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         tblComprobantes.getColumnModel().getColumn(columna).setMaxWidth(ancho);
     }
 
-    /**
-     * Los documentos que ya están abiertos deben dejar de ofrecer las
-     * resoluciones inactivas y mostrar las nuevas sin reiniciar.
-     */
     private void refrescarResolucionesEnDocumentos() {
         instancias.getFactura().actualizarTablaResoluciones();
         instancias.getIngresos().actualizarTablaResoluciones();
@@ -6634,7 +6507,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         setFilaTabla(tblConfiguraciones, nombreBorrarProductos, 1, DatosMaestra.isBorrarProductos());
 
         setFilaTabla(tblConfiguraciones, "Modificar precio de productos", 1, DatosMaestra.isModificarPrecio());
-        setFilaTabla(tblConfiguraciones, "Consecutivo adicional en factura", 1, DatosMaestra.isConsecutivoAdicional());
+        setFilaTabla(tblConfiguraciones, OPCION_CONSECUTIVO_ADICIONAL, 1, DatosMaestra.isConsecutivoAdicional());
         setFilaTabla(tblConfiguraciones, "Activar turnos", 1, DatosMaestra.isTurnoActivo());
         aplicarEstadoNumeroTurno();
         setFilaTabla(tblConfiguraciones, "Modificar nombre de productos", 1, DatosMaestra.isModificarNombre());
@@ -7251,6 +7124,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
     private static final String OPCION_SOLO_MESAS_MESEROS = "Activar solo mesas para meseros";
     private static final String OPCION_FACTURAR_MESAS_MESEROS = "Habilitar facturar mesas para meseros";
+    private static final String OPCION_CONSECUTIVO_ADICIONAL = "Consecutivo adicional en factura";
 
     /**
      * Las opciones de meseros solo están en la tabla si es restaurante; si no
@@ -7276,7 +7150,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 return col == 1 ? Boolean.class : Object.class;
             }
         };
-        modelo.addRow(new Object[]{"Consecutivo adicional en factura", false});
+        // Consecutivo adicional: solo aplica cuando no es restaurante
+        if (!esRestaurante) {
+            modelo.addRow(new Object[]{OPCION_CONSECUTIVO_ADICIONAL, false});
+        }
         modelo.addRow(new Object[]{"Ventas Contado Predeterminado", false});
         modelo.addRow(new Object[]{"Modificar nombre de productos", false});
         modelo.addRow(new Object[]{"Modificar precio de productos", false});

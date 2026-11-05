@@ -307,10 +307,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }
 
     private void agregarCondicionPorTerminal(StringBuilder builder) {
-        if (DatosMaestra.isVisualizarTodasLasFacturas()) {
-            return;
-        }
-
         boolean esAdmin = "ADMIN".equals(instancias.getUsuario());
         if (esAdmin) {
             return;

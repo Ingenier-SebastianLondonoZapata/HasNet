@@ -168,6 +168,9 @@ public final class VistaFactura extends javax.swing.JPanel {
             saltarPasosFactura = false, solicitudPermiso = false, pasandoACongelada = false,
             facturacionDesdeDocumentos = false;
 
+    // Comprobante con el que corrieron las validaciones (ver validarCambioAComprobanteElectronico).
+    private String tipoComprobanteValidado = "";
+
     private String tipoProceso, loteGeneral = "", permisoNumero = "",
             terminal = "", loteCuentasCobro = "", fechaFacturaAutomatica = "";
 
@@ -3459,7 +3462,10 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         ResultadoValidacionInventario resultadoValidacion = this.saltarPasosFactura ? null : validarInventarioProductos(idBodega);
 
-        ModeloContacto datosCliente = !ID_CLIENTE_CARGADO.equals("") ? instancias.getSql().getDatosTercero(ID_CLIENTE_CARGADO) : new ModeloContacto();
+        String idClienteCargado = null == ID_CLIENTE_CARGADO ? "" : ID_CLIENTE_CARGADO;
+        ModeloContacto datosCliente = idClienteCargado.isEmpty() ? new ModeloContacto() : instancias.getSql().getDatosTercero(ID_CLIENTE_CARGADO);
+
+        tipoComprobanteValidado = obtenerTipoComprobante();
         if (!validacionesGeneralesDeFacturacion(datosCliente, resultadoValidacion, DatosMaestra.isFacturarSinInventario())) {
             borrarAdiciones();
             return "";
@@ -3480,7 +3486,8 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     /**
-     * Llena los combos de lista de precios con las listas que existen en los productos (L1 y las adicionales).
+     * Llena los combos de lista de precios con las listas que existen en los
+     * productos (L1 y las adicionales).
      */
     public final void actualizarListasPrecio() {
         List<String> nombres = new ArrayList<>();
@@ -3495,8 +3502,9 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     /**
-     * Al editar la lista de una línea solo se ofrecen las listas que tiene ese producto (la L1 y sus listas con precio),
-     * más la que la línea ya tenga seleccionada.
+     * Al editar la lista de una línea solo se ofrecen las listas que tiene ese
+     * producto (la L1 y sus listas con precio), más la que la línea ya tenga
+     * seleccionada.
      */
     private void cargarListasDelProducto(int fila, Object listaActual) {
         List<String> nombres = new ArrayList<>();
@@ -3518,7 +3526,10 @@ public final class VistaFactura extends javax.swing.JPanel {
         cmbListas.setModel(new DefaultComboBoxModel(nombres.toArray()));
     }
 
-    /** Selecciona la lista del cliente; si ningún producto la tiene aún se agrega al combo para no perderla. */
+    /**
+     * Selecciona la lista del cliente; si ningún producto la tiene aún se
+     * agrega al combo para no perderla.
+     */
     private void seleccionarListaPrecio(String lista) {
         if (lista != null && !lista.trim().isEmpty()) {
             DefaultComboBoxModel modelo = (DefaultComboBoxModel) cmbListaPrecio.getModel();
@@ -5828,6 +5839,14 @@ public final class VistaFactura extends javax.swing.JPanel {
             return "";
         }
 
+        String comprobanteValidado = tipoComprobanteValidado;
+        tipoComprobanteValidado = "";
+        if (!validarCambioAComprobanteElectronico(comprobanteValidado)) {
+            funcionalidadVentas.reiniciarPagos(instancias);
+            borrarAdiciones();
+            return "";
+        }
+
         String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(this.tipoProceso);
         String[] consecutivos = obtenerConsecutivoDocumento();
         String factura = consecutivos[0];
@@ -6652,7 +6671,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                 tblProductosKeyReleased(evento);
             }
         }*/
-
         cargarTotales();
         txtObservaciones.setText(consecutivo);
         saltarPasosFactura = false;
@@ -6682,7 +6700,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                 tblProductosKeyReleased(evento);
             }
         }*/
-
         cargarTotales();
         txtObservaciones.setText(consecutivo);
         saltarPasosFactura = false;
@@ -6992,7 +7009,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
 
             System.out.println("que numero carga: " + Utilidades.formatearCantidadVista(big.getBigDecimal(cantidadPlu).multiply(cantidad)));
-            
+
             modeloPro.addRow(new Object[]{
                 codigoProducto,
                 descripcion,
@@ -8028,6 +8045,34 @@ public final class VistaFactura extends javax.swing.JPanel {
                 }
             }
         }
+    }
+
+    /**
+     * La tabla de comprobantes (dentro de pnlDatosAdicionales) también se
+     * muestra en la ventana de pagos, que se abre después de las validaciones.
+     * Si allí se cambia a un comprobante electrónico, se ejecutan las
+     * validaciones electrónicas antes de generar el documento.
+     */
+    private boolean validarCambioAComprobanteElectronico(String comprobanteValidado) {
+        String tipoComprobante = obtenerTipoComprobante();
+        boolean generaDocumentoElectronico = this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor())
+                || (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) && lbTitulo.getText().equals("DOMICILIO"));
+
+        if (!generaDocumentoElectronico || !Constantes.esFacturacionElectronica(tipoComprobante)
+                || tipoComprobante.equals(comprobanteValidado)) {
+            return true;
+        }
+
+        String vendedor = cmbVendedor.getItemCount() > 0 ? cmbVendedor.getSelectedItem().toString() : "";
+        ModeloContacto datosCliente = DATOS_CLIENTE_CARGADO != null ? DATOS_CLIENTE_CARGADO : new ModeloContacto();
+
+        if (!squemaFacturacionElectronica.validaciones_facturacionElectronica(datosCliente, vendedor, null, false, false)) {
+            return false;
+        }
+
+        // Sin inventario y saltando pasos: solo se repiten las validaciones de detalle propias
+        // del comprobante electrónico; las alertas de inventario, costo y utilidad ya se mostraron.
+        return squemaFacturacion.validaciones_detalle_facturacion(tblProductos, tipoComprobante, this.tipoProceso, null, false, true);
     }
 
     private boolean validarCancelacionFactura() {

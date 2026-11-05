@@ -27,7 +27,7 @@ public class ModeloMaestraGeneral {
 
     private boolean usarLector, preciosConImpuesto, ventasPredeterminado, mensajeUtilidad, facturarSinInventario,
             mostrarDevuelta, consecutivoAdicional, combinarProductos, modificarNombre, modificarPrecio,
-            facturarMesas, soloMesas, borrarMesas, borrarProductos, turno, visualizarTodasLasFacturas, mostrarInformacionCuadre;
+            facturarMesas, soloMesas, borrarMesas, borrarProductos, turno, mostrarInformacionCuadre;
 
     private boolean generaOrdenMedica, imprimirOrdenMedica, imprimirFacturaOrdenMedica, diasAutomaticos, moduloPermisos,
             validarCupoCredito;
@@ -224,14 +224,6 @@ public class ModeloMaestraGeneral {
 
     public void setCodPrestadorServicio(String codPrestadorServicio) {
         this.codPrestadorServicio = codPrestadorServicio;
-    }
-
-    public boolean isVisualizarTodasLasFacturas() {
-        return visualizarTodasLasFacturas;
-    }
-
-    public void setVisualizarTodasLasFacturas(boolean visualizarTodasLasFacturas) {
-        this.visualizarTodasLasFacturas = visualizarTodasLasFacturas;
     }
 
     public boolean isMostrarInformacionCuadre() {

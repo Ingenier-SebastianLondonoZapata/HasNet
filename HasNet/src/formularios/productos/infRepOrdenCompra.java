@@ -1,6 +1,5 @@
 package formularios.productos;
 
-import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -672,9 +671,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                if (!DatosMaestra.isVisualizarTodasLasFacturas()) {
-                    sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
-                }
+                sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
             }
 
             if (cmbProveedor.getItemCount() > 0) {

@@ -171,14 +171,6 @@ public class DatosMaestra {
         return general != null && general.isMostrarDevuelta();
     }
 
-    /**
-     * "Visualizar todas las facturas". Se mantiene siempre en false (así se
-     * comportaba el sistema; ninguna pantalla configura esta opción).
-     */
-    public static boolean isVisualizarTodasLasFacturas() {
-        return false;
-    }
-
     public static boolean isMostrarInformacionCuadre() {
         return general != null && general.isMostrarInformacionCuadre();
     }
