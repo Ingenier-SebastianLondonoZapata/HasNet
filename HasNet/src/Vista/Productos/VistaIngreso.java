@@ -43,7 +43,6 @@ import Utilidades.Numeros;
 import Utilidades.Utilidades;
 import Dao.Productos.DaoProducto;
 import formularios.Tesoreria.dlgTipoEgreso;
-import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgTipoDescuento;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import formularios.productos.dlgDetalleCompra;
@@ -345,7 +344,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         lbNombre = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         btnBuscTerceros = new javax.swing.JButton();
-        btnInformacionCliente = new javax.swing.JButton();
         lbNombre1 = new javax.swing.JLabel();
         txtTelefono = new javax.swing.JTextField();
         btnImportarExcel = new javax.swing.JButton();
@@ -954,20 +952,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             }
         });
 
-        btnInformacionCliente.setBackground(new java.awt.Color(255, 255, 255));
-        btnInformacionCliente.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        btnInformacionCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscarInfo.png"))); // NOI18N
-        btnInformacionCliente.setText("Ver datos");
-        btnInformacionCliente.setBorder(null);
-        btnInformacionCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnInformacionCliente.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInformacionCliente.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnInformacionCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInformacionClienteActionPerformed(evt);
-            }
-        });
-
         lbNombre1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         lbNombre1.setText("Teléfono:");
 
@@ -990,9 +974,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(txtNit, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBuscTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnInformacionCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnBuscTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtNombre)
                     .addComponent(txtTelefono))
                 .addGap(5, 5, 5))
@@ -1004,7 +986,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(txtNit, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnBuscTerceros, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnInformacionCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbNit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -2201,14 +2182,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void tblProductosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProductosKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_tblProductosKeyPressed
-
-    private void btnInformacionClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformacionClienteActionPerformed
-        if (null != DATOS_CLIENTE_CARGADO) {
-            dlgInformacionCliente notaCliente = new dlgInformacionCliente(null, true, DATOS_CLIENTE_CARGADO.getIdSistema());
-            notaCliente.setLocationRelativeTo(null);
-            notaCliente.setVisible(true);
-        }
-    }//GEN-LAST:event_btnInformacionClienteActionPerformed
 
     private void txtPorcentajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPorcentajeMouseClicked
         if (instancias.getConfiguraciones().isFacturaElectronica()) {
@@ -3680,7 +3653,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private javax.swing.JButton btnBuscTerceros3;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnImportarExcel;
-    private javax.swing.JButton btnInformacionCliente;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnReimprimir;
     private javax.swing.ButtonGroup buttonGroup1;

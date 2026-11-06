@@ -777,7 +777,7 @@
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="btnTestConexion1" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnConfiguraciones" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -814,7 +814,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnVerificar" min="-2" pref="37" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                              <Component id="btnTestConexion1" min="-2" pref="37" max="-2" attributes="0"/>
+                              <Component id="btnConfiguraciones" min="-2" pref="37" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -1257,7 +1257,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVerificarActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnTestConexion1">
+                    <Component class="javax.swing.JButton" name="btnConfiguraciones">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="d6" green="d6" red="d6" type="rgb"/>
@@ -1289,7 +1289,7 @@
                         </Property>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTestConexion1ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfiguracionesActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -1545,7 +1545,7 @@
                       <Component id="lbVentas8" alignment="1" pref="60" max="32767" attributes="0"/>
                       <Component id="lbVentas9" alignment="1" pref="0" max="32767" attributes="0"/>
                       <Component id="lbVentas10" alignment="1" max="32767" attributes="0"/>
-                      <Component id="lbConfiguraciones" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnConfiguracionesMini" alignment="0" max="32767" attributes="0"/>
                       <Component id="lbVeterinaria1" alignment="0" max="32767" attributes="0"/>
                       <Component id="lbAgenda1" alignment="0" max="32767" attributes="0"/>
                       <Component id="lbVentas12" alignment="0" max="32767" attributes="0"/>
@@ -1579,7 +1579,7 @@
                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                   <Component id="btnParqueadero1" min="-2" pref="43" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lbConfiguraciones" min="-2" pref="41" max="-2" attributes="0"/>
+                  <Component id="btnConfiguracionesMini" min="-2" pref="41" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -1779,7 +1779,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lbVeterinaria1ActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="lbConfiguraciones">
+        <Component class="javax.swing.JButton" name="btnConfiguracionesMini">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Calibri" size="14" style="0"/>
@@ -1795,7 +1795,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lbConfiguracionesActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfiguracionesMiniActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="lbMedico1">

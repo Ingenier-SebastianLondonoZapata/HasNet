@@ -1237,8 +1237,6 @@
                                   <Component id="txtNit" pref="139" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnBuscTerceros" min="-2" pref="43" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btnInformacionCliente" min="-2" pref="124" max="-2" attributes="0"/>
                               </Group>
                               <Component id="txtNombre" max="32767" attributes="0"/>
                               <Component id="txtTelefono" max="32767" attributes="0"/>
@@ -1254,7 +1252,6 @@
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="txtNit" alignment="0" max="32767" attributes="0"/>
                               <Component id="btnBuscTerceros" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btnInformacionCliente" alignment="0" max="32767" attributes="0"/>
                               <Component id="lbNit" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -1338,33 +1335,6 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscTercerosActionPerformed"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnInformacionCliente">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Century Gothic" size="16" style="0"/>
-                    </Property>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/buscarInfo.png"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Ver datos"/>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="null"/>
-                    </Property>
-                    <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-                      <Color id="Cursor Por defecto"/>
-                    </Property>
-                    <Property name="horizontalTextPosition" type="int" value="4"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[2, 7, 2, 5]"/>
-                    </Property>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInformacionClienteActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lbNombre1">

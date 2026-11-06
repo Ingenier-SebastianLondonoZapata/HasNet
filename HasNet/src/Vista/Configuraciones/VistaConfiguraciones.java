@@ -3964,6 +3964,11 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         instancias.getReimpresion().consultarMaestros();
         instancias.getAbonos().consultarMaestros();
 
+        // Buzón de solicitudes de permiso según "Módulo de solicitudes de permisos"
+        if (instancias.getMenu() != null) {
+            instancias.getMenu().activarFuncionSolicitudes();
+        }
+
         // Consecutivo adicional / turno (restaurante) en las vistas de facturación
         actualizarConsecutivoEnVista(instancias::getFactura);
         actualizarConsecutivoEnVista(instancias::getFacturaCreditos);
@@ -4033,7 +4038,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         general.setRegimenEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "Régimen", 1).toUpperCase());
         general.setDireccionEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "Dirección", 1).toUpperCase());
         general.setTelefonoEmpresa(getCeldaTextoPorEtiqueta(tblInformacionEmpresa, "Teléfono", 1).toUpperCase());
-        general.setUsarLector(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Usar lector", 1));
+        general.setUsarLector(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, OPCION_USAR_LECTOR, 1));
         general.setTituloFactura(obtenerTituloFactura());
         general.setPreciosConImpuesto(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Precios con impuestos", 1));
         general.setVentasPredeterminado(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Ventas Contado Predeterminado", 1));
@@ -4058,7 +4063,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         general.setTurnoConsecutivo(isTurnoActivo() ? parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Número de turno", 1)) : 0);
         // En restaurante la opción no se muestra ni aplica: se guarda desactivada
         general.setConsecutivoAdicional(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, OPCION_CONSECUTIVO_ADICIONAL, 1));
-        general.setModificarPrecio(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Modificar precio de productos", 1));
+        general.setModificarPrecio(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, OPCION_MODIFICAR_PRECIO, 1));
 
         boolean opcionBorrarProductos = instancias.getConfiguraciones().isRestaurante()
                 ? getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Borrar productos en mesas", 1)
@@ -4076,7 +4081,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         general.setIntervalosHosp(String.valueOf(cmbIntervalo1.getSelectedItem()));
         general.setDiasAutomaticos(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Días de plazo automaticos", 1));
         general.setModuloPermisos(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Módulo de solicitudes de permisos", 1));
-        general.setFoco(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Foco después de cargar el producto", 1));
+        // Sin modificar precio, el foco solo puede ir a la cantidad
+        general.setFoco(isModificarPrecioActivo()
+                ? getCeldaTextoPorEtiqueta(tblConfiguraciones1, OPCION_FOCO_PRODUCTO, 1)
+                : FOCO_CANTIDAD);
         general.setFacturarMesas(valorOpcionMeseros(OPCION_FACTURAR_MESAS_MESEROS, DatosMaestra.isFacturarMesas()));
         general.setSoloMesas(valorOpcionMeseros(OPCION_SOLO_MESAS_MESEROS, DatosMaestra.isSoloMesas()));
 
@@ -6292,7 +6300,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         setFilaTabla(tblOpcionesImpresiones, OPCION_IMPRESION_POR_GRUPO, 1, DatosMaestra.isImpresionPorGrupo());
 
-        setFilaTabla(tblConfiguraciones1, "Foco después de cargar el producto", 1, DatosMaestra.getFocoDespuesDeCargarProducto());
+        setFilaTabla(tblConfiguraciones1, OPCION_FOCO_PRODUCTO, 1, DatosMaestra.getFocoDespuesDeCargarProducto());
 
         setFilaTabla(tblConfiguraciones, "Validar el cupo del credito", 1, DatosMaestra.isValidarCupoCredito());
         setFilaTabla(tblConfiguraciones, "Días de plazo automaticos", 1, DatosMaestra.isCargarDiasPlazoAutomaticamente());
@@ -6506,7 +6514,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         String nombreBorrarProductos = instancias.getConfiguraciones().isRestaurante() ? "Borrar productos en mesas" : "Borrar productos en congeladas";
         setFilaTabla(tblConfiguraciones, nombreBorrarProductos, 1, DatosMaestra.isBorrarProductos());
 
-        setFilaTabla(tblConfiguraciones, "Modificar precio de productos", 1, DatosMaestra.isModificarPrecio());
+        setFilaTabla(tblConfiguraciones, OPCION_MODIFICAR_PRECIO, 1, DatosMaestra.isModificarPrecio());
+        aplicarEstadoFocoProducto();
         setFilaTabla(tblConfiguraciones, OPCION_CONSECUTIVO_ADICIONAL, 1, DatosMaestra.isConsecutivoAdicional());
         setFilaTabla(tblConfiguraciones, "Activar turnos", 1, DatosMaestra.isTurnoActivo());
         aplicarEstadoNumeroTurno();
@@ -6550,7 +6559,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         setFilaTabla(tblConfiguraciones1, "Días para alerta de cartera", 1, DatosMaestra.getDiasAlertaCuadre());
 
         setFilaTabla(tblOpcionesImpresiones, "Imprimir recodiga en cuadre de caja", 1, DatosMaestra.isImprimirRecogida());
-        setFilaTabla(tblConfiguraciones, "Usar lector", 1, DatosMaestra.isUsarLector());
+        setFilaTabla(tblConfiguraciones, OPCION_USAR_LECTOR, 1, DatosMaestra.isUsarLector());
         setFilaTabla(tblConfiguraciones1, "Título en la factura", 1, DatosMaestra.getTituloFactura());
         setFilaTabla(tblConfiguraciones, "Precios con impuestos", 1, DatosMaestra.isPreciosConImpuestos());
         setFilaTabla(tblConfiguraciones, "Ventas Contado Predeterminado", 1, DatosMaestra.isVentasContadoPredeterminado());
@@ -6646,9 +6655,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         // El máximo efectivo (100 si no hay) lo da DatosMaestra.getDescuentoMaximoPermitido()
         String descMax = DatosMaestra.getDescuentoMaximoVentas();
-        if (!descMax.equals("") && !descMax.equals("0")) {
-            setFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar", 1, descMax);
-        }
+        setFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar", 1,
+                descMax == null || descMax.trim().isEmpty() ? "0" : descMax.trim());
         aplicarEstadoDescuentoMaximo();
 
         llenarTablaServicios();
@@ -7125,6 +7133,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private static final String OPCION_SOLO_MESAS_MESEROS = "Activar solo mesas para meseros";
     private static final String OPCION_FACTURAR_MESAS_MESEROS = "Habilitar facturar mesas para meseros";
     private static final String OPCION_CONSECUTIVO_ADICIONAL = "Consecutivo adicional en factura";
+    private static final String OPCION_MODIFICAR_PRECIO = "Modificar precio de productos";
+    private static final String OPCION_FOCO_PRODUCTO = "Foco después de cargar el producto";
+    private static final String FOCO_CANTIDAD = "Cantidad";
+    private static final String OPCION_USAR_LECTOR = "Usar lector";
 
     /**
      * Las opciones de meseros solo están en la tabla si es restaurante; si no
@@ -7156,7 +7168,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
         modelo.addRow(new Object[]{"Ventas Contado Predeterminado", false});
         modelo.addRow(new Object[]{"Modificar nombre de productos", false});
-        modelo.addRow(new Object[]{"Modificar precio de productos", false});
+        modelo.addRow(new Object[]{OPCION_MODIFICAR_PRECIO, false});
         modelo.addRow(new Object[]{"Combinar productos iguales", false});
         modelo.addRow(new Object[]{"Días de plazo automaticos", false});
         modelo.addRow(new Object[]{"Facturar Utilidad Sobrepasada", false});
@@ -7171,7 +7183,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         modelo.addRow(new Object[]{"Borrar " + identificador, false});
 
         modelo.addRow(new Object[]{"Módulo de solicitudes de permisos", false});
-        modelo.addRow(new Object[]{"Usar lector", false});
+        modelo.addRow(new Object[]{OPCION_USAR_LECTOR, false});
         modelo.addRow(new Object[]{"Precios con impuestos", false});
 
         // Opciones de meseros: solo aplican para restaurante
@@ -7180,15 +7192,17 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             modelo.addRow(new Object[]{OPCION_FACTURAR_MESAS_MESEROS, true});
         }
 
-        final int facturarRow = 6, alertarRow = 7;
+        // Las filas se identifican por su etiqueta: según la configuración algunas
+        // no se agregan y los índices cambian.
         modelo.addTableModelListener(e -> {
-            if (e.getColumn() == 1 && e.getFirstRow() == facturarRow) {
-                boolean facturar = Boolean.TRUE.equals(modelo.getValueAt(facturarRow, 1));
-                modelo.setValueAt(!facturar, alertarRow, 1);
+            if (e.getColumn() != 1 || e.getFirstRow() < 0 || e.getFirstRow() >= modelo.getRowCount()) {
+                return;
             }
-            if (e.getColumn() == 1 && e.getFirstRow() >= 0 && e.getFirstRow() < modelo.getRowCount()
-                    && "Activar turnos".equals(modelo.getValueAt(e.getFirstRow(), 0))) {
+            Object etiqueta = modelo.getValueAt(e.getFirstRow(), 0);
+            if ("Activar turnos".equals(etiqueta)) {
                 aplicarEstadoNumeroTurno();
+            } else if (OPCION_MODIFICAR_PRECIO.equals(etiqueta) || OPCION_USAR_LECTOR.equals(etiqueta)) {
+                aplicarEstadoFocoProducto();
             }
         });
 
@@ -7220,7 +7234,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         tipos.add("combo_descuento");
         etiquetas.add("Descuento máximo para aplicar");
         tipos.add("int");
-        etiquetas.add("Foco después de cargar el producto");
+        etiquetas.add(OPCION_FOCO_PRODUCTO);
         tipos.add("combo_foco");
         etiquetas.add("Cantidad al cargar un producto");
         tipos.add("num");
@@ -7251,6 +7265,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 }
                 if ("Descuento máximo para aplicar".equals(getValueAt(row, 0))) {
                     return isTipoDescuentoPorcentaje();
+                }
+                if (OPCION_FOCO_PRODUCTO.equals(getValueAt(row, 0))) {
+                    // Con lector el foco siempre vuelve al código del producto
+                    return isModificarPrecioActivo() && !isUsarLectorActivo();
                 }
                 return true;
             }
@@ -7292,8 +7310,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
             @Override
             public javax.swing.table.TableCellEditor getCellEditor(int row, int col) {
-                if (col == 1 && row < tipos.size()) {
-                    switch (tipos.get(row)) {
+                // "row" es de la vista: con filas ocultas no coincide con el modelo
+                int filaModelo = convertRowIndexToModel(row);
+                if (col == 1 && filaModelo < tipos.size()) {
+                    switch (tipos.get(filaModelo)) {
                         case "combo_descuento":
                             return new javax.swing.DefaultCellEditor(
                                     new javax.swing.JComboBox<>(new String[]{"Porcentaje", "Valor"}));
@@ -7341,6 +7361,19 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             }
         };
 
+        // Filas que no aplican según la configuración se ocultan (no se ponen en gris)
+        filtroConfiguraciones1 = new javax.swing.table.TableRowSorter<>(modelo);
+        for (int columna = 0; columna < modelo.getColumnCount(); columna++) {
+            filtroConfiguraciones1.setSortable(columna, false);
+        }
+        filtroConfiguraciones1.setRowFilter(new javax.swing.RowFilter<javax.swing.table.TableModel, Integer>() {
+            @Override
+            public boolean include(javax.swing.RowFilter.Entry<? extends javax.swing.table.TableModel, ? extends Integer> entry) {
+                return esFilaVisibleConfiguraciones1(entry.getStringValue(0));
+            }
+        });
+        tblConfiguraciones1.setRowSorter(filtroConfiguraciones1);
+
         tblConfiguraciones1.setFont(new java.awt.Font("Arial", 0, 16));
         tblConfiguraciones1.setRowHeight(28);
         if (tblConfiguraciones1.getColumnModel().getColumnCount() > 0) {
@@ -7351,28 +7384,95 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         jScrollPane22.setViewportView(tblConfiguraciones1);
     }
 
+    private javax.swing.table.TableRowSorter<javax.swing.table.TableModel> filtroConfiguraciones1;
+
+    /**
+     * Filas de tblConfiguraciones1 que solo se muestran cuando aplican:
+     * - "Número de turno": con "Activar turnos".
+     * - "Foco después de cargar el producto": sin "Usar lector". Sin "Modificar
+     *   precio" sigue visible, bloqueada en "Cantidad".
+     * - "Descuento máximo para aplicar": con tipo de descuento "Porcentaje".
+     */
+    private boolean esFilaVisibleConfiguraciones1(String etiqueta) {
+        if ("Número de turno".equals(etiqueta)) {
+            return isTurnoActivo();
+        }
+        if (OPCION_FOCO_PRODUCTO.equals(etiqueta)) {
+            return !isUsarLectorActivo();
+        }
+        if ("Descuento máximo para aplicar".equals(etiqueta)) {
+            return isTipoDescuentoPorcentaje();
+        }
+        return true;
+    }
+
+    /**
+     * El filtro depende de otra tabla (tblConfiguraciones): se vuelve a aplicar
+     * cuando cambian esas opciones.
+     */
+    private void refrescarFilasVisiblesConfiguraciones1() {
+        if (filtroConfiguraciones1 == null) {
+            return;
+        }
+        // Se difiere: puede llamarse desde un listener del mismo modelo, antes de
+        // que el filtro haya procesado el cambio.
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            if (filtroConfiguraciones1 != null) {
+                filtroConfiguraciones1.sort();
+            }
+        });
+    }
+
+    private boolean isModificarPrecioActivo() {
+        return tblConfiguraciones != null && getCeldaBooleanaPorEtiqueta(tblConfiguraciones, OPCION_MODIFICAR_PRECIO, 1);
+    }
+
+    private boolean isUsarLectorActivo() {
+        return tblConfiguraciones != null && getCeldaBooleanaPorEtiqueta(tblConfiguraciones, OPCION_USAR_LECTOR, 1);
+    }
+
+    /**
+     * "Foco después de cargar el producto":
+     * - Sin "Modificar precio de productos" no puede ir al valor: queda fijo en
+     *   "Cantidad" y la celda se bloquea.
+     * - Con "Usar lector" no aplica (el foco vuelve al código del producto): la
+     *   fila se oculta y conserva su valor.
+     */
+    private void aplicarEstadoFocoProducto() {
+        if (tblConfiguraciones1 == null) {
+            return;
+        }
+        boolean modificarPrecio = isModificarPrecioActivo();
+        if (!modificarPrecio || isUsarLectorActivo()) {
+            cancelarEdicionFila(tblConfiguraciones1, getFilaTabla(tblConfiguraciones1, OPCION_FOCO_PRODUCTO));
+        }
+        if (!modificarPrecio) {
+            setFilaTabla(tblConfiguraciones1, OPCION_FOCO_PRODUCTO, 1, FOCO_CANTIDAD);
+        }
+        refrescarFilasVisiblesConfiguraciones1();
+        tblConfiguraciones1.repaint();
+    }
+
     private boolean isTurnoActivo() {
         return tblConfiguraciones != null && getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Activar turnos", 1);
     }
 
     /**
-     * "Número de turno" solo es editable con "Activar turnos" en Si (inicia en
-     * 1 si estaba en 0); de lo contrario se fuerza a 0.
+     * "Número de turno" solo se muestra con "Activar turnos" en Si (inicia en 1
+     * si estaba en 0); de lo contrario se oculta y se fuerza a 0.
      */
     private void aplicarEstadoNumeroTurno() {
         if (tblConfiguraciones1 == null) {
             return;
         }
         if (!isTurnoActivo()) {
-            int fila = getFilaTabla(tblConfiguraciones1, "Número de turno");
-            if (fila >= 0 && tblConfiguraciones1.isEditing() && tblConfiguraciones1.getEditingRow() == fila) {
-                tblConfiguraciones1.getCellEditor().cancelCellEditing();
-            }
+            cancelarEdicionFila(tblConfiguraciones1, getFilaTabla(tblConfiguraciones1, "Número de turno"));
             setFilaTabla(tblConfiguraciones1, "Número de turno", 1, "0");
         } else if (parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Número de turno", 1)) <= 0) {
             // Al activar turnos, el consecutivo inicia en 1
             setFilaTabla(tblConfiguraciones1, "Número de turno", 1, "1");
         }
+        refrescarFilasVisiblesConfiguraciones1();
         tblConfiguraciones1.repaint();
     }
 
@@ -7390,12 +7490,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             return;
         }
         if (!isTipoDescuentoPorcentaje()) {
-            int fila = getFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar");
-            if (fila >= 0 && tblConfiguraciones1.isEditing() && tblConfiguraciones1.getEditingRow() == fila) {
-                tblConfiguraciones1.getCellEditor().cancelCellEditing();
-            }
+            cancelarEdicionFila(tblConfiguraciones1, getFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar"));
             setFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar", 1, "0");
         }
+        refrescarFilasVisiblesConfiguraciones1();
         tblConfiguraciones1.repaint();
     }
 
@@ -7531,9 +7629,12 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         tblImpresoraPorTipo.getColumnModel().getColumn(1).setCellEditor(new javax.swing.DefaultCellEditor(cmbImpresora));
     }
 
+    // Los métodos por etiqueta trabajan sobre el MODELO (índices del modelo), no
+    // sobre la vista: así siguen funcionando con filas ocultas por un filtro.
     private int getFilaTabla(javax.swing.JTable tabla, String etiqueta) {
-        for (int i = 0; i < tabla.getRowCount(); i++) {
-            Object val = tabla.getValueAt(i, 0);
+        javax.swing.table.TableModel modelo = tabla.getModel();
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            Object val = modelo.getValueAt(i, 0);
             if (etiqueta.equals(val)) {
                 return i;
             }
@@ -7544,13 +7645,13 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private void setFilaTabla(javax.swing.JTable tabla, String etiqueta, int columna, Object valor) {
         int fila = getFilaTabla(tabla, etiqueta);
         if (fila >= 0) {
-            tabla.setValueAt(valor, fila, columna);
+            tabla.getModel().setValueAt(valor, fila, columna);
         }
     }
 
     private boolean getCeldaBooleana(javax.swing.JTable tabla, int fila, int columna) {
         try {
-            Object val = tabla.getValueAt(fila, columna);
+            Object val = tabla.getModel().getValueAt(fila, columna);
             return val != null && (Boolean) val;
         } catch (Exception e) {
             return false;
@@ -7559,10 +7660,20 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
     private String getCeldaTexto(javax.swing.JTable tabla, int fila, int columna) {
         try {
-            Object val = tabla.getValueAt(fila, columna);
+            Object val = tabla.getModel().getValueAt(fila, columna);
             return val != null ? val.toString() : "";
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    /**
+     * Cancela la edición si se está editando la fila (del modelo) indicada.
+     */
+    private void cancelarEdicionFila(javax.swing.JTable tabla, int filaModelo) {
+        if (filaModelo >= 0 && tabla.isEditing()
+                && tabla.convertRowIndexToModel(tabla.getEditingRow()) == filaModelo) {
+            tabla.getCellEditor().cancelCellEditing();
         }
     }
 

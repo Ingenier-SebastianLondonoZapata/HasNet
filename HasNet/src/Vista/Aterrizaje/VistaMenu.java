@@ -10,7 +10,7 @@ import clases.Instancias;
 import clases.alertasHospitalizacionVeterinario;
 import clases.metodosGenerales;
 import clases.recordatorios.alertaRecordatorio;
-import clases.solicitudesPermisos;
+import Vista.Configuraciones.hiloSolicitudesPermisos;
 import Vista.Configuraciones.vistaSuperMaestra;
 import Vista.Productos.VistaProductos;
 import configuracion.dlgPermisos;
@@ -153,9 +153,12 @@ import Vista.Productos.Reportes.VistaReportesProducto;
 
 public class VistaMenu extends javax.swing.JFrame {
 
+    private hiloSolicitudesPermisos hiloSolicitudes;
+
     private final Rectangle desktop;
     private final metodosGenerales metodos;
     private Instancias instancias;
+
     private final Rectangle MENU, SUBMENU;
     boolean seVeElMenu;
     private JInternalFrame[] formularios, anula, caja, cartera;
@@ -275,64 +278,64 @@ public class VistaMenu extends javax.swing.JFrame {
                         break;
                     case "boton1":
                         try {
-                            lbItem1ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem1ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton2":
                         try {
-                            lbItem2ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem2ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton3":
                         try {
-                            lbItem3ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem3ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton4":
                         try {
-                            lbItem4ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem4ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton5":
                         try {
-                            lbItem5ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem5ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton6":
                         try {
-                            lbItem6ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem6ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton7":
                         try {
-                            lbItem7ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem7ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton8":
                         try {
-                            lbItem8ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem8ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton9":
                         try {
-                            lbItem9ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem9ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "boton10":
                         try {
-                            lbItem10ActionPerformed(null);
-                        } catch (Exception ex) {
-                        }
-                        break;
+                        lbItem10ActionPerformed(null);
+                    } catch (Exception ex) {
+                    }
+                    break;
                     case "modulo1":
                         animacion("ventas");
                         break;
@@ -427,7 +430,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnLaboratorio = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         btnVerificar = new javax.swing.JButton();
-        btnTestConexion1 = new javax.swing.JButton();
+        btnConfiguraciones = new javax.swing.JButton();
         btnOcultar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnCambiarUsuario = new javax.swing.JButton();
@@ -448,7 +451,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbVentas12 = new javax.swing.JButton();
         lbAgenda1 = new javax.swing.JButton();
         lbVeterinaria1 = new javax.swing.JButton();
-        lbConfiguraciones = new javax.swing.JButton();
+        btnConfiguracionesMini = new javax.swing.JButton();
         lbMedico1 = new javax.swing.JButton();
         btnParqueadero1 = new javax.swing.JButton();
 
@@ -489,7 +492,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/logoNuevo.png"))); // NOI18N
         lbLogo.setBorder(null);
         lbLogo.setContentAreaFilled(false);
-        lbLogo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbLogo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbLogo.setFocusPainted(false);
         lbLogo.setFocusable(false);
         lbLogo.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -507,7 +510,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem1.setText("COTIZACION");
         lbItem1.setBorderPainted(false);
-        lbItem1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem1.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -521,7 +524,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem2.setText("COTIZACION");
         lbItem2.setBorderPainted(false);
-        lbItem2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem2.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -535,7 +538,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem3.setText("COTIZACION");
         lbItem3.setBorderPainted(false);
-        lbItem3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem3.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -549,7 +552,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem4.setText("COTIZACION");
         lbItem4.setBorderPainted(false);
-        lbItem4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem4.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -563,7 +566,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem5.setText("COTIZACION");
         lbItem5.setBorderPainted(false);
-        lbItem5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem5.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem5.addActionListener(new java.awt.event.ActionListener() {
@@ -577,7 +580,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem6.setText("COTIZACION");
         lbItem6.setBorderPainted(false);
-        lbItem6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem6.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem6.addActionListener(new java.awt.event.ActionListener() {
@@ -591,7 +594,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem7.setText("COTIZACION");
         lbItem7.setBorderPainted(false);
-        lbItem7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem7.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem7.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem7.addActionListener(new java.awt.event.ActionListener() {
@@ -605,7 +608,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem8.setText("COTIZACION");
         lbItem8.setBorderPainted(false);
-        lbItem8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem8.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem8.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem8.addActionListener(new java.awt.event.ActionListener() {
@@ -619,7 +622,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem9.setText("COTIZACION");
         lbItem9.setBorderPainted(false);
-        lbItem9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem9.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem9.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem9.addActionListener(new java.awt.event.ActionListener() {
@@ -633,7 +636,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem10.setText("COTIZACION");
         lbItem10.setBorderPainted(false);
-        lbItem10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem10.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem10.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem10.addActionListener(new java.awt.event.ActionListener() {
@@ -647,7 +650,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem11.setText("COTIZACION");
         lbItem11.setBorderPainted(false);
-        lbItem11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem11.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem11.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem11.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem11.addActionListener(new java.awt.event.ActionListener() {
@@ -661,7 +664,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem12.setText("COTIZACION");
         lbItem12.setBorderPainted(false);
-        lbItem12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem12.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem12.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem12.addActionListener(new java.awt.event.ActionListener() {
@@ -675,7 +678,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem13.setText("COTIZACION");
         lbItem13.setBorderPainted(false);
-        lbItem13.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem13.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem13.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem13.addActionListener(new java.awt.event.ActionListener() {
@@ -689,7 +692,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem14.setText("COTIZACION");
         lbItem14.setBorderPainted(false);
-        lbItem14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem14.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem14.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem14.addActionListener(new java.awt.event.ActionListener() {
@@ -703,7 +706,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem15.setText("COTIZACION");
         lbItem15.setBorderPainted(false);
-        lbItem15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem15.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem15.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem15.addActionListener(new java.awt.event.ActionListener() {
@@ -717,7 +720,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem16.setText("COTIZACION");
         lbItem16.setBorderPainted(false);
-        lbItem16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem16.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem16.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem16.addActionListener(new java.awt.event.ActionListener() {
@@ -731,7 +734,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem17.setText("COTIZACION");
         lbItem17.setBorderPainted(false);
-        lbItem17.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem17.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem17.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem17.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem17.addActionListener(new java.awt.event.ActionListener() {
@@ -745,7 +748,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/flecha.png"))); // NOI18N
         lbItem18.setText("COTIZACION");
         lbItem18.setBorderPainted(false);
-        lbItem18.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbItem18.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbItem18.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbItem18.setMargin(new java.awt.Insets(2, 0, 2, 0));
         lbItem18.addActionListener(new java.awt.event.ActionListener() {
@@ -830,7 +833,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/VENTAS-NEGRO.png"))); // NOI18N
         btnVentas.setText(" MIS VENTAS");
         btnVentas.setBorder(null);
-        btnVentas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVentas.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnVentas.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnVentas.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnVentas.addActionListener(new java.awt.event.ActionListener() {
@@ -844,7 +847,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/PRODUCTOS-NEGRO.png"))); // NOI18N
         btnProductos.setText(" PRODUCTOS");
         btnProductos.setBorder(null);
-        btnProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnProductos.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnProductos.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnProductos.setMaximumSize(new java.awt.Dimension(146, 119));
@@ -861,7 +864,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/TERCEROS-NEGRO.png"))); // NOI18N
         btnTerceros.setText(" TERCEROS");
         btnTerceros.setBorder(null);
-        btnTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnTerceros.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnTerceros.addActionListener(new java.awt.event.ActionListener() {
@@ -875,7 +878,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnTesoreria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/TESORERIA-NEGRO.png"))); // NOI18N
         btnTesoreria.setText(" TESORERIA");
         btnTesoreria.setBorder(null);
-        btnTesoreria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTesoreria.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnTesoreria.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnTesoreria.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnTesoreria.setMaximumSize(new java.awt.Dimension(146, 121));
@@ -892,7 +895,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnCartera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/CARTERA-NEGRO.png"))); // NOI18N
         btnCartera.setText(" CARTERA");
         btnCartera.setBorder(null);
-        btnCartera.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCartera.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnCartera.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnCartera.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnCartera.addActionListener(new java.awt.event.ActionListener() {
@@ -915,7 +918,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnAgenda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/AGENDA-NEGRO.png"))); // NOI18N
         btnAgenda.setText(" AGENDA");
         btnAgenda.setBorder(null);
-        btnAgenda.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgenda.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgenda.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnAgenda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -928,7 +931,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnVeterinario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/VETERINARIO-NEGRO.png"))); // NOI18N
         btnVeterinario.setText(" VETERINARIO");
         btnVeterinario.setBorder(null);
-        btnVeterinario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVeterinario.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnVeterinario.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnVeterinario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -941,7 +944,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnMedico.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/MEDICO-NEGRO.png"))); // NOI18N
         btnMedico.setText("MEDICO");
         btnMedico.setBorder(null);
-        btnMedico.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMedico.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnMedico.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnMedico.setMaximumSize(new java.awt.Dimension(146, 119));
         btnMedico.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -957,7 +960,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnOftalmologia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/MEDICO-NEGRO.png"))); // NOI18N
         btnOftalmologia.setText("OFTALMOLOGIA");
         btnOftalmologia.setBorder(null);
-        btnOftalmologia.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOftalmologia.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnOftalmologia.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnOftalmologia.setMaximumSize(new java.awt.Dimension(146, 119));
         btnOftalmologia.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -973,7 +976,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnParqueadero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/PARQUEADERO-NEGRO.png"))); // NOI18N
         btnParqueadero.setText("PARQUEADERO");
         btnParqueadero.setBorder(null);
-        btnParqueadero.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnParqueadero.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnParqueadero.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnParqueadero.setMaximumSize(new java.awt.Dimension(146, 119));
         btnParqueadero.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -989,7 +992,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnRecordatorios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/RECORDATORIO-NEGRO.png"))); // NOI18N
         btnRecordatorios.setText("RECORDATORIO");
         btnRecordatorios.setBorder(null);
-        btnRecordatorios.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRecordatorios.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnRecordatorios.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnRecordatorios.setMaximumSize(new java.awt.Dimension(146, 119));
         btnRecordatorios.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -1005,7 +1008,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnLaboratorio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/LABORATORIO-NEGRO.png"))); // NOI18N
         btnLaboratorio.setText("LABORATORIO");
         btnLaboratorio.setBorder(null);
-        btnLaboratorio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLaboratorio.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnLaboratorio.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnLaboratorio.setMaximumSize(new java.awt.Dimension(146, 119));
         btnLaboratorio.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -1023,7 +1026,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnVerificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/LupaPequeña.png"))); // NOI18N
         btnVerificar.setText("Consultar precios");
         btnVerificar.setBorder(null);
-        btnVerificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVerificar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnVerificar.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnVerificar.setMaximumSize(new java.awt.Dimension(146, 119));
         btnVerificar.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -1034,19 +1037,19 @@ public class VistaMenu extends javax.swing.JFrame {
             }
         });
 
-        btnTestConexion1.setBackground(new java.awt.Color(214, 214, 214));
-        btnTestConexion1.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
-        btnTestConexion1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ajustes.png"))); // NOI18N
-        btnTestConexion1.setText("Configuraciones");
-        btnTestConexion1.setBorder(null);
-        btnTestConexion1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTestConexion1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnTestConexion1.setMaximumSize(new java.awt.Dimension(146, 119));
-        btnTestConexion1.setMinimumSize(new java.awt.Dimension(146, 119));
-        btnTestConexion1.setPreferredSize(new java.awt.Dimension(146, 119));
-        btnTestConexion1.addActionListener(new java.awt.event.ActionListener() {
+        btnConfiguraciones.setBackground(new java.awt.Color(214, 214, 214));
+        btnConfiguraciones.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        btnConfiguraciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ajustes.png"))); // NOI18N
+        btnConfiguraciones.setText("Configuraciones");
+        btnConfiguraciones.setBorder(null);
+        btnConfiguraciones.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnConfiguraciones.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnConfiguraciones.setMaximumSize(new java.awt.Dimension(146, 119));
+        btnConfiguraciones.setMinimumSize(new java.awt.Dimension(146, 119));
+        btnConfiguraciones.setPreferredSize(new java.awt.Dimension(146, 119));
+        btnConfiguraciones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestConexion1ActionPerformed(evt);
+                btnConfiguracionesActionPerformed(evt);
             }
         });
 
@@ -1072,7 +1075,7 @@ public class VistaMenu extends javax.swing.JFrame {
                     .addComponent(btnProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(btnTestConexion1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnConfiguraciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1108,7 +1111,7 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addComponent(btnTestConexion1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnConfiguraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10))
         );
 
@@ -1141,9 +1144,7 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addGap(3, 3, 3)
                 .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlMenuLayout.createSequentialGroup()
-                        .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0))))
+                    .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1309,7 +1310,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbVentas8.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbVentas8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/VENTAS-NEGRO.png"))); // NOI18N
         lbVentas8.setBorder(null);
-        lbVentas8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbVentas8.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbVentas8.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbVentas8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1321,7 +1322,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbVentas9.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbVentas9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/PRODUCTOS-NEGRO.png"))); // NOI18N
         lbVentas9.setBorder(null);
-        lbVentas9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbVentas9.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbVentas9.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbVentas9.setMaximumSize(new java.awt.Dimension(146, 119));
         lbVentas9.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -1336,7 +1337,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbVentas10.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbVentas10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/TERCEROS-NEGRO.png"))); // NOI18N
         lbVentas10.setBorder(null);
-        lbVentas10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbVentas10.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbVentas10.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbVentas10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1348,7 +1349,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbVentas11.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbVentas11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/TESORERIA-NEGRO.png"))); // NOI18N
         lbVentas11.setBorder(null);
-        lbVentas11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbVentas11.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbVentas11.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbVentas11.setMaximumSize(new java.awt.Dimension(146, 121));
         lbVentas11.setMinimumSize(new java.awt.Dimension(146, 121));
@@ -1363,7 +1364,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbVentas12.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbVentas12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/CARTERA-NEGRO.png"))); // NOI18N
         lbVentas12.setBorder(null);
-        lbVentas12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbVentas12.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbVentas12.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbVentas12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1375,7 +1376,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbAgenda1.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbAgenda1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/AGENDA-NEGRO.png"))); // NOI18N
         lbAgenda1.setBorder(null);
-        lbAgenda1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbAgenda1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbAgenda1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbAgenda1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1387,7 +1388,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbVeterinaria1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         lbVeterinaria1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/VETERINARIO-NEGRO.png"))); // NOI18N
         lbVeterinaria1.setBorder(null);
-        lbVeterinaria1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbVeterinaria1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbVeterinaria1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbVeterinaria1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1395,13 +1396,13 @@ public class VistaMenu extends javax.swing.JFrame {
             }
         });
 
-        lbConfiguraciones.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        lbConfiguraciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ajustes.png"))); // NOI18N
-        lbConfiguraciones.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lbConfiguraciones.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        lbConfiguraciones.addActionListener(new java.awt.event.ActionListener() {
+        btnConfiguracionesMini.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        btnConfiguracionesMini.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ajustes.png"))); // NOI18N
+        btnConfiguracionesMini.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnConfiguracionesMini.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnConfiguracionesMini.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lbConfiguracionesActionPerformed(evt);
+                btnConfiguracionesMiniActionPerformed(evt);
             }
         });
 
@@ -1409,7 +1410,7 @@ public class VistaMenu extends javax.swing.JFrame {
         lbMedico1.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         lbMedico1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/MEDICO-NEGRO.png"))); // NOI18N
         lbMedico1.setBorder(null);
-        lbMedico1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbMedico1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lbMedico1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         lbMedico1.setMaximumSize(new java.awt.Dimension(146, 119));
         lbMedico1.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -1424,7 +1425,7 @@ public class VistaMenu extends javax.swing.JFrame {
         btnParqueadero1.setFont(new java.awt.Font("Century Gothic", 1, 17)); // NOI18N
         btnParqueadero1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/PARQUEADERO-NEGRO.png"))); // NOI18N
         btnParqueadero1.setBorder(null);
-        btnParqueadero1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnParqueadero1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnParqueadero1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnParqueadero1.setMaximumSize(new java.awt.Dimension(146, 119));
         btnParqueadero1.setMinimumSize(new java.awt.Dimension(146, 119));
@@ -1445,7 +1446,7 @@ public class VistaMenu extends javax.swing.JFrame {
                     .addComponent(lbVentas8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
                     .addComponent(lbVentas9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(lbVentas10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbConfiguraciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnConfiguracionesMini, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbVeterinaria1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbAgenda1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbVentas12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1476,7 +1477,7 @@ public class VistaMenu extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addComponent(btnParqueadero1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbConfiguraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnConfiguracionesMini, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10))
         );
 
@@ -2837,7 +2838,7 @@ public class VistaMenu extends javax.swing.JFrame {
         activarColor(btnOftalmologia, "Oftalmologia");
     }//GEN-LAST:event_btnOftalmologiaActionPerformed
 
-    private void lbConfiguracionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbConfiguracionesActionPerformed
+    private void btnConfiguracionesMiniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguracionesMiniActionPerformed
         try {
             if (instancias.getUsuarioLog().getUsuario().equals("ADMIN")) {
                 instancias.getMaestra().setSelected(true);
@@ -2848,7 +2849,7 @@ public class VistaMenu extends javax.swing.JFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_lbConfiguracionesActionPerformed
+    }//GEN-LAST:event_btnConfiguracionesMiniActionPerformed
 
     private void cmbAccesosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbAccesosItemStateChanged
         if (cmbAccesos.getSelectedIndex() == 1) {
@@ -2932,7 +2933,7 @@ public class VistaMenu extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbAccesosActionPerformed
 
-    private void btnTestConexion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestConexion1ActionPerformed
+    private void btnConfiguracionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguracionesActionPerformed
         try {
             if (instancias.getUsuarioLog().getUsuario().equals("ADMIN")) {
                 instancias.getMaestra().setSelected(true);
@@ -2945,11 +2946,10 @@ public class VistaMenu extends javax.swing.JFrame {
             Logger.getLogger(VistaMenu.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnTestConexion1ActionPerformed
+    }//GEN-LAST:event_btnConfiguracionesActionPerformed
 
     public void cerrarAlCambiar() {
-        solicitudesPermisos solicitudes = new solicitudesPermisos();
-        solicitudes.interrupt();
+        detenerFuncionSolicitudes();
         this.dispose();
 
         if (!instancias.getUsuario().equals("ADMIN")) {
@@ -3043,6 +3043,9 @@ public class VistaMenu extends javax.swing.JFrame {
         } else {
             btnRecordatorios.setVisible(false);
         }
+
+        // Configuraciones (maestra): solo para el administrador
+        btnConfiguraciones.setVisible("ADMIN".equals(instancias.getUsuarioLog().getUsuario()));
 
         if (instancias.getConfiguraciones().isMedico() || instancias.getConfiguraciones().isLaboratorio() || instancias.getConfiguraciones().isOftalmologia()) {
             cargarModuloGeneracionRips();
@@ -3146,21 +3149,27 @@ public class VistaMenu extends javax.swing.JFrame {
         }
     }
 
-    private void activarFuncionSolicitudes() {
-        solicitudesPermisos solicitudes = new solicitudesPermisos();
-        if (instancias.getUsuario().equals("ADMIN")) {
-            if (DatosMaestra.isModuloPermisos()) {
-                btnSolicitudes.setVisible(true);
-                sep4.setVisible(true);
-                solicitudes.start();
-            } else {
-                btnSolicitudes.setVisible(false);
-                sep4.setVisible(false);
-            }
-        } else {
-            btnSolicitudes.setVisible(false);
-            sep4.setVisible(false);
-            solicitudes.stop();
+    public void activarFuncionSolicitudes() {
+        boolean activo = "ADMIN".equals(instancias.getUsuario()) && DatosMaestra.isModuloPermisos();
+
+        btnSolicitudes.setVisible(activo);
+        sep4.setVisible(activo);
+
+        if (!activo) {
+            detenerFuncionSolicitudes();
+            return;
+        }
+
+        if (hiloSolicitudes == null || !hiloSolicitudes.isAlive()) {
+            hiloSolicitudes = new hiloSolicitudesPermisos();
+            hiloSolicitudes.start();
+        }
+    }
+
+    private void detenerFuncionSolicitudes() {
+        if (hiloSolicitudes != null) {
+            hiloSolicitudes.detener();
+            hiloSolicitudes = null;
         }
     }
 
@@ -4613,6 +4622,8 @@ public class VistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnAgenda;
     private javax.swing.JButton btnCambiarUsuario;
     private javax.swing.JButton btnCartera;
+    private javax.swing.JButton btnConfiguraciones;
+    private javax.swing.JButton btnConfiguracionesMini;
     private javax.swing.JButton btnDocumentos;
     private javax.swing.JButton btnLaboratorio;
     private javax.swing.JButton btnMedicamentos;
@@ -4626,7 +4637,6 @@ public class VistaMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnSolicitudes;
     private javax.swing.JButton btnTerceros;
     private javax.swing.JButton btnTesoreria;
-    private javax.swing.JButton btnTestConexion1;
     private javax.swing.JButton btnVentas;
     private javax.swing.JButton btnVerificar;
     private javax.swing.JButton btnVeterinario;
@@ -4638,7 +4648,6 @@ public class VistaMenu extends javax.swing.JFrame {
     private formularios.JPanelsSliding jPanelsSliding1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton lbAgenda1;
-    private javax.swing.JButton lbConfiguraciones;
     private javax.swing.JButton lbItem1;
     private javax.swing.JButton lbItem10;
     private javax.swing.JButton lbItem11;

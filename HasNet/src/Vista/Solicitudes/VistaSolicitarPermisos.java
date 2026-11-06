@@ -28,6 +28,15 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
 
     private final AccionesPermisos accionRealizar;
 
+    // Vista de facturación que pidió el permiso. Si se indica, el resultado se
+    // aplica sobre ella y no sobre la instancia que corresponde al tipo de proceso
+    // (la factura a crédito, por ejemplo, también usa "facturacion").
+    private Vista.Ventas.VistaFactura vistaOrigen;
+
+    public void setVistaOrigen(Vista.Ventas.VistaFactura vistaOrigen) {
+        this.vistaOrigen = vistaOrigen;
+    }
+
     public VistaSolicitarPermisos(java.awt.Frame parent, String tipoProceso, AccionesPermisos accion, String valor, BigDecimal descuentoMaximo) {
 
         super(parent, true);
@@ -41,6 +50,9 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
         this.tipoProceso = tipoProceso;
 
         configurarPantalla(tipoProceso, descuentoMaximo);
+
+        pnlSolicitudPermiso.setVisible(DatosMaestra.isModuloPermisos());
+        pack();
 
         txtValor.setText(valor);
 
@@ -147,7 +159,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
 
         jPanel5 = new javax.swing.JPanel();
         lbMensaje = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        pnlSolicitudPermiso = new javax.swing.JPanel();
         btnSolicitarPermiso = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -173,8 +185,8 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
         lbMensaje.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbMensaje.setText("#mensaje");
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Solicitar permiso", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 14))); // NOI18N
+        pnlSolicitudPermiso.setBackground(new java.awt.Color(255, 255, 255));
+        pnlSolicitudPermiso.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Solicitar permiso", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 14))); // NOI18N
 
         btnSolicitarPermiso.setBackground(new java.awt.Color(0, 204, 102));
         btnSolicitarPermiso.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
@@ -204,28 +216,28 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
         txtNota.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(txtNota);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlSolicitudPermisoLayout = new javax.swing.GroupLayout(pnlSolicitudPermiso);
+        pnlSolicitudPermiso.setLayout(pnlSolicitudPermisoLayout);
+        pnlSolicitudPermisoLayout.setHorizontalGroup(
+            pnlSolicitudPermisoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSolicitudPermisoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSolicitudPermisoLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSolicitarPermiso, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(158, 158, 158))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        pnlSolicitudPermisoLayout.setVerticalGroup(
+            pnlSolicitudPermisoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSolicitudPermisoLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlSolicitudPermisoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSolicitarPermiso, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -339,7 +351,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(lbMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlSolicitudPermiso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -354,7 +366,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
                 .addGap(24, 24, 24)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlSolicitudPermiso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -438,7 +450,8 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSolicitarPermisoActionPerformed
 
     private void btnSolicitarPermisoContrasenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarPermisoContrasenhaActionPerformed
-        if (txtNota.getText().equalsIgnoreCase("") || txtNota.getText().equalsIgnoreCase(" ")) {
+        if (DatosMaestra.isModuloPermisos()
+                && (txtNota.getText().equalsIgnoreCase("") || txtNota.getText().equalsIgnoreCase(" "))) {
             ControladorAlertas.alertFail("Debe ingresar la nota");
             txtNota.requestFocus();
             return;
@@ -448,7 +461,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
             String consecutivo = instancias.getSql().getNumConsecutivo("PERMISO")[0].toString();
             if (!instancias.getSql().agregarPermiso("PERMISO-" + consecutivo, txtTipo.getText(), txtValor.getText(),
                     txtNota.getText(), metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), "AUTO-CONFIRMADO", instancias.getUsuario())) {
-                ControladorAlertas.alertFail("Hubo un error al ingresar la medida");
+                ControladorAlertas.alertFail("Hubo un error al guardar permiso");
                 return;
             }
 
@@ -498,19 +511,19 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
                 break;
 
             case "borrarMesa":
-                instancias.getMesa1().limpiarMesa();
+                (vistaOrigen != null ? vistaOrigen : instancias.getMesa1()).limpiarMesa();
                 break;
 
             case "borrarFactura":
-                instancias.getFactura().limpiar(false);
+                (vistaOrigen != null ? vistaOrigen : instancias.getFactura()).limpiar(false);
                 break;
 
             case "borrarProductoMesa":
-                instancias.getMesa1().eliminarFila();
+                (vistaOrigen != null ? vistaOrigen : instancias.getMesa1()).eliminarFila();
                 break;
 
             case "borrarProductoFactura":
-                instancias.getFactura().eliminarFila();
+                (vistaOrigen != null ? vistaOrigen : instancias.getFactura()).eliminarFila();
                 break;
         }
     }
@@ -537,6 +550,14 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
     private void actualizarSolicitudPermiso(boolean autorizado, String consecutivo) {
 
         String permiso = consecutivo == null ? null : "PERMISO-" + consecutivo;
+
+        if (vistaOrigen != null) {
+            vistaOrigen.setSolicitudPermiso(autorizado);
+            if (autorizado) {
+                vistaOrigen.setPermisoNumero(permiso);
+            }
+            return;
+        }
 
         switch (tipoProceso) {
 
@@ -603,7 +624,6 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
     private javax.swing.JButton btnSolicitarPermisoContrasenha;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -612,6 +632,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
     private javax.swing.JLabel lbMensaje;
     private javax.swing.JLabel lbMensaje1;
     private javax.swing.JLabel lbTitulo;
+    private javax.swing.JPanel pnlSolicitudPermiso;
     private javax.swing.JTextArea txtNota;
     private javax.swing.JTextField txtTipo;
     private javax.swing.JTextField txtValor;

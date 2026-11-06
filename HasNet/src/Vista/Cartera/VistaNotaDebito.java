@@ -41,7 +41,6 @@ import Procesos.Inventario.Servicio.ServicioValidacionFactura;
 import Utilidades.DatosMaestra;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
-import formularios.Ventas.dlgInformacionCliente;
 import formularios.Ventas.dlgTipoDescuento;
 import Vista.Productos.VistaBuscadorProductos;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
@@ -231,7 +230,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         btnBuscTerceros = new javax.swing.JButton();
         lbNit1 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
-        btnBuscTerceros1 = new javax.swing.JButton();
         cmbVendedor = new javax.swing.JComboBox();
         lbVendedor = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
@@ -378,19 +376,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             }
         });
 
-        btnBuscTerceros1.setBackground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscarInfo.png"))); // NOI18N
-        btnBuscTerceros1.setBorder(null);
-        btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnBuscTerceros1.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnBuscTerceros1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscTerceros1ActionPerformed(evt);
-            }
-        });
-
         cmbVendedor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cmbVendedorMouseClicked(evt);
@@ -417,9 +402,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbNit1)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2)
-                .addComponent(btnBuscTerceros1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,9 +416,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
                             .addComponent(btnBuscTerceros)
                             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(txtNit)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnBuscTerceros1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(lbNit1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5)
                 .addComponent(lbVendedor)
@@ -1583,12 +1564,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     private void txtNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtNombreMouseClicked
 
     }//GEN-LAST:event_txtNombreMouseClicked
-
-    private void btnBuscTerceros1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscTerceros1ActionPerformed
-        dlgInformacionCliente notaCliente = new dlgInformacionCliente(null, true, txtIdSistema.getText());
-        notaCliente.setLocationRelativeTo(null);
-        notaCliente.setVisible(true);
-    }//GEN-LAST:event_btnBuscTerceros1ActionPerformed
 
     private void cmbVendedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbVendedorMouseClicked
 
@@ -2850,24 +2825,26 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             }
         }
 
-        tblProductos.changeSelection(tblProductos.getRowCount() - 1, 0, false, false);
         tblProductos.removeEditor();
         tblInventario.removeEditor();
 
-        if (tblProductos.editCellAt(tblProductos.getRowCount() - 1, 0)) {
-            tblProductos.setColumnSelectionInterval(0, 0);
-            tblProductos.transferFocus();
+        int ultimaFila = tblProductos.getRowCount() - 1;
+        if (ultimaFila < 0) {
+            return;
         }
 
-        if (DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor")) {
-            tblProductos.editCellAt(tblInventario.getRowCount() - 1, 2);
-            tblProductos.setColumnSelectionInterval(2, 2);
-            tblProductos.transferFocus();
-        } else {
-            tblProductos.editCellAt(tblInventario.getRowCount() - 1, 3);
-            tblProductos.setColumnSelectionInterval(3, 3);
-            tblProductos.transferFocus();
+        // Con "Usar lector" el foco vuelve al código para seguir cargando productos;
+        // si no, va a la celda configurada en "Foco después de cargar el producto".
+        if (DatosMaestra.isUsarLector()) {
+            tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
+            txtCodProducto.requestFocus();
+            return;
         }
+
+        int columna = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
+        tblProductos.changeSelection(ultimaFila, columna, false, false);
+        tblProductos.editCellAt(ultimaFila, columna);
+        tblProductos.transferFocus();
     }
 
     public void cargarProducto(String codigo, String cantidad, int plu, String imei, String lote, String idProd, Boolean agrupar, String talla, String color,
@@ -4416,7 +4393,6 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBusProd;
     private javax.swing.JButton btnBuscTerceros;
-    private javax.swing.JButton btnBuscTerceros1;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnReImprimir;
