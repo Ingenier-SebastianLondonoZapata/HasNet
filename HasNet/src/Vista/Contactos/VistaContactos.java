@@ -16,6 +16,7 @@ import Modelo.Contactos.ModeloBodega;
 import Modelo.Contactos.ModeloConsultaContacto;
 import Modelo.Contactos.ModeloDatosVehiculo;
 import Utilidades.Limpiadores;
+import Utilidades.PanelZoomImagen;
 import clases.ImagePreviewPanel;
 import clases.Instancias;
 import clases.Medico.ndConvenio;
@@ -2531,12 +2532,9 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         String origen = chooser.getSelectedFile().getAbsolutePath();
 
         try {
-            metodos.montarImagenTerceros(origen, rutaFoto(txtIdSistema.getText(), tipoSeleccionado()));
-
-            ImageIcon fot = new ImageIcon(origen);
-            Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
-            lbFoto.setIcon(icono);
-            this.repaint();
+            String destino = rutaFoto(txtIdSistema.getText(), tipoSeleccionado());
+            metodos.montarImagenOriginal(origen, destino);
+            PanelZoomImagen.mostrarEnEtiqueta(lbFoto, new java.io.File(destino));
         } catch (Exception ex) {
             ControladorAlertas.alertFail("Hubo un error al cargar el archivo");
         }
@@ -3100,10 +3098,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     }
 
     private void mostrarFoto(String idSistema, TipoContacto tipoContacto) {
-        ImageIcon fot = new ImageIcon(rutaFoto(idSistema, tipoContacto));
-        Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
-        lbFoto.setIcon(icono);
-        this.repaint();
+        PanelZoomImagen.mostrarEnEtiqueta(lbFoto, new java.io.File(rutaFoto(idSistema, tipoContacto)));
     }
 
     private String rutaFoto(String idSistema, TipoContacto tipoContacto) {

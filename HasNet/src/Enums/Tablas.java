@@ -17,6 +17,8 @@ public enum Tablas {
     COMPRA("bdCompra"),
     ARMADO("bdCosteo"),
     ARMADO_PRODUCTO("bdCosteoProd"),
+    TRASLADOS("bdTraslados"),
+    TRASLADOS_DETALLE("bdTrasladosDetalle"),
     COLORES("bdColores"),
     TALLA("bdTalla");
 

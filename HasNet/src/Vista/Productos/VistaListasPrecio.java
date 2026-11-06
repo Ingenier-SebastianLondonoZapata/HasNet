@@ -410,6 +410,9 @@ public class VistaListasPrecio extends JPanel {
             txtPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
                 @Override
                 public void keyReleased(java.awt.event.KeyEvent e) {
+                    if (e.getKeyCode() != java.awt.event.KeyEvent.VK_ENTER) {
+                        formatearPrecio();
+                    }
                     mostrarUtilidad();
                 }
             });
@@ -456,6 +459,23 @@ public class VistaListasPrecio extends JPanel {
             txtCantidad.setEnabled(!esPrincipal && chkPlu.isSelected());
             if (esPrincipal || !chkPlu.isSelected()) {
                 txtCantidad.setText("1");
+            }
+        }
+
+        /**
+         * Formatea el precio como moneda mientras se digita, igual que los
+         * campos de precio de VistaProductos (txtCosto): vacío o solo el
+         * símbolo queda en 0.
+         */
+        private void formatearPrecio() {
+            String texto = txtPrecio.getText();
+            if (texto.replaceAll("[^0-9]", "").isEmpty()) {
+                texto = "0";
+            }
+            try {
+                txtPrecio.setText(big.setMoneda(big.getMoneda(texto)));
+            } catch (Exception e) {
+                // Texto no convertible: se deja como está y validarYAplicar lo reporta
             }
         }
 

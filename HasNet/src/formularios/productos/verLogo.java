@@ -6,14 +6,12 @@ import Dao.Productos.DaoProducto;
 
 import clases.Instancias;
 import Modelo.Productos.ModeloProducto;
-import java.awt.Image;
+import Utilidades.PanelZoomImagen;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 public final class verLogo extends javax.swing.JDialog {
@@ -30,14 +28,35 @@ public final class verLogo extends javax.swing.JDialog {
         ModeloProducto nodo = daoProducto.obtenerDatosProducto(codigo, Bodegas.predeterminada());
 
         lbTitulo.setText(nodo.getDescripcion());
-
-        System.out.println("rutaaa: " + System.getProperty("user.dir") + "\\imagenes\\productos\\" + nodo.getIdSistema() + ".jpg");
-        ImageIcon fot = new ImageIcon(System.getProperty("user.dir") + "\\imagenes\\productos\\" + nodo.getIdSistema() + ".jpg");
-        Icon icono = new ImageIcon(fot.getImage().getScaledInstance(lbFoto.getWidth(), lbFoto.getHeight(), Image.SCALE_DEFAULT));
-        lbFoto.setIcon(icono);
-        this.repaint();
+        construirVisor(nodo.getIdSistema());
 
         this.getRootPane().registerKeyboardAction(accion("cerrar", this), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+    }
+
+    private void construirVisor(String idSistema) {
+        PanelZoomImagen visor = new PanelZoomImagen();
+        java.io.File archivo = idSistema == null ? null
+                : new java.io.File(System.getProperty("user.dir") + "\\imagenes\\productos\\" + idSistema + ".jpg");
+        if (archivo == null || !archivo.isFile()) {
+            visor.setImagen(null, "Producto sin foto");
+        } else {
+            visor.cargar(archivo);
+        }
+
+        jPanel1.removeAll();
+        jPanel1.setLayout(new java.awt.BorderLayout(0, 8));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        jPanel1.add(lbTitulo, java.awt.BorderLayout.NORTH);
+        jPanel1.add(visor, java.awt.BorderLayout.CENTER);
+
+        getContentPane().removeAll();
+        getContentPane().setLayout(new java.awt.BorderLayout());
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        java.awt.Rectangle pantalla = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        setMinimumSize(new java.awt.Dimension(450, 450));
+        setSize((int) (pantalla.width * 0.7), (int) (pantalla.height * 0.7));
+        setResizable(true);
     }
 
     private ActionListener accion(final String opc, final JDialog ventana) {
@@ -94,23 +113,20 @@ public final class verLogo extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(87, 87, 87)
-                        .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
+                .addGap(10, 10, 10)
                 .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -123,8 +139,6 @@ public final class verLogo extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
-
-        getAccessibleContext().setAccessibleName("Vista previa");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

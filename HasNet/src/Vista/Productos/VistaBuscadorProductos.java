@@ -832,14 +832,12 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             btnIngresarActionPerformed(null);
         }
 
-        if (evt.getClickCount() > 0) {
+        if (evt.getClickCount() > 0 && filaSeleccionada >= 0) {
             if (columnaSeleccionada == 11) {
-                txtId.setText("");
-                txtId.requestFocus();
-            } else if (columnaSeleccionada == 11) {
-                verLogo verLogo = new verLogo(null, rootPaneCheckingEnabled, tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10).toString());
+                verLogo verLogo = new verLogo(null, true, tblRegistros.getValueAt(filaSeleccionada, 10).toString());
                 verLogo.setLocationRelativeTo(null);
                 verLogo.setVisible(true);
+                txtId.requestFocus();
             } else {
                 boolean estadoColumna = Boolean.parseBoolean(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 6).toString());
                 tblRegistros.setValueAt(!estadoColumna, filaSeleccionada, 6);

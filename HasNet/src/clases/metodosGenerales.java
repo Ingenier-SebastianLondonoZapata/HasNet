@@ -63,8 +63,6 @@ import clases.productos.ndIngreso;
 import clases.productos.ndIngresoEx;
 import clases.productos.ndInventarioInicial;
 import clases.productos.ndProceso;
-import clases.productos.ndProductoAjustes;
-import clases.productos.ndTraslado;
 import clases.recordatorios.ndRecordatorio;
 import Modelo.Contactos.ModeloContacto;
 import com.toedter.calendar.JDateChooser;
@@ -3001,49 +2999,6 @@ public class metodosGenerales {
         return nodo;
     }
 
-    public ndTraslado llenarTraslado(Object[] vector) {
-
-        ndTraslado nodo = new ndTraslado();
-
-        nodo.setId((String) vector[0]);
-        nodo.setOrigen((String) vector[1]);
-        nodo.setDestino(String.valueOf(vector[2]));
-        nodo.setFecha(String.valueOf(vector[3]));
-        nodo.setUnidades(Double.parseDouble((String) (vector[4])));
-        nodo.setValor(String.valueOf(vector[5]));
-        nodo.setTipo((String) vector[6]);
-        nodo.setUsuario((String) vector[7]);
-        nodo.setTerminal(String.valueOf(vector[8]));
-        nodo.setHora((String) vector[9]);
-        nodo.setBodega((String) vector[10]);
-        nodo.setModeloContable((String) vector[11]);
-        return nodo;
-    }
-
-    public ndProductoAjustes llenarAjustes(Object[] vector) {
-        ndProductoAjustes nodo = new ndProductoAjustes();
-        nodo.setTraslado((String) vector[0]);
-        nodo.setProducto((String) vector[1]);
-        nodo.setCantidad(Double.parseDouble(((vector[2]).toString()).replace(",", ".")));
-        nodo.setLista(String.valueOf(vector[3]));
-        nodo.setTotal(String.valueOf(vector[4]));
-        nodo.setObservaciones((String) vector[5]);
-        nodo.setDescripcion((String) vector[6]);
-        nodo.setPlu((String) vector[7]);
-        nodo.setCantidad2(Double.parseDouble(((vector[8]).toString()).replace(",", ".")));
-        nodo.setIdProd((String) vector[9]);
-        nodo.setImei((String) vector[10]);
-        nodo.setTalla((String) vector[11]);
-        nodo.setColor((String) vector[12]);
-        nodo.setSubtotal(String.valueOf(vector[13]));
-        nodo.setIva(String.valueOf(vector[14]));
-        nodo.setPorcIva(Double.parseDouble(((vector[15]).toString()).replace(",", ".")));
-        nodo.setCosto(String.valueOf(vector[16]));
-        nodo.setPorcImpo(Double.parseDouble(((vector[17]).toString()).replace(",", ".")));
-        nodo.setImpoconsumo(String.valueOf(vector[18]));
-        return nodo;
-    }
-
     public ndEgreso llenarEgreso(Object[] vector) {
 
         ndEgreso nodo = new ndEgreso();
@@ -3419,29 +3374,6 @@ public class metodosGenerales {
 
     public Object[] pasarValoresNC(ndNc nodo) {
         Object[] vector = {nodo.getValor(), nodo.getRestante()};
-        return vector;
-    }
-
-    public Object[] pasarDatosTraslado(ndTraslado nodo) {
-        Object[] vector = {nodo.getId(), nodo.getOrigen(), nodo.getDestino(), nodo.getFecha(), nodo.getUnidades(), nodo.getTipo(),
-            nodo.getUsuario(), nodo.getTerminal(), nodo.getHora(), nodo.getBodega(), nodo.getModeloContable()};
-        return vector;
-    }
-
-    public Object[] pasarValoresTraslado(ndTraslado nodo) {
-        Object[] vector = {nodo.getValor()};
-        return vector;
-    }
-
-    public Object[] pasarDatosProductosAjustes(ndProductoAjustes nodo) {
-        Object[] vector = {nodo.getTraslado(), nodo.getProducto(), nodo.getCantidad(), nodo.getObservaciones(), nodo.getDescripcion(),
-            nodo.getPlu(), nodo.getCantidad2(), nodo.getIdProd(), nodo.getImei(), nodo.getTalla(), nodo.getColor(), nodo.getPorcIva(),
-            nodo.getPorcImpo()};
-        return vector;
-    }
-
-    public Object[] pasarValoresProductosAjustes(ndProductoAjustes nodo) {
-        Object[] vector = {nodo.getLista(), nodo.getTotal(), nodo.getSubtotal(), nodo.getIva(), nodo.getCosto(), nodo.getImpoconsumo()};
         return vector;
     }
 
@@ -4626,6 +4558,47 @@ public class metodosGenerales {
     public void montarImagenTerceros(String origen, String destino) {
         //llama el metodo con la ruta de origen, destino y el tamaño que debe tomar la imagen.
         recortarYguardarImagen(origen, destino, 250, 250);
+    }
+
+    public void montarImagenOriginal(String origen, String destino) throws IOException {
+        File archivoOrigen = new File(origen);
+        File archivoDestino = new File(destino);
+        archivoDestino.getParentFile().mkdirs();
+
+        String nombre = archivoOrigen.getName().toLowerCase();
+        if (nombre.endsWith(".jpg") || nombre.endsWith(".jpeg")) {
+            Files.copy(archivoOrigen.toPath(), archivoDestino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return;
+        }
+
+        BufferedImage imagen = ImageIO.read(archivoOrigen);
+        if (imagen == null) {
+            throw new IOException("Formato de imagen no soportado: " + origen);
+        }
+
+        BufferedImage rgb = new BufferedImage(imagen.getWidth(), imagen.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = rgb.createGraphics();
+        g.setColor(java.awt.Color.WHITE);
+        g.fillRect(0, 0, rgb.getWidth(), rgb.getHeight());
+        g.drawImage(imagen, 0, 0, null);
+        g.dispose();
+
+        guardarJpgMaximaCalidad(rgb, archivoDestino);
+    }
+
+    private static void guardarJpgMaximaCalidad(BufferedImage imagen, File destino) throws IOException {
+        javax.imageio.ImageWriter escritor = ImageIO.getImageWritersByFormatName("jpg").next();
+        javax.imageio.ImageWriteParam parametros = escritor.getDefaultWriteParam();
+        parametros.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+        parametros.setCompressionQuality(1.0f);
+
+        Files.deleteIfExists(destino.toPath());
+        try (javax.imageio.stream.ImageOutputStream salida = ImageIO.createImageOutputStream(destino)) {
+            escritor.setOutput(salida);
+            escritor.write(null, new javax.imageio.IIOImage(imagen, null, null), parametros);
+        } finally {
+            escritor.dispose();
+        }
     }
 
     //Montar la imagen del logo.

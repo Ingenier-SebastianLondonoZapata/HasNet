@@ -2154,15 +2154,6 @@ public class SQL {
         return data;
     }
 
-    public Object[][] getUltimosPonderados() {
-        String colName[] = {
-            "producto", "nuevoPonderado", "ultimoCosto", "Descripcion", "Grupo"
-        };
-        String origen = " ultimoPonderado";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, nuevoPonderado, ultimoCosto, Descripcion, Grupo FROM ultimoPonderado ", "");
-        return dtDatos;
-    }
-
     public Object[] getDatosConvenioPendiente(String nit, String condicion) {
         //LISTO
         boolean ok = false;
@@ -4631,23 +4622,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getProductosAjuste(String ajuste) {
-        String colName[] = {
-            "producto", "cantidad", "idProd"
-        };
-        String origen = " bdTrasladosProd";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, cantidad, idProd FROM bdTrasladosProd where traslado = '" + ajuste + "'", " where traslado = '" + ajuste + "'");
-        return dtDatos;
-    }
-
-    public String tipoAjuste(String factura) {
-        String instruccion_sql = "select origen from bdTraslados where id = '" + factura + "'; ";
-        String[] colName = {"origen"};
-        boolean[] cadena = {true};
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data[0].toString();
-    }
-
     //    OBTENGO LOS REGISTROS DE LA CONSULTA DE PAGOS
     public Object[][] getRegistrosPagos(String ingreso) {
 
@@ -6228,23 +6202,6 @@ public class SQL {
         return nodo;
     }
 
-    public boolean agregarTraslado(ndTraslado nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdTraslados(id, origen, destino, fecha, unidades, tipo, usuario, terminal, hora, bodega, modeloContable, valor)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosTraslado(nodo), metodos.pasarValoresTraslado(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarProductosAjustes(ndProductoAjustes nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdTrasladosProd(traslado, producto, cantidad, observacion, descripcion, plu, cantidad2, idProd, "
-                + "imei, talla, color, porcIva, porcImpo, lista, total, subtotal, iva, costo, impoconsumo)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosProductosAjustes(nodo), metodos.pasarValoresProductosAjustes(nodo), instruccion_sql);
-        return ok;
-    }
-    
     public boolean agregarEgreso(ndEgreso nodo) {
         boolean ok = false;
         String instruccion_sql = "insert into bdEgreso(Id, nit, razon, telefono, direccion, cred1, cred2, deb1, deb2, fecha, documento,"

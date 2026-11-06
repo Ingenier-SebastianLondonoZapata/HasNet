@@ -13,8 +13,6 @@ public final class Bodegas {
     public static final String ETIQUETA_ACTIVO = "ACTIVO";
     public static final String ETIQUETA_INACTIVO = "INACTIVO";
     
-    public static final String AJUSTE_EXTERNO = "123-11";
-
     private Bodegas() {
     }
 

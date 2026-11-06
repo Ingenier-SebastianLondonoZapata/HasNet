@@ -5,6 +5,7 @@ import Utilidades.Contactos.Bodegas;
 import Estrategia.AbstractDao;
 import Procesos.Inventario.Dao.DaoInventario;
 import Modelo.Productos.ModeloListaPrecio;
+import Modelo.Productos.ProductoImagen;
 import Modelo.Productos.ResultadoPluProducto;
 import Utilidades.BaseDatos.ValidadorTabla;
 import Utilidades.Utilidades;
@@ -296,6 +297,24 @@ public class DaoProducto extends AbstractDao {
                 return rs.next() && rs.getBoolean("activo");
             }
         }
+    }
+
+    public List<ProductoImagen> obtenerProductosParaImagenes() throws SQLException {
+        String sql = "SELECT idSistema, Codigo, codigoBarras, descripcion FROM " + Tablas.PRODUCTOS.getNombre();
+        List<ProductoImagen> productos = new ArrayList<>();
+
+        try (PreparedStatement ps = getConnection().prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                productos.add(new ProductoImagen(
+                        rs.getString("idSistema"),
+                        rs.getString("Codigo"),
+                        rs.getString("codigoBarras"),
+                        rs.getString("descripcion")));
+            }
+        }
+
+        return productos;
     }
 
     public int obtenerConsecutivoProducto() throws SQLException {

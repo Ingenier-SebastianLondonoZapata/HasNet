@@ -8,22 +8,21 @@ import Enums.TipoProducto;
 import Utilidades.Contactos.Bodegas;
 import Impresiones.ImpresionesProductos.GeneradorReporteProducto;
 import Modelo.Inventario.DetalleProducto;
-import Modelo.Inventario.MovimientoInventario;
 import Modelo.Inventario.UltimoPonderado;
+import Modelo.Productos.LineaAjusteInventario;
+import Modelo.Productos.ModeloAjusteInventario;
 import Modelo.Productos.ResultadoPluProducto;
 import Utilidades.DatosMaestra;
 import Procesos.Inventario.Dao.DaoDetalleProducto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
-import Procesos.Inventario.Servicio.ServicioInventario;
+import Procesos.Inventario.Servicio.ServicioAjusteInventario;
 import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
 import Utilidades.Utilidades;
 import clases.Instancias;
 import Modelo.Productos.ModeloProducto;
-import clases.productos.ndTraslado;
 import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndCompra;
-import clases.productos.ndProductoAjustes;
 import Dao.Productos.DaoProducto;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import java.awt.Dimension;
@@ -51,6 +50,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     private final ServicioActualizacionPonderado servicioActualizacionPonderado = new ServicioActualizacionPonderado();
     private final DaoDetalleProducto daoDetalleProducto = new DaoDetalleProducto();
     private final DaoProducto daoProducto = new DaoProducto();
+    private final ServicioAjusteInventario servicioAjusteInventario = new ServicioAjusteInventario();
 
     String simbolo = "";
     DefaultTableModel modeloTablaProductos;
@@ -81,7 +81,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
 //        tblProductos.setDefaultRenderer(Object.class, new cambiarColorTabla(2, 0));
         instancias = Instancias.getInstancias();
-        lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("TRAS")[0]);
+        actualizarConsecutivoVista();
 
         txtFecha.setText(metodos.fecha());
         simbolo = instancias.getSimbolo();
@@ -633,112 +633,120 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (tblProductos.getRowCount() == 0) {
             ControladorAlertas.alertFail("No ha añadido ningun producto");
-        } else {
-
-            int xyz = tblProductos.getRowCount();
-            if (xyz > 0) {
-                for (int i = 0; i < xyz; i++) {
-                    if (tblProductos.getValueAt(i, 3).equals("0")) {
-                        ControladorAlertas.alertFail("Las cantidades deben ser mayor a 0");
-                        return;
-                    }
-
-                    if (big.getMoneda(tblProductos.getValueAt(i, 2).toString()).compareTo(BigDecimal.ZERO) <= 0) {
-                        ControladorAlertas.alertFail("Los valores deben ser mayor a " + this.simbolo + " 0");
-                        return;
-                    }
-
-                    tblProductos.setColumnSelectionInterval(0, 0);
-                    tblProductos.setRowSelectionInterval(i, i);
-                    KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
-                    tblProductosKeyReleased(x);
-                }
-            }
-
-            if (!saltarPasos) {
-                if (!ControladorAlertas.option("¿Desea continuar?")) {
-                    return;
-                }
-            }
-
-            String factura = "TRAS-" + instancias.getSql().getNumConsecutivo("TRAS")[0];
-
-            //PROCESO GUARDAR REGISTRO EN CAJA
-            String origen = "", destino = "";
-
-            if (cmbTipoAjuste.getSelectedIndex() == 0) {
-                origen = Bodegas.AJUSTE_EXTERNO;
-                destino = Bodegas.predeterminada();
-            } else {
-                origen = Bodegas.predeterminada();
-                destino = Bodegas.AJUSTE_EXTERNO;
-            }
-
-            Object[] vector = {factura, origen, destino, metodos.fechaConsulta(metodosGenerales.fecha()), cantidadTotal,
-                big.getMoneda(txtValor.getText()), cmbTipoAjuste.getSelectedItem(),
-                instancias.getUsuario(), instancias.getTerminal(), metodosGenerales.hora(), "", ""};
-
-            ndTraslado nodo = metodos.llenarTraslado(vector);
-
-            if (!instancias.getSql().agregarTraslado(nodo)) {
-                ControladorAlertas.alertFail("Error al guardar el ajuste");
-                return;
-            }
-
-            //PROCESO GUARDAR VENTA
-            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-                String observaciones = cmbTipoAjuste.getSelectedIndex() == 0 ? obtenerValorTabla(i, 8) : obtenerValorTabla(i, 11);
-
-                Object vectVenta[] = {factura, tblProductos.getValueAt(i, 15), tblProductos.getValueAt(i, 3),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 2)), big.getMoneda((String) tblProductos.getValueAt(i, 7)), observaciones,
-                    tblProductos.getValueAt(i, 1), tblProductos.getValueAt(i, 9) + "", tblProductos.getValueAt(i, 10),
-                    tblProductos.getValueAt(i, 14), observaciones, "", "", big.getMoneda((String) tblProductos.getValueAt(i, 4)),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 6)), big.getBigDecimal((String) tblProductos.getValueAt(i, 5)),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 16)), big.getBigDecimal((String) tblProductos.getValueAt(i, 17)),
-                    big.getMoneda((String) tblProductos.getValueAt(i, 18))
-                };
-
-                ndProductoAjustes nodoTras = metodos.llenarAjustes(vectVenta);
-
-                if (!instancias.getSql().agregarProductosAjustes(nodoTras)) {
-                    ControladorAlertas.alertFail("Error al guardar el ajuste");
-                }
-            }
-
-            TipoDocumento tipoMovimiento = cmbTipoAjuste.getSelectedIndex() == 0 ? TipoDocumento.AJUSTE_ENTRADA : TipoDocumento.AJUSTE_SALIDA;
-            List<DetalleProducto> detallesProductos = cmbTipoAjuste.getSelectedIndex() == 0 ? generarDetallesProductos() : new ArrayList<DetalleProducto>();
-            String idBodega = Bodegas.predeterminada();
-            List<MovimientoInventario> productos = generarListadoProductos(idBodega);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, detallesProductos, tipoMovimiento, factura, idBodega, instancias.getUsuario(), null);
-
-            try {
-                servicioInventario.procesarMovimiento();
-            } catch (SQLException ex) {
-                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
-
-            //CAMBIAR CONSECUTIVO FACTURA
-            if (!instancias.getSql().aumentarConsecutivo("TRAS", Integer.parseInt((String) instancias.getSql().getNumConsecutivo("TRAS")[0]) + 1)) {
-                ControladorAlertas.alertFail("Hubo un problema al guardar en el consecutivo del traslado");
-            }
-
-            lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("TRAS")[0]);
-
-            if (!saltarPasos) {
-                ControladorAlertas.alertSuccess("Ajuste exitoso");
-            }
-
-            saltarPasos = false;
-
-            if (ControladorAlertas.option("¿Desea imprimir?")) {
-                generarReporte(factura);
-            }
-
-            preguntaLimpiar = false;
-            btnLimpiarActionPerformed(evt);
+            return;
         }
+
+        recalcularFilas();
+
+        ModeloAjusteInventario ajuste = construirAjuste();
+
+        try {
+            servicioAjusteInventario.validar(ajuste);
+        } catch (IllegalArgumentException ex) {
+            ControladorAlertas.alertFail(ex.getMessage());
+            return;
+        }
+
+        if (!saltarPasos && !ControladorAlertas.option("¿Desea continuar?")) {
+            return;
+        }
+
+        try {
+            servicioAjusteInventario.guardar(ajuste);
+        } catch (SQLException | RuntimeException ex) {
+            Logger.getLogger(VistaAjusteInventario.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("Error al guardar el ajuste: " + ex.getMessage());
+            return;
+        }
+
+        if (!saltarPasos) {
+            ControladorAlertas.alertSuccess("Ajuste exitoso");
+        }
+
+        saltarPasos = false;
+
+        if (ControladorAlertas.option("¿Desea imprimir?")) {
+            generarReporte(ajuste);
+        }
+
+        preguntaLimpiar = false;
+        btnLimpiarActionPerformed(evt);
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void recalcularFilas() {
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            tblProductos.setColumnSelectionInterval(0, 0);
+            tblProductos.setRowSelectionInterval(i, i);
+            KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
+            tblProductosKeyReleased(x);
+        }
+    }
+
+    private ModeloAjusteInventario construirAjuste() {
+        boolean entrada = cmbTipoAjuste.getSelectedIndex() == 0;
+
+        ModeloAjusteInventario ajuste = new ModeloAjusteInventario();
+        ajuste.setEntrada(entrada);
+        ajuste.setIdBodega(Bodegas.predeterminada());
+
+        if (entrada) {
+            ajuste.agregarDetallesProductos(generarDetallesProductos());
+        }
+
+        for (int i = 0; i < tblProductos.getRowCount(); i++) {
+            ajuste.agregarLinea(construirLineaAjuste(i, entrada));
+        }
+
+        return ajuste;
+    }
+
+    private LineaAjusteInventario construirLineaAjuste(int fila, boolean entrada) {
+        LineaAjusteInventario linea = new LineaAjusteInventario();
+        linea.setIdSistema(obtenerValorTabla(fila, 15));
+        linea.setDescripcion(obtenerValorTabla(fila, 1));
+        linea.setPlu(obtenerValorTabla(fila, 9));
+        linea.setIdDetalleProducto(obtenerValorTabla(fila, 14));
+        linea.setObservaciones(entrada ? obtenerValorTabla(fila, 8) : obtenerValorTabla(fila, 11));
+        linea.setDetalle(obtenerValorTabla(fila, 11));
+        linea.setCantidad(numeroTabla(fila, 3));
+        linea.setCantidadInventario(numeroTabla(fila, 10));
+        linea.setValorUnitario(monedaTabla(fila, 2));
+        linea.setSubtotal(monedaTabla(fila, 4));
+        linea.setPorcentajeIva(numeroTabla(fila, 5));
+        linea.setIva(monedaTabla(fila, 6));
+        linea.setTotal(monedaTabla(fila, 7));
+        linea.setCosto(monedaTabla(fila, 16));
+        linea.setPorcentajeImpoconsumo(numeroTabla(fila, 17));
+        linea.setImpoconsumo(monedaTabla(fila, 18));
+        return linea;
+    }
+
+    private BigDecimal numeroTabla(int fila, int columna) {
+        Object valor = tblProductos.getValueAt(fila, columna);
+        if (valor instanceof BigDecimal) {
+            return (BigDecimal) valor;
+        }
+        if (valor instanceof Number) {
+            return new BigDecimal(valor.toString());
+        }
+        return Utilidades.convertirBigDecimal(obtenerValorTabla(fila, columna));
+    }
+
+    private BigDecimal monedaTabla(int fila, int columna) {
+        String valor = obtenerValorTabla(fila, columna).trim();
+        if (valor.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return big.getMoneda(valor);
+    }
+
+    private void actualizarConsecutivoVista() {
+        try {
+            lbNoFactura.setText(servicioAjusteInventario.siguienteConsecutivo());
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaAjusteInventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         if (preguntaLimpiar) {
@@ -755,7 +763,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         txtValor.setText(this.simbolo + " 0");
         cantidadTotal = "0";
         tblProductos.removeEditor();
-        lbNoFactura.setText((String) instancias.getSql().getNumConsecutivo("TRAS")[0]);
+        actualizarConsecutivoVista();
 
         guardarMovimientosPrecargados();
     }//GEN-LAST:event_btnLimpiarActionPerformed
@@ -783,19 +791,31 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     }//GEN-LAST:event_popBorrarActionPerformed
 
     private void btnReimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirActionPerformed
-        String consecutivo = "TRAS-" + metodos.msgIngresarEnter(this, "Documento a reimprimir");
-        if (consecutivo.equals("TRAS-")) {
+        String documento = ServicioAjusteInventario.PREFIJO + metodos.msgIngresarEnter(this, "Documento a reimprimir");
+        if (documento.equals(ServicioAjusteInventario.PREFIJO)) {
             return;
         }
 
-        boolean anulado = instancias.getSql().getDocumentoAnulado("bdTraslados", "Where id='" + consecutivo + "' ");
+        ModeloAjusteInventario ajuste;
+        try {
+            ajuste = servicioAjusteInventario.obtener(documento);
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaAjusteInventario.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("Error al consultar el ajuste: " + ex.getMessage());
+            return;
+        }
 
-        if (anulado) {
+        if (ajuste == null) {
+            ControladorAlertas.alertFail("El documento no existe");
+            return;
+        }
+
+        if (ajuste.estaAnulado()) {
             ControladorAlertas.alert("Este documento se encuentra anulado");
             return;
         }
 
-        generarReporte(consecutivo);
+        generarReporte(ajuste);
     }//GEN-LAST:event_btnReimprimirActionPerformed
 
     private void lbProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lbProductoKeyReleased
@@ -805,47 +825,43 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
     }//GEN-LAST:event_lbProductoKeyReleased
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
-        String consecutivo = "TRAS-" + metodos.msgIngresarEnter(this, "Documento a anular");
-        if (consecutivo.equals("TRAS-")) {
+        String documento = ServicioAjusteInventario.PREFIJO + metodos.msgIngresarEnter(this, "Documento a anular");
+        if (documento.equals(ServicioAjusteInventario.PREFIJO)) {
             return;
         }
 
+        ModeloAjusteInventario ajuste;
         try {
-            boolean anulado = instancias.getSql().getDocumentoAnulado("bdTraslados", "Where id='" + consecutivo + "' ");
-            if (anulado) {
-                ControladorAlertas.alertFail("El documento se encuentra anulado");
-                return;
-            }
-        } catch (Exception e) {
+            ajuste = servicioAjusteInventario.obtener(documento);
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaAjusteInventario.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("Error al consultar el ajuste: " + ex.getMessage());
+            return;
+        }
+
+        if (ajuste == null) {
             ControladorAlertas.alertFail("El documento no existe");
             return;
         }
 
-        if (ControladorAlertas.option("¿Anular este ajuste?")) {
-
-            if (!instancias.getSql().anularDocumento(consecutivo, "bdTraslados")) {
-                ControladorAlertas.alertFail("Hubo un problema al anular el ajuste");
-                return;
-            }
-
-            Object[][] productosAjuste = instancias.getSql().getProductosAjuste(consecutivo);
-            String origen = instancias.getSql().tipoAjuste(consecutivo);
-            boolean esAjusteEntrada = origen.equals(Bodegas.AJUSTE_EXTERNO);
-
-            TipoDocumento tipoMovimiento = esAjusteEntrada ? TipoDocumento.ANULAR_AJUSTE_ENTRADA : TipoDocumento.ANULAR_AJUSTE_SALIDA;
-            String idBodega = Bodegas.predeterminada();
-            List<MovimientoInventario> productos = generarListadoProductos(idBodega, productosAjuste);
-            ServicioInventario servicioInventario = new ServicioInventario(productos, new ArrayList<DetalleProducto>(), tipoMovimiento, consecutivo, idBodega, instancias.getUsuario(), null);
-
-            try {
-                servicioInventario.procesarMovimiento();
-            } catch (SQLException ex) {
-                Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
-
-            ControladorAlertas.alertSuccess("Ajuste anulado con éxito");
+        if (ajuste.estaAnulado()) {
+            ControladorAlertas.alertFail("El documento se encuentra anulado");
+            return;
         }
+
+        if (!ControladorAlertas.option("¿Anular este ajuste?")) {
+            return;
+        }
+
+        try {
+            servicioAjusteInventario.anular(documento);
+        } catch (SQLException | RuntimeException ex) {
+            Logger.getLogger(VistaAjusteInventario.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("Hubo un problema al anular el ajuste: " + ex.getMessage());
+            return;
+        }
+
+        ControladorAlertas.alertSuccess("Ajuste anulado con éxito");
     }//GEN-LAST:event_btnAnularActionPerformed
 
     private void cmbTipoAjusteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTipoAjusteItemStateChanged
@@ -940,13 +956,12 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         ventanaProductos("");
     }//GEN-LAST:event_btnBusProdActionPerformed
 
-    private void generarReporte(String consecutivo) {
+    private void generarReporte(ModeloAjusteInventario ajuste) {
         GeneradorReporteProducto reportes = new GeneradorReporteProducto(instancias);
-        reportes.verAjusteInventario(consecutivo);
+        reportes.verAjusteInventario(ajuste.getDocumento());
 
-        boolean esAjusteEntrada = instancias.getSql().tipoAjuste(consecutivo).equals(Bodegas.AJUSTE_EXTERNO);
-        if (instancias.getConfiguraciones().isProductosDetallados() && esAjusteEntrada) {
-            reportes.verIngresoDetalle(consecutivo);
+        if (instancias.getConfiguraciones().isProductosDetallados() && ajuste.esEntrada()) {
+            reportes.verIngresoDetalle(ajuste.getDocumento());
         }
     }
 
@@ -958,38 +973,6 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         while (tblDetalle.getRowCount() > 0) {
             modeloPro1.removeRow(0);
         }
-    }
-
-    private List<MovimientoInventario> generarListadoProductos(String idBodega) {
-
-        List<MovimientoInventario> movimientos = new ArrayList<>();
-
-        for (int i = 0; i < tblProductos.getRowCount(); i++) {
-            ModeloProducto producto = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(i, 15).toString(), idBodega);
-            BigDecimal cantidad = Utilidades.convertirBigDecimal(tblProductos.getValueAt(i, 10).toString());
-            String idDetalleProducto = obtenerValorTabla(i, 14);
-
-            MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, idDetalleProducto);
-            movimientos.add(inventario);
-        }
-
-        return movimientos;
-    }
-
-    private List<MovimientoInventario> generarListadoProductos(String idBodega, Object[][] productosAjuste) {
-
-        List<MovimientoInventario> movimientos = new ArrayList<>();
-
-        for (Object[] productoAjuste : productosAjuste) {
-            ModeloProducto producto = daoProducto.obtenerDatosProducto(productoAjuste[0].toString(), idBodega);
-            BigDecimal cantidad = Utilidades.convertirBigDecimal(productoAjuste[1].toString());
-            String idDetalleProducto = productoAjuste[2] != null ? productoAjuste[2].toString() : "";
-
-            MovimientoInventario inventario = new MovimientoInventario(producto, cantidad, BigDecimal.ZERO, idDetalleProducto);
-            movimientos.add(inventario);
-        }
-
-        return movimientos;
     }
 
     private String obtenerValorTabla(int row, int col) {
