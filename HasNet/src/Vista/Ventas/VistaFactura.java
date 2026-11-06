@@ -7498,7 +7498,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         utilidad = valorUnidad.subtract(costo);
         utilidad = utilidad.multiply(Utilidades.convertirBigDecimal(tblProductos.getValueAt(fila, 3).toString()));
-        System.out.println("utilidad producto: " + utilidad);
         tblProductos.setValueAt(big.setMoneda(utilidad), fila, 14);
 
         compra = costo;

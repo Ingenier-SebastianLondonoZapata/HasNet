@@ -132,11 +132,11 @@ public abstract class AbstractProcesadorMovimiento implements ProcesadorMovimien
 
     protected SentenciaSql sqlDetalleDescontarConEstado(String idDetalleProducto, BigDecimal cantidad, String estadoSiSeAgota) {
         String sql = "UPDATE " + Tablas.DETALLE_PRODUCTO.getNombre()
-                + " SET cantidadDisponible = cantidadDisponible - ?, "
-                + "estado = CASE WHEN (cantidadDisponible - ?) <= 0 THEN ? ELSE estado END "
+                + " SET estado = CASE WHEN (cantidadDisponible - ?) <= 0 THEN ? ELSE estado END, "
+                + "cantidadDisponible = cantidadDisponible - ? "
                 + "WHERE Id = ?";
 
-        return new SentenciaSql(sql, cantidad, cantidad, estadoSiSeAgota, idDetalleProducto);
+        return new SentenciaSql(sql, cantidad, estadoSiSeAgota, cantidad, idDetalleProducto);
     }
 
     protected SentenciaSql sqlDetalleReintegrarConEstado(String idDetalleProducto, BigDecimal cantidad, String estado) {

@@ -89,7 +89,6 @@ public class buscBodegas extends javax.swing.JDialog {
     private boolean aplica(ModeloBodega bodega, String tipo) {
         boolean interna = Bodegas.TIPO_INTERNA.equalsIgnoreCase(bodega.getTipoBodega());
         boolean principal = bodega.esPrincipal();
-        boolean ajusteExterno = Bodegas.AJUSTE_EXTERNO.equalsIgnoreCase(bodega.getCodigo());
 
         if (TIPO_INTERNA.equals(tipo)) {
             return interna;
@@ -100,10 +99,10 @@ public class buscBodegas extends javax.swing.JDialog {
         }
 
         if (TIPO_PRESTAMO.equals(tipo)) {
-            return principal || (!interna && !ajusteExterno);
+            return principal || !interna;
         }
 
-        return !interna && !ajusteExterno;
+        return !interna;
     }
 
     private ActionListener accion(final String opc, final JDialog ventana) {

@@ -5833,15 +5833,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         return !bodegasPendientes.isEmpty() || cambioPredeterminada;
     }
 
-    /**
-     * Escribe las bodegas pendientes y la bodega por defecto.
-     */
     private boolean guardarCambiosBodegas() {
         if (!bodegasPendientes.isEmpty()) {
             java.util.List<ModeloBodega> bodegas = new java.util.ArrayList<>();
             for (ModeloBodega pendiente : bodegasPendientes.values()) {
-                // Validación contra la base de datos por si otra terminal
-                // registró el mismo nombre mientras tanto
                 String codigoActual = esBodegaNueva(pendiente.getCodigo()) ? "" : pendiente.getCodigo();
                 if (daoBodegas.existeNombre(pendiente.getNombre(), Bodegas.TIPO_INTERNA, codigoActual)) {
                     ControladorAlertas.alertFail("Ya existe una bodega con el nombre " + pendiente.getNombre());
@@ -5936,11 +5931,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         cmbBodegas.setSelectedIndex(bodegasCombo.isEmpty() ? -1 : 0);
     }
 
-    /**
-     * Guarda la bodega elegida en "Bodega por defecto" (se llama al GUARDAR la
-     * maestra) y refresca la maestra en memoria, para que el resto del sistema
-     * empiece a mover inventario sobre ella sin reiniciar.
-     */
     private boolean guardarBodegaPredeterminada() {
         int indice = cmbBodegas.getSelectedIndex();
 
@@ -5964,10 +5954,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         return true;
     }
 
-    /**
-     * La columna de estado muestra una etiqueta, pero el modelo viaja con el
-     * 1/0 que guarda la base de datos.
-     */
     private ModeloBodega bodegaDeLaFila(int fila) {
         return new ModeloBodega(valorCeldaBodega(fila, 0), "", valorCeldaBodega(fila, 1),
                 Bodegas.TIPO_INTERNA, Bodegas.estado(valorCeldaBodega(fila, 2)), instancias.getUsuario());
@@ -7526,7 +7512,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
     private void inicializarTablaImpresoraPorTipo() {
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                new String[]{"Tipo Documento", "Impresora", "Predeterminada"}, 0
+                new String[]{"Tipo Documento", "Impresora", "Por defecto"}, 0
         ) {
             Class[] types = new Class[]{Object.class, Object.class, Boolean.class};
 

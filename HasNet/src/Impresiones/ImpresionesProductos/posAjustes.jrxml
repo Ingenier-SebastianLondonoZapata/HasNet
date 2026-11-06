@@ -9,7 +9,27 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[Select * from repTraslados where traslado=$P{numFactura}]]>
+		<![CDATA[SELECT d.traslado,
+       t.fecha,
+       d.producto,
+       d.descripcion,
+       d.cantidad,
+       d.lista,
+       d.total,
+       d.detalle,
+       t.unidades,
+       t.valor,
+       t.anulada,
+       d.observacion,
+       t.tipo,
+       t.terminal,
+       p.Codigo,
+       t.hora,
+       t.usuario
+FROM bdTraslados t
+INNER JOIN bdTrasladosDetalle d ON d.traslado = t.Id
+INNER JOIN bdProductos p ON p.idSistema = d.producto
+WHERE t.Id = $P{numFactura}]]>
 	</queryString>
 	<field name="traslado" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -51,9 +71,6 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="terminal" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="bodega" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="Codigo" class="java.lang.String">

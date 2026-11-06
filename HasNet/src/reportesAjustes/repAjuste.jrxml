@@ -9,8 +9,30 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from repTraslados $P!{cliente} 
-ORDER BY fecha ASC;]]>
+		<![CDATA[SELECT * FROM (
+    SELECT d.traslado,
+           t.fecha,
+           d.producto,
+           d.descripcion,
+           d.cantidad,
+           d.lista,
+           d.total,
+           t.unidades,
+           t.valor,
+           t.anulada,
+           d.observacion,
+           t.tipo,
+           t.terminal,
+           COALESCE(b.nombre, t.origen) AS bodega,
+           p.Codigo,
+           t.hora,
+           t.usuario
+    FROM bdTraslados t
+    INNER JOIN bdTrasladosDetalle d ON d.traslado = t.Id
+    INNER JOIN bdProductos p ON p.idSistema = d.producto
+    LEFT JOIN bdBodegas b ON b.codigo = t.origen
+) repTraslados $P!{cliente}
+ORDER BY fecha ASC]]>
 	</queryString>
 	<field name="traslado" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
