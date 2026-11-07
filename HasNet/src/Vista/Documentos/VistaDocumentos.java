@@ -418,7 +418,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         chkSoloAnuladas = new javax.swing.JCheckBox();
         chkSoloFacturasElectronicas = new javax.swing.JCheckBox();
         btnFacturar = new javax.swing.JButton();
-        btnImprimir = new javax.swing.JButton();
         chkUnificarFacturas = new javax.swing.JCheckBox();
         pnlFormulario1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -768,21 +767,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
         });
 
-        btnImprimir.setBackground(new java.awt.Color(46, 204, 113));
-        btnImprimir.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
-        btnImprimir.setText("FACTURAR E IMPRIMIR");
-        btnImprimir.setToolTipText("Ctrl+I");
-        btnImprimir.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnImprimir.setMargin(new java.awt.Insets(2, 14, 2, 5));
-        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImprimirActionPerformed(evt);
-            }
-        });
-
         chkUnificarFacturas.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
         chkUnificarFacturas.setText("Unificar factura para documentos del mismo cliente");
 
@@ -800,8 +784,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(chkUnificarFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
                 .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -814,7 +796,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnFacturar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(chkUnificarFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -1437,7 +1418,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         if (esRestaurante && usaTurno) {
             titulo = "Turno";
         } else if (!esRestaurante && usaSegundoNumeroFactura) {
-            titulo = "Num Fact2";
+            titulo = "Otro consecutivo";
         }
 
         String encabezado = datosDocumento.isEsAnulado() ? "Reimpresión (Anulada)" : "Reimpresión";
@@ -1455,15 +1436,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 String documento = prefijoPorDocumento + NUMERO_DOCUMENTO_SELECCIONADO;
                 
                 Boolean notaDebito = cmbTipoDocumento.getSelectedItem().equals("NOTA DÉBITO");
-                String verImpoconsumoEnImpresion = String.valueOf(DatosMaestra.isImprimirImpoconsumo());
-                String verRetencionesEnImpresion = String.valueOf(DatosMaestra.isImprimirRetenciones());
-
-                boolean usaAgrupada = esRestaurante && DatosMaestra.isCombinarProductos();
-                String condicion = usaAgrupada || esRestaurante ? metodos.sentenciaImpresionFactura("agrupada", " WHERE bdFactura.factura = '" + documento + "' ")
-                        : metodos.sentenciaImpresionFactura("", " WHERE bdFactura.factura = '" + documento + "' ");
 
                 new GeneradorReporteFactura(instancias).ver_Factura(txtObservaciones.getText(), infoEmpresa, informacionLegal, encabezado, pieDePagina, tipoImpresion,
-                        documento, false, titulo, impresoraEstablecida, verImpoconsumoEnImpresion, verRetencionesEnImpresion, condicion, notaDebito);
+                        documento, false, titulo, impresoraEstablecida, notaDebito);
                 break;
             }
 
@@ -1475,17 +1450,15 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             }
 
             case "COTIZACIÓN": {
-                boolean previsualizarCotizacion = DatosMaestra.isPrevisualizarCotizacion();
                 String documento = "COTI-" + NUMERO_DOCUMENTO_SELECCIONADO;
-                new GeneradorReporteCotizacion(instancias).ver_Cotiza(documento, txtObservaciones.getText(), instancias.getInformacionEmpresa(), informacionLegal, tipoImpresion, previsualizarCotizacion);
+                new GeneradorReporteCotizacion(instancias).ver_Cotiza(documento, txtObservaciones.getText(), instancias.getInformacionEmpresa(), informacionLegal, tipoImpresion, false);
                 break;
             }
 
             case "PEDIDOS": {
-                boolean previsualizarPedidos = DatosMaestra.isPrevisualizarPlanSepare();
                 String documento = "PEDIDO-" + NUMERO_DOCUMENTO_SELECCIONADO;
                 GeneradorReportePedido reportes = new GeneradorReportePedido(instancias);
-                reportes.ver_Pedido(documento, txtObservaciones.getText(), infoEmpresa, "", tipoImpresion, previsualizarPedidos);
+                reportes.ver_Pedido(documento, txtObservaciones.getText(), infoEmpresa, "", tipoImpresion, false);
                 break;
             }
 
@@ -1626,12 +1599,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chkSoloAnuladasItemStateChanged
 
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
-        iniciarFacturacion(false);
+        iniciarFacturacion();
     }//GEN-LAST:event_btnFacturarActionPerformed
-
-    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        iniciarFacturacion(true);
-    }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void chkSoloFacturasElectronicasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkSoloFacturasElectronicasItemStateChanged
         actualizarTablaDocumentos();
@@ -1812,7 +1781,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
 
         btnFacturar.setVisible(esVisible);
-        btnImprimir.setVisible(esVisible);
         chkUnificarFacturas.setVisible(esVisible);
     }
 
@@ -1887,7 +1855,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
     private String obtenerTipoImpresion() {
         String tipo = obtenerNombreImpresion();
-        String configuracionImpresion = instancias.getConfiguraciones().getTipoImpresion();
+        String configuracionImpresion = DatosMaestra.getTipoImpresion();
         String regimen = instancias.getRegimen();
 
         if ("separePosSinIva".equals(tipo)) {
@@ -2020,7 +1988,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(i, 12).toString().replace(".", ","))), i, 12);
         }
 
-        if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
+        if (DatosMaestra.getTipoImpresion().equals("Sin-Codigo")) {
             tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -2202,7 +2170,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         tblDocumentos.setRowSorter(modeloOrdenado);
     }
 
-    private void iniciarFacturacion(boolean imprimir) {
+    private void iniciarFacturacion() {
         List<DocumentoSeleccionado> seleccionados = recolectarDocumentosSeleccionados();
 
         if (seleccionados.isEmpty()) {
@@ -2236,6 +2204,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         if (confirmacion != JOptionPane.YES_OPTION) {
             return;
         }
+
+        boolean imprimir = ControladorAlertas.option("¿Desea imprimir la factura?");
 
         ServicioFacturacionMasiva servicio = new ServicioFacturacionMasiva(instancias);
         if (unificar) {
@@ -2288,7 +2258,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnAnular;
     private javax.swing.JButton btnBuscTerceros1;
     private javax.swing.JButton btnFacturar;
-    private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnReimprimir;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton carta;

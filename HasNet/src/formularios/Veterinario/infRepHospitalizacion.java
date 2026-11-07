@@ -2,7 +2,7 @@ package formularios.Veterinario;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import clases.Instancias;
 import clases.Veterinario.ndMascota;
 import Modelo.Contactos.ModeloContacto;
@@ -455,7 +455,7 @@ public class infRepHospitalizacion extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCliente);

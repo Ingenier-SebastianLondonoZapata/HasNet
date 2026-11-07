@@ -1,5 +1,8 @@
 package formularios.Parqueadero;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -11,8 +14,7 @@ import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.productos.buscSubGrupos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -725,9 +727,8 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
     }
 
     public void ventanaSubGrupos(String codigo) {
-        buscSubGrupos buscar = new buscSubGrupos(null, rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.subGrupos(null, rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscSubGrupos(buscar);
         instancias.setValor(txtCodigo1.getText());
         instancias.setCampoActual(txtCodigo1);
         txtCodigo1.requestFocus();
@@ -746,7 +747,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCliente);

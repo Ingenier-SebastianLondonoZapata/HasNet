@@ -1,12 +1,13 @@
 package formularios.Parqueadero;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
 import clases.metodosGenerales;
 import formularios.Ventas.buscTipoVehiculo;
-import formularios.productos.buscColores;
-import formularios.productos.buscMarcas;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -356,12 +357,10 @@ public class nuevoTercero extends javax.swing.JDialog {
     }//GEN-LAST:event_txtTipoVehiculoKeyReleased
 
     public void ventanaColores(String nit) {
-        buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.colores(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscColores(buscar);
         instancias.setCampoActual(txtColor);
         txtColor.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }
@@ -378,12 +377,10 @@ public class nuevoTercero extends javax.swing.JDialog {
     }
 
     public void ventanaMarcas(String nit) {
-        buscMarcas buscar = new buscMarcas(instancias.getMenu(), rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.marcas(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscMarcas(buscar);
         instancias.setCampoActual(txtMarca);
         txtMarca.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }

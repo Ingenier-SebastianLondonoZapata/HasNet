@@ -116,9 +116,6 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
         return informacionLegal;
     }
 
-    public String getTipoImpresion() {
-        return tipoImpresion;
-    }
 
     public int getDiasAlertaBloqueo() {
         return diasAlertaBloqueo;
@@ -170,9 +167,6 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
         lbNit10 = new javax.swing.JLabel();
         rdComun = new javax.swing.JRadioButton();
         rdSimplificado = new javax.swing.JRadioButton();
-        jPanel47 = new javax.swing.JPanel();
-        lbNit11 = new javax.swing.JLabel();
-        cmbTipoImpresiones = new javax.swing.JComboBox<>();
         lbTelefono17 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtInformacionLegal = new javax.swing.JTextArea();
@@ -303,33 +297,6 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
                     .addComponent(rdSimplificado)))
         );
 
-        jPanel47.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel47.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Adobe Arabic", 1, 12), new java.awt.Color(102, 153, 0))); // NOI18N
-
-        lbNit11.setBackground(new java.awt.Color(204, 204, 204));
-        lbNit11.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        lbNit11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbNit11.setText("Impresiones");
-        lbNit11.setOpaque(true);
-
-        cmbTipoImpresiones.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        cmbTipoImpresiones.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Con codigo", "Sin codigo", "Tipo serial" }));
-
-        javax.swing.GroupLayout jPanel47Layout = new javax.swing.GroupLayout(jPanel47);
-        jPanel47.setLayout(jPanel47Layout);
-        jPanel47Layout.setHorizontalGroup(
-            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cmbTipoImpresiones, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lbNit11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel47Layout.setVerticalGroup(
-            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel47Layout.createSequentialGroup()
-                .addComponent(lbNit11, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(cmbTipoImpresiones, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
-        );
-
         lbTelefono17.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbTelefono17.setText("Información legal impresión:");
 
@@ -437,10 +404,7 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
                 .addComponent(jPanel45, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel46, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(pnlOculto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -463,9 +427,7 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
                 .addGap(5, 5, 5)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel47, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)
                         .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -528,17 +490,9 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
 
     private modeloConfiguracion llenarModeloSuperMaestra() {
         modeloConfiguracion modelo = new modeloConfiguracion();
-        String regimenSistema = "ConIva", tipoImpresion;
+        String regimenSistema = "ConIva";
         if (rdSimplificado.isSelected()) {
             regimenSistema = "SinIva";
-        }
-
-        if (cmbTipoImpresiones.getSelectedItem().equals("Con codigo")) {
-            tipoImpresion = "Con-Codigo";
-        } else if (cmbTipoImpresiones.getSelectedItem().equals("Sin codigo")) {
-            tipoImpresion = "Sin-Codigo";
-        } else {
-            tipoImpresion = "Imei";
         }
 
         modelo.setNit(nit);
@@ -566,7 +520,7 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
         modelo.setProductosSerial(tipoSeleccionTabla(tblModulos.getValueAt(17, 1).toString()));
         modelo.setUsb(tipoSeleccionTabla(tblModulos.getValueAt(18, 1).toString()));
         modelo.setInformacionLegal(txtInformacionLegal.getText());
-        modelo.setTipoImpresion(tipoImpresion);
+        modelo.setTipoImpresion(this.tipoImpresion);
         modelo.setDiasAntesAlertaBloqueo(Integer.parseInt(txtDiasAlertaBloqueo.getText()));
         modelo.setDiasDespuesGabelaBloqueo(Integer.parseInt(txtDiasGabelaBloqueo.getText()));
         modelo.setNumeroFacturasElectronicasDisponibles(Integer.parseInt(txtFEDisponibles.getText()));
@@ -645,14 +599,6 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
             instancias.setRegimen("");
         }
 
-        if (modelo.getTipoImpresion().equals("Con-Codigo")) {
-            cmbTipoImpresiones.setSelectedIndex(0);
-        } else if (modelo.getTipoImpresion().equals("Sin-Codigo")) {
-            cmbTipoImpresiones.setSelectedIndex(1);
-        } else {
-            cmbTipoImpresiones.setSelectedIndex(2);
-        }
-
         nit = modelo.getNit();
         nombre = modelo.getNombre();
         telefono = modelo.getTelefono();
@@ -693,7 +639,6 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGuardarSuperMaestra;
     private javax.swing.JComboBox<String> cmbOpcionesSINO;
-    private javax.swing.JComboBox<String> cmbTipoImpresiones;
     private javax.swing.ButtonGroup grupoRegimen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
@@ -701,12 +646,10 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel45;
     private javax.swing.JPanel jPanel46;
-    private javax.swing.JPanel jPanel47;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane16;
     private javax.swing.JLabel lbNit10;
-    private javax.swing.JLabel lbNit11;
     private javax.swing.JLabel lbNit13;
     private javax.swing.JLabel lbNit9;
     private javax.swing.JLabel lbTelefono17;

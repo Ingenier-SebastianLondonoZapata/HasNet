@@ -27,7 +27,7 @@ import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
 import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import Vista.Productos.VistaInventarioInicial;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -1212,7 +1212,7 @@ public class infTrasladosInternos extends javax.swing.JInternalFrame implements 
     }//GEN-LAST:event_popBorrarActionPerformed
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtTraslado);

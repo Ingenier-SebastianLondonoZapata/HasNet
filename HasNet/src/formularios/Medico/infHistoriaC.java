@@ -9,7 +9,7 @@ import clases.Medico.ndHistoriaClinica;
 import clases.Medico.ndOrdenServicio;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -1034,7 +1034,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtIdSistemaKeyReleased
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtId);

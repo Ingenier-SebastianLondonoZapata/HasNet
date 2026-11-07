@@ -5684,7 +5684,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="btnGuardarMaestra" min="-2" pref="290" max="-2" attributes="0"/>
+                          <Component id="btnGuardarMaestra" min="-2" pref="314" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -5710,7 +5710,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/imagenes/guardar.png"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="GUARDAR DATOS MAESTRA"/>
+                    <Property name="text" type="java.lang.String" value="GUARDAR DATOS CONFIGURACI&#xd3;N"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                       <Color id="Default Cursor"/>
                     </Property>

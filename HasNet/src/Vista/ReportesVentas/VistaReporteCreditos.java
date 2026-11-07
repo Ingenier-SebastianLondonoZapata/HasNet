@@ -5,7 +5,7 @@ import Controlador.Alertas.ControladorAlertas;
 import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
 import javax.swing.JComboBox;
@@ -456,7 +456,7 @@ public class VistaReporteCreditos extends javax.swing.JPanel {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCliente);

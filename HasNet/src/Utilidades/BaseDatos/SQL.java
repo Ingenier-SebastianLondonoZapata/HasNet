@@ -3478,15 +3478,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public boolean AgregarNuevoTercero(Object[] dato) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdNuevoTercero(cc, primerNombre, segundoNombre, primerApellido, segundoApellido, "
-                + "telefono, usuario, fecha, celular, direccion, cedula)"
-                + "values(?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(dato, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean AgregarContraremision(Object[] dato) {
         boolean ok = false;
         String instruccion_sql = "insert into bdContraremision(Id, fecha, hallazgos, nombres, apellidos, edad, tipoId, identificacion, telefono, tratamientos, "

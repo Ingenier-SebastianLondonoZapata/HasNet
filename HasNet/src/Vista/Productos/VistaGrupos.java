@@ -1,11 +1,12 @@
 package Vista.Productos;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
 import clases.metodosGenerales;
-import formularios.productos.buscGrupos;
-import formularios.productos.buscSubGrupos;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -702,9 +703,8 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLimpiarSubgrupoActionPerformed
 
     public void ventanaGrupos(String codigo) {
-        buscGrupos buscar = new buscGrupos(null, rootPaneCheckingEnabled, "");
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(null, rootPaneCheckingEnabled, true);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscGrupos(buscar);
         instancias.setCampoActual(txtCodigo);
         txtCodigo.requestFocus();
         buscar.noEncontrado(codigo.replace("'", "//"));
@@ -744,9 +744,8 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaSubGrupos(String codigo) {
-        buscSubGrupos buscar = new buscSubGrupos(null, rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.subGrupos(null, rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscSubGrupos(buscar);
         instancias.setValor(txtCodigo.getText());
         instancias.setCampoActual(txtCodigoSubGrupo);
         txtCodigoSubGrupo.requestFocus();

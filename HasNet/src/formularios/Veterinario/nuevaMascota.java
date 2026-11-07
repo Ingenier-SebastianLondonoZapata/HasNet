@@ -8,7 +8,7 @@ import clases.Veterinario.ndMascota;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.event.KeyEvent;
 
 public class nuevaMascota extends javax.swing.JDialog {
@@ -557,7 +557,7 @@ public class nuevaMascota extends javax.swing.JDialog {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtNit);

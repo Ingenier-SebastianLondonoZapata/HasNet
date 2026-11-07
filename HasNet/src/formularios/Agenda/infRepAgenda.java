@@ -2,7 +2,7 @@ package formularios.Agenda;
 
 import Controlador.Alertas.ControladorAlertas;
 
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import clases.Instancias;
 import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
@@ -731,7 +731,7 @@ public class infRepAgenda extends javax.swing.JInternalFrame {
     }
 
     public void ventanaPaciente(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtPaciente);

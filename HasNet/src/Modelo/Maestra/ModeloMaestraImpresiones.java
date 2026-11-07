@@ -11,7 +11,8 @@ public class ModeloMaestraImpresiones {
             numeroCopiasPlanSepare = 0, numeroCopiasPedido = 0, numeroCopiasComanda = 0, numeroCopiasPrefactura = 0;
 
     private String impresoraPos, impresoraMediaCarta, impresoraCarta, impresoraComanda, impresoraPrefactura,
-            tipoPredeterminado, mostrarUbicacion, formatoImpresion, piePagina, informacionLegal, anexoFactura, anexoOrdenServicio;
+            tipoPredeterminado, mostrarUbicacion, formatoImpresion, piePagina, informacionLegal, anexoFactura, anexoOrdenServicio,
+            tipoImpresion;
 
     private static int parsear(String valor) {
         try {
@@ -359,5 +360,13 @@ public class ModeloMaestraImpresiones {
 
     public void setAnexoOrdenServicio(String anexoOrdenServicio) {
         this.anexoOrdenServicio = anexoOrdenServicio;
+    }
+
+    public String getTipoImpresion() {
+        return tipoImpresion;
+    }
+
+    public void setTipoImpresion(String tipoImpresion) {
+        this.tipoImpresion = tipoImpresion;
     }
 }

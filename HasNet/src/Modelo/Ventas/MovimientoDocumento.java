@@ -10,7 +10,7 @@ public class MovimientoDocumento {
     private final String prefijoGeneral;
     private final String vendedor;
     private final String congelada;
-    private final int turno;
+    private final String turno;
     private final String fechaFactura;
     private final BigDecimal copago;
     private final String porcentajeReteFuente;
@@ -39,8 +39,16 @@ public class MovimientoDocumento {
         return congelada;
     }
 
-    public int getTurno() {
+    public String getTurno() {
         return turno;
+    }
+
+    public int getTurnoNumerico() {
+        try {
+            return Integer.parseInt(turno.trim());
+        } catch (NumberFormatException | NullPointerException e) {
+            return 0;
+        }
     }
 
     public String getFechaFactura() {
@@ -55,7 +63,7 @@ public class MovimientoDocumento {
         return porcentajeReteFuente;
     }
 
-    public MovimientoDocumento(String tipoComprobante, String factura, String factura2, String prefijoGeneral, String vendedor, String congelada, int turno, String fechaFactura, BigDecimal copago, String porcentajeReteFuente) {
+    public MovimientoDocumento(String tipoComprobante, String factura, String factura2, String prefijoGeneral, String vendedor, String congelada, String turno, String fechaFactura, BigDecimal copago, String porcentajeReteFuente) {
         this.tipoComprobante = tipoComprobante;
         this.factura = factura;
         this.factura2 = factura2;

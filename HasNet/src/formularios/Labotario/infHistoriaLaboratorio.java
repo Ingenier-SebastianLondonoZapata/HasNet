@@ -18,7 +18,7 @@ import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
 import formularios.Genericos.buscPlantillaDeTextos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Color;
 
 import java.awt.Dimension;
@@ -3182,7 +3182,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtId);

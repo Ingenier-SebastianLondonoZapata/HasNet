@@ -157,8 +157,8 @@ public class DaoMaestra {
                 + "tipoPredeterminado, mostrarUbicacion, "
                 + "imprimirHora, imprimirRetenciones, imprimirImpoconsumo, imprimirRecodiga, imprimirCuadreFiscal, "
                 + "impresionPorGrupo, formatoImpresion, "
-                + "piePagina, informacionLegal, anexoFactura, anexoOrdenServicio"
-                + ") VALUES (1, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                + "piePagina, informacionLegal, anexoFactura, anexoOrdenServicio, tipoImpresion"
+                + ") VALUES (1, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
                 + " ON DUPLICATE KEY UPDATE "
                 + "previsualizarFactura=VALUES(previsualizarFactura), previsualizarOServicio=VALUES(previsualizarOServicio), "
                 + "previsualizarCotizacion=VALUES(previsualizarCotizacion), previsualizarPlanSepare=VALUES(previsualizarPlanSepare), "
@@ -180,7 +180,8 @@ public class DaoMaestra {
                 + "imprimirCuadreFiscal=VALUES(imprimirCuadreFiscal), impresionPorGrupo=VALUES(impresionPorGrupo), "
                 + "formatoImpresion=VALUES(formatoImpresion), "
                 + "piePagina=VALUES(piePagina), informacionLegal=VALUES(informacionLegal), "
-                + "anexoFactura=VALUES(anexoFactura), anexoOrdenServicio=VALUES(anexoOrdenServicio)";
+                + "anexoFactura=VALUES(anexoFactura), anexoOrdenServicio=VALUES(anexoOrdenServicio), "
+                + "tipoImpresion=VALUES(tipoImpresion)";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             int i = 1;
             stmt.setBoolean(i++, imp.isPrevisualizarFactura());
@@ -222,6 +223,7 @@ public class DaoMaestra {
             stmt.setString(i++, imp.getInformacionLegal());
             stmt.setString(i++, imp.getAnexoFactura());
             stmt.setString(i++, imp.getAnexoOrdenServicio());
+            stmt.setString(i++, imp.getTipoImpresion());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -325,7 +327,7 @@ public class DaoMaestra {
                 + "tipoPredeterminado, mostrarUbicacion, "
                 + "imprimirHora, imprimirRetenciones, imprimirImpoconsumo, imprimirRecodiga, imprimirCuadreFiscal, "
                 + "impresionPorGrupo, formatoImpresion, "
-                + "piePagina, informacionLegal, anexoFactura, anexoOrdenServicio "
+                + "piePagina, informacionLegal, anexoFactura, anexoOrdenServicio, tipoImpresion "
                 + "FROM bdMaestraImpresiones WHERE Id = 1";
         try (PreparedStatement stmt = conexion.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
@@ -372,6 +374,7 @@ public class DaoMaestra {
             imp.setInformacionLegal(rs.getString("informacionLegal"));
             imp.setAnexoFactura(rs.getString("anexoFactura"));
             imp.setAnexoOrdenServicio(rs.getString("anexoOrdenServicio"));
+            imp.setTipoImpresion(rs.getString("tipoImpresion"));
             return imp;
         } catch (SQLException e) {
             System.err.println("Error al obtener impresiones maestras: " + e.getMessage());

@@ -7,7 +7,7 @@ import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import clases.recordatorios.ndRecordatorio;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -1040,7 +1040,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtId);
@@ -1060,7 +1060,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
     }
     
     public void ventanaProveedor(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), false, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), false, true, null, "");
         buscar.setLocationRelativeTo(null);
         buscar.setTipoBuscador("");
         instancias.setBusClientes(buscar);

@@ -17,7 +17,7 @@ import Modelo.Productos.ModeloProducto;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -823,7 +823,7 @@ public class infFormulaMedica extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBuscTerceros2ActionPerformed
 
     public void ventanaReimpresion(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtId);

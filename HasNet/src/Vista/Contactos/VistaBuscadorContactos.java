@@ -1,9 +1,14 @@
-package formularios.terceros;
+package Vista.Contactos;
 
+import Controlador.Alertas.ControladorAlertas;
+import Dao.Terceros.DaoContactos;
+import Enums.TipoContacto;
+import Modelo.Contactos.ModeloContacto;
 import clases.Instancias;
 import clases.metodosGenerales;
 import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
+import java.util.Collections;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
@@ -13,7 +18,7 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class buscClientes extends javax.swing.JDialog {
+public class VistaBuscadorContactos extends javax.swing.JDialog {
 
     DefaultTableModel modelo;
     TableRowSorter modeloOrdenado;
@@ -22,6 +27,11 @@ public class buscClientes extends javax.swing.JDialog {
     private VistaFactura factura;
     private boolean buscarInactivos;
     private String tipoBuscador = "";
+    private TipoContacto tipoContacto;
+
+    public void setTipoContacto(TipoContacto tipoContacto) {
+        this.tipoContacto = tipoContacto;
+    }
 
     public String getTipoBuscador() {
         return tipoBuscador;
@@ -39,7 +49,7 @@ public class buscClientes extends javax.swing.JDialog {
         this.factura = factura;
     }
 
-    public buscClientes(java.awt.Frame parent, boolean modal, boolean buscarInactivos, Object[][] datos, String cod) {
+    public VistaBuscadorContactos(java.awt.Frame parent, boolean modal, boolean buscarInactivos, Object[][] datos, String cod) {
         super(parent, modal);
         initComponents();
 
@@ -92,7 +102,7 @@ public class buscClientes extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRegistros = new javax.swing.JTable();
         btnEste = new javax.swing.JButton();
-        btnEste1 = new javax.swing.JButton();
+        btnAgregarContacto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Buscador de clientes...");
@@ -183,12 +193,12 @@ public class buscClientes extends javax.swing.JDialog {
             }
         });
 
-        btnEste1.setBackground(new java.awt.Color(46, 204, 113));
-        btnEste1.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
-        btnEste1.setText("NUEVO");
-        btnEste1.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarContacto.setBackground(new java.awt.Color(46, 204, 113));
+        btnAgregarContacto.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        btnAgregarContacto.setText("NUEVO");
+        btnAgregarContacto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEste1ActionPerformed(evt);
+                btnAgregarContactoActionPerformed(evt);
             }
         });
 
@@ -199,7 +209,7 @@ public class buscClientes extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
                     .addComponent(txtId)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(rd4)
@@ -213,7 +223,7 @@ public class buscClientes extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnEste1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAgregarContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEste)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -234,7 +244,7 @@ public class buscClientes extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnEste, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEste1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnAgregarContacto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10))
         );
 
@@ -253,16 +263,52 @@ public class buscClientes extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEsteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEsteActionPerformed
-        if (opc.equals("factura1")) {
-            instancias.setValorCampo((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
-            this.dispose();
-            metodosGenerales.presionarEnter(instancias.getCampoActual());
-        } else {
-            instancias.setValorCampo((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
-            this.dispose();
-            metodosGenerales.presionarEnter(instancias.getCampoActual());
-        }
+        seleccionarContacto((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
     }//GEN-LAST:event_btnEsteActionPerformed
+
+    private void seleccionarContacto(String identificacion) {
+        instancias.setValorCampo(identificacion);
+        this.dispose();
+        metodosGenerales.presionarEnter(instancias.getCampoActual());
+    }
+
+    private void registrarContacto() {
+        VistaContactoRapido modal = new VistaContactoRapido(instancias.getMenu(), true);
+        modal.preparar(tipoContactoInicial(), txtId.getText(), instancias.getConfiguraciones().isFacturaElectronica());
+        modal.setVisible(true);
+
+        if (!modal.isAceptado()) {
+            txtId.requestFocus();
+            return;
+        }
+
+        ModeloContacto contacto = modal.getContacto();
+        if (!modal.isContactoNuevo()) {
+            seleccionarContacto(contacto.getId());
+            return;
+        }
+
+        if (!new DaoContactos().guardar(contacto, Collections.emptyList(), Collections.emptyList())) {
+            ControladorAlertas.alertFail("No fue posible guardar el contacto");
+            return;
+        }
+
+        ControladorAlertas.alertSuccess("Contacto registrado con éxito");
+        seleccionarContacto(contacto.getId());
+    }
+
+    private TipoContacto tipoContactoInicial() {
+        if (tipoContacto != null) {
+            return tipoContacto;
+        }
+        switch (opc) {
+            case "ingreso":
+            case "egreso":
+                return TipoContacto.PROVEEDOR;
+            default:
+                return TipoContacto.TERCERO;
+        }
+    }
 
     private void txtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdKeyReleased
         filtrar(evt);
@@ -343,15 +389,9 @@ public class buscClientes extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_tblRegistrosMouseClicked
 
-    private void btnEste1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste1ActionPerformed
-        this.dispose();
-
-        nuevoTercero nuevo = new nuevoTercero(null, true, new metodosGenerales(), instancias, opc);
-        if (opc.equals("factura")) {
-            nuevo.setFactura(factura);
-        }
-        nuevo.setVisible(true);
-    }//GEN-LAST:event_btnEste1ActionPerformed
+    private void btnAgregarContactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarContactoActionPerformed
+        registrarContacto();
+    }//GEN-LAST:event_btnAgregarContactoActionPerformed
 
     private void rd4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rd4ActionPerformed
         // TODO add your handling code here:
@@ -456,21 +496,27 @@ public class buscClientes extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(buscClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorContactos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(buscClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorContactos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(buscClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorContactos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(buscClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaBuscadorContactos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                buscClientes dialog = new buscClientes(new javax.swing.JFrame(), true, false, null, "");
+                VistaBuscadorContactos dialog = new VistaBuscadorContactos(new javax.swing.JFrame(), true, false, null, "");
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -483,8 +529,8 @@ public class buscClientes extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarContacto;
     private javax.swing.JButton btnEste;
-    private javax.swing.JButton btnEste1;
     private javax.swing.ButtonGroup filtro;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

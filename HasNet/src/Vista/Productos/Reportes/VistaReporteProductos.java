@@ -1,5 +1,8 @@
 package Vista.Productos.Reportes;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -12,8 +15,7 @@ import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
-import formularios.productos.buscGrupos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;
@@ -760,7 +762,7 @@ public class VistaReporteProductos extends javax.swing.JPanel {
     }
 
     public void ventanaProveedor(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), false, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), false, true, null, "");
         buscar.setLocationRelativeTo(null);
         buscar.setTipoBuscador("");
         instancias.setBusClientes(buscar);
@@ -781,9 +783,8 @@ public class VistaReporteProductos extends javax.swing.JPanel {
     }
 
     public void ventanaGrupo(String nit) {
-        buscGrupos buscar = new buscGrupos(instancias.getMenu(), false, "");
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(instancias.getMenu(), false, true);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscGrupos(buscar);
         instancias.setCampoActual(txtGrupo);
         txtGrupo.requestFocus();
         buscar.noEncontrado(nit);

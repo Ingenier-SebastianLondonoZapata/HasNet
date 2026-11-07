@@ -12,7 +12,7 @@ import Utilidades.BaseDatos.SQL;
 import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import formularios.terceros.buscEmpleados;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -624,7 +624,7 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCliente);

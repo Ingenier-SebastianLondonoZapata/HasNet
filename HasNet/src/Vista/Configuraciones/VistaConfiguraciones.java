@@ -176,6 +176,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                             teclasPresionadas = 2;
                         } else if (teclasPresionadas == 2) {
                             new dlgPedirSuperContrasena(null, true, "").setVisible(true);
+                            actualizarInformacionImpresion();
                             teclasPresionadas = 0;
                         } else {
                             teclasPresionadas = 0;
@@ -3614,7 +3615,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         btnGuardarMaestra.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarMaestra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         btnGuardarMaestra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        btnGuardarMaestra.setText("GUARDAR DATOS MAESTRA");
+        btnGuardarMaestra.setText("GUARDAR DATOS CONFIGURACIÓN");
         btnGuardarMaestra.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardarMaestra.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardarMaestra.setMargin(new java.awt.Insets(2, 14, 2, 5));
@@ -3630,7 +3631,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnGuardarMaestra, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGuardarMaestra, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -3781,9 +3782,17 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         impresiones.setPiePagina(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Pie de página", 1));
         impresiones.setInformacionLegal(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Información legal", 1));
-        impresiones.setAnexoFactura(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Anexo factura", 1));
-        impresiones.setAnexoOrdenServicio(getCeldaTextoPorEtiqueta(tblInformacionImpresion, "Anexo orden de servicio", 1));
+        impresiones.setAnexoFactura(textoFilaOValorActual("Anexo factura", DatosMaestra.getAnexoFactura()));
+        impresiones.setAnexoOrdenServicio(textoFilaOValorActual("Anexo orden de servicio", DatosMaestra.getAnexoOrdenServicio()));
+        impresiones.setTipoImpresion(valorTipoImpresion(getCeldaTextoPorEtiqueta(tblInformacionImpresion, FILA_TIPO_IMPRESION, 1)));
         return impresiones;
+    }
+
+    private String textoFilaOValorActual(String etiqueta, String valorActual) {
+        if (getFilaTabla(tblInformacionImpresion, etiqueta) < 0) {
+            return valorActual == null ? "" : valorActual;
+        }
+        return getCeldaTextoPorEtiqueta(tblInformacionImpresion, etiqueta, 1);
     }
 
     private String obtenerTipoImpresionPredeterminado() {
@@ -6509,8 +6518,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         setFilaTabla(tblConfiguraciones, "Combinar productos iguales", 1, DatosMaestra.isCombinarProductos());
         setFilaTabla(tblConfiguraciones1, "Límite de productos (carta/media carta)", 1, DatosMaestra.getLimiteProductosPorFactura());
 
-        instancias.getMenu().abrirCaja();
-
+        instancias.getMenu().activarBotonAbrirCaja();
         instancias.getMenu().actualizarUsuario(instancias.getUsuario());
 
         try {
@@ -6530,6 +6538,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         setFilaTabla(tblInformacionEmpresa, "Régimen", 1, DatosMaestra.getRegimenEmpresa());
         setFilaTabla(tblInformacionEmpresa, "Dirección", 1, DatosMaestra.getDireccionEmpresa());
         inicializarTablaInformacionImpresion();
+        setFilaTabla(tblInformacionImpresion, FILA_TIPO_IMPRESION, 1, etiquetaTipoImpresion(DatosMaestra.getTipoImpresion()));
         setFilaTabla(tblInformacionImpresion, "Pie de página", 1, DatosMaestra.getPiePagina());
         setFilaTabla(tblInformacionImpresion, "Información legal", 1, DatosMaestra.getInformacionLegal());
         setFilaTabla(tblInformacionImpresion, "Anexo factura", 1, DatosMaestra.getAnexoFactura());
@@ -7018,6 +7027,56 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         return sb.toString();
     }
 
+    private static final String FILA_TIPO_IMPRESION = "Tipo de impresión";
+    private static final String TIPO_SIN_CODIGO = "Sin codigo";
+    private static final String TIPO_CON_CODIGO = "Con codigo";
+    private static final String TIPO_SERIAL = "Tipo serial";
+
+    private String[] opcionesTipoImpresion() {
+        if (instancias.getConfiguraciones().isProductosDetallados()) {
+            return new String[]{TIPO_SERIAL};
+        }
+        return new String[]{TIPO_SIN_CODIGO, TIPO_CON_CODIGO};
+    }
+
+    private String etiquetaTipoImpresion(String tipoImpresion) {
+        String tipo = DatosMaestra.ajustarTipoImpresion(tipoImpresion, instancias.getConfiguraciones().isProductosDetallados());
+        if (DatosMaestra.TIPO_IMPRESION_SERIAL.equals(tipo)) {
+            return TIPO_SERIAL;
+        }
+        return DatosMaestra.TIPO_IMPRESION_CON_CODIGO.equals(tipo) ? TIPO_CON_CODIGO : TIPO_SIN_CODIGO;
+    }
+
+    private String valorTipoImpresion(String etiqueta) {
+        String tipo = TIPO_CON_CODIGO.equals(etiqueta) ? DatosMaestra.TIPO_IMPRESION_CON_CODIGO : DatosMaestra.TIPO_IMPRESION_SIN_CODIGO;
+        return DatosMaestra.ajustarTipoImpresion(tipo, instancias.getConfiguraciones().isProductosDetallados());
+    }
+
+    public void actualizarInformacionImpresion() {
+        if (tblInformacionImpresion.isEditing()) {
+            tblInformacionImpresion.getCellEditor().stopCellEditing();
+        }
+
+        java.util.Map<String, String> valores = new java.util.HashMap<>();
+        for (int fila = 0; fila < tblInformacionImpresion.getRowCount(); fila++) {
+            Object valor = tblInformacionImpresion.getValueAt(fila, 1);
+            valores.put(String.valueOf(tblInformacionImpresion.getValueAt(fila, 0)), valor == null ? "" : valor.toString());
+        }
+
+        inicializarTablaInformacionImpresion();
+
+        String tipoActual = valores.get(FILA_TIPO_IMPRESION);
+        String tipo = java.util.Arrays.asList(opcionesTipoImpresion()).contains(tipoActual)
+                ? tipoActual
+                : etiquetaTipoImpresion(DatosMaestra.getTipoImpresion());
+        setFilaTabla(tblInformacionImpresion, FILA_TIPO_IMPRESION, 1, tipo);
+        setFilaTabla(tblInformacionImpresion, "Pie de página", 1, valores.getOrDefault("Pie de página", DatosMaestra.getPiePagina()));
+        setFilaTabla(tblInformacionImpresion, "Información legal", 1, valores.getOrDefault("Información legal", DatosMaestra.getInformacionLegal()));
+        setFilaTabla(tblInformacionImpresion, "Anexo factura", 1, valores.getOrDefault("Anexo factura", DatosMaestra.getAnexoFactura()));
+        setFilaTabla(tblInformacionImpresion, "Anexo orden de servicio", 1, valores.getOrDefault("Anexo orden de servicio", DatosMaestra.getAnexoOrdenServicio()));
+        javax.swing.SwingUtilities.invokeLater(() -> ajustarAlturaFilas(tblInformacionImpresion));
+    }
+
     private void inicializarTablaInformacionImpresion() {
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
                 new String[]{"Información impresión", "Valor"}, 0
@@ -7027,6 +7086,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 return col == 1;
             }
         };
+        modelo.addRow(new Object[]{FILA_TIPO_IMPRESION, ""});
         modelo.addRow(new Object[]{"Pie de página", ""});
         modelo.addRow(new Object[]{"Información legal", ""});
         if (instancias.getConfiguraciones().isProductosDetallados()) {
@@ -7085,6 +7145,9 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
             @Override
             public javax.swing.table.TableCellEditor getCellEditor(int row, int column) {
+                if (column == 1 && FILA_TIPO_IMPRESION.equals(getValueAt(row, 0))) {
+                    return new javax.swing.DefaultCellEditor(new javax.swing.JComboBox<>(opcionesTipoImpresion()));
+                }
                 if (column == 1) {
                     return editor;
                 }
@@ -7573,6 +7636,31 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
             public boolean isCellEditable(int row, int col) {
                 return col != 0;
+            }
+
+            @Override
+            public void setValueAt(Object valor, int fila, int columna) {
+                super.setValueAt(valor, fila, columna);
+                if ((columna == 1 || columna == 2) && Boolean.TRUE.equals(valor)) {
+                    super.setValueAt(false, fila, columna == 1 ? 2 : 1);
+                    super.setValueAt(null, fila, 3);
+                    fireTableRowsUpdated(fila, fila);
+                } else if (columna == 3 && tieneNumeroCopias(valor)) {
+                    super.setValueAt(false, fila, 1);
+                    super.setValueAt(false, fila, 2);
+                    fireTableRowsUpdated(fila, fila);
+                }
+            }
+
+            private boolean tieneNumeroCopias(Object valor) {
+                if (valor == null) {
+                    return false;
+                }
+                try {
+                    return Integer.parseInt(valor.toString().trim()) > 0;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
             }
         };
         modelo.addRow(new Object[]{"Factura", null, null, null});

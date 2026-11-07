@@ -9,7 +9,7 @@ import clases.Medico.ndHistoriaClinica;
 import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 
@@ -1520,7 +1520,7 @@ public class infCertificadoMedicoEstudiante extends javax.swing.JPanel {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtId);

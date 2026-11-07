@@ -1,5 +1,8 @@
 package formularios.Veterinario;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Impresiones.ImpresionesVeterinario.GeneradorReporteVeterinario;
@@ -14,8 +17,7 @@ import clases.big;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
 import formularios.Medico.buscMedicamentos;
-import formularios.productos.buscMedidas;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -1304,11 +1306,10 @@ public class infFormulaMedicaVeterinaria extends javax.swing.JInternalFrame {
     }
 
     public void ventanaMedidas(String nit) {
-        buscMedidas buscar = new buscMedidas(null, rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.medidas(null, rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
         instancias.setCampoActual(txtMedida);
         txtMedida.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }

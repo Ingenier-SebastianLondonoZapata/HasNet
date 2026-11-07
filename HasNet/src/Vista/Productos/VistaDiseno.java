@@ -1,5 +1,8 @@
 package Vista.Productos;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Modelo.Productos.ModeloListaPrecio;
@@ -22,7 +25,6 @@ import clases.Instancias;
 import Modelo.Productos.ModeloProducto;
 import clases.big;
 import clases.metodosGenerales;
-import formularios.productos.buscMedidas;
 import Vista.Restaurante.VistaProductosCambio;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -428,11 +430,11 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             }
         });
         txtCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCodigoKeyReleased(evt);
-            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtCodigoKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCodigoKeyReleased(evt);
             }
         });
 
@@ -441,7 +443,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd1.setForeground(new java.awt.Color(255, 255, 255));
         btnBusProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
         btnBusProd1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnBusProd1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBusProd1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBusProd1.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBusProd1.addActionListener(new java.awt.event.ActionListener() {
@@ -696,7 +698,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtUtilidad1)
                     .addComponent(txtUtilidad2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -776,7 +778,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnActualizar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
         btnActualizar.setText("MODIFICAR");
-        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnActualizar.setEnabled(false);
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnActualizar.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -790,7 +792,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnGuardar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -803,7 +805,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnNuevo.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO ");
-        btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnNuevo.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
@@ -926,7 +928,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
         btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBusProd.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBusProd.addActionListener(new java.awt.event.ActionListener() {
@@ -1023,7 +1025,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         lbCantidad.setText("Cantidad:");
 
         spCantidad.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        spCantidad.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spCantidad.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spCantidad.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 spCantidadStateChanged(evt);
@@ -1048,7 +1050,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnNuevo1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         btnNuevo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
         btnNuevo1.setText("NUEVO ");
-        btnNuevo1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevo1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevo1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnNuevo1.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnNuevo1.addActionListener(new java.awt.event.ActionListener() {
@@ -1061,7 +1063,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnGuardar1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR");
-        btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar1.setEnabled(false);
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar1.setMargin(new java.awt.Insets(2, 14, 2, 5));
@@ -1076,7 +1078,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd2.setForeground(new java.awt.Color(255, 255, 255));
         btnBusProd2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
         btnBusProd2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnBusProd2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBusProd2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBusProd2.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBusProd2.addActionListener(new java.awt.event.ActionListener() {
@@ -1089,7 +1091,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBuscTerceros2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
         btnBuscTerceros2.setText("REIMPRIMIR");
-        btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBuscTerceros2.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBuscTerceros2.addActionListener(new java.awt.event.ActionListener() {
@@ -1102,7 +1104,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnAnular.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
         btnAnular.setText("ANULAR");
-        btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnAnular.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnAnular.addActionListener(new java.awt.event.ActionListener() {
@@ -1289,7 +1291,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd3.setForeground(new java.awt.Color(255, 255, 255));
         btnBusProd3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
         btnBusProd3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnBusProd3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBusProd3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd3.setEnabled(false);
         btnBusProd3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBusProd3.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -2145,12 +2147,10 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     }
 
     public void ventanaMedidas(String nit) {
-        buscMedidas buscar = new buscMedidas(instancias.getMenu(), rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.medidas(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscMedidas(buscar);
         instancias.setCampoActual(txtMedida);
         txtMedida.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }
@@ -2386,9 +2386,6 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         tabla.getColumnModel().getColumn(4).setMinWidth(0);
         tabla.getColumnModel().getColumn(4).setPreferredWidth(0);
         tabla.getColumnModel().getColumn(4).setMaxWidth(0);
-        tabla.getColumnModel().getColumn(5).setMinWidth(0);
-        tabla.getColumnModel().getColumn(5).setPreferredWidth(0);
-        tabla.getColumnModel().getColumn(5).setMaxWidth(0);
 
         if (instancias.getConfiguraciones().isRestaurante()) {
             tabla.getColumnModel().getColumn(5).setMinWidth(50);

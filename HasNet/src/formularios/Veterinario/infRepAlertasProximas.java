@@ -7,7 +7,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.Veterinario.ndMascota;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
 import javax.swing.JComboBox;

@@ -14,7 +14,7 @@ import Modelo.Contactos.ModeloContacto;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -773,7 +773,7 @@ public class infGuarderia extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtIdTerceroKeyReleased
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtId);

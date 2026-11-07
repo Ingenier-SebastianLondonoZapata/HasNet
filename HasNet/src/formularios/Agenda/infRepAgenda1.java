@@ -1,5 +1,8 @@
 package formularios.Agenda;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -14,7 +17,7 @@ import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -987,9 +990,8 @@ public class infRepAgenda1 extends javax.swing.JPanel {
     }
 
     public void ventanaGrupos(String codigo) {
-        buscGrupos buscar = new buscGrupos(null, true, "");
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(null, true, true);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscGrupos(buscar);
         instancias.setCampoActual(txtGrupo);
         txtGrupo.requestFocus();
         buscar.noEncontrado(codigo.replace("'", "//"));
@@ -1020,7 +1022,7 @@ public class infRepAgenda1 extends javax.swing.JPanel {
 
     
     public void ventanaProveedor(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), false, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), false, true, null, "");
         buscar.setLocationRelativeTo(null);
         buscar.setTipoBuscador("");
         instancias.setBusClientes(buscar);

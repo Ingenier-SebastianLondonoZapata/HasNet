@@ -7,7 +7,7 @@ package formularios.Oftalmologia;
 
 import clases.Instancias;
 import clases.metodosGenerales;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;

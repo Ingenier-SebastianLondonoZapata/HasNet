@@ -1,5 +1,6 @@
 package formularios.terceros;
 
+import Vista.Contactos.VistaBuscadorContactos;
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
@@ -645,7 +646,7 @@ public class infRepClientes extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCliente);

@@ -1,5 +1,8 @@
 package Vista.Productos;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Utilidades.DatosMaestra;
 import Dao.Productos.DaoProducto;
 
@@ -13,11 +16,15 @@ import clases.big;
 import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import com.mxrck.autocompleter.TextAutoCompleter;
-import formularios.productos.buscGrupos;
-import formularios.productos.buscProductos2;
-import formularios.productos.nuevoProducto;
 import formularios.productos.verLogo;
+import Controlador.Alertas.ControladorAlertas;
+import Modelo.Productos.ModeloProducto;
+import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import java.awt.Image;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -33,6 +40,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public final class VistaBuscadorProductos extends javax.swing.JDialog {
+
+    private static final Logger LOGGER = Logger.getLogger(VistaBuscadorProductos.class.getName());
 
     private final DaoProducto daoProducto = new DaoProducto();
 
@@ -385,7 +394,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         tblRegistros = new javax.swing.JTable();
         btnIzquierda = new javax.swing.JButton();
         btnDerecha = new javax.swing.JButton();
-        btnEste2 = new javax.swing.JButton();
         btnNuevoProducto = new javax.swing.JButton();
         btnIngresar = new javax.swing.JButton();
 
@@ -537,18 +545,9 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         });
 
-        btnEste2.setBackground(new java.awt.Color(204, 204, 204));
-        btnEste2.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
-        btnEste2.setText("UNIFICADOS");
-        btnEste2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEste2ActionPerformed(evt);
-            }
-        });
-
         btnNuevoProducto.setBackground(new java.awt.Color(46, 204, 113));
         btnNuevoProducto.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
-        btnNuevoProducto.setText("NUEVO");
+        btnNuevoProducto.setText("NUEVO PRODUCTO");
         btnNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNuevoProductoActionPerformed(evt);
@@ -569,7 +568,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtId)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -581,7 +580,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                         .addComponent(btnEste3)
                         .addGap(2, 2, 2)
                         .addComponent(btnEste4, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
                         .addComponent(lbBuscador1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
                         .addComponent(lbBuscador, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -589,12 +588,10 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                         .addComponent(btnIzquierda, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDerecha, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addGap(20, 20, 20))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnEste2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnNuevoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnNuevoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -602,7 +599,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(lbTelefono, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -619,9 +616,8 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                 .addGap(3, 3, 3)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnNuevoProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEste2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnIngresar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
         );
@@ -680,60 +676,66 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
         //SI HAY PRODUCTOS SELECCIONADOS LOS CARGAMOS.
         if (cantSeleccionada > 0) {
-            if (opc == null) {
-                opc = "";
-            }
-
-            if (opc.equals("")) {
-                instancias.setValorCampo((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10));
-                this.dispose();
-                metodosGenerales.presionarEnter(instancias.getCampoActual());
-            } else {
-                switch (opc) {
-                    case "factura":
-                        this.dispose();
-                        factura.cargarProductos1(cantidad);
-                        break;
-                    case "cotizacion":
-                        this.dispose();
-                        instancias.getCotiza().cargarProductos1(cantidad);
-                        break;
-                    case "ingreso":
-                        this.dispose();
-                        instancias.getIngresos().cargarProductos(cantidad);
-                        break;
-                    case "ordenCompra":
-                        this.dispose();
-                        instancias.getOrdenCompra().cargarProductos(cantidad);
-                        break;
-                    case "trasladoInterno":
-                        this.dispose();
-                        instancias.getTrasladosInternos().cargarProductos(cantidad);
-                        break;
-                    case "ajuste":
-                        this.dispose();
-                        instancias.getVistaAjusteInventario().cargarProductos(cantidad);
-                        break;
-                    case "diseño":
-                        this.dispose();
-                        instancias.getCosteo().cargarProductos(cantidad);
-                        break;
-                    case "producto":
-                        this.dispose();
-                        instancias.getProductos().cargarProductos(cantidad);
-                        break;
-                    case "inventarioInicial":
-                        this.dispose();
-                        instancias.getInventarioInicial().cargarProductos(cantidad);
-                        break;
-                    case "NotaDebito":
-                        this.dispose();
-                        instancias.getNd().cargarProductos1(cantidad);
-                        break;
-                }
-            }
+            String idSeleccionado = tblRegistros.getSelectedRow() < 0 ? (String) cantidad[0][0]
+                    : (String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10);
+            entregarProductos(cantidad, idSeleccionado);
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void entregarProductos(Object[][] cantidad, String idSeleccionado) {
+        if (opc == null) {
+            opc = "";
+        }
+
+        if (opc.equals("")) {
+            instancias.setValorCampo(idSeleccionado);
+            this.dispose();
+            metodosGenerales.presionarEnter(instancias.getCampoActual());
+        } else {
+            switch (opc) {
+                case "factura":
+                    this.dispose();
+                    factura.cargarProductos1(cantidad);
+                    break;
+                case "cotizacion":
+                    this.dispose();
+                    instancias.getCotiza().cargarProductos1(cantidad);
+                    break;
+                case "ingreso":
+                    this.dispose();
+                    instancias.getIngresos().cargarProductos(cantidad);
+                    break;
+                case "ordenCompra":
+                    this.dispose();
+                    instancias.getOrdenCompra().cargarProductos(cantidad);
+                    break;
+                case "trasladoInterno":
+                    this.dispose();
+                    instancias.getTrasladosInternos().cargarProductos(cantidad);
+                    break;
+                case "ajuste":
+                    this.dispose();
+                    instancias.getVistaAjusteInventario().cargarProductos(cantidad);
+                    break;
+                case "diseño":
+                    this.dispose();
+                    instancias.getCosteo().cargarProductos(cantidad);
+                    break;
+                case "producto":
+                    this.dispose();
+                    instancias.getProductos().cargarProductos(cantidad);
+                    break;
+                case "inventarioInicial":
+                    this.dispose();
+                    instancias.getInventarioInicial().cargarProductos(cantidad);
+                    break;
+                case "NotaDebito":
+                    this.dispose();
+                    instancias.getNd().cargarProductos1(cantidad);
+                    break;
+            }
+        }
+    }
 
     private void txtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdKeyReleased
         filtrar(evt);
@@ -891,16 +893,53 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     }//GEN-LAST:event_txtIdMouseClicked
 
     private void btnNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProductoActionPerformed
-        nuevoProducto nuevo = new nuevoProducto(null, true, new metodosGenerales(), instancias, opc);
+        registrarProducto();
+    }//GEN-LAST:event_btnNuevoProductoActionPerformed
 
-        if (opc.equals("ingreso") || opc.equals("ordenCompra")) {
-            nuevo.setIngreso(ingreso);
-        } else if (opc.equals("factura")) {
-            nuevo.setFactura(factura);
+    private void registrarProducto() {
+        VistaProductoRapido modal = new VistaProductoRapido(instancias.getMenu(), true);
+        modal.preparar(txtId.getText(), esRegimenComun());
+        modal.setVisible(true);
+
+        if (!modal.isAceptado()) {
+            txtId.requestFocus();
+            return;
         }
 
-        nuevo.setVisible(true);
-    }//GEN-LAST:event_btnNuevoProductoActionPerformed
+        ModeloProducto producto = modal.getProducto();
+        if (!guardarProducto(producto)) {
+            return;
+        }
+
+        ControladorAlertas.alertSuccess("Producto registrado con éxito");
+        entregarProductos(new Object[][]{{producto.getIdSistema(), 0}}, producto.getIdSistema());
+    }
+
+    private boolean guardarProducto(ModeloProducto producto) {
+        int consecutivo = Integer.parseInt(instancias.getSql().getNumConsecutivo("PROD")[0].toString());
+        producto.setIdSistema("PROD-" + String.format("%08d", consecutivo));
+
+        if (!daoProducto.agregarProducto(producto)) {
+            ControladorAlertas.alertFail("No fue posible guardar el producto");
+            return false;
+        }
+
+        if (!instancias.getSql().aumentarConsecutivo("PROD", consecutivo + 1)) {
+            ControladorAlertas.alertFail("Error al guardar en el consecutivo del producto");
+        }
+
+        try {
+            new ServicioActualizacionPonderado().crearPonderadoInicial(producto, BigDecimal.ZERO, instancias.getUsuario());
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error al crear el ponderado inicial del producto " + producto.getIdSistema(), ex);
+            ControladorAlertas.alertFail("Error al crear el costo inicial del producto");
+        }
+        return true;
+    }
+
+    private boolean esRegimenComun() {
+        return !"SinIva".equals(instancias.getRegimen());
+    }
 
     private void txtGrupoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtGrupoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -915,15 +954,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             txtGrupo.setText("");
         }
     }//GEN-LAST:event_txtGrupoKeyReleased
-
-    private void btnEste2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste2ActionPerformed
-        buscProductos2 buscar = new buscProductos2(null, rootPaneCheckingEnabled);
-        buscar.setLocationRelativeTo(null);
-        Object[][] datos = daoProducto.obtenerProductosUnificados(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 10).toString());
-        buscar.setInstancia(instancias, datos);
-        buscar.setBuscador(this);
-        buscar.show();
-    }//GEN-LAST:event_btnEste2ActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
 
@@ -1007,9 +1037,8 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     }
 
     public void ventanaGrupos(String codigo) {
-        buscGrupos buscar = new buscGrupos(null, true, "Buscador");
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(null, true, false);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscGrupos(buscar);
         instancias.setCampoActual(txtGrupo);
         txtGrupo.requestFocus();
 //        cargarTablaProductos(false);
@@ -1053,7 +1082,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDerecha;
-    private javax.swing.JButton btnEste2;
     private javax.swing.JButton btnEste3;
     private javax.swing.JButton btnEste4;
     private javax.swing.JButton btnIngresar;

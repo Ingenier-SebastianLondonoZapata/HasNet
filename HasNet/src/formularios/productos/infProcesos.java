@@ -1,5 +1,8 @@
 package formularios.productos;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.Instancias;
@@ -456,9 +459,8 @@ public class infProcesos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaProductos(String codigo) {
-        buscProcesos buscar = new buscProcesos(null, rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.procesos(null, rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscProcesos(buscar);
         instancias.setCampoActual(txtCodigo);
         txtCodigo.requestFocus();
         buscar.noEncontrado(codigo.replace("'", "//"));

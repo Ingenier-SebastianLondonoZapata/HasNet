@@ -20,7 +20,7 @@ import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
 import Vista.Tesoreria.VistaEgresos;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -2384,7 +2384,7 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtPaciente);

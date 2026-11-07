@@ -64,17 +64,20 @@
                       <Component id="pnlPropina" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jSeparator1" min="-2" pref="2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                      </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="btnCancelar" min="-2" pref="134" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnGuardar" min="-2" pref="141" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -82,21 +85,19 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jSeparator1" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Component id="pnlInformacionAdicional" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="pnlPropina" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btnGuardar" min="-2" pref="41" max="-2" attributes="0"/>
-                              <Component id="btnCancelar" min="-2" pref="41" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
+                      <Component id="jPanel2" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="25" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="btnGuardar" min="-2" pref="41" max="-2" attributes="0"/>
+                      <Component id="btnCancelar" min="-2" pref="41" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -258,82 +259,82 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lbEtiqueta2" min="-2" pref="135" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="txtCambio" alignment="1" min="-2" pref="156" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Component id="lbCheque9" min="-2" pref="135" max="-2" attributes="0"/>
-                                          <EmptySpace pref="8" max="32767" attributes="0"/>
-                                          <Component id="txtTotalGeneral" min="-2" pref="156" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Component id="jSeparator3" alignment="1" max="32767" attributes="0"/>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="lbCheque6" min="-2" pref="138" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="txtTotalPropina" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="lbEtiqueta1" min="-2" pref="138" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="txtTotal" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="lbCheque1" max="32767" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="txtTotalDinero" min="-2" pref="156" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                              <Component id="lbCheque8" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="lbCheque7" pref="138" max="32767" attributes="0"/>
-                                              <Component id="lbCheque2" max="32767" attributes="0"/>
-                                              <Component id="lbNC" max="32767" attributes="0"/>
-                                              <Component id="lbEtiqueta" max="32767" attributes="0"/>
-                                              <Component id="lbEfectivo" max="32767" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                                      <Component id="txtCheque" alignment="0" max="32767" attributes="0"/>
-                                                      <Component id="txtNC" alignment="0" max="32767" attributes="0"/>
-                                                      <Component id="txtValor" alignment="0" pref="156" max="32767" attributes="0"/>
-                                                      <Component id="txtEfectivo" alignment="1" max="32767" attributes="0"/>
-                                                  </Group>
-                                                  <Component id="txtTarjetaDebito" alignment="1" min="-2" pref="156" max="-2" attributes="0"/>
-                                              </Group>
-                                              <Component id="txtTarjetaCredito" max="32767" attributes="0"/>
-                                          </Group>
-                                      </Group>
+                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="lbCheque8" alignment="0" max="32767" attributes="0"/>
+                              <Component id="lbCheque7" max="32767" attributes="0"/>
+                              <Component id="lbCheque2" max="32767" attributes="0"/>
+                              <Component id="lbNC" max="32767" attributes="0"/>
+                              <Component id="lbEfectivo" min="-2" pref="138" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="lbEtiqueta" alignment="0" min="-2" pref="138" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txtCheque" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtNC" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtValor" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtEfectivo" alignment="1" max="32767" attributes="0"/>
+                          <Component id="txtTarjetaDebito" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtTarjetaCredito" min="-2" pref="156" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnPagarTodo" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jSeparator2" min="-2" pref="299" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jSeparator3" alignment="1" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="lbEtiqueta2" min="-2" pref="135" max="-2" attributes="0"/>
+                                      <Component id="lbCheque9" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="txtTotalGeneral" alignment="1" min="-2" pref="156" max="-2" attributes="0"/>
+                                      <Component id="txtCambio" alignment="1" min="-2" pref="156" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                              <Component id="btnPagarTodo" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="lbCheque6" alignment="0" min="-2" pref="138" max="-2" attributes="0"/>
+                                          <Component id="lbCheque1" alignment="0" min="-2" pref="139" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="lbEtiqueta1" alignment="0" min="-2" pref="138" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="txtTotalPropina" max="32767" attributes="0"/>
+                                      <Component id="txtTotal" max="32767" attributes="0"/>
+                                      <Component id="txtTotalDinero" pref="156" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                      <EmptySpace pref="44" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="txtEfectivo" min="-2" pref="30" max="-2" attributes="0"/>
                           <Component id="lbEfectivo" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnPagarTodo" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
-                          <Component id="lbEtiqueta" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtValor" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Component id="txtValor" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="lbEtiqueta" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="btnPagarTodo" min="-2" pref="32" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -343,24 +344,24 @@
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="lbCheque2" max="32767" attributes="0"/>
-                          <Component id="txtCheque" max="32767" attributes="0"/>
+                          <Component id="txtCheque" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="lbCheque7" max="32767" attributes="0"/>
-                          <Component id="txtTarjetaDebito" max="32767" attributes="0"/>
+                          <Component id="txtTarjetaDebito" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="lbCheque8" max="32767" attributes="0"/>
-                          <Component id="txtTarjetaCredito" max="32767" attributes="0"/>
+                          <Component id="txtTarjetaCredito" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Component id="jSeparator2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtTotalDinero" alignment="3" max="32767" attributes="0"/>
-                          <Component id="lbCheque1" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jSeparator2" min="-2" pref="2" max="-2" attributes="0"/>
+                      <EmptySpace pref="10" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lbCheque1" min="-2" pref="27" max="-2" attributes="0"/>
+                          <Component id="txtTotalDinero" min="-2" pref="29" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -376,13 +377,13 @@
                       <Component id="jSeparator3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtTotalGeneral" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Component id="txtTotalGeneral" min="-2" pref="32" max="-2" attributes="0"/>
                           <Component id="lbCheque9" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lbEtiqueta2" max="32767" attributes="0"/>
-                          <Component id="txtCambio" max="32767" attributes="0"/>
+                          <Component id="lbEtiqueta2" pref="32" max="32767" attributes="0"/>
+                          <Component id="txtCambio" pref="32" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                   </Group>
@@ -393,7 +394,7 @@
             <Component class="javax.swing.JLabel" name="lbEfectivo">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Efectivo:"/>
               </Properties>
@@ -415,7 +416,7 @@
             <Component class="javax.swing.JLabel" name="lbEtiqueta">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="30" style="1"/>
+                  <Font name="Arial" size="26" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="PAGA:"/>
               </Properties>
@@ -458,7 +459,7 @@
             <Component class="javax.swing.JLabel" name="lbNC">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Nota cr&#xe9;dito:"/>
               </Properties>
@@ -466,7 +467,7 @@
             <Component class="javax.swing.JLabel" name="lbCheque2">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cheque:"/>
               </Properties>
@@ -484,9 +485,9 @@
                 <Property name="name" type="java.lang.String" value="N.C" noResource="true"/>
               </Properties>
               <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNCKeyTyped"/>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNCKeyPressed"/>
                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNCKeyReleased"/>
-                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNCKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txtCheque">
@@ -502,14 +503,14 @@
                 <Property name="name" type="java.lang.String" value="Cheque" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtChequeKeyReleased"/>
                 <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtChequeKeyTyped"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtChequeKeyReleased"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbCheque7">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Tarjeta d&#xe9;bito:"/>
               </Properties>
@@ -527,14 +528,14 @@
                 <Property name="name" type="java.lang.String" value="Cheque" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTarjetaDebitoKeyReleased"/>
                 <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTarjetaDebitoKeyTyped"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTarjetaDebitoKeyReleased"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbCheque8">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Tarjeta cr&#xe9;dito:"/>
               </Properties>
@@ -552,8 +553,8 @@
                 <Property name="name" type="java.lang.String" value="Cheque" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTarjetaCreditoKeyReleased"/>
                 <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTarjetaCreditoKeyTyped"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTarjetaCreditoKeyReleased"/>
               </Events>
             </Component>
             <Component class="javax.swing.JSeparator" name="jSeparator2">
@@ -576,7 +577,7 @@
             <Component class="javax.swing.JLabel" name="lbCheque1">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Total Dinero:"/>
@@ -585,7 +586,7 @@
             <Component class="javax.swing.JLabel" name="lbEtiqueta1">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Total Factura:"/>
@@ -594,7 +595,7 @@
             <Component class="javax.swing.JLabel" name="lbCheque6">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="18" style="0"/>
+                  <Font name="Arial" size="16" style="0"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Total Propina:"/>
@@ -637,7 +638,7 @@
             <Component class="javax.swing.JLabel" name="lbCheque9">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="28" style="1"/>
+                  <Font name="Arial" size="26" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="TOTAL:"/>
@@ -646,7 +647,7 @@
             <Component class="javax.swing.JLabel" name="lbEtiqueta2">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Arial" size="28" style="1"/>
+                  <Font name="Arial" size="26" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="CAMBIO:"/>
@@ -667,8 +668,8 @@
                 <Property name="name" type="java.lang.String" value="Cheque" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTotalGeneralKeyReleased"/>
                 <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTotalGeneralKeyTyped"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTotalGeneralKeyReleased"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txtCambio">

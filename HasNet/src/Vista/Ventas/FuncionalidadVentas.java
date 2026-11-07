@@ -3,7 +3,7 @@ package Vista.Ventas;
 import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
-import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
+import Impresiones.ImpresionesFacturas.DatosImpresionFactura;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.InformacionAdicional;
 import Modelo.Inventario.MovimientoInventario;
@@ -177,77 +177,17 @@ public class FuncionalidadVentas {
         instancias.getSql().aumentarConsecutivo("FORMAPAGO", consecutivo + 1);
     }
 
-    public void pausarImpresora() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ignored) {
-        }
-    }
-
-    public String condicionFactura(Instancias instancias, String factura2) {
-        return metodos.sentenciaImpresionFactura(
-                tipoSentenciaFactura(instancias),
-                " WHERE bdFactura.factura = '" + factura2 + "' ");
-    }
-
-    public void imprimirPasadaFactura(Instancias instancias, String factura2, String nombreReporte,
-            String observaciones, String legal, String pie, String titulo, String impresora,
-            String impoconsumo, String retenciones, String etiquetaCopia,
-            boolean porGrupo, Object[] grupos, int cantidadGrupos) {
-
-        String infoEmpresa = infoEmpresaConResolucion(instancias);
-
-        if (porGrupo) {
-            for (int i = 0; i < cantidadGrupos; i++) {
-                String grupo = grupos[i].toString();
-                String impresoraGrupo = impresoraDeGrupo(instancias, grupo);
-                String condicion = condicionFacturaPorGrupo(instancias, factura2, grupo);
-                new GeneradorReporteFactura(instancias).ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
-                        nombreReporte, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
-                        impresoraGrupo, impoconsumo, retenciones, condicion, false);
-                pausarImpresora();
-            }
-        } else {
-            String condicion = condicionFactura(instancias, factura2);
-            new GeneradorReporteFactura(instancias).ver_Factura(observaciones, infoEmpresa, legal, etiquetaCopia, pie,
-                    nombreReporte, factura2, !DatosMaestra.isPrevisualizarFactura(), titulo,
-                    impresora, impoconsumo, retenciones, condicion, false);
-        }
-    }
-
-    private String tipoSentenciaFactura(Instancias instancias) {
-        return instancias.getConfiguraciones().isRestaurante() ? "agrupada" : "";
-    }
-
-    private String condicionFacturaPorGrupo(Instancias instancias, String factura2, String grupo) {
-        String where = grupo.isEmpty()
-                ? " WHERE bdFactura.factura = '" + factura2 + "' AND Grupo IS NULL "
-                : " WHERE bdFactura.factura = '" + factura2 + "' AND Grupo = '" + grupo + "' ";
-        return metodos.sentenciaImpresionFactura(tipoSentenciaFactura(instancias), where);
-    }
-
-    private String impresoraDeGrupo(Instancias instancias, String grupo) {
-        if (grupo.isEmpty()) {
-            return "Sin_impresora";
-        }
-        Object[] datosGrupo = instancias.getSql().getDatosGrupo(grupo);
-        return datosGrupo[5].toString();
-    }
-
-    private String infoEmpresaConResolucion(Instancias instancias) {
-        return metodosGenerales.convertToMultiline(
-                instancias.getInformacionEmpresaCompleto() + "\n" + instancias.getResolucion());
-    }
-
-    public Object[] construirDatosReporteFactura(Instancias instancias, boolean esMediaCarta, boolean esCarta, boolean esPos) {
+    public DatosImpresionFactura construirDatosImpresionFactura(Instancias instancias, boolean esMediaCarta, boolean esCarta) {
         String nombreReporte = obtenerPrefijoReporte(esMediaCarta, esCarta)
                 + instancias.getRegimen()
-                + obtenerSufijoReporte(instancias.getConfiguraciones().getTipoImpresion());
+                + obtenerSufijoReporte(DatosMaestra.getTipoImpresion());
 
-        String impresora = obtenerImpresora(esMediaCarta, esCarta);
-        String titulo = obtenerTitulo(instancias);
-
-        return new Object[]{nombreReporte, impresora, titulo};
+        return new DatosImpresionFactura()
+                .setNombreReporte(nombreReporte)
+                .setImpresora(obtenerImpresora(esMediaCarta, esCarta))
+                .setTitulo(obtenerTitulo(instancias))
+                .setInformacionEmpresa(metodosGenerales.convertToMultiline(
+                        instancias.getInformacionEmpresaCompleto() + "\n" + instancias.getResolucion()));
     }
 
     private String obtenerTitulo(Instancias instancias) {
@@ -255,7 +195,7 @@ public class FuncionalidadVentas {
             return DatosMaestra.isTurnoActivo() ? "Turno" : "";
         }
 
-        return DatosMaestra.isConsecutivoAdicional() ? "Num Fact2" : "";
+        return DatosMaestra.isConsecutivoAdicional() ? "Otro consecutivo" : "";
     }
 
     private String obtenerPrefijoReporte(boolean esMediaCarta, boolean esCarta) {

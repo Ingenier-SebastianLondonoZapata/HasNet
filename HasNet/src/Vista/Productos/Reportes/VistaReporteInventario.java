@@ -1,5 +1,8 @@
 package Vista.Productos.Reportes;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -22,9 +25,7 @@ import clases.productos.ndGrupo;
 import Modelo.Inventario.FiltroReporteInventario;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
-import formularios.productos.buscColores;
-import formularios.productos.buscGrupos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -1004,12 +1005,10 @@ public class VistaReporteInventario extends javax.swing.JPanel {
     }
 
     public void ventanaColores1(String nit) {
-        buscColores buscar = new buscColores(instancias.getMenu(), false);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.colores(instancias.getMenu(), false);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscColores(buscar);
         instancias.setCampoActual(txtColor);
         txtColor.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }
@@ -1057,7 +1056,7 @@ public class VistaReporteInventario extends javax.swing.JPanel {
     }
 
     public void ventanaProveedor(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), false, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), false, true, null, "");
         buscar.setLocationRelativeTo(null);
         buscar.setTipoBuscador("");
         instancias.setBusClientes(buscar);
@@ -1068,9 +1067,8 @@ public class VistaReporteInventario extends javax.swing.JPanel {
     }
     
     public void ventanaGrupo(String nit) {
-        buscGrupos buscar = new buscGrupos(instancias.getMenu(), true, "");
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(instancias.getMenu(), true, true);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscGrupos(buscar);
         instancias.setCampoActual(txtGrupo);
         txtGrupo.requestFocus();
         buscar.noEncontrado(nit);

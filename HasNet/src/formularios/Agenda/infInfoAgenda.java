@@ -15,8 +15,7 @@ import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
 import formularios.Agenda.ndAgenda;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.terceros.buscClientes;
-import formularios.terceros.nuevoTercero;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Image;
@@ -1405,7 +1404,7 @@ public class infInfoAgenda extends javax.swing.JDialog {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(null, rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(null, rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         buscar.setOpc("agenda");
         instancias.setBusClientes(buscar);
@@ -1413,14 +1412,6 @@ public class infInfoAgenda extends javax.swing.JDialog {
         txtId.requestFocus();
         buscar.noEncontrado(nit);
         buscar.show();
-    }
-
-    public void cargarNuevoPaciente(String id, String nombre, String telefono, String cel, String idSistema) {
-        txtIdSistema.setText(idSistema);
-        txtId.setText(id);
-        txtpNombre.setText(nombre);
-        txtTelefono.setText(telefono);
-        txtCelular.setText(cel);
     }
 
     public void cargarCliente(String nit) {

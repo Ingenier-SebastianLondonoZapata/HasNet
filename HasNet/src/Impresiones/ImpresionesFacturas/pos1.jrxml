@@ -5,6 +5,10 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="factura" class="java.lang.String"/>
 	<parameter name="numFactura" class="java.lang.String"/>
+	<parameter name="agrupar" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
+	</parameter>
+	<parameter name="grupo" class="java.lang.String"/>
 	<parameter name="observaciones" class="java.lang.String"/>
 	<parameter name="urlImagen" class="java.io.InputStream"/>
 	<parameter name="info" class="java.lang.String"/>
@@ -18,7 +22,131 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[$P!{numFactura}]]>
+		<![CDATA[SELECT
+    bdfactura.idFactura AS idFactura,
+    CAST(SUBSTR(bdfactura.idFactura, 6, 100) AS SIGNED) AS ordenId,
+    CAST(SUBSTR(bdterceros.id, 1, 100) AS SIGNED) AS cliente,
+    bdterceros.ciudad AS ciudad,
+    bdfactura.vendedor AS vendedor,
+    bdfactura.red AS red,
+    bdfactura.fechaFactura AS fechaFactura,
+    bdfactura.fechaVencimiento AS fechaVencimiento,
+    bdfactura.efectivoGeneral AS efectivoGeneral,
+    bdfactura.ncGeneral AS ncGeneral,
+    bdfactura.chequeGeneral AS chequeGeneral,
+    bdfactura.targetaGeneral AS targetaGeneral,
+    bdfactura.totalGeneral AS totalGeneral,
+    bdfactura.descuentoGeneral AS descuentoGeneral,
+    bdfactura.ivaGeneral AS ivaGeneral,
+    bdfactura.subtotalGeneral AS subtotalGeneral,
+    bdfactura.comprobante AS comprobante,
+    bdfactura.cotizacion AS cotizacion,
+    bdfactura.anulada AS anulada,
+    bdfactura.anula AS anula,
+    bdfactura.credito AS credito,
+    bdfactura.cxc AS cxc,
+    bdfactura.usuario AS usuario,
+    bdfactura.rtIva AS rtIva,
+    bdfactura.rtIca AS rtIca,
+    bdfactura.rtFuente AS rtFuente,
+    bdfactura.otros AS otros,
+    bdfactura.observacion AS observacion,
+    bdfactura.anulada1 AS anulada1,
+    bdfactura.anula1 AS anula1,
+    bdfactura.credito1 AS credito1,
+    bdfactura.cxc1 AS cxc1,
+    bdfactura.usuario1 AS usuario1,
+    bdfactura.fechaAlerta AS fechaAlerta,
+    bdfactura.terminal AS terminal,
+    bdfactura.estadoGeneral AS estadoGeneral,
+    bdfactura.estado2 AS estado2,
+    bdfactura.devuelta AS devuelta,
+    bdfactura.factura AS factura,
+    bdfactura.resolucion AS resolucion,
+    bdfactura.fechaAnulacion AS fechaAnulacion,
+    bdfactura.cuadreAnulacion AS cuadreAnulacion,
+    bdfactura.usuarioAnula AS usuarioAnula,
+    bdfactura.copago AS copago,
+    bdfactura.garantia AS garantia,
+    bdfactura.diasGarantia AS diasGarantia,
+    bdfactura.rango AS rango,
+    bdfactura.terminos AS terminos,
+    bdfactura.notaAnulacion AS notaAnulacion,
+    bdfactura.conseMesa AS conseMesa,
+    bdfactura.producto AS producto,
+    bdfactura.lista AS lista,
+    IF($P{agrupar}, SUM(bdfactura.cantidad), MAX(bdfactura.cantidad)) AS cantidad,
+    IF($P{agrupar}, SUM(bdfactura.descuento), MAX(bdfactura.descuento)) AS descuento,
+    IF($P{agrupar}, SUM(bdfactura.total), MAX(bdfactura.total)) AS total,
+    IF($P{agrupar}, SUM(bdfactura.iva), MAX(bdfactura.iva)) AS iva,
+    IF($P{agrupar}, SUM(bdfactura.subtotal), MAX(bdfactura.subtotal)) AS subtotal,
+    bdfactura.NC AS NC,
+    IF($P{agrupar}, SUM(bdfactura.utilidad), MAX(bdfactura.utilidad)) AS utilidad,
+    bdfactura.concepto AS concepto,
+    bdfactura.porcDescuento AS porcDescuento,
+    bdfactura.descripcion AS descripcion,
+    bdfactura.plu AS plu,
+    IF($P{agrupar}, SUM(bdfactura.cant2), MAX(bdfactura.cant2)) AS cant2,
+    bdfactura.estado AS estado,
+    bdfactura.porcIva AS porcIva,
+    bdfactura.tercero AS tercero,
+    bdfactura.utilidad1 AS utilidad1,
+    bdterceros.nombre AS nombre,
+    bdterceros.telefono AS telefono,
+    bdterceros.direccion AS direccion,
+    IF(ISNULL(bdprestamo.cuotaInicial), 0, bdprestamo.cuotaInicial) AS cuotaInicial2,
+    bdfactura.factura AS id2,
+    bdproductos.ubicacion1 AS ubicacion1,
+    bdproductos.referencia AS referencia,
+    (bdfactura.subtotalGeneral - bdfactura.descuentoGeneral) AS valor3,
+    IF((bdfactura.producto = 'PROD-000000032'), bdfactura.impuesto, '0') AS impuesto,
+    bdcxc.plazo AS plazo,
+    bdterceros.nombreContacto AS nombreContacto,
+    bdterceros.cargo AS cargo,
+    IF(bdfactura.turno IS NULL OR TRIM(bdfactura.turno) IN ('', '0'), '', bdfactura.turno) AS turno,
+    bdproductos.grupo AS Grupo,
+    bdterceros.eps AS eps,
+    bdepsprecargados.nombre AS nombreEps,
+    bdfactura.Id AS Id,
+    bdfactura.placa AS placa,
+    bdplacas.tipo AS tipo,
+    bdparqueaderoautos.fIngreso AS fIngreso,
+    bdparqueaderoautos.fSalida AS fSalida,
+    bdparqueaderoautos.hIngreso AS hIngreso,
+    bdparqueaderoautos.hSalida AS hSalida,
+    bdparqueaderoautos.horas AS horas,
+    bdfactura.imei AS imei,
+    bddetalleproductos.color AS color,
+    bdterceros.idSistema AS idSistema,
+    IF($P{agrupar}, SUM(bdfactura.impoconsumo), MAX(bdfactura.impoconsumo)) AS impoconsumo,
+    bdproductos.Codigo AS Codigo,
+    bdfactura.totalPropina AS totalPropina,
+    bdfactura.hora AS hora,
+    bdfactura.idProd AS idProd,
+    bdgrupo.nombre AS nombreGrupo,
+    bdfactura.impoGeneral AS impoGeneral,
+    bdfactura.porcImpo AS porcImpo,
+    bdfactura.bodega AS bodega
+FROM bdfactura
+    LEFT JOIN bdprestamo ON bdfactura.idFactura = bdprestamo.factura
+    LEFT JOIN bdcxc ON bdfactura.factura = bdcxc.factura2
+    LEFT JOIN bdplacas ON bdfactura.placa = bdplacas.placa
+    LEFT JOIN bdparqueaderoautos ON bdparqueaderoautos.factura = bdfactura.factura
+    LEFT JOIN bddetalleproductos ON bdfactura.idProd = bddetalleproductos.Id
+    LEFT JOIN bdproductos ON bdfactura.producto = bdproductos.idSistema
+    LEFT JOIN bdterceros ON bdfactura.cliente = bdterceros.idSistema
+    LEFT JOIN bdepsprecargados ON bdepsprecargados.Id = bdterceros.eps
+    LEFT JOIN bdgrupo ON bdproductos.grupo = bdgrupo.codigo
+WHERE bdfactura.factura = $P{numFactura}
+    AND ($P{grupo} IS NULL
+        OR ($P{grupo} = '' AND bdproductos.grupo IS NULL)
+        OR bdproductos.grupo = $P{grupo})
+    AND (NOT $P{agrupar} OR bdcxc.tipo = 'FACT' OR bdcxc.tipo IS NULL)
+GROUP BY IF($P{agrupar},
+        CONCAT_WS('|', bdfactura.factura, bdfactura.producto, bdfactura.lista, bdfactura.descuento,
+                  bdfactura.plu, bdfactura.porcIva, bdfactura.porcImpo),
+        bdfactura.Id)
+ORDER BY MIN(bdfactura.Id)]]>
 	</queryString>
 	<field name="idFactura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -489,23 +617,23 @@
 <frame>
 <reportElement positionType="Float" x="0" y="170" width="184" height="28" uuid="07f56400-c21a-41ff-b4ed-a34199dc5cc2"/>
 <staticText>
-				<reportElement positionType="Float" x="0" y="14" width="98" height="14" uuid="16552b42-454c-411d-92fa-aafddc812afe">
+				<reportElement positionType="Float" x="0" y="14" width="86" height="14" uuid="16552b42-454c-411d-92fa-aafddc812afe">
 					<printWhenExpression><![CDATA[!$F{plazo}.toString().equalsIgnoreCase("0")]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Arial" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FACTURA A CREDITO]]></text>
 			</staticText>
 <textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="99" y="14" width="51" height="14" uuid="1cda8e3e-74b2-43fd-9bad-0569ddb82f3c"/>
+				<reportElement positionType="Float" x="86" y="14" width="68" height="14" uuid="1cda8e3e-74b2-43fd-9bad-0569ddb82f3c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{titulo2}]]></textFieldExpression>
 			</textField>
 <textField isBlankWhenNull="true" isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="150" y="14" width="34" height="14" forecolor="#000000" uuid="c1ecc47b-0e51-422c-9196-59d5756570a4"/>
+				<reportElement positionType="Float" x="154" y="14" width="30" height="14" forecolor="#000000" uuid="c1ecc47b-0e51-422c-9196-59d5756570a4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>

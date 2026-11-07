@@ -1,5 +1,8 @@
 package formularios.Ventas;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -12,9 +15,8 @@ import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
-import formularios.productos.buscGrupos;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;
@@ -1413,7 +1415,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), false, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), false, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCodGrupo);
@@ -1423,9 +1425,8 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
     }
 
     public void ventanaGrupos(String codigo) {
-        buscGrupos buscar = new buscGrupos(null, true, "");
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(null, true, true);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscGrupos(buscar);
         instancias.setCampoActual(txtCodGrupo);
         txtCodGrupo.requestFocus();
         buscar.noEncontrado(codigo.replace("'", "//"));

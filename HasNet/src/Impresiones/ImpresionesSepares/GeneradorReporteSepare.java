@@ -13,7 +13,7 @@ public class GeneradorReporteSepare extends GeneradorReporteBase {
 
     public void ver_Separe(String factura, String observaciones, String info, String tipo, String nombreReporte, boolean imprimir) {
         String informacionLegal = instancias.getLegal() == null ? "" : instancias.getLegal();
-        String pieDePagina = instancias.getPie() == null ? "" : instancias.getLegal();
+        String pieDePagina = instancias.getPie() == null ? "" : instancias.getPie();
 
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("factura", factura.replace("SEPARE-", ""));
@@ -28,6 +28,6 @@ public class GeneradorReporteSepare extends GeneradorReporteBase {
         parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());
-        ejecutar(nombreReporte, parametros);
+        ejecutar(nombreReporte, parametros, imprimir);
     }
 }

@@ -13,7 +13,7 @@ public class GeneradorReportePedido extends GeneradorReporteBase {
 
     public void ver_Pedido(String factura, String observaciones, String info, String tipo, String nombreReporte, boolean imprimir) {
         String informacionLegal = instancias.getLegal() == null ? "" : instancias.getLegal();
-        String pieDePagina = instancias.getPie() == null ? "" : instancias.getLegal();
+        String pieDePagina = instancias.getPie() == null ? "" : instancias.getPie();
 
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("factura", factura.replace("PEDIDO-", ""));
@@ -28,7 +28,7 @@ public class GeneradorReportePedido extends GeneradorReporteBase {
         parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());
-        ejecutar(nombreReporte, parametros);
+        ejecutar(nombreReporte, parametros, imprimir);
     }
 
     public void ver_ListadoPedido(String factura, String observaciones, String info) {

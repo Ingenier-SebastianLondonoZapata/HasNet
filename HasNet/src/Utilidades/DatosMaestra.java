@@ -427,6 +427,25 @@ public class DatosMaestra {
         return impresiones != null ? s(impresiones.getAnexoOrdenServicio()) : "";
     }
 
+    public static final String TIPO_IMPRESION_SIN_CODIGO = "Sin-Codigo";
+    public static final String TIPO_IMPRESION_CON_CODIGO = "Con-Codigo";
+    public static final String TIPO_IMPRESION_SERIAL = "Imei";
+
+    public static String getTipoImpresion() {
+        String guardado = impresiones != null ? impresiones.getTipoImpresion() : null;
+        clases.Instancias instancias = clases.Instancias.getInstancias();
+        boolean productosDetallados = instancias.getConfiguraciones() != null
+                && instancias.getConfiguraciones().isProductosDetallados();
+        return ajustarTipoImpresion(guardado, productosDetallados);
+    }
+
+    public static String ajustarTipoImpresion(String tipoImpresion, boolean productosDetallados) {
+        if (productosDetallados) {
+            return TIPO_IMPRESION_SERIAL;
+        }
+        return TIPO_IMPRESION_CON_CODIGO.equals(tipoImpresion) ? TIPO_IMPRESION_CON_CODIGO : TIPO_IMPRESION_SIN_CODIGO;
+    }
+
     // ── Opciones de impresión ───────────────────────────────────────────────
     /**
      * Valor crudo de "Imprimir ubicación en factura" ("SI"/"NO").

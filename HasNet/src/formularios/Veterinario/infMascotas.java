@@ -1,5 +1,8 @@
 package formularios.Veterinario;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import clases.ImagePreviewPanel;
@@ -9,8 +12,7 @@ import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
 import clases.Veterinario.ndMascota;
 import datechooser.beans.DateChooserCombo;
-import formularios.productos.buscColores;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -1332,12 +1334,10 @@ public class infMascotas extends javax.swing.JInternalFrame {
     }
 
     public void ventanaColores(String nit) {
-        buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.colores(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscColores(buscar);
         instancias.setCampoActual(txtColor);
         txtColor.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }
@@ -1478,7 +1478,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setOpc("mascota");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);

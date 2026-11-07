@@ -46,7 +46,7 @@ import formularios.Tesoreria.dlgTipoEgreso;
 import formularios.Ventas.dlgTipoDescuento;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import formularios.productos.dlgDetalleCompra;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import Procesos.Inventario.Dao.DaoPonderado;
 import java.awt.Color;
 import java.awt.Event;
@@ -181,7 +181,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             lbSubtotal.setText("Subtotal:");
         }
 
-        if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
+        if (DatosMaestra.getTipoImpresion().equals("Sin-Codigo")) {
             tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -2969,7 +2969,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setOpc("ingreso");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);

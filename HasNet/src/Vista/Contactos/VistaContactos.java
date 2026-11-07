@@ -28,7 +28,6 @@ import clases.metodosGenerales;
 import formularios.Medico.buscConvenio;
 import formularios.Medico.buscEpsPrecargadas;
 import formularios.terceros.buscCargos;
-import formularios.terceros.buscClientes;
 import formularios.terceros.buscOcupaciones;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -2647,14 +2646,8 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtIdentificacionActionPerformed
 
     private void cmbCiudadItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbCiudadItemStateChanged
-        Object[][] codigosPostales = instancias.getSql().getCodigosPostales(cmbDepartamento.getSelectedItem().toString(), cmbCiudad.getSelectedItem().toString());
-        cmbCodigoPostal.removeAllItems();
-        cmbCodigoPostal.addItem(" ");
-
-        for (Object[] codigosPostale : codigosPostales) {
-            if (null != codigosPostale[0]) {
-                cmbCodigoPostal.addItem(codigosPostale[0]);
-            }
+        if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+            Utilidades.Contactos.Regiones.cargarCodigosPostales(cmbCodigoPostal, cmbDepartamento.getSelectedItem(), cmbCiudad.getSelectedItem());
         }
     }//GEN-LAST:event_cmbCiudadItemStateChanged
 
@@ -3510,7 +3503,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit, JTextField campo, String opcionBuscador) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
         buscar.setLocationRelativeTo(null);
         buscar.setTipoBuscador(opcionBuscador);
         instancias.setBusClientes(buscar);
@@ -3521,7 +3514,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTercerosReferidos(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, true, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCodigoReferido);

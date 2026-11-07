@@ -1,5 +1,8 @@
 package Procesos.Inventario.Vista;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -20,8 +23,6 @@ import Utilidades.Utilidades;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import formularios.productos.buscColores;
-import formularios.productos.buscTallas;
 import java.awt.Color;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -1465,34 +1466,28 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
     }//GEN-LAST:event_tblDetalleMouseClicked
 
     public void ventanaTallas(String nit) {
-        buscTallas buscar = new buscTallas(instancias.getMenu(), rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.tallas(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscTallas(buscar);
         instancias.setCampoActual(txtTalla);
         txtTalla.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }
 
     public void ventanaColores(String nit) {
-        buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.colores(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscColores(buscar);
         instancias.setCampoActual(txtColor);
         txtColor.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }
 
     public void ventanaColores1(String nit) {
-        buscColores buscar = new buscColores(instancias.getMenu(), rootPaneCheckingEnabled);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.colores(instancias.getMenu(), rootPaneCheckingEnabled);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscColores(buscar);
         instancias.setCampoActual(txtColor1);
         txtColor1.requestFocus();
-        buscar.setInstancia(instancias);
         buscar.noEncontrado(nit);
         buscar.show();
     }

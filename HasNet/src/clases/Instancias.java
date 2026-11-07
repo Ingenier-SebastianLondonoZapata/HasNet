@@ -1,5 +1,6 @@
 package clases;
 
+import Vista.Contactos.VistaBuscadorContactos;
 import Vista.Productos.Reportes.VistaReporteProductos;
 import Vista.Productos.Reportes.VistaReporteInventario;
 import Vista.Productos.Reportes.VistaReportesProducto;
@@ -139,7 +140,6 @@ public class Instancias {
     private VistaDiseno costeo;
     private String tFactura;
     private infProcesos procesos;
-    private buscProcesos buscProcesos;
     private iFactura reporte;
     private jcThread progres;
     private String rutaAguardar;
@@ -149,8 +149,6 @@ public class Instancias {
 
     private infRepCuadre repCuadre;
     private VistaReportesProducto reportesProductos;
-    private buscGrupos buscGrupos;
-    private buscSubGrupos buscSubGrupos;
     private String regimen;
     private String terminal;
 
@@ -263,7 +261,7 @@ public class Instancias {
     /* INICIO TERCEROS */
     private VistaContactos clientes;
     private VistaContactos paciente;
-    private buscClientes busClientes;
+    private VistaBuscadorContactos busClientes;
     private buscEmpleados buscEmpleados;
 
     /* INICIO VENTAS */
@@ -297,11 +295,6 @@ public class Instancias {
     private VistaGrupos grupos;
     private VistaBuscadorProductos buscProductos;
     private buscSeriales buscSeriales;
-    private buscColores buscColores;
-    private buscTallas buscTallas;
-    private buscMedidas buscMedidas;
-    private buscMarcas buscMarcas;
-    private buscTiposProductos buscTiposProductos;
     private infTrasladosInternos trasladosInternos;
     private VistaReporteProductos repProductos;
     private infRepIvasCompras repIvasCompras;
@@ -576,14 +569,6 @@ public class Instancias {
         this.repGuarderia = repGuarderia;
     }
 
-    public buscTallas getBuscTallas() {
-        return buscTallas;
-    }
-
-    public void setBuscTallas(buscTallas buscTallas) {
-        this.buscTallas = buscTallas;
-    }
-
     public buscHoraHospitalizacion getBuscHorasHospitalizacion() {
         return buscHorasHospitalizacion;
     }
@@ -830,38 +815,6 @@ public class Instancias {
 
     public void setRepIvas(VistaReporteIvas repIvas) {
         this.repIvas = repIvas;
-    }
-
-    public buscTiposProductos getBuscTiposProductos() {
-        return buscTiposProductos;
-    }
-
-    public void setBuscTiposProductos(buscTiposProductos buscTiposProductos) {
-        this.buscTiposProductos = buscTiposProductos;
-    }
-
-    public buscMarcas getBuscMarcas() {
-        return buscMarcas;
-    }
-
-    public void setBuscMarcas(buscMarcas buscMarcas) {
-        this.buscMarcas = buscMarcas;
-    }
-
-    public buscColores getBuscColores() {
-        return buscColores;
-    }
-
-    public void setBuscColores(buscColores buscColores) {
-        this.buscColores = buscColores;
-    }
-
-    public buscMedidas getBuscMedidas() {
-        return buscMedidas;
-    }
-
-    public void setBuscMedidas(buscMedidas buscMedidas) {
-        this.buscMedidas = buscMedidas;
     }
 
     public VistaReporteInventario getInventario() {
@@ -1886,14 +1839,6 @@ public class Instancias {
         this.regimen = regimen;
     }
 
-    public buscGrupos getBuscGrupos() {
-        return buscGrupos;
-    }
-
-    public void setBuscGrupos(buscGrupos buscGrupos) {
-        this.buscGrupos = buscGrupos;
-    }
-
     public VistaPagos getPagos() {
         return pagos;
     }
@@ -1996,14 +1941,6 @@ public class Instancias {
 
     public String gettFactura() {
         return tFactura;
-    }
-
-    public buscProcesos getBuscProcesos() {
-        return buscProcesos;
-    }
-
-    public void setBuscProcesos(buscProcesos buscProcesos) {
-        this.buscProcesos = buscProcesos;
     }
 
     public SQL getSql() {
@@ -2254,11 +2191,11 @@ public class Instancias {
         this.usuario = usuario;
     }
 
-    public buscClientes getBusClientes() {
+    public VistaBuscadorContactos getBusClientes() {
         return busClientes;
     }
 
-    public void setBusClientes(buscClientes busClientes) {
+    public void setBusClientes(VistaBuscadorContactos busClientes) {
         this.busClientes = busClientes;
     }
 
@@ -2360,14 +2297,6 @@ public class Instancias {
 
     public void setRepNC(VistaReporteNotasCredito repNC) {
         this.repNC = repNC;
-    }
-
-    public buscSubGrupos getBuscSubGrupos() {
-        return buscSubGrupos;
-    }
-
-    public void setBuscSubGrupos(buscSubGrupos buscSubGrupos) {
-        this.buscSubGrupos = buscSubGrupos;
     }
 
     public void actualizarGrupos(Object[] dato) {

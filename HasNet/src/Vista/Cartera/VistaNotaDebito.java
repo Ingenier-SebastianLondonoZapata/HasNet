@@ -45,7 +45,7 @@ import formularios.Ventas.dlgTipoDescuento;
 import Vista.Productos.VistaBuscadorProductos;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
 import Vista.Productos.VistaSeleccionarPLU;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -139,7 +139,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
         tblProductos.setDefaultRenderer(Object.class, new IconCellRenderer());
         tblProductos.getColumnModel().getColumn(1).setCellRenderer(new WordWrapCellRenderer());
 
-        if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
+        if (DatosMaestra.getTipoImpresion().equals("Sin-Codigo")) {
             tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -2756,7 +2756,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtNit);

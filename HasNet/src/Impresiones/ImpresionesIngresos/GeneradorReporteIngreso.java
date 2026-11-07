@@ -14,7 +14,7 @@ public class GeneradorReporteIngreso extends GeneradorReporteBase {
 
     public void verIngreso(String factura, String tipoCompra) {
         String sufijo = DatosMaestra.getSufijoReporteImpresion();
-        if (instancias.getConfiguraciones().getTipoImpresion().equals("Sin-Codigo")) {
+        if (DatosMaestra.getTipoImpresion().equals("Sin-Codigo")) {
             sufijo = sufijo + "1";
         }
         ejecutar("ingreso" + sufijo, parametrosIngreso(factura, tipoCompra));

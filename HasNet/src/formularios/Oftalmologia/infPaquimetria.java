@@ -9,7 +9,7 @@ import Utilidades.BaseDatos.SQL;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
 import formularios.Oftalmologia.pnlDibujo;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;

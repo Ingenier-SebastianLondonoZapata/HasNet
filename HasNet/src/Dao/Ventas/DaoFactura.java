@@ -28,6 +28,20 @@ public class DaoFactura {
     private final DaoGenerales daoGenerales = new DaoGenerales();
     private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
 
+    public String obtenerTurnoFactura(String factura) {
+        String sql = "SELECT turno FROM bdfactura WHERE factura = ? AND turno IS NOT NULL "
+                + "AND TRIM(turno) <> '' AND TRIM(turno) <> '0' LIMIT 1";
+        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            pstmt.setString(1, factura);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() ? rs.getString("turno").trim() : "";
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener el turno de la factura " + factura, e);
+            return "";
+        }
+    }
+
     public DocumentoMovimiento cargarCotizacion(String idCotizacion) {
         Object[][] mat = getRegistrosCotizas(idCotizacion);
         if (mat.length == 0) return DocumentoMovimiento.vacio();

@@ -16,8 +16,7 @@ import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
 import formularios.Agenda.ndAgenda;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.terceros.buscClientes;
-import formularios.terceros.nuevoTercero;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Image;
@@ -1803,7 +1802,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(null, rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(null, rootPaneCheckingEnabled, false, null, "");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtId);

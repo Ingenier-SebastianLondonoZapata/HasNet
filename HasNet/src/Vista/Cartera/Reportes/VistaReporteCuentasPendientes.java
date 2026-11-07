@@ -4,7 +4,7 @@ import Controlador.Alertas.ControladorAlertas;
 
 import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import clases.Instancias;
 import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
@@ -823,7 +823,7 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setOpc("factura");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);

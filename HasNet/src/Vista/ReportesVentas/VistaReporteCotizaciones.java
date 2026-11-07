@@ -12,7 +12,7 @@ import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
 import Vista.Productos.VistaBuscadorProductos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;
 
@@ -596,7 +596,7 @@ public class VistaReporteCotizaciones extends javax.swing.JPanel {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), false, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), false, false, null, "");
         buscar.setOpc("factura");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);

@@ -26,7 +26,7 @@ import clases.big;
 import clases.convertirNumeroALetras;
 import clases.metodosGenerales;
 import formularios.Tesoreria.buscEgresos;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -2179,7 +2179,7 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), rootPaneCheckingEnabled, false, null, "");
         buscar.setOpc("egreso");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);

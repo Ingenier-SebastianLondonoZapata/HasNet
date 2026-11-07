@@ -1,5 +1,8 @@
 package formularios.productos;
 
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
+
 import Controlador.Alertas.ControladorAlertas;
 
 import Utilidades.Contactos.Bodegas;
@@ -14,7 +17,7 @@ import clases.metodosGenerales;
 import clases.productos.ndGrupo;
 import Modelo.Productos.ModeloProducto;
 import Modelo.Contactos.ModeloContacto;
-import formularios.terceros.buscClientes;
+import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -770,7 +773,7 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
     }
 
     public void ventanaTerceros(String nit) {
-        buscClientes buscar = new buscClientes(instancias.getMenu(), true, false, null, "");
+        VistaBuscadorContactos buscar = new VistaBuscadorContactos(instancias.getMenu(), true, false, null, "");
         buscar.setOpc("ingreso");
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
@@ -815,9 +818,8 @@ public class infRepOrdenCompra extends javax.swing.JPanel {
     }
 
     public void ventanaGrupo(String nit) {
-        buscGrupos buscar = new buscGrupos(instancias.getMenu(), false, "");
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(instancias.getMenu(), false, true);
         buscar.setLocationRelativeTo(null);
-        instancias.setBuscGrupos(buscar);
         instancias.setCampoActual(txtGrupo);
         txtGrupo.requestFocus();
         buscar.noEncontrado(nit);
