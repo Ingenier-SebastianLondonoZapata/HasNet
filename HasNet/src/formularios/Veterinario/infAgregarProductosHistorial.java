@@ -405,7 +405,7 @@ public class infAgregarProductosHistorial extends javax.swing.JInternalFrame {
             String codigo = txtCodProducto.getText();
             plu = true;
             cargarProducto(codigo.replace("'", "//"), txtCant.getText(), "", "", "", 1);
-        } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
+        } else if (Utilidades.Utilidades.esTeclaMultiplicar(evt, txtCodProducto.getText())) {
             double cantidad = 1;
             try {
                 cantidad = Double.parseDouble(txtCodProducto.getText().replace("*", ""));

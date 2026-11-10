@@ -755,7 +755,7 @@ public class dlgMedicamentosPendientes extends javax.swing.JDialog {
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             btnGuardar.requestFocus();
-        } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
+        } else if (Utilidades.Utilidades.esTeclaMultiplicar(evt, txtMedicamento.getText())) {
             double cantidad = 1;
             try {
                 cantidad = Double.parseDouble(txtMedicamento.getText().replace("*", ""));

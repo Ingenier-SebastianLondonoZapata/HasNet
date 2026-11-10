@@ -2269,7 +2269,7 @@ public class VistaNotaDebito extends javax.swing.JInternalFrame {
             cargarProducto(codigo, cant, 1, "", "", "", true, "", "", "", "", "");
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             btnGuardar.requestFocus();
-        } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
+        } else if (Utilidades.esTeclaMultiplicar(evt, txtCodProducto.getText())) {
             double cantidad = 1;
             try {
                 cantidad = Double.parseDouble(txtCodProducto.getText().replace("*", ""));

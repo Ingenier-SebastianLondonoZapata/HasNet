@@ -87,6 +87,8 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnBusProd.setEnabled(false);
         txtCodProducto.setEnabled(false);
+        txtCantidadDiseno.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
+        txtCantidadArmado.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
 
         instancias = Instancias.getInstancias();
         actualizarGrupos();
@@ -287,6 +289,8 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnActualizar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnNuevo = new javax.swing.JButton();
+        lbCantidadDiseno = new javax.swing.JLabel();
+        txtCantidadDiseno = new javax.swing.JTextField();
         lbNit8 = new javax.swing.JLabel();
         txtCodProducto = new javax.swing.JTextField();
         btnBusProd = new javax.swing.JButton();
@@ -313,6 +317,8 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         jSeparator2 = new javax.swing.JSeparator();
         scrProductos1 = new javax.swing.JScrollPane();
         tblProductosArmado = new javax.swing.JTable();
+        lbCantidadArmado = new javax.swing.JLabel();
+        txtCantidadArmado = new javax.swing.JTextField();
         txtCodigoProducto = new javax.swing.JTextField();
         btnBusProd3 = new javax.swing.JButton();
         txtIdSistema = new javax.swing.JTextField();
@@ -907,6 +913,16 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        lbCantidadDiseno.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lbCantidadDiseno.setText("Cantidad:");
+
+        txtCantidadDiseno.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        txtCantidadDiseno.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCantidadDiseno.setText("1");
+        txtCantidadDiseno.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtCantidadDiseno.setEnabled(false);
+        txtCantidadDiseno.setName("combo"); // NOI18N
+
         lbNit8.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         lbNit8.setText("Cargar producto al diseño:");
 
@@ -951,9 +967,13 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCostoTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlDisenoProductoLayout.createSequentialGroup()
+                        .addComponent(lbCantidadDiseno)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCantidadDiseno, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
                         .addComponent(lbNit8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCodProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtCodProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBusProd, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(5, 5, 5)
@@ -968,6 +988,8 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                     .addGroup(pnlDisenoProductoLayout.createSequentialGroup()
                         .addGap(5, 5, 5)
                         .addGroup(pnlDisenoProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lbCantidadDiseno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtCantidadDiseno)
                             .addComponent(lbNit8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtCodProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                             .addComponent(btnBusProd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1269,6 +1291,16 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             tblProductosArmado.getColumnModel().getColumn(5).setMaxWidth(0);
         }
 
+        lbCantidadArmado.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbCantidadArmado.setText("Cantidad:");
+
+        txtCantidadArmado.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        txtCantidadArmado.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCantidadArmado.setText("1");
+        txtCantidadArmado.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtCantidadArmado.setEnabled(false);
+        txtCantidadArmado.setName("combo"); // NOI18N
+
         txtCodigoProducto.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtCodigoProducto.setEnabled(false);
         txtCodigoProducto.setName("combo"); // NOI18N
@@ -1333,9 +1365,13 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(pnlArmadoProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlArmadoProductoLayout.createSequentialGroup()
+                        .addComponent(lbCantidadArmado)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCantidadArmado, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
                         .addComponent(lbAgregarProductoDiseno, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBusProd3, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 11, Short.MAX_VALUE))
@@ -1357,6 +1393,8 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                         .addComponent(txtIdSistema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlArmadoProductoLayout.createSequentialGroup()
                         .addGroup(pnlArmadoProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lbCantidadArmado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtCantidadArmado)
                             .addComponent(btnBusProd3, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                             .addComponent(txtCodigoProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                             .addComponent(lbAgregarProductoDiseno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1433,7 +1471,9 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String codigo = txtCodProducto.getText();
             plu = true;
-            cargarProducto(codigo.replace("'", "//"), "1", 1);
+            cargarProducto(codigo.replace("'", "//"), cantidadEstablecida(txtCantidadDiseno), 1);
+        } else if (Utilidades.esTeclaMultiplicar(evt, txtCodProducto.getText())) {
+            asignarCantidad(txtCodProducto, txtCantidadDiseno);
         }
     }//GEN-LAST:event_txtCodProductoKeyReleased
 
@@ -1857,6 +1897,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         btnBusProd.setEnabled(false);
         txtCodProducto.setEnabled(false);
+        txtCantidadDiseno.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         chkManejarInventario.setSelected(false);
         txtCodigo.setEditable(true);
 
@@ -2098,8 +2139,20 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     private void txtCodigoProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoProductoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             cargarInsumoArmado(txtCodigoProducto.getText().replace("'", "//"));
+        } else if (Utilidades.esTeclaMultiplicar(evt, txtCodigoProducto.getText())) {
+            asignarCantidad(txtCodigoProducto, txtCantidadArmado);
         }
     }//GEN-LAST:event_txtCodigoProductoKeyReleased
+
+    private void asignarCantidad(JTextField campoCodigo, JTextField campoCantidad) {
+        BigDecimal cantidad = Utilidades.obtenerCantidadMultiplicar(campoCodigo.getText());
+        campoCantidad.setText(Utilidades.formatearCantidadVista(cantidad));
+        campoCodigo.setText("");
+    }
+
+    private String cantidadEstablecida(JTextField campoCantidad) {
+        return Utilidades.formatearCantidad(Utilidades.obtenerCantidadMultiplicar(campoCantidad.getText()));
+    }
 
     private void btnBusProd3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusProd3ActionPerformed
         ventanaInsumosArmado("");
@@ -2252,6 +2305,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
                 tblProductos.transferFocus();
 
                 txtCodProducto.setText("");
+                txtCantidadDiseno.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
             }
             return;
         }
@@ -2437,12 +2491,13 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
     public void cargarProductos(Object[][] productos) {
         this.plu = false;
+        String cantidadEstablecida = cantidadEstablecida(txtCantidadDiseno);
 
         for (int i = 0; i < productos.length; i++) {
             String codigo = productos[i][0].toString();
             String cantidad = productos[i][1].toString();
             if (cantidad.equals("0")) {
-                cantidad = DatosMaestra.getCantidadEstablecidaAlCargar();
+                cantidad = cantidadEstablecida;
             }
             cargarProducto(codigo, cantidad, 1);
             KeyEvent x = new KeyEvent(this, WIDTH, WIDTH, WIDTH, KeyEvent.VK_ENTER);
@@ -2505,6 +2560,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         txtCodigoArmado.setText("");
         txtDescripcionArmado.setText("");
         txtCodigoProducto.setText("");
+        txtCantidadArmado.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         txtIdSistema.setText("");
         spCantidad.setValue(1);
 
@@ -2638,12 +2694,13 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
             Logger.getLogger(VistaDiseno.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String cantidad = Utilidades.formatearCantidad(BigDecimal.ONE);
+        String cantidad = cantidadEstablecida(txtCantidadArmado);
 
         ((DefaultTableModel) tblProductosArmado.getModel()).addRow(new Object[]{
             insumo.getIdSistema(), insumo.getDescripcion(), cantidad, "1", cantidad,
             Boolean.FALSE, big.setMoneda(ponderado), big.setMoneda(ultimoCosto), big.setMoneda(ponderado)});
 
+        txtCantidadArmado.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         calcularCostoArmado();
         editarCantidadInsumo(tblProductosArmado.getRowCount() - 1);
     }
@@ -2845,6 +2902,8 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel lbAgregarProductoDiseno;
     private javax.swing.JLabel lbCantidad;
+    private javax.swing.JLabel lbCantidadArmado;
+    private javax.swing.JLabel lbCantidadDiseno;
     private javax.swing.JLabel lbCiudad;
     private javax.swing.JLabel lbCodigo;
     private javax.swing.JLabel lbCostoTotal;
@@ -2879,6 +2938,8 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
     private javax.swing.JTabbedPane tabContenedor;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTable tblProductosArmado;
+    private javax.swing.JTextField txtCantidadArmado;
+    private javax.swing.JTextField txtCantidadDiseno;
     private javax.swing.JTextField txtCodProducto;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtCodigoArmado;

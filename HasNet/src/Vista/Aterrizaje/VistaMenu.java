@@ -1328,7 +1328,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
         agregarFormulario(new creditos(), instancias::setFacturaCreditos, usuario.isCreditos());
         agregarFormulario(new VistaReportesVentas(), instancias::setReportesVentas);
-        agregarFormulario(new VistaPreparacion(), instancias::setPreparacion);
+        instancias.setPreparacion(new VistaPreparacion(this, true));
         agregarFormulario(new pedido(), instancias::setPedido, usuario.isPedidos());
         agregarFormulario(new planSepare(), instancias::setPlanSepare, usuario.isPlanSepares());
         agregarFormulario(new infFacturarLotes(), instancias::setFacturarLotes);

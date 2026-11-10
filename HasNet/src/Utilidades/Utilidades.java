@@ -1,5 +1,6 @@
 package Utilidades;
 
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -75,5 +76,16 @@ public class Utilidades {
 
     public static String formatearCantidadVista(String valor) {
         return formatearCantidadVista(convertirBigDecimal(valor));
+    }
+
+    public static boolean esTeclaMultiplicar(KeyEvent evt, String texto) {
+        return evt.getKeyCode() == KeyEvent.VK_MULTIPLY
+                || evt.getKeyChar() == '*'
+                || (texto != null && texto.contains("*"));
+    }
+
+    public static BigDecimal obtenerCantidadMultiplicar(String texto) {
+        BigDecimal cantidad = convertirBigDecimal(texto == null ? "" : texto.replace("*", ""));
+        return cantidad.compareTo(BigDecimal.ZERO) > 0 ? cantidad : BigDecimal.ONE;
     }
 }

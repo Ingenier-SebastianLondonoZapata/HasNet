@@ -77,9 +77,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
+import Utilidades.ImportacionesExcel.HojaExcel;
+import Utilidades.ImportacionesExcel.LibroExcel;
 
 public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallado {
 
@@ -1354,20 +1353,13 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
     private void txtCodigoProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoProductoKeyReleased
         String codigoProducto = txtCodigoProducto.getText();
 
-        switch (evt.getKeyCode()) {
-            case KeyEvent.VK_ENTER:
-                plu = true;
-                cargarProducto(codigoProducto.replace("'", "//"), Utilidades.convertirBigDecimal(txtCantidad.getText()), 1, "Directo");
-                break;
-
-            case KeyEvent.VK_MULTIPLY:
-                BigDecimal cantidad = obtenerCantidad(codigoProducto);
-                txtCantidad.setText(Utilidades.formatearCantidadVista(cantidad));
-                txtCodigoProducto.setText("");
-                break;
-
-            default:
-                break;
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            plu = true;
+            cargarProducto(codigoProducto.replace("'", "//"), Utilidades.convertirBigDecimal(txtCantidad.getText()), 1, "Directo");
+        } else if (Utilidades.esTeclaMultiplicar(evt, codigoProducto)) {
+            BigDecimal cantidad = Utilidades.obtenerCantidadMultiplicar(codigoProducto);
+            txtCantidad.setText(Utilidades.formatearCantidadVista(cantidad));
+            txtCodigoProducto.setText("");
         }
     }//GEN-LAST:event_txtCodigoProductoKeyReleased
 
@@ -2079,22 +2071,22 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         if (opcion == JFileChooser.APPROVE_OPTION) {
             archivoExcel = examinar.getSelectedFile().getAbsoluteFile();
 
-            try {
-                Workbook leerExcel = Workbook.getWorkbook(archivoExcel);
-                for (int hoja = 0; hoja < leerExcel.getNumberOfSheets(); hoja++) {
-                    Sheet hojaP = leerExcel.getSheet(hoja);
-                    int filas = hojaP.getRows();
+            try (LibroExcel leerExcel = LibroExcel.abrir(archivoExcel)) {
+                for (int hoja = 0; hoja < leerExcel.cantidadHojas(); hoja++) {
+                    HojaExcel hojaP = leerExcel.hoja(hoja);
+                    int filas = hojaP.filas();
                     for (int fila = 0; fila < filas; fila++) {
                         if (fila > 0) {
-                            if (!hojaP.getCell(0, fila).getContents().equals("")) {
-                                cargarProductoDesdeExcel(hojaP.getCell(0, fila).getContents(), hojaP.getCell(1, fila).getContents(), hojaP.getCell(2, fila).getContents(),
-                                        hojaP.getCell(3, fila).getContents(), hojaP.getCell(4, fila).getContents(), hojaP.getCell(5, fila).getContents());
+                            if (!hojaP.contenido(0, fila).equals("")) {
+                                cargarProductoDesdeExcel(hojaP.contenido(0, fila), hojaP.contenido(1, fila), hojaP.contenido(2, fila),
+                                        hojaP.contenido(3, fila), hojaP.contenido(4, fila), hojaP.contenido(5, fila));
                             }
                         }
                     }
                 }
-            } catch (IOException | BiffException ex) {
-                ControladorAlertas.alertFail("El archivo de excel es de una versión no compatible");
+            } catch (IOException ex) {
+                Logger.getLogger(VistaIngreso.class.getName()).log(Level.SEVERE, null, ex);
+                ControladorAlertas.alertFail("No se pudo leer el archivo. Debe ser un Excel (.xls o .xlsx)");
                 return;
             }
         }
@@ -2566,6 +2558,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         tblProductos.setValueAt(big.setNumero(utilidad), tblProductos.getRowCount() - 1, 17);
         tblProductos.setValueAt(big.setNumero(valorPonderadoDigitado), tblProductos.getRowCount() - 1, 2);
         tblProductos.setValueAt(big.setNumero(valorPonderadoDigitado), tblProductos.getRowCount() - 1, 15);
+        marcarFocoTabla(false);
     }
 
     public void cargarProductoDesdeExcel(String codigo, String valorUnit, String cantidad, String descuento, String iva, String impo) {
@@ -2800,7 +2793,9 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             tblProductosKeyReleased(x);
 
             txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
-            marcarFocoTabla();
+            if (!formaCargo.equals("DetalleProducto")) {
+                marcarFocoTabla(true);
+            }
         }
     }
 
@@ -2832,17 +2827,18 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         return false;
     }
 
-    private void marcarFocoTabla() {
+    private void marcarFocoTabla(boolean cantidadEditable) {
         final int ultimaFila = tblProductos.getRowCount() - 1;
         if (ultimaFila < 0) {
             return;
         }
 
-        if (DatosMaestra.isUsarLector()) {
+        boolean focoEnValor = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor");
+        if (DatosMaestra.isUsarLector() || (!focoEnValor && !cantidadEditable)) {
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             txtCodigoProducto.requestFocus();
         } else {
-            int columna = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
+            int columna = focoEnValor ? 2 : 3;
             tblProductos.setColumnSelectionInterval(columna, columna);
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             tblProductos.editCellAt(ultimaFila, columna);
@@ -3631,18 +3627,6 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
             for (int i = 0; i < totalLineas; i++) {
                 calcularTabla(i);
             }
-        }
-    }
-
-    private BigDecimal obtenerCantidad(String codigoProducto) {
-        try {
-            BigDecimal cantidad = Utilidades.convertirBigDecimal(codigoProducto.replace("*", ""));
-
-            return cantidad.compareTo(BigDecimal.ZERO) > 0
-                    ? cantidad
-                    : BigDecimal.ONE;
-        } catch (NumberFormatException e) {
-            return BigDecimal.ONE;
         }
     }
 

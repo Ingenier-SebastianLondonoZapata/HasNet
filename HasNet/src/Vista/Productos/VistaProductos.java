@@ -81,6 +81,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     Object[][] grupos;
     modeloConfiguracion nodoConf;
     String simbolo = "";
+    private ModeloProducto productoCargado;
 
     public VistaProductos() {
 
@@ -351,6 +352,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
         btnEliminar.setText("INACTIVAR");
         btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnEliminar.setEnabled(false);
         btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnEliminar.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -1063,7 +1065,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
                                         .addComponent(txtUtilidad1, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(txtUtilidad2, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlValoresLayout.createSequentialGroup()
-                                            .addComponent(lbCupo1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(lbCupo1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(txtMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -1213,7 +1215,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         jLabel1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         jLabel1.setText("Tipo producto:");
 
-        txtTipoProd.setBackground(new java.awt.Color(255, 204, 204));
+        txtTipoProd.setBackground(new java.awt.Color(220, 220, 220));
         txtTipoProd.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtTipoProd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtTipoProd.addActionListener(new java.awt.event.ActionListener() {
@@ -1233,7 +1235,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         jLabel2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         jLabel2.setText("Marca:");
 
-        txtMarca.setBackground(new java.awt.Color(255, 204, 204));
+        txtMarca.setBackground(new java.awt.Color(220, 220, 220));
         txtMarca.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtMarca.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtMarca.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1711,8 +1713,8 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         btnGuardar.setEnabled(true);
         txtCodUnificar.setEditable(false);
         btnUnificar.setEnabled(false);
-        btnEliminar.setText("INACTIVAR");
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
+        productoCargado = null;
+        actualizarBotonEstadoProducto();
         jTabbedPane1.setSelectedIndex(0);
         lbNit.requestFocus();
     }//GEN-LAST:event_btnNuevoActionPerformed
@@ -1744,37 +1746,72 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        if (btnEliminar.getText().equalsIgnoreCase("ACTIVAR")) {
-            if (ControladorAlertas.option("¿Activar este registro?")) {
-                instancias.getSql().activarProducto(txtCodigo.getText());
-                ControladorAlertas.alertSuccess("Producto activado con éxito");
-                btnNuevoActionPerformed(evt);
+        if (productoCargado == null) {
+            ControladorAlertas.alert("Debe cargar un producto");
+            return;
+        }
+
+        String codigo = productoCargado.getCodigo();
+
+        if (productoInactivo()) {
+            if (!ControladorAlertas.option("¿Activar este registro?")) {
                 return;
             }
-        }
 
-        if (ControladorAlertas.option("¿Inactivar este registro?")) {
-
-            Object[][] congeladas = instancias.getSql().getDatosCongelada();
-            if (congeladas.length > 0) {
-                for (int i = 0; i < congeladas.length; i++) {
-                    if (congeladas[i][7].toString().equals(txtIdSistema.getText())) {
-                        if (instancias.getConfiguraciones().isRestaurante()) {
-                            ControladorAlertas.alert("¡El producto no se puede inactivar porque esta cargado en una mesa!");
-                            return;
-                        } else {
-                            ControladorAlertas.alert("¡El producto no se puede inactivar porque esta cargado en una congelada!");
-                            return;
-                        }
-                    }
-                }
+            if (!instancias.getSql().activarProducto(codigo)) {
+                ControladorAlertas.alertFail("No se pudo activar el producto");
+                return;
             }
 
-            instancias.getSql().eliminarProducto(txtCodigo.getText());
-            ControladorAlertas.alertSuccess("Producto inactivado con éxito");
+            ControladorAlertas.alertSuccess("Producto activado con éxito");
             btnNuevoActionPerformed(evt);
+            return;
         }
+
+        if (!ControladorAlertas.option("¿Inactivar este registro?")) {
+            return;
+        }
+
+        if (estaEnCongelada(productoCargado.getIdSistema())) {
+            ControladorAlertas.alert(instancias.getConfiguraciones().isRestaurante()
+                    ? "¡El producto no se puede inactivar porque esta cargado en una mesa!"
+                    : "¡El producto no se puede inactivar porque esta cargado en una congelada!");
+            return;
+        }
+
+        if (!instancias.getSql().eliminarProducto(codigo)) {
+            ControladorAlertas.alertFail("No se pudo inactivar el producto");
+            return;
+        }
+
+        ControladorAlertas.alertSuccess("Producto inactivado con éxito");
+        btnNuevoActionPerformed(evt);
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private boolean productoInactivo() {
+        return productoCargado != null && instancias.getSql().getProdActivo(productoCargado.getCodigo());
+    }
+
+    private boolean estaEnCongelada(String idSistema) {
+        for (Object[] congelada : instancias.getSql().getDatosCongelada()) {
+            if (idSistema.equals(String.valueOf(congelada[7]))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void actualizarBotonEstadoProducto() {
+        btnEliminar.setEnabled(productoCargado != null);
+
+        if (productoInactivo()) {
+            btnEliminar.setText("ACTIVAR");
+            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png")));
+        } else {
+            btnEliminar.setText("INACTIVAR");
+            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
+        }
+    }
 
     private void btnBusProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusProdActionPerformed
         jTabbedPane1.setSelectedIndex(0);
@@ -2285,7 +2322,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     private void cargarDesdeExcel() {
         JFileChooser abrir = new JFileChooser();
         abrir.setDialogTitle("Seleccione la plantilla con los productos");
-        abrir.setFileFilter(new FileNameExtensionFilter("Excel 97-2003 (*.xls)", "xls"));
+        abrir.setFileFilter(new FileNameExtensionFilter("Excel (*.xls, *.xlsx)", "xls", "xlsx"));
         if (abrir.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
@@ -2307,7 +2344,7 @@ public class VistaProductos extends javax.swing.JInternalFrame {
             setCursor(java.awt.Cursor.getDefaultCursor());
         }
 
-        String base = archivo.getName().replaceFirst("(?i)\\.xls$", "");
+        String base = archivo.getName().replaceFirst("(?i)\\.xlsx?$", "");
         String marca = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
         File archivoErrores = new File(archivo.getParentFile(), base + "_ERRORES_" + marca + ".xls");
         File archivoRepetidos = new File(archivo.getParentFile(), base + "_REPETIDOS_" + marca + ".xls");
@@ -2588,10 +2625,8 @@ public class VistaProductos extends javax.swing.JInternalFrame {
 
                 utilidad();
 
-                if (instancias.getSql().getProdActivo(txtCodigo.getText())) {
-                    btnEliminar.setText("ACTIVAR");
-                    btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png")));
-                }
+                productoCargado = nodo;
+                actualizarBotonEstadoProducto();
 
                 txtCodUnificar.setEditable(true);
                 btnUnificar.setEnabled(true);

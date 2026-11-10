@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.Normalizer;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,13 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import jxl.Cell;
-import jxl.CellType;
-import jxl.DateCell;
-import jxl.NumberCell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
+import Utilidades.ImportacionesExcel.HojaExcel;
+import Utilidades.ImportacionesExcel.LibroExcel;
 
 public class ServicioImportacionInventarioInicial {
 
@@ -56,26 +50,23 @@ public class ServicioImportacionInventarioInicial {
         this.productosDetallados = productosDetallados;
     }
 
-    public ResultadoImportacionInventarioInicial importar(File archivo, Set<String> idsYaCargados, Set<String> identificadoresYaCargados) throws IOException, BiffException {
+    public ResultadoImportacionInventarioInicial importar(File archivo, Set<String> idsYaCargados, Set<String> identificadoresYaCargados) throws IOException {
         ResultadoImportacionInventarioInicial resultado = new ResultadoImportacionInventarioInicial();
         identificadoresVistos.addAll(identificadoresYaCargados);
 
-        Workbook libro = Workbook.getWorkbook(archivo);
-        try {
-            Sheet hoja = libro.getSheet(0);
+        try (LibroExcel libro = LibroExcel.abrir(archivo)) {
+            HojaExcel hoja = libro.hoja(0);
             Map<String, Integer> columnas = leerEncabezado(hoja, resultado);
             if (resultado.tieneErrores()) {
                 return resultado;
             }
 
-            for (int fila = 1; fila < hoja.getRows(); fila++) {
+            for (int fila = 1; fila < hoja.filas(); fila++) {
                 if (filaVacia(hoja, fila)) {
                     continue;
                 }
                 procesarFila(hoja, fila, columnas, idsYaCargados, resultado);
             }
-        } finally {
-            libro.close();
         }
 
         validarTotales(resultado);
@@ -83,10 +74,10 @@ public class ServicioImportacionInventarioInicial {
         return resultado;
     }
 
-    private Map<String, Integer> leerEncabezado(Sheet hoja, ResultadoImportacionInventarioInicial resultado) {
+    private Map<String, Integer> leerEncabezado(HojaExcel hoja, ResultadoImportacionInventarioInicial resultado) {
         Map<String, Integer> columnas = new HashMap<>();
-        for (int columna = 0; columna < hoja.getColumns(); columna++) {
-            columnas.put(normalizar(hoja.getCell(columna, 0).getContents()), columna);
+        for (int columna = 0; columna < hoja.columnas(); columna++) {
+            columnas.put(normalizar(hoja.contenido(columna, 0)), columna);
         }
 
         for (String requerida : new String[]{"Codigo"}) {
@@ -99,7 +90,7 @@ public class ServicioImportacionInventarioInicial {
         return columnas;
     }
 
-    private void procesarFila(Sheet hoja, int fila, Map<String, Integer> columnas, Set<String> idsYaCargados, ResultadoImportacionInventarioInicial resultado) {
+    private void procesarFila(HojaExcel hoja, int fila, Map<String, Integer> columnas, Set<String> idsYaCargados, ResultadoImportacionInventarioInicial resultado) {
         int numero = fila + 1;
         String codigo = texto(hoja, fila, columnas, "Codigo");
         if (codigo.isEmpty()) {
@@ -190,7 +181,7 @@ public class ServicioImportacionInventarioInicial {
         return linea;
     }
 
-    private void procesarSinTipo(Sheet hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
+    private void procesarSinTipo(HojaExcel hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
         BigDecimal cantidad = decimal(hoja, fila, columnas, "Cantidad", numero, resultado);
         if (cantidad == null || cantidad.signum() <= 0) {
             resultado.getErrores().add("Fila " + numero + ": ingrese una cantidad mayor a 0");
@@ -205,7 +196,7 @@ public class ServicioImportacionInventarioInicial {
         linea.sumarCantidad(cantidad);
     }
 
-    private void procesarSerialOImei(Sheet hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
+    private void procesarSerialOImei(HojaExcel hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
         String tipo = linea.getTipo();
         boolean esImei = DetalleTipoProducto.IMEI.getValue().equals(tipo);
         String etiqueta = esImei ? "imei" : "serial";
@@ -246,7 +237,7 @@ public class ServicioImportacionInventarioInicial {
         linea.sumarCantidad(BigDecimal.ONE);
     }
 
-    private void procesarColorOTalla(Sheet hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
+    private void procesarColorOTalla(HojaExcel hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
         String tipo = linea.getTipo();
         boolean usaColor = !DetalleTipoProducto.TALLA.getValue().equals(tipo);
         boolean usaTalla = !DetalleTipoProducto.COLOR.getValue().equals(tipo);
@@ -290,7 +281,7 @@ public class ServicioImportacionInventarioInicial {
         linea.sumarCantidad(cantidad);
     }
 
-    private void procesarLote(Sheet hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
+    private void procesarLote(HojaExcel hoja, int fila, Map<String, Integer> columnas, LineaImportacionInventarioInicial linea, int numero, ResultadoImportacionInventarioInicial resultado) {
         BigDecimal cantidad = decimal(hoja, fila, columnas, "Cantidad", numero, resultado);
         if (cantidad == null || cantidad.signum() <= 0) {
             resultado.getErrores().add("Fila " + numero + ": ingrese una cantidad mayor a 0");
@@ -348,7 +339,7 @@ public class ServicioImportacionInventarioInicial {
         }
     }
 
-    private String colorValido(Sheet hoja, int fila, Map<String, Integer> columnas, int numero, ResultadoImportacionInventarioInicial resultado) {
+    private String colorValido(HojaExcel hoja, int fila, Map<String, Integer> columnas, int numero, ResultadoImportacionInventarioInicial resultado) {
         String color = texto(hoja, fila, columnas, "Color").toUpperCase();
         if (color.isEmpty()) {
             resultado.getErrores().add("Fila " + numero + ": ingrese el color");
@@ -358,7 +349,7 @@ public class ServicioImportacionInventarioInicial {
         return color;
     }
 
-    private String tallaValida(Sheet hoja, int fila, Map<String, Integer> columnas, int numero, ResultadoImportacionInventarioInicial resultado) {
+    private String tallaValida(HojaExcel hoja, int fila, Map<String, Integer> columnas, int numero, ResultadoImportacionInventarioInicial resultado) {
         String talla = texto(hoja, fila, columnas, "Talla").toUpperCase();
         if (talla.isEmpty()) {
             resultado.getErrores().add("Fila " + numero + ": ingrese la talla");
@@ -368,35 +359,32 @@ public class ServicioImportacionInventarioInicial {
         return talla;
     }
 
-    private Cell celda(Sheet hoja, int fila, Map<String, Integer> columnas, String columna) {
+    private String texto(HojaExcel hoja, int fila, Map<String, Integer> columnas, String columna) {
         Integer indice = columnas.get(normalizar(columna));
-        return indice == null ? null : hoja.getCell(indice, fila);
-    }
-
-    private String texto(Sheet hoja, int fila, Map<String, Integer> columnas, String columna) {
-        Cell celda = celda(hoja, fila, columnas, columna);
-        if (celda == null) {
+        if (indice == null) {
             return "";
         }
 
-        if (celda.getType() == CellType.NUMBER) {
-            return new BigDecimal(((NumberCell) celda).getValue()).toBigInteger().toString();
+        Double valor = hoja.numero(indice, fila);
+        if (valor != null) {
+            return new BigDecimal(valor).toBigInteger().toString();
         }
 
-        return celda.getContents().trim();
+        return hoja.contenido(indice, fila).trim();
     }
 
-    private BigDecimal decimal(Sheet hoja, int fila, Map<String, Integer> columnas, String columna, int numero, ResultadoImportacionInventarioInicial resultado) {
-        Cell celda = celda(hoja, fila, columnas, columna);
-        if (celda == null || celda.getContents().trim().isEmpty()) {
+    private BigDecimal decimal(HojaExcel hoja, int fila, Map<String, Integer> columnas, String columna, int numero, ResultadoImportacionInventarioInicial resultado) {
+        Integer indice = columnas.get(normalizar(columna));
+        if (indice == null || hoja.contenido(indice, fila).trim().isEmpty()) {
             return null;
         }
 
-        if (celda.getType() == CellType.NUMBER) {
-            return BigDecimal.valueOf(((NumberCell) celda).getValue());
+        Double valor = hoja.numero(indice, fila);
+        if (valor != null) {
+            return BigDecimal.valueOf(valor);
         }
 
-        String contenido = celda.getContents().trim();
+        String contenido = hoja.contenido(indice, fila).trim();
         if (!contenido.matches("[-+]?[0-9.,]+")) {
             resultado.getErrores().add("Fila " + numero + ": '" + contenido + "' no es un número válido en " + columna);
             return null;
@@ -405,22 +393,23 @@ public class ServicioImportacionInventarioInicial {
         return Utilidades.convertirBigDecimal(contenido);
     }
 
-    private LocalDate fecha(Sheet hoja, int fila, Map<String, Integer> columnas, String columna) {
-        Cell celda = celda(hoja, fila, columnas, columna);
-        if (celda == null || celda.getContents().trim().isEmpty()) {
+    private LocalDate fecha(HojaExcel hoja, int fila, Map<String, Integer> columnas, String columna) {
+        Integer indice = columnas.get(normalizar(columna));
+        if (indice == null || hoja.contenido(indice, fila).trim().isEmpty()) {
             return null;
         }
 
-        if (celda.getType() == CellType.DATE) {
-            return ((DateCell) celda).getDate().toInstant().atZone(ZoneOffset.UTC).toLocalDate();
+        LocalDate valor = hoja.fecha(indice, fila);
+        if (valor != null) {
+            return valor;
         }
 
-        return Utilidades.convertirFecha(celda.getContents().trim());
+        return Utilidades.convertirFecha(hoja.contenido(indice, fila).trim());
     }
 
-    private boolean filaVacia(Sheet hoja, int fila) {
-        for (int columna = 0; columna < hoja.getColumns(); columna++) {
-            if (!hoja.getCell(columna, fila).getContents().trim().isEmpty()) {
+    private boolean filaVacia(HojaExcel hoja, int fila) {
+        for (int columna = 0; columna < hoja.columnas(); columna++) {
+            if (!hoja.contenido(columna, fila).trim().isEmpty()) {
                 return false;
             }
         }

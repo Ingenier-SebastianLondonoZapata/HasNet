@@ -12,12 +12,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jxl.Cell;
-import jxl.CellType;
-import jxl.NumberCell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
 
 public final class LectorPlantillaProductos {
 
@@ -25,19 +19,12 @@ public final class LectorPlantillaProductos {
     }
 
     public static PlantillaProductos leer(File archivo) throws IOException {
-        Workbook libro;
-        try {
-            libro = Workbook.getWorkbook(archivo);
-        } catch (BiffException ex) {
-            throw new IOException("El archivo no es un Excel 97-2003 (.xls) válido", ex);
-        }
-
-        try {
-            Sheet hoja = libro.getSheet(0);
+        try (LibroExcel libro = LibroExcel.abrir(archivo)) {
+            HojaExcel hoja = libro.hoja(0);
             Map<ColumnaPlantillaProductos, Integer> columnas = leerEncabezado(hoja);
             PlantillaProductos plantilla = new PlantillaProductos(columnas.containsKey(ColumnaPlantillaProductos.INVENTARIO_INICIAL));
 
-            for (int fila = 1; fila < hoja.getRows(); fila++) {
+            for (int fila = 1; fila < hoja.filas(); fila++) {
                 Object[] valores = leerFila(hoja, fila, columnas, plantilla.isConInventario());
                 if (!vacia(valores)) {
                     plantilla.getFilas().add(new FilaPlantillaProductos(fila + 1, valores));
@@ -45,15 +32,13 @@ public final class LectorPlantillaProductos {
             }
 
             return plantilla;
-        } finally {
-            libro.close();
         }
     }
 
-    private static Map<ColumnaPlantillaProductos, Integer> leerEncabezado(Sheet hoja) throws IOException {
+    private static Map<ColumnaPlantillaProductos, Integer> leerEncabezado(HojaExcel hoja) throws IOException {
         Map<String, Integer> porNombre = new HashMap<>();
-        for (int columna = 0; columna < hoja.getColumns(); columna++) {
-            porNombre.put(normalizar(hoja.getCell(columna, 0).getContents()), columna);
+        for (int columna = 0; columna < hoja.columnas(); columna++) {
+            porNombre.put(normalizar(hoja.contenido(columna, 0)), columna);
         }
 
         Map<ColumnaPlantillaProductos, Integer> columnas = new EnumMap<>(ColumnaPlantillaProductos.class);
@@ -79,7 +64,7 @@ public final class LectorPlantillaProductos {
         return columnas;
     }
 
-    private static Object[] leerFila(Sheet hoja, int fila, Map<ColumnaPlantillaProductos, Integer> columnas, boolean conInventario) {
+    private static Object[] leerFila(HojaExcel hoja, int fila, Map<ColumnaPlantillaProductos, Integer> columnas, boolean conInventario) {
         Object[] valores = new Object[ColumnaPlantillaProductos.cantidad(conInventario)];
         for (ColumnaPlantillaProductos columna : ColumnaPlantillaProductos.values()) {
             Integer indice = columnas.get(columna);
@@ -87,14 +72,13 @@ public final class LectorPlantillaProductos {
                 continue;
             }
 
-            Cell celda = hoja.getCell(indice, fila);
-            String contenido = celda.getContents().trim();
+            String contenido = hoja.contenido(indice, fila).trim();
             if (contenido.isEmpty()) {
                 continue;
             }
 
-            if (celda.getType() == CellType.NUMBER) {
-                double numero = ((NumberCell) celda).getValue();
+            Double numero = hoja.numero(indice, fila);
+            if (numero != null) {
                 boolean esCodigo = columna == ColumnaPlantillaProductos.CODIGO || columna == ColumnaPlantillaProductos.CODIGO_BARRAS;
                 valores[columna.ordinal()] = esCodigo ? (Object) new BigDecimal(numero).toBigInteger().toString() : (Object) numero;
             } else {

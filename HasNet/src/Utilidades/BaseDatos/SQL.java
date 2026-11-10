@@ -7972,6 +7972,23 @@ public class SQL {
         return datos;
     }
 
+    public DefaultTableModel getRegistrosGruposActivos() {
+        String columNames[] = {
+            "Codigo", "Descripción"
+        };
+        String colName[] = {
+            "codigo", "nombre"
+        };
+        String origen = " bdGrupo where activo = false ";
+        Object dtDatos[][] = GetTabla(colName, origen, "select codigo, nombre from bdGrupo where activo = false ORDER BY nombre");
+        DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        return datos;
+    }
+
     public Object[][] getRegistrosGrupos3() {
         String columNames[] = {
             "Codigo", "Descripción"
@@ -7998,47 +8015,6 @@ public class SQL {
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
             public boolean isCellEditable(int row, int column) {
                 return false;
-            }
-        };
-        return datos;
-    }
-
-    public DefaultTableModel getRegistrosProductos(boolean conIva, String consulta, String base) {
-
-        String pvp = "pvp";
-        if (conIva) {
-            pvp = "L1";
-        }
-
-        String columNames[] = {
-            "Codigo", "Descripcion", "Referencia", "PVP", "Inv", "ubicacion", "Sel", "Cant", "Grupo", "U. Costo", "idSistema", "Ver",
-            "Usuario", "manejaInventario", "PLU", "Ind", "descripcionLarga"
-        };
-        String colName[] = {
-            "Codigo", "Descripcion", "referencia", pvp, "inventario", "ubicacion1", "sel", "campoVacio", "Grupo", "ultimoCosto",
-            "idSistema", "campoVacio1", "Usuario", "manejaInventario", "plu2", "indVentas", "descripcionLarga"
-        };
-
-        String origen = base;
-
-        Object dtDatos2[][] = GetTabla(colName, origen, (new StringBuilder()).append(consulta).toString(), new Integer[]{6});
-
-        DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 6 || column == 7) {
-                    return true;
-                }
-                return false;
-            }
-
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
             }
         };
         return datos;

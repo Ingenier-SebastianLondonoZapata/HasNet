@@ -4,9 +4,11 @@ import Vista.Buscadores.BuscadoresCatalogo;
 import Vista.Buscadores.VistaBuscadorCatalogo;
 
 import Utilidades.DatosMaestra;
+import Dao.Productos.DaoBuscadorProductos;
 import Dao.Productos.DaoProducto;
 
-import Procesos.Inventario.Dao.DaoInventario;
+import Modelo.Productos.FiltroBuscadorProductos;
+import Modelo.Productos.ProductoBuscador;
 import Utilidades.Contactos.Bodegas;
 import Utilidades.Utilidades;
 import Vista.Ventas.VistaFactura;
@@ -23,12 +25,15 @@ import Procesos.Inventario.Servicio.ServicioActualizacionPonderado;
 import java.awt.Image;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -43,18 +48,26 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
     private static final Logger LOGGER = Logger.getLogger(VistaBuscadorProductos.class.getName());
 
+    private static final Icon ICONO_VER = escalarIcono("/imagenes/verLogo.png", 22, 18);
+    private static final Icon ICONO_PLU = escalarIcono("/imagenes/PLU.png", 40, 20);
+
     private final DaoProducto daoProducto = new DaoProducto();
+    private final DaoBuscadorProductos daoBuscadorProductos = new DaoBuscadorProductos();
+
+    private boolean buscarInactivos;
+    private FiltroBuscadorProductos filtroAplicado;
 
     DefaultTableModel modelo;
     TableRowSorter modeloOrdenado;
     Instancias instancias;
 
-    private String TIPO_BUSQUEDA;
+    private final String TIPO_BUSQUEDA;
+    private final TextAutoCompleter autoCompletar;
 
     private String opc;
     private VistaFactura factura;
     private VistaIngreso ingreso;
-    private TextAutoCompleter autoCompletar;
+
     private String claseBuscador = "";
     int pos = 0;
 
@@ -116,123 +129,120 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     }
 
     public void cargarTablaProductos(boolean buscarInactivos) {
+        this.buscarInactivos = buscarInactivos;
+        recargarProductos();
+    }
 
-        //Siempre va a estar con la consulta, si es true osea, necesita buscar tambien los falsos ira vacia y buscara todo.
-        String consulta = "";
+    private void recargarProductos() {
+        FiltroBuscadorProductos filtro = new FiltroBuscadorProductos(buscarInactivos, claseBuscador, txtGrupo.getText(),
+                TIPO_BUSQUEDA, Bodegas.predeterminada(), DatosMaestra.isPrecioVentaConIva());
 
-        if (!buscarInactivos) {
-            consulta = "Where activo=false ";
+        if (filtro.equals(filtroAplicado)) {
+            txtId.requestFocus();
+            return;
         }
 
-        //Si tiene alguna clase especial para buscar
-        if (claseBuscador.equals("Agenda")) {
-            if (consulta.equals("")) {
-                consulta = "Where claseBuscador='Agenda' ";
-            } else {
-                consulta = consulta + "And claseBuscador='Agenda' ";
-            }
+        List<ProductoBuscador> productos;
+        try {
+            productos = daoBuscadorProductos.buscar(filtro);
+            filtroAplicado = filtro;
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error al consultar los productos del buscador", ex);
+            ControladorAlertas.alertFail("No fue posible consultar los productos");
+            productos = new ArrayList<>();
+            filtroAplicado = null;
         }
 
-        String grupo = "";
-        if (!txtGrupo.getText().equals("")) {
-            grupo = txtGrupo.getText();
-            if (consulta.equals("")) {
-                consulta = "Where Grupo = '" + grupo + "' ";
-            } else {
-                consulta = consulta + "And Grupo = '" + grupo + "' ";
-            }
+        mostrarProductos(productos);
+
+        try {
+            tblRegistros.getSelectionModel().setSelectionInterval(1, 1);
+        } catch (ArrayIndexOutOfBoundsException exp) {
         }
 
-        if (TIPO_BUSQUEDA.equals("adiciones")) {
-            if (consulta.equals("")) {
-                consulta = "Where grupo = 'GRP-02' ";
-            } else {
-                consulta = consulta + "And grupo = 'GRP-02' ";
-            }
-        }
+        txtId.requestFocus();
+    }
 
-        if (TIPO_BUSQUEDA.equals("peluqueria")) {
-            if (consulta.equals("")) {
-                consulta = "Where grupo = 'GRP-06' ";
-            } else {
-                consulta = consulta + "And grupo = 'GRP-06' ";
-            }
-        }
+    private void mostrarProductos(List<ProductoBuscador> productos) {
+        modelo = new ModeloTablaBuscadorProductos(construirFilas(productos));
 
-        String base = "bdProductos";
-        if (TIPO_BUSQUEDA.equals("desdeCosteo")) {
-            if (consulta.equals("")) {
-                consulta = "Where " + base + ".Usuario = 'FACTURA' OR " + base + ".Usuario = 'COSTEO' ";
-            } else {
-                consulta = consulta + "And " + base + ".Usuario = 'FACTURA' OR " + base + ".Usuario = 'COSTEO' ";
-            }
-        }
-
-        if (TIPO_BUSQUEDA.equals("parqueadero")) {
-            if (consulta.equals("")) {
-                consulta = "Where Grupo = 'GRP-0' ";
-            } else {
-                consulta = consulta + "And Grupo = 'GRP-0' ";
-            }
-        }
-
-        if (TIPO_BUSQUEDA.equals("lavado")) {
-            if (consulta.equals("")) {
-                consulta = "Where Grupo = 'GRP-01' ";
-            } else {
-                consulta = consulta + "And Grupo = 'GRP-01' ";
-            }
-        }
-
-        if (TIPO_BUSQUEDA.equals("showRoom")) {
-            if (consulta.equals("")) {
-                consulta = "Where Grupo = 'GRP-04' ";
-            } else {
-                consulta = consulta + "And Grupo = 'GRP-04' ";
-            }
-        }
-
-        if (TIPO_BUSQUEDA.equals("sinArmados")) {
-            if (consulta.equals("")) {
-                consulta = "Where " + base + ".Usuario = 'ADMIN' ";
-            } else {
-                consulta = consulta + "And " + base + ".Usuario = 'ADMIN' ";
-            }
-        }
-
-        if (TIPO_BUSQUEDA.equals("sinSerial")) {
-            if (consulta.equals("")) {
-                consulta = "Where (tipoProducto = '' OR tipoProducto is NULL) && " + base + ".Usuario = 'ADMIN' ";
-            } else {
-                consulta = consulta + "And (tipoProducto = '' OR tipoProducto is NULL) && " + base + ".Usuario = 'ADMIN'  ";
-            }
-        }
-
-        String pvp1 = "((ROUND((" + base + ".L1 * ((" + base + ".IVA / 100) + 1)),2) + ROUND((" + base + ".L1 * "
-                + "((" + base + ".impoconsumoVenta / 100) + 1)),2)) - " + base + ".L1) AS pvp";
-        String pvp2 = "((ROUND((" + base + ".L1 * ((" + base + ".IVA / 100) + 1)), 2) + ROUND((" + base + ".L1 * "
-                + "((" + base + ".impoconsumoVenta / 100) + 1)),2)) - " + base + ".L1)";
-
-        if (DatosMaestra.isPrecioVentaConIva()) {
-            pvp1 = base + ".L1 AS L1";
-            pvp2 = base + ".L1";
-        }
-
-        String from = " (" + base + " LEFT JOIN bdultimoponderado ON ((bdultimoponderado.producto = " + base + ".idSistema))"
-                + DaoInventario.unirInventario(base, Bodegas.predeterminada()) + ") " + consulta;
-
-        String sentenciaSQL1 = " SELECT " + base + ".Codigo AS Codigo, " + base + ".Descripcion AS Descripcion, "
-                + "" + base + ".referencia AS referencia, " + pvp1 + ", " + DaoInventario.FISICO_COMO_TEXTO + " AS inventario, " + base + ".ubicacion1 AS ubicacion1, false as sel, "
-                + "'' AS campoVacio, " + base + ".grupo AS Grupo, bdultimoponderado.ultimoCosto AS ultimoCosto, " + base + ".idSistema AS idSistema, '' AS campoVacio1, "
-                + "" + base + ".Usuario AS Usuario, " + base + ".manejaInventario AS manejaInventario, " + "EXISTS(SELECT 1 FROM bdProductosListas l WHERE l.idSistema = " + base + ".idSistema AND l.plu = 1) AS plu2, " + base + ".indVentas AS indVentas, "
-                + "" + base + ".descripcionLarga AS descripcionLarga FROM " + from + "GROUP BY " + base + ".Codigo, " + base + ".Descripcion, " + base + ".referencia, " + pvp2 + ", "
-                + "bdinventario.fisicoInventario, " + base + ".ubicacion1, campoVacio, Grupo, ultimoCosto, idSistema, campoVacio1, Usuario, manejaInventario, plu2, "
-                + "indVentas, descripcionLarga ORDER BY Descripcion ";
-
-        DefaultTableModel modelo = instancias.getSql().getRegistrosProductos(DatosMaestra.isPrecioVentaConIva(), sentenciaSQL1, from);
-
+        tblRegistros.setRowSorter(null);
         tblRegistros.setModel(modelo);
+        configurarColumnas();
 
+        modeloOrdenado = new TableRowSorter<>(modelo);
+        tblRegistros.setRowSorter(modeloOrdenado);
+    }
+
+    private Object[][] construirFilas(List<ProductoBuscador> productos) {
+        JLabel ver = new JLabel(ICONO_VER);
+        JLabel plu = new JLabel(ICONO_PLU);
+
+        Object[][] filas = new Object[productos.size()][];
+        for (int i = 0; i < productos.size(); i++) {
+            filas[i] = construirFila(productos.get(i), ver, plu);
+        }
+        return filas;
+    }
+
+    private Object[] construirFila(ProductoBuscador producto, JLabel ver, JLabel plu) {
+        return new Object[]{
+            producto.getCodigo(),
+            producto.getDescripcion(),
+            producto.getReferencia(),
+            formatearPrecio(producto.getPrecio()),
+            formatearInventario(producto),
+            producto.getUbicacion(),
+            false,
+            "",
+            producto.getGrupo(),
+            formatearCosto(producto.getUltimoCosto()),
+            producto.getIdSistema(),
+            ver,
+            producto.getUsuario(),
+            producto.isManejaInventario() ? "1" : "0",
+            producto.isTienePlu() ? plu : "",
+            producto.getIndVentas(),
+            producto.getDescripcionLarga()
+        };
+    }
+
+    private static String formatearPrecio(String precio) {
+        try {
+            return big.setMoneda(new BigDecimal(precio.trim()));
+        } catch (RuntimeException e) {
+            return big.setMoneda(BigDecimal.ZERO);
+        }
+    }
+
+    private static String formatearInventario(ProductoBuscador producto) {
+        if ("FACTURA".equals(producto.getUsuario()) || !producto.isManejaInventario()) {
+            return "N/A";
+        }
+        return Utilidades.formatearCantidadVista(producto.getFisicoInventario());
+    }
+
+    private static String formatearCosto(String costo) {
+        if (costo == null) {
+            return "#ERROR";
+        }
+        try {
+            return big.setMoneda(new BigDecimal(costo.trim().replace(",", ".")));
+        } catch (RuntimeException e) {
+            return "SIN COSTO";
+        }
+    }
+
+    private static Icon escalarIcono(String ruta, int ancho, int alto) {
+        ImageIcon imagen = new ImageIcon(VistaBuscadorProductos.class.getResource(ruta));
+        return new ImageIcon(imagen.getImage().getScaledInstance(ancho, alto, Image.SCALE_DEFAULT));
+    }
+
+    private RowFilter<Object, Object> filtroTexto(String texto, int columna) {
+        return RowFilter.regexFilter("(?i)" + Pattern.quote(texto), columna);
+    }
+
+    private void configurarColumnas() {
         if (tblRegistros.getColumnModel().getColumnCount() > 0) {
             tblRegistros.getColumnModel().getColumn(0).setMinWidth(125);
             tblRegistros.getColumnModel().getColumn(0).setPreferredWidth(125);
@@ -290,67 +300,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             tblRegistros.getColumnModel().getColumn(16).setMinWidth(0);
             tblRegistros.getColumnModel().getColumn(16).setPreferredWidth(0);
             tblRegistros.getColumnModel().getColumn(16).setMaxWidth(0);
-
         }
-
-        modelo = (DefaultTableModel) tblRegistros.getModel();
-        modeloOrdenado = new TableRowSorter<>(modelo);
-        tblRegistros.setRowSorter(modeloOrdenado);
-
-//        txtId.requestFocus();
-        Icon icono = null;
-        ImageIcon fot = new ImageIcon(getClass().getResource("/imagenes/verLogo.png"));
-        icono = new ImageIcon(fot.getImage().getScaledInstance(22, 18, Image.SCALE_DEFAULT));
-
-        Icon icono1 = null;
-        ImageIcon fot1 = new ImageIcon(getClass().getResource("/imagenes/PLU.png"));
-        icono1 = new ImageIcon(fot1.getImage().getScaledInstance(40, 20, Image.SCALE_DEFAULT));
-
-        for (int i = 0; i < tblRegistros.getRowCount(); i++) {
-            String cantidad = tblRegistros.getValueAt(i, 4).toString();
-            tblRegistros.setValueAt(Utilidades.formatearCantidadVista(cantidad), i, 4);
-
-            if (tblRegistros.getValueAt(i, 12) != null) {
-                if (tblRegistros.getValueAt(i, 12).equals("FACTURA")) {
-                    tblRegistros.setValueAt("N/A", i, 4);
-                }
-            }
-
-            if (tblRegistros.getValueAt(i, 13) != null) {
-                if (tblRegistros.getValueAt(i, 13).equals("0")) {
-                    tblRegistros.setValueAt("N/A", i, 4);
-                }
-            }
-
-            if (tblRegistros.getValueAt(i, 14) != null) {
-                if (tblRegistros.getValueAt(i, 14).equals("1")) {
-                    tblRegistros.setValueAt(new JLabel(icono1), i, 14);
-                } else {
-                    tblRegistros.setValueAt("", i, 14);
-                }
-            }
-
-            tblRegistros.setValueAt(big.setMoneda(big.getBigDecimal(tblRegistros.getValueAt(i, 3))), i, 3);
-
-            if (tblRegistros.getValueAt(i, 9) == null) {
-                tblRegistros.setValueAt("#ERROR", i, 9);
-            } else {
-                try {
-                    tblRegistros.setValueAt(big.setMoneda(big.getMoneda(tblRegistros.getValueAt(i, 9).toString().replace(".", ","))), i, 9);
-                } catch (Exception e) {
-                    tblRegistros.setValueAt("SIN COSTO", i, 9);
-                }
-            }
-
-            tblRegistros.setValueAt(new JLabel(icono), i, 11);
-        }
-
-        try {
-            tblRegistros.getSelectionModel().setSelectionInterval(1, 1);
-        } catch (ArrayIndexOutOfBoundsException exp) {
-        }
-
-        txtId.requestFocus();
     }
 
     public VistaFactura getFactura() {
@@ -383,8 +333,8 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
         filtro = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        btnEste4 = new javax.swing.JButton();
-        btnEste3 = new javax.swing.JButton();
+        btnLimpiarFiltroGrupo = new javax.swing.JButton();
+        btnBuscarGrupos = new javax.swing.JButton();
         lbTelefono = new javax.swing.JLabel();
         txtGrupo = new javax.swing.JTextField();
         lbBuscador1 = new javax.swing.JLabel();
@@ -410,29 +360,29 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        btnEste4.setBackground(new java.awt.Color(204, 204, 204));
-        btnEste4.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
-        btnEste4.setText("LIMPIAR FILTRO");
-        btnEste4.addActionListener(new java.awt.event.ActionListener() {
+        btnLimpiarFiltroGrupo.setBackground(new java.awt.Color(204, 204, 204));
+        btnLimpiarFiltroGrupo.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        btnLimpiarFiltroGrupo.setText("LIMPIAR FILTRO");
+        btnLimpiarFiltroGrupo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEste4ActionPerformed(evt);
+                btnLimpiarFiltroGrupoActionPerformed(evt);
             }
         });
 
-        btnEste3.setBackground(new java.awt.Color(204, 204, 204));
-        btnEste3.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
-        btnEste3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
-        btnEste3.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscarGrupos.setBackground(new java.awt.Color(204, 204, 204));
+        btnBuscarGrupos.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
+        btnBuscarGrupos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscarGrupos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEste3ActionPerformed(evt);
+                btnBuscarGruposActionPerformed(evt);
             }
         });
 
-        lbTelefono.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        lbTelefono.setText("Grupo:");
+        lbTelefono.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbTelefono.setText("Grupo seleccionado:");
 
-        txtGrupo.setBackground(new java.awt.Color(255, 204, 204));
-        txtGrupo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtGrupo.setBackground(new java.awt.Color(220, 220, 220));
+        txtGrupo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtGrupo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtGrupo.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         txtGrupo.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -446,13 +396,13 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         });
 
-        lbBuscador1.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        lbBuscador1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         lbBuscador1.setText("Filtro actual:");
 
-        lbBuscador.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        lbBuscador.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         lbBuscador.setText("Codigo");
 
-        txtId.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        txtId.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         txtId.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 txtIdMouseClicked(evt);
@@ -464,7 +414,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         });
 
-        tblRegistros.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        tblRegistros.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         tblRegistros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"001", "Celular", null, null, null, null, null, null, null},
@@ -546,7 +496,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         });
 
         btnNuevoProducto.setBackground(new java.awt.Color(46, 204, 113));
-        btnNuevoProducto.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        btnNuevoProducto.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         btnNuevoProducto.setText("NUEVO PRODUCTO");
         btnNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -555,7 +505,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         });
 
         btnIngresar.setBackground(new java.awt.Color(204, 204, 204));
-        btnIngresar.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        btnIngresar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         btnIngresar.setText("INGRESAR");
         btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -573,14 +523,14 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                     .addComponent(txtId)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lbTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3)
                         .addComponent(txtGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEste3)
+                        .addComponent(btnBuscarGrupos)
                         .addGap(2, 2, 2)
-                        .addComponent(btnEste4, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                        .addComponent(btnLimpiarFiltroGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                         .addComponent(lbBuscador1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
                         .addComponent(lbBuscador, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -604,8 +554,8 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(lbTelefono, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtGrupo, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnEste3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEste4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
+                        .addComponent(btnBuscarGrupos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnLimpiarFiltroGrupo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(btnDerecha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addComponent(btnIzquierda, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -614,7 +564,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                 .addGap(2, 2, 2)
                 .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnNuevoProducto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -793,31 +743,37 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             pos = 0;
         }
 
-        if (pos == 0) {
-            modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + txtId.getText(), 0));
-            lbBuscador.setText("Codigo");
-            if (tblRegistros.getRowCount() == 0) {
-                modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + txtId.getText(), 1));
-                lbBuscador.setText("Descripción");
+        switch (pos) {
+            case 0:
+                modeloOrdenado.setRowFilter(filtroTexto(txtId.getText(), 0));
+                lbBuscador.setText("Codigo");
                 if (tblRegistros.getRowCount() == 0) {
-                    modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + txtId.getText(), 2));
-                    lbBuscador.setText("Referencia");
+                    modeloOrdenado.setRowFilter(filtroTexto(txtId.getText(), 1));
+                    lbBuscador.setText("Descripción");
                     if (tblRegistros.getRowCount() == 0) {
-                        modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + txtId.getText(), 5));
-                        lbBuscador.setText("Ubicación");
-
+                        modeloOrdenado.setRowFilter(filtroTexto(txtId.getText(), 2));
+                        lbBuscador.setText("Referencia");
+                        if (tblRegistros.getRowCount() == 0) {
+                            modeloOrdenado.setRowFilter(filtroTexto(txtId.getText(), 5));
+                            lbBuscador.setText("Ubicación");
+                        }
                     }
                 }
-            }
-        } else if (pos == 1) {
-            lbBuscador.setText("Descripción");
-            modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + txtId.getText(), 1));
-        } else if (pos == 2) {
-            lbBuscador.setText("Referencia ");
-            modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + txtId.getText(), 2));
-        } else if (pos == 5) {
-            lbBuscador.setText("Ubicación");
-            modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + txtId.getText(), 5));
+                break;
+            case 1:
+                lbBuscador.setText("Descripción");
+                modeloOrdenado.setRowFilter(filtroTexto(txtId.getText(), 1));
+                break;
+            case 2:
+                lbBuscador.setText("Referencia ");
+                modeloOrdenado.setRowFilter(filtroTexto(txtId.getText(), 2));
+                break;
+            case 5:
+                lbBuscador.setText("Ubicación");
+                modeloOrdenado.setRowFilter(filtroTexto(txtId.getText(), 5));
+                break;
+            default:
+                break;
         }
 
         try {
@@ -946,7 +902,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             ndGrupo nodo = instancias.getSql().getDatosGrupo2(txtGrupo.getText());
 
             if (nodo.getCodigo() != null) {
-                cargarTablaProductos(false);
+                recargarProductos();
             } else {
                 ventanaGrupos(txtGrupo.getText());
             }
@@ -1014,17 +970,17 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_tblRegistrosMousePressed
 
-    private void btnEste3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste3ActionPerformed
+    private void btnBuscarGruposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarGruposActionPerformed
         ventanaGrupos(txtGrupo.getText());
-    }//GEN-LAST:event_btnEste3ActionPerformed
+    }//GEN-LAST:event_btnBuscarGruposActionPerformed
 
-    private void btnEste4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEste4ActionPerformed
+    private void btnLimpiarFiltroGrupoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarFiltroGrupoActionPerformed
         txtGrupo.setText("");
-        cargarTablaProductos(false);
-    }//GEN-LAST:event_btnEste4ActionPerformed
+        recargarProductos();
+    }//GEN-LAST:event_btnLimpiarFiltroGrupoActionPerformed
 
     private void txtGrupoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtGrupoFocusGained
-        cargarTablaProductos(false);
+        recargarProductos();
     }//GEN-LAST:event_txtGrupoFocusGained
 
     public void setSeleccionados(String cod) {
@@ -1037,7 +993,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     }
 
     public void ventanaGrupos(String codigo) {
-        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.grupos(null, true, false);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.gruposActivos(null, true, false);
         buscar.setLocationRelativeTo(null);
         instancias.setCampoActual(txtGrupo);
         txtGrupo.requestFocus();
@@ -1058,7 +1014,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
     public void noEncontrado(String codigo) {
         txtId.setText(codigo);
-        modeloOrdenado.setRowFilter(RowFilter.regexFilter("(?i)" + codigo, 1));
+        modeloOrdenado.setRowFilter(filtroTexto(codigo, 1));
         try {
             tblRegistros.getSelectionModel().setSelectionInterval(0, 0);
         } catch (ArrayIndexOutOfBoundsException exp) {
@@ -1081,11 +1037,11 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscarGrupos;
     private javax.swing.JButton btnDerecha;
-    private javax.swing.JButton btnEste3;
-    private javax.swing.JButton btnEste4;
     private javax.swing.JButton btnIngresar;
     private javax.swing.JButton btnIzquierda;
+    private javax.swing.JButton btnLimpiarFiltroGrupo;
     private javax.swing.JButton btnNuevoProducto;
     private javax.swing.ButtonGroup filtro;
     private javax.swing.JPanel jPanel1;

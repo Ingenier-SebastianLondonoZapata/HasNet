@@ -13,6 +13,7 @@ import Modelo.Inventario.ResultadoImportacionInventarioInicial;
 import Procesos.Inventario.Servicio.ServicioImportacionInventarioInicial;
 import Procesos.Inventario.Servicio.ServicioInventarioInicial;
 import Procesos.Inventario.Vista.VistaMovimientoDetalleProducto;
+import Utilidades.DatosMaestra;
 import Utilidades.DetalleProducto.UtilidadesDetalleProducto;
 import Utilidades.ImportacionesExcel.DescargadorPlantillas;
 import Utilidades.Utilidades;
@@ -51,7 +52,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import jxl.read.biff.BiffException;
 
 /**
  * Inventario inicial de muchos productos a la vez. Cada producto es una fila de
@@ -104,6 +104,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
         instancias = Instancias.getInstancias();
         pnlInvisible.setVisible(false);
         simbolo = instancias.getSimbolo();
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
 
         construirInterfaz();
     }
@@ -123,6 +124,8 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
         btnGuardar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         pnlCargarProducto = new javax.swing.JPanel();
+        lbCantidad = new javax.swing.JLabel();
+        txtCantidad = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtProducto = new javax.swing.JTextField();
         btnBusProd = new javax.swing.JButton();
@@ -236,6 +239,16 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
 
         pnlCargarProducto.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cargar producto", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
 
+        lbCantidad.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        lbCantidad.setText("Cantidad:");
+
+        txtCantidad.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtCantidad.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCantidad.setText("1");
+        txtCantidad.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtCantidad.setEnabled(false);
+        txtCantidad.setName("combo"); // NOI18N
+
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         jLabel2.setText("Codigo:");
         jLabel2.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -318,6 +331,10 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
             pnlCargarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlCargarProductoLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(lbCantidad)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -336,7 +353,9 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
             .addGroup(pnlCargarProductoLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(pnlCargarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbCantidad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtCantidad)
+                    .addComponent(jLabel2,javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                     .addComponent(btnBusProd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnQuitarProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -466,11 +485,14 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
         lbCostoGeneral = new JLabel(" ");
         lbCostoGeneral.setFont(new Font("Arial", Font.BOLD, 18));
 
+        txtCantidad.setPreferredSize(new Dimension(70, 34));
         txtProducto.setPreferredSize(new Dimension(380, 34));
         btnBusProd.setPreferredSize(new Dimension(40, 34));
 
         JPanel superior = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         superior.setBackground(Color.WHITE);
+        superior.add(lbCantidad);
+        superior.add(txtCantidad);
         superior.add(jLabel2);
         superior.add(txtProducto);
         superior.add(btnBusProd);
@@ -517,6 +539,10 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
     private void txtProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProductoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             cargarProducto(txtProducto.getText().replace("'", "//"), 1);
+        } else if (Utilidades.esTeclaMultiplicar(evt, txtProducto.getText())) {
+            BigDecimal cantidad = Utilidades.obtenerCantidadMultiplicar(txtProducto.getText());
+            txtCantidad.setText(Utilidades.formatearCantidadVista(cantidad));
+            txtProducto.setText("");
         }
     }//GEN-LAST:event_txtProductoKeyReleased
 
@@ -546,7 +572,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
             return;
         }
 
-        String error = agregarProducto(nodo, BigDecimal.ZERO, true);
+        String error = agregarProducto(nodo, Utilidades.convertirBigDecimal(txtCantidad.getText()), true);
         if (error != null) {
             if (error.contains("inactivo")) {
                 ControladorAlertas.alertFail(error);
@@ -563,6 +589,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
      */
     public void cargarProductos(Object[][] productos) {
         List<Object> omitidos = new ArrayList<>();
+        BigDecimal cantidadEstablecida = Utilidades.convertirBigDecimal(txtCantidad.getText());
 
         for (Object[] seleccionado : productos) {
             String codigo = seleccionado[0].toString();
@@ -573,6 +600,9 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
             }
 
             BigDecimal cantidad = Utilidades.convertirBigDecimal(seleccionado[1].toString());
+            if (cantidad.signum() <= 0) {
+                cantidad = cantidadEstablecida;
+            }
             // con varios productos no se abre el detalle uno por uno: se llena desde "Ver detalle" de cada fila
             String error = agregarProducto(nodo, cantidad, productos.length == 1);
             if (error != null) {
@@ -622,6 +652,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
         productosCargados.put(id, nodo);
         agregarFila(nodo, tipo, cantidad, costo);
         txtProducto.setText("");
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
 
         int fila = modeloInventario.getRowCount() - 1;
         tblInventario.setRowSelectionInterval(fila, fila);
@@ -631,7 +662,9 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
             return null;
         }
 
-        if (tipo.isEmpty()) {
+        if (tipo.isEmpty() && DatosMaestra.isUsarLector()) {
+            txtProducto.requestFocus();
+        } else if (tipo.isEmpty()) {
             tblInventario.editCellAt(fila, COL_CANTIDAD);
             if (tblInventario.getEditorComponent() != null) {
                 tblInventario.getEditorComponent().requestFocus();
@@ -841,8 +874,8 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
         }
 
         JFileChooser examinar = new JFileChooser();
-        examinar.setDialogTitle("Inventario inicial desde Excel (.xls)");
-        examinar.setFileFilter(new FileNameExtensionFilter("Excel 97-2003 (*.xls)", "xls"));
+        examinar.setDialogTitle("Inventario inicial desde Excel (.xls, .xlsx)");
+        examinar.setFileFilter(new FileNameExtensionFilter("Excel (*.xls, *.xlsx)", "xls", "xlsx"));
         if (examinar.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
@@ -853,9 +886,9 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
         try {
             resultado = new ServicioImportacionInventarioInicial(instancias.getConfiguraciones().isProductosDetallados()).importar(archivo, new HashSet<>(productosCargados.keySet()),
                     identificadoresCargados());
-        } catch (IOException | BiffException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(VistaInventarioInicial.class.getName()).log(Level.SEVERE, null, ex);
-            ControladorAlertas.alertFail("No se pudo leer el archivo. Debe ser un Excel 97-2003 (.xls)");
+            ControladorAlertas.alertFail("No se pudo leer el archivo. Debe ser un Excel (.xls o .xlsx)");
             return;
         }
 
@@ -997,6 +1030,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
         excelCargado = false;
         eliminarRegistros();
         txtProducto.setText("");
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
         actualizarTotales();
         txtProducto.requestFocus();
     }
@@ -1049,6 +1083,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
     private javax.swing.ButtonGroup grupoInventarios;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lbCantidad;
     private javax.swing.JPanel pnlBotones;
     private javax.swing.JPanel pnlCargarProducto;
     private javax.swing.JPanel pnlInventarioInicial;
@@ -1056,6 +1091,7 @@ public class VistaInventarioInicial extends javax.swing.JInternalFrame implement
     private javax.swing.JPanel pnlTabla;
     private javax.swing.JScrollPane scrFormulario;
     private javax.swing.JTable tblDetalle;
+    private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtProducto;
     private javax.swing.JTextField txtProducto1;
     // End of variables declaration//GEN-END:variables

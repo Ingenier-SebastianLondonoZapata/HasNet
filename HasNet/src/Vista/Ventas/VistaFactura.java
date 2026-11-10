@@ -277,6 +277,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private void setearOpcionesAlIniciar() {
         tblProductos.setDefaultRenderer(Object.class, new ModificarTablaVistaFactura(32, productosDisenados));
         tblProductos.getColumnModel().getColumn(1).setCellRenderer(new WordWrapCellRenderer(productosDisenados, 32));
+        instalarAjusteAltoDescripcion();
         chkSisteCredito.setEnabled(false);
         lbCupo.setVisible(false);
         pnlOcultar.setVisible(false);
@@ -439,6 +440,67 @@ public final class VistaFactura extends javax.swing.JPanel {
         return a;
     }
 
+    private void instalarAjusteAltoDescripcion() {
+        tblProductos.getModel().addTableModelListener(new javax.swing.event.TableModelListener() {
+            @Override
+            public void tableChanged(javax.swing.event.TableModelEvent e) {
+                if (e.getColumn() == javax.swing.event.TableModelEvent.ALL_COLUMNS || e.getColumn() == 1) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            ajustarAltoFilasDescripcion();
+                        }
+                    });
+                }
+            }
+        });
+
+        tblProductos.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                ajustarAltoFilasDescripcion();
+            }
+        });
+
+        tblProductos.getColumnModel().addColumnModelListener(new javax.swing.event.TableColumnModelListener() {
+            @Override
+            public void columnAdded(javax.swing.event.TableColumnModelEvent e) {
+            }
+
+            @Override
+            public void columnRemoved(javax.swing.event.TableColumnModelEvent e) {
+            }
+
+            @Override
+            public void columnMoved(javax.swing.event.TableColumnModelEvent e) {
+            }
+
+            @Override
+            public void columnMarginChanged(javax.swing.event.ChangeEvent e) {
+                ajustarAltoFilasDescripcion();
+            }
+
+            @Override
+            public void columnSelectionChanged(javax.swing.event.ListSelectionEvent e) {
+            }
+        });
+    }
+
+    private void ajustarAltoFilasDescripcion() {
+        int ancho = tblProductos.getColumnModel().getColumn(1).getWidth();
+        if (ancho <= 0) {
+            return;
+        }
+
+        int altoMinimo = tblProductos.getRowHeight();
+        for (int fila = 0; fila < tblProductos.getRowCount(); fila++) {
+            int alto = Math.max(altoMinimo, WordWrapCellRenderer.altoRequerido(tblProductos, tblProductos.getValueAt(fila, 1), ancho));
+            if (tblProductos.getRowHeight(fila) != alto) {
+                tblProductos.setRowHeight(fila, alto);
+            }
+        }
+    }
+
     static class WordWrapCellRenderer extends JTextArea implements TableCellRenderer {
 
         private static final Color VERDE_PRODUCTO_DISENADO = new Color(210, 245, 208);
@@ -451,35 +513,40 @@ public final class VistaFactura extends javax.swing.JPanel {
             this.columnaIdSistema = columnaIdSistema;
             setLineWrap(true);
             setWrapStyleWord(true);
+            setOpaque(true);
         }
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setText(value.toString());
-            setSize(table.getColumnModel().getColumn(column).getWidth(), 30);
+            setFont(table.getFont());
+            setText(value == null ? "" : value.toString());
 
-            if (getPreferredSize().height > 30) {
-                if (table.getRowHeight(row) != getPreferredSize().height) {
-                    table.setRowHeight(row, getPreferredSize().height);
-                }
-            } else {
-                if (table.getRowHeight(row) != getPreferredSize().height) {
-                    table.setRowHeight(row, 30);
-                }
-            }
+            int ancho = table.getColumnModel().getColumn(column).getWidth();
+            setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 1, 0, 1));
+            setSize(ancho, Short.MAX_VALUE);
+            int altoTexto = getPreferredSize().height;
+            int margenSuperior = Math.max(1, (table.getRowHeight(row) - altoTexto) / 2);
+            setBorder(javax.swing.BorderFactory.createEmptyBorder(margenSuperior, 1, 1, 1));
 
             if (isSelected) {
-                setForeground(new Color(0, 0, 0));
+                setForeground(table.getSelectionForeground());
                 setBackground(table.getSelectionBackground());
-                Font font = new Font("Arial", Font.PLAIN, 17);
-                setFont(font);
             } else {
-                setForeground(new Color(0, 0, 0));
+                setForeground(table.getForeground());
                 setBackground(esFilaDeProductoDisenado(table, row) ? VERDE_PRODUCTO_DISENADO : table.getBackground());
-                Font font = new Font("Arial", Font.PLAIN, 17);
-                setFont(font);
             }
 
             return this;
+        }
+
+        static int altoRequerido(JTable table, Object value, int ancho) {
+            JTextArea medida = new JTextArea();
+            medida.setLineWrap(true);
+            medida.setWrapStyleWord(true);
+            medida.setFont(table.getFont());
+            medida.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            medida.setText(value == null ? "" : value.toString());
+            medida.setSize(ancho, Short.MAX_VALUE);
+            return medida.getPreferredSize().height;
         }
 
         private boolean esFilaDeProductoDisenado(JTable table, int row) {
@@ -1008,6 +1075,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         rdTipoNormal = new javax.swing.JRadioButton();
         rdTipoCopago = new javax.swing.JRadioButton();
         txtDescGeneral = new javax.swing.JTextField();
+        pnlInformacionNotaDebito = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         btnInformacionAdicional = new javax.swing.JButton();
         txtTotal = new javax.swing.JLabel();
@@ -2629,13 +2697,13 @@ public final class VistaFactura extends javax.swing.JPanel {
                             .addComponent(txtTurno, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                             .addComponent(lbOtroConsecutivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(5, 5, 5)
-                        .addComponent(jtblComprobantes, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jtblComprobantes, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
                         .addGap(15, 15, 15)
                         .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lbObservaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
                             .addComponent(lbCar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, 0)
-                        .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
                     .addGroup(pnlDatosAdicionalesLayout.createSequentialGroup()
                         .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtDiasPlazo, javax.swing.GroupLayout.Alignment.LEADING)
@@ -2789,14 +2857,27 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
         });
 
+        pnlInformacionNotaDebito.setBackground(new java.awt.Color(255, 204, 255));
+
+        javax.swing.GroupLayout pnlInformacionNotaDebitoLayout = new javax.swing.GroupLayout(pnlInformacionNotaDebito);
+        pnlInformacionNotaDebito.setLayout(pnlInformacionNotaDebitoLayout);
+        pnlInformacionNotaDebitoLayout.setHorizontalGroup(
+            pnlInformacionNotaDebitoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        pnlInformacionNotaDebitoLayout.setVerticalGroup(
+            pnlInformacionNotaDebitoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout pnlOcultarLayout = new javax.swing.GroupLayout(pnlOcultar);
         pnlOcultar.setLayout(pnlOcultarLayout);
         pnlOcultarLayout.setHorizontalGroup(
             pnlOcultarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlOcultarLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(pnlOcultarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlOcultarLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(rdTipoNormal, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(rdTipoCopago)
@@ -2813,14 +2894,19 @@ public final class VistaFactura extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pnlCuentaCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlOcultarLayout.createSequentialGroup()
-                        .addComponent(txtCupo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCartera, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(217, 217, 217)
-                        .addComponent(txtFechaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlOcultarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlOcultarLayout.createSequentialGroup()
+                                .addComponent(txtCupo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtCartera, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(217, 217, 217)
+                                .addComponent(txtFechaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(pnlOcultarLayout.createSequentialGroup()
+                                .addComponent(pnlInformacionNotaDebito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(58, 58, 58)))
                         .addComponent(cmbListaPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(216, Short.MAX_VALUE))
+                .addGap(216, 216, 216))
             .addGroup(pnlOcultarLayout.createSequentialGroup()
                 .addComponent(pnlDatosAdicionales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -2843,12 +2929,16 @@ public final class VistaFactura extends javax.swing.JPanel {
                     .addComponent(pnlCuentaCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlOcultarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlOcultarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtCupo, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtCartera, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtFechaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbListaPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
+                    .addComponent(cmbListaPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlOcultarLayout.createSequentialGroup()
+                        .addGroup(pnlOcultarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFechaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlOcultarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtCupo, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtCartera, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlInformacionNotaDebito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(7, 7, 7)
                 .addComponent(pnlDatosAdicionales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
@@ -3100,7 +3190,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 898, Short.MAX_VALUE)
                 .addGap(3, 3, 3))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -3821,16 +3911,9 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             btnGuardar.requestFocus();
-        } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
-            double cantidad = 1;
-            try {
-                cantidad = Double.parseDouble(txtCodigoProducto.getText().replace("*", ""));
-            } catch (Exception e) {
-            }
-            txtCantidad.setText(String.valueOf(cantidad));
-            if (txtCantidad.getText().substring(txtCantidad.getText().length() - 1, txtCantidad.getText().length()).equals("0")) {
-                txtCantidad.setText(txtCantidad.getText().substring(0, txtCantidad.getText().length() - 2));
-            }
+        } else if (Utilidades.esTeclaMultiplicar(evt, txtCodigoProducto.getText())) {
+            BigDecimal cantidad = Utilidades.obtenerCantidadMultiplicar(txtCodigoProducto.getText());
+            txtCantidad.setText(Utilidades.formatearCantidadVista(cantidad));
             txtCodigoProducto.setText("");
         }
     }//GEN-LAST:event_txtCodigoProductoKeyReleased
@@ -4306,50 +4389,54 @@ public final class VistaFactura extends javax.swing.JPanel {
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
-        String idBodega = Bodegas.predeterminada();
+        int fila = tblProductos.getSelectedRow();
+        int columna = tblProductos.getSelectedColumn();
 
-        if (instancias.getConfiguraciones().isFacturaElectronica() && evt.getClickCount() >= 1
-                && (tblProductos.getSelectedColumn() == 5 || tblProductos.getSelectedColumn() == 6)) {
-            abrirModalDescuentosProducto(tblProductos.getSelectedRow());
+        if (fila < 0) {
+            return;
         }
 
-        if (!this.tipoProceso.equals(TipoDocumento.COTIZACION.getValor())) {
-            ModeloProducto nodo = daoProducto.obtenerDatosProducto(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(), idBodega);
+        if (columna == 5 || columna == 6) {
+            if (instancias.getConfiguraciones().isFacturaElectronica()) {
+                abrirModalDescuentosProducto(fila);
+            }
+            return;
+        }
 
-            if (nodo.getUsuario().equalsIgnoreCase(TipoProducto.PRODUCTO_DISENADO.getValue()) && evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 1) {
-                if (!this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
-                    instancias.getMenu().ocultarMenu("preparacion");
-                }
+        boolean esCotizacion = this.tipoProceso.equals(TipoDocumento.COTIZACION.getValor());
 
-                instancias.getPreparacion().cargarDatos(tblProductos.getValueAt(tblProductos.getSelectedRow(), 32).toString(),
-                        tblProductos.getValueAt(tblProductos.getSelectedRow(), 21).toString(), mesaCongelada,
-                        String.valueOf(tblProductos.getSelectedRow()), this.tipoProceso);
+        if (!esCotizacion && (columna == 1 || columna == 3)) {
+            ModeloProducto nodo = daoProducto.obtenerDatosProducto(obtenerValorTabla(fila, 32), Bodegas.predeterminada());
 
-                try {
-                    instancias.getPreparacion().setSelected(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            if (columna == 1 && TipoProducto.PRODUCTO_DISENADO.getValue().equalsIgnoreCase(nodo.getUsuario())) {
+                abrirPreparacionProducto(fila);
+                return;
             }
 
-            String tipoProductoSeleccionado = null == nodo.getTipoProducto() ? "" : DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto());
-            if (instancias.getConfiguraciones().isProductosDetallados()
-                    && !tipoProductoSeleccionado.isEmpty()
-                    && evt.getClickCount() >= 1
-                    && tblProductos.getSelectedColumn() == 3) {
-                if (evt.getClickCount() >= 1 && tblProductos.getSelectedColumn() == 3) {
-                    ControladorAlertas.alert("La cantidad no se puede modificar");
-                    return;
-                }
+            if (columna == 3 && esProductoDetallado(nodo)) {
+                ControladorAlertas.alert("La cantidad no se puede modificar");
+                return;
             }
         }
 
-        if (tblProductos.getSelectedColumn() == 1 && !DatosMaestra.isModificarNombre()) {
+        if (columna == 1 && !DatosMaestra.isModificarNombre()) {
             ControladorAlertas.alert("El nombre no se puede modificar");
-        } else if (tblProductos.getSelectedColumn() == 2 && !DatosMaestra.isModificarPrecio()) {
+        } else if (columna == 2 && !DatosMaestra.isModificarPrecio()) {
             ControladorAlertas.alert("El precio no se puede modificar");
         }
     }//GEN-LAST:event_tblProductosMouseClicked
+
+    private void abrirPreparacionProducto(int fila) {
+        instancias.getPreparacion().cargarDatos(obtenerValorTabla(fila, 32), obtenerValorTabla(fila, 21), mesaCongelada,
+                String.valueOf(fila), this.tipoProceso);
+        instancias.getPreparacion().mostrar();
+    }
+
+    private boolean esProductoDetallado(ModeloProducto nodo) {
+        return instancias.getConfiguraciones().isProductosDetallados()
+                && nodo.getTipoProducto() != null
+                && !DetalleTipoProducto.obtenerTipoProducto(nodo.getTipoProducto()).isEmpty();
+    }
 
     private void tblProductosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProductosKeyReleased
         int filaSeleccionada = tblProductos.getSelectedRow();
@@ -5795,31 +5882,22 @@ public final class VistaFactura extends javax.swing.JPanel {
             mostrarDevueltaFactura();
         }
 
-        String impresoraComanda = "";
-        try {
-            impresoraComanda = DatosMaestra.getImpresoraComanda();
-        } catch (Exception e) {
-        }
-
-        //IMPRIMIR LA COMANDA
-        if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()) || this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor())
-                || this.tipoProceso.equals(TipoDocumento.MESA.getValor()) && instancias.getConfiguraciones().isRestaurante() && !this.saltarPasosFactura) {
-
-            if (ControladorAlertas.option("¿Desea generar comanda?")) {
-                String condicion = "where factura = '" + factura + "'";
-                String titulo = lbTitulo.getText();
-
-                if ("mesa".equals(tipoProceso)) {
-                    boolean esDomicilio = "DOMICILIO".equals(lbTitulo.getText());
-                    titulo = esDomicilio
-                            ? ""
-                            : lbTitulo.getText();
-                }
-
-                imprimirComanda(condicion, factura, titulo, impresoraComanda);
+        if (debeSolicitarComanda() && ControladorAlertas.option("¿Desea generar comanda?")) {
+            String impresoraComanda = "";
+            try {
+                impresoraComanda = DatosMaestra.getImpresoraComanda();
+            } catch (Exception e) {
             }
+
+            String condicion = "where factura = '" + factura + "'";
+            String titulo = lbTitulo.getText();
+
+            if (TipoDocumento.MESA.getValor().equals(tipoProceso) && "DOMICILIO".equals(lbTitulo.getText())) {
+                titulo = "";
+            }
+
+            imprimirComanda(condicion, factura, titulo, impresoraComanda);
         }
-        // FIN DE LA IMPRESION DE LA COMANDA
 
         if (this.tipoProceso.equals(TipoDocumento.MESA.getValor()) && !lbTitulo.getText().equals("DOMICILIO")) {
             instancias.getSql().cambiarEstadoMesa(instancias.getTitulo(), "DISPONIBLE");
@@ -5871,6 +5949,16 @@ public final class VistaFactura extends javax.swing.JPanel {
         if (!instancias.getSql().agregarCxc(nodoCxc)) {
             ControladorAlertas.alertFail("Hubo un problema al guardar la factura en cartera");
         }
+    }
+
+    private boolean debeSolicitarComanda() {
+        if (!instancias.getConfiguraciones().isRestaurante() || this.saltarPasosFactura) {
+            return false;
+        }
+
+        return this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor())
+                || this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor())
+                || this.tipoProceso.equals(TipoDocumento.MESA.getValor());
     }
 
     private void imprimirComanda(String condicion, String factura, String titulo, String impresoraComanda) {
@@ -6821,8 +6909,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                 productosDisenados.add(nodo.getIdSistema());
             }
 
-            System.out.println("que numero carga: " + Utilidades.formatearCantidadVista(big.getBigDecimal(cantidadPlu).multiply(cantidad)));
-
             modeloPro.addRow(new Object[]{
                 codigoProducto,
                 descripcion,
@@ -6876,11 +6962,13 @@ public final class VistaFactura extends javax.swing.JPanel {
             return;
         }
 
-        if (DatosMaestra.isUsarLector()) {
+        boolean cantidadEditable = obtenerValorTabla(ultimaFila, 29).isEmpty();
+        boolean focoEnValor = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor");
+        if (DatosMaestra.isUsarLector() || (!focoEnValor && !cantidadEditable)) {
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             txtCodigoProducto.requestFocus();
         } else {
-            int columna = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
+            int columna = focoEnValor ? 2 : 3;
             tblProductos.setColumnSelectionInterval(columna, columna);
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             tblProductos.editCellAt(ultimaFila, columna);
@@ -6918,10 +7006,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    /**
-     * Cartera y cupo en dos líneas para que la etiqueta no se alargue y
-     * desacomode el formulario cuando los valores son grandes.
-     */
     private void mostrarCarteraYCupo(String cartera, String cupo) {
         lbCupo.setText("<html>CARTERA PENDIENTE: " + cartera + "<br>TIENE CUPO DE: " + cupo + "</html>");
     }
@@ -6975,9 +7059,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         tblProductos.removeEditor();
-
-        // Con "Usar lector" el foco vuelve al código para seguir cargando productos;
-        // si no, va a la celda configurada en "Foco después de cargar el producto".
         marcarFocoTabla();
     }
 
@@ -8941,6 +9022,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JPanel pnlFacturacionAutomatica;
     private javax.swing.JPanel pnlFormulario;
     private javax.swing.JPanel pnlGrupos;
+    private javax.swing.JPanel pnlInformacionNotaDebito;
     private javax.swing.JPanel pnlOcultar;
     private javax.swing.JPanel pnlOrdenServicio;
     private javax.swing.JMenuItem popBorrar;

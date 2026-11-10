@@ -109,7 +109,7 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        rd4.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        rd4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         rd4.setSelected(true);
         rd4.setText("General");
         rd4.addItemListener(new java.awt.event.ItemListener() {
@@ -123,7 +123,7 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
             }
         });
 
-        rd1.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        rd1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         rd1.setText("Nombre");
         rd1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -131,7 +131,7 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
             }
         });
 
-        rd2.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        rd2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         rd2.setText("CC/Nit");
         rd2.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -139,7 +139,7 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
             }
         });
 
-        rdTelefono.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
+        rdTelefono.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         rdTelefono.setText("Teléfono");
         rdTelefono.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -147,7 +147,7 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
             }
         });
 
-        txtId.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtId.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdActionPerformed(evt);
@@ -159,7 +159,7 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
             }
         });
 
-        tblRegistros.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        tblRegistros.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         tblRegistros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -195,7 +195,7 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
 
         btnAgregarContacto.setBackground(new java.awt.Color(46, 204, 113));
         btnAgregarContacto.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
-        btnAgregarContacto.setText("NUEVO");
+        btnAgregarContacto.setText("NUEVO CONTACTO");
         btnAgregarContacto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAgregarContactoActionPerformed(evt);
@@ -223,9 +223,9 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAgregarContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAgregarContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEste)
+                .addComponent(btnEste, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -237,13 +237,13 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
                     .addComponent(rd2)
                     .addComponent(rdTelefono)
                     .addComponent(rd4))
-                .addGap(1, 1, 1)
-                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                .addGap(5, 5, 5)
+                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnEste, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEste, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAgregarContacto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10))
         );

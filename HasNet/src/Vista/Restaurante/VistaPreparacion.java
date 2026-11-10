@@ -16,17 +16,24 @@ import Vista.Productos.VistaBuscadorProductos;
 import Modelo.Ventas.OpcionPreparacion;
 import Utilidades.Utilidades;
 import Utilidades.Ventas.ParserPreparacion;
-import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class VistaPreparacion extends javax.swing.JInternalFrame {
+public class VistaPreparacion extends javax.swing.JDialog {
+
     private final DaoProducto daoProducto = new DaoProducto();
 
     metodosGenerales metodos = new metodosGenerales();
@@ -46,23 +53,23 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         this.btnGuardar = btnGuardar;
     }
 
-    private JComponent Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-    private Dimension dimBarra = null;
-
     convertirNumeroALetras convertirNumeroALetras = new convertirNumeroALetras();
 
-    public VistaPreparacion() {
-
+    public VistaPreparacion(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
         instancias = Instancias.getInstancias();
         tblProductosPrincipales.setDefaultRenderer(Object.class, new cambiarColorTabla(12, 0));
 
-        Barra = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
-        dimBarra = Barra.getPreferredSize();
-        Barra.setSize(0, 0);
-        Barra.setPreferredSize(new Dimension(0, 0));
-        setBorder(null);
-        repaint();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                btnCancelarActionPerformed(null);
+            }
+        });
+
+        getRootPane().registerKeyboardAction(e -> btnCancelarActionPerformed(null),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         tablaPrincipal = (DefaultTableModel) tblProductosPrincipales.getModel();
         DefaultTableModel modelo2 = (DefaultTableModel) tblAderezo.getModel();
@@ -93,7 +100,6 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         pnlAderezos = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblAderezo = new javax.swing.JTable();
-        jLabel5 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         txtBuscar2 = new javax.swing.JTextField();
         chkTodas = new javax.swing.JRadioButton();
@@ -117,29 +123,31 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         });
         jPopupMenu1.add(popBorrar);
 
-        setTitle("Factura");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("Preparación");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         pnlDetalles.setBackground(new java.awt.Color(255, 255, 255));
         pnlDetalles.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("OBSERVACIONES");
 
         txtObservaciones.setColumns(20);
+        txtObservaciones.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtObservaciones.setLineWrap(true);
         txtObservaciones.setRows(2);
         txtObservaciones.setWrapStyleWord(true);
         jScrollPane1.setViewportView(txtObservaciones);
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnGuardar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setToolTipText("Ctrl+G");
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -154,11 +162,11 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         });
 
         btnCancelar.setBackground(new java.awt.Color(255, 255, 255));
-        btnCancelar.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnCancelar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
         btnCancelar.setText("VOLVER ");
         btnCancelar.setToolTipText("Ctrl+G");
-        btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnCancelar.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -179,7 +187,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             .addGroup(pnlDetallesLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(pnlDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(pnlDetallesLayout.createSequentialGroup()
@@ -192,21 +200,21 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         pnlDetallesLayout.setVerticalGroup(
             pnlDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDetallesLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
+                .addGap(10, 10, 10)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
+                .addGroup(pnlDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pnlAderezos.setBackground(new java.awt.Color(255, 255, 255));
-        pnlAderezos.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        pnlAderezos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Aderezos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 14))); // NOI18N
 
-        tblAderezo.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        tblAderezo.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         tblAderezo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -252,20 +260,17 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             tblAderezo.getColumnModel().getColumn(2).setMaxWidth(50);
         }
 
-        jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("ADEREZOS");
+        jLabel16.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel16.setText("Buscar aderezo:");
 
-        jLabel16.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jLabel16.setText("BUSCAR:");
-
-        txtBuscar2.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        txtBuscar2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtBuscar2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscar2KeyReleased(evt);
             }
         });
 
+        chkTodas.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         chkTodas.setText("Seleccionar todas");
         chkTodas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -287,30 +292,27 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
                         .addComponent(jLabel16)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBuscar2))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlAderezosLayout.setVerticalGroup(
             pnlAderezosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAderezosLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(10, 10, 10)
                 .addGroup(pnlAderezosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtBuscar2)
-                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(txtBuscar2, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
+                .addGap(3, 3, 3)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(3, 3, 3)
                 .addComponent(chkTodas)
                 .addContainerGap())
         );
 
         pnlPrincipal.setBackground(new java.awt.Color(255, 255, 255));
-        pnlPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        pnlPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Preparación", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 14))); // NOI18N
 
-        tblProductosPrincipales.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        tblProductosPrincipales.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         tblProductosPrincipales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -354,9 +356,9 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             tblProductosPrincipales.getColumnModel().getColumn(1).setMinWidth(0);
             tblProductosPrincipales.getColumnModel().getColumn(1).setPreferredWidth(0);
             tblProductosPrincipales.getColumnModel().getColumn(1).setMaxWidth(0);
-            tblProductosPrincipales.getColumnModel().getColumn(3).setMinWidth(50);
-            tblProductosPrincipales.getColumnModel().getColumn(3).setPreferredWidth(90);
-            tblProductosPrincipales.getColumnModel().getColumn(3).setMaxWidth(130);
+            tblProductosPrincipales.getColumnModel().getColumn(3).setMinWidth(40);
+            tblProductosPrincipales.getColumnModel().getColumn(3).setPreferredWidth(70);
+            tblProductosPrincipales.getColumnModel().getColumn(3).setMaxWidth(120);
             tblProductosPrincipales.getColumnModel().getColumn(4).setMinWidth(45);
             tblProductosPrincipales.getColumnModel().getColumn(4).setPreferredWidth(45);
             tblProductosPrincipales.getColumnModel().getColumn(4).setMaxWidth(45);
@@ -365,16 +367,17 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             tblProductosPrincipales.getColumnModel().getColumn(5).setMaxWidth(82);
         }
 
-        lbAdiciones.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        lbAdiciones.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbAdiciones.setText("CARGAR ADICIONES:");
 
-        txtBuscar1.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        txtBuscar1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtBuscar1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscar1KeyReleased(evt);
             }
         });
 
+        txtCodProducto.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtCodProducto.setName("combo"); // NOI18N
         txtCodProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -387,7 +390,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel13.setFont(new java.awt.Font("Century Gothic", 1, 15)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel13.setText("Buscar producto:");
 
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
@@ -395,7 +398,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
         btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBusProd.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBusProd.addActionListener(new java.awt.event.ActionListener() {
@@ -411,7 +414,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane7)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -427,13 +430,13 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         pnlPrincipalLayout.setVerticalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(10, 10, 10)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtBuscar1)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtBuscar1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                .addGap(5, 5, 5)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
                         .addGap(3, 3, 3)
@@ -452,15 +455,15 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(pnlPrincipal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(pnlAderezos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lbTitulo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(pnlAderezos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlDetalles, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -468,12 +471,12 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlAderezos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
+                    .addComponent(pnlAderezos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(10, 10, 10)
+                .addComponent(pnlDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         scrFormulario.setViewportView(jPanel1);
@@ -488,7 +491,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrFormulario)
+            .addComponent(scrFormulario, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
         );
 
         pack();
@@ -569,6 +572,26 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         }
 
         instancias.getMenu().activarBoton();
+        setVisible(false);
+    }
+
+    public void mostrar() {
+        GraphicsConfiguration pantalla = getOwner() != null ? getOwner().getGraphicsConfiguration() : getGraphicsConfiguration();
+        Rectangle limites = pantalla.getBounds();
+        Insets bordes = Toolkit.getDefaultToolkit().getScreenInsets(pantalla);
+        int anchoDisponible = limites.width - bordes.left - bordes.right;
+        int alto = limites.height - bordes.top - bordes.bottom;
+
+        pack();
+        int ancho = getWidth();
+        if (getHeight() > alto) {
+            ancho += scrFormulario.getVerticalScrollBar().getPreferredSize().width;
+        }
+        ancho = Math.min(ancho, anchoDisponible);
+
+        int x = limites.x + bordes.left + (anchoDisponible - ancho) / 2;
+        setBounds(x, limites.y + bordes.top, ancho, alto);
+        setVisible(true);
     }
 
     private void btnGuardarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnGuardarKeyReleased
@@ -665,6 +688,7 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
         }
 
         instancias.getMenu().activarBoton();
+        setVisible(false);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnCancelarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnCancelarKeyReleased
@@ -867,7 +891,6 @@ public class VistaPreparacion extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;

@@ -617,15 +617,9 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             plu = true;
             String codigo = txtCodigoProducto.getText();
             cargarProducto(codigo.replace("'", "//"), Utilidades.convertirBigDecimal(txtCantidad.getText()), 1, "", "", "", "", "", "", "");
-        } else if (evt.getKeyCode() == KeyEvent.VK_MULTIPLY) {
-            BigDecimal cantidad = BigDecimal.ONE;
-
-            try {
-                cantidad = Utilidades.convertirBigDecimal(txtCodigoProducto.getText().replace("*", ""));
-            } catch (NumberFormatException e) {
-            }
-
-            txtCantidad.setText(String.valueOf(cantidad));
+        } else if (Utilidades.esTeclaMultiplicar(evt, txtCodigoProducto.getText())) {
+            BigDecimal cantidad = Utilidades.obtenerCantidadMultiplicar(txtCodigoProducto.getText());
+            txtCantidad.setText(Utilidades.formatearCantidadVista(cantidad));
             txtCodigoProducto.setText("");
         }
     }//GEN-LAST:event_txtCodigoProductoKeyReleased
@@ -1193,16 +1187,19 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             tblProductos.setValueAt(Utilidades.formatearCantidadVista(cantidadFinal), i, 3);
 
             calcularFila(i);
-            txtCodigoProducto.setText("");
+            limpiarCampoCodigo();
             tblProductos.setColumnSelectionInterval(0, 0);
             tblProductos.setRowSelectionInterval(i, i);
             txtCodigoProducto.requestFocus();
-
-            txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
             return true;
         }
 
         return false;
+    }
+
+    private void limpiarCampoCodigo() {
+        txtCodigoProducto.setText("");
+        txtCantidad.setText(DatosMaestra.getCantidadEstablecidaAlCargar());
     }
 
     public void cargarProducto(String codigo, BigDecimal cantidad, int pluProducto, String imei, String lote, String idProd, String talla, String color,
@@ -1246,6 +1243,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
             VistaMovimientoDetalleProducto compraDetallada = new VistaMovimientoDetalleProducto(null, true, nodo, null, tipoMov, tipoDocumento, BigDecimal.ZERO);
             compraDetallada.setLocationRelativeTo(null);
             compraDetallada.setVisible(true);
+            txtCodigoProducto.setText("");
         } else {
             if (this.plu) {
                 this.plu = false;
@@ -1356,7 +1354,8 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
                 big.setMoneda(totalImpoconsumo)
             });
 
-            marcarFocoTabla();
+            limpiarCampoCodigo();
+            marcarFocoTabla(tipo.isEmpty());
         }
     }
 
@@ -1375,17 +1374,18 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
         return false;
     }
 
-    private void marcarFocoTabla() {
+    private void marcarFocoTabla(boolean cantidadEditable) {
         final int ultimaFila = tblProductos.getRowCount() - 1;
         if (ultimaFila < 0) {
             return;
         }
 
-        if (DatosMaestra.isUsarLector()) {
+        boolean focoEnValor = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor");
+        if (DatosMaestra.isUsarLector() || (!focoEnValor && !cantidadEditable)) {
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             txtCodigoProducto.requestFocus();
         } else {
-            int columna = DatosMaestra.getFocoDespuesDeCargarProducto().equals("Valor") ? 2 : 3;
+            int columna = focoEnValor ? 2 : 3;
             tblProductos.setColumnSelectionInterval(columna, columna);
             tblProductos.setRowSelectionInterval(ultimaFila, ultimaFila);
             tblProductos.editCellAt(ultimaFila, columna);

@@ -239,6 +239,7 @@
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                       <Color id="Default Cursor"/>
                     </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="2"/>
                     <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[2, 7, 2, 5]"/>
@@ -1029,7 +1030,7 @@
                                                           <Component id="txtUtilidad1" alignment="0" max="32767" attributes="0"/>
                                                           <Component id="txtUtilidad2" min="-2" pref="246" max="-2" attributes="0"/>
                                                           <Group type="102" alignment="0" attributes="0">
-                                                              <Component id="lbCupo1" min="-2" pref="109" max="-2" attributes="0"/>
+                                                              <Component id="lbCupo1" min="-2" pref="119" max="-2" attributes="0"/>
                                                               <EmptySpace max="-2" attributes="0"/>
                                                               <Component id="txtMinimo" min="-2" pref="99" max="-2" attributes="0"/>
                                                           </Group>
@@ -1580,7 +1581,7 @@
                         <Component class="javax.swing.JTextField" name="txtTipoProd">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                              <Color blue="dc" green="dc" red="dc" type="rgb"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Arial" size="12" style="0"/>
@@ -1604,7 +1605,7 @@
                         <Component class="javax.swing.JTextField" name="txtMarca">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                              <Color blue="dc" green="dc" red="dc" type="rgb"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Arial" size="12" style="0"/>

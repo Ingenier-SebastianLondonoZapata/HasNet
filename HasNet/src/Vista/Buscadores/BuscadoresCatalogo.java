@@ -18,6 +18,15 @@ public final class BuscadoresCatalogo {
         return new VistaBuscadorCatalogo(parent, modal, configuracion);
     }
 
+    public static VistaBuscadorCatalogo gruposActivos(Frame parent, boolean modal, boolean presionarEnterAlSeleccionar) {
+        ConfiguracionBuscadorCatalogo configuracion = new ConfiguracionBuscadorCatalogo("GRUPOS", () -> sql().getRegistrosGruposActivos())
+                .filtro("Descripción", 1)
+                .filtro("Codigo", 0)
+                .anchoFijo(0, 90)
+                .presionarEnterAlSeleccionar(presionarEnterAlSeleccionar);
+        return new VistaBuscadorCatalogo(parent, modal, configuracion);
+    }
+
     public static VistaBuscadorCatalogo subGrupos(Frame parent, boolean modal) {
         ConfiguracionBuscadorCatalogo configuracion = new ConfiguracionBuscadorCatalogo("Buscador de subgrupos...",
                 () -> sql().getRegistrosSubGrupos(condicionGrupo()))
