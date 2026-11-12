@@ -1,11 +1,14 @@
 package Impresiones.ImpresionesFacturas;
 
+import Enums.TipoDocumento;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class DatosImpresionFactura {
 
+    private TipoDocumento tipoDocumento = TipoDocumento.FACTURACION;
+    private String tituloDocumento = "";
     private String factura = "";
     private String nombreReporte = "";
     private String impresora = "";
@@ -15,6 +18,24 @@ public class DatosImpresionFactura {
     private String legal = "";
     private String pie = "";
     private List<String> grupos = new ArrayList<>();
+
+    public TipoDocumento getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public DatosImpresionFactura setTipoDocumento(TipoDocumento tipoDocumento) {
+        this.tipoDocumento = tipoDocumento == null ? TipoDocumento.FACTURACION : tipoDocumento;
+        return this;
+    }
+
+    public String getTituloDocumento() {
+        return tituloDocumento;
+    }
+
+    public DatosImpresionFactura setTituloDocumento(String tituloDocumento) {
+        this.tituloDocumento = tituloDocumento == null ? "" : tituloDocumento;
+        return this;
+    }
 
     public String getFactura() {
         return factura;

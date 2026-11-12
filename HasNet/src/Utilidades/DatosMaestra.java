@@ -430,6 +430,7 @@ public class DatosMaestra {
     public static final String TIPO_IMPRESION_SIN_CODIGO = "Sin-Codigo";
     public static final String TIPO_IMPRESION_CON_CODIGO = "Con-Codigo";
     public static final String TIPO_IMPRESION_SERIAL = "Imei";
+    public static final String TIPO_IMPRESION_SERIAL_SIN_CODIGO = "Imei-Sin-Codigo";
 
     public static String getTipoImpresion() {
         String guardado = impresiones != null ? impresiones.getTipoImpresion() : null;
@@ -441,9 +442,19 @@ public class DatosMaestra {
 
     public static String ajustarTipoImpresion(String tipoImpresion, boolean productosDetallados) {
         if (productosDetallados) {
-            return TIPO_IMPRESION_SERIAL;
+            return TIPO_IMPRESION_SERIAL_SIN_CODIGO.equals(tipoImpresion) ? TIPO_IMPRESION_SERIAL_SIN_CODIGO : TIPO_IMPRESION_SERIAL;
         }
         return TIPO_IMPRESION_CON_CODIGO.equals(tipoImpresion) ? TIPO_IMPRESION_CON_CODIGO : TIPO_IMPRESION_SIN_CODIGO;
+    }
+
+    public static boolean isTipoImpresionSerial() {
+        String tipo = getTipoImpresion();
+        return TIPO_IMPRESION_SERIAL.equals(tipo) || TIPO_IMPRESION_SERIAL_SIN_CODIGO.equals(tipo);
+    }
+
+    public static boolean isImprimirCodigo() {
+        String tipo = getTipoImpresion();
+        return TIPO_IMPRESION_CON_CODIGO.equals(tipo) || TIPO_IMPRESION_SERIAL.equals(tipo);
     }
 
     // ── Opciones de impresión ───────────────────────────────────────────────

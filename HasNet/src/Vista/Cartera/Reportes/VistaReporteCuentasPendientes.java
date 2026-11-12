@@ -31,8 +31,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
             cmbTerminal.addItem(terminal.getTerminal());
         }
 
-        btnCuotas.setVisible(false);
-
         if (instancias.getConfiguraciones().isFacturacionLote()) {
             rdCuentasCobro.setVisible(true);
         } else {
@@ -81,7 +79,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
         btnImpresa = new javax.swing.JRadioButton();
         btnExcel = new javax.swing.JRadioButton();
         jPanel1 = new javax.swing.JPanel();
-        btnCuotas = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         rdCartera = new javax.swing.JRadioButton();
@@ -193,16 +190,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        btnCuotas.setBackground(new java.awt.Color(46, 204, 113));
-        btnCuotas.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        btnCuotas.setText("Generar por Cuotas");
-        btnCuotas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCuotas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCuotasActionPerformed(evt);
-            }
-        });
-
         jButton6.setBackground(new java.awt.Color(46, 204, 113));
         jButton6.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jButton6.setText("Generar");
@@ -220,8 +207,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCuotas)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -229,7 +214,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCuotas, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                     .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
                 .addGap(15, 15, 15))
         );
@@ -680,52 +664,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
         cmbPlaca.removeItem(cmbPlaca.getSelectedItem());
     }//GEN-LAST:event_btnRemPlacaActionPerformed
 
-    private void btnCuotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuotasActionPerformed
-        if (ControladorAlertas.option("¿Esta seguro?")) {
-//            String sql = "where";
-            String sql = "";
-
-            if (cmbCientes.getItemCount() > 0) {
-                sql = sql + "where (";
-
-                for (int i = 0; i < cmbCientes.getItemCount(); i++) {
-                    sql = sql + " cliente='" + cmbCientes.getItemAt(i) + "' OR";
-                }
-
-                sql = sql.substring(0, sql.length() - 2) + ") AND";
-//                sql = sql.substring(0, sql.length() - 2) + ") ";
-            }
-
-            String ini = metodos.desdeDate(dtInicio.getCurrent()), fin = metodos.desdeDate(dtFinal.getCurrent());
-
-//            sql = sql + " ((fecha)<=#" + fin + "#)";
-            if (sql.equals("")) {
-                sql = sql + "where";
-            }
-            sql = sql + " (((fechaPrestamo)>=#" + ini + "#) And ((fechaPrestamo)<=#" + fin + "#))";
-
-            System.out.println(sql);
-
-//             sql = sql + " ((fechaPrestamo)>=#" + "01/04/2014" + "# And (fechaPrestamo)<=#" + "4/5/2014" + "#)";
-            dtInicio.setFormat(0);
-            dtFinal.setFormat(0);
-
-            dtInicio.setFormat(2);
-            dtFinal.setFormat(2);
-
-            String tipo = "";
-
-            if (btnExcel.isSelected()) {
-                tipo = "xls";
-                instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte cartera por cuotas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
-            }
-
-//            instancias.getReporte().ver_RepcarteraCuotas(sql, tipo);
-            instancias.getReporte().ver_RepCarteraCuotas(sql, tipo);
-
-        }
-    }//GEN-LAST:event_btnCuotasActionPerformed
-
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         if (ControladorAlertas.option("¿Esta seguro?")) {
             String sql = "where";
@@ -859,7 +797,6 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
     private javax.swing.JButton btnAggCliente1;
     private javax.swing.JButton btnAggPlaca;
     private javax.swing.JButton btnAggTerminal;
-    private javax.swing.JButton btnCuotas;
     private javax.swing.JRadioButton btnExcel;
     private javax.swing.JRadioButton btnImpresa;
     private javax.swing.JButton btnRemCliente;

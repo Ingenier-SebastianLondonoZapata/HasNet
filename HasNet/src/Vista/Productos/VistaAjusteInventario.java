@@ -95,7 +95,7 @@ public class VistaAjusteInventario extends javax.swing.JInternalFrame implements
 
         consultarMaestros();
 
-        if (DatosMaestra.getTipoImpresion().equals("Sin-Codigo")) {
+        if (!DatosMaestra.isImprimirCodigo()) {
             tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);

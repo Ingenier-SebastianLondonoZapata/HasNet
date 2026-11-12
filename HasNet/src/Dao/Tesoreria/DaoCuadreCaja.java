@@ -28,17 +28,16 @@ public class DaoCuadreCaja {
     public List<ModeloDocumentoCuadre> obtenerFacturas(String fecha, String usuario) {
         List<Object> params = new ArrayList<>();
         params.add(fecha);
-        // bdFactura guarda una fila por producto: se agrupa por documento (los valores de cabecera se repiten).
-        String sql = "SELECT MAX(f.factura), MAX(f.efectivoGeneral), MAX(f.targetaGeneral), MAX(f.tarjetaCredito), "
-                + "MAX(f.chequeGeneral), MAX(f.ncGeneral), MAX(f.totalGeneral), "
+        String sql = "SELECT f.factura, f.efectivoGeneral, f.targetaGeneral, f.tarjetaCredito, "
+                + "f.chequeGeneral, f.ncGeneral, f.totalGeneral, "
                 + "(SELECT COALESCE(SUM(p.cuotaInicial), 0) FROM bdPrestamo p WHERE p.factura = f.idFactura), "
-                + "MAX(f.terminal), MAX(f.comprobante), MAX(f.credito), MAX(f.conseMesa), MAX(f.totalPropina), MAX(f.sisteCredito) "
-                + "FROM bdFactura f WHERE f.estadoGeneral = 'PENDIENTE' AND f.anulada = 0 AND f.fechaFactura = ?"
+                + "f.terminal, f.comprobante, f.credito, f.conseMesa, f.totalPropina, f.sisteCredito "
+                + "FROM bdDocumentos f "
+                + "LEFT JOIN bdDocumentos s ON s.tipoDocumento = 'separe' AND s.estado2 = f.idFactura "
+                + "WHERE f.tipoDocumento IN ('facturacion', 'notaDebito') AND f.estadoGeneral = 'PENDIENTE' "
+                + "AND f.anulada = 0 AND f.fechaFactura = ? AND s.idDocumento IS NULL"
                 + filtroUsuario("f.usuario", usuario, params)
-                // La factura generada al saldar un plan separe es solo informativa (el dinero ya entró por los abonos):
-                // bdPlanSepare.estado2 guarda el idFactura de esa factura. Requiere el índice idx_planSepare_estado2.
-                + " AND NOT EXISTS (SELECT 1 FROM bdPlanSepare s WHERE s.estado2 = f.idFactura)"
-                + " GROUP BY f.idFactura ORDER BY CAST(SUBSTR(f.idFactura, 6) AS UNSIGNED)";
+                + " ORDER BY CAST(SUBSTR(f.idFactura, 6) AS UNSIGNED)";
 
         List<ModeloDocumentoCuadre> documentos = new ArrayList<>();
         for (Object[] fila : consultar(sql, params)) {
@@ -66,11 +65,12 @@ public class DaoCuadreCaja {
     public List<ModeloDocumentoCuadre> obtenerPlanesSepare(String fecha, String usuario) {
         List<Object> params = new ArrayList<>();
         params.add(fecha);
-        String sql = "SELECT s.idFactura, MAX(s.efectivoGeneral), MAX(s.targetaGeneral), MAX(s.chequeGeneral), "
-                + "MAX(s.ncGeneral), MAX(s.totalGeneral), MAX(s.terminal), MAX(s.comprobante) "
-                + "FROM bdPlanSepare s WHERE s.estadoGeneral = 'PENDIENTE' AND s.anulada = 0 AND s.fechaFactura = ?"
+        String sql = "SELECT s.idFactura, s.efectivoGeneral, s.targetaGeneral, s.chequeGeneral, "
+                + "s.ncGeneral, s.totalGeneral, s.terminal, s.comprobante "
+                + "FROM bdDocumentos s WHERE s.tipoDocumento = 'separe' AND s.estadoGeneral = 'PENDIENTE' "
+                + "AND s.anulada = 0 AND s.fechaFactura = ?"
                 + filtroUsuario("s.usuario", usuario, params)
-                + " GROUP BY s.idFactura ORDER BY CAST(SUBSTR(s.idFactura, 8) AS UNSIGNED)";
+                + " ORDER BY CAST(SUBSTR(s.idFactura, 8) AS UNSIGNED)";
 
         List<ModeloDocumentoCuadre> documentos = new ArrayList<>();
         for (Object[] fila : consultar(sql, params)) {
@@ -185,8 +185,10 @@ public class DaoCuadreCaja {
         List<Object> params = new ArrayList<>();
         params.add(idProductoDomicilio);
         params.add(fecha);
-        String sql = "SELECT COALESCE(SUM(f.total), 0) FROM bdFactura f "
-                + "WHERE f.producto = ? AND f.estadoGeneral = 'PENDIENTE' AND f.anulada = 0 AND f.fechaFactura = ?"
+        String sql = "SELECT COALESCE(SUM(dd.total), 0) FROM bdDocumentos f "
+                + "INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = f.idDocumento "
+                + "WHERE f.tipoDocumento IN ('facturacion', 'notaDebito') AND dd.producto = ? "
+                + "AND f.estadoGeneral = 'PENDIENTE' AND f.anulada = 0 AND f.fechaFactura = ?"
                 + filtroUsuario("f.usuario", usuario, params);
         return consultarNumero(sql, params);
     }
@@ -203,13 +205,15 @@ public class DaoCuadreCaja {
             conexion.setAutoCommit(false);
 
             // Facturas (se excluye la factura informativa de plan separe, igual que en obtenerFacturas)
-            actualizar("UPDATE bdFactura f SET f.red = ?, f.estadoGeneral = 'REALIZADO' "
-                    + "WHERE f.estadoGeneral = 'PENDIENTE' AND f.anulada = 0 AND f.fechaFactura = ?",
-                    "f.usuario", usuario,
-                    " AND NOT EXISTS (SELECT 1 FROM bdPlanSepare s WHERE s.estado2 = f.idFactura)", documento, fecha);
+            actualizar("UPDATE bdDocumentos f "
+                    + "LEFT JOIN bdDocumentos s ON s.tipoDocumento = 'separe' AND s.estado2 = f.idFactura "
+                    + "SET f.red = ?, f.estadoGeneral = 'REALIZADO' "
+                    + "WHERE f.tipoDocumento IN ('facturacion', 'notaDebito') AND f.estadoGeneral = 'PENDIENTE' "
+                    + "AND f.anulada = 0 AND f.fechaFactura = ? AND s.idDocumento IS NULL",
+                    "f.usuario", usuario, "", documento, fecha);
 
-            actualizar("UPDATE bdPlanSepare s SET s.red = ?, s.estadoGeneral = 'REALIZADO' "
-                    + "WHERE s.estadoGeneral = 'PENDIENTE' AND s.anulada = 0 AND s.fechaFactura = ?",
+            actualizar("UPDATE bdDocumentos s SET s.red = ?, s.estadoGeneral = 'REALIZADO' "
+                    + "WHERE s.tipoDocumento = 'separe' AND s.estadoGeneral = 'PENDIENTE' AND s.anulada = 0 AND s.fechaFactura = ?",
                     "s.usuario", usuario, "", documento, fecha);
 
             actualizar("UPDATE bdAbonos a SET a.red = ?, a.estado = 'REALIZADO' "
@@ -225,8 +229,9 @@ public class DaoCuadreCaja {
                     "e.usuario", usuario, "", documento, fecha);
 
             // Facturas anuladas ese día: se asocian al cuadre por el usuario que las anuló
-            actualizar("UPDATE bdFactura f SET f.cuadreAnulacion = ? "
-                    + "WHERE f.fechaAnulacion = ? AND (f.cuadreAnulacion IS NULL OR f.cuadreAnulacion = '')",
+            actualizar("UPDATE bdDocumentos f SET f.cuadreAnulacion = ? "
+                    + "WHERE f.tipoDocumento IN ('facturacion', 'notaDebito') AND f.fechaAnulacion = ? "
+                    + "AND (f.cuadreAnulacion IS NULL OR f.cuadreAnulacion = '')",
                     "f.usuarioAnula", usuario, "", documento, fecha);
 
             actualizar("UPDATE bdRecogidaParcial r SET r.activo = 0 "

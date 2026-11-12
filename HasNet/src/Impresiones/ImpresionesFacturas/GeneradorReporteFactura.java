@@ -1,6 +1,7 @@
 package Impresiones.ImpresionesFacturas;
 
 import Dao.Ventas.DaoFactura;
+import Enums.TipoDocumento;
 import Impresiones.Documentos.ServicioImpresionDocumentos;
 import Utilidades.DatosMaestra;
 import Impresiones.GeneradorReporteBase;
@@ -21,12 +22,12 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
 
     public void imprimirFactura(DatosImpresionFactura datos, String etiquetaCopia, boolean imprimir) {
         if (datos.getGrupos().isEmpty()) {
-            generarFactura(datos, etiquetaCopia, imprimir, datos.getImpresora(), null, false);
+            generarFactura(datos, etiquetaCopia, imprimir, datos.getImpresora(), null);
             return;
         }
 
         for (String grupo : datos.getGrupos()) {
-            generarFactura(datos, etiquetaCopia, imprimir, impresoraDeGrupo(grupo), grupo, false);
+            generarFactura(datos, etiquetaCopia, imprimir, impresoraDeGrupo(grupo), grupo);
             ServicioImpresionDocumentos.pausar();
         }
     }
@@ -35,6 +36,7 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
             String facturaTerm, boolean imprimir, String titulo, String impresora, Boolean notaDebito) {
 
         DatosImpresionFactura datos = new DatosImpresionFactura()
+                .setTipoDocumento(Boolean.TRUE.equals(notaDebito) ? TipoDocumento.NOTA_DEBITO : TipoDocumento.FACTURACION)
                 .setFactura(facturaTerm)
                 .setNombreReporte(nombreReporte)
                 .setImpresora(impresora)
@@ -44,16 +46,17 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
                 .setLegal(legal)
                 .setPie(pie);
 
-        generarFactura(datos, tipo, imprimir, impresora, null, Boolean.TRUE.equals(notaDebito));
+        generarFactura(datos, tipo, imprimir, impresora, null);
     }
 
     private void generarFactura(DatosImpresionFactura datos, String etiquetaCopia, boolean imprimir,
-            String impresora, String grupo, boolean notaDebito) {
+            String impresora, String grupo) {
 
         String facturaTerm = datos.getFactura();
-        String consecutivo = notaDebito ? facturaTerm.replace("ND-", "") : facturaTerm.replace("FACT-", "");
+        String consecutivo = facturaTerm.replaceFirst("^[A-Za-z]+-", "");
 
         Map<String, Object> parametros = new HashMap<>();
+        parametros.put("tipoDocumento", datos.getTipoDocumento().getValor());
         parametros.put("factura", consecutivo);
         parametros.put("numFactura", facturaTerm);
         parametros.put("agrupar", instancias.getConfiguraciones().isRestaurante());
@@ -69,16 +72,37 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
         parametros.put("ordenServicio", usaOrdenServicioAutomotor() ? "SI" : "NO");
         parametros.put("titulo2", tituloSegunConsecutivo(datos.getTitulo(), facturaTerm));
         parametros.put("hora", DatosMaestra.isImprimirHora() ? "SI" : "NO");
-        parametros.put("titulo", notaDebito ? "Nota Debito No." : DatosMaestra.getTituloFactura());
+        parametros.put("titulo", tituloDocumento(datos));
         parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
         parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + instancias.getUsuario() + ".jpg");
         parametros.put("impoconsumo", String.valueOf(DatosMaestra.isImprimirImpoconsumo()));
         parametros.put("retenciones", String.valueOf(DatosMaestra.isImprimirRetenciones()));
+        parametros.put("mostrarCodigo", DatosMaestra.isImprimirCodigo());
+        parametros.put("mostrarSerial", DatosMaestra.isTipoImpresionSerial());
+        parametros.put("esMedico", instancias.getConfiguraciones().isMedico());
 
         if (IMPRESORA_PREDETERMINADA.equalsIgnoreCase(impresora)) {
             ejecutar(datos.getNombreReporte(), parametros, imprimir);
         } else {
             ejecutarEnImpresora(datos.getNombreReporte(), parametros, imprimir, impresora);
+        }
+    }
+
+    private String tituloDocumento(DatosImpresionFactura datos) {
+        if (!datos.getTituloDocumento().isEmpty()) {
+            return datos.getTituloDocumento();
+        }
+        switch (datos.getTipoDocumento()) {
+            case NOTA_DEBITO:
+                return "Nota Debito No.";
+            case COTIZACION:
+                return "Cotización No.";
+            case PEDIDO:
+                return "Pedido No.";
+            case PLAN_SEPARE:
+                return "Separe No.";
+            default:
+                return DatosMaestra.getTituloFactura();
         }
     }
 
@@ -97,7 +121,7 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
         return datosGrupo[5].toString();
     }
 
-    public void ver_PrefacturaVenta(String condicion, String factura, String observaciones, String facturaTerm, String mesa,
+    public void ver_PrefacturaVenta(String idFactura, String factura, String observaciones, String facturaTerm, String mesa,
             String info, BigDecimal propina, Boolean previsualizar, String impresora) {
         String sufijo = instancias.getRegimen().equals("") ? "" : "SinIva";
 
@@ -107,7 +131,7 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
         parametros.put("observaciones", observaciones);
         parametros.put("hora", metodosGenerales.fechaHora());
         parametros.put("info", info);
-        parametros.put("sql", condicion);
+        parametros.put("idFactura", idFactura);
         parametros.put("porcPropina", propina);
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());

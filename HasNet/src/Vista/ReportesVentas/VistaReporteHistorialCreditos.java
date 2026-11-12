@@ -370,7 +370,7 @@ public class VistaReporteHistorialCreditos extends javax.swing.JPanel {
 
             String ini = metodos.desdeDate(dtInicio.getCurrent()), fin = metodos.desdeDate(dtFinal.getCurrent());
 
-            sql = sql + " (((fechaFactura)>=#" + ini + "#) And ((fechaFactura)<=#" + fin + "#))";
+            sql = sql + " (((fechaFactura)>='" + ini + "') And ((fechaFactura)<='" + fin + "'))";
 
             System.out.println(sql);
 

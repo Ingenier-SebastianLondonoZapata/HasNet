@@ -92,10 +92,10 @@ ORDER BY idFactura
 	<field name="ubicacion1" class="java.lang.String"/>
 	<field name="referencia" class="java.lang.String"/>
 	<field name="documento2" class="java.lang.String"/>
-	<field name="impuesto" class="java.lang.Integer"/>
+	<field name="impoconsumoGeneral" class="java.math.BigDecimal"/>
 	<field name="Codigo" class="java.lang.String"/>
 	<field name="IdCliente" class="java.lang.String"/>
-	<field name="imei" class="java.lang.String"/>
+	<field name="detalle" class="java.lang.String"/>
 	<field name="hora" class="java.sql.Timestamp"/>
 	<variable name="variable1" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{iva}]]></variableExpression>
@@ -322,7 +322,7 @@ ORDER BY idFactura
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Impuesto]]></text>
+				<text><![CDATA[Impoconsumo]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="1240" y="35" width="180" height="15" forecolor="#000000" backcolor="#CCCCCC" uuid="b95dc373-18f9-4abc-ba2a-9bad05670b52"/>
@@ -543,14 +543,14 @@ ORDER BY idFactura
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{impuesto})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{impoconsumoGeneral})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="1240" y="0" width="180" height="15" uuid="1bfd148a-1486-43e4-9ca5-efc8d79e965a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{imei}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{detalle}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="3546" y="0" width="114" height="15" uuid="80fab040-77aa-4537-86b7-445b35f9011f"/>

@@ -71,6 +71,17 @@ public class MySql_connection {
         return conexion;
     }
 
+    public Connection crearConexionIndependiente() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException ex) {
+            throw new SQLException("No se encontró el driver de MySQL", ex);
+        }
+
+        String sURL = "jdbc:mysql://" + leerArchivoPropiedades() + ":3306/" + nombreBaseDatos;
+        return DriverManager.getConnection(sURL, "click", "cl1ckP4$4yMzf");
+    }
+
     public static void desconectar() throws SQLException {
         if (conexion != null && !conexion.isClosed()) {
             conexion.close();

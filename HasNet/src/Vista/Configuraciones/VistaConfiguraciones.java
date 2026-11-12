@@ -7030,25 +7030,45 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private static final String FILA_TIPO_IMPRESION = "Tipo de impresión";
     private static final String TIPO_SIN_CODIGO = "Sin codigo";
     private static final String TIPO_CON_CODIGO = "Con codigo";
-    private static final String TIPO_SERIAL = "Tipo serial";
+    private static final String TIPO_SERIAL_CON_CODIGO = "Tipo serial con codigo";
+    private static final String TIPO_SERIAL_SIN_CODIGO = "Tipo serial sin codigo";
 
     private String[] opcionesTipoImpresion() {
         if (instancias.getConfiguraciones().isProductosDetallados()) {
-            return new String[]{TIPO_SERIAL};
+            return new String[]{TIPO_SERIAL_SIN_CODIGO, TIPO_SERIAL_CON_CODIGO};
         }
         return new String[]{TIPO_SIN_CODIGO, TIPO_CON_CODIGO};
     }
 
     private String etiquetaTipoImpresion(String tipoImpresion) {
         String tipo = DatosMaestra.ajustarTipoImpresion(tipoImpresion, instancias.getConfiguraciones().isProductosDetallados());
-        if (DatosMaestra.TIPO_IMPRESION_SERIAL.equals(tipo)) {
-            return TIPO_SERIAL;
+        switch (tipo) {
+            case DatosMaestra.TIPO_IMPRESION_SERIAL:
+                return TIPO_SERIAL_CON_CODIGO;
+            case DatosMaestra.TIPO_IMPRESION_SERIAL_SIN_CODIGO:
+                return TIPO_SERIAL_SIN_CODIGO;
+            case DatosMaestra.TIPO_IMPRESION_CON_CODIGO:
+                return TIPO_CON_CODIGO;
+            default:
+                return TIPO_SIN_CODIGO;
         }
-        return DatosMaestra.TIPO_IMPRESION_CON_CODIGO.equals(tipo) ? TIPO_CON_CODIGO : TIPO_SIN_CODIGO;
     }
 
     private String valorTipoImpresion(String etiqueta) {
-        String tipo = TIPO_CON_CODIGO.equals(etiqueta) ? DatosMaestra.TIPO_IMPRESION_CON_CODIGO : DatosMaestra.TIPO_IMPRESION_SIN_CODIGO;
+        String tipo;
+        switch (etiqueta == null ? "" : etiqueta) {
+            case TIPO_SERIAL_CON_CODIGO:
+                tipo = DatosMaestra.TIPO_IMPRESION_SERIAL;
+                break;
+            case TIPO_SERIAL_SIN_CODIGO:
+                tipo = DatosMaestra.TIPO_IMPRESION_SERIAL_SIN_CODIGO;
+                break;
+            case TIPO_CON_CODIGO:
+                tipo = DatosMaestra.TIPO_IMPRESION_CON_CODIGO;
+                break;
+            default:
+                tipo = DatosMaestra.TIPO_IMPRESION_SIN_CODIGO;
+        }
         return DatosMaestra.ajustarTipoImpresion(tipo, instancias.getConfiguraciones().isProductosDetallados());
     }
 

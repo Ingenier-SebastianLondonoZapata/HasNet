@@ -9,7 +9,6 @@ import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloListaPrecio;
 import Modelo.Productos.ModeloProducto;
-import Vista.Cartera.VistaNotaDebito;
 import Vista.Ventas.VistaFactura;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,7 +28,6 @@ public class VistaSeleccionarPLU extends javax.swing.JDialog {
     private String codigo;
     private String opc, baseUtilizada;
     private VistaFactura factura;
-    private VistaNotaDebito notaDebito;
 
     public VistaFactura getFactura() {
         return factura;
@@ -37,14 +35,6 @@ public class VistaSeleccionarPLU extends javax.swing.JDialog {
 
     public void setFactura(VistaFactura factura) {
         this.factura = factura;
-    }
-
-    public VistaNotaDebito getNotaDebito() {
-        return notaDebito;
-    }
-
-    public void setNotaDebito(VistaNotaDebito notaDebito) {
-        this.notaDebito = notaDebito;
     }
 
     public VistaSeleccionarPLU(java.awt.Frame parent, boolean modal, String base) {
@@ -158,11 +148,6 @@ public class VistaSeleccionarPLU extends javax.swing.JDialog {
 
             if (cantidadAIngresar.compareTo(BigDecimal.ZERO) > 0) {
                 switch (opc) {
-                    case "NotaDebito":
-                        notaDebito.setPlu(false);
-                        notaDebito.cargarProducto(codigo, (((String) tblRegistros.getValueAt(i, 6))), numeroPlu, "",
-                                "", "", false, "", "", "", "", "");
-                        break;
                     case "factura":
                         factura.setPlu(false);
                         factura.cargarProducto(codigo, cantidadAIngresar, numeroPlu, "", "", "", true, "", "", "", "", "");

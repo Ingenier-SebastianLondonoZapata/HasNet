@@ -11,9 +11,12 @@
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<parameter name="simbolo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from repCotizas $P!{cliente} 
-ORDER BY idFactura
- ASC;]]>
+		<![CDATA[SELECT TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')) AS fechaFactura, d.cliente AS cliente, t.nombre AS nombre, d.vendedor AS vendedor, d.observacion AS observacion, p.Codigo AS Codigo, p.Descripcion AS Descripcion, SUM(dd.cant2) AS cantidad, dd.lista AS lista, SUM(dd.subtotal) AS subtotal, SUM(dd.descuento) AS descuento, dd.porcIva AS porcIva, SUM(dd.iva) AS iva, SUM(dd.total) AS total, SUM(dd.utilidad) AS utilidad, d.subtotalGeneral AS subtotalGeneral, d.descuentoGeneral AS descuentoGeneral, d.otros AS otros, d.rtFuente AS rtFuente, d.rtIva AS rtIva, d.ivaGeneral AS ivaGeneral, d.totalGeneral AS totalGeneral, d.efectivoGeneral AS efectivoGeneral, d.targetaGeneral AS targetaGeneral, d.chequeGeneral AS chequeGeneral, d.ncGeneral AS ncGeneral, dd.tercero AS tercero, dd.utilidad1 AS utilidad1, d.idFactura AS idFactura, d.factura AS id2, d.credito AS credito, d.anulada AS anulada, t.id AS Id, p.grupo AS Grupo, p.idSistema AS producto, d.estadoGeneral AS estadoGeneral
+FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento
+LEFT JOIN bdproductos p ON p.idSistema = dd.producto LEFT JOIN bdterceros t ON t.idSistema = d.cliente
+$P!{cliente}
+GROUP BY TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')), d.cliente, t.nombre, d.vendedor, d.observacion, p.Codigo, dd.lista, dd.porcIva, d.subtotalGeneral, d.descuentoGeneral, d.otros, d.rtFuente, d.rtIva, d.ivaGeneral, d.totalGeneral, d.efectivoGeneral, d.targetaGeneral, d.chequeGeneral, d.ncGeneral, dd.tercero, dd.utilidad1, d.idFactura, d.factura, d.credito, d.anulada, t.id, p.grupo, p.idSistema, d.estadoGeneral
+ORDER BY d.idFactura ASC]]>
 	</queryString>
 	<field name="fechaFactura" class="java.sql.Timestamp"/>
 	<field name="cliente" class="java.lang.String"/>

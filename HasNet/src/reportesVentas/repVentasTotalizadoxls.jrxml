@@ -169,9 +169,6 @@
 	<field name="turno" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="impuesto" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="idSistema" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>

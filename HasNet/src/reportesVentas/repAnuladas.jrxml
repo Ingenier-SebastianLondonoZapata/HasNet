@@ -241,14 +241,14 @@ ORDER BY idFactura ASC;]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="documento2" class="java.lang.String"/>
-	<field name="impuesto" class="java.lang.Integer">
+	<field name="impoconsumoGeneral" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="Codigo" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="IdCliente" class="java.lang.String"/>
-	<field name="imei" class="java.lang.String">
+	<field name="detalle" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="hora" class="java.sql.Time">
@@ -595,7 +595,7 @@ ORDER BY idFactura ASC;]]>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
 					</textElement>
-					<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{impuesto})]]></textFieldExpression>
+					<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{impoconsumoGeneral})]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="0" y="0" width="1" height="46" uuid="564b95f7-c1ee-49f9-a7e2-2fb8ff8fc1e2"/>
@@ -711,7 +711,7 @@ ORDER BY idFactura ASC;]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{imei}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{detalle}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="675" y="0" width="40" height="13" uuid="2c16ecd3-9de8-4484-bc87-774ca1e84074"/>

@@ -30,7 +30,8 @@ import Procesos.Inventario.Servicio.ServicioInventario;
 import Utilidades.DatosMaestra;
 import Utilidades.Utilidades;
 import Vista.Productos.VistaInventarioInicial;
-import clases.Ventas.ndFactura;
+import Dao.Documentos.DaoDocumentos;
+import Modelo.Documentos.ModeloFactura;
 import clases.Ventas.ndNotasCredito;
 import clases.big;
 import clases.metodosGenerales;
@@ -74,7 +75,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
     TableRowSorter modeloOrdenado;
-    ndFactura nodo;
+    ModeloFactura nodo;
     DecimalFormat df = new DecimalFormat("#.00");
     String simbolo = "";
 
@@ -1616,9 +1617,9 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         btnLimpiarActionPerformed(null);
         txtFactura.setText(factura.replace("FACT-", ""));
 
-        ndFactura nodo = instancias.getSql().getDatosFactura(factura);
+        ModeloFactura nodo = (ModeloFactura) new DaoDocumentos().obtenerPorFactura(DaoDocumentos.TIPOS_FACTURA, factura);
 
-        if (nodo.getIdFactura() == null) {
+        if (nodo == null) {
             ControladorAlertas.alert("Esta factura no existe");
             return;
         }
@@ -1628,7 +1629,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             return;
         }
 
-        if (nodo.getModeloContable().equals(Constantes.FACTURACION_ELECTRONICA)) {
+        if (Constantes.FACTURACION_ELECTRONICA.equals(nodo.getTipoComprobante())) {
             try {
                 ConsultaFacturaElectronicaDTO datosFactura = consumidorFacturacionElectronica.consultarFacturaElectronica(factura.replace("FACT-", ""));
                 if (datosFactura.getCufe().isEmpty()) {
@@ -1665,10 +1666,10 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
                 }
             }
         } catch (Exception e) {
-            txtTotalNc.setText(big.setMoneda(big.getBigDecimal(nodo.getTotalGeneral())));
+            txtTotalNc.setText(big.setMoneda(nodo.getTotal()));
         }
 
-        txtRtfPorc.setText(nodo.getOtros());
+        txtRtfPorc.setText(nodo.getPorcentajeReteFuente().toPlainString());
 
         tblProductos.setModel(instancias.getSql().getRegistrosVentasPlu(nodo.getFactura()));
 
@@ -1758,12 +1759,12 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         txtNit.setText(nodoCliente.getId());
         txtVendedor.setText(nodo.getVendedor());
 
-        if (big.getBigDecimal(nodo.getRtIva()).compareTo(BigDecimal.ZERO) > 0) {
-            txtRiva.setText(big.setMonedaExacta(big.getBigDecimal(nodo.getRtIva())));
+        if (nodo.getReteIva().compareTo(BigDecimal.ZERO) > 0) {
+            txtRiva.setText(big.setMonedaExacta(nodo.getReteIva()));
         }
 
-        if (big.getBigDecimal(nodo.getRtFuente()).compareTo(BigDecimal.ZERO) > 0) {
-            txtRtf.setText(big.setMonedaExacta(big.getBigDecimal(nodo.getRtFuente())));
+        if (nodo.getReteFuente().compareTo(BigDecimal.ZERO) > 0) {
+            txtRtf.setText(big.setMonedaExacta(nodo.getReteFuente()));
         }
 
         if (nodoCliente.getNombre() != null) {
@@ -1771,7 +1772,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             txtTelefono.setText(nodoCliente.getTelefono());
         }
 
-        if (Constantes.FACTURACION_ELECTRONICA_POS.equals(nodo.getModeloContable())) {
+        if (Constantes.FACTURACION_ELECTRONICA_POS.equals(nodo.getTipoComprobante())) {
             rdPos.setSelected(true);
         }
 
@@ -1779,7 +1780,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
         cargarTotales();
 
         this.porcentajeReteFuente = big.getMoneda(txtRtf.getText()).multiply(big.getBigDecimal(100)).divide(big.getMoneda(txtSubTotal.getText()), 2, RoundingMode.HALF_UP);
-        if (big.getBigDecimal(nodo.getRtIva()).compareTo(BigDecimal.ZERO) > 0) {
+        if (nodo.getReteIva().compareTo(BigDecimal.ZERO) > 0) {
             this.contieneReteIva = true;
         }
     }
@@ -2307,7 +2308,7 @@ public class VistaNotaCredito extends javax.swing.JInternalFrame {
             }
         }
 
-        ndFactura nodoCaja = instancias.getSql().getDatosFactura("FACT-" + txtFactura.getText());
+        ModeloFactura nodoCaja = (ModeloFactura) new DaoDocumentos().obtenerPorFactura(DaoDocumentos.TIPOS_FACTURA, "FACT-" + txtFactura.getText());
 
         //PROCESO GUARDAR VENTA
         for (int i = 0; i < tblProductos.getRowCount(); i++) {

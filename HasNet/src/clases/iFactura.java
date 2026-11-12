@@ -1,6 +1,13 @@
 package clases;
 
 import Controlador.Alertas.ControladorAlertas;
+import Dao.Documentos.ConsultaDocumentos;
+import Dao.Documentos.ConsultaCartera;
+import Dao.Documentos.ConsultaFactura;
+import Dao.Documentos.ConsultaReportes;
+import Dao.Documentos.ConsultaVista;
+import Dao.Documentos.DaoDocumentos;
+import Enums.TipoDocumento;
 
 import Utilidades.DatosMaestra;
 import Impresiones.IniciarReporte;
@@ -719,7 +726,7 @@ public class iFactura {
             //Se crea un objeto HashMap
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
-            parametros.put("cliente", sql);
+            parametros.put("cliente", ConsultaReportes.filtroOrdenes(sql));
             parametros.put("encabezado", encabezado);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
@@ -843,7 +850,7 @@ public class iFactura {
             Map parametros = new HashMap();
             parametros.clear();
             parametros.put("urlImagen", logo());
-            parametros.put("sql", sql);
+            parametros.put("sql", ConsultaFactura.filtro(ConsultaFactura.y(sql, "factura.anulada = 0")));
             parametros.put("info", instancia.getInformacionEmpresaCompleto());
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
@@ -1113,7 +1120,7 @@ public class iFactura {
             //Se crea un objeto HashMap
             Map parametros = new HashMap();
             parametros.clear();
-            parametros.put("cliente", sql);
+            parametros.put("cliente", ConsultaVista.FACTURACION.filtro(sql));
             parametros.put("encabezado", encabezado);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
@@ -1239,26 +1246,35 @@ public class iFactura {
         }
     }
 
+    private String condicionDocumentos(String condicion) {
+        String filtro = ConsultaDocumentos.filtroTipos(DaoDocumentos.TIPOS_FACTURA);
+        String adicional = ConsultaDocumentos.sinWhere(condicion);
+        if (adicional.isEmpty()) {
+            return " WHERE " + filtro + " ";
+        }
+        return " WHERE " + filtro + " AND (" + ConsultaDocumentos.traducirCondicion(TipoDocumento.FACTURACION, adicional, "bdfactura") + ") ";
+    }
+
     private String sentenciaFacturacionDetallado(String condicion) {
         String sentencia = "SELECT bdfactura.fechaFactura AS fechaFactura, bdfactura.cliente AS cliente, bdterceros.nombre AS nombre, bdfactura.vendedor AS vendedor, "
-                + "bdfactura.observacion AS observacion, bdproductos.Codigo AS Codigo, bdfactura.descripcion AS Descripcion, bdfactura.imei AS imei, "
+                + "bdfactura.observacion AS observacion, bdproductos.Codigo AS Codigo, bdfactura.descripcion AS Descripcion, bdfactura.detalle AS detalle, "
                 + "SUM(bdfactura.cant2) AS cantidad, bdfactura.lista AS lista, SUM(bdfactura.subtotal) AS subtotal, SUM(bdfactura.descuento) AS descuento, "
                 + "bdfactura.porcIva AS porcIva, SUM(bdfactura.iva) AS iva, SUM(bdfactura.impoconsumo) AS impoconsumo, SUM(bdfactura.total) AS total, "
                 + "SUM(bdfactura.utilidad) AS utilidad, bdfactura.subtotalGeneral AS subtotalGeneral, bdfactura.descuentoGeneral AS descuentoGeneral, bdfactura.otros AS otros, "
-                + "bdfactura.rtFuente AS rtFuente, bdfactura.rtIva AS rtIva, bdfactura.ivaGeneral AS ivaGeneral, bdfactura.impuesto AS impuesto, bdfactura.porcImpo AS porcImpo, "
+                + "bdfactura.rtFuente AS rtFuente, bdfactura.rtIva AS rtIva, bdfactura.ivaGeneral AS ivaGeneral, bdfactura.porcImpo AS porcImpo, "
                 + "bdfactura.impoGeneral AS impoGeneral, bdfactura.totalGeneral AS totalGeneral, bdfactura.efectivoGeneral AS efectivoGeneral, "
                 + "bdfactura.targetaGeneral AS targetaGeneral, bdfactura.chequeGeneral AS chequeGeneral, bdfactura.ncGeneral AS ncGeneral, bdfactura.tercero AS tercero, "
                 + "bdfactura.utilidad1 AS utilidad1, bdfactura.idFactura AS idFactura, bdfactura.factura AS id2, bdfactura.credito AS credito, bdfactura.anulada AS anulada, "
                 + "bdterceros.id AS Id, bdproductos.grupo AS Grupo, bdproductos.idSistema AS producto, bdfactura.hora AS hora, bdfactura.tarjetaCredito AS tarjetaCredito, "
                 + "bdfactura.sisteCredito AS sisteCredito "
-                + "FROM ((bdfactura LEFT JOIN bdproductos ON ((bdfactura.producto = bdproductos.idSistema))) LEFT JOIN bdterceros ON ((bdfactura.cliente = bdterceros.idSistema))) "
-                + condicion + " GROUP BY bdfactura.fechaFactura, bdfactura.cliente, bdterceros.nombre, bdfactura.vendedor, bdfactura.observacion, bdproductos.Codigo, bdfactura.imei, "
+                + "FROM ((" + ConsultaDocumentos.ORIGEN + "LEFT JOIN bdproductos ON ((bdfactura.producto = bdproductos.idSistema))) LEFT JOIN bdterceros ON ((bdfactura.cliente = bdterceros.idSistema))) "
+                + condicionDocumentos(condicion) + " GROUP BY bdfactura.fechaFactura, bdfactura.cliente, bdterceros.nombre, bdfactura.vendedor, bdfactura.observacion, bdproductos.Codigo, bdfactura.detalle, "
                 + "bdfactura.lista, bdfactura.porcIva, bdfactura.subtotalGeneral, bdfactura.descuentoGeneral, bdfactura.otros, bdfactura.rtFuente, bdfactura.rtIva, "
-                + "bdfactura.ivaGeneral, bdfactura.impuesto, bdfactura.totalGeneral, bdfactura.efectivoGeneral, bdfactura.targetaGeneral, bdfactura.chequeGeneral, "
+                + "bdfactura.ivaGeneral, bdfactura.totalGeneral, bdfactura.efectivoGeneral, bdfactura.targetaGeneral, bdfactura.chequeGeneral, "
                 + "bdfactura.ncGeneral, bdfactura.impoGeneral, bdfactura.porcImpo, bdfactura.tercero, bdfactura.utilidad1, bdfactura.idFactura, bdfactura.factura, "
                 + "bdfactura.credito, bdfactura.anulada, bdterceros.id, bdproductos.grupo, bdproductos.idSistema, bdfactura.hora, bdfactura.tarjetaCredito, "
                 + "bdfactura.sisteCredito ORDER BY bdfactura.Id";
-        return sentencia;
+        return ConsultaDocumentos.traducir(TipoDocumento.FACTURACION, sentencia, "bdfactura");
     }
 
     private String sentenciaFacturacionTotalizado(String condicion) {
@@ -1275,22 +1291,22 @@ public class iFactura {
                 + "bdfactura.cuadreAnulacion  AS cuadreAnulacion, bdfactura.usuarioAnula AS usuarioAnula, bdfactura.placa AS placa, bdfactura.garantia AS garantia, "
                 + "bdfactura.diasGarantia AS diasGarantia, bdfactura.rango AS rango, bdfactura.terminos AS terminos, bdfactura.notaAnulacion AS notaAnulacion, "
                 + "bdfactura.conseMesa AS conseMesa, bdfactura.factura AS id2, bdfactura.copago AS copago, bdprestamo.cuotaInicial AS cuotaInicial2, "
-                + "CAST(bdfactura.fechaFactura AS DATE) AS fechaFactura, bdfactura.turno AS turno, bdfactura.impuesto AS impuesto,  bdterceros.idSistema AS idSistema, "
+                + "CAST(bdfactura.fechaFactura AS DATE) AS fechaFactura, bdfactura.turno AS turno, bdterceros.idSistema AS idSistema, "
                 + "CAST(bdfactura.fechaFactura AS DATE) AS fechaFactura1, bdfactura.impoGeneral AS impoconsumo, bdfactura.tarjetaCredito AS tarjetaCredito, "
                 + "bdfactura.franquisia AS franquisia, bdfactura.hora AS hora, bdfactura.valorComision AS valorComision, bdfactura.totalPropina AS totalPropina, "
                 + "bdfactura.sisteCredito AS sisteCredito, bdfactura.bodega AS bodega "
-                + "FROM ((bdfactura LEFT JOIN bdprestamo ON ((bdfactura.idFactura = bdprestamo.factura))) LEFT JOIN bdterceros ON ((bdfactura.cliente = bdterceros.idSistema))) "
-                + condicion + " GROUP BY bdfactura.idFactura, CAST(SUBSTR(bdfactura.idFactura,6,100)AS SIGNED), bdterceros.nombre, bdterceros.id, bdfactura.vendedor, bdfactura.red, "
+                + "FROM ((" + ConsultaDocumentos.ORIGEN + "LEFT JOIN bdprestamo ON ((bdfactura.idFactura = bdprestamo.factura))) LEFT JOIN bdterceros ON ((bdfactura.cliente = bdterceros.idSistema))) "
+                + condicionDocumentos(condicion) + " GROUP BY bdfactura.idFactura, CAST(SUBSTR(bdfactura.idFactura,6,100)AS SIGNED), bdterceros.nombre, bdterceros.id, bdfactura.vendedor, bdfactura.red, "
                 + "bdfactura.fechaVencimiento, bdfactura.efectivoGeneral,bdfactura.ncGeneral, bdfactura.chequeGeneral, bdfactura.targetaGeneral, bdfactura.totalGeneral, "
                 + "bdfactura.descuentoGeneral, bdfactura.ivaGeneral, bdfactura.subtotalGeneral, bdfactura.comprobante, bdfactura.cotizacion, bdfactura.anulada, bdfactura.anula,"
                 + "bdfactura.credito, bdfactura.cxc, bdfactura.usuario, bdfactura.rtIva, bdfactura.rtIca, bdfactura.rtFuente, bdfactura.otros, bdfactura.anulada1, bdfactura.anula1,"
                 + "bdfactura.credito1, bdfactura.cxc1, bdfactura.usuario1, bdfactura.fechaAlerta, bdfactura.terminal, bdfactura.estadoGeneral, bdfactura.estado2, bdfactura.devuelta,"
                 + "bdfactura.resolucion, bdfactura.fechaAnulacion, bdfactura.cuadreAnulacion, bdfactura.usuarioAnula, bdfactura.placa, bdfactura.garantia, bdfactura.diasGarantia,"
-                + "bdfactura.rango, bdfactura.conseMesa, bdfactura.factura, bdfactura.copago, bdprestamo.cuotaInicial, bdfactura.turno, bdfactura.impuesto, bdterceros.idSistema, "
+                + "bdfactura.rango, bdfactura.conseMesa, bdfactura.factura, bdfactura.copago, bdprestamo.cuotaInicial, bdfactura.turno, bdterceros.idSistema, "
                 + "CAST(FORMAT(bdfactura.fechaFactura, 'yyyy/mm/dd')AS DATE), bdfactura.impoGeneral, CAST(FORMAT(bdfactura.fechaFactura,'yyyy/mm/dd')AS DATE), "
                 + "bdfactura.tarjetaCredito, bdfactura.franquisia, bdfactura.hora, bdfactura.valorComision, bdfactura.totalPropina, bdfactura.sisteCredito, bdfactura.bodega "
                 + "ORDER BY CAST(SUBSTR(bdfactura.idFactura,6,100)AS SIGNED)";
-        return sentencia;
+        return ConsultaDocumentos.traducir(TipoDocumento.FACTURACION, sentencia, "bdfactura");
     }
 
     public void ver_RepVentas(String sql, String encabezado, String tipo, String encabezado2) {
@@ -1516,7 +1532,7 @@ public class iFactura {
             //Se crea un objeto HashMap 
             Map<String, String> parametros = new HashMap<String, String>();
             parametros.clear();
-            parametros.put("cliente", sql);
+            parametros.put("cliente", ConsultaReportes.filtroCotizaciones(sql));
             parametros.put("encabezado", encabezado);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
@@ -1590,6 +1606,7 @@ public class iFactura {
         try {
             //direccion del archivo JASPER
             URL in = this.getClass().getResource("/reportesAbonos/repAbonos" + tipo + ".jasper");
+            sql = ConsultaCartera.origenAbonos(sql);
             reporte = (JasperReport) JRLoader.loadObject(in);
             //Se crea un objeto HashMap
             Map<String, String> parametros = new HashMap();
@@ -1833,26 +1850,6 @@ public class iFactura {
             parametros.clear();
             parametros.put("cliente", sql);
             parametros.put("encabezado", encabezado);
-
-            IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
-            vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);
-            barra.show();
-
-        } catch (JRException E) {
-            System.out.println(E);
-        }
-    }
-
-    public void ver_RepCarteraCuotas(String total, String tipo) {
-        JasperReport reporte;
-        try {
-            //direccion del archivo JASPER
-            URL in = this.getClass().getResource("/reportes/ejemplo/repCarteraCuotas" + tipo + ".jasper");
-            reporte = (JasperReport) JRLoader.loadObject(in);
-            //Se crea un objeto HashMap
-            Map<String, String> parametros = new HashMap();
-            parametros.clear();
-            parametros.put("total", total);
 
             IniciarReporte ini = new IniciarReporte(parametros, reporte, false, true, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);

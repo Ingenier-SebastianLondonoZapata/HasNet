@@ -7,7 +7,40 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from cuadreCajaFiscalVentas where id=$P{idCuadre}]]>
+		<![CDATA[SELECT
+    CAST(SUBSTR(c.Id, 8, 100) AS SIGNED) AS ordenId,
+    c.Id AS Id,
+    IFNULL(co.bruto, 0) AS brutoContado,
+    IFNULL(co.neto, 0) AS netoContado,
+    IFNULL(co.descuentos, 0) AS descuentosContado,
+    IFNULL(cr.bruto, 0) AS brutoCredito,
+    IFNULL(cr.neto, 0) AS netoCredito,
+    IFNULL(cr.descuentos, 0) AS descuentosCredito,
+    IFNULL(an.total, 0) AS totalAnulacion,
+    c.ncRealizadas AS ncRealizadas,
+    IFNULL(an.cantidad, 0) AS contAnuladas,
+    c.contNcRealizadas AS contNcRealizadas,
+    c.contContado AS contContado,
+    c.contCredito AS contCredito,
+    c.sisteCredito AS sisteCredito,
+    IF(co.bruto IS NULL, cr.bruto - c.ncRealizadas, IF(cr.bruto IS NULL, co.bruto - c.ncRealizadas, co.bruto + cr.bruto - c.ncRealizadas)) AS brutoVenta,
+    IF(co.neto IS NULL, cr.neto - c.ncRealizadas, IF(cr.neto IS NULL, co.neto - c.ncRealizadas, co.neto + cr.neto - c.ncRealizadas)) AS netoVenta,
+    IF(co.descuentos IS NULL, cr.descuentos, IF(cr.descuentos IS NULL, co.descuentos, co.descuentos + cr.descuentos)) AS totalDescuentoVenta,
+    c.contContado + c.contCredito + IFNULL(nc.cantidad, 0) + IFNULL(an.cantidad, 0) AS contVentas,
+    IFNULL(se.bruto, 0) AS brutoSepare,
+    IFNULL(se.neto, 0) AS netoSepare
+FROM bdcuadre c
+LEFT JOIN (SELECT SUM(d.subtotalGeneral) AS bruto, SUM(d.totalGeneral) AS neto, SUM(d.descuentoGeneral) AS descuentos
+    FROM bdDocumentos d WHERE d.tipoDocumento IN ('facturacion', 'notaDebito') AND d.red = $P{idCuadre} AND d.credito = 0 AND d.anulada = 0) co ON 1 = 1
+LEFT JOIN (SELECT SUM(d.subtotalGeneral) AS bruto, SUM(d.totalGeneral) AS neto, SUM(d.descuentoGeneral) AS descuentos
+    FROM bdDocumentos d WHERE d.tipoDocumento IN ('facturacion', 'notaDebito') AND d.red = $P{idCuadre} AND d.credito = 1 AND d.anulada = 0) cr ON 1 = 1
+LEFT JOIN (SELECT SUM(d.totalGeneral) AS total, COUNT(*) AS cantidad
+    FROM bdDocumentos d WHERE d.tipoDocumento IN ('facturacion', 'notaDebito') AND d.cuadreAnulacion = $P{idCuadre}) an ON 1 = 1
+LEFT JOIN (SELECT COUNT(*) AS cantidad FROM bdnc n WHERE n.cuadre = $P{idCuadre}) nc ON 1 = 1
+LEFT JOIN (SELECT SUM(d.subtotalGeneral) AS bruto, SUM(d.totalGeneral) AS neto
+    FROM bdDocumentos d INNER JOIN bdterceros t ON t.idSistema = d.cliente
+    WHERE d.tipoDocumento = 'separe' AND d.red = $P{idCuadre}) se ON 1 = 1
+WHERE c.Id = $P{idCuadre}]]>
 	</queryString>
 	<field name="ordenId" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>

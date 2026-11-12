@@ -9,8 +9,10 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT SUM(factura.subtotal) AS subtotal, SUM(factura.iva) AS iva,SUM(factura.total) AS total, SUM(factura.descuento) AS descuento, IF((factura.Grupo != ""), factura.Grupo, 'SIN-GRUPO') AS Grupo, SUM(factura.utilidad) AS utilidad, SUM(factura.impoconsumo) AS impoconsumo, IF((factura.Grupo != ""), factura.nombreGrupo, 'SIN-GRUPO') AS nombreGrupo FROM factura $P!{sql}
-GROUP BY factura.Grupo, factura.nombreGrupo, factura.anulada HAVING anulada = 0]]>
+		<![CDATA[SELECT SUM(dd.subtotal) AS subtotal, SUM(dd.iva) AS iva,SUM(dd.total) AS total, SUM(dd.descuento) AS descuento, IF((p.grupo != ""), p.grupo, 'SIN-GRUPO') AS Grupo, SUM(dd.utilidad) AS utilidad, SUM(dd.impoconsumo) AS impoconsumo, IF((p.grupo != ""), g.nombre, 'SIN-GRUPO') AS nombreGrupo
+FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento LEFT JOIN bdterceros t ON t.idSistema = d.cliente LEFT JOIN bdproductos p ON p.idSistema = dd.producto LEFT JOIN bdgrupo g ON g.codigo = p.grupo
+$P!{sql}
+GROUP BY p.grupo, g.nombre]]>
 	</queryString>
 	<field name="subtotal" class="java.math.BigDecimal"/>
 	<field name="iva" class="java.math.BigDecimal"/>

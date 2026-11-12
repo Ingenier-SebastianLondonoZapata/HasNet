@@ -33,16 +33,10 @@ import java.util.logging.Logger;
 public class FuncionalidadVentas {
 
     private final DaoResoluciones daoResoluciones = new DaoResoluciones();
+    private final Dao.Documentos.DaoDocumentos daoDocumentos = new Dao.Documentos.DaoDocumentos();
     private final Dao.Configuraciones.DaoMaestra daoMaestra = new Dao.Configuraciones.DaoMaestra();
     private final metodosGenerales metodos = new metodosGenerales();
 
-    public boolean aumentarConsecutivoResolucion(int idResolucion) {
-        if (!daoResoluciones.aumentarConsecutivoResolucion(idResolucion)) {
-            ControladorAlertas.alertFail("Error al aumentar consecutivo de factura");
-            return false;
-        }
-        return true;
-    }
 
     public void reiniciarPagos(Instancias instancias) {
         instancias.setEfectivoDevuelta(BigDecimal.ZERO);
@@ -81,44 +75,6 @@ public class FuncionalidadVentas {
         return nuevoTurno;
     }
 
-    public String validarYObtenerFactura(int idResolucion) {
-        ModeloResolucion resolucion = daoResoluciones.obtenerInformacionResolucion(idResolucion);
-        if (resolucion == null) {
-            ControladorAlertas.alert("No se pudo obtener los datos de la resolución.");
-            return "";
-        }
-
-        String prefijo = (resolucion.getPrefijo() == null) ? "" : resolucion.getPrefijo();
-        int segundosEsperando = 0;
-
-        String facturaReal = "FACT-" + prefijo + resolucion.getConsecutivo();
-        Object[][] datosFactura = Instancias.getInstancias().getSql().getVerificadorFactura(facturaReal);
-
-        while (datosFactura.length > 0) {
-            // Refrescar la resolución por si alguien más aumentó el consecutivo
-            resolucion = daoResoluciones.obtenerInformacionResolucion(idResolucion);
-            facturaReal = "FACT-" + prefijo + resolucion.getConsecutivo();
-            datosFactura = Instancias.getInstancias().getSql().getVerificadorFactura(facturaReal);
-
-            try {
-                Thread.sleep(1000);
-                segundosEsperando++;
-
-                if (segundosEsperando > 2) {
-                    if (!daoResoluciones.aumentarConsecutivoResolucion(idResolucion)) {
-                        ControladorAlertas.alertFail("Error al aumentar consecutivo de la resolución");
-                    }
-                    segundosEsperando = 0;
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                ControladorAlertas.alertFail("Error al aumentar consecutivo de la resolución");
-                break;
-            }
-        }
-
-        return "FACT-" + prefijo + resolucion.getConsecutivo();
-    }
 
     public String obtenerNumeroCongelada(Instancias instancias, String tipoProceso, Instancias instancias1) {
         String numeroCongelada = "";
@@ -178,9 +134,7 @@ public class FuncionalidadVentas {
     }
 
     public DatosImpresionFactura construirDatosImpresionFactura(Instancias instancias, boolean esMediaCarta, boolean esCarta) {
-        String nombreReporte = obtenerPrefijoReporte(esMediaCarta, esCarta)
-                + instancias.getRegimen()
-                + obtenerSufijoReporte(DatosMaestra.getTipoImpresion());
+        String nombreReporte = obtenerPrefijoReporte(esMediaCarta, esCarta) + instancias.getRegimen();
 
         return new DatosImpresionFactura()
                 .setNombreReporte(nombreReporte)
@@ -222,18 +176,6 @@ public class FuncionalidadVentas {
         return DatosMaestra.getImpresoraPos();
     }
 
-    private String obtenerSufijoReporte(String tipoImpresion) {
-        if ("Sin-Codigo".equals(tipoImpresion)) {
-            return "1";
-        }
-
-        if ("Imei".equals(tipoImpresion)) {
-            return "Imei";
-        }
-
-        return "";
-    }
-
     public BigDecimal revisarPrecioProducto(String listaPrecio, BigDecimal valorUnitario, ModeloProducto datosProducto) {
         return obtenerPrecioLista(listaPrecio, datosProducto);
     }
@@ -261,7 +203,7 @@ public class FuncionalidadVentas {
                             @Override
                             public void actualizar(String idDocumento, String tituloDocumento) {
                                 instancias.getSql().eliminarComanda(idDocumento, "factura");
-                                instancias.getSql().eliminarMesa(idDocumento);
+                                daoDocumentos.eliminarPorIdFactura(TipoDocumento.MESA, idDocumento);
                                 instancias.getSql().cambiarEstadoMesa(tituloDocumento, EstadosTipoDocumento.DISPONIBLE.getNombre());
                             }
                         })

@@ -169,9 +169,6 @@
 	<field name="turno" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="impuesto" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="idSistema" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -231,9 +228,6 @@
 	</variable>
 	<variable name="nc" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{ncGeneral}]]></variableExpression>
-	</variable>
-	<variable name="impuesto" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{impuesto}]]></variableExpression>
 	</variable>
 	<variable name="impuestoConsumo" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{impoconsumo}]]></variableExpression>
@@ -433,13 +427,6 @@
 			<line>
 				<reportElement x="1036" y="54" width="1" height="19" uuid="69cdab08-0749-493b-919c-ac227889dd8e"/>
 			</line>
-			<staticText>
-				<reportElement mode="Opaque" x="896" y="54" width="65" height="19" forecolor="#000000" backcolor="#CCCCCC" uuid="126bc9a9-ccc1-4a7f-9607-09dfa1d717d9"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Imp. Bolsa]]></text>
-			</staticText>
 			<line>
 				<reportElement x="0" y="73" width="1792" height="1" uuid="f2d25fa4-9578-4c53-bb52-bde5a061dfb0"/>
 			</line>
@@ -686,13 +673,6 @@
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="1036" y="0" width="1" height="16" uuid="f5c87114-d542-4668-b741-56c4bf7213cc"/>
 			</line>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement x="896" y="0" width="64" height="16" uuid="4e211a44-115f-4868-bef9-03f681faacee"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{impuesto})]]></textFieldExpression>
-			</textField>
 			<textField pattern="h.mm a">
 				<reportElement x="225" y="0" width="58" height="16" uuid="d961b841-154f-4806-ba50-17067e7dca1a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -991,23 +971,9 @@
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($V{nc})]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement mode="Opaque" x="976" y="4" width="85" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="bb93e346-7c9d-4d48-9bfa-3b13251cc048"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Imp. Bolsa]]></text>
-			</staticText>
 			<line>
 				<reportElement x="1147" y="4" width="1" height="36" uuid="3f52c949-26f1-4970-a8ac-635d682b8415"/>
 			</line>
-			<textField pattern="">
-				<reportElement x="975" y="20" width="86" height="19" uuid="79c4e284-907f-4d45-97dd-284aa7bc2d06"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($V{impuesto})]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="522" y="39" width="1266" height="1" uuid="d39841e5-e528-4e75-8fd4-49b710ace288"/>
 			</line>

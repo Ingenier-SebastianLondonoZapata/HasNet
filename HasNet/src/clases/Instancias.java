@@ -46,7 +46,7 @@ import Vista.Tesoreria.VistaEgresos;
 import Vista.Contactos.VistaContactos;
 import Vista.Restaurante.VistaMesas;
 import Vista.Documentos.VistaDocumentos;
-import Vista.Cartera.VistaNotaDebito;
+import Vista.Cartera.notaDebito;
 import Vista.Cartera.VistaNotaCredito;
 import Vista.Configuraciones.VistaConfiguraciones;
 import Modelo.Maestra.modeloConfiguracion;
@@ -363,7 +363,7 @@ public class Instancias {
     private String[] vendedores = new String[0];
     private VistaReportesCartera reportesCartera;
     private VistaNotaCredito nc;
-    private VistaNotaDebito nd;
+    private notaDebito nd;
     private VistaReporteNotasCredito repNC;
     private VistaReporteNotasDebito repND;
     private VistaPagos pagos;
@@ -481,11 +481,15 @@ public class Instancias {
         this.idND = idND;
     }
 
-    public VistaNotaDebito getNd() {
+    public VistaFactura getNd() {
+        return nd.getPnlFactura();
+    }
+
+    public notaDebito getNdContenedor() {
         return nd;
     }
 
-    public void setNd(VistaNotaDebito nd) {
+    public void setNd(notaDebito nd) {
         this.nd = nd;
     }
 

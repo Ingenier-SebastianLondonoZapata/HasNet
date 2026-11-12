@@ -15,7 +15,7 @@ public enum TipoDocumento {
     ANULAR_MESA("anularMesa", ""),
     ANULAR_ORDER_SERVICIO("anularOrden", ""),
     CREDITO("credito", ""),
-    NOTA_DEBITO("notaDebito", ""),
+    NOTA_DEBITO("notaDebito", "ND"),
     NOTA_CREDITO("notaCredito", ""),
     AJUSTE_ENTRADA("ajusteEntrada", ""),
     ANULAR_AJUSTE_ENTRADA("anularAjusteEntrada", ""),

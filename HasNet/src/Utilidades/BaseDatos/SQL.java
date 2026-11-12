@@ -25,6 +25,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import Dao.Documentos.ConsultaDocumentos;
+import Dao.Documentos.ConsultaCartera;
+import Dao.Documentos.ConsultaFactura;
+import Dao.Documentos.ConsultaReportes;
+import Dao.Documentos.ConsultaVista;
+import Dao.Documentos.DaoDocumentos;
+import Enums.TipoDocumento;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,76 +63,62 @@ public class SQL {
         String colName[] = {
             "subtotal", "iva", "total", "descuento", "Grupo", "utilidad", "impoconsumo", "nombreGrupo"
         };
-        String origen = " factura ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT Sum(factura.subtotal) AS subtotal, Sum(factura.iva) AS iva, "
-                + "Sum(factura.total) AS total, Sum(factura.descuento) AS descuento, factura.Grupo, Sum(factura.utilidad) AS utilidad, "
-                + "Sum(factura.impoconsumo) AS impoconsumo, factura.nombreGrupo from " + origen + sql + " GROUP BY factura.Grupo, factura.nombreGrupo, factura.anulada"
-                + " HAVING anulada = 0 ", "");
-        return dtDatos;
+        return consultarIndicador(colName, "SUM(factura.subtotal) AS subtotal, SUM(factura.iva) AS iva, SUM(factura.total) AS total, "
+                + "SUM(factura.descuento) AS descuento, factura.Grupo AS Grupo, SUM(factura.utilidad) AS utilidad, "
+                + "SUM(factura.impoconsumo) AS impoconsumo, factura.nombreGrupo AS nombreGrupo", sql, "GROUP BY factura.Grupo, factura.nombreGrupo");
     }
 
     public Object[][] getIndicadoresPor(String sql, String campo) {
         String colName[] = {
             "subtotal", "iva", "total", "descuento", campo, "utilidad", "impoconsumo"
         };
-        String origen = " factura ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT Sum(factura.subtotal) AS subtotal, Sum(factura.iva) AS iva, "
-                + "Sum(factura.total) AS total, Sum(factura.descuento) AS descuento, factura." + campo + ", Sum(factura.utilidad) AS utilidad, "
-                + "Sum(factura.impoconsumo) AS impoconsumo from " + origen + sql + " GROUP BY factura." + campo + ", factura.anulada"
-                + " HAVING ANULADA = 0 ", "");
-        return dtDatos;
+        return consultarIndicador(colName, "SUM(factura.subtotal) AS subtotal, SUM(factura.iva) AS iva, SUM(factura.total) AS total, "
+                + "SUM(factura.descuento) AS descuento, factura." + campo + " AS " + campo + ", SUM(factura.utilidad) AS utilidad, "
+                + "SUM(factura.impoconsumo) AS impoconsumo", sql, "GROUP BY factura." + campo);
     }
 
     public Object[][] getIndicadoresPorGeneral(String sql) {
         String colName[] = {
             "subtotal", "iva", "total", "descuento", "Mes", "utilidad", "impoconsumo"
         };
-        String origen = " factura ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT Sum(factura.subtotal) AS subtotal, Sum(factura.iva) AS iva, "
-                + "Sum(factura.total) AS total, Sum(factura.descuento) AS descuento, Sum(factura.utilidad) AS utilidad, "
-                + "Sum(factura.impoconsumo) AS impoconsumo, Month(fechaFactura) AS Mes, Year(fechaFactura) AS Ano "
-                + "FROM " + origen + sql + " GROUP BY Month(fechaFactura), Year(fechaFactura), factura.anulada HAVING anulada = 0 ", "");
-        return dtDatos;
+        return consultarIndicador(colName, "SUM(factura.subtotal) AS subtotal, SUM(factura.iva) AS iva, SUM(factura.total) AS total, "
+                + "SUM(factura.descuento) AS descuento, SUM(factura.utilidad) AS utilidad, SUM(factura.impoconsumo) AS impoconsumo, "
+                + "MONTH(factura.fechaFactura) AS Mes, YEAR(factura.fechaFactura) AS Ano", sql,
+                "GROUP BY MONTH(factura.fechaFactura), YEAR(factura.fechaFactura)");
     }
 
     public Object[][] getIndicadoresPorProductoMes(String sql) {
         String colName[] = {
             "subtotal", "iva", "total", "descuento", "Mes", "utilidad", "impoconsumo", "Codigo", "descripcion"
         };
-        String origen = " factura ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT Sum(factura.subtotal) AS subtotal, Sum(factura.iva) AS iva, "
-                + "Sum(factura.total) AS total, Sum(factura.descuento) AS descuento, Sum(factura.utilidad) AS utilidad, "
-                + "Sum(factura.impoconsumo) AS impoconsumo, Month(fechaFactura) AS Mes, Year(fechaFactura) AS Ano, factura.Codigo, factura.descripcion "
-                + "FROM " + origen + sql + " GROUP BY Month(fechaFactura), Year(fechaFactura), factura.Codigo, factura.descripcion, factura.anulada "
-                + "HAVING anulada = 0 ", "");
-        return dtDatos;
+        return consultarIndicador(colName, "SUM(factura.subtotal) AS subtotal, SUM(factura.iva) AS iva, SUM(factura.total) AS total, "
+                + "SUM(factura.descuento) AS descuento, SUM(factura.utilidad) AS utilidad, SUM(factura.impoconsumo) AS impoconsumo, "
+                + "MONTH(factura.fechaFactura) AS Mes, YEAR(factura.fechaFactura) AS Ano, factura.Codigo AS Codigo, factura.descripcion AS descripcion", sql,
+                "GROUP BY MONTH(factura.fechaFactura), YEAR(factura.fechaFactura), factura.Codigo, factura.descripcion");
     }
 
     public Object[][] getIndicadoresPorProductos(String sql, String agrupar) {
         String colName[] = {
             "subtotal", "iva", "total", "descuento", "Codigo", "utilidad", "impoconsumo", "descripcion", "cant2"
         };
-        String origen = " factura ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT Sum(factura.subtotal) AS subtotal, Sum(factura.iva) AS iva, "
-                + "Sum(factura.total) AS total, Sum(factura.descuento) AS descuento, factura.Codigo, Sum(factura.utilidad) AS utilidad, "
-                + "Sum(factura.impoconsumo) AS impoconsumo, factura.descripcion, Sum(factura.cant2) AS cant2 from " + origen + sql + " GROUP BY factura.Codigo, "
-                + "factura.descripcion, factura.anulada HAVING anulada = 0 "
-                + "ORDER BY Sum(FACTURA." + agrupar + ") DESC", "");
-        return dtDatos;
+        return consultarIndicador(colName, "SUM(factura.subtotal) AS subtotal, SUM(factura.iva) AS iva, SUM(factura.total) AS total, "
+                + "SUM(factura.descuento) AS descuento, factura.Codigo AS Codigo, SUM(factura.utilidad) AS utilidad, "
+                + "SUM(factura.impoconsumo) AS impoconsumo, factura.descripcion AS descripcion, SUM(factura.cant2) AS cant2", sql,
+                "GROUP BY factura.Codigo, factura.descripcion ORDER BY SUM(factura." + agrupar + ") DESC");
     }
 
     public Object[][] getIndicadoresPorCliente(String sql) {
         String colName[] = {
             "subtotal", "iva", "total", "descuento", "cliente", "utilidad", "impoconsumo", "nombre"
         };
-        String origen = " factura ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT Sum(factura.subtotal) AS subtotal, Sum(factura.iva) AS iva, "
-                + "Sum(factura.total) AS total, Sum(factura.descuento) AS descuento, factura.cliente, Sum(factura.utilidad) AS utilidad, "
-                + "Sum(factura.impoconsumo) AS impoconsumo, factura.nombre from " + origen + sql + " GROUP BY factura.cliente, factura.nombre, factura.anulada "
-                + "HAVING anulada = 0 ", "");
-        return dtDatos;
+        return consultarIndicador(colName, "SUM(factura.subtotal) AS subtotal, SUM(factura.iva) AS iva, SUM(factura.total) AS total, "
+                + "SUM(factura.descuento) AS descuento, factura.cliente AS cliente, SUM(factura.utilidad) AS utilidad, "
+                + "SUM(factura.impoconsumo) AS impoconsumo, factura.nombre AS nombre", sql, "GROUP BY factura.cliente, factura.nombre");
     }
 
+    private Object[][] consultarIndicador(String[] colName, String columnas, String condicion, String agrupacion) {
+        return consultarFilas(colName, ConsultaFactura.consulta(columnas, ConsultaFactura.y(condicion, "factura.anulada = 0"), agrupacion));
+    }
     public boolean cambiarEstadoGeneral(String estado, String id, String tabla) {
         boolean ok = false;
         String instruccion_sql = "update " + tabla + " set estado=? where Id = '" + id + "' ;";
@@ -807,35 +803,93 @@ public class SQL {
         return datos;
     }
 
-    public Object[][] getResumenVentas(String sql) {
+    public Object[][] getResumenVentas(String fechaInicio, String fechaFin) {
         String colName[] = {
             "efectivoGeneral", "subtotalGeneral", "ivaGeneral", "totalGeneral", "impoconsumo"
         };
-        String origen = " facturacion ";
-        Object dtDatos[][] = getDatos(colName, origen, " SELECT SUM(facturacion.efectivoGeneral) AS efectivoGeneral, SUM(facturacion.subtotalGeneral) AS subtotalGeneral,"
-                + "SUM(facturacion.ivaGeneral) AS ivaGeneral, SUM(facturacion.totalGeneral) AS totalGeneral, SUM(impoconsumo) AS impoconsumo "
-                + "FROM facturacion " + sql, sql);
-        return dtDatos;
+        return consultarFilas(colName, ConsultaVista.FACTURACION.consulta("SUM(facturacion.efectivoGeneral) AS efectivoGeneral, "
+                + "SUM(facturacion.subtotalGeneral) AS subtotalGeneral, SUM(facturacion.ivaGeneral) AS ivaGeneral, "
+                + "SUM(facturacion.totalGeneral) AS totalGeneral, SUM(facturacion.impoconsumo) AS impoconsumo",
+                "facturacion.fechaFactura BETWEEN ? AND ? AND facturacion.anulada = 0", ""), fechaInicio, fechaFin);
     }
 
-    public Object[][] getResumenCostos(String sql) {
-        String colName[] = {
-            "SumaDecantidad", "total"
-        };
-        String origen = " bdFactura ";
-        Object dtDatos[][] = getDatos(colName, origen, " SELECT SUM(bdFactura.cantidad) AS SumaDecantidad, SUM(bdCosteo.total) AS total "
-                + "FROM bdFactura INNER JOIN bdCosteo ON bdFactura.idCosteo = bdCosteo.Id " + sql, sql);
-        return dtDatos;
+    public Object[][] getResumenCostos(String fechaInicio, String fechaFin) {
+        String colName[] = {"SumaDecantidad", "total"};
+        String sql = "SELECT SUM(dd.cantidad) AS SumaDecantidad, SUM(c.total) AS total FROM" + ConsultaDocumentos.ORIGEN
+                + "INNER JOIN bdCosteo c ON d.idCosteo = c.Id WHERE " + ConsultaDocumentos.filtroTipos(DaoDocumentos.TIPOS_FACTURA)
+                + " AND d.fechaFactura >= ? AND d.fechaFactura <= ? AND d.anulada = 0";
+        return consultarFilas(colName, sql, fechaInicio, fechaFin);
     }
 
-    public Object[][] getResumenCostos1(String sql) {
+    public Object[][] getResumenCostos1(String fechaInicio, String fechaFin) {
+        String colName[] = {"total"};
+        String sql = "SELECT SUM(dd.cantidad * CAST(u.nuevoPonderado AS DOUBLE)) AS total FROM" + ConsultaDocumentos.ORIGEN
+                + "LEFT JOIN bdUltimoPonderado u ON dd.producto = u.producto WHERE " + ConsultaDocumentos.filtroTipos(DaoDocumentos.TIPOS_FACTURA)
+                + " AND d.fechaFactura >= ? AND d.fechaFactura <= ? AND d.anulada = 0";
+        return consultarFilas(colName, sql, fechaInicio, fechaFin);
+    }
+
+    public Object[][] getRegistrosFacturacionAutomatica(String filtro) {
         String colName[] = {
-            "total"
-        };
-        String origen = " bdFactura ";
-        Object dtDatos[][] = getDatos(colName, origen, " SELECT SUM(cantidad * CAST(nuevoPonderado AS DOUBLE)) AS total "
-                + "FROM bdFactura LEFT JOIN bdUltimoPonderado ON bdFactura.producto = bdUltimoPonderado.producto " + sql, sql);
-        return dtDatos;
+            "idFactura", "cliente", "totalGeneral", "descripcion", "fechaUltimoPago", "cantFacturados", "preparacion", "inicio", "hasta", "cantIncremento"};
+        String sql = "SELECT " + ConsultaDocumentos.columnas(TipoDocumento.CUENTA_COBRO, colName) + " FROM" + ConsultaDocumentos.ORIGEN
+                + "WHERE " + ConsultaDocumentos.filtroTipo(TipoDocumento.CUENTA_COBRO) + " AND (" + filtro + ") ORDER BY d.idDocumento, dd.linea";
+        return consultarFilas(colName, sql);
+    }
+
+    public Object[][] getProductosCongeladaImei(String imei) {
+        String colName[] = {"idFactura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
+        return consultarFilas(colName, sentenciaProductosImei(Collections.singletonList(TipoDocumento.MESA), colName, false), imei + "%");
+    }
+
+    public Object[][] getProductosVentasImei(String imei) {
+        String colName[] = {"factura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
+        return consultarFilas(colName, sentenciaProductosImei(DaoDocumentos.TIPOS_FACTURA, colName, false), imei + "%");
+    }
+
+    public Object[][] getProductosSeparesImei(String imei) {
+        String colName[] = {"factura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
+        return consultarFilas(colName, sentenciaProductosImei(Collections.singletonList(TipoDocumento.PLAN_SEPARE), colName, false), imei + "%");
+    }
+
+    public Object[][] getProductosVentasAnuladasImei(String imei) {
+        String colName[] = {"factura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
+        return consultarFilas(colName, sentenciaProductosImei(DaoDocumentos.TIPOS_FACTURA, colName, true), imei + "%");
+    }
+
+    private String sentenciaProductosImei(List<TipoDocumento> tipos, String[] colName, boolean anuladas) {
+        return "SELECT " + ConsultaDocumentos.columnas(tipos.get(0), colName) + " FROM" + ConsultaDocumentos.ORIGEN
+                + "WHERE " + ConsultaDocumentos.filtroTipos(tipos) + " AND dd.detalle LIKE ? AND d.anulada = " + (anuladas ? "1" : "0")
+                + " ORDER BY dd.idDetalle";
+    }
+
+    public Object[][] getDatosCongelada1() {
+        String colName[] = {"idFactura", "totalGeneral", "conseMesa", "turno"};
+        String sql = "SELECT d.idFactura AS idFactura, d.conseMesa AS conseMesa, d.totalGeneral AS totalGeneral, d.turno AS turno "
+                + "FROM bdDocumentos d WHERE " + ConsultaDocumentos.filtroTipo(TipoDocumento.MESA) + " ORDER BY d.idFactura";
+        return consultarFilas(colName, sql);
+    }
+
+    public Object[][] facturasLote(String lote) {
+        String colName[] = {"factura"};
+        String sql = "SELECT d.factura AS factura FROM bdDocumentos d WHERE "
+                + ConsultaDocumentos.filtroTipos(DaoDocumentos.TIPOS_FACTURA) + " AND d.cxc = ? ORDER BY d.idDocumento";
+        return consultarFilas(colName, sql, lote);
+    }
+
+    public Object[] getCantFacturado(String valor) {
+        String[] colName = {"cantFacturados"};
+        boolean[] cadena = {true};
+        String sql = "SELECT d.cantFacturados AS cantFacturados FROM bdDocumentos d WHERE "
+                + ConsultaDocumentos.filtroTipo(TipoDocumento.CUENTA_COBRO) + " AND d.idFactura = ?";
+        return consultarRegistro(colName, cadena, sql, valor);
+    }
+
+    public Object[][] getProductosVenta(String factura) {
+        String colName[] = {
+            "producto", "cantidad", "descripcion", "plu", "cant2", "lista", "descuento", "preparacion", "conseMesa", "notaAnulacion", "rango",
+            "porcDescuento", "detalle", "idProd", "impoconsumo", "porcImpo"};
+        return consultarFilas(colName, sentenciaDocumento(TipoDocumento.MESA, colName, "d.idFactura"), factura);
     }
 
     public Object[][] getRemisiones(String id) {
@@ -1004,25 +1058,11 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getResumenGerencial(String sql) {
-        String colName[] = {
-            "fechaFactura", "porcIva", "SumaDeiva", "SumaDesubtotal", "SumaDedescuento", "SumaDetotal", "producto", "cliente", "vendedor"
-        };
-        String origen = "repIvasVentas" + sql;
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select fechaFactura, porcIva, SumaDeiva, SumaDesubtotal, "
-                + "SumaDedescuento, SumaDetotal, producto, cliente, vendedor from ").append(origen).toString());
-
-        return dtDatos;
-    }
-
     public Object[][] getReporteDeImpuestos(String sql, String tabla, String tipoPorc) {
         String colName[] = {
             "fechaFactura", tipoPorc, "SumaDeiva", "SumaDesubtotal", "SumaDedescuento", "SumaDetotal", "producto", "cliente", "vendedor"
         };
-        String origen = tabla + sql;
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select fechaFactura, " + tipoPorc + ", SumaDeiva, SumaDesubtotal, "
-                + "SumaDedescuento, SumaDetotal, producto, cliente, vendedor from ").append(origen).toString());
-        return dtDatos;
+        return consultarTabla(colName, new Integer[]{}, ConsultaReportes.impuestos(sql, "repImpoVentas".equalsIgnoreCase(tabla)));
     }
 
     public Object[][] getRegistrosParqueaderoAutos() {
@@ -1304,22 +1344,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getRegistrosFacturacionAutomatica(String condicion) {
-        String colName[] = {
-            "idFactura", "cliente", "totalGeneral", "descripcion", "fechaUltimoPago", "cantFacturados", "preparacion", "inicio", "hasta", "cantIncremento"};
-        String origen = " bdCuentaCobro ";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, cliente, totalGeneral, descripcion, fechaUltimoPago, cantFacturados, preparacion, "
-                + "inicio, hasta, cantIncremento from bdCuentaCobro " + condicion, condicion);
-        return dtDatos;
-    }
-
-    public Object[][] getMesFacturado(String mes, String tercero) {
-        String colName[] = {"idFactura"};
-        String origen = " bdFactura ";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura from mesFacturado where mesFacturado = '" + mes + "' and cliente = '" + tercero + "'; ", "where mesFacturado = '" + mes + "' and cliente = '" + tercero + "' ");
-        return dtDatos;
-    }
-
     public boolean agregarLavado(ndLavado nodo) {
         boolean ok = false;
         String instruccion_sql = "insert into bdLavado(id, empleado, servicio, usuario, fecha, fechaRealizado, placa, cliente, nombre, liquidado, tipoVehiculo, marca, oServicio) values (?,?,?,?,?,?,?,?,?,?,?,?,?);";
@@ -1331,13 +1355,6 @@ public class SQL {
         String colName[] = {"cantidad"};
         String origen = " bdDetalleProductos";
         Object dtDatos[][] = getDatos(colName, origen, "select cantidad FROM bdDetalleProductos where Id = " + id + ";", " where Id = " + id + " ");
-        return dtDatos[0][0].toString();
-    }
-
-    public String getBodegaSepare(String id) {
-        String colName[] = {"bodega"};
-        String origen = " bdPlanSepare";
-        Object dtDatos[][] = getDatos(colName, origen, "select bodega FROM bdPlanSepare where idFactura = '" + id + "';", " where idFactura = '" + id + "' ");
         return dtDatos[0][0].toString();
     }
 
@@ -1752,15 +1769,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getTotalizadoNc(String base) {
-        String colName[] = {
-            "codigo", "Expr1"
-        };
-        String origen = " totalizadoNotasCredito";
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoNotasCredito ", "");
-        return dtDatos;
-    }
-
     public Object[][] getTotalizadoTrasladoBod(String sql, String base) {
         String colName[] = {
             "codigo", "Expr1"
@@ -1813,15 +1821,6 @@ public class SQL {
         };
         String origen = " totalizadoCompras";
         Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoCompras ", "");
-        return dtDatos;
-    }
-
-    public Object[][] getTotalizadoAnuladas(String base) {
-        String colName[] = {
-            "codigo", "Expr1"
-        };
-        String origen = " totalizadoAnuladas";
-        Object dtDatos[][] = getDatos(colName, origen, "select codigo, Expr1 from totalizadoAnuladas ", "");
         return dtDatos;
     }
 
@@ -3134,18 +3133,6 @@ public class SQL {
         Actualizar_Registro(new Object[]{"", ""}, null, instruccion_sql);
     }
 
-    public void cambiarEstadoOrden1(String orden, String estado, String prod) {
-        //LISTO
-        String instruccion_sql = "update bdOServicio1 set estado2=? WHERE idFactura ='" + orden + "' AND producto = '" + prod + "' ;";
-        Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
-    }
-
-    public void cambiarEstadoOrden1(String orden, String estado) {
-        //LISTO
-        String instruccion_sql = "update bdOServicio1 set estado2=? WHERE idFactura ='" + orden + "' ;";
-        Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
-    }
-
     public void cambiarEstadoOrden(String orden, String estado) {
         //LISTO
         String instruccion_sql = "update bdOrdenServicio set estado2=? WHERE id='" + orden + "' ;";
@@ -3558,10 +3545,19 @@ public class SQL {
         String colName[] = {
             factura + "2", "cliente", "nombre", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "cuotas"
         };
-        String origen = " conCxcSepare";
-        String sql = "select " + factura + " AS " + factura + "2, cliente, nombre, fechaFactura, fechaVencimiento, valor, saldo, edadCartera, estadoVencimiento,factura,terminal,cuotas from conCxcSepare ORDER BY orden";
-
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append(sql).toString());
+        String numero = "facturaTerm".equals(factura) ? "d.factura" : "cx.factura";
+        String sql = "SELECT " + numero + " AS " + factura + "2, t.id AS cliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, "
+                + "d.fechaVencimiento AS fechaVencimiento, cx.valor AS valor, "
+                + ConsultaCartera.saldo("cx.valor", ConsultaCartera.abonosRealizadosInterno("d.idFactura")) + " AS saldo, "
+                + ConsultaCartera.EDAD_DIAS + " AS edadCartera, "
+                + ConsultaCartera.estadoVencimiento("d.fechaAlerta", "d.fechaVencimiento") + " AS estadoVencimiento, "
+                + "cx.factura AS factura, d.terminal AS terminal, cx.cuotas AS cuotas "
+                + "FROM bdDocumentos d "
+                + "INNER JOIN bdcxc cx ON cx.factura = d.idFactura "
+                + "INNER JOIN bdterceros t ON t.idSistema = d.cliente "
+                + "WHERE d.tipoDocumento = 'separe' AND d.anulada = 0 AND cx.factura <> '0' AND cx.tipo = 'SEPARE' AND cx.estado = 'PEND' "
+                + "ORDER BY " + ConsultaCartera.orden("d.fechaAlerta", "d.fechaVencimiento");
+        Object dtDatos[][] = consultarTabla(colName, new Integer[]{}, sql);
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -3598,11 +3594,11 @@ public class SQL {
         String colName[] = {
             factura + "2", "cliente", "nombre", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura",
             "cuotas", "turno", "vendedor", "Sel"};
-        String origen = " conDomicilio";
-
-        Object dtDatos2[][] = GetTabla(colName, origen, (new StringBuilder()).append("select facturaTerm AS " + factura + "2, cliente, nombre, fechaFactura, "
-                + "fechaVencimiento, valor, saldo, edadCartera, estadoVencimiento, factura, cuotas, turno, vendedor, false as sel"
-                + " from conDomicilio ORDER BY orden").toString(), new Integer[]{13});
+        String sql = "SELECT x.facturaTerm AS " + factura + "2, x.cliente, x.nombre, x.fechaFactura, x.fechaVencimiento, x.valor, x.saldo, x.edadCartera, "
+                + "x.estadoVencimiento, x.factura, x.cuotas, x.turno, x.vendedor, false AS sel FROM ("
+                + ConsultaCartera.cuentasPendientes(ConsultaCartera.CONSECUTIVO_DOMICILIO, "FACT", false, ConsultaCartera.EDAD_NUMERICA)
+                + ") x ORDER BY x.orden";
+        Object dtDatos2[][] = consultarTabla(colName, new Integer[]{13}, sql);
         DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
             public boolean isCellEditable(int row, int column) {
                 if (column == 13) {
@@ -3630,17 +3626,6 @@ public class SQL {
         Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, total, ubicacion,"
                 + " referencia,estado, plu, cant2 from cuentaCobro where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
 
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosPlanSepare(String factura) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "ubicacion",
-            "referencia", "estado", "plu", "cant2", "imei", "idProd"};
-        String origen = " planSepare";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, "
-                + "iva, total, ubicacion, referencia,estado, plu, cant2, imei, idProd from planSepare where idFactura = '" + factura + "' ",
-                " where idFactura = '" + factura + "'");
         return dtDatos;
     }
 
@@ -3808,80 +3793,6 @@ public class SQL {
         String origen = " configuracion";
         Object dtDatos[][] = getDatos(colName, origen, "select version FROM configuracion ", "");
         return dtDatos[0][0].toString();
-    }
-
-    public int contadorFacturasAnuladas(String ini, String usuario) {
-        String colName[] = {"contAnuladas"};
-        String origen = " contadorFacturasAnuladas";
-        Object dtDatos[][] = getDatos(colName, origen, "select contAnuladas from " + origen + " where " + ini + " AND usuarioAnula = '" + usuario + "'",
-                " where " + ini + " AND usuarioAnula = '" + usuario + "'");
-
-        return Integer.parseInt(dtDatos[0][0].toString());
-    }
-
-    public boolean modificarPlanSepareFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota, boolean anula, String anulacion) {
-        boolean ok = false;
-        String instruccion_sql = "update bdPlanSepare set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=? where factura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarPlantillaFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota, boolean anula, String anulacion) {
-        boolean ok = false;
-        String instruccion_sql = "update bdCuentaCobro set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=? where idFactura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarFacturaFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota, boolean anula, String anulacion) {
-        boolean ok = false;
-        String instruccion_sql = "update bdFactura set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=? where factura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarPedidoFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota, boolean anula, String anulacion) {
-        boolean ok = false;
-        String instruccion_sql = "update bdPedido set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=?, estadoGeneral=? where factura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion, "ANULADA"}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarCotizacionFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota, boolean anula, String anulacion) {
-        boolean ok = false;
-        String instruccion_sql = "update bdCotizacion set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=?, estadoGeneral=? where factura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion, "ANULADA"}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarOServicioFechaAnulacion(String fechaAnulacion, String usuarioAnula, String id, String nota,
-            boolean anula, String anulacion) {
-        boolean ok = false;
-        String instruccion_sql = "update bdOServicio1 set fechaAnulacion=?, usuarioAnula=?, notaAnulacion=?, anulada=?, anula=?, estadoGeneral=? "
-                + "where factura = '" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", fechaAnulacion, usuarioAnula, nota, anula, anulacion, "ANULADA"}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean anularFacturaVerificadorFacturas(String id) {
-        boolean ok = false;
-        String instruccion_sql = "update bdVerificadorFacturas set anulada=? where factura = '" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", true}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarFechaUltimoPago(String id, String fecha, String cant) {
-        boolean ok = false;
-        String instruccion_sql = "update bdCuentaCobro set fechaUltimoPago=?, cantFacturados=? where idFactura = '" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", fecha, cant}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarFechaUltimoPago(String id, String cant) {
-        boolean ok = false;
-        String instruccion_sql = "update bdCuentaCobro set cantFacturados=? where idFactura = '" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", cant}, null, instruccion_sql);
-        return ok;
     }
 
     //CONSULTA QUE LLENA LA TABLA DE ALERTA CUMPLEAÑOS
@@ -4330,41 +4241,6 @@ public class SQL {
         return datos;
     }
 
-    public Object[][] getRegistrosPrefacturas(String factura) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "ubicacion1",
-            "referencia", "estado", "plu", "cant2", "vendedor", "cliente", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral",
-            "rango", "imei", "idProd"};
-        String origen = " factura";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, total, "
-                + "ubicacion1, referencia,estado, plu, cant2, vendedor, cliente, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, rango,"
-                + "imei, idProd from factura where factura = '" + factura + "'", " where factura = '" + factura + "'");
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosPrefacturas(String factura, String terminal) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "ubicacion1",
-            "referencia", "estado", "plu", "cant2"};
-        String origen = " factura";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, total, ubicacion1, referencia,estado, plu, cant2 from factura where factura = '" + factura + "' and terminal = '" + terminal + "'", " where factura = '" + factura + "' and terminal = '" + terminal + "'");
-
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosCCobro(String factura) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "cliente", "vendedor",
-            "estado", "plu", "cant2", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "observacion", "estadoGeneral", "preparacion",
-            "inicio", "hasta", "cantIncremento", "cantFacturados", "fechaUltimoPago"};
-        String origen = " bdCuentaCobro ";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, "
-                + "total, cliente, vendedor, estado, plu, cant2, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, observacion, "
-                + "estadoGeneral, preparacion, inicio, hasta, cantIncremento, cantFacturados, fechaUltimoPago from bdCuentaCobro where idFactura = '" + factura + "'",
-                " where idFactura = '" + factura + "'");
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosOrdenes(String factura) {
         String colName[] = {
             "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "cliente", "vendedor",
@@ -4413,15 +4289,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getRegistrosPrefacturasTerminal(String factura, String terminal) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "ubicacion1", "referencia", "estado", "plu", "cant2", "anulada"};
-        String origen = " factura";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, total, ubicacion1, referencia,estado, plu, cant2, anulada from factura where idFactura = '" + factura + "' and terminal = '" + terminal + "'", " where idFactura = '" + factura + "' and terminal = '" + terminal + "'");
-
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosPrePedidos(String factura) {
         String colName[] = {
             "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "ubicacion1",
@@ -4437,10 +4304,9 @@ public class SQL {
         String colName[] = {
             "factura", "SumaNc", "total"
         };
-        String origen = " ConsultaNc";
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, SumaNc, total from ConsultaNc where factura2 = '" + id + "'; ", " where factura2 = '" + id + "'");
-
-        return dtDatos;
+        return consultarFilas(colName, "SELECT d.factura AS factura, SUM(n.valor) AS SumaNc, d.totalGeneral AS total "
+                + "FROM bdnc n INNER JOIN bdDocumentos d ON d.factura = n.factura AND " + ConsultaCartera.FACTURAS + " "
+                + "WHERE d.factura = ? GROUP BY d.factura, d.totalGeneral", id);
     }
 
     public Object[][] getMesasOcupadas() {
@@ -5138,17 +5004,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getRegistrosFactura(String condicion) {
-        String colName[] = {
-            "tipo", "factura", "fechaFactura", "cliente", "nombre", "Id", "terminal"
-        };
-        String origen = " factura ";
-//        System.out.println("select 'Factura' as tipo, factura, fechaFactura,cliente,nombre,Id,terminal from factura " + condicion);
-        Object dtDatos[][] = getDatos(colName, origen, "select 'Factura' as tipo, factura, fechaFactura,cliente,nombre,Id,terminal from factura " + condicion, condicion);
-
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosIngreso(String condicion) {
         String colName[] = {
             "tipo", "ingreso", "fechaFactura", "proveedor", "nombre", "terminal"
@@ -5182,340 +5037,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarFactura(ndFactura nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdFactura(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
-                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
-                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
-                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, preparacion, "
-                + "turno, franquisia, comision, imei, lote, idProd, mesFacturado, porcPropina, idCosteo, hora, sisteCredito, bodega, modeloContable, efectivoGeneral, "
-                + "ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, "
-                + "ivaGeneral, subtotalGeneral, rtIva, rtIca, rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad, porcDescuento, "
-                + "cant2, porcIva, utilidad1, impuesto, impoGeneral, valorComision, totalFacturaComision, tarjetaCredito, totalPropina, porcImpo, impoconsumo, costo)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
-                + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosFactura(nodo), metodos.pasarValoresFactura(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarOServicio1(ndOServicio1 nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdOServicio1(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
-                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
-                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
-                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, preparacion, bodega, "
-                + "efectivoGeneral, ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, rtIva, rtIca, "
-                + "rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad, porcDescuento, cant2, porcIva, utilidad1)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosOServicio1(nodo), metodos.pasarValoresOServicio1(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarCuentaCobro(ndCongelada nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdCuentaCobro(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
-                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
-                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
-                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, preparacion, inicio, "
-                + "hasta, cantIncremento, bodega, efectivoGeneral, ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, rtIva, rtIca, "
-                + "rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad, porcDescuento, cant2, porcIva, utilidad1, "
-                + "impoconsumoGeneral, porcImpo, impoconsumo)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
-                + "?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosCongelada(nodo), metodos.pasarValoresCongelada(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarCongelada(ndCongelada nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdCongelada(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
-                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
-                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
-                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, "
-                + "preparacion, turno, imei, idProd, bodega, efectivoGeneral, ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, "
-                + "subtotalGeneral, rtIva, rtIca, rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad,"
-                + "porcDescuento, cant2, porcIva, utilidad1, impoconsumoGeneral, porcImpo, impoconsumo)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?"
-                + ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosCongelada(nodo), metodos.pasarValoresCongelada(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarPlanSepare(ndPlanSepare nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdPlanSepare(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
-                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
-                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
-                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, "
-                + "preparacion, imei, idProd, bodega, efectivoGeneral, ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, rtIva, rtIca, "
-                + "rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad, porcDescuento, cant2, porcIva, utilidad1)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
-                + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosPlanSepare(nodo), metodos.pasarValoresPlanSepare(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarPedido(ndPedido nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdPedido(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
-                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
-                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
-                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, preparacion, bodega, "
-                + "idProd, detalle, efectivoGeneral, ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, rtIva, rtIca, "
-                + "rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad, porcDescuento, cant2, porcIva, utilidad1)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosPedido(nodo), metodos.pasarValoresPedido(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarCotizacion(ndCotizacion nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdCotizacion(idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, "
-                + "comprobante, cotizacion, anulada, anula, credito, cxc, usuario, observacion, anulada1, anula1, credito1, cxc1, usuario1, "
-                + "fechaAlerta, terminal, estadoGeneral, estado2, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, placa, "
-                + "garantia, diasGarantia, rango, terminos, notaAnulacion, conseMesa, producto, NC, concepto, descripcion, plu, estado, tercero, preparacion, bodega,  "
-                + "efectivoGeneral, ncGeneral, chequeGeneral, targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, rtIva, rtIca, "
-                + "rtFuente, otros, devuelta, copago, lista, cantidad, descuento, total, iva, subtotal, utilidad, porcDescuento, cant2, porcIva, utilidad1)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosCotizacion(nodo), metodos.pasarValoresCotizacion(nodo), instruccion_sql);
-        return ok;
-    }
-
-    public ndFactura getDatosFactura(String id) {
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, impuesto, turno, impoGeneral, franquisia, comision, "
-                + "valorComision, totalFacturaComision, imei, lote, idProd, mesFacturado, tarjetaCredito, totalPropina, porcPropina, idCosteo, hora, "
-                + "porcImpo, impoconsumo, sisteCredito, bodega, costo, modeloContable from bdFactura where factura = '" + id + "'; ";
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "impuesto", "turno", "impoGeneral", "franquisia", "comision", "valorComision", "totalFacturaComision",
-            "imei", "lote", "idProd", "mesFacturado", "tarjetaCredito", "totalPropina", "porcPropina", "idCosteo", "hora", "porcImpo", "impoconsumo",
-            "sisteCredito", "bodega", "costo", "modeloContable"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, false, true, true, true};
-
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        ndFactura nodo = metodos.llenarFactura(data);
-        return nodo;
-    }
-
-    public ndOServicio1 getDatosOServicio1(String id) {
-
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, bodega from bdOServicio1 where idFactura = '" + id + "'; ";
-
-        //columnas de la tabla que se
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "bodega"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndOServicio1 nodo = metodos.llenarOServicio1(data);
-
-        return nodo;
-    }
-
-    public ndPlanSepare getDatosPlanSepare(String id) {
-
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, imei, idProd, bodega from bdPlanSepare where idFactura = '" + id + "'; ";
-
-        //columnas de la tabla que se
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "imei", "idProd", "bodega"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndPlanSepare nodo = metodos.llenarPlanSepare(data);
-
-        return nodo;
-    }
-
-    public ndCongelada getDatosCuentaCobro(String id) {
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, inicio, hasta, cantIncremento, impoconsumoGeneral, porcImpo, "
-                + "impoconsumo, bodega from bdCuentaCobro where idFactura = '" + id + "'; ";
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "inicio", "hasta", "cantIncremento", "impoconsumoGeneral", "porcImpo", "impoconsumo", "bodega"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        ndCongelada nodo = metodos.llenarCongelada(data);
-        return nodo;
-    }
-
-    public ndCongelada getDatosCongelada(String id) {
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, turno, imei, idProd, impoconsumoGeneral, porcImpo, impoconsumo,"
-                + "bodega from bdCongelada where idFactura = '" + id + "'; ";
-
-        //columnas de la tabla que se
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "turno", "imei", "idProd", "impoconsumoGeneral", "porcImpo", "impoconsumo", "bodega"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndCongelada nodo = metodos.llenarCongelada(data);
-
-        return nodo;
-    }
-
-    public ndCongelada getDatosCongelada1(String id) {
-
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, turno, imei, idProd, impoconsumoGeneral, porcImpo, impoconsumo, "
-                + "bodega from bdCongelada where conseMesa = '" + id + "'; ";
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "turno", "imei", "idProd", "impoconsumoGeneral", "porcImpo", "impoconsumo", "bodega"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndCongelada nodo = metodos.llenarCongelada(data);
-
-        return nodo;
-    }
-
-    public ndPedido getDatosPedido(String id) {
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, bodega, idProd, detalle from bdPedido where idFactura = '" + id + "'; ";
-
-        //columnas de la tabla que se
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "bodega", "idProd", "detalle"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndPedido nodo = metodos.llenarPedido(data);
-        return nodo;
-    }
-
-    public ndCotizacion getDatosCotizacion(String id) {
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, bodega from bdCotizacion where idFactura = '" + id + "'; ";
-
-        //columnas de la tabla que se
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "bodega"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndCotizacion nodo = metodos.llenarCotizacion(data);
-
-        return nodo;
-    }
-
     public ndGarantia getDatosAbonos(String id) {
 
         String instruccion_sql = "select id, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivo, nc, cheque, targeta, comprobante, "
@@ -5534,41 +5055,6 @@ public class SQL {
         Object[] data = GetRegistro(colName, cadena, instruccion_sql);
 
         ndGarantia nodo = metodos.llenarAbonos(data);
-
-        return nodo;
-    }
-
-    public ndFactura getDatosCajaTerminal(String id) {
-
-        String instruccion_sql = "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion, impuesto, turno, impoGeneral, franquisia, comision, "
-                + "valorComision, totalFacturaComision, imei, lote, idProd, mesFacturado, tarjetaCredito, totalPropina, porcPropina, idCosteo, hora,"
-                + "porcImpo, impoconsumo, sisteCredito, bodega, costo, modeloContable "
-                + "from bdFactura where factura = '" + id + "'; ";
-
-        String[] colName = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion", "impuesto", "turno", "impoGeneral", "franquisia", "comision", "valorComision", "totalFacturaComision",
-            "imei", "lote", "idProd", "mesFacturado", "tarjetaCredito", "totalPropina", "porcPropina", "idCosteo", "hora", "porcImpo", "impoconsumo",
-            "sisteCredito", "bodega", "costo", "modeloContable"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true,
-            true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-            true, true, true, true, true, false, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndFactura nodo = metodos.llenarFactura(data);
 
         return nodo;
     }
@@ -5735,17 +5221,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarVerificarFactura(String factura, String cliente, String fact, String terminal, BigDecimal total, String fechaFactura,
-            String fechaVence, String fechaAlerta, String vendedor, String consecutivo, String placa, String turno) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdVerificadorFacturas(idFactura, cliente, factura, terminal, fechaFactura, fechaVencimiento, "
-                + "fechaAlerta, vendedor, consecutivo, placa, turno, total)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{factura, cliente, fact, terminal, fechaFactura, fechaVence, fechaAlerta,
-            vendedor, consecutivo, placa, turno}, new Object[]{total}, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarFormaPago(String id, String factura, String idFormaPago, String formaPago, BigDecimal valor, String relacion, String fecha,
             String hora, String usuario) {
         boolean ok = false;
@@ -5781,22 +5256,6 @@ public class SQL {
 
         ok = Agregar_Registro(new Object[]{egreso, codigo}, null, instruccion_sql);
         return ok;
-    }
-
-    public String getNombreClienteFactura(String factura) {
-        System.out.println("lo ultimo: " + factura);
-        String instruccion_sql = "SELECT bdTerceros.nombre FROM bdFactura JOIN bdTerceros ON bdFactura.cliente = bdTerceros.IdSistema "
-                + "WHERE bdFactura.factura = '" + factura + "' GROUP BY bdTerceros.nombre; ";
-        //columnas de la tabla que se
-        String[] colName = {"nombre"};
-        boolean[] cadena = {true};
-
-        try {
-            System.out.println("Nombre retornado: " + GetRegistro(colName, cadena, instruccion_sql)[0].toString());
-            return GetRegistro(colName, cadena, instruccion_sql)[0].toString();
-        } catch (Exception e) {
-            return "Sin_nombre";
-        }
     }
 
     public String getIDPago(String factura, String tipo) {
@@ -5986,10 +5445,7 @@ public class SQL {
     public Object[][] getVentasMovimientos(String prod, Boolean estado) {
         String colName[] = {
             "idFactura", "cliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario", "notaAnulacion"};
-        String instruccion_sql = "select idFactura, cliente, nombre, fechaFactura, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, "
-                + "usuario, notaAnulacion from facturacion where factura = '" + prod + "' ";
-        Object dtDatos[][] = getDatos(colName, " facturacion ", instruccion_sql, " where factura = '" + prod + "' ");
-        return dtDatos;
+        return consultarFilas(colName, ConsultaVista.FACTURACION.consulta(ConsultaVista.FACTURACION.columnas(colName), "d.factura = ?", ""), prod);
     }
 
     public Object[][] getNotasCreditoMovimientos(String prod) {
@@ -6003,10 +5459,11 @@ public class SQL {
     public Object[][] getSeparesMovimientos(String fact) {
         String colName[] = {
             "idFactura", "IdCliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario"};
-        String instruccion_sql = "select idFactura, IdCliente, nombre, fechaFactura, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, "
-                + "usuario from separacion where idFactura = '" + fact + "' ";
-        Object dtDatos[][] = getDatos(colName, " separacion ", instruccion_sql, " where idFactura = '" + fact + "' ");
-        return dtDatos;
+        return consultarFilas(colName, "SELECT d.idFactura AS idFactura, t.id AS IdCliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, "
+                + "d.subtotalGeneral AS subtotalGeneral, d.descuentoGeneral AS descuentoGeneral, d.ivaGeneral AS ivaGeneral, "
+                + "d.totalGeneral AS totalGeneral, d.usuario AS usuario "
+                + "FROM bdDocumentos d INNER JOIN bdterceros t ON t.idSistema = d.cliente "
+                + "WHERE d.tipoDocumento = 'separe' AND d.idFactura = ?", fact);
     }
 
     public Object[][] getCongeladasMovimientos(String fact) {
@@ -6027,49 +5484,12 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getProductosCongeladaImei(String imei) {
-        String colName[] = {
-            "idFactura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
-        String instruccion_sql = "select idFactura, cantidad, lista, descuento, subtotal, iva, porcIva, total from bdCongelada "
-                + "where imei LIKE '" + imei + "%' and anulada = false ";
-        Object dtDatos[][] = getDatos(colName, " bdCongelada ", instruccion_sql, " where imei LIKE '" + imei + "%' and anulada = false  ");
-        return dtDatos;
-    }
-
-    public Object[][] getProductosVentasImei(String imei) {
-        String colName[] = {
-            "factura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
-        String instruccion_sql = "select factura, cantidad, lista, descuento, subtotal, iva, porcIva, total from bdFactura where imei LIKE '" + imei + "%' and anulada = false ";
-        Object dtDatos[][] = getDatos(colName, " bdFactura ", instruccion_sql, " where imei LIKE"
-                + " '" + imei + "%' and anulada = false  ");
-
-        return dtDatos;
-    }
-
     public Object[][] getProductosNotasCreditoImei(String imei) {
         String colName[] = {
             "NC", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
         String instruccion_sql = "select NC, cantidad, lista, descuento, subtotal, iva, porcIva, total from bdNotasCredito "
                 + " where imei LIKE '" + imei + "%' ";
         Object dtDatos[][] = getDatos(colName, " bdNotasCredito ", instruccion_sql, " where imei = '" + imei + "' ");
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosSeparesImei(String imei) {
-        String colName[] = {
-            "factura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
-        String instruccion_sql = "select factura, cantidad, lista, descuento, subtotal, iva, porcIva, total from bdPlanSepare where imei LIKE '" + imei + '%' + "' and anulada = false ";
-        Object dtDatos[][] = getDatos(colName, " bdPlanSepare ", instruccion_sql, " where imei LIKE '" + imei + '%' + "' and anulada = false  ");
-
-        return dtDatos;
-    }
-
-    public Object[][] getProductosVentasAnuladasImei(String imei) {
-        String colName[] = {
-            "factura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
-        String instruccion_sql = "select factura, cantidad, lista, descuento, subtotal, iva, porcIva, total from bdFactura where imei LIKE '" + imei + "%' and anulada = true ";
-        Object dtDatos[][] = getDatos(colName, " bdFactura ", instruccion_sql, " where imei LIKE '" + imei + "%' and anulada = true  ");
 
         return dtDatos;
     }
@@ -6233,51 +5653,9 @@ public class SQL {
         return ok;
     }
 
-    public boolean cambiarMesa(String factura, String conse) {
-        boolean ok = false;
-        String instruccion_sql = "update bdCongelada set conseMesa = ? where idFactura = '" + factura + "'; ";
-        ok = Actualizar_Registro(new Object[]{"", conse}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarCuadreSepare(String id, String doc, String estado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdPlanSepare set red=?, estadoGeneral=? where idFactura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarCuadreFactura(String id, String doc, String estado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdFactura set red=?, estadoGeneral=? where factura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean modificarCuadreAbonos(String id, String doc, String estado) {
         boolean ok = false;
         String instruccion_sql = "update bdAbonos set red=?,estado=? where factura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarCotizaciones(String id, String doc, String estado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdCotizacion set red=?,estado=? where idFactura ='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarOServicio1(String id, String doc, String estado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdOServicio1 set red=?, estadoGeneral=? where idFactura='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarOServicio1(String id, String doc, String estado, String prod) {
-        boolean ok = false;
-        String instruccion_sql = "update bdOServicio1 set red=?, estadoGeneral=? where idFactura='" + id + "' AND producto = '" + prod + "' ;";
         ok = Actualizar_Registro(new Object[]{"", doc, estado}, null, instruccion_sql);
         return ok;
     }
@@ -6296,35 +5674,11 @@ public class SQL {
         return ok;
     }
 
-    public boolean modificarCuadreAnulacion(String id, String estado) {
-        boolean ok = false;
-        String instruccion_sql = "update bdFactura set cuadreAnulacion=? where id='" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
-        return ok;
-    }
-
-    public Object[][] facturasAnuladasCuadre(String concepto, String usuario) {
-        String colName[] = {"id"};
-        String origen = " bdFactura ";
-        Object dtDatos[][] = getDatos(colName, origen, "select id FROM bdFactura where" + concepto + " And (cuadreAnulacion = '' or cuadreAnulacion is Null) "
-                + "AND usuarioAnula='" + usuario + "' ;", " where" + concepto + " And (cuadreAnulacion = '' or cuadreAnulacion is Null) AND usuarioAnula='" + usuario + "';");
-
-        return dtDatos;
-    }
-
     public Object[][] getDatosCongelada() {
         String colName[] = {"idFactura", "cliente", "totalGeneral", "conseMesa", "nombre", "telefono", "observacion", "producto"};
         String origen = " congeladas";
         Object dtDatos[][] = getDatos(colName, origen, "select idFactura, cliente, totalGeneral, conseMesa, nombre, "
                 + "telefono, observacion, producto FROM congeladas", "");
-        return dtDatos;
-    }
-
-    public Object[][] getDatosCongelada1() {
-        String colName[] = {"idFactura", "totalGeneral", "conseMesa", "turno"};
-        String origen = " bdcongelada ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT bdcongelada.idFactura AS idFactura, bdcongelada.conseMesa AS conseMesa, "
-                + "bdcongelada.totalGeneral AS totalGeneral, bdcongelada.turno AS turno FROM bdcongelada GROUP BY bdcongelada.idFactura", "");
         return dtDatos;
     }
 
@@ -6426,16 +5780,6 @@ public class SQL {
         String origen = " bdCxc";
         Object dtDatos[][] = getDatos(colName, origen, "select Id FROM bdCxc where factura2 = '" + factura + "'", " where factura2 = '" + factura + "' ");
 
-        return dtDatos;
-    }
-
-    public Object[][] getVerificadorFactura(String factura) {
-        String colName[] = {
-            "idFactura"
-        };
-        String origen = " bdVerificadorFacturas";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura FROM bdVerificadorFacturas where factura = '" + factura + "' ",
-                " where factura = '" + factura + "' ");
         return dtDatos;
     }
 
@@ -6562,16 +5906,6 @@ public class SQL {
         String instruccion_sql = "select Id from bdDetalleProductos where imei = '" + id + "' and (estado = 'DISPONIBLE' or estado = 'PRESTADO') ";
         //columnas de la tabla que se
         String[] colName = {"Id"};
-        boolean[] cadena = {true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data[0].toString();
-    }
-
-    public String ordenExistente(String id) {
-        String instruccion_sql = "select idFactura from bdOServicio1 where idFactura = '" + id + "' ";
-        //columnas de la tabla que se
-        String[] colName = {"idFactura"};
         boolean[] cadena = {true};
         //se realiza la consulta
         Object[] data = GetRegistro(colName, cadena, instruccion_sql);
@@ -6824,13 +6158,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] facturasLote(String lote) {
-        String colName[] = {"factura"};
-        String origen = " bdFactura ";
-        Object dtDatos[][] = getDatos(colName, origen, "select factura from bdFactura where cxc = '" + lote + "'", " where cxc = '" + lote + "'");
-        return dtDatos;
-    }
-
     public String getNumeroMesas() {
         String instruccion_sql = "select count(nombre) as nombre from bdMesas; ";
         //columnas de la tabla que se
@@ -6861,13 +6188,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public boolean anularLote(String lote) {
-        boolean ok = false;
-        String instruccion_sql = "update bdFactura set anulada=? where cxc = '" + lote + "' ;";
-        ok = Inactivar_Registro(instruccion_sql);
-        return ok;
-    }
-
     public boolean anularEgreso(String Id) {
         boolean ok = false;
         String instruccion_sql = "update bdEgreso set anulada=? where egreso = '" + Id + "' ;";
@@ -6887,13 +6207,6 @@ public class SQL {
         boolean ok = false;
         String instruccion_sql = "update bdAbonos set anulada=? where factura = '" + Id + "' ;";
         ok = Inactivar_Registro(instruccion_sql);
-        return ok;
-    }
-
-    public boolean activarCuentaCobro(String id) {
-        boolean ok = false;
-        String instruccion_sql = "update bdCuentaCobro set anulada=? where idFactura = '" + id + "' ;";
-        ok = Activar_Registro(instruccion_sql);
         return ok;
     }
 
@@ -7019,36 +6332,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean eliminarFactura(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdFactura", "factura = '" + id + "'");
-        return ok;
-    }
-
-    public boolean eliminarCuentaCobro(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdCuentaCobro", "idFactura = '" + id + "'");
-        return ok;
-    }
-
-    public boolean eliminarCotizacion(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdCotizacion", "idFactura = '" + id + "'");
-        return ok;
-    }
-
-    public boolean eliminarOServicio(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdOServicio1", "idFactura = '" + id + "'");
-        return ok;
-    }
-
-    public boolean eliminarMesa(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdCongelada", "idFactura = '" + id + "'");
-        return ok;
-    }
-
     public boolean eliminarComanda(String id, String campo) {
         boolean ok = false;
         ok = eliminar_registro("bdComanda", campo + " = '" + id + "'");
@@ -7058,18 +6341,6 @@ public class SQL {
     public boolean eliminarGarantia(String id) {
         boolean ok = false;
         ok = eliminar_registro("bdGarantia", "id = '" + id + "'");
-        return ok;
-    }
-
-    public boolean eliminarSepare(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdPlanSepare", "idFactura = '" + id + "'");
-        return ok;
-    }
-
-    public boolean eliminarPedido(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdPedido", "idFactura = '" + id + "'");
         return ok;
     }
 
@@ -7114,34 +6385,21 @@ public class SQL {
     }
 
     public Object getCarteraPendiente(String usu) {
-        String instruccion_sql = "select valor"
-                + " from carteraPendiente where cliente = '" + usu + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"valor"};
-        boolean[] cadena = {true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        return data[0];
+        return consultarRegistro(new String[]{"valor"}, new boolean[]{true}, sentenciaCarteraPendiente(), usu)[0];
     }
 
     public Object getCarteraPendiente2(String usu) {
-        String instruccion_sql = "select valor2 from carteraPendiente where cliente = '" + usu + "'; ";
-        String[] colName = {"valor2"};
-        boolean[] cadena = {true};
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data[0];
+        return consultarRegistro(new String[]{"valor2"}, new boolean[]{true}, sentenciaCarteraPendiente(), usu)[0];
     }
 
     public Object[] getCarteraPendiente1(String usu) {
-        String instruccion_sql = "select valor2, valor"
-                + " from carteraPendiente where cliente = '" + usu + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"valor2", "valor"};
-        boolean[] cadena = {true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data;
+        return consultarRegistro(new String[]{"valor2", "valor"}, new boolean[]{true, true}, sentenciaCarteraPendiente(), usu);
+    }
+
+    private String sentenciaCarteraPendiente() {
+        return "SELECT SUM(r.valor) AS valor2, COUNT(r.plazo) AS cantidad, SUM(IFNULL(" + ConsultaCartera.abonosRegistrados("r.factura2") + ", 0)) AS valor "
+                + "FROM bdcxc r INNER JOIN bdDocumentos d ON d.factura = r.factura2 AND " + ConsultaCartera.FACTURAS + " "
+                + "WHERE r.estado = 'PEND' AND d.anulada = 0 AND d.cliente = ? GROUP BY d.cliente";
     }
 
     public boolean getProdActivo(String usu) {
@@ -7160,16 +6418,6 @@ public class SQL {
         String instruccion_sql = "select numero from bdConsecutivos where Id = '" + valor + "'; ";
         //columnas de la tabla que se
         String[] colName = {"numero"};
-        boolean[] cadena = {true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data;
-    }
-
-    public Object[] getCantFacturado(String valor) {
-        String instruccion_sql = "select cantFacturados from bdCuentaCobro where idFactura = '" + valor + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"cantFacturados"};
         boolean[] cadena = {true};
         //se realiza la consulta
         Object[] data = GetRegistro(colName, cadena, instruccion_sql);
@@ -7798,6 +7046,77 @@ public class SQL {
         return datos;
     }
 
+    private String sentenciaDocumento(TipoDocumento tipo, String[] colName, String campo) {
+        return sentenciaDocumento(Collections.singletonList(tipo), colName, campo);
+    }
+
+    private String sentenciaDocumento(List<TipoDocumento> tipos, String[] colName, String campo) {
+        return "SELECT " + ConsultaDocumentos.columnas(tipos.get(0), colName) + " FROM" + ConsultaDocumentos.ORIGEN
+                + "WHERE " + ConsultaDocumentos.filtroTipos(tipos) + " AND " + campo + " = ? ORDER BY dd.idDetalle";
+    }
+
+    private Object[][] consultarTabla(String[] colName, Integer[] booleanos, String sql, Object... parametros) {
+        List<Object[]> filas = new ArrayList<>();
+        List<Integer> columnasBooleanas = java.util.Arrays.asList(booleanos);
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.length; i++) {
+                pstm.setObject(i + 1, parametros[i]);
+            }
+            try (ResultSet res = pstm.executeQuery()) {
+                while (res.next()) {
+                    Object[] fila = new Object[colName.length];
+                    for (int j = 0; j < colName.length; j++) {
+                        fila[j] = columnasBooleanas.contains(j) ? res.getBoolean(colName[j]) : res.getString(colName[j]);
+                    }
+                    filas.add(fila);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return filas.toArray(new Object[filas.size()][]);
+    }
+
+    private Object[][] consultarFilas(String[] colName, String sql, Object... parametros) {
+        List<String[]> filas = new ArrayList<>();
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.length; i++) {
+                pstm.setObject(i + 1, parametros[i]);
+            }
+            try (ResultSet res = pstm.executeQuery()) {
+                while (res.next()) {
+                    String[] fila = new String[colName.length];
+                    for (int j = 0; j < colName.length; j++) {
+                        fila[j] = res.getString(colName[j]);
+                    }
+                    filas.add(fila);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return filas.toArray(new String[filas.size()][]);
+    }
+
+    private Object[] consultarRegistro(String[] colName, boolean[] cadena, String sql, Object... parametros) {
+        Object[] data = new Object[colName.length];
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.length; i++) {
+                pstm.setObject(i + 1, parametros[i]);
+            }
+            try (ResultSet res = pstm.executeQuery()) {
+                while (res.next()) {
+                    for (int j = 0; j < colName.length; j++) {
+                        data[j] = cadena[j] ? res.getString(colName[j]) : res.getBoolean(colName[j]);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return data;
+    }
+
     private Object[] GetRegistro(String colName[], boolean cadena[], String sql) {
         Object[] data = new Object[colName.length];
         try {
@@ -8383,91 +7702,19 @@ public class SQL {
         return dtDatos;
     }
 
-    public DefaultTableModel getRegistrosVentas(String factura, String id) {
-        String columNames[] = {
-            "Codigo", "Descripcion", "Valor/Unit", "Cant", "Subtotal", "Descuento", "%", "IVA", "INC", "idProd", "preparacion", "idCosteo", "Total", "Cant2", "idSistema"
-        };
-        String colName[] = {
-            "Codigo", "descripcion", "lista", "cantidad", "subtotal", "descuento", "porcIva", "iva", "impoGeneral", "idProd", "preparacion", "idCosteo", "total", "cant2", "idSistema"
-        };
-        String origen = " bdFactura";
-        Object dtDatos[][] = getDatos(colName, origen, "select bdProductos.Codigo, bdFactura.descripcion, bdFactura.lista, bdFactura.cantidad, bdFactura.subtotal, bdFactura.descuento, "
-                + "bdFactura.porcIva, bdFactura.iva, bdFactura.impoGeneral, bdFactura.idProd, bdFactura.preparacion, bdFactura.idCosteo, bdFactura.total, bdFactura.cant2, idSistema "
-                + "from bdFactura INNER JOIN bdProductos ON bdFactura.producto = bdProductos.idSistema "
-                + "where " + id + "= '" + factura + "'", " where " + id + "= '" + factura + "'");
-        DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
-            public boolean isCellEditable(int row, int column) {
-//                if (column == 3) {
-//                    return true;
-//                } else {  
-                return false;
-//                }
-            }
-        };
-        return datos;
-    }
-
-    public DefaultTableModel getRegistrosVentasSepares(String factura, String id) {
-        String columNames[] = {
-            "Codigo", "Descripcion", "Valor/Unit", "Cant", "Subtotal", "Descuento", "%", "IVA", "Total", "Cant2", "idSistema", "idProd"
-        };
-        String colName[] = {
-            "Codigo", "descripcion", "lista", "cantidad", "subtotal", "descuento", "porcIva", "iva", "total", "cant2", "idSistema", "idProd"
-        };
-        String origen = " bdPlanSepare";
-        Object dtDatos[][] = getDatos(colName, origen, "select bdProductos.Codigo, bdPlanSepare.descripcion, bdPlanSepare.lista, bdPlanSepare.cantidad, bdPlanSepare.subtotal, "
-                + "bdPlanSepare.descuento, bdPlanSepare.porcIva, bdPlanSepare.iva, bdPlanSepare.total, bdPlanSepare.cant2, idSistema, idProd "
-                + "from bdPlanSepare INNER JOIN bdProductos ON bdPlanSepare.producto = bdProductos.idSistema "
-                + "where " + id + "= '" + factura + "'", " where " + id + "= '" + factura + "'");
-        DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 3) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
-        return datos;
-    }
-
-    public DefaultTableModel getRegistrosPlantillas1(String factura) {
-        String columNames[] = {
-            "Codigo", "Descripcion", "Valor/Unit", "Cant", "Subtotal", "Descuento", "%", "IVA", "Total", "Cant2", "idSistema"
-        };
-        String colName[] = {
-            "Codigo", "descripcion", "lista", "cantidad", "subtotal", "descuento", "porcIva", "iva", "total", "cant2", "idSistema"
-        };
-        String origen = " bdCuentaCobro";
-        Object dtDatos[][] = getDatos(colName, origen, "select bdProductos.Codigo, bdCuentaCobro.descripcion, bdCuentaCobro.lista, bdCuentaCobro.cantidad, "
-                + "bdCuentaCobro.subtotal, bdCuentaCobro.descuento, bdCuentaCobro.porcIva, bdCuentaCobro.iva, bdCuentaCobro.total, bdCuentaCobro.cant2, "
-                + "idSistema from bdCuentaCobro INNER JOIN bdProductos ON bdCuentaCobro.producto = bdProductos.idSistema "
-                + "where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
-        DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 3) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
-        return datos;
-    }
-
     public DefaultTableModel getRegistrosVentasPlu(String factura) {
         String columNames[] = {
             "Codigo", "Descripcion", "Valor/Unit", "Cantidad", "Subtotal", "Descuento", "% IVA", "IVA", "% Impo", "Impoconsumo", "Total", "Plu", "Cant2",
-            "Cant", "Descuento", "imei", "idProd", "Cod", "codEstandar", "porcDescuento", "rango", "unidad", "manejaInventario"
+            "Cant", "Descuento", "Detalle", "idProd", "Cod", "codEstandar", "porcDescuento", "rango", "unidad", "manejaInventario"
         };
         String colName[] = {
             "producto", "descripcion", "lista", "cantidad", "subtotal", "descuento", "porcIva", "iva", "porcImpo", "impoconsumo", "total", "plu", "cant2",
-            "cantidadInicial", "descuentoInicial", "imei", "idProd", "codigo", "codEstandar", "porcDescuento", "rango", "unidad", "manejaInventario"
+            "cantidadInicial", "descuentoInicial", "detalle", "idProd", "codigo", "codEstandar", "porcDescuento", "rango", "unidad", "manejaInventario"
         };
-        String origen = " factura";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, descuento, porcIva, iva, porcImpo, impoconsumo, "
-                + "total, plu, cant2, cant2 as cantidadInicial, descuento as descuentoInicial, false as campoVacio, imei, idProd, codigo, codEstandar, "
-                + "porcDescuento, rango, unidad, manejaInventario from factura where factura = '" + factura + "'", " where factura = '" + factura + "'");
+        Object dtDatos[][] = consultarFilas(colName, ConsultaFactura.consulta(ConsultaFactura.columnas("producto", "descripcion", "lista", "cantidad", "subtotal",
+                "descuento", "porcIva", "iva", "porcImpo", "impoconsumo", "total", "plu", "cant2") + ", dd.cant2 AS cantidadInicial, dd.descuento AS descuentoInicial, "
+                + ConsultaFactura.columnas("detalle", "idProd", "Codigo", "codEstandar", "porcDescuento", "rango", "unidad", "manejaInventario"),
+                "d.factura = ?", "ORDER BY dd.idDetalle"), factura);
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
             public boolean isCellEditable(int row, int column) {
                 if (column == 3) {
@@ -8593,19 +7840,6 @@ public class SQL {
         return datos;
     }
 
-    public Object[][] getRegistrosCotizas(String factura) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "plu", "cant2",
-            "cliente", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "rango", "estadoGeneral", "vendedor", "observacion", "bodega"
-        };
-        String origen = " cotizacion";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, "
-                + "total, plu, cant2, cliente, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, rango, estadoGeneral, vendedor, observacion, bodega "
-                + "from cotizacion where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
-
-        return dtDatos;
-    }
-
     public Object[][] getPlantilla(String factura) {
         String colName[] = {
             "proceso", "tiempo", "ultimo"};
@@ -8626,14 +7860,14 @@ public class SQL {
     }
 
     public Object[][] getRegistrosAbonos(String factura) {
-
         String colName[] = {
             "factura", "tipo", "SumaDevalor"
         };
-        String origen = " abonosFacturacion";
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, tipo, SumaDevalor FROM abonosFacturacion where facturaTerm = '" + factura + "'", " where facturaTerm = '" + factura + "'");
-
-        return dtDatos;
+        return consultarFilas(colName, "SELECT a.factura AS factura, a.tipo AS tipo, SUM(a.valor) AS SumaDevalor "
+                + "FROM bdcxc a LEFT JOIN bdDocumentos d ON d.factura = a.factura2 AND " + ConsultaCartera.FACTURAS + " "
+                + "WHERE a.tipo = 'ABONO' AND a.estado IN " + ConsultaCartera.ESTADOS_ABONO + " AND (a.factura = ? OR a.factura2 = ?) "
+                + "AND IF(a.factura LIKE 'SEPARE-%', a.factura, d.factura) = ? "
+                + "GROUP BY a.factura, a.tipo, d.cliente, d.factura, d.terminal, a.estado", factura, factura, factura);
     }
 
     public Object[][] getRegistrosAbonosTerminal(String factura) {
@@ -8666,31 +7900,10 @@ public class SQL {
             "facturaTerm2", "cliente", "nombre", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "cuotas", "turno",
             "vendedor", "placa"
         };
-
-        String origen = " bdterceros bt "
-                + "LEFT JOIN bdverificadorfacturas bvf ON bt.idSistema = bvf.cliente "
-                + "LEFT JOIN repcartera rc ON rc.fact = bvf.factura "
-                + "LEFT JOIN bdcxc cx ON cx.factura2 = bvf.factura "
-                + "WHERE cx.factura <> '0' "
-                + "AND cx.tipo = '" + tipo + "' "
-                + "AND cx.estado = 'PEND' "
-                + "AND bvf.anulada = 0 "
-                + "AND (bvf.consecutivo = 'SIN-CONSECUTIVO' OR bvf.consecutivo LIKE 'CONG%' OR bvf.consecutivo LIKE 'Mesa.%')";
-        String sql = "SELECT bvf.factura AS facturaTerm2, bt.id AS cliente, bt.nombre AS nombre, "
-                + "bvf.fechaFactura AS fechaFactura, bvf.fechaVencimiento AS fechaVencimiento, cx.valor AS valor, "
-                + "IF(rc.valor IS NULL, cx.valor, cx.valor - rc.valor) AS saldo, "
-                + "(TO_DAYS(bvf.fechaVencimiento) - TO_DAYS(CAST(NOW() AS DATE))) AS edadCartera, "
-                + "IF(CAST(NOW() AS DATE) >= bvf.fechaAlerta AND CAST(NOW() AS DATE) < bvf.fechaVencimiento, 'ALERTA', "
-                + "IF(CAST(NOW() AS DATE) >= bvf.fechaVencimiento, 'VENCIDA', 'OK')) AS estadoVencimiento, "
-                + "cx.factura AS factura, bvf.terminal AS terminal, cx.cuotas AS cuotas, bvf.turno AS turno, "
-                + "bvf.vendedor AS vendedor, bvf.placa AS placa, "
-                + "IF(CAST(NOW() AS DATE) >= bvf.fechaAlerta AND CAST(NOW() AS DATE) < bvf.fechaVencimiento, 2, "
-                + "IF(CAST(NOW() AS DATE) >= bvf.fechaVencimiento, 1, 3)) AS orden, "
-                + "CAST(SUBSTR(bvf.idFactura, 6, 100) AS SIGNED) AS ordenId "
-                + "FROM" + origen
-                + " ORDER BY orden, ordenId";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append(sql).toString());
-
+        String sql = "SELECT x.facturaTerm AS facturaTerm2, x.* FROM ("
+                + ConsultaCartera.cuentasPendientes(ConsultaCartera.CONSECUTIVO_NORMAL, tipo, true, ConsultaCartera.EDAD_DIAS)
+                + ") x ORDER BY x.orden, x.ordenId";
+        Object dtDatos[][] = consultarTabla(colName, new Integer[]{}, sql);
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -8731,15 +7944,17 @@ public class SQL {
     }
 
     public DefaultTableModel getRegistrosCxcPorCliente(String factura, String cliente) {
-
         String columNames[] = {
             "Factura", "Factura", "Fecha Factura", "Fecha Venc.", "Valor", "Saldo", "Edad Cart.", "Estado", "Factura Interna", "Seleccionar"
         };
         String colName[] = {
             "factura2", "facturaTerm", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "sel"
         };
-        String origen = " conCxc where cliente = '" + cliente + "'";
-        Object dtDatos2[][] = GetTabla(colName, origen, (new StringBuilder()).append("select factura AS factura2, facturaTerm, fechaFactura, fechaVencimiento, valor, saldo, edadCartera, estadoVencimiento, factura,false as sel from conCxc where cliente = '" + cliente + "' ORDER BY fechaFactura").toString(), new Integer[]{9});
+        String sql = "SELECT x.factura AS factura2, x.facturaTerm, x.fechaFactura, x.fechaVencimiento, x.valor, x.saldo, x.edadCartera, "
+                + "x.estadoVencimiento, x.factura, false AS sel FROM ("
+                + ConsultaCartera.cuentasPendientes("(" + ConsultaCartera.CONSECUTIVO_NORMAL + ") AND t.id = ?", "FACT", true, ConsultaCartera.EDAD_DIAS)
+                + ") x ORDER BY x.fechaFactura";
+        Object dtDatos2[][] = consultarTabla(colName, new Integer[]{9}, sql, cliente);
         DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
             public boolean isCellEditable(int row, int column) {
                 if (column == 9) {
@@ -8747,9 +7962,8 @@ public class SQL {
                 }
                 return false;
             }
-
             Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -8760,15 +7974,17 @@ public class SQL {
     }
 
     public DefaultTableModel getRegistrosCxcDomicilioPorCliente(String factura, String cliente) {
-
         String columNames[] = {
             "Factura", "Factura", "Fecha Factura", "Fecha Venc.", "Valor", "Saldo", "Edad Cart.", "Estado", "Factura Interna", "Seleccionar"
         };
         String colName[] = {
             "factura2", "facturaTerm", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "sel"
         };
-        String origen = " conDomicilio where cliente = '" + cliente + "'";
-        Object dtDatos2[][] = GetTabla(colName, origen, (new StringBuilder()).append("select factura AS factura2, facturaTerm, fechaFactura, fechaVencimiento, valor, saldo, edadCartera, estadoVencimiento, factura,false as sel from conDomicilio where cliente = '" + cliente + "' ORDER BY fechaFactura").toString(), new Integer[]{9});
+        String sql = "SELECT x.factura AS factura2, x.facturaTerm, x.fechaFactura, x.fechaVencimiento, x.valor, x.saldo, x.edadCartera, "
+                + "x.estadoVencimiento, x.factura, false AS sel FROM ("
+                + ConsultaCartera.cuentasPendientes("(" + ConsultaCartera.CONSECUTIVO_DOMICILIO + ") AND t.id = ?", "FACT", false, ConsultaCartera.EDAD_NUMERICA)
+                + ") x ORDER BY x.fechaFactura";
+        Object dtDatos2[][] = consultarTabla(colName, new Integer[]{9}, sql, cliente);
         DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
             public boolean isCellEditable(int row, int column) {
                 if (column == 9) {
@@ -8776,9 +7992,8 @@ public class SQL {
                 }
                 return false;
             }
-
             Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -8786,17 +8001,6 @@ public class SQL {
             }
         };
         return datos;
-    }
-
-    public Object[][] getRegistrosFacturas(String condicion) {
-        String colName[] = {
-            "idFactura", "factura", "fechaFactura", "cliente", "nombre", "vendedor", "totalGeneral", "terminal", "turno", "modeloContable"
-        };
-        String origen = " facturacionTablas";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, factura, fechaFactura, cliente, nombre, vendedor, totalGeneral, terminal, turno, modeloContable "
-                + " from " + origen + " where anulada=false " + condicion + " order by ordenId Desc", " where anulada=false " + condicion);
-
-        return dtDatos;
     }
 
     public Object[][] getRegistrosPlantillas(String condicion) {
@@ -8811,37 +8015,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getTodosRegistrosFacturas(String condicion) {
-        String colName[] = {
-            "idFactura", "cliente", "vendedor", "red", "fechaFactura", "fechaVencimiento", "efectivoGeneral", "ncGeneral", "chequeGeneral",
-            "targetaGeneral", "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "comprobante", "cotizacion", "anulada",
-            "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "anulada1", "anula1", "credito1", "cxc1",
-            "usuario1", "fechaAlerta", "terminal", "estadoGeneral", "estado2", "devuelta", "factura", "resolucion", "fechaAnulacion", "cuadreAnulacion",
-            "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "rango", "terminos", "notaAnulacion", "conseMesa", "producto", "lista",
-            "cantidad", "descuento", "total", "iva", "subtotal", "NC", "utilidad", "concepto", "porcDescuento", "descripcion", "plu", "cant2", "estado",
-            "porcIva", "tercero", "utilidad1", "preparacion"
-        };
-        String origen = " bdFactura";
-        //Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select id, fechaFactura, cliente, vendedor from ").append(origen).toString());
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, cliente, vendedor, red, fechaFactura, fechaVencimiento, efectivoGeneral, ncGeneral, chequeGeneral, "
-                + "targetaGeneral, totalGeneral, descuentoGeneral, ivaGeneral, subtotalGeneral, comprobante, cotizacion, anulada, anula, credito, cxc, "
-                + "usuario, rtIva, rtIca, rtFuente, otros, observacion, anulada1, anula1, credito1, cxc1, usuario1, fechaAlerta, terminal, estadoGeneral, "
-                + "estado2, devuelta, factura, resolucion, fechaAnulacion, cuadreAnulacion, usuarioAnula, copago, placa, garantia, diasGarantia, rango, "
-                + "terminos, notaAnulacion, conseMesa, producto, lista, cantidad, descuento, total, iva, subtotal, NC, utilidad, concepto, porcDescuento, "
-                + "descripcion, plu, cant2, estado, porcIva, tercero, utilidad1, preparacion from " + origen + " where factura = '" + condicion + "'", " where factura = '" + condicion + "'");
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosSepares(String condicion) {
-        String colName[] = {
-            "factura", "idFactura", "fechaFactura", "idCliente", "nombre", "vendedor", "totalGeneral", "terminal"
-        };
-        String origen = " separacion";
-        //Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select id, fechaFactura, cliente, vendedor from ").append(origen).toString());
-        Object dtDatos[][] = getDatos(colName, origen, "select factura, idFactura, fechaFactura, idCliente, nombre, vendedor, totalGeneral, terminal  from " + origen + " where anulada=false " + condicion, " where anulada=false " + condicion);
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosFacturasTerminales(String condicion) {
         String colName[] = {
             "id", "factura", "fechaFactura", "cliente", "nombre", "vendedor", "total"
@@ -8849,26 +8022,6 @@ public class SQL {
         String origen = " cajaOrdenada";
         //Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select id, fechaFactura, cliente, vendedor from ").append(origen).toString());
         Object dtDatos[][] = getDatos(colName, origen, "select id,factura, fechaFactura, cliente,nombre, vendedor, total  from " + origen + " where anulada=false " + condicion, " where anulada=false " + condicion);
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosFacturaAdmin() {
-        String colName[] = {
-            "idFactura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "ordenId", "cuotaInicial2", "terminal", "comprobante", "fechaFactura", "usuario"
-        };
-        String origen = " facturacion";
-        //Object dtDatos[][] = getDatos(colName, origen, "select restante, Id FROM bdNc where cliente = '" + cliente + "' AND restante <> 0", " where cliente = '" + cliente + "' AND restante <> 0");
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, efectivoGeneral, targetaGeneral, chequeGeneral, ncGeneral, totalGeneral, ordenId, cuotaInicial2, terminal, comprobante, fechaFactura, usuario from " + origen + " where estadoGeneral ='PENDIENTE' AND anulada = false ", " where estadoGeneral ='PENDIENTE' AND anulada = false ");
-
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosSepareAdmin() {
-        String colName[] = {
-            "factura", "efectivoGeneral", "targetaGeneral", "chequeGeneral", "ncGeneral", "totalGeneral", "ordenId", "cuotaInicial2", "terminal", "comprobante"
-        };
-        String origen = " planSepare";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, efectivoGeneral, targetaGeneral, chequeGeneral, ncGeneral, totalGeneral, ordenId, cuotaInicial2, terminal, comprobante from " + origen + " where estado='PENDIENTE' ", " where estado='PENDIENTE' ");
         return dtDatos;
     }
 
@@ -8995,17 +8148,6 @@ public class SQL {
     }
 
     //CONGELADAS   
-    public Object[][] getProductosVenta(String factura) {
-        String colName[] = {
-            "producto", "cantidad", "descripcion", "plu", "cant2", "lista", "descuento", "preparacion", "conseMesa", "notaAnulacion", "rango",
-            "porcDescuento", "imei", "idProd", "impoconsumo", "porcImpo"};
-        String origen = " bdCongelada";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, cantidad, descripcion, plu, cant2, lista, descuento, preparacion, "
-                + "conseMesa, notaAnulacion, rango, porcDescuento, imei, idProd, impoconsumo, porcImpo from bdCongelada where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
-
-        return dtDatos;
-    }
-
     public Object[][] getProductosPrecompra(String ingreso, String usuario) {
 
         String sql = "";

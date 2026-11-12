@@ -8,8 +8,7 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from repCarteraPendienteCuentaCobro $P!{total}
-ORDER BY cliente, factura DESC, tipo ASC;]]>
+		<![CDATA[SELECT * FROM (SELECT cx.factura AS fact, cx.tipo AS tipo, cx.estado AS estado, cx.recibo AS recibo, cx.plazo AS plazo, cx.vencimiento AS vencimiento, t.id AS cliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, d.anulada AS anulada, IF((SELECT SUM(a.valor) FROM bdcxc a WHERE a.factura = cx.factura AND a.tipo = 'ABONO' AND a.estado = 'ABONO-REALIZADO') IS NULL, cx.valor, cx.valor - (SELECT SUM(a.valor) FROM bdcxc a WHERE a.factura = cx.factura AND a.tipo = 'ABONO' AND a.estado = 'ABONO-REALIZADO')) AS Expr1, d.vendedor AS vendedor, cx.factura AS factura, d.terminal AS terminal, cx.valor AS valor, t.telefono AS telefono, CAST((cx.vencimiento - CURDATE()) AS SIGNED) AS edadCartera, IF(NOW() >= cx.vencimiento, 'VENCIDA', 'OK') AS estadoVenc, d.placa AS placa, t.direccion AS direccion, t.ciudad AS ciudad, t.idSistema AS idSistema FROM bdcxc cx INNER JOIN bdDocumentos d ON d.idFactura = cx.factura AND d.tipoDocumento = 'cuentaCobro' LEFT JOIN bdterceros t ON t.idSistema = d.cliente WHERE cx.tipo = 'CUENTACOBRO' AND cx.estado <> 'CANCELADA' AND d.anulada = 0) repCarteraPendienteCuentaCobro $P!{total} ORDER BY cliente, factura DESC, tipo ASC]]>
 	</queryString>
 	<field name="fact" class="java.lang.String"/>
 	<field name="tipo" class="java.lang.String"/>

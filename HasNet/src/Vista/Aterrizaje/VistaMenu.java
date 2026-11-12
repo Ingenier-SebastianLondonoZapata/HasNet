@@ -19,7 +19,7 @@ import formularios.Agenda.infAgendaConsulta;
 import formularios.Agenda.infRepAgenda;
 
 import Vista.Cartera.VistaAbonos;
-import Vista.Cartera.VistaNotaDebito;
+import Vista.Cartera.notaDebito;
 import Vista.Cartera.VistaPagos;
 import Vista.Cartera.Reportes.VistaReportesCartera;
 
@@ -1371,7 +1371,7 @@ public class VistaMenu extends javax.swing.JFrame {
         agregarFormulario(new VistaEgresos(), instancias::setEgresos, usuario.isEgresos());
         agregarFormulario(new VistaCuadreCaja(), instancias::setCaja, usuario.isCuadreCaja());
         agregarFormulario(new VistaNotaCredito(), instancias::setNc, usuario.isNotasCredito());
-        agregarFormulario(new VistaNotaDebito(), instancias::setNd, usuario.isNotasCredito());
+        agregarFormulario(new notaDebito(), instancias::setNd, usuario.isNotasCredito());
         agregarFormularioSeleccionado(new infRepEgresos(), instancias::setRepEgresos, usuario.isReporteEgresos());
         agregarFormulario(new infRepCuadre(), instancias::setRepCuadre, usuario.isReporteCuadreCaja());
     }

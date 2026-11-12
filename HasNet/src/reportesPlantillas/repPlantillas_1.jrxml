@@ -10,9 +10,9 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from repPlantillasDiario $P!{cliente} 
-ORDER BY id
- ASC;]]>
+		<![CDATA[SELECT * FROM (SELECT d.idFactura AS id, CAST(SUBSTR(d.idFactura, 8, 100) AS SIGNED) AS id2, d.cliente AS cliente, t.nombre AS nombre, d.subtotalGeneral AS subtotal, d.ivaGeneral AS iva, d.totalGeneral AS total, d.fechaFactura AS fechaFactura, d.anulada AS anulada, d.rtIva AS rtIva, d.rtIca AS rtIca, d.rtFuente AS rtFuente, d.otros AS otros, d.descuentoGeneral AS descuento, d.efectivoGeneral AS efectivo, '0' AS nc, d.chequeGeneral AS cheque, d.targetaGeneral AS targeta, d.credito AS credito, d.bodega AS bodega, d.periodicidad AS periodicidad, d.inicio AS inicio, d.hasta AS hasta, d.fechaUltimoPago AS fechaUltimoPago, d.cantIncremento AS cantIncremento, t.id AS idTercero FROM bdDocumentos d INNER JOIN bdterceros t ON t.idSistema = d.cliente WHERE d.tipoDocumento = 'cuentaCobro' AND d.anulada = 0) repPlantillasDiario
+$P!{cliente}
+ORDER BY id ASC]]>
 	</queryString>
 	<field name="id" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>

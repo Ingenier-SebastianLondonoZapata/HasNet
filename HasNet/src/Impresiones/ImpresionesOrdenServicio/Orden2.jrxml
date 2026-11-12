@@ -8,7 +8,10 @@
 		<defaultValueExpression><![CDATA["C:\\Users\\.CLIK\\Documents\\PROYECTOS\\ESTANDAR MEDICO\\src\\reportes\\ejemplo\\"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select * from oServicio1 where num > 12 and num < 25 and idFactura =$P{numero}]]>
+		<![CDATA[SELECT DISTINCT d.idFactura AS idFactura, b.ordenServicio AS ordenServicio, b.nombreParte AS nombreParte, b.inventario AS inventario, b.problemasDerecha AS problemasDerecha, b.problemasIzquierda AS problemasIzquierda, b.observaciones AS observaciones, b.num AS num
+FROM bddetalleordenservicio b INNER JOIN bdDocumentos d ON d.idFactura = b.ordenServicio AND d.tipoDocumento = 'orden'
+WHERE b.num > 12 AND b.num < 25 AND d.idFactura = $P{numero}
+AND EXISTS (SELECT 1 FROM bdDocumentosDetalle x WHERE x.idDocumento = d.idDocumento)]]>
 	</queryString>
 	<field name="idFactura" class="java.lang.String"/>
 	<field name="ordenServicio" class="java.lang.String"/>

@@ -1,7 +1,7 @@
 package Modelo.Ventas;
 
+import Modelo.Documentos.ModeloDocumento;
 import Utilidades.Fechas;
-import clases.big;
 import java.math.BigDecimal;
 
 public class ModeloDatosDocumento {
@@ -161,61 +161,25 @@ public class ModeloDatosDocumento {
         this.estado2 = estado2;
     }
 
-    public static ModeloDatosDocumento construirModelo(Object datos, BigDecimal impoConsumo) {
-
-        boolean esAnulada = obtenerValor(datos, "isAnulada");
+    public static ModeloDatosDocumento construirModelo(ModeloDocumento documento) {
         return new ModeloDatosDocumento(
-                obtenerTexto(datos, "getFactura"),
-                obtenerTexto(datos, "getCliente"),
-                obtenerTexto(datos, "getVendedor"),
-                Fechas.formatearFecha1(obtenerFecha(datos, "getFechaFactura")),
-                Fechas.formatearFecha1(obtenerFecha(datos, "getFechaVencimiento")),
-                obtenerTexto(datos, "getObservacion"),
-                obtenerTexto(datos, "getResolucion"),
-                big.getBigDecimal(obtenerNumero(datos, "getSubtotalGeneral")),
-                big.getBigDecimal(obtenerNumero(datos, "getDescuentoGeneral")),
-                big.getBigDecimal(obtenerNumero(datos, "getIvaGeneral")),
-                impoConsumo,
-                big.getBigDecimal(obtenerNumero(datos, "getTotalGeneral")),
-                esAnulada,
-                obtenerTexto(datos, "getBodega"),
-                obtenerTexto(datos, "getEstadoGeneral"),
-                obtenerTexto(datos, "getEstado2")
+                documento.getFactura(),
+                documento.getCliente(),
+                documento.getVendedor(),
+                Fechas.formatearFecha1(documento.getFechaFactura()),
+                Fechas.formatearFecha1(documento.getFechaVencimiento()),
+                documento.getObservacion(),
+                documento.getResolucion(),
+                documento.getSubtotal(),
+                documento.getDescuento(),
+                documento.getIva(),
+                documento.getImpoconsumo(),
+                documento.getTotal(),
+                documento.isAnulada(),
+                documento.getBodega(),
+                documento.getEstadoGeneral(),
+                documento.getEstado2()
         );
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T obtenerValor(Object obj, String metodo) {
-        try {
-            return (T) obj.getClass().getMethod(metodo).invoke(obj);
-        } catch (Exception e) {
-            throw new RuntimeException("Error obteniendo valor: " + metodo, e);
-        }
-    }
-
-    private static String obtenerFecha(Object obj, String metodo) {
-        return obtenerTexto(obj, metodo);
-    }
-
-    private static String obtenerTexto(Object obj, String metodo) {
-        Object valor = obtenerValor(obj, metodo);
-        return String.valueOf(valor);
-    }
-
-    private static Number obtenerNumero(Object obj, String metodo) {
-        Object valor = obtenerValor(obj, metodo);
-
-        if (valor instanceof Number) {
-            return (Number) valor;
-        } else if (valor instanceof String) {
-            try {
-                return new BigDecimal((String) valor);
-            } catch (NumberFormatException e) {
-                throw new RuntimeException("No se pudo convertir el String a BigDecimal: " + valor, e);
-            }
-        }
-
-        throw new RuntimeException("Tipo no válido para número en método: " + metodo);
     }
 
 }

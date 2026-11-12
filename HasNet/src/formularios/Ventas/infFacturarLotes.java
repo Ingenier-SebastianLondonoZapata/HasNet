@@ -10,7 +10,8 @@ import Vista.BarraProceso.vistaBarraProceso;
 import formularios.terceros.*;
 import Utilidades.DatosMaestra;
 import clases.Instancias;
-import clases.Ventas.ndFactura;
+import Dao.Documentos.DaoDocumentos;
+import Modelo.Documentos.ModeloDocumento;
 import clases.big;
 import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
@@ -690,7 +691,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
                     }
                     String fecha = metodosGenerales.anho() + "-" + mes + "-01";
 
-                    if (!instancias.getSql().modificarFechaUltimoPago(tblClientes.getValueAt(i, 0).toString(), fecha, String.valueOf(cantFacturados))) {
+                    if (!new Dao.Documentos.DaoDocumentos().actualizarFacturacionCuentaCobro(tblClientes.getValueAt(i, 0).toString(), fecha, cantFacturados)) {
                         ControladorAlertas.alertFail("Error al agregar la fecha de pago");
                         return;
                     }
@@ -765,7 +766,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
             return;
         }
 
-        boolean anulado = instancias.getSql().getDocumentoAnulado("bdFactura", "Where cxc='" + consecutivo + "' ");
+        boolean anulado = new Dao.Documentos.DaoDocumentos().loteAnulado(consecutivo);
 
         if (anulado) {
             ControladorAlertas.alert("Este lote se encuentra anulado");
@@ -774,12 +775,9 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
         if (ControladorAlertas.option("¿Esta seguro de anular este lote?")) {
 
-            instancias.getSql().anularLote(consecutivo);
-
-            Object[][] facturas = instancias.getSql().facturasLote(consecutivo);
-
-            for (Object[] factura : facturas) {
-                instancias.getSql().anularFacturaVerificadorFacturas(factura[0].toString());
+            if (!new Dao.Documentos.DaoDocumentos().anularPorLote(consecutivo)) {
+                ControladorAlertas.alertFail("Error al anular el lote");
+                return;
             }
 
             ControladorAlertas.alertSuccess("Lote anulado con éxito");
@@ -797,7 +795,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
             return;
         }
 
-        boolean anulado = instancias.getSql().getDocumentoAnulado("bdFactura", "Where cxc ='" + consecutivo + "' ");
+        boolean anulado = new Dao.Documentos.DaoDocumentos().loteAnulado(consecutivo);
 
         if (anulado) {
             ControladorAlertas.alert("Este lote se encuentra anulado");
@@ -811,14 +809,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
             for (Object[] factura : facturas) {
 
-                String tipo = "";
-                String tipoImpr = DatosMaestra.getTipoImpresion();
-                if (tipoImpr.equals("Con-Codigo")) {
-                } else if (tipoImpr.equals("Sin-Codigo")) {
-                    tipo = "factura" + instancias.getRegimen() + "1";
-                } else if (tipoImpr.equals("Imei")) {
-                    tipo = "factura" + instancias.getRegimen() + "Imei";
-                }
+                String tipo = "factura" + instancias.getRegimen();
 
                 String titulo;
                 if (instancias.getConfiguraciones().isRestaurante()) {
@@ -837,8 +828,8 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
                 String encabezado = "Reimpresion";
 
-                ndFactura nodo = instancias.getSql().getDatosFactura(factura[0].toString());
-                String infoEmpresa = metodosGenerales.convertToMultiline(instancias.getInformacionEmpresaReimpresion() + "\n" + nodo.getResolucion());
+                ModeloDocumento nodo = new DaoDocumentos().obtenerPorFactura(DaoDocumentos.TIPOS_FACTURA, factura[0].toString());
+                String infoEmpresa = metodosGenerales.convertToMultiline(instancias.getInformacionEmpresaReimpresion() + "\n" + (nodo == null ? "" : nodo.getResolucion()));
 
                 new GeneradorReporteFactura(instancias).ver_Factura("", infoEmpresa, instancias.getLegal(), encabezado, instancias.getPie(), tipo,
                         factura[0].toString(), false, titulo, impresora, false);
@@ -1105,7 +1096,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
     }
 
     private String condicion() {
-        String sql = "where (estadoGeneral = 'PENDIENTE' AND anulada = 0) ";
+        String sql = "(estadoGeneral = 'PENDIENTE' AND anulada = 0) ";
 
         if (!sql.equals("") && cmbClientes.getItemCount() > 0) {
             sql = sql + "AND";

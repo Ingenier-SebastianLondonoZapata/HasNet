@@ -284,14 +284,14 @@ public class VistaReporteResumenDia extends javax.swing.JPanel {
             } else {
                 instancias.getSql().eliminarTodo("bdGenerarResumen");
 
-                Object[][] datos = instancias.getSql().getResumenVentas("WHERE (((fechaFactura) >='" + ini + "') AND ((fechaFactura)<= '" + fin + "')) AND facturacion.anulada =FALSE ");
+                Object[][] datos = instancias.getSql().getResumenVentas(ini, fin);
                 tblDatos.setValueAt(big.setMoneda(big.getBigDecimal(datos[0][0])), 0, 0);
                 tblDatos.setValueAt(big.setMoneda(big.getBigDecimal(datos[0][1])), 0, 1);
                 tblDatos.setValueAt(big.setMoneda(big.getBigDecimal(datos[0][2])), 0, 2);
                 tblDatos.setValueAt(big.setMoneda(big.getBigDecimal(datos[0][3])), 0, 3);
                 tblDatos.setValueAt(big.setMoneda(big.getBigDecimal(datos[0][4])), 0, 4);
 
-                Object[][] datos1 = instancias.getSql().getResumenCostos(" WHERE (((fechaFactura) >= '" + ini + "') AND ((fechaFactura) <= '" + fin + "')) AND bdFactura.anulada = FALSE ");
+                Object[][] datos1 = instancias.getSql().getResumenCostos(ini, fin);
                 tblDatos.setValueAt(datos1[0][0], 1, 0);
                 if (datos1[0][1] == null) {
                     tblDatos.setValueAt(this.simbolo + " 0", 1, 1);
@@ -299,7 +299,7 @@ public class VistaReporteResumenDia extends javax.swing.JPanel {
                     tblDatos.setValueAt(big.setMoneda(big.getBigDecimal(datos1[0][1])), 1, 1);
                 }
 
-                Object[][] datos2 = instancias.getSql().getResumenCostos1(" WHERE (((fechaFactura) >= '" + ini + "') AND ((fechaFactura) <= '" + fin + "')) AND bdFactura.anulada = FALSE ");
+                Object[][] datos2 = instancias.getSql().getResumenCostos1(ini, fin);
                 if (datos2[0][0] == null) {
                     tblDatos.setValueAt(this.simbolo + " 0", 2, 0);
                 } else {

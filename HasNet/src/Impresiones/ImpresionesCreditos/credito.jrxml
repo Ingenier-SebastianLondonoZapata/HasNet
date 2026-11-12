@@ -10,7 +10,7 @@
 p.cuotaInicial, vf.vendedor 
 FROM bdprestamo p LEFT JOIN bdcuota c ON c.contrato = p.contrato
 LEFT JOIN bdterceros t ON t.idSistema = p.cliente
-INNER JOIN bdverificadorfacturas vf ON vf.idFactura = p.factura
+INNER JOIN bdDocumentos vf ON vf.idFactura = p.factura AND vf.tipoDocumento = 'facturacion'
 WHERE p.contrato = $P{id}
 ORDER BY c.numCuota;]]>
 	</queryString>

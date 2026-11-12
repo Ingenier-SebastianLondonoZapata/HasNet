@@ -34,7 +34,7 @@
 	<field name="Descripcion" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="imei" class="java.lang.String">
+	<field name="detalle" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="cantidad" class="java.lang.Double">
@@ -80,9 +80,6 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="ivaGeneral" class="java.math.BigDecimal">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="impuesto" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="porcImpo" class="java.lang.Integer">
@@ -616,7 +613,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{Descripcion} + ' ' + $F{imei}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Descripcion} + ' ' + $F{detalle}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="13" uuid="2293ed51-61b9-423e-bc59-0aeb0df91c43"/>

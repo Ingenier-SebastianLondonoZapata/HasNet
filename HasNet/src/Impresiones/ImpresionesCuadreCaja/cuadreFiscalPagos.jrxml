@@ -7,7 +7,39 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from cuadreCajaFiscalPagos where id=$P{idCuadre}]]>
+		<![CDATA[SELECT
+    CAST(SUBSTR(c.Id, 8, 100) AS SIGNED) AS ordenId,
+    c.Id AS Id,
+    c.efectivoSistema AS efectivoSistema,
+    c.chequeSistema AS chequeSistema,
+    c.tarjetaSistema AS tarjetaSistema,
+    c.ncSistema AS ncSistema,
+    c.contEfectivo AS contEfectivo,
+    c.contCheque AS contCheque,
+    c.contTarjeta AS contTarjeta,
+    c.contNcRecibidas AS contNcRecibidas,
+    c.contEfectivo + c.contTarjeta + c.contCheque + c.contNcRecibidas AS contMediosPago,
+    c.efectivoSistema + c.chequeSistema + c.tarjetaSistema + c.ncSistema AS totalMediosPago,
+    IFNULL(rt.contIva, 0) AS contRtvIva,
+    IFNULL(rt.sumaIva, 0) AS sumaRtvIva,
+    IFNULL(rt.contFuente, 0) AS contRtFuente,
+    IFNULL(rt.sumaFuente, 0) AS sumaRtvFuente,
+    c.efectivo AS efectivo,
+    c.tarjeta AS tarjeta,
+    c.cheque AS cheque,
+    c.nc AS nc,
+    c.gasto AS gasto,
+    c.efectivo - c.efectivoSistema + c.gastosManuales AS diferenciaEfectivo,
+    c.tarjeta - c.tarjetaSistema AS diferenciaTarjeta,
+    c.cheque - c.chequeSistema AS diferenciaCheque,
+    c.nc - c.ncSistema AS diferenciaNc,
+    c.recogida AS recogida,
+    c.propinas AS propinas
+FROM bdcuadre c
+LEFT JOIN (SELECT SUM(d.rtIva > 0) AS contIva, SUM(IF(d.rtIva > 0, d.rtIva, NULL)) AS sumaIva,
+        SUM(d.rtFuente > 0) AS contFuente, SUM(IF(d.rtFuente > 0, d.rtFuente, NULL)) AS sumaFuente
+    FROM bdDocumentos d WHERE d.tipoDocumento IN ('facturacion', 'notaDebito') AND d.red = $P{idCuadre}) rt ON 1 = 1
+WHERE c.Id = $P{idCuadre}]]>
 	</queryString>
 	<field name="ordenId" class="java.lang.Long"/>
 	<field name="Id" class="java.lang.String">

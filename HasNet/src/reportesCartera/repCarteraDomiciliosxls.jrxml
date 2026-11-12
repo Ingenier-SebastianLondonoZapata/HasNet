@@ -8,8 +8,7 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from repCartera2 $P!{total}
-ORDER BY cliente, factura DESC, tipo ASC;]]>
+		<![CDATA[SELECT * FROM (SELECT d.idFactura AS fact, cx.tipo AS tipo, cx.estado AS estado, cx.recibo AS recibo, cx.plazo AS plazo, cx.vencimiento AS vencimiento, d.cliente AS cliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, d.anulada AS anulada, IF((SELECT SUM(a.valor) FROM bdcxc a WHERE a.factura2 = d.factura AND a.tipo = 'ABONO' AND a.estado = 'ABONO-REALIZADO') IS NULL, cx.valor, cx.valor - (SELECT SUM(a.valor) FROM bdcxc a WHERE a.factura2 = d.factura AND a.tipo = 'ABONO' AND a.estado = 'ABONO-REALIZADO')) AS Expr1, d.vendedor AS vendedor, d.idFactura AS factura, d.terminal AS terminal, d.factura AS factura2, cx.valor AS valor, t.telefono AS telefono, CAST((cx.vencimiento - CAST(NOW() AS DATE)) AS SIGNED) AS edadCartera, IF(CAST(NOW() AS DATE) >= cx.vencimiento, 'VENCIDA', 'OK') AS estadoVenc, d.turno AS turno, d.placa AS placa, t.direccion AS direccion, t.ciudad AS ciudad, t.id AS idSistema, d.conseMesa AS conseMesa FROM bdcxc cx INNER JOIN bdDocumentos d ON d.factura = cx.factura2 AND d.tipoDocumento IN ('facturacion', 'notaDebito') LEFT JOIN bdterceros t ON t.idSistema = d.cliente WHERE cx.tipo = 'FACT' AND cx.estado <> 'CANCELADA' AND d.anulada = 0) repCartera2 $P!{total} ORDER BY cliente, factura DESC, tipo ASC]]>
 	</queryString>
 	<field name="fact" class="java.lang.String"/>
 	<field name="tipo" class="java.lang.String"/>

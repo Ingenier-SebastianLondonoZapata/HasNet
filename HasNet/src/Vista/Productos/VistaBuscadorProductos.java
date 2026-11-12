@@ -679,10 +679,6 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
                     this.dispose();
                     instancias.getInventarioInicial().cargarProductos(cantidad);
                     break;
-                case "NotaDebito":
-                    this.dispose();
-                    instancias.getNd().cargarProductos1(cantidad);
-                    break;
             }
         }
     }

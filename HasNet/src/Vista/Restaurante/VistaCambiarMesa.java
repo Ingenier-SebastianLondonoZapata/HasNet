@@ -192,7 +192,7 @@ public class VistaCambiarMesa extends javax.swing.JDialog {
             return;
         }
 
-        instancias.getSql().cambiarMesa(facturaGeneral, mesa.getNombre());
+        new Dao.Documentos.DaoDocumentos().cambiarMesa(facturaGeneral, mesa.getNombre());
         instancias.getMesa1().setCambioMesa(true);
         ControladorAlertas.alertSuccess("Mesa cambiada correctamente!");
         this.dispose();

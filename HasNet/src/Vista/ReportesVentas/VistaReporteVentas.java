@@ -1110,13 +1110,13 @@ public class VistaReporteVentas extends javax.swing.JPanel {
                     sql = sql + " (";
 
                     for (int i = 0; i < cmbTerminal2.getItemCount(); i++) {
-                        sql = sql + " terminal='" + cmbTerminal2.getItemAt(i) + "' OR";
+                        sql = sql + " bdfactura.terminal='" + cmbTerminal2.getItemAt(i) + "' OR";
                     }
 
                     sql = sql.substring(0, sql.length() - 2) + ") AND";
                 }
             } else {
-                sql = sql + " terminal='" + instancias.getTerminal() + "' AND";
+                sql = sql + " bdfactura.terminal='" + instancias.getTerminal() + "' AND";
             }
 
             if (cmbTipo2.getItemCount() > 0) {

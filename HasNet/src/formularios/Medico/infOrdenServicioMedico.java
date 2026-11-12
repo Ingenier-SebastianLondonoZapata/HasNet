@@ -13,7 +13,7 @@ import clases.Medico.ndConvenio;
 import clases.Medico.ndEpsPrecargados;
 import clases.Medico.ndOrdenServicio;
 import Utilidades.BaseDatos.SQL;
-import clases.Ventas.ndFactura;
+import Modelo.Documentos.ModeloDocumento;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
@@ -1732,15 +1732,10 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
                     || !nodoDos.getCopago().equalsIgnoreCase(nodo.getCopago()) || !nodoDos.getDescuento().equalsIgnoreCase(nodo.getDescuento())) {
 
                 if (!nodoDos.getOrden().equals("")) {
-                    ndFactura factura = instancias.getSql().getDatosFactura(nodoDos.getOrden());
+                    ModeloDocumento factura = new Dao.Documentos.DaoDocumentos().obtenerPorFactura(Dao.Documentos.DaoDocumentos.TIPOS_FACTURA, nodoDos.getOrden());
 
-                    if (!instancias.getSql().modificarFacturaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), factura.getFactura(),
-                            "Modificación de la orden medica", true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                        ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
-                        return;
-                    }
-
-                    if (!instancias.getSql().anularFacturaVerificadorFacturas(factura.getFactura())) {
+                    if (factura != null && !new Dao.Documentos.DaoDocumentos().anularPorFactura(Dao.Documentos.DaoDocumentos.TIPOS_FACTURA, factura.getFactura(), metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(),
+                            "Modificación de la orden medica", (String) instancias.getSql().getNumConsecutivo("ANULA")[0], null)) {
                         ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
                         return;
                     }
@@ -2113,15 +2108,10 @@ public class infOrdenServicioMedico extends javax.swing.JInternalFrame {
             ndOrdenServicio nodoDos = instancias.getSql().getDatosOrdenServicio(txtId.getText());
 
             if (!nodoDos.getOrden().equals("")) {
-                ndFactura factura = instancias.getSql().getDatosFactura(nodoDos.getOrden());
+                ModeloDocumento factura = new Dao.Documentos.DaoDocumentos().obtenerPorFactura(Dao.Documentos.DaoDocumentos.TIPOS_FACTURA, nodoDos.getOrden());
 
-                if (!instancias.getSql().modificarFacturaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), factura.getFactura(),
-                        "Modificación de la orden medica", true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                    ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
-                    return;
-                }
-
-                if (!instancias.getSql().anularFacturaVerificadorFacturas(factura.getFactura())) {
+                if (factura != null && !new Dao.Documentos.DaoDocumentos().anularPorFactura(Dao.Documentos.DaoDocumentos.TIPOS_FACTURA, factura.getFactura(), metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(),
+                        "Modificación de la orden medica", (String) instancias.getSql().getNumConsecutivo("ANULA")[0], null)) {
                     ControladorAlertas.alertFail("Error al agregar la fecha de la anulación");
                     return;
                 }

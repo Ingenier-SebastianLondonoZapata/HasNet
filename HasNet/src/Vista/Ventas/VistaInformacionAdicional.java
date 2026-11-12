@@ -58,7 +58,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         txtTarjetaCredito.setText(this.simbolo + " 0");
         txtTotalPropina.setText(this.simbolo + " 0");
         txtTotalGeneral.setText(this.simbolo + " 0");
-        txtPropina.setText(this.simbolo + " 0");
 
         txtTotal.setText(big.setMoneda(valor));
         txtEfectivo.setText(big.setMoneda(valor));
@@ -76,11 +75,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
 
         this.NC = nc;
 
-        if (instancias.getConfiguraciones().isRestaurante()) {
-            pnlPropina.setVisible(true);
-        } else {
-            pnlPropina.setVisible(false);
-        }
+        configurarPropina();
 
         instancias.getSql().cambiarEstFact("ON");
 
@@ -168,20 +163,42 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         }
     }
 
+    private boolean esRestaurante() {
+        return instancias.getConfiguraciones().isRestaurante();
+    }
+
+    private void configurarPropina() {
+        boolean restaurante = esRestaurante();
+        lbPropina.setVisible(restaurante);
+        txtPorcPropina.setVisible(restaurante);
+        txtTotalPropina.setVisible(restaurante);
+        txtTotalPropina.setEditable(restaurante);
+        txtPorcPropina.setEditable(restaurante);
+        txtPorcPropina.setText("0");
+        txtTotalPropina.setText(this.simbolo + " 0");
+    }
+
     private void conservarPropina() {
-        if (!instancias.getConfiguraciones().isRestaurante()) {
+        double porcPropina = 0;
+        try {
+            porcPropina = Double.parseDouble(txtPorcPropina.getText().replace(",", "."));
+        } catch (NumberFormatException e) {
+        }
+        registrarPropina(porcPropina);
+    }
+
+    private void registrarPropina(double porcPropina) {
+        if (!esRestaurante()) {
+            instancias.setPorcPropina("0");
+            instancias.setPropina(BigDecimal.ZERO);
+            instancias.setTotalPropina(BigDecimal.ZERO);
             return;
         }
 
-        String porcPropina = "0";
-        try {
-            porcPropina = String.valueOf(Double.parseDouble(txtPorcPropina.getText().replace(",", ".")));
-        } catch (NumberFormatException e) {
-        }
-
-        instancias.setPorcPropina(porcPropina);
-        instancias.setPropina(big.getMoneda(txtPropina.getText()));
-        instancias.setTotalPropina(big.getMoneda(txtTotalPropina.getText()));
+        BigDecimal totalPropina = big.getMoneda(txtTotalPropina.getText());
+        instancias.setPorcPropina(String.valueOf(porcPropina));
+        instancias.setPropina(porcPropina > 0 ? BigDecimal.ZERO : totalPropina);
+        instancias.setTotalPropina(totalPropina);
     }
 
     private void actualizarEstadoPagos() {
@@ -240,11 +257,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         btnGuardar = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         btnCancelar = new javax.swing.JButton();
-        pnlPropina = new javax.swing.JPanel();
-        lbCheque4 = new javax.swing.JLabel();
-        txtPorcPropina = new javax.swing.JTextField();
-        lbCheque5 = new javax.swing.JLabel();
-        txtPropina = new javax.swing.JTextField();
         pnlInformacionAdicional = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lbEfectivo = new javax.swing.JLabel();
@@ -264,14 +276,15 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         txtTotalDinero = new javax.swing.JTextField();
         lbCheque1 = new javax.swing.JLabel();
         lbEtiqueta1 = new javax.swing.JLabel();
-        lbCheque6 = new javax.swing.JLabel();
+        lbPropina = new javax.swing.JLabel();
         txtTotal = new javax.swing.JTextField();
         txtTotalPropina = new javax.swing.JTextField();
-        jSeparator3 = new javax.swing.JSeparator();
         lbCheque9 = new javax.swing.JLabel();
         lbEtiqueta2 = new javax.swing.JLabel();
         txtTotalGeneral = new javax.swing.JTextField();
         txtCambio = new javax.swing.JTextField();
+        txtPorcPropina = new javax.swing.JTextField();
+        jSeparator4 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Forma de pago");
@@ -300,70 +313,6 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                 btnCancelarActionPerformed(evt);
             }
         });
-
-        pnlPropina.setBackground(new java.awt.Color(255, 255, 255));
-        pnlPropina.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Agregar Propina", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 13))); // NOI18N
-
-        lbCheque4.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        lbCheque4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbCheque4.setText("En %:");
-
-        txtPorcPropina.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        txtPorcPropina.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPorcPropina.setText("0");
-        txtPorcPropina.setName("Cheque"); // NOI18N
-        txtPorcPropina.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtPorcPropinaKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtPorcPropinaKeyTyped(evt);
-            }
-        });
-
-        lbCheque5.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        lbCheque5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lbCheque5.setText("En Valor:");
-
-        txtPropina.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        txtPropina.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPropina.setName("Cheque"); // NOI18N
-        txtPropina.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtPropinaKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtPropinaKeyTyped(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnlPropinaLayout = new javax.swing.GroupLayout(pnlPropina);
-        pnlPropina.setLayout(pnlPropinaLayout);
-        pnlPropinaLayout.setHorizontalGroup(
-            pnlPropinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPropinaLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(lbCheque4, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPorcPropina, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lbCheque5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPropina, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        pnlPropinaLayout.setVerticalGroup(
-            pnlPropinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPropinaLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(pnlPropinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbCheque4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlPropinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtPorcPropina, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lbCheque5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtPropina, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(5, 5, 5))
-        );
 
         pnlInformacionAdicional.setLayout(new java.awt.BorderLayout());
 
@@ -499,9 +448,9 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         lbEtiqueta1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbEtiqueta1.setText("Total Factura:");
 
-        lbCheque6.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        lbCheque6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lbCheque6.setText("Total Propina:");
+        lbPropina.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbPropina.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbPropina.setText("Propina %:");
 
         txtTotal.setEditable(false);
         txtTotal.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
@@ -513,12 +462,10 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
             }
         });
 
-        txtTotalPropina.setEditable(false);
         txtTotalPropina.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         txtTotalPropina.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtTotalPropina.setText("0");
         txtTotalPropina.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtTotalPropina.setEnabled(false);
         txtTotalPropina.setName("Cheque"); // NOI18N
         txtTotalPropina.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -563,58 +510,70 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
             }
         });
 
+        txtPorcPropina.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        txtPorcPropina.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtPorcPropina.setText("0");
+        txtPorcPropina.setName("Cheque"); // NOI18N
+        txtPorcPropina.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPorcPropinaKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPorcPropinaKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator4)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lbCheque9, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                            .addComponent(lbEtiqueta2, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbCheque9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbEtiqueta2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbCheque1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lbEtiqueta1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(lbPropina)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtPorcPropina, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTotalGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
-                            .addComponent(txtCambio))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTotalDinero)
+                            .addComponent(txtTotal)
+                            .addComponent(txtTotalPropina)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(txtTotalGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(txtCambio)))
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(lbCheque6, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lbCheque1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(lbEtiqueta1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTotalDinero)
-                                    .addComponent(txtTotal)
-                                    .addComponent(txtTotalPropina)))
-                            .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(lbCheque8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lbCheque7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lbCheque2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lbNC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lbEfectivo, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(lbEtiqueta, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(3, 3, 3)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(txtCheque, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtNC, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtValor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                                    .addComponent(txtEfectivo, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTarjetaDebito)
-                                    .addComponent(txtTarjetaCredito))))
-                        .addGap(5, 5, 5)
-                        .addComponent(btnPagarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0))))
+                            .addComponent(lbCheque7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbCheque2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbNC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbCheque8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(lbEtiqueta, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(lbEfectivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(3, 3, 3)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtCheque, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNC, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtValor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                            .addComponent(txtEfectivo, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTarjetaDebito)
+                            .addComponent(txtTarjetaCredito))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnPagarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -656,19 +615,20 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                     .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtTotalPropina, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                    .addComponent(lbCheque6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(10, 10, 10)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbPropina, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtPorcPropina)
+                    .addComponent(txtTotalPropina))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtTotalGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbCheque9, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbEtiqueta2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
+                    .addComponent(txtCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbEtiqueta2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -677,9 +637,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlInformacionAdicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlPropina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(pnlInformacionAdicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -698,12 +656,9 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
                 .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jSeparator1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(pnlInformacionAdicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlPropina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlInformacionAdicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -827,8 +782,8 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
             return;
         }
 
-        Double porcPropina = 0.0;
-        if (instancias.getConfiguraciones().isRestaurante()) {
+        double porcPropina = 0;
+        if (esRestaurante()) {
             try {
                 porcPropina = Double.parseDouble(txtPorcPropina.getText().replace(",", "."));
             } catch (Exception e) {
@@ -849,9 +804,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         instancias.setTarjetaDevuelta(big.getMoneda(txtTarjetaDebito.getText()));
         instancias.setTarjetaCredito(big.getMoneda(txtTarjetaCredito.getText()));
         instancias.setChequeDevuelta(big.getMoneda(txtCheque.getText()));
-        instancias.setPorcPropina(String.valueOf(porcPropina));
-        instancias.setPropina(big.getMoneda(txtPropina.getText()));
-        instancias.setTotalPropina(big.getMoneda(txtTotalPropina.getText()));
+        registrarPropina(porcPropina);
 
         if (big.getMoneda(txtCambio.getText()).compareTo(BigDecimal.ZERO) == - 1) {
             instancias.setDevuelta(big.getBigDecimal("0"));
@@ -944,35 +897,38 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
     }//GEN-LAST:event_txtTarjetaCreditoKeyTyped
 
     private void txtPorcPropinaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPorcPropinaKeyReleased
-        if (!txtPorcPropina.getText().equals("")) {
-            BigDecimal porc = BigDecimal.valueOf(Double.parseDouble(txtPorcPropina.getText().replace(",", ".")));
-            BigDecimal total = porc.multiply(valorNeto).divide(big.getBigDecimal("100"));
-            txtPropina.setText(this.simbolo + " 0");
-            txtTotalPropina.setText(big.setMonedaExacta(total));
-            calcularEfectivo();
+        if (!esRestaurante()) {
+            return;
         }
+
+        BigDecimal porcentaje;
+        try {
+            porcentaje = txtPorcPropina.getText().trim().isEmpty()
+                    ? BigDecimal.ZERO
+                    : BigDecimal.valueOf(Double.parseDouble(txtPorcPropina.getText().replace(",", ".")));
+        } catch (NumberFormatException e) {
+            return;
+        }
+        BigDecimal total = porcentaje.multiply(valorNeto).divide(big.getBigDecimal("100"));
+        txtTotalPropina.setText(big.setMonedaExacta(total));
+        txtPorcPropina.setText(big.setNumero(porcentaje));
+        calcularEfectivo();
     }//GEN-LAST:event_txtPorcPropinaKeyReleased
 
     private void txtPorcPropinaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPorcPropinaKeyTyped
         metodos.soloNum(evt);
     }//GEN-LAST:event_txtPorcPropinaKeyTyped
 
-    private void txtPropinaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPropinaKeyReleased
-        if (txtPropina.getText().equals("") || txtPropina.getText().equals(this.simbolo) || txtPropina.getText().equals(this.simbolo + " ")) {
-            txtPropina.setText("0");
+    private void txtTotalPropinaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalPropinaKeyReleased
+        if (!esRestaurante()) {
+            return;
         }
-        txtPropina.setText(big.setMonedaExacta(big.getMoneda(txtPropina.getText())));
-        txtTotalPropina.setText(big.setMonedaExacta(big.getMoneda(txtPropina.getText())));
+        if (txtTotalPropina.getText().equals("") || txtTotalPropina.getText().equals(this.simbolo) || txtTotalPropina.getText().equals(this.simbolo + " ")) {
+            txtTotalPropina.setText("0");
+        }
+        txtTotalPropina.setText(big.setMonedaExacta(big.getMoneda(txtTotalPropina.getText())));
         txtPorcPropina.setText("0");
         calcularEfectivo();
-    }//GEN-LAST:event_txtPropinaKeyReleased
-
-    private void txtPropinaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPropinaKeyTyped
-        metodos.soloNum(evt);
-    }//GEN-LAST:event_txtPropinaKeyTyped
-
-    private void txtTotalPropinaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalPropinaKeyReleased
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalPropinaKeyReleased
 
     private void txtTotalPropinaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalPropinaKeyTyped
@@ -1061,12 +1017,9 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JLabel lbCheque1;
     private javax.swing.JLabel lbCheque2;
-    private javax.swing.JLabel lbCheque4;
-    private javax.swing.JLabel lbCheque5;
-    private javax.swing.JLabel lbCheque6;
     private javax.swing.JLabel lbCheque7;
     private javax.swing.JLabel lbCheque8;
     private javax.swing.JLabel lbCheque9;
@@ -1075,14 +1028,13 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
     private javax.swing.JLabel lbEtiqueta1;
     private javax.swing.JLabel lbEtiqueta2;
     private javax.swing.JLabel lbNC;
+    private javax.swing.JLabel lbPropina;
     private javax.swing.JPanel pnlInformacionAdicional;
-    private javax.swing.JPanel pnlPropina;
     private javax.swing.JTextField txtCambio;
     private javax.swing.JTextField txtCheque;
     private javax.swing.JTextField txtEfectivo;
     private javax.swing.JTextField txtNC;
     private javax.swing.JTextField txtPorcPropina;
-    private javax.swing.JTextField txtPropina;
     private javax.swing.JTextField txtTarjetaCredito;
     private javax.swing.JTextField txtTarjetaDebito;
     private javax.swing.JTextField txtTotal;

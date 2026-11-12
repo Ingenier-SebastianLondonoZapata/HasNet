@@ -7,7 +7,25 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from cuadreCajaFiscalIvas where id=$P{idCuadre}]]>
+		<![CDATA[SELECT
+    CAST(SUBSTR(c.Id, 8, 100) AS SIGNED) AS ordenId,
+    c.Id AS Id,
+    x.porcIva AS porcIva,
+    x.impuesto AS totalIvaDiscriminandoIva,
+    x.subtotal AS subTotalDiscriminadoIva,
+    x.total AS totalDiscriminadoIva,
+    t.impuesto AS SumaDeiva,
+    t.subtotal AS SumaDesubtotal,
+    x.descuento AS totalDescuentoDiscriminadoIva
+FROM bdcuadre c
+INNER JOIN (SELECT d.red, SUM(dd.iva) AS impuesto, SUM(dd.subtotal) AS subtotal
+    FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento
+    WHERE d.tipoDocumento IN ('facturacion', 'notaDebito') AND d.red = $P{idCuadre} AND d.anulada = 0 GROUP BY d.red) t ON t.red = c.Id
+LEFT JOIN (SELECT d.red, dd.porcIva, SUM(dd.iva) AS impuesto, SUM(dd.subtotal) AS subtotal, SUM(dd.total) AS total, SUM(dd.descuento) AS descuento
+    FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento
+    WHERE d.tipoDocumento IN ('facturacion', 'notaDebito') AND d.red = $P{idCuadre} AND d.anulada = 0 GROUP BY d.red, dd.porcIva) x ON x.red = c.Id
+WHERE c.Id = $P{idCuadre}
+ORDER BY x.porcIva]]>
 	</queryString>
 	<field name="ordenId" class="java.lang.Short"/>
 	<field name="Id" class="java.lang.String"/>

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="792" columnWidth="565" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" uuid="086a586a-2dca-4448-ad46-fceddaffa95b">
 	<property name="ireport.zoom" value="1.7715610000000137"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="49"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="factura" class="java.lang.String"/>
 	<parameter name="numFactura" class="java.lang.String"/>
 	<parameter name="agrupar" class="java.lang.Boolean">
@@ -25,132 +25,143 @@
 	<parameter name="ordenServicio" class="java.lang.String"/>
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<parameter name="mostrarCodigo" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[Boolean.TRUE]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mostrarSerial" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoDocumento" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["facturacion"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="esMedico" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT
-    bdfactura.idFactura AS idFactura,
-    CAST(SUBSTR(bdfactura.idFactura, 6, 100) AS SIGNED) AS ordenId,
+    d.idFactura AS idFactura,
+    CAST(SUBSTR(d.idFactura, 6, 100) AS SIGNED) AS ordenId,
     CAST(SUBSTR(bdterceros.id, 1, 100) AS SIGNED) AS cliente,
     bdterceros.ciudad AS ciudad,
-    bdfactura.vendedor AS vendedor,
-    bdfactura.red AS red,
-    bdfactura.fechaFactura AS fechaFactura,
-    bdfactura.fechaVencimiento AS fechaVencimiento,
-    bdfactura.efectivoGeneral AS efectivoGeneral,
-    bdfactura.ncGeneral AS ncGeneral,
-    bdfactura.chequeGeneral AS chequeGeneral,
-    bdfactura.targetaGeneral AS targetaGeneral,
-    bdfactura.totalGeneral AS totalGeneral,
-    bdfactura.descuentoGeneral AS descuentoGeneral,
-    bdfactura.ivaGeneral AS ivaGeneral,
-    bdfactura.subtotalGeneral AS subtotalGeneral,
-    bdfactura.comprobante AS comprobante,
-    bdfactura.cotizacion AS cotizacion,
-    bdfactura.anulada AS anulada,
-    bdfactura.anula AS anula,
-    bdfactura.credito AS credito,
-    bdfactura.cxc AS cxc,
-    bdfactura.usuario AS usuario,
-    bdfactura.rtIva AS rtIva,
-    bdfactura.rtIca AS rtIca,
-    bdfactura.rtFuente AS rtFuente,
-    bdfactura.otros AS otros,
-    bdfactura.observacion AS observacion,
-    bdfactura.anulada1 AS anulada1,
-    bdfactura.anula1 AS anula1,
-    bdfactura.credito1 AS credito1,
-    bdfactura.cxc1 AS cxc1,
-    bdfactura.usuario1 AS usuario1,
-    bdfactura.fechaAlerta AS fechaAlerta,
-    bdfactura.terminal AS terminal,
-    bdfactura.estadoGeneral AS estadoGeneral,
-    bdfactura.estado2 AS estado2,
-    bdfactura.devuelta AS devuelta,
-    bdfactura.factura AS factura,
-    bdfactura.resolucion AS resolucion,
-    bdfactura.fechaAnulacion AS fechaAnulacion,
-    bdfactura.cuadreAnulacion AS cuadreAnulacion,
-    bdfactura.usuarioAnula AS usuarioAnula,
-    bdfactura.copago AS copago,
-    bdfactura.garantia AS garantia,
-    bdfactura.diasGarantia AS diasGarantia,
-    bdfactura.rango AS rango,
-    bdfactura.terminos AS terminos,
-    bdfactura.notaAnulacion AS notaAnulacion,
-    bdfactura.conseMesa AS conseMesa,
-    bdfactura.producto AS producto,
-    bdfactura.lista AS lista,
-    IF($P{agrupar}, SUM(bdfactura.cantidad), MAX(bdfactura.cantidad)) AS cantidad,
-    IF($P{agrupar}, SUM(bdfactura.descuento), MAX(bdfactura.descuento)) AS descuento,
-    IF($P{agrupar}, SUM(bdfactura.total), MAX(bdfactura.total)) AS total,
-    IF($P{agrupar}, SUM(bdfactura.iva), MAX(bdfactura.iva)) AS iva,
-    IF($P{agrupar}, SUM(bdfactura.subtotal), MAX(bdfactura.subtotal)) AS subtotal,
-    bdfactura.NC AS NC,
-    IF($P{agrupar}, SUM(bdfactura.utilidad), MAX(bdfactura.utilidad)) AS utilidad,
-    bdfactura.concepto AS concepto,
-    bdfactura.porcDescuento AS porcDescuento,
-    bdfactura.descripcion AS descripcion,
-    bdfactura.plu AS plu,
-    IF($P{agrupar}, SUM(bdfactura.cant2), MAX(bdfactura.cant2)) AS cant2,
-    bdfactura.estado AS estado,
-    bdfactura.porcIva AS porcIva,
-    bdfactura.tercero AS tercero,
-    bdfactura.utilidad1 AS utilidad1,
+    d.vendedor AS vendedor,
+    d.red AS red,
+    d.fechaFactura AS fechaFactura,
+    d.fechaVencimiento AS fechaVencimiento,
+    d.efectivoGeneral AS efectivoGeneral,
+    d.ncGeneral AS ncGeneral,
+    d.chequeGeneral AS chequeGeneral,
+    d.targetaGeneral AS targetaGeneral,
+    d.totalGeneral AS totalGeneral,
+    d.descuentoGeneral AS descuentoGeneral,
+    d.ivaGeneral AS ivaGeneral,
+    d.subtotalGeneral AS subtotalGeneral,
+    d.comprobante AS comprobante,
+    d.cotizacion AS cotizacion,
+    d.anulada AS anulada,
+    d.anula AS anula,
+    d.credito AS credito,
+    d.cxc AS cxc,
+    d.usuario AS usuario,
+    d.rtIva AS rtIva,
+    d.rtIca AS rtIca,
+    d.rtFuente AS rtFuente,
+    d.otros AS otros,
+    d.observacion AS observacion,
+    CAST(0 AS UNSIGNED) AS anulada1,
+    '' AS anula1,
+    CAST(0 AS UNSIGNED) AS credito1,
+    '' AS cxc1,
+    '' AS usuario1,
+    d.fechaAlerta AS fechaAlerta,
+    d.terminal AS terminal,
+    d.estadoGeneral AS estadoGeneral,
+    d.estado2 AS estado2,
+    d.devuelta AS devuelta,
+    d.factura AS factura,
+    d.resolucion AS resolucion,
+    d.fechaAnulacion AS fechaAnulacion,
+    d.cuadreAnulacion AS cuadreAnulacion,
+    d.usuarioAnula AS usuarioAnula,
+    d.copago AS copago,
+    d.garantia AS garantia,
+    d.diasGarantia AS diasGarantia,
+    dd.rango AS rango,
+    d.terminos AS terminos,
+    d.notaAnulacion AS notaAnulacion,
+    d.conseMesa AS conseMesa,
+    dd.producto AS producto,
+    dd.lista AS lista,
+    IF($P{agrupar}, SUM(dd.cantidad), MAX(dd.cantidad)) AS cantidad,
+    IF($P{agrupar}, SUM(dd.descuento), MAX(dd.descuento)) AS descuento,
+    IF($P{agrupar}, SUM(dd.total), MAX(dd.total)) AS total,
+    IF($P{agrupar}, SUM(dd.iva), MAX(dd.iva)) AS iva,
+    IF($P{agrupar}, SUM(dd.subtotal), MAX(dd.subtotal)) AS subtotal,
+    '' AS NC,
+    IF($P{agrupar}, SUM(dd.utilidad), MAX(dd.utilidad)) AS utilidad,
+    '' AS concepto,
+    dd.porcDescuento AS porcDescuento,
+    dd.descripcion AS descripcion,
+    dd.plu AS plu,
+    IF($P{agrupar}, SUM(dd.cant2), MAX(dd.cant2)) AS cant2,
+    dd.estado AS estado,
+    dd.porcIva AS porcIva,
+    dd.tercero AS tercero,
+    dd.utilidad1 AS utilidad1,
     bdterceros.nombre AS nombre,
     bdterceros.telefono AS telefono,
     bdterceros.direccion AS direccion,
     IF(ISNULL(bdprestamo.cuotaInicial), 0, bdprestamo.cuotaInicial) AS cuotaInicial2,
-    bdfactura.factura AS id2,
+    d.factura AS id2,
     bdproductos.ubicacion1 AS ubicacion1,
     bdproductos.referencia AS referencia,
-    (bdfactura.subtotalGeneral - bdfactura.descuentoGeneral) AS valor3,
-    IF((bdfactura.producto = 'PROD-000000032'), bdfactura.impuesto, '0') AS impuesto,
+    (d.subtotalGeneral - d.descuentoGeneral) AS valor3,
     bdcxc.plazo AS plazo,
     bdterceros.nombreContacto AS nombreContacto,
     bdterceros.cargo AS cargo,
-    IF(bdfactura.turno IS NULL OR TRIM(bdfactura.turno) IN ('', '0'), '', bdfactura.turno) AS turno,
+    IF(d.turno IS NULL OR TRIM(d.turno) IN ('', '0'), '', d.turno) AS turno,
     bdproductos.grupo AS Grupo,
     bdterceros.eps AS eps,
     bdepsprecargados.nombre AS nombreEps,
-    bdfactura.Id AS Id,
-    bdfactura.placa AS placa,
+    dd.idDetalle AS Id,
+    d.placa AS placa,
     bdplacas.tipo AS tipo,
     bdparqueaderoautos.fIngreso AS fIngreso,
     bdparqueaderoautos.fSalida AS fSalida,
     bdparqueaderoautos.hIngreso AS hIngreso,
     bdparqueaderoautos.hSalida AS hSalida,
     bdparqueaderoautos.horas AS horas,
-    bdfactura.imei AS imei,
+    dd.detalle AS detalle,
     bddetalleproductos.color AS color,
     bdterceros.idSistema AS idSistema,
-    IF($P{agrupar}, SUM(bdfactura.impoconsumo), MAX(bdfactura.impoconsumo)) AS impoconsumo,
+    IF($P{agrupar}, SUM(dd.impoconsumo), MAX(dd.impoconsumo)) AS impoconsumo,
     bdproductos.Codigo AS Codigo,
-    bdfactura.totalPropina AS totalPropina,
-    bdfactura.hora AS hora,
-    bdfactura.idProd AS idProd,
+    d.totalPropina AS totalPropina,
+    d.horaFactura AS hora,
+    dd.idProd AS idProd,
     bdgrupo.nombre AS nombreGrupo,
-    bdfactura.impoGeneral AS impoGeneral,
-    bdfactura.porcImpo AS porcImpo,
-    bdfactura.bodega AS bodega
-FROM bdfactura
-    LEFT JOIN bdprestamo ON bdfactura.idFactura = bdprestamo.factura
-    LEFT JOIN bdcxc ON bdfactura.factura = bdcxc.factura2
-    LEFT JOIN bdplacas ON bdfactura.placa = bdplacas.placa
-    LEFT JOIN bdparqueaderoautos ON bdparqueaderoautos.factura = bdfactura.factura
-    LEFT JOIN bddetalleproductos ON bdfactura.idProd = bddetalleproductos.Id
-    LEFT JOIN bdproductos ON bdfactura.producto = bdproductos.idSistema
-    LEFT JOIN bdterceros ON bdfactura.cliente = bdterceros.idSistema
+    d.impoconsumoGeneral AS impoGeneral,
+    dd.porcImpo AS porcImpo,
+    d.bodega AS bodega
+FROM (bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento AND (d.tipoDocumento = $P{tipoDocumento} OR ($P{tipoDocumento} = 'facturacion' AND d.tipoDocumento = 'notaDebito')))
+    LEFT JOIN bdprestamo ON d.idFactura = bdprestamo.factura
+    LEFT JOIN bdcxc ON d.factura = bdcxc.factura2
+    LEFT JOIN bdplacas ON d.placa = bdplacas.placa
+    LEFT JOIN bdparqueaderoautos ON bdparqueaderoautos.factura = d.factura
+    LEFT JOIN bddetalleproductos ON dd.idProd = bddetalleproductos.Id
+    LEFT JOIN bdproductos ON dd.producto = bdproductos.idSistema
+    LEFT JOIN bdterceros ON d.cliente = bdterceros.idSistema
     LEFT JOIN bdepsprecargados ON bdepsprecargados.Id = bdterceros.eps
     LEFT JOIN bdgrupo ON bdproductos.grupo = bdgrupo.codigo
-WHERE bdfactura.factura = $P{numFactura}
+WHERE d.factura = $P{numFactura}
     AND ($P{grupo} IS NULL
         OR ($P{grupo} = '' AND bdproductos.grupo IS NULL)
         OR bdproductos.grupo = $P{grupo})
     AND (NOT $P{agrupar} OR bdcxc.tipo = 'FACT' OR bdcxc.tipo IS NULL)
 GROUP BY IF($P{agrupar},
-        CONCAT_WS('|', bdfactura.factura, bdfactura.producto, bdfactura.lista, bdfactura.descuento,
-                  bdfactura.plu, bdfactura.porcIva, bdfactura.porcImpo),
-        bdfactura.Id)
-ORDER BY MIN(bdfactura.Id)]]>
+        CONCAT_WS('|', d.factura, dd.producto, dd.lista, dd.descuento,
+                  dd.plu, dd.porcIva, dd.porcImpo),
+        dd.idDetalle)
+ORDER BY MIN(dd.idDetalle)]]>
 	</queryString>
 	<field name="idFactura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -370,7 +381,6 @@ ORDER BY MIN(bdfactura.Id)]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="valor3" class="java.math.BigDecimal"/>
-	<field name="impuesto" class="java.lang.String"/>
 	<field name="plazo" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -414,7 +424,7 @@ ORDER BY MIN(bdfactura.Id)]]>
 	<field name="horas" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="imei" class="java.lang.String">
+	<field name="detalle" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="color" class="java.lang.String">
@@ -558,7 +568,7 @@ ORDER BY MIN(bdfactura.Id)]]>
 				</textElement>
 				<text><![CDATA[Hora]]></text>
 			</staticText>
-			<textField pattern="h:mm a">
+			<textField pattern="h:mm a" isBlankWhenNull="true">
 				<reportElement x="501" y="95" width="62" height="13" uuid="3eeffdcf-e8a4-4ccc-a7dc-ffd59cbcab98">
 					<printWhenExpression><![CDATA[$P{hora}.toString().equalsIgnoreCase("SI")]]></printWhenExpression>
 				</reportElement>
@@ -610,12 +620,50 @@ ORDER BY MIN(bdfactura.Id)]]>
 				<textFieldExpression><![CDATA[$P{factura}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="131" width="52" height="12" uuid="356aa334-14d5-4e4c-aee9-a9871e846360"/>
+				<reportElement x="1" y="131" width="52" height="12" uuid="356aa334-14d5-4e4c-aee9-a9871e846360">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{esMedico}.booleanValue())]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Vendedor:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="1" y="131" width="52" height="12" uuid="0034419b-37ad-4e0d-bf64-a4fa44a480f3">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cod Eps:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="53" y="131" width="237" height="12" uuid="97bfdb37-f8fe-4923-86d8-6716d5688c6e">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{eps}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="295" y="119" width="42" height="12" uuid="3b691e32-4e27-486d-837e-467a441a8d51">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EPS:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="337" y="119" width="85" height="12" uuid="510da83c-213a-48ca-a625-da14b337579d">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreEps}]]></textFieldExpression>
+			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="53" y="107" width="237" height="12" uuid="6bf76e49-6b22-4dfb-845c-2e0c31359a0a"/>
 				<textElement>
@@ -638,7 +686,9 @@ ORDER BY MIN(bdfactura.Id)]]>
 				<textFieldExpression><![CDATA[$F{fechaFactura}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="53" y="131" width="237" height="12" uuid="e9a0c5c7-6c86-4b99-a1ee-84b9b0cd7710"/>
+				<reportElement x="53" y="131" width="237" height="12" uuid="e9a0c5c7-6c86-4b99-a1ee-84b9b0cd7710">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{esMedico}.booleanValue())]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
@@ -664,7 +714,7 @@ ORDER BY MIN(bdfactura.Id)]]>
 			</textField>
 			<staticText>
 				<reportElement x="295" y="119" width="42" height="12" uuid="e821382c-972d-43e0-a29c-60caefd766b2">
-					<printWhenExpression><![CDATA[$P{ordenServicio}.equalsIgnoreCase("SI")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{esMedico}.booleanValue() && $P{ordenServicio}.equalsIgnoreCase("SI"))]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="Arial" size="9" isBold="true"/>
@@ -673,7 +723,7 @@ ORDER BY MIN(bdfactura.Id)]]>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="337" y="131" width="82" height="12" uuid="06accd6e-96ec-4922-86aa-78d5adb1fd9c">
-					<printWhenExpression><![CDATA[$P{ordenServicio}.equalsIgnoreCase("SI")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{esMedico}.booleanValue() && $P{ordenServicio}.equalsIgnoreCase("SI"))]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="Arial" size="9"/>
@@ -682,7 +732,7 @@ ORDER BY MIN(bdfactura.Id)]]>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="337" y="119" width="82" height="12" uuid="00d38cf1-7e54-4f6c-a03c-d103bb95328f">
-					<printWhenExpression><![CDATA[$P{ordenServicio}.equalsIgnoreCase("SI")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{esMedico}.booleanValue() && $P{ordenServicio}.equalsIgnoreCase("SI"))]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="Arial" size="9"/>
@@ -691,7 +741,7 @@ ORDER BY MIN(bdfactura.Id)]]>
 			</textField>
 			<staticText>
 				<reportElement x="295" y="131" width="42" height="12" uuid="b9d52c1e-7b2a-4765-b6ab-8fae4b0f34d7">
-					<printWhenExpression><![CDATA[$P{ordenServicio}.equalsIgnoreCase("SI")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{esMedico}.booleanValue() && $P{ordenServicio}.equalsIgnoreCase("SI"))]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="Arial" size="9" isBold="true"/>
@@ -717,7 +767,9 @@ ORDER BY MIN(bdfactura.Id)]]>
 	<columnHeader>
 		<band height="16" splitType="Stretch">
 			<line>
-				<reportElement x="96" y="2" width="1" height="13" uuid="948b2397-afea-43a1-baca-63fe38be8289"/>
+				<reportElement x="96" y="2" width="1" height="13" uuid="948b2397-afea-43a1-baca-63fe38be8289">
+					<printWhenExpression><![CDATA[$P{mostrarCodigo}]]></printWhenExpression>
+				</reportElement>
 			</line>
 			<line>
 				<reportElement x="508" y="2" width="1" height="13" uuid="52792f6b-c5f3-45c0-995a-3bebe81d1f4e"/>
@@ -737,7 +789,7 @@ ORDER BY MIN(bdfactura.Id)]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[DCTO]]></text>
+				<text><![CDATA[Descuento]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="509" y="2" width="55" height="13" backcolor="#CCCCCC" uuid="81fd1717-c447-4949-b777-21d87e47d1a7"/>
@@ -756,14 +808,27 @@ ORDER BY MIN(bdfactura.Id)]]>
 				<reportElement x="460" y="2" width="1" height="13" uuid="2a25bed9-9fe0-40b9-818d-43950765ed2a"/>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="1" y="2" width="95" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="748f8453-5f39-45b2-a102-480762fbb04e"/>
+				<reportElement mode="Opaque" x="1" y="2" width="95" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="748f8453-5f39-45b2-a102-480762fbb04e">
+					<printWhenExpression><![CDATA[$P{mostrarCodigo}]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Codigo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="97" y="2" width="217" height="13" backcolor="#CCCCCC" uuid="bd0eeac5-24b4-4824-86c3-c12575e5e9d8"/>
+				<reportElement mode="Opaque" x="97" y="2" width="217" height="13" backcolor="#CCCCCC" uuid="bd0eeac5-24b4-4824-86c3-c12575e5e9d8">
+					<printWhenExpression><![CDATA[$P{mostrarCodigo}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="2" width="313" height="13" backcolor="#CCCCCC" uuid="e52fe0dd-b966-418c-823f-e47a95284a24">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{mostrarCodigo}.booleanValue())]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
@@ -800,7 +865,9 @@ ORDER BY MIN(bdfactura.Id)]]>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement x="2" y="0" width="94" height="12" uuid="1ef48dd9-2326-4026-8bab-ca4f372cb697"/>
+				<reportElement x="2" y="0" width="94" height="12" uuid="1ef48dd9-2326-4026-8bab-ca4f372cb697">
+					<printWhenExpression><![CDATA[$P{mostrarCodigo}]]></printWhenExpression>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
@@ -838,7 +905,9 @@ ORDER BY MIN(bdfactura.Id)]]>
 				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="12" uuid="b23cb71c-5fbf-47bd-a85d-4b9b64af279f"/>
 			</line>
 			<line>
-				<reportElement stretchType="RelativeToBandHeight" x="96" y="0" width="1" height="12" uuid="eb80e683-4121-4214-a5c2-3c000348c0fa"/>
+				<reportElement stretchType="RelativeToBandHeight" x="96" y="0" width="1" height="12" uuid="eb80e683-4121-4214-a5c2-3c000348c0fa">
+					<printWhenExpression><![CDATA[$P{mostrarCodigo}]]></printWhenExpression>
+				</reportElement>
 			</line>
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="314" y="0" width="1" height="12" uuid="47afe4d6-31d3-4630-8f42-454afa8c8602"/>
@@ -859,7 +928,18 @@ ORDER BY MIN(bdfactura.Id)]]>
 				<reportElement stretchType="RelativeToBandHeight" x="564" y="0" width="1" height="12" uuid="27d952a6-abe4-41a6-8dd3-ae35e25c5397"/>
 			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="97" y="0" width="217" height="12" uuid="bb74f6e7-603a-47fe-9b35-735055c3074c"/>
+				<reportElement stretchType="RelativeToBandHeight" x="97" y="0" width="217" height="12" uuid="bb74f6e7-603a-47fe-9b35-735055c3074c">
+					<printWhenExpression><![CDATA[$P{mostrarCodigo}]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="2" y="0" width="312" height="12" uuid="7dc7de40-6b83-41d5-99b9-0deebfdb7063">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!$P{mostrarCodigo}.booleanValue())]]></printWhenExpression>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
@@ -871,6 +951,32 @@ ORDER BY MIN(bdfactura.Id)]]>
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cant2}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="14">
+			<printWhenExpression><![CDATA[Boolean.valueOf($P{mostrarSerial}.booleanValue() && $F{detalle} != null && !$F{detalle}.trim().isEmpty())]]></printWhenExpression>
+			<line>
+				<reportElement x="0" y="0" width="565" height="1" uuid="5e45662d-9437-465e-a54d-c7572e2604ab"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="1" height="13" uuid="45943782-f822-421c-930c-036ff5693cce"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="1" width="52" height="13" backcolor="#CCCCCC" uuid="a1feef07-c456-4c91-b7ab-b3c149fa8266"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Detalle]]></text>
+			</staticText>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="564" y="1" width="1" height="13" uuid="23934769-f717-4910-b710-e2be56ea7bd6"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="54" y="1" width="510" height="13" uuid="bdb3d8ce-eef1-4410-9fb8-584464435bee"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle}]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="1">
@@ -1023,6 +1129,44 @@ ORDER BY MIN(bdfactura.Id)]]>
 			</staticText>
 			<line>
 				<reportElement x="372" y="40" width="189" height="1" uuid="9e026f54-ce73-4c63-bf1e-2f14366a5b99"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="373" y="40" width="73" height="12" backcolor="#CCCCCC" uuid="c0fbd017-f93b-42e5-8f69-59ddbb3efbe6">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ COPAGO]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement x="447" y="40" width="112" height="12" uuid="73d0bbea-56cf-44b0-8510-5831b9797825">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{copago})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="561" y="40" width="1" height="12" uuid="0c61d0ca-c52f-4170-b077-71b8d28363ad">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="372" y="40" width="1" height="12" uuid="ba4e3813-f1e1-4443-9b61-8190f2d900a0">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="446" y="40" width="1" height="12" uuid="b56b70df-4be2-4061-8415-8eb47782f530">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="372" y="52" width="189" height="1" uuid="46ff251c-4a05-484e-9441-514cd5e3759c">
+					<printWhenExpression><![CDATA[$P{esMedico}]]></printWhenExpression>
+				</reportElement>
 			</line>
 			<line>
 				<reportElement x="372" y="3" width="190" height="1" uuid="16013581-d047-4b80-81f4-e239f6e829de"/>

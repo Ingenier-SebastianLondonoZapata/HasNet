@@ -9,7 +9,10 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT Sum(factura.subtotal) AS subtotal, Sum(factura.iva) AS iva, Sum(factura.total) AS total, Sum(factura.descuento) AS descuento, factura.Codigo, Sum(factura.utilidad) AS utilidad,Sum(factura.impoconsumo) AS impoconsumo, factura.descripcion, Sum(factura.cant2) AS cant2 from factura $P!{sql} GROUP BY factura.Codigo,factura.descripcion, factura.anulada HAVING anulada = 0 ORDER BY Sum(FACTURA.cant2) DESC]]>
+		<![CDATA[SELECT Sum(dd.subtotal) AS subtotal, Sum(dd.iva) AS iva, Sum(dd.total) AS total, Sum(dd.descuento) AS descuento, p.Codigo AS Codigo, Sum(dd.utilidad) AS utilidad,Sum(dd.impoconsumo) AS impoconsumo, dd.descripcion AS descripcion, Sum(dd.cant2) AS cant2
+FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento LEFT JOIN bdterceros t ON t.idSistema = d.cliente LEFT JOIN bdproductos p ON p.idSistema = dd.producto LEFT JOIN bdgrupo g ON g.codigo = p.grupo
+$P!{sql}
+GROUP BY p.Codigo,dd.descripcion ORDER BY Sum(dd.cant2) DESC]]>
 	</queryString>
 	<field name="subtotal" class="java.math.BigDecimal"/>
 	<field name="iva" class="java.math.BigDecimal"/>

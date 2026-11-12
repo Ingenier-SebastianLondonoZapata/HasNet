@@ -7,9 +7,7 @@
 	<parameter name="encabezado" class="java.lang.String"/>
 	<parameter name="parameter1" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from consultaCuentasPagadas2 $P!{cliente} 
-ORDER BY factura
- ASC;]]>
+		<![CDATA[SELECT * FROM (SELECT p.contrato AS factura, d.vendedor AS vendedor, d.cliente AS cliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, (SELECT cx.vencimiento FROM bdcxc cx WHERE cx.factura2 = d.factura AND cx.tipo IN ('FACT', 'SEPARE') AND cx.estado <> 'CANCELADA' ORDER BY cx.Id LIMIT 1) AS vencimiento, p.valorAprovado AS valorAprovado, LEFT(p.interes, 1000) AS interes2, p.totalInteres AS totalInteres, p.cuotas AS cuotas, (SELECT SUM(c.totalAbono) FROM bdcuota c WHERE c.contrato = p.contrato) AS SumaDetotalAbono, IFNULL(cc.CuentaDetotal2, '0') AS cuotasAbonadas, IFNULL(ca.CuentaDeestado, '0') AS cuotasAtrasadas FROM bdprestamo p INNER JOIN bdDocumentos d ON d.factura = p.factura2 AND d.tipoDocumento IN ('facturacion', 'notaDebito') AND d.anulada = 0 LEFT JOIN bdterceros t ON t.idSistema = d.cliente LEFT JOIN contcuentas3 cc ON cc.contrato = p.contrato LEFT JOIN contatrasadas3 ca ON ca.contrato = p.contrato WHERE EXISTS (SELECT 1 FROM bdcuota c WHERE c.contrato = p.contrato)) consultaCuentasPagadas2 $P!{cliente} ORDER BY factura ASC]]>
 	</queryString>
 	<field name="factura" class="java.lang.String"/>
 	<field name="vendedor" class="java.lang.String"/>

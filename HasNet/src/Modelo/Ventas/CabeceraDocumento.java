@@ -11,35 +11,85 @@ public class CabeceraDocumento {
     private String observacion;
     private String bodega;
     private String estadoGeneral;
-    private String placaReal;     // solo ORDER_SERVICIO, null en otros tipos
+    private String placaReal;
 
-    public String getClienteId() { return clienteId; }
-    public void setClienteId(String clienteId) { this.clienteId = clienteId; }
+    public String getClienteId() {
+        return clienteId;
+    }
 
-    public String getVendedor() { return vendedor; }
-    public void setVendedor(String vendedor) { this.vendedor = vendedor; }
+    public void setClienteId(String clienteId) {
+        this.clienteId = clienteId;
+    }
 
-    public String getSubtotal() { return subtotal; }
-    public void setSubtotal(String subtotal) { this.subtotal = subtotal; }
+    public String getVendedor() {
+        return vendedor;
+    }
 
-    public String getTotalDescuentos() { return totalDescuentos; }
-    public void setTotalDescuentos(String totalDescuentos) { this.totalDescuentos = totalDescuentos; }
+    public void setVendedor(String vendedor) {
+        this.vendedor = vendedor;
+    }
 
-    public String getTotalIva() { return totalIva; }
-    public void setTotalIva(String totalIva) { this.totalIva = totalIva; }
+    public String getSubtotal() {
+        return subtotal;
+    }
 
-    public String getTotal() { return total; }
-    public void setTotal(String total) { this.total = total; }
+    public void setSubtotal(String subtotal) {
+        this.subtotal = subtotal;
+    }
 
-    public String getObservacion() { return observacion; }
-    public void setObservacion(String observacion) { this.observacion = observacion; }
+    public String getTotalDescuentos() {
+        return totalDescuentos;
+    }
 
-    public String getBodega() { return bodega; }
-    public void setBodega(String bodega) { this.bodega = bodega; }
+    public void setTotalDescuentos(String totalDescuentos) {
+        this.totalDescuentos = totalDescuentos;
+    }
 
-    public String getEstadoGeneral() { return estadoGeneral; }
-    public void setEstadoGeneral(String estadoGeneral) { this.estadoGeneral = estadoGeneral; }
+    public String getTotalIva() {
+        return totalIva;
+    }
 
-    public String getPlacaReal() { return placaReal; }
-    public void setPlacaReal(String placaReal) { this.placaReal = placaReal; }
+    public void setTotalIva(String totalIva) {
+        this.totalIva = totalIva;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
+
+    public String getBodega() {
+        return bodega;
+    }
+
+    public void setBodega(String bodega) {
+        this.bodega = bodega;
+    }
+
+    public String getEstadoGeneral() {
+        return estadoGeneral;
+    }
+
+    public void setEstadoGeneral(String estadoGeneral) {
+        this.estadoGeneral = estadoGeneral;
+    }
+
+    public String getPlacaReal() {
+        return placaReal;
+    }
+
+    public void setPlacaReal(String placaReal) {
+        this.placaReal = placaReal;
+    }
 }

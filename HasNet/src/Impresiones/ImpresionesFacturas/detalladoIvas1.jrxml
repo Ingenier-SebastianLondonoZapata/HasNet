@@ -11,8 +11,14 @@
 	<parameter name="detalle" class="java.lang.String"/>
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<parameter name="tipoDocumento" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["facturacion"]]></defaultValueExpression>
+	</parameter>
 	<queryString>
-		<![CDATA[select * from facturaIva where idFactura = $P{numero}]]>
+		<![CDATA[SELECT d.factura AS idFactura, IF(dd.porcIva > 0, dd.porcIva, IF(dd.porcImpo > 0, dd.porcImpo, 'Exento')) AS porcIva, SUM(dd.subtotal) AS SumaDeTotal, SUM(COALESCE(dd.iva, 0) + COALESCE(dd.impoconsumo, 0)) AS SumaDeiva
+FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento
+WHERE (d.tipoDocumento = $P{tipoDocumento} OR ($P{tipoDocumento} = 'facturacion' AND d.tipoDocumento = 'notaDebito')) AND d.factura = $P{numero}
+GROUP BY d.factura, IF(dd.porcIva > 0, dd.porcIva, IF(dd.porcImpo > 0, dd.porcImpo, 'Exento'))]]>
 	</queryString>
 	<field name="idFactura" class="java.lang.String"/>
 	<field name="porcIva" class="java.lang.String"/>
@@ -42,7 +48,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isUnderline="false"/>
 				</textElement>
-				<text><![CDATA[IVA]]></text>
+				<text><![CDATA[IMP]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

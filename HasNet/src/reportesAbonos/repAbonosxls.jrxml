@@ -9,8 +9,7 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from repAbonos $P!{sql} 
-ORDER BY factura DESC;]]>
+		<![CDATA[select * from $P!{sql} ORDER BY factura DESC]]>
 	</queryString>
 	<field name="factura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>

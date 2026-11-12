@@ -10,7 +10,7 @@ public class LineaProducto {
     private String porcDescuento;
     private String descuento;
     private String rango;         // null cuando no aplica
-    private String imei;          // "" cuando no aplica
+    private String detalle;       // "" cuando no aplica
     private String idProd;        // "" cuando no aplica
     private String preparacion;   // campo "estado" en BD, "" cuando no aplica
 
@@ -38,8 +38,8 @@ public class LineaProducto {
     public String getRango() { return rango; }
     public void setRango(String rango) { this.rango = rango; }
 
-    public String getImei() { return imei; }
-    public void setImei(String imei) { this.imei = imei; }
+    public String getDetalle() { return detalle; }
+    public void setDetalle(String detalle) { this.detalle = detalle; }
 
     public String getIdProd() { return idProd; }
     public void setIdProd(String idProd) { this.idProd = idProd; }

@@ -448,10 +448,12 @@ public class dlgDetalleTrasladosPendientes extends javax.swing.JDialog {
         //instancias.getFactura().setDescontarFisicoInventario("NO");
 //        instancias.getFactura().facturarOrdenesServiciosDetalladas(productos, txtCliente.getText(), txtNit.getText(), txtDias.getText());
 
+        Dao.Documentos.DaoDocumentos daoDocumentos = new Dao.Documentos.DaoDocumentos();
         for (int i = 0; i < tblTraslados.getRowCount(); i++) {
             if ((Boolean) tblTraslados.getValueAt(i, 7)) {
-                instancias.getSql().modificarOServicio1(id, "", "REALIZADO", tblTraslados.getValueAt(i, 0).toString());
-                instancias.getSql().cambiarEstadoOrden1(id, "FACTURADO", tblTraslados.getValueAt(i, 0).toString());
+                String producto = tblTraslados.getValueAt(i, 0).toString();
+                daoDocumentos.actualizarLineaOrden(id, producto, "", "REALIZADO");
+                daoDocumentos.actualizarEstado2LineaOrden(id, producto, "FACTURADO");
             }
         }
 

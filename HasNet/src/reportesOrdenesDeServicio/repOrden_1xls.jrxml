@@ -10,9 +10,12 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from repOrdenDiario $P!{cliente} 
-ORDER BY idFactura
- ASC;]]>
+		<![CDATA[SELECT d.idFactura AS idFactura, d.cliente AS cliente, t.nombre AS nombre, d.subtotalGeneral AS subtotalGeneral, d.ivaGeneral AS ivaGeneral, d.totalGeneral AS totalGeneral, TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')) AS fechaFactura, d.anulada AS anulada, d.rtIva AS rtIva, d.rtIca AS rtIca, d.rtFuente AS rtFuente, d.otros AS otros, dd.descuento AS descuento, d.efectivoGeneral AS efectivoGeneral, '' AS nc, d.chequeGeneral AS chequeGeneral, d.targetaGeneral AS targetaGeneral, d.credito AS credito, d.bodega AS bodega, o.placa AS placa, o.tipo AS tipo, o.modelo AS modelo, o.numeroChasis AS numeroChasis, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral) AS estadoGeneral, o.marca AS marca, o.km AS km, d.terminal AS terminal, d.diasGarantia AS diasGarantia, t.id AS idCliente
+FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento
+LEFT JOIN bdoservicio o ON o.id = d.idFactura LEFT JOIN bdterceros t ON t.idSistema = d.cliente
+$P!{cliente}
+GROUP BY d.idFactura, d.cliente, t.nombre, d.subtotalGeneral, d.ivaGeneral, d.totalGeneral, TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')), d.anulada, d.rtIva, d.rtIca, d.rtFuente, d.otros, dd.descuento, d.efectivoGeneral, d.chequeGeneral, d.targetaGeneral, d.credito, d.bodega, o.placa, o.tipo, o.modelo, o.numeroChasis, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral), o.marca, o.km, d.terminal, d.diasGarantia, t.id
+ORDER BY d.idFactura ASC]]>
 	</queryString>
 	<field name="idFactura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>

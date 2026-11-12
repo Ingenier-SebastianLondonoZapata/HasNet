@@ -1,5 +1,7 @@
 package Dao.Ventas;
 
+import Dao.Documentos.DaoDocumentos;
+import Enums.TipoDocumento;
 import Utilidades.BaseDatos.MySql_connection;
 import Utilidades.Constantes;
 import java.sql.Connection;
@@ -9,27 +11,22 @@ import java.sql.SQLException;
 
 public class DaoPlanSepare {
 
-    private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private final DaoDocumentos daoDocumentos = new DaoDocumentos();
+
+    private Connection conexion() {
+        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    }
 
     public boolean modificarEstadoPlanSepare(String estado, String idFacturaGenerada, String idDocumento) {
-        String sql = "UPDATE bdPlanSepare SET estadoGeneral = ?, estado2 = ? WHERE idFactura = ?";
-
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, estado);
-            stmt.setString(2, idFacturaGenerada);
-            stmt.setString(3, idDocumento);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al modificar estado plan separe: " + e.getMessage());
-            return false;
-        }
+        return daoDocumentos.actualizarEstadoPorIdFactura(TipoDocumento.PLAN_SEPARE, idDocumento, estado, idFacturaGenerada);
     }
 
     public boolean esFacturaDePlanSepare(String idFactura) {
-        String sql = "SELECT 1 FROM bdPlanSepare WHERE estado2 = ? LIMIT 1";
+        String sql = "SELECT 1 FROM bdDocumentos WHERE tipoDocumento = ? AND estado2 = ? LIMIT 1";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, idFactura);
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
+            stmt.setString(1, TipoDocumento.PLAN_SEPARE.getValor());
+            stmt.setString(2, idFactura);
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
@@ -40,10 +37,12 @@ public class DaoPlanSepare {
     }
 
     public boolean estaFacturado(String idPlanSepare) {
-        String sql = "SELECT 1 FROM bdPlanSepare WHERE idFactura = ? AND estado2 IS NOT NULL AND estado2 <> '' LIMIT 1";
+        String sql = "SELECT 1 FROM bdDocumentos WHERE tipoDocumento = ? AND idFactura = ? "
+                + "AND estado2 IS NOT NULL AND estado2 <> '' LIMIT 1";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, idPlanSepare);
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
+            stmt.setString(1, TipoDocumento.PLAN_SEPARE.getValor());
+            stmt.setString(2, idPlanSepare);
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }

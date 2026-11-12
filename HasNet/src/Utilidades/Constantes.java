@@ -55,8 +55,6 @@ public class Constantes {
     public static final int COLUMNA_VALOR_IVA = 33;
     public static final int COLUMNA_UNIDAD_MEDIDA = 35;
 
-    public static final int COLUMNA_UNIDAD_MEDIDA_NOTA_DEBITO = 36;
-
     public static final List<Integer> TARIFAS_IVAS_PERMITIDOS = Arrays.asList(0, 5, 16, 19);
     public static final List<Integer> TARIFAS_IMPOCONSUMO_PERMITIDOS = Arrays.asList(0, 2, 4, 8, 16);
 

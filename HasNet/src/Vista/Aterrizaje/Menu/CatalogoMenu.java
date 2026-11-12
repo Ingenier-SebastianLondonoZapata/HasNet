@@ -104,7 +104,7 @@ public class CatalogoMenu {
         o.agregar(OpcionMenu.de("POR COBRAR", instancias::getAbonos).titulo("ABONOS CUENTAS POR COBRAR"));
         o.agregar(OpcionMenu.de("PARA PAGAR", instancias::getPagos).titulo("ABONOS CUENTAS POR PAGAR"));
         o.agregar(OpcionMenu.de("NOTA CRÉDITO", instancias::getNc).titulo("NOTAS CRÉDITO"));
-        o.agregar(OpcionMenu.de("NOTA DÉBITO", instancias::getNd).titulo("NOTAS DÉBITO"));
+        o.agregar(OpcionMenu.de("NOTA DÉBITO", instancias::getNdContenedor).titulo("NOTAS DÉBITO"));
         o.agregar(OpcionMenu.de("REPORTES", instancias::getReportesCartera).titulo("REPORTES DE CARTERA"));
         return o.lista();
     }

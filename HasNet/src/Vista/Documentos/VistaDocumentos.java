@@ -1,21 +1,21 @@
 package Vista.Documentos;
 
 import Dao.Ventas.DaoPlanSepare;
+import Dao.Documentos.DaoDocumentos;
 import Dao.Productos.DaoProducto;
 
 import Controlador.Alertas.ControladorAlertas;
 import Enums.EstadosTipoDocumento;
 import Enums.TipoDocumento;
 import Utilidades.Contactos.Bodegas;
-import Impresiones.ImpresionesCotizaciones.GeneradorReporteCotizacion;
+import Impresiones.ImpresionesFacturas.DatosImpresionFactura;
 import Impresiones.ImpresionesFacturas.GeneradorReporteFactura;
 import Impresiones.ImpresionesOrdenServicio.GeneradorReporteOrdenServicio;
-import Impresiones.ImpresionesPedidos.GeneradorReportePedido;
-import Impresiones.ImpresionesSepares.GeneradorReporteSepare;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Contactos.ModeloContacto;
 import Modelo.Contactos.ModeloDatosVehiculo;
+import Modelo.Documentos.ModeloDocumento;
 import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
 import Utilidades.DatosMaestra;
@@ -27,11 +27,6 @@ import Vista.Productos.VistaInventarioInicial;
 import Vista.Solicitudes.VistaSolicitarPermisos;
 import clases.Cartera.ndCxc;
 import clases.Instancias;
-import clases.Ventas.ndCotizacion;
-import clases.Ventas.ndFactura;
-import clases.Ventas.ndOServicio1;
-import clases.Ventas.ndPedido;
-import clases.Ventas.ndPlanSepare;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
@@ -52,6 +47,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +59,7 @@ import javax.swing.table.TableRowSorter;
 
 public class VistaDocumentos extends javax.swing.JInternalFrame {
     private final DaoProducto daoProducto = new DaoProducto();
+    private final DaoDocumentos daoDocumentos = new DaoDocumentos();
 
     private final DaoReimpresiones daoReimpresiones = new DaoReimpresiones();
     private final DaoContactos daoTerceros = new DaoContactos();
@@ -81,7 +78,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     metodosGenerales metodos = new metodosGenerales();
     Instancias instancias;
     TableRowSorter modeloOrdenado;
-    ndPlanSepare nodo1;
     private String infoEmpresa;
 
     //Barra de titulo
@@ -178,51 +174,33 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
     }
 
-    private String determinarTablaSeleccionada() {
+    private List<TipoDocumento> determinarTiposSeleccionados() {
         Object seleccion = cmbTipoDocumento.getSelectedItem();
         if (seleccion == null) {
-            return "";
+            return Collections.emptyList();
         }
 
-        String tipo = seleccion.toString();
-
-        switch (tipo) {
+        switch (seleccion.toString()) {
             case "FACTURA":
+                return Collections.singletonList(TipoDocumento.FACTURACION);
             case "NOTA DÉBITO":
-                return "bdFactura";
+                return Collections.singletonList(TipoDocumento.NOTA_DEBITO);
             case "PLAN SEPARE":
-                return "bdPlanSepare";
+                return Collections.singletonList(TipoDocumento.PLAN_SEPARE);
             case "COTIZACIÓN":
-                return "bdCotizacion";
+                return Collections.singletonList(TipoDocumento.COTIZACION);
             case "PEDIDOS":
-                return "bdPedido";
+                return Collections.singletonList(TipoDocumento.PEDIDO);
             case "ORDEN DE SERVICIO":
-                return "bdOServicio1";
+                return Collections.singletonList(TipoDocumento.ORDER_SERVICIO);
             default:
-                return "";
+                return Collections.emptyList();
         }
     }
 
-    private String determinarConsulta() {
+    private boolean esFacturaONotaDebitoSeleccionada() {
         Object seleccion = cmbTipoDocumento.getSelectedItem();
-        if (seleccion == null) {
-            return "";
-        }
-
-        String tipo = seleccion.toString();
-
-        switch (tipo) {
-            case "FACTURA":
-            case "NOTA DÉBITO":
-                return "SELECT F.idFactura, F.factura, F.fechaFactura, T.id, T.nombre, F.vendedor, F.totalGeneral, F.terminal, F.turno, F.modeloContable ";
-            case "PLAN SEPARE":
-            case "COTIZACIÓN":
-            case "PEDIDOS":
-            case "ORDEN DE SERVICIO":
-                return "SELECT F.idFactura, F.factura, F.fechaFactura, T.id, T.nombre, F.vendedor, F.totalGeneral, F.terminal ";
-            default:
-                return "";
-        }
+        return "FACTURA".equals(seleccion) || "NOTA DÉBITO".equals(seleccion);
     }
 
     private void agregarCondicionPorEstado(StringBuilder builder) {
@@ -344,8 +322,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             builder.append("AND ");
         }
 
-        builder.append("modeloContable = '" + Constantes.FACTURACION_ELECTRONICA + "' "
-                + "OR modeloContable = '" + Constantes.FACTURACION_ELECTRONICA_POS + "' ");
+        builder.append("(modeloContable = '" + Constantes.FACTURACION_ELECTRONICA + "' "
+                + "OR modeloContable = '" + Constantes.FACTURACION_ELECTRONICA_POS + "') ");
     }
 
     public void actualizarTablaDocumentos() {
@@ -355,9 +333,8 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         consultarMaestros();
 
-        String tabla = determinarTablaSeleccionada();
-        String consulta = determinarConsulta();
-        if (tabla == null || tabla.isEmpty()) {
+        List<TipoDocumento> tipos = determinarTiposSeleccionados();
+        if (tipos.isEmpty()) {
             return;
         }
 
@@ -376,7 +353,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         }
 
         System.out.println("Condiciones documentos: " + condicion);
-        List<ModeloTablaDocumentos> documentos = daoReimpresiones.obtenerDocumentos(consulta, condicion, tabla);
+        List<ModeloTablaDocumentos> documentos = daoReimpresiones.obtenerDocumentos(tipos, esFacturaONotaDebitoSeleccionada(), condicion);
 
         limpiarDatosTabla();
         cargarDocumentosTabla(documentos);
@@ -1442,25 +1419,20 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 break;
             }
 
-            case "PLAN SEPARE": {
-                String documento = "SEPARE-" + NUMERO_DOCUMENTO_SELECCIONADO;
-                GeneradorReporteSepare reportes = new GeneradorReporteSepare(instancias);
-                reportes.ver_Separe(documento, txtObservaciones.getText(), infoEmpresa, encabezado, tipoImpresion, false);
+            case "PLAN SEPARE":
+                reimprimirDocumento(TipoDocumento.PLAN_SEPARE, "SEPARE-" + NUMERO_DOCUMENTO_SELECCIONADO, infoEmpresa,
+                        informacionLegal, pieDePagina, encabezado, tipoImpresion, impresoraEstablecida);
                 break;
-            }
 
-            case "COTIZACIÓN": {
-                String documento = "COTI-" + NUMERO_DOCUMENTO_SELECCIONADO;
-                new GeneradorReporteCotizacion(instancias).ver_Cotiza(documento, txtObservaciones.getText(), instancias.getInformacionEmpresa(), informacionLegal, tipoImpresion, false);
+            case "COTIZACIÓN":
+                reimprimirDocumento(TipoDocumento.COTIZACION, "COTI-" + NUMERO_DOCUMENTO_SELECCIONADO, instancias.getInformacionEmpresa(),
+                        informacionLegal, pieDePagina, encabezado, tipoImpresion, impresoraEstablecida);
                 break;
-            }
 
-            case "PEDIDOS": {
-                String documento = "PEDIDO-" + NUMERO_DOCUMENTO_SELECCIONADO;
-                GeneradorReportePedido reportes = new GeneradorReportePedido(instancias);
-                reportes.ver_Pedido(documento, txtObservaciones.getText(), infoEmpresa, "", tipoImpresion, false);
+            case "PEDIDOS":
+                reimprimirDocumento(TipoDocumento.PEDIDO, "PEDIDO-" + NUMERO_DOCUMENTO_SELECCIONADO, infoEmpresa,
+                        informacionLegal, pieDePagina, encabezado, tipoImpresion, impresoraEstablecida);
                 break;
-            }
 
             case "ORDEN DE SERVICIO": {
                 String documento = "OSERV-" + NUMERO_DOCUMENTO_SELECCIONADO;
@@ -1472,6 +1444,20 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             default:
         }
     }//GEN-LAST:event_btnReimprimirActionPerformed
+
+    private void reimprimirDocumento(TipoDocumento tipo, String documento, String informacionEmpresa, String informacionLegal,
+            String pieDePagina, String encabezado, String nombreReporte, String impresora) {
+        DatosImpresionFactura datos = new DatosImpresionFactura()
+                .setTipoDocumento(tipo)
+                .setFactura(documento)
+                .setNombreReporte(nombreReporte)
+                .setImpresora(impresora)
+                .setInformacionEmpresa(informacionEmpresa)
+                .setObservaciones(txtObservaciones.getText())
+                .setLegal(informacionLegal)
+                .setPie(pieDePagina);
+        new GeneradorReporteFactura(instancias).imprimirFactura(datos, encabezado, false);
+    }
 
     private void tblDocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDocumentosMouseClicked
         Object tipoSeleccionado = cmbTipoDocumento.getSelectedItem();
@@ -1621,8 +1607,9 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         switch (opcionSeleccionada) {
             case "PLAN SEPARE":
-                if (!instancias.getSql().modificarPlanSepareFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
-                        nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
+                if (!daoDocumentos.anularPorFactura(Collections.singletonList(TipoDocumento.PLAN_SEPARE), datosDocumento.getIdentificadorFactura(),
+                        metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), nota,
+                        (String) instancias.getSql().getNumConsecutivo("ANULA")[0], null)) {
                     ControladorAlertas.alert("Error al anular el plan separe");
                     return;
                 }
@@ -1637,27 +1624,25 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             case "PLANTILLAS":
                 break;
             case "COTIZACIÓN":
-                if (!instancias.getSql().modificarCotizacionFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
-                        nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
+                if (!daoDocumentos.anularPorFactura(Collections.singletonList(TipoDocumento.COTIZACION), datosDocumento.getIdentificadorFactura(),
+                        metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), nota,
+                        (String) instancias.getSql().getNumConsecutivo("ANULA")[0], EstadosTipoDocumento.ANULADA.getNombre())) {
                     ControladorAlertas.alert("Error al anular la cotización plan separe");
                 }
 
                 break;
             case "PEDIDOS":
-                if (!instancias.getSql().modificarPedidoFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
-                        nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
+                if (!daoDocumentos.anularPorFactura(Collections.singletonList(TipoDocumento.PEDIDO), datosDocumento.getIdentificadorFactura(),
+                        metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), nota,
+                        (String) instancias.getSql().getNumConsecutivo("ANULA")[0], EstadosTipoDocumento.ANULADA.getNombre())) {
                     ControladorAlertas.alert("Error al anular el pedido");
                 }
 
                 break;
             case "FACTURA":
-                if (!instancias.getSql().modificarFacturaFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), datosDocumento.getIdentificadorFactura(),
-                        nota, true, (String) instancias.getSql().getNumConsecutivo("ANULA")[0])) {
-                    ControladorAlertas.alert("Error al anular la factura");
-                    return;
-                }
-
-                if (!instancias.getSql().anularFacturaVerificadorFacturas(datosDocumento.getIdentificadorFactura())) {
+                if (!daoDocumentos.anularPorFactura(DaoDocumentos.TIPOS_FACTURA, datosDocumento.getIdentificadorFactura(),
+                        metodos.fechaConsulta(metodosGenerales.fecha()), instancias.getUsuario(), nota,
+                        (String) instancias.getSql().getNumConsecutivo("ANULA")[0], null)) {
                     ControladorAlertas.alert("Error al anular la factura");
                     return;
                 }
@@ -1795,15 +1780,12 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         boolean esPos = pos.isSelected();
         int cantidadProductos = tblProductos.getRowCount();
         String regimen = instancias.getRegimen();
-        boolean esMedico = instancias.getConfiguraciones().isMedico();
-
-        if (esMedico) {
-            return esCarta ? "facturaMedicaCompleta" : "facturaMedica";
-        }
-
         switch (tipoDocumento) {
             case "FACTURA":
             case "NOTA DÉBITO":
+            case "PLAN SEPARE":
+            case "COTIZACIÓN":
+            case "PEDIDOS":
                 if (esCarta || cantidadProductos > 6) {
                     return "facturaCompleta" + regimen;
                 }
@@ -1812,33 +1794,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 }
                 return "factura" + regimen;
 
-            case "PLAN SEPARE":
-                if (esCarta || cantidadProductos > 6) {
-                    return "separeCompleta";
-                }
-                if (esPos) {
-                    return "separePos";
-                }
-                return "separe";
-
-            case "COTIZACIÓN":
-                if (esCarta || cantidadProductos > 6) {
-                    return "cotizaCompleta";
-                }
-                if (esPos) {
-                    return "cotizaPos";
-                }
-                return "cotiza";
-
-            case "PEDIDOS":
-                if (esCarta || cantidadProductos > 6) {
-                    return "pedidoCompleta";
-                }
-                if (esPos) {
-                    return "pedidoPos";
-                }
-                return "pedido";
-
             case "ORDEN DE SERVICIO":
                 if (esCarta || cantidadProductos > 6) {
                     return "OrdenNormalCompleta";
@@ -1846,7 +1801,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
                 if (esPos) {
                     return "OrdenPos";
                 }
-                return "Orden";
+                return "OrdenNormal";
 
             default:
                 return "";
@@ -1854,35 +1809,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     }
 
     private String obtenerTipoImpresion() {
-        String tipo = obtenerNombreImpresion();
-        String configuracionImpresion = DatosMaestra.getTipoImpresion();
-        String regimen = instancias.getRegimen();
-
-        if ("separePosSinIva".equals(tipo)) {
-            tipo = "separePos";
-        }
-
-        switch (configuracionImpresion) {
-            case "Sin-Codigo":
-                tipo += "1";
-                break;
-            case "Imei":
-                tipo += "Imei";
-                break;
-            case "Con-Codigo":
-            default:
-                break;
-        }
-
-        if (esFacturaMedica(tipo) && !regimen.isEmpty()) {
-            tipo += "SinIva";
-        }
-
-        return tipo;
-    }
-
-    private boolean esFacturaMedica(String tipo) {
-        return tipo.startsWith("facturaMedica");
+        return obtenerNombreImpresion();
     }
 
     private String obtenerImpresoraEstablecida() {
@@ -1909,74 +1836,56 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
         String consecutivo = txtConsecutivo.getText();
         String nombreTitulo;
 
+        DaoDocumentos dao = new DaoDocumentos();
+        ModeloDocumento documento;
+        String numero;
+
         switch (tipo) {
             case "FACTURA":
-            case "NOTA DÉBITO": {
-                String prefijo = tipo.equals("FACTURA") ? "FACT-" : "ND-";
-                ndFactura datos = instancias.getSql().getDatosFactura(prefijo + consecutivo);
-                if (datos == null) {
-                    return;
-                }
-
-                nombreTitulo = "REIMPRESIÓN DE " + prefijo + consecutivo;
-                datosDocumento = ModeloDatosDocumento.construirModelo(datos, big.getBigDecimal(datos.getImpoGeneral()));
+            case "NOTA DÉBITO":
+                numero = (tipo.equals("FACTURA") ? "FACT-" : "ND-") + consecutivo;
+                documento = dao.obtenerPorFactura(DaoDocumentos.TIPOS_FACTURA, numero);
                 break;
-            }
 
-            case "PLAN SEPARE": {
-                ndPlanSepare datos = instancias.getSql().getDatosPlanSepare("SEPARE-" + consecutivo);
-                if (datos == null) {
-                    return;
-                }
-
-                nombreTitulo = "REIMPRESIÓN DE SEPARE-" + consecutivo;
-                datosDocumento = ModeloDatosDocumento.construirModelo(datos, BigDecimal.ZERO);
+            case "PLAN SEPARE":
+                numero = "SEPARE-" + consecutivo;
+                documento = dao.obtenerPorIdFactura(TipoDocumento.PLAN_SEPARE, numero);
                 break;
-            }
 
-            case "COTIZACIÓN": {
-                ndCotizacion datos = instancias.getSql().getDatosCotizacion("COTI-" + consecutivo);
-                if (datos == null) {
-                    return;
-                }
-
-                nombreTitulo = "REIMPRESIÓN DE COTI-" + consecutivo;
-                datosDocumento = ModeloDatosDocumento.construirModelo(datos, BigDecimal.ZERO);
+            case "COTIZACIÓN":
+                numero = "COTI-" + consecutivo;
+                documento = dao.obtenerPorIdFactura(TipoDocumento.COTIZACION, numero);
                 break;
-            }
 
-            case "PEDIDOS": {
-                ndPedido datos = instancias.getSql().getDatosPedido("PEDIDO-" + consecutivo);
-                if (datos == null) {
-                    return;
-                }
-
-                nombreTitulo = "REIMPRESIÓN DE PEDIDO-" + consecutivo;
-                datosDocumento = ModeloDatosDocumento.construirModelo(datos, BigDecimal.ZERO);
+            case "PEDIDOS":
+                numero = "PEDIDO-" + consecutivo;
+                documento = dao.obtenerPorIdFactura(TipoDocumento.PEDIDO, numero);
                 break;
-            }
 
-            case "ORDEN DE SERVICIO": {
-                ndOServicio1 datos = instancias.getSql().getDatosOServicio1("OSERV-" + consecutivo);
-                if (datos == null) {
-                    return;
-                }
-
-                nombreTitulo = "REIMPRESIÓN DE OSERV-" + consecutivo;
-                datosDocumento = ModeloDatosDocumento.construirModelo(datos, BigDecimal.ZERO);
+            case "ORDEN DE SERVICIO":
+                numero = "OSERV-" + consecutivo;
+                documento = dao.obtenerPorIdFactura(TipoDocumento.ORDER_SERVICIO, numero);
                 break;
-            }
 
             default:
                 return;
         }
 
+        if (documento == null) {
+            return;
+        }
+
+        nombreTitulo = "REIMPRESIÓN DE " + numero;
+        datosDocumento = ModeloDatosDocumento.construirModelo(documento);
         instancias.getMenu().cambiarTitulo(nombreTitulo);
     }
 
     private void llenarProductosDocumento() {
-        String tabla = determinarTablaSeleccionada();
-        tblProductos.setModel(daoReimpresiones.obtenerDetallesDocumentoEnTabla(tabla, datosDocumento.getIdentificadorFactura()));
+        List<TipoDocumento> tipos = determinarTiposSeleccionados();
+        if (tipos.isEmpty()) {
+            return;
+        }
+        tblProductos.setModel(daoReimpresiones.obtenerDetallesDocumentoEnTabla(tipos, datosDocumento.getIdentificadorFactura()));
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(i, 2).toString().replace(".", ","))), i, 2);
@@ -1988,7 +1897,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             tblProductos.setValueAt(big.setMoneda(big.getMoneda(tblProductos.getValueAt(i, 12).toString().replace(".", ","))), i, 12);
         }
 
-        if (DatosMaestra.getTipoImpresion().equals("Sin-Codigo")) {
+        if (!DatosMaestra.isImprimirCodigo()) {
             tblProductos.getColumnModel().getColumn(0).setMinWidth(0);
             tblProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
             tblProductos.getColumnModel().getColumn(0).setMaxWidth(0);

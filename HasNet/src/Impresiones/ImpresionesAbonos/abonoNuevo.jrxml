@@ -11,7 +11,7 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from abonoNuevo where abono = $P{abono}]]>
+		<![CDATA[SELECT ab.id AS id, ab.fecha AS fecha, t.nombre AS nombre, t.id AS cliente, ab.numFactura AS numFactura, ab.totalFactura AS totalFactura, ab.comprobante AS comprobante, ab.abonoActual AS abonoActual, ab.abonoLetras AS abonoLetras, ab.abonosAnteriores AS abonosAnteriores, pa.cheque AS cheque, pa.targeta AS targeta, pa.efectivo AS efectivo, pa.nc AS nc, pa.rtIva AS rtIva, pa.rtIca AS rtIca, pa.rtFuente AS rtFuente, pa.otros AS otros, pa.descuentos AS descuentos, bg.AbonoGeneral AS abonoGeneral, bg.saldoTotal AS saldoTotalGeneral, bg.valor AS valorGeneral, bg.enLetra AS enLetra, IF((SELECT SUM(a.valor) FROM bdcxc a WHERE a.factura2 = bg.AbonoGeneral AND a.tipo = 'ABONO' AND a.estado = 'ABONO-REALIZADO') IS NULL, 0, bg.saldoTotal - (SELECT SUM(a.valor) FROM bdcxc a WHERE a.factura2 = bg.AbonoGeneral AND a.tipo = 'ABONO' AND a.estado = 'ABONO-REALIZADO')) AS saldoFaltante, ab.abono AS abono, SUBSTR(ab.abono, 7) AS abono2 FROM bdabono ab LEFT JOIN bdabonos pa ON pa.factura = ab.abono LEFT JOIN bdterceros t ON t.idSistema = ab.cliente LEFT JOIN bdabonogeneral bg ON bg.abono = ab.abono WHERE ab.abono = $P{abono} GROUP BY ab.fecha, t.nombre, t.id, ab.numFactura, ab.totalFactura, ab.comprobante, ab.abonoActual, ab.abonoLetras, ab.abonosAnteriores, pa.cheque, pa.targeta, pa.efectivo, pa.nc, pa.rtIva, pa.rtIca, pa.rtFuente, pa.otros, pa.descuentos, bg.AbonoGeneral, bg.saldoTotal, bg.valor, saldoFaltante, ab.abono, abono2]]>
 	</queryString>
 	<field name="id" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>

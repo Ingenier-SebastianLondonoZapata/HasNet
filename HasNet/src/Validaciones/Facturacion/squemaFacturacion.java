@@ -135,7 +135,7 @@ public class squemaFacturacion extends javax.swing.JPanel {
     }
     private static final String USUARIO_POR_DEFECTO = "1010";
 
-    private String obtenerValorTabla(JTable tablaProductos, String campoTabla, int posicionProducto, boolean esNotaCredito, boolean esNotaDebito) {
+    private String obtenerValorTabla(JTable tablaProductos, String campoTabla, int posicionProducto, boolean esNotaCredito) {
         switch (campoTabla) {
             case "ID_SISTEMA":
                 if (esNotaCredito) {
@@ -148,8 +148,6 @@ public class squemaFacturacion extends javax.swing.JPanel {
             case "UNIDAD_MEDIDA":
                 if (esNotaCredito) {
                     return tablaProductos.getValueAt(posicionProducto, 21).toString();
-                } else if (esNotaDebito) {
-                    return tablaProductos.getValueAt(posicionProducto, Constantes.COLUMNA_UNIDAD_MEDIDA_NOTA_DEBITO).toString();
                 } else {
                     return tablaProductos.getValueAt(posicionProducto, Constantes.COLUMNA_UNIDAD_MEDIDA).toString();
                 }
@@ -184,15 +182,14 @@ public class squemaFacturacion extends javax.swing.JPanel {
         List<Object> errores_validacion = new ArrayList<>();
         List<Object> alertas_validacion = new ArrayList<>();
         boolean esNotaCredito = tipoProceso.equals(TipoDocumento.NOTA_CREDITO.getValor());
-        boolean esNotaDebito = tipoProceso.equals(TipoDocumento.NOTA_DEBITO.getValor());
 
         if (tablaProductos.getRowCount() == 0 && !tipoProceso.equals(TipoDocumento.NOTA_CREDITO.getValor())) {
             errores_validacion.add("No ha cargado ningún producto");
         }
 
         for (int i = 0; i < tablaProductos.getRowCount(); i++) {
-            String descripcionProducto = obtenerValorTabla(tablaProductos, "DESCRIPCION_PRODUCTO", i, esNotaCredito, esNotaDebito);
-            String unidadMedida = obtenerValorTabla(tablaProductos, "UNIDAD_MEDIDA", i, esNotaCredito, esNotaDebito);
+            String descripcionProducto = obtenerValorTabla(tablaProductos, "DESCRIPCION_PRODUCTO", i, esNotaCredito);
+            String unidadMedida = obtenerValorTabla(tablaProductos, "UNIDAD_MEDIDA", i, esNotaCredito);
 
             if (descripcionProducto.length() > Constantes.LONGITUD_MAXIMA_DESCRIPCION_PRODUCTOS) {
                 errores_validacion.add("El producto '" + descripcionProducto + "' supera los 255 caracteres!");
@@ -220,8 +217,8 @@ public class squemaFacturacion extends javax.swing.JPanel {
                     errores_validacion.add("El producto '" + descripcionProducto + "' debe tener unidad de medida válida");
                 }
 
-                int porcentajeIva = Integer.parseInt(obtenerValorTabla(tablaProductos, "PORCENTAJE_IVA", i, esNotaCredito, esNotaDebito));
-                int porcentajeImpoconsumo = Integer.parseInt(obtenerValorTabla(tablaProductos, "PORCENTAJE_IMPOCONSUMO", i, esNotaCredito, esNotaDebito));
+                int porcentajeIva = Integer.parseInt(obtenerValorTabla(tablaProductos, "PORCENTAJE_IVA", i, esNotaCredito));
+                int porcentajeImpoconsumo = Integer.parseInt(obtenerValorTabla(tablaProductos, "PORCENTAJE_IMPOCONSUMO", i, esNotaCredito));
 
                 if (!Constantes.TARIFAS_IVAS_PERMITIDOS.contains(porcentajeIva)) {
                     errores_validacion.add("El IVA " + porcentajeIva + "% del producto '" + descripcionProducto + "' no es válido. "
@@ -234,7 +231,7 @@ public class squemaFacturacion extends javax.swing.JPanel {
                 }
             }
 
-            String idSistema = obtenerValorTabla(tablaProductos, "ID_SISTEMA", i, esNotaCredito, esNotaDebito);
+            String idSistema = obtenerValorTabla(tablaProductos, "ID_SISTEMA", i, esNotaCredito);
             try {
                 BigDecimal costoProducto = servicioActualizacionPonderado.obtenerOCrearUltimoPonderado(idSistema, instancias.getUsuario()).getNuevoPonderado();
                 if (valorProducto.compareTo(costoProducto) < 0 && !saltarPasosFactura) {

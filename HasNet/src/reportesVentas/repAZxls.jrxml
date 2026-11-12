@@ -11,17 +11,17 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT bdfactura.producto AS producto,
-bdfactura.descripcion AS descripcion,
-SUM(bdfactura.total) AS total,
-SUM(bdfactura.iva) AS iva,
-SUM(bdfactura.cantidad) AS cantidad,
+		<![CDATA[SELECT dd.producto AS producto,
+dd.descripcion AS descripcion,
+SUM(dd.total) AS total,
+SUM(dd.iva) AS iva,
+SUM(dd.cantidad) AS cantidad,
 bdproductos.Codigo AS Codigo 
-FROM (bdfactura LEFT JOIN bdproductos ON 
-((bdproductos.idSistema = bdfactura.producto)))
-WHERE fechaFactura  BETWEEN $P!{cliente}  
-GROUP BY bdfactura.producto, bdfactura.descripcion, bdproductos.Codigo, bdfactura.anulada
-HAVING (bdfactura.anulada = 0)]]>
+FROM ((bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento AND d.tipoDocumento IN ('facturacion', 'notaDebito')) LEFT JOIN bdproductos ON 
+((bdproductos.idSistema = dd.producto)))
+WHERE d.fechaFactura  BETWEEN $P!{cliente}  
+GROUP BY dd.producto, dd.descripcion, bdproductos.Codigo, d.anulada
+HAVING (d.anulada = 0)]]>
 	</queryString>
 	<field name="producto" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
