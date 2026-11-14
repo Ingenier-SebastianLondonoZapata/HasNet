@@ -102,7 +102,7 @@ public class GeneradorReporteMedico extends GeneradorReporteBase {
     public void verOrdenServicio(String numero) {
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("numero", numero);
-        parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
+        parametros.put("informacionLegalHasNet", instancias.getReporte().getInformacionLegalHasNet());
         ejecutar("ordenServicio", parametros);
     }
 

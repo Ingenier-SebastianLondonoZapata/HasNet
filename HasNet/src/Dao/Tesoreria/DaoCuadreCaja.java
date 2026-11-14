@@ -30,14 +30,14 @@ public class DaoCuadreCaja {
         params.add(fecha);
         String sql = "SELECT f.factura, f.efectivoGeneral, f.targetaGeneral, f.tarjetaCredito, "
                 + "f.chequeGeneral, f.ncGeneral, f.totalGeneral, "
-                + "(SELECT COALESCE(SUM(p.cuotaInicial), 0) FROM bdPrestamo p WHERE p.factura = f.idFactura), "
+                + "(SELECT COALESCE(SUM(p.cuotaInicial), 0) FROM bdPrestamo p WHERE p.factura = f.factura), "
                 + "f.terminal, f.comprobante, f.credito, f.conseMesa, f.totalPropina, f.sisteCredito "
                 + "FROM bdDocumentos f "
-                + "LEFT JOIN bdDocumentos s ON s.tipoDocumento = 'separe' AND s.estado2 = f.idFactura "
+                + "LEFT JOIN bdDocumentos s ON s.tipoDocumento = 'separe' AND s.estado2 = f.factura "
                 + "WHERE f.tipoDocumento IN ('facturacion', 'notaDebito') AND f.estadoGeneral = 'PENDIENTE' "
                 + "AND f.anulada = 0 AND f.fechaFactura = ? AND s.idDocumento IS NULL"
                 + filtroUsuario("f.usuario", usuario, params)
-                + " ORDER BY CAST(SUBSTR(f.idFactura, 6) AS UNSIGNED)";
+                + " ORDER BY f.idDocumento";
 
         List<ModeloDocumentoCuadre> documentos = new ArrayList<>();
         for (Object[] fila : consultar(sql, params)) {
@@ -65,12 +65,12 @@ public class DaoCuadreCaja {
     public List<ModeloDocumentoCuadre> obtenerPlanesSepare(String fecha, String usuario) {
         List<Object> params = new ArrayList<>();
         params.add(fecha);
-        String sql = "SELECT s.idFactura, s.efectivoGeneral, s.targetaGeneral, s.chequeGeneral, "
+        String sql = "SELECT s.factura, s.efectivoGeneral, s.targetaGeneral, s.chequeGeneral, "
                 + "s.ncGeneral, s.totalGeneral, s.terminal, s.comprobante "
                 + "FROM bdDocumentos s WHERE s.tipoDocumento = 'separe' AND s.estadoGeneral = 'PENDIENTE' "
                 + "AND s.anulada = 0 AND s.fechaFactura = ?"
                 + filtroUsuario("s.usuario", usuario, params)
-                + " ORDER BY CAST(SUBSTR(s.idFactura, 8) AS UNSIGNED)";
+                + " ORDER BY s.idDocumento";
 
         List<ModeloDocumentoCuadre> documentos = new ArrayList<>();
         for (Object[] fila : consultar(sql, params)) {
@@ -206,7 +206,7 @@ public class DaoCuadreCaja {
 
             // Facturas (se excluye la factura informativa de plan separe, igual que en obtenerFacturas)
             actualizar("UPDATE bdDocumentos f "
-                    + "LEFT JOIN bdDocumentos s ON s.tipoDocumento = 'separe' AND s.estado2 = f.idFactura "
+                    + "LEFT JOIN bdDocumentos s ON s.tipoDocumento = 'separe' AND s.estado2 = f.factura "
                     + "SET f.red = ?, f.estadoGeneral = 'REALIZADO' "
                     + "WHERE f.tipoDocumento IN ('facturacion', 'notaDebito') AND f.estadoGeneral = 'PENDIENTE' "
                     + "AND f.anulada = 0 AND f.fechaFactura = ? AND s.idDocumento IS NULL",

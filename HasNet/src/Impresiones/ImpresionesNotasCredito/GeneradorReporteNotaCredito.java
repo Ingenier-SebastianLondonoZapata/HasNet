@@ -20,7 +20,7 @@ public class GeneradorReporteNotaCredito extends GeneradorReporteBase {
         parametros.put("regimen", instancias.getRegimen().equals("") ? "" : "SinIva");
         parametros.put("urlImagen", logo());
         parametros.put("info", info);
-        parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
+        parametros.put("informacionLegalHasNet", instancias.getReporte().getInformacionLegalHasNet());
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());
         ejecutar("nc" + DatosMaestra.getSufijoReporteImpresion(), parametros);

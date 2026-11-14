@@ -1,6 +1,8 @@
 package formularios.Parqueadero;
 
 import Controlador.Alertas.ControladorAlertas;
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
 
 import clases.Instancias;
 import Utilidades.BaseDatos.SQL;
@@ -500,14 +502,12 @@ public class infRepHistorial extends javax.swing.JInternalFrame {
     }
 
     public void ventanaPlacas(String nit, String condi) {
-        buscPlacas buscar = new buscPlacas(instancias.getMenu(), rootPaneCheckingEnabled, condi);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.placas(instancias.getMenu(), true, condi, false);
         buscar.setLocationRelativeTo(null);
-        buscar.setInstancia(instancias);
-        instancias.setBuscPlacas(buscar);
         instancias.setCampoActual(txtPlaca);
         txtPlaca.requestFocus();
         buscar.noEncontrado(nit);
-        buscar.show();
+        buscar.setVisible(true);
     }
 
     public void cargarCliente(String nit) {

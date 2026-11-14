@@ -28,6 +28,8 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
     private boolean buscarInactivos;
     private String tipoBuscador = "";
     private TipoContacto tipoContacto;
+    private boolean soloSeleccion;
+    private String contactoSeleccionado;
 
     public void setTipoContacto(TipoContacto tipoContacto) {
         this.tipoContacto = tipoContacto;
@@ -266,7 +268,21 @@ public class VistaBuscadorContactos extends javax.swing.JDialog {
         seleccionarContacto((String) tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0));
     }//GEN-LAST:event_btnEsteActionPerformed
 
+    public void activarSoloSeleccion() {
+        this.soloSeleccion = true;
+    }
+
+    public String getContactoSeleccionado() {
+        return contactoSeleccionado;
+    }
+
     private void seleccionarContacto(String identificacion) {
+        if (soloSeleccion) {
+            contactoSeleccionado = identificacion;
+            this.dispose();
+            return;
+        }
+
         instancias.setValorCampo(identificacion);
         this.dispose();
         metodosGenerales.presionarEnter(instancias.getCampoActual());

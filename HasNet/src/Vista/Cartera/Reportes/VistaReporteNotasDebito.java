@@ -535,7 +535,7 @@ public class VistaReporteNotasDebito extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String tipo = "";
-        String sql = "where bdfactura.idFactura like 'ND-%' AND";
+        String sql = "where bdfactura.factura like 'ND-%' AND";
 
         if (instancias.getUsuario().equals("ADMIN")) {
             if (cmbTerminal2.getItemCount() > 0) {

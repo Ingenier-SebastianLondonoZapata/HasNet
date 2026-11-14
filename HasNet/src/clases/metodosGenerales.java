@@ -38,7 +38,6 @@ import clases.Parqueadero.ndParqueadero;
 import clases.Ventas.ndCaja;
 import clases.Ventas.ndGarantia;
 import clases.Ventas.ndNotasCredito;
-import clases.Ventas.ndOServicio;
 import clases.Veterinario.ndConstanteHospitalizacion;
 import clases.Veterinario.ndConsulta;
 import clases.Veterinario.ndFormulaVeterinaria;
@@ -1609,23 +1608,6 @@ public class metodosGenerales {
         return nodo;
     }
 
-    public ndOServicio llenarOServicio(Object[] vector) {
-        ndOServicio nodo = new ndOServicio();
-        nodo.setId((String) vector[0]);
-        nodo.setPlaca((String) vector[1]);
-        nodo.setTipo((String) vector[2]);
-        nodo.setModelo((String) vector[3]);
-        nodo.setNumeroChasis((String) vector[4]);
-        nodo.setFechaCompra((String) vector[5]);
-        nodo.setMarca((String) vector[6]);
-        nodo.setKm((String) vector[7]);
-        nodo.setNumeroMotor((String) vector[8]);
-        nodo.setColor((String) vector[9]);
-        nodo.setProblema((String) vector[10]);
-
-        return nodo;
-    }
-
     public ndCaja llenarCaja(Object[] vector) {
 
         ndCaja nodo = new ndCaja();
@@ -2415,11 +2397,6 @@ public class metodosGenerales {
             nodo.getTotalPropinas(), nodo.getSisteCredito()
         };
 
-        return vector;
-    }
-
-    public Object[] pasarDatosOServicio(ndOServicio nodo) {
-        Object[] vector = {nodo.getId(), nodo.getPlaca(), nodo.getTipo(), nodo.getModelo(), nodo.getNumeroChasis(), nodo.getFechaCompra(), nodo.getMarca(), nodo.getKm(), nodo.getNumeroMotor(), nodo.getColor(), nodo.getProblema()};
         return vector;
     }
 
@@ -3619,7 +3596,7 @@ public class metodosGenerales {
     public void montarFirma(String origen, String destino) {
         //llama el metodo con la ruta de origen, destino y el tamaño que debe tomar la imagen.
         recortarYguardarImagen(origen, destino, 200, 60);
-    }
+    }   
 
     /*Este método es el de la magia recibe la ruta al archivo original y la ruta donde vamos a guardar la copia*/
     public static void recortarYguardarImagen(String origen, String destino, int anchoMax, int altoMax) {

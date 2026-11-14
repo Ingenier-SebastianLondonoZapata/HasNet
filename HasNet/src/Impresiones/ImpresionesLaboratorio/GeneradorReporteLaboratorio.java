@@ -21,7 +21,7 @@ public class GeneradorReporteLaboratorio extends GeneradorReporteBase {
         parametros.put("pie", pie);
         parametros.put("edad", edad);
         parametros.put("fecha", metodosGenerales.fecha());
-        parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
+        parametros.put("informacionLegalHasNet", instancias.getReporte().getInformacionLegalHasNet());
         parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + instancias.getUsuario() + ".jpg");
         ejecutar(examen, parametros);
     }

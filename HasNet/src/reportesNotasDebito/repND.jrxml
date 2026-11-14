@@ -109,7 +109,7 @@
 	<field name="utilidad1" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="idFactura" class="java.lang.String">
+	<field name="factura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="id2" class="java.lang.String"/>
@@ -154,7 +154,7 @@
 		<variableExpression><![CDATA[$F{impoconsumo}]]></variableExpression>
 	</variable>
 	<group name="factura">
-		<groupExpression><![CDATA[$F{idFactura}]]></groupExpression>
+		<groupExpression><![CDATA[$F{factura}]]></groupExpression>
 		<groupHeader>
 			<band height="48">
 				<staticText>
@@ -246,7 +246,7 @@
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{idFactura}:$F{id2})]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{factura}:$F{id2})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement x="236" y="15" width="105" height="13" uuid="6aeb01ae-da68-48f6-b18e-cba1ca90c999"/>

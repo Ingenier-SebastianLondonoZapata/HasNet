@@ -41,7 +41,7 @@ public final class ConsultaCartera {
                 + edad + " AS edadCartera, "
                 + estadoVencimiento("d.fechaAlerta", "d.fechaVencimiento") + " AS estadoVencimiento, "
                 + orden("d.fechaAlerta", "d.fechaVencimiento") + " AS orden, d.terminal AS terminal, cx.cuotas AS cuotas, "
-                + "d.turno AS turno, d.vendedor AS vendedor, d.placa AS placa, CAST(SUBSTR(d.idFactura, 6, 100) AS SIGNED) AS ordenId "
+                + "d.turno AS turno, d.vendedor AS vendedor, d.placa AS placa, d.idDocumento AS ordenId "
                 + "FROM bdDocumentos d "
                 + "INNER JOIN bdcxc cx ON cx.factura2 = d.factura "
                 + (terceroObligatorio ? "INNER" : "LEFT") + " JOIN bdterceros t ON t.idSistema = d.cliente "
@@ -49,9 +49,9 @@ public final class ConsultaCartera {
     }
 
     public static String carteraFacturas() {
-        return "SELECT d.idFactura AS fact, cx.tipo AS tipo, cx.estado AS estado, cx.recibo AS recibo, cx.plazo AS plazo, cx.vencimiento AS vencimiento, "
+        return "SELECT d.factura AS fact, cx.tipo AS tipo, cx.estado AS estado, cx.recibo AS recibo, cx.plazo AS plazo, cx.vencimiento AS vencimiento, "
                 + "d.cliente AS cliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, d.anulada AS anulada, "
-                + saldo("cx.valor", abonosRealizados("d.factura")) + " AS Expr1, d.vendedor AS vendedor, d.idFactura AS factura, d.terminal AS terminal, "
+                + saldo("cx.valor", abonosRealizados("d.factura")) + " AS Expr1, d.vendedor AS vendedor, d.factura AS factura, d.terminal AS terminal, "
                 + "d.factura AS factura2, cx.valor AS valor, t.telefono AS telefono, CAST((cx.vencimiento - CAST(NOW() AS DATE)) AS SIGNED) AS edadCartera, "
                 + "IF(CAST(NOW() AS DATE) >= cx.vencimiento, 'VENCIDA', 'OK') AS estadoVenc, d.turno AS turno, d.placa AS placa, t.direccion AS direccion, "
                 + "t.ciudad AS ciudad, t.id AS idSistema, d.conseMesa AS conseMesa "
@@ -67,7 +67,7 @@ public final class ConsultaCartera {
                 + "d.terminal AS terminal, cx.valor AS valor, t.telefono AS telefono, CAST((cx.vencimiento - CURDATE()) AS SIGNED) AS edadCartera, "
                 + "IF(NOW() >= cx.vencimiento, 'VENCIDA', 'OK') AS estadoVenc, d.placa AS placa, t.direccion AS direccion, t.ciudad AS ciudad, "
                 + idSistema + " AS idSistema "
-                + "FROM bdcxc cx INNER JOIN bdDocumentos d ON d.idFactura = cx.factura AND d.tipoDocumento = '" + tipoDocumento + "' "
+                + "FROM bdcxc cx INNER JOIN bdDocumentos d ON d.factura = cx.factura AND d.tipoDocumento = '" + tipoDocumento + "' "
                 + "LEFT JOIN bdterceros t ON t.idSistema = d.cliente "
                 + "WHERE cx.tipo = '" + tipoCxc + "' AND cx.estado <> 'CANCELADA' AND d.anulada = 0";
     }

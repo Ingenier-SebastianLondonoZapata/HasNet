@@ -7,7 +7,7 @@
 	<parameter name="placa" class="java.lang.String"/>
 	<parameter name="fecha" class="java.lang.String"/>
 	<parameter name="hora" class="java.lang.String"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -74,7 +74,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

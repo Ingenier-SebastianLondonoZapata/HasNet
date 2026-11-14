@@ -13,19 +13,11 @@ import java.math.BigDecimal;
  */
 public class ModeloTablaDocumentos {
 
-    String idFactura, factura, fechaFactura, identificadorCliente, nombreCliente, vendedor, terminal, turno, tipoFactura;
+    String factura, fechaFactura, identificadorCliente, nombreCliente, vendedor, terminal, turno, tipoFactura;
     BigDecimal totalGeneral;
 
     public ModeloTablaDocumentos() {
         //DO NOTHING
-    }
-
-    public String getIdFactura() {
-        return idFactura;
-    }
-
-    public void setIdFactura(String idFactura) {
-        this.idFactura = idFactura;
     }
 
     public String getFactura() {
@@ -100,8 +92,7 @@ public class ModeloTablaDocumentos {
         this.totalGeneral = totalGeneral;
     }
 
-    public ModeloTablaDocumentos(String idFactura, String factura, String fechaFactura, String identificadorCliente, String nombreCliente, String vendedor, String terminal, String turno, String tipoFactura, BigDecimal totalGeneral) {
-        this.idFactura = idFactura;
+    public ModeloTablaDocumentos(String factura, String fechaFactura, String identificadorCliente, String nombreCliente, String vendedor, String terminal, String turno, String tipoFactura, BigDecimal totalGeneral) {
         this.factura = factura;
         this.fechaFactura = fechaFactura;
         this.identificadorCliente = identificadorCliente;

@@ -17,11 +17,11 @@ public final class ConsultaDocumentos {
     public static final String ORIGEN = " bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento ";
 
     private static final Set<String> ENCABEZADO = new HashSet<>(Arrays.asList(
-            "idFactura", "factura", "cliente", "vendedor", "efectivoGeneral", "ncGeneral", "chequeGeneral", "targetaGeneral",
+            "factura", "cliente", "vendedor", "efectivoGeneral", "ncGeneral", "chequeGeneral", "targetaGeneral",
             "totalGeneral", "descuentoGeneral", "ivaGeneral", "subtotalGeneral", "impoconsumoGeneral", "comprobante", "cotizacion",
             "anulada", "anula", "credito", "cxc", "usuario", "rtIva", "rtIca", "rtFuente", "otros", "observacion", "terminal",
             "devuelta", "resolucion", "cuadreAnulacion", "usuarioAnula", "copago", "placa", "garantia", "diasGarantia", "terminos",
-            "conseMesa", "turno", "franquisia", "comision", "valorComision", "totalFacturaComision", "mesFacturado", "tarjetaCredito",
+            "conseMesa", "turno", "mesFacturado", "tarjetaCredito",
             "totalPropina", "porcPropina", "idCosteo", "sisteCredito", "bodega", "modeloContable", "inicio", "hasta",
             "cantIncremento", "fechaUltimoPago", "cantFacturados"));
 
@@ -31,7 +31,6 @@ public final class ConsultaDocumentos {
             "idProd", "costo", "rango", "detalle"));
 
     private static final Map<String, String> CONSTANTES = new HashMap<>();
-    private static final Map<String, String> VEHICULO = new HashMap<>();
 
     private static final Map<String, String> RENOMBRADAS = new HashMap<>();
 
@@ -49,16 +48,6 @@ public final class ConsultaDocumentos {
         CONSTANTES.put("usuario1", "''");
         CONSTANTES.put("NC", "''");
         CONSTANTES.put("concepto", "''");
-
-        VEHICULO.put("tipo", "d.vehiculoTipo");
-        VEHICULO.put("modelo", "d.vehiculoModelo");
-        VEHICULO.put("numeroChasis", "d.vehiculoNumeroChasis");
-        VEHICULO.put("fechaCompra", "d.vehiculoFechaCompra");
-        VEHICULO.put("marca", "d.vehiculoMarca");
-        VEHICULO.put("km", "d.vehiculoKm");
-        VEHICULO.put("numeroMotor", "d.vehiculoNumeroMotor");
-        VEHICULO.put("color", "d.vehiculoColor");
-        VEHICULO.put("problema", "d.vehiculoProblema");
 
         RENOMBRADAS.put("hora", "d.horaFactura");
         RENOMBRADAS.put("impoGeneral", "d.impoconsumoGeneral");
@@ -145,9 +134,6 @@ public final class ConsultaDocumentos {
 
         if (CONSTANTES.containsKey(nombre)) {
             return CONSTANTES.get(nombre);
-        }
-        if (orden && VEHICULO.containsKey(nombre)) {
-            return VEHICULO.get(nombre);
         }
         if (ENCABEZADO.contains(nombre)) {
             return "d." + nombre;

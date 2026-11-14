@@ -224,7 +224,7 @@
 			<line>
 				<reportElement x="392" y="0" width="1" height="16" uuid="59d90b87-e03f-4645-ac76-f4a73a0c4406"/>
 			</line>
-			<textField pattern="#,##0.0">
+			<textField pattern="#,##0.####">
 				<reportElement x="393" y="0" width="77" height="16" uuid="647067e7-5fdf-4c45-9031-aa89894cd3e1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>

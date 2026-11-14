@@ -194,8 +194,8 @@ public class FuncionalidadVentas {
                 .registrar(TipoDocumento.PLAN_SEPARE.getValor(), TipoDocumento.ANULAR_PLAN_SEPARE,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
-                            public void actualizar(String idDocumento, String idFacturaGenerada) {
-                                daoPlanSepare.modificarEstadoPlanSepare(EstadosTipoDocumento.FACTURADA.getNombre(), idFacturaGenerada, idDocumento);
+                            public void actualizar(String idDocumento, String facturaGenerada) {
+                                daoPlanSepare.modificarEstadoPlanSepare(EstadosTipoDocumento.FACTURADA.getNombre(), facturaGenerada, idDocumento);
                             }
                         })
                 .registrar(TipoDocumento.MESA.getValor(), TipoDocumento.ANULAR_MESA,
@@ -203,16 +203,16 @@ public class FuncionalidadVentas {
                             @Override
                             public void actualizar(String idDocumento, String tituloDocumento) {
                                 instancias.getSql().eliminarComanda(idDocumento, "factura");
-                                daoDocumentos.eliminarPorIdFactura(TipoDocumento.MESA, idDocumento);
+                                daoDocumentos.eliminarPorFactura(TipoDocumento.MESA, idDocumento);
                                 instancias.getSql().cambiarEstadoMesa(tituloDocumento, EstadosTipoDocumento.DISPONIBLE.getNombre());
                             }
                         })
                 .registrar(TipoDocumento.PEDIDO.getValor(), TipoDocumento.ANULAR_PEDIDO,
                         new ConversorDocumentoAFactura.ActualizadorDocumento() {
                             @Override
-                            public void actualizar(String idDocumento, String idFacturaGenerada) {
+                            public void actualizar(String idDocumento, String facturaGenerada) {
                                 instancias.getSql().eliminarComanda(idDocumento, "factura");
-                                daoPedido.modificarEstadoPedido(EstadosTipoDocumento.FACTURADA.getNombre(), idFacturaGenerada, idDocumento);
+                                daoPedido.modificarEstadoPedido(EstadosTipoDocumento.FACTURADA.getNombre(), facturaGenerada, idDocumento);
                             }
                         })
                 .registrar(TipoDocumento.ORDER_SERVICIO.getValor(), TipoDocumento.ANULAR_ORDER_SERVICIO,

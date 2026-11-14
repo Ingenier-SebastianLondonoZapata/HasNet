@@ -17,16 +17,16 @@ public class DaoPlanSepare {
         return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
     }
 
-    public boolean modificarEstadoPlanSepare(String estado, String idFacturaGenerada, String idDocumento) {
-        return daoDocumentos.actualizarEstadoPorIdFactura(TipoDocumento.PLAN_SEPARE, idDocumento, estado, idFacturaGenerada);
+    public boolean modificarEstadoPlanSepare(String estado, String facturaGenerada, String documento) {
+        return daoDocumentos.actualizarEstadoPorFactura(TipoDocumento.PLAN_SEPARE, documento, estado, facturaGenerada);
     }
 
-    public boolean esFacturaDePlanSepare(String idFactura) {
+    public boolean esFacturaDePlanSepare(String factura) {
         String sql = "SELECT 1 FROM bdDocumentos WHERE tipoDocumento = ? AND estado2 = ? LIMIT 1";
 
         try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setString(1, TipoDocumento.PLAN_SEPARE.getValor());
-            stmt.setString(2, idFactura);
+            stmt.setString(2, factura);
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
@@ -37,7 +37,7 @@ public class DaoPlanSepare {
     }
 
     public boolean estaFacturado(String idPlanSepare) {
-        String sql = "SELECT 1 FROM bdDocumentos WHERE tipoDocumento = ? AND idFactura = ? "
+        String sql = "SELECT 1 FROM bdDocumentos WHERE tipoDocumento = ? AND factura = ? "
                 + "AND estado2 IS NOT NULL AND estado2 <> '' LIMIT 1";
 
         try (PreparedStatement stmt = conexion().prepareStatement(sql)) {

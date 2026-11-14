@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.7715610000000093"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="311"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<parameter name="usuario" class="java.lang.String"/>
 	<parameter name="firma" class="java.lang.String"/>
 	<parameter name="urlImagen" class="java.io.InputStream"/>
@@ -438,7 +438,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Century Gothic" size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="1" y="67" width="534" height="19"/>

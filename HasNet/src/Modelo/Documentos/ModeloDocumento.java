@@ -9,7 +9,6 @@ public class ModeloDocumento {
 
     private int idDocumento;
     private TipoDocumento tipoDocumento;
-    private String idFactura = "";
     private String factura = "";
     private String cliente = "";
     private String vendedor = "";
@@ -85,14 +84,6 @@ public class ModeloDocumento {
 
     public void setTipoDocumento(TipoDocumento tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
-    }
-
-    public String getIdFactura() {
-        return idFactura;
-    }
-
-    public void setIdFactura(String idFactura) {
-        this.idFactura = idFactura;
     }
 
     public String getFactura() {

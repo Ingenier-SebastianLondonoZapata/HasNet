@@ -1,6 +1,8 @@
 package formularios.Parqueadero;
 
 import Controlador.Alertas.ControladorAlertas;
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
 
 import Utilidades.Contactos.Bodegas;
 
@@ -1688,7 +1690,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtDiasPlazoKeyReleased
 
     private void btnReImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReImprimirActionPerformed
-        new GeneradorReporteOrdenServicio(instancias).ver_oServicio("OSERV-" + txtoServicio.getText(), txtObservaciones.getText(), false, "", "Normal");
+        new GeneradorReporteOrdenServicio(instancias).ver_oServicio("OSERV-" + txtoServicio.getText(), txtObservaciones.getText(), false, "OrdenNormal");
     }//GEN-LAST:event_btnReImprimirActionPerformed
 
     private void cmbEstadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEstadosActionPerformed
@@ -1781,14 +1783,12 @@ public class infLavadero extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jRadioButton1ItemStateChanged
 
     public void ventanaPlacas(String nit, String condi) {
-        buscPlacas buscar = new buscPlacas(instancias.getMenu(), rootPaneCheckingEnabled, condi);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.placas(instancias.getMenu(), true, condi, true);
         buscar.setLocationRelativeTo(null);
-        buscar.setInstancia(instancias);
-        instancias.setBuscPlacas(buscar);
         instancias.setCampoActual(txtPlaca);
         txtPlaca.requestFocus();
         buscar.noEncontrado(nit);
-        buscar.show();
+        buscar.setVisible(true);
     }
 
     public void cargarLavado(String idLavado) {

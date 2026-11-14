@@ -608,7 +608,7 @@ public class vistaSuperMaestra extends javax.swing.JDialog {
         txtFEDisponibles.setText(modelo.getNumeroFacturasElectronicasDisponibles() + "");
         txtInformacionLegal.setText(modelo.getInformacionLegal() + "");
 
-        instancias.getReporte().setInformacionLegalClick(modelo.getInformacionLegal());
+        instancias.getReporte().setInformacionLegalHasNet(modelo.getInformacionLegal());
         this.tipoImpresion = modelo.getTipoImpresion();
     }
 

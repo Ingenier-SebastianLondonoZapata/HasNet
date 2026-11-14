@@ -429,7 +429,7 @@
 			<line>
 				<reportElement x="252" y="0" width="1" height="14" uuid="bceb3a2b-df59-4d1d-adcd-7c0a699c7151"/>
 			</line>
-			<textField>
+			<textField pattern="#,##0.####">
 				<reportElement x="253" y="0" width="35" height="14" uuid="677d1450-d176-41a6-b517-c096af3c16d3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>

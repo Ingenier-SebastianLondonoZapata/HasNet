@@ -88,7 +88,7 @@ $P!{sql}]]>
 	</title>
 	<detail>
 		<band height="14" splitType="Stretch">
-			<textField isStretchWithOverflow="true" pattern="#,##0">
+			<textField isStretchWithOverflow="true" pattern="#,##0.####">
 				<reportElement x="170" y="0" width="46" height="14" uuid="16ac1c22-c803-452b-b7eb-1cac1d3c3972"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="true"/>

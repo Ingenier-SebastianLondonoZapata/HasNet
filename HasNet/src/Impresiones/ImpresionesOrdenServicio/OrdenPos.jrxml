@@ -10,13 +10,12 @@
 	<parameter name="numOrden" class="java.lang.String"/>
 	<parameter name="tipoFact" class="java.lang.String"/>
 	<parameter name="pie" class="java.lang.String"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<parameter name="simbolo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from oServicio where idFactura = $P{orden}]]>
+		<![CDATA[select * from oServicio where factura = $P{orden}]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String"/>
 	<field name="cliente" class="java.lang.String"/>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="direccion" class="java.lang.String"/>
@@ -240,7 +239,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{idFactura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{factura}]]></textFieldExpression>
 			</textField>
 </frame>
 <frame>
@@ -278,7 +277,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{lista})]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.####">
 				<reportElement positionType="Float" x="132" y="0" width="23" height="11" uuid="56b6c326-f6e5-4a7d-bbea-397dbb5bdd6b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -389,7 +388,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

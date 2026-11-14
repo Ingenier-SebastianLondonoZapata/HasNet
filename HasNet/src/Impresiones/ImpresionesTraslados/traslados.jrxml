@@ -294,7 +294,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{lista})]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.####">
 				<reportElement x="429" y="1" width="55" height="14" uuid="74102ef2-4967-4a57-a370-93cd63b4ddc6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>

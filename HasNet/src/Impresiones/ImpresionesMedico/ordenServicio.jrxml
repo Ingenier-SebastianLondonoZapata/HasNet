@@ -301,7 +301,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{comision}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" pattern="#,##0.####">
 				<reportElement mode="Transparent" x="103" y="160" width="171" height="21" uuid="313d63dd-2f91-4c59-8f2c-1153ac51dd41"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="8" isBold="false"/>

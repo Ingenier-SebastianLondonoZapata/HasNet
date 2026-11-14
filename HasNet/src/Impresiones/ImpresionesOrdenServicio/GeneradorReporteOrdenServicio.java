@@ -11,7 +11,7 @@ public class GeneradorReporteOrdenServicio extends GeneradorReporteBase {
         super(instancias);
     }
 
-    public void ver_oServicio(String factura, String observaciones, boolean imprimir, String tipoVehiculo, String tipo1) {
+    public void ver_oServicio(String factura, String observaciones, boolean imprimir, String nombreReporte) {
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("orden", factura);
         parametros.put("numOrden", factura.replace("OSERV-", ""));
@@ -22,7 +22,7 @@ public class GeneradorReporteOrdenServicio extends GeneradorReporteBase {
         parametros.put("pie", instancias.getPie());
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());
-        parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
-        ejecutar(tipo1, parametros, imprimir);
+        parametros.put("informacionLegalHasNet", instancias.getReporte().getInformacionLegalHasNet());
+        ejecutar(nombreReporte, parametros, imprimir);
     }
 }

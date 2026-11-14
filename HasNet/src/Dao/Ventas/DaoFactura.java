@@ -6,7 +6,6 @@ import Modelo.Ventas.DocumentoMovimiento;
 import Modelo.Ventas.LineaProducto;
 import Utilidades.Utilidades;
 import clases.Cartera.ndCxc;
-import clases.Ventas.ndOServicio;
 import Dao.Generales.DaoGenerales;
 import Dao.Documentos.ConsultaDocumentos;
 import Dao.Documentos.ConsultaFactura;
@@ -57,21 +56,21 @@ public class DaoFactura {
         return new DocumentoMovimiento(parsearCabeceraOrden(mat), parsearLineasOrden(mat));
     }
 
-    public DocumentoMovimiento cargarMovimientoPrefactura(String idFactura) {
-        Object[][] mat = getRegistrosPrefacturas(idFactura);
+    public DocumentoMovimiento cargarMovimientoPrefactura(String factura) {
+        Object[][] mat = getRegistrosPrefacturas(factura);
         if (mat.length == 0) return DocumentoMovimiento.vacio();
         return new DocumentoMovimiento(parsearCabeceraPrefactura(mat), parsearLineasPrefactura(mat));
     }
 
     public DocumentoMovimiento cargarPlanSepare(String id) {
-        ModeloDocumento documento = new DaoDocumentos().obtenerPorIdFactura(TipoDocumento.PLAN_SEPARE, id);
+        ModeloDocumento documento = new DaoDocumentos().obtenerPorFactura(TipoDocumento.PLAN_SEPARE, id);
         if (documento == null) return DocumentoMovimiento.vacio();
         Object[][] mat = getRegistrosPlanSepare(id);
         return new DocumentoMovimiento(parsearCabecera(documento), parsearLineasPlanSepare(mat));
     }
 
     public DocumentoMovimiento cargarPedido(String id) {
-        ModeloDocumento documento = new DaoDocumentos().obtenerPorIdFactura(TipoDocumento.PEDIDO, id);
+        ModeloDocumento documento = new DaoDocumentos().obtenerPorFactura(TipoDocumento.PEDIDO, id);
         if (documento == null) return DocumentoMovimiento.vacio();
         Object[][] mat = getRegistrosPedido(id);
         return new DocumentoMovimiento(parsearCabecera(documento), parsearLineasPedido(mat));
@@ -273,18 +272,18 @@ public class DaoFactura {
     // Consultas base — retornan Object[][] (se mantienen para compatibilidad)
     // -------------------------------------------------------------------------
 
-    public Object[][] getRegistrosCotizas(String idFactura) {
+    public Object[][] getRegistrosCotizas(String factura) {
         String[] columnas = {
             "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento",
             "porcIva", "iva", "total", "plu", "cant2", "cliente", "subtotalGeneral", "descuentoGeneral",
             "ivaGeneral", "totalGeneral", "rango", "estadoGeneral", "vendedor", "observacion", "bodega"
         };
         String sql = ConsultaVista.COTIZACION.consulta(ConsultaVista.COTIZACION.columnas(columnas),
-                "d.idFactura = '" + idFactura.replace("'", "''") + "'", "ORDER BY dd.idDetalle");
+                "d.factura = '" + factura.replace("'", "''") + "'", "ORDER BY dd.idDetalle");
         return daoGenerales.obtenerDatosTabla(columnas, sql);
     }
 
-    public Object[][] getRegistrosOrdenes(String idFactura) {
+    public Object[][] getRegistrosOrdenes(String factura) {
         String[] columnas = {
             "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento",
             "porcIva", "iva", "total", "cliente", "vendedor", "estado", "plu", "cant2",
@@ -294,7 +293,7 @@ public class DaoFactura {
         String sql = "SELECT producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, "
                 + "porcIva, iva, total, cliente, vendedor, estado, plu, cant2, subtotalGeneral, "
                 + "descuentoGeneral, ivaGeneral, totalGeneral, observacion, estadoGeneral, placaReal "
-                + "FROM ordenServicio WHERE idFactura = '" + idFactura + "'";
+                + "FROM ordenServicio WHERE factura = '" + factura + "'";
         return daoGenerales.obtenerDatosTabla(columnas, sql);
     }
 
@@ -348,7 +347,7 @@ public class DaoFactura {
         return lineas;
     }
 
-    private Object[][] getRegistrosMesa(String idFactura) {
+    private Object[][] getRegistrosMesa(String factura) {
         String[] columnas = {
             "cliente", "vendedor", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral",
             "estadoGeneral", "observacion",
@@ -357,21 +356,21 @@ public class DaoFactura {
         };
         String sql = "SELECT " + ConsultaDocumentos.columnas(TipoDocumento.MESA, columnas) + " FROM" + ConsultaDocumentos.ORIGEN
                 + "WHERE " + ConsultaDocumentos.filtroTipo(TipoDocumento.MESA)
-                + " AND d.idFactura = '" + idFactura.replace("'", "''") + "' ORDER BY dd.idDetalle";
+                + " AND d.factura = '" + factura.replace("'", "''") + "' ORDER BY dd.idDetalle";
         return daoGenerales.obtenerDatosTabla(columnas, sql);
     }
 
-    private Object[][] getRegistrosPlanSepare(String idFactura) {
+    private Object[][] getRegistrosPlanSepare(String factura) {
         String[] columnas = {
             "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento",
             "porcIva", "iva", "total", "ubicacion", "referencia", "estado", "plu", "cant2", "detalle", "idProd"
         };
         String sql = ConsultaVista.PLAN_SEPARE.consulta(ConsultaVista.PLAN_SEPARE.columnas(columnas),
-                "d.idFactura = '" + idFactura.replace("'", "''") + "'", "ORDER BY dd.idDetalle");
+                "d.factura = '" + factura.replace("'", "''") + "'", "ORDER BY dd.idDetalle");
         return daoGenerales.obtenerDatosTabla(columnas, sql);
     }
 
-    private Object[][] getRegistrosPedido(String idFactura) {
+    private Object[][] getRegistrosPedido(String factura) {
         String[] columnas = {
             "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento",
             "porcIva", "iva", "total", "ubicacion1", "referencia", "estado", "plu", "cant2",
@@ -379,48 +378,13 @@ public class DaoFactura {
         };
         String sql = "SELECT producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, "
                 + "porcIva, iva, total, ubicacion1, referencia, estado, plu, cant2, preparacion, rango, idProd "
-                + "FROM pedidos WHERE idFactura = '" + idFactura + "'";
-        return daoGenerales.obtenerDatosTabla(columnas, sql);
-    }
-
-    public Object[][] getEstadoVehiculo(String orden) {
-        String[] columnas = {"idParte", "nombreParte", "problemasDerecha", "problemasIzquierda", "observaciones"};
-        String sql = "SELECT idParte, nombreParte, problemasDerecha, problemasIzquierda, observaciones "
-                + "FROM bdDetalleOrdenServicio WHERE ordenServicio = '" + orden + "'";
+                + "FROM pedidos WHERE factura = '" + factura + "'";
         return daoGenerales.obtenerDatosTabla(columnas, sql);
     }
 
     // -------------------------------------------------------------------------
     // Consultas de nodos únicos
     // -------------------------------------------------------------------------
-
-    public ndOServicio getDatosOServicio(String id) {
-        String sql = "SELECT id, placa, tipo, modelo, numeroChasis, fechaCompra, marca, km, numeroMotor, color, problema "
-                + "FROM bdOServicio WHERE id = ?";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    ndOServicio nodo = new ndOServicio();
-                    nodo.setId(rs.getString("id"));
-                    nodo.setPlaca(rs.getString("placa"));
-                    nodo.setTipo(rs.getString("tipo"));
-                    nodo.setModelo(rs.getString("modelo"));
-                    nodo.setNumeroChasis(rs.getString("numeroChasis"));
-                    nodo.setFechaCompra(rs.getString("fechaCompra"));
-                    nodo.setMarca(rs.getString("marca"));
-                    nodo.setKm(rs.getString("km"));
-                    nodo.setNumeroMotor(rs.getString("numeroMotor"));
-                    nodo.setColor(rs.getString("color"));
-                    nodo.setProblema(rs.getString("problema"));
-                    return nodo;
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener datos de orden de servicio: " + e.getMessage());
-        }
-        return new ndOServicio();
-    }
 
     public ndCxc getDatosCxc(String factura) {
         String sql = "SELECT factura, tipo, estado, recibo, valor, plazo, vencimiento, usuario, terminal, cuotas, factura2 "

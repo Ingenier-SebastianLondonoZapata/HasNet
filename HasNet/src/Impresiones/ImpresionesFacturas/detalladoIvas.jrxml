@@ -15,12 +15,12 @@
 		<defaultValueExpression><![CDATA["facturacion"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT d.factura AS idFactura, IF(dd.porcIva > 0, dd.porcIva, IF(dd.porcImpo > 0, dd.porcImpo, 'Exento')) AS porcIva, SUM(dd.subtotal) AS SumaDeTotal, SUM(COALESCE(dd.iva, 0) + COALESCE(dd.impoconsumo, 0)) AS SumaDeiva
+		<![CDATA[SELECT d.factura AS factura, IF(dd.porcIva > 0, dd.porcIva, IF(dd.porcImpo > 0, dd.porcImpo, 'Exento')) AS porcIva, SUM(dd.subtotal) AS SumaDeTotal, SUM(COALESCE(dd.iva, 0) + COALESCE(dd.impoconsumo, 0)) AS SumaDeiva
 FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento
 WHERE (d.tipoDocumento = $P{tipoDocumento} OR ($P{tipoDocumento} = 'facturacion' AND d.tipoDocumento = 'notaDebito')) AND d.factura = $P{numero}
 GROUP BY d.factura, IF(dd.porcIva > 0, dd.porcIva, IF(dd.porcImpo > 0, dd.porcImpo, 'Exento'))]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String"/>
+	<field name="factura" class="java.lang.String"/>
 	<field name="porcIva" class="java.lang.String"/>
 	<field name="SumaDetotal" class="java.math.BigDecimal"/>
 	<field name="SumaDeiva" class="java.math.BigDecimal"/>
@@ -29,27 +29,27 @@ GROUP BY d.factura, IF(dd.porcIva > 0, dd.porcIva, IF(dd.porcImpo > 0, dd.porcIm
 	</background>
 	<columnHeader>
 		<band height="9">
-			<staticText>
+			<textField isStretchWithOverflow="true">
 				<reportElement mode="Opaque" x="0" y="0" width="34" height="9" backcolor="#CCCCCC" uuid="c7d0c219-e91b-43d4-9aac-28b04fe6b933"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isUnderline="false"/>
 				</textElement>
-				<text><![CDATA[PORC %]]></text>
-			</staticText>
-			<staticText>
+				<textFieldExpression><![CDATA["PORC %"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement mode="Opaque" x="34" y="0" width="63" height="9" backcolor="#CCCCCC" uuid="9928aa94-61cc-4cdc-b36c-66f51ce9c359"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isUnderline="false"/>
 				</textElement>
-				<text><![CDATA[BASE]]></text>
-			</staticText>
-			<staticText>
+				<textFieldExpression><![CDATA["BASE"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement mode="Opaque" x="97" y="0" width="67" height="9" backcolor="#CCCCCC" uuid="1399bc23-708d-42a6-9b96-8cbc41045fa7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isUnderline="false"/>
 				</textElement>
-				<text><![CDATA[IMP]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["IMPUESTO"]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -68,7 +68,7 @@ GROUP BY d.factura, IF(dd.porcIva > 0, dd.porcIva, IF(dd.porcImpo > 0, dd.porcIm
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{SumaDetotal})]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="0" y="0" width="34" height="9" uuid="785bc495-9623-4376-9d2e-5dc203164c69"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7"/>

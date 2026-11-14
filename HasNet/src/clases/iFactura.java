@@ -50,11 +50,11 @@ public class iFactura {
     public void consultarMaestros() {
     }
 
-    public void setInformacionLegalClick(String informacionLegalClick) {
-        this.informacionLegalReportes = informacionLegalClick;
+    public void setInformacionLegalHasNet(String informacionLegalHasNet) {
+        this.informacionLegalReportes = informacionLegalHasNet;
     }
 
-    public String getInformacionLegalClick() {
+    public String getInformacionLegalHasNet() {
         return informacionLegalReportes;
     }
 
@@ -1264,21 +1264,21 @@ public class iFactura {
                 + "bdfactura.rtFuente AS rtFuente, bdfactura.rtIva AS rtIva, bdfactura.ivaGeneral AS ivaGeneral, bdfactura.porcImpo AS porcImpo, "
                 + "bdfactura.impoGeneral AS impoGeneral, bdfactura.totalGeneral AS totalGeneral, bdfactura.efectivoGeneral AS efectivoGeneral, "
                 + "bdfactura.targetaGeneral AS targetaGeneral, bdfactura.chequeGeneral AS chequeGeneral, bdfactura.ncGeneral AS ncGeneral, bdfactura.tercero AS tercero, "
-                + "bdfactura.utilidad1 AS utilidad1, bdfactura.idFactura AS idFactura, bdfactura.factura AS id2, bdfactura.credito AS credito, bdfactura.anulada AS anulada, "
+                + "bdfactura.utilidad1 AS utilidad1, bdfactura.factura AS factura, bdfactura.factura AS id2, bdfactura.credito AS credito, bdfactura.anulada AS anulada, "
                 + "bdterceros.id AS Id, bdproductos.grupo AS Grupo, bdproductos.idSistema AS producto, bdfactura.hora AS hora, bdfactura.tarjetaCredito AS tarjetaCredito, "
                 + "bdfactura.sisteCredito AS sisteCredito "
                 + "FROM ((" + ConsultaDocumentos.ORIGEN + "LEFT JOIN bdproductos ON ((bdfactura.producto = bdproductos.idSistema))) LEFT JOIN bdterceros ON ((bdfactura.cliente = bdterceros.idSistema))) "
                 + condicionDocumentos(condicion) + " GROUP BY bdfactura.fechaFactura, bdfactura.cliente, bdterceros.nombre, bdfactura.vendedor, bdfactura.observacion, bdproductos.Codigo, bdfactura.detalle, "
                 + "bdfactura.lista, bdfactura.porcIva, bdfactura.subtotalGeneral, bdfactura.descuentoGeneral, bdfactura.otros, bdfactura.rtFuente, bdfactura.rtIva, "
                 + "bdfactura.ivaGeneral, bdfactura.totalGeneral, bdfactura.efectivoGeneral, bdfactura.targetaGeneral, bdfactura.chequeGeneral, "
-                + "bdfactura.ncGeneral, bdfactura.impoGeneral, bdfactura.porcImpo, bdfactura.tercero, bdfactura.utilidad1, bdfactura.idFactura, bdfactura.factura, "
+                + "bdfactura.ncGeneral, bdfactura.impoGeneral, bdfactura.porcImpo, bdfactura.tercero, bdfactura.utilidad1, bdfactura.factura, "
                 + "bdfactura.credito, bdfactura.anulada, bdterceros.id, bdproductos.grupo, bdproductos.idSistema, bdfactura.hora, bdfactura.tarjetaCredito, "
                 + "bdfactura.sisteCredito ORDER BY bdfactura.Id";
         return ConsultaDocumentos.traducir(TipoDocumento.FACTURACION, sentencia, "bdfactura");
     }
 
     private String sentenciaFacturacionTotalizado(String condicion) {
-        String sentencia = " SELECT bdfactura.idFactura AS idFactura, CAST(SUBSTR(bdfactura.idFactura,6,100) AS SIGNED) AS ordenId, bdterceros.nombre AS nombre, "
+        String sentencia = " SELECT d.idDocumento AS ordenId, bdterceros.nombre AS nombre, "
                 + "bdterceros.id AS cliente, bdfactura.vendedor AS vendedor, bdfactura.red AS red, bdfactura.fechaVencimiento AS fechaVencimiento, "
                 + "bdfactura.efectivoGeneral AS efectivoGeneral, bdfactura.ncGeneral AS ncGeneral, bdfactura.chequeGeneral AS chequeGeneral, "
                 + "bdfactura.targetaGeneral AS targetaGeneral, bdfactura.totalGeneral AS totalGeneral, bdfactura.descuentoGeneral AS descuentoGeneral, "
@@ -1293,10 +1293,10 @@ public class iFactura {
                 + "bdfactura.conseMesa AS conseMesa, bdfactura.factura AS id2, bdfactura.copago AS copago, bdprestamo.cuotaInicial AS cuotaInicial2, "
                 + "CAST(bdfactura.fechaFactura AS DATE) AS fechaFactura, bdfactura.turno AS turno, bdterceros.idSistema AS idSistema, "
                 + "CAST(bdfactura.fechaFactura AS DATE) AS fechaFactura1, bdfactura.impoGeneral AS impoconsumo, bdfactura.tarjetaCredito AS tarjetaCredito, "
-                + "bdfactura.franquisia AS franquisia, bdfactura.hora AS hora, bdfactura.valorComision AS valorComision, bdfactura.totalPropina AS totalPropina, "
+                + "bdfactura.hora AS hora, bdfactura.totalPropina AS totalPropina, "
                 + "bdfactura.sisteCredito AS sisteCredito, bdfactura.bodega AS bodega "
-                + "FROM ((" + ConsultaDocumentos.ORIGEN + "LEFT JOIN bdprestamo ON ((bdfactura.idFactura = bdprestamo.factura))) LEFT JOIN bdterceros ON ((bdfactura.cliente = bdterceros.idSistema))) "
-                + condicionDocumentos(condicion) + " GROUP BY bdfactura.idFactura, CAST(SUBSTR(bdfactura.idFactura,6,100)AS SIGNED), bdterceros.nombre, bdterceros.id, bdfactura.vendedor, bdfactura.red, "
+                + "FROM ((" + ConsultaDocumentos.ORIGEN + "LEFT JOIN bdprestamo ON ((bdfactura.factura = bdprestamo.factura))) LEFT JOIN bdterceros ON ((bdfactura.cliente = bdterceros.idSistema))) "
+                + condicionDocumentos(condicion) + " GROUP BY d.idDocumento, bdterceros.nombre, bdterceros.id, bdfactura.vendedor, bdfactura.red, "
                 + "bdfactura.fechaVencimiento, bdfactura.efectivoGeneral,bdfactura.ncGeneral, bdfactura.chequeGeneral, bdfactura.targetaGeneral, bdfactura.totalGeneral, "
                 + "bdfactura.descuentoGeneral, bdfactura.ivaGeneral, bdfactura.subtotalGeneral, bdfactura.comprobante, bdfactura.cotizacion, bdfactura.anulada, bdfactura.anula,"
                 + "bdfactura.credito, bdfactura.cxc, bdfactura.usuario, bdfactura.rtIva, bdfactura.rtIca, bdfactura.rtFuente, bdfactura.otros, bdfactura.anulada1, bdfactura.anula1,"
@@ -1304,8 +1304,8 @@ public class iFactura {
                 + "bdfactura.resolucion, bdfactura.fechaAnulacion, bdfactura.cuadreAnulacion, bdfactura.usuarioAnula, bdfactura.placa, bdfactura.garantia, bdfactura.diasGarantia,"
                 + "bdfactura.rango, bdfactura.conseMesa, bdfactura.factura, bdfactura.copago, bdprestamo.cuotaInicial, bdfactura.turno, bdterceros.idSistema, "
                 + "CAST(FORMAT(bdfactura.fechaFactura, 'yyyy/mm/dd')AS DATE), bdfactura.impoGeneral, CAST(FORMAT(bdfactura.fechaFactura,'yyyy/mm/dd')AS DATE), "
-                + "bdfactura.tarjetaCredito, bdfactura.franquisia, bdfactura.hora, bdfactura.valorComision, bdfactura.totalPropina, bdfactura.sisteCredito, bdfactura.bodega "
-                + "ORDER BY CAST(SUBSTR(bdfactura.idFactura,6,100)AS SIGNED)";
+                + "bdfactura.tarjetaCredito, bdfactura.hora, bdfactura.totalPropina, bdfactura.sisteCredito, bdfactura.bodega "
+                + "ORDER BY d.idDocumento";
         return ConsultaDocumentos.traducir(TipoDocumento.FACTURACION, sentencia, "bdfactura");
     }
 
@@ -2026,7 +2026,7 @@ public class iFactura {
             parametros.put("urlImagen", logo());
             parametros.put("sqlFecha", sql);
             parametros.put("info", info);
-            parametros.put("informacionLegalClick", informacionLegalReportes);
+            parametros.put("informacionLegalHasNet", informacionLegalReportes);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
@@ -2053,7 +2053,7 @@ public class iFactura {
             parametros.put("placa", placa);
             parametros.put("fecha", fecha);
             parametros.put("hora", hora);
-            parametros.put("informacionLegalClick", informacionLegalReportes);
+            parametros.put("informacionLegalHasNet", informacionLegalReportes);
             parametros.put("simbolo", instancia.getSimbolo());
             parametros.put("cadenaDecimales", instancia.getCadenaDecimales());
 
@@ -2088,7 +2088,7 @@ public class iFactura {
             parametros.put("valHora", valHora);
             parametros.put("tipo", tipo);
             parametros.put("total", total);
-            parametros.put("informacionLegalClick", informacionLegalReportes);
+            parametros.put("informacionLegalHasNet", informacionLegalReportes);
 
             IniciarReporte ini = new IniciarReporte(parametros, reporte, true, false, instancia);
             vistaBarraProceso barra = new vistaBarraProceso(ini, instancia);

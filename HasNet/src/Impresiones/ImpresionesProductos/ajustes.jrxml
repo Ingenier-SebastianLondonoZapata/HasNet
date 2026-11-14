@@ -322,7 +322,7 @@ WHERE t.Id = $P{numFactura}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{observacion}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.#">
+			<textField pattern="#,##0.####">
 				<reportElement x="442" y="0" width="62" height="18" uuid="be3d33ae-9118-4f04-bf26-6c5382d56392"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>

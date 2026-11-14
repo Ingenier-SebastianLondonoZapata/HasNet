@@ -67,7 +67,7 @@ $P!{sql}]]>
 	</columnHeader>
 	<detail>
 		<band height="14" splitType="Stretch">
-			<textField isStretchWithOverflow="true" pattern="#,##0">
+			<textField isStretchWithOverflow="true" pattern="#,##0.####">
 				<reportElement x="170" y="0" width="46" height="14" uuid="f09f4437-fe17-474e-9259-bd5b5e4c38af"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11" isBold="true"/>

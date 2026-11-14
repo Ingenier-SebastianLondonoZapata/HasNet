@@ -1815,7 +1815,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         tblOpcionesImpresiones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"Imprimir ubicación en factura", null},
-                {"Imprimir hora en factura", null},
+                {"Imprimir hora en documentos", null},
                 {"Imprimir retenciones en factura", null},
                 {"Imprimir impoconsumo en factura", null},
                 {"Imprimir recodiga en cuadre de caja", null},
@@ -3772,7 +3772,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         impresiones.setTipoPredeterminado(obtenerTipoImpresionPredeterminado());
 
         impresiones.setMostrarUbicacion(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir ubicación en factura", 1) ? "SI" : "NO");
-        impresiones.setImprimirHora(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir hora en factura", 1));
+        impresiones.setImprimirHora(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir hora en documentos", 1));
         impresiones.setImprimirRetenciones(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir retenciones en factura", 1));
         impresiones.setImprimirImpoconsumo(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir impoconsumo en factura", 1));
         impresiones.setImprimirRecodiga(getCeldaBooleanaPorEtiqueta(tblOpcionesImpresiones, "Imprimir recodiga en cuadre de caja", 1));
@@ -6469,7 +6469,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         setFilaTabla(tblOpcionesImpresiones, "Imprimir impoconsumo en factura", 1, DatosMaestra.isImprimirImpoconsumo());
         setFilaTabla(tblOpcionesImpresiones, "Imprimir retenciones en factura", 1, DatosMaestra.isImprimirRetenciones());
-        setFilaTabla(tblOpcionesImpresiones, "Imprimir hora en factura", 1, DatosMaestra.isImprimirHora());
+        setFilaTabla(tblOpcionesImpresiones, "Imprimir hora en documentos", 1, DatosMaestra.isImprimirHora());
 
         setFilaTabla(tblConfiguraciones, "Facturar sin inventario", 1, DatosMaestra.isFacturarSinInventario());
 
@@ -6648,23 +6648,12 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             rdNoGenerarOrden.setVisible(false);
         }
 
-        // El máximo efectivo (100 si no hay) lo da DatosMaestra.getDescuentoMaximoPermitido()
         String descMax = DatosMaestra.getDescuentoMaximoVentas();
         setFilaTabla(tblConfiguraciones1, "Descuento máximo para aplicar", 1,
                 descMax == null || descMax.trim().isEmpty() ? "0" : descMax.trim());
         aplicarEstadoDescuentoMaximo();
 
         llenarTablaServicios();
-
-        //ACTUALIZAR CON INSTANCIAS
-        //actualizarVariables();
-        /*String nombre = "";
-         try {
-         nombre = instancias.getSql().getNombreEmpleadoUsuario(instancias.getUsuarioLog().getUsuario());
-         } catch (Exception e) {
-         }
-
-         llenarVendedores(nombre);*/
         instancias.getSql().usuarioActivo("ON", instancias.getTerminal());
     }
 

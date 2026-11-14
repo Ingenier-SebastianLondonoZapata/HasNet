@@ -1,6 +1,8 @@
 package Vista.Buscadores;
 
+import Dao.Terceros.DaoVehiculos;
 import Utilidades.BaseDatos.SQL;
+import Vista.Contactos.RegistradorPlacas;
 import clases.Instancias;
 import java.awt.Frame;
 
@@ -104,6 +106,22 @@ public final class BuscadoresCatalogo {
                         .guardar(valor -> sql().agregarTipoProd(valor))
                         .mensajeError("Hubo un error al guardar")
                         .mensajeExito("Tipo de producto ingresado con exito"));
+        return new VistaBuscadorCatalogo(parent, modal, configuracion);
+    }
+
+    public static VistaBuscadorCatalogo placas(Frame parent, boolean modal, String idSistemaCliente, boolean permitirRegistro) {
+        RegistradorPlacas registrador = new RegistradorPlacas(parent);
+        String contacto = registrador.contactoDePlacas(idSistemaCliente);
+
+        ConfiguracionBuscadorCatalogo configuracion = new ConfiguracionBuscadorCatalogo("Buscador de placas...",
+                () -> new DaoVehiculos().buscadorPlacas(contacto))
+                .filtro("Placa", 0)
+                .filtro("Contacto", 1)
+                .anchoFijo(0, 110);
+
+        if (permitirRegistro) {
+            configuracion.registroExterno(placa -> registrador.registrar(placa, contacto));
+        }
         return new VistaBuscadorCatalogo(parent, modal, configuracion);
     }
 

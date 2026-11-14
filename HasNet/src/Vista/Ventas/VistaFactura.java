@@ -50,7 +50,6 @@ import Vista.Productos.VistaInventarioInicial;
 import Vista.Solicitudes.VistaSolicitarPermisos;
 import clases.Cartera.ndCxc;
 import clases.Instancias;
-import clases.Ventas.ndOServicio;
 import clases.big;
 import clases.credito.ndCuota;
 import clases.credito.ndPrestamo;
@@ -64,12 +63,10 @@ import Modelo.Documentos.ModeloCuentaCobro;
 import Modelo.Documentos.ModeloDetalleDocumento;
 import Modelo.Documentos.ModeloDocumento;
 import Modelo.Documentos.ModeloFactura;
-import Modelo.Documentos.ModeloOrdenServicio;
 import Dao.InicioSesion.DaoInicioSesion;
 import Dao.Ventas.DaoComanda;
 import Dao.Ventas.DaoFactura;
 import Dao.Ventas.DaoOrdenServicio;
-import Modelo.Ventas.ModeloDetalleOrdenServicio;
 import Utilidades.DocumentosElectronicos;
 import Dao.Ventas.DaoCotizacion;
 import Dao.Ventas.DaoPedido;
@@ -77,11 +74,9 @@ import Dao.Ventas.DaoPlanSepare;
 import Dao.Productos.DaoProducto;
 import Dao.Productos.DaoListaPrecio;
 import Modelo.Productos.ModeloListaPrecio;
-import formularios.Parqueadero.buscPlacas;
-import formularios.Ventas.buscProblemas;
-import formularios.Ventas.buscTipoVehiculo;
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
 import formularios.Ventas.dlgTipoDescuento;
-import formularios.Ventas.infNuevaParte;
 import Vista.Productos.VistaBuscadorProductos;
 import Vista.Productos.VistaSeleccionarPLU;
 import Vista.Contactos.VistaBuscadorContactos;
@@ -258,7 +253,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         repaint();
 
         txtNit.requestFocus();
-        pnlOrdenServicio.setVisible(false);
         btnModificar.setVisible(false);
         btnReImprimir.setVisible(false);
 
@@ -560,8 +554,13 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     public void actualizarVistaSegunTipoDocumento(String tipo) {
+        boolean ordenServicioAutomotor = instancias.getConfiguraciones().isOrdenServicio()
+                && instancias.getConfiguraciones().isServicioAutomotor();
+        lbPlaca.setVisible(ordenServicioAutomotor);
+        txtPlaca.setVisible(ordenServicioAutomotor);
+        btnBuscarPlaca.setVisible(ordenServicioAutomotor);
+
         tapControl.remove(pnlCredito);
-        tapControl.remove(pnlOrdenServicio);
         tapControl.remove(pnlFacturacionAutomatica);
 
         if (this.esFacturaCredito) {
@@ -607,11 +606,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                 txtDiasPlazo.setEnabled(false);
                 chkSisteCredito.setEnabled(false);
                 btnReImprimir.setVisible(false);
-
-                if (instancias.getConfiguraciones().isServicioAutomotor()) {
-                    tapControl.addTab("Registro Orden", pnlOrdenServicio);
-                }
-
                 break;
             case "pedido":
                 lbTitulo.setText("PEDIDOS");
@@ -760,7 +754,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         return fila;
     }
 
-    public void generarImpresion(String factura, String factura2) {
+    public void generarImpresion(String factura) {
         String observaciones = txtObservaciones.getText();
         String legal = textoImpresion(instancias::getLegal);
         String pie = textoImpresion(instancias::getPie);
@@ -771,7 +765,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             case "mesa":
                 imprimirFactura(funcionalidadVentas
                         .construirDatosImpresionFactura(instancias, rdMediaCarta.isSelected(), rdCarta.isSelected())
-                        .setFactura(factura2)
+                        .setFactura(factura)
                         .setObservaciones(observaciones)
                         .setLegal(legal)
                         .setPie(pie)
@@ -783,7 +777,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                         .construirDatosImpresionFactura(instancias, rdMediaCarta.isSelected(), rdCarta.isSelected())
                         .setTipoDocumento(TipoDocumento.NOTA_DEBITO)
                         .setTitulo("")
-                        .setFactura(factura2)
+                        .setFactura(factura)
                         .setObservaciones(observaciones)
                         .setLegal(legal)
                         .setPie(pie));
@@ -795,22 +789,20 @@ public final class VistaFactura extends javax.swing.JPanel {
                 break;
 
             case "orden": {
-                boolean automotor = instancias.getConfiguraciones().isServicioAutomotor();
-                String tipoVehiculo = automotor ? txtTipoVehiculo.getText() : "";
-                String reporteOrden = automotor ? "" : reporteOrdenServicio();
+                String reporteOrden = reporteOrdenServicio();
                 servicio.imprimir(TipoDocumentoImpresion.ORDEN_SERVICIO, (copia, imprimirDirecto)
                         -> new GeneradorReporteOrdenServicio(instancias).ver_oServicio(factura, observaciones,
-                                imprimirDirecto, tipoVehiculo, reporteOrden));
+                                imprimirDirecto, reporteOrden));
                 break;
             }
 
             case "pedido":
-                imprimirDocumento(TipoDocumentoImpresion.PEDIDO, datosDocumento(TipoDocumento.PEDIDO, factura2,
+                imprimirDocumento(TipoDocumentoImpresion.PEDIDO, datosDocumento(TipoDocumento.PEDIDO, factura,
                         instancias.getInformacionEmpresaCompleto(), observaciones, legal, pie));
                 break;
 
             case "separe":
-                imprimirDocumento(TipoDocumentoImpresion.PLAN_SEPARE, datosDocumento(TipoDocumento.PLAN_SEPARE, factura2,
+                imprimirDocumento(TipoDocumentoImpresion.PLAN_SEPARE, datosDocumento(TipoDocumento.PLAN_SEPARE, factura,
                         instancias.getInformacionEmpresaCompleto(), observaciones, legal, pie));
                 break;
         }
@@ -845,11 +837,11 @@ public final class VistaFactura extends javax.swing.JPanel {
                 -> generador.imprimirFactura(datos, ServicioImpresionDocumentos.etiquetaCopia(copia), imprimirDirecto));
     }
 
-    private DatosImpresionFactura datosFacturaOrdenMedica(String factura2) {
+    private DatosImpresionFactura datosFacturaOrdenMedica(String factura) {
         return funcionalidadVentas
                 .construirDatosImpresionFactura(instancias, rdMediaCarta.isSelected(), rdCarta.isSelected())
                 .setTitulo("")
-                .setFactura(factura2)
+                .setFactura(factura)
                 .setInformacionEmpresa(instancias.getInformacionEmpresaCompleto())
                 .setObservaciones(txtObservaciones.getText())
                 .setLegal(textoImpresion(instancias::getLegal))
@@ -965,30 +957,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         lbDireccion7 = new javax.swing.JLabel();
         lbDireccion8 = new javax.swing.JLabel();
         txtValorVenta = new javax.swing.JTextField();
-        pnlOrdenServicio = new javax.swing.JPanel();
-        lbNombre9 = new javax.swing.JLabel();
-        txtPlaca = new javax.swing.JTextField();
-        lbNombre10 = new javax.swing.JLabel();
-        lbNombre5 = new javax.swing.JLabel();
-        txtMarca = new javax.swing.JTextField();
-        lbNombre6 = new javax.swing.JLabel();
-        lbNombre7 = new javax.swing.JLabel();
-        txtModelo = new javax.swing.JTextField();
-        txtKm = new javax.swing.JTextField();
-        lbNombre8 = new javax.swing.JLabel();
-        txtMotor = new javax.swing.JTextField();
-        txtNumChasis = new javax.swing.JTextField();
-        lbNombre11 = new javax.swing.JLabel();
-        lbNombre13 = new javax.swing.JLabel();
-        txtColor = new javax.swing.JTextField();
-        lbNombre14 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        txtProblema = new javax.swing.JTextArea();
-        btnNuevaParte = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tblArticulos = new javax.swing.JTable();
-        btnNuevaParte1 = new javax.swing.JButton();
-        txtTipoVehiculo = new javax.swing.JTextField();
         pnlFacturacionAutomatica = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -1049,6 +1017,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         txtRiva = new javax.swing.JLabel();
         lbOtroConsecutivo = new javax.swing.JLabel();
         txtTurno = new javax.swing.JTextField();
+        txtPlaca = new javax.swing.JTextField();
+        lbPlaca = new javax.swing.JLabel();
+        btnBuscarPlaca = new javax.swing.JButton();
         cmbListas = new javax.swing.JComboBox();
         txtPlaca1 = new javax.swing.JTextField();
         txtCopago = new javax.swing.JTextField();
@@ -1721,259 +1692,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         tapControl.addTab("Datos Créditos", pnlCredito);
 
-        pnlOrdenServicio.setBackground(new java.awt.Color(255, 255, 255));
-        pnlOrdenServicio.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 1, 18))); // NOI18N
-
-        lbNombre9.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre9.setText("Placa:");
-
-        txtPlaca.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtPlaca.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtPlaca.setName("Nombre"); // NOI18N
-        txtPlaca.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtPlacaKeyReleased(evt);
-            }
-        });
-
-        lbNombre10.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre10.setText("Tipo:");
-
-        lbNombre5.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre5.setText("Marca:");
-
-        txtMarca.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtMarca.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtMarca.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtMarca.setName("Nombre"); // NOI18N
-
-        lbNombre6.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre6.setText("Km:");
-
-        lbNombre7.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre7.setText("Modelo:");
-
-        txtModelo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtModelo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtModelo.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtModelo.setName("Nombre"); // NOI18N
-
-        txtKm.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtKm.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtKm.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtKm.setName("Nombre"); // NOI18N
-
-        lbNombre8.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre8.setText("N° Motor:");
-
-        txtMotor.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtMotor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtMotor.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtMotor.setName("Nombre"); // NOI18N
-
-        txtNumChasis.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtNumChasis.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtNumChasis.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtNumChasis.setName("Nombre"); // NOI18N
-
-        lbNombre11.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre11.setText("N° Chasis:");
-
-        lbNombre13.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
-        lbNombre13.setText("Color:");
-
-        txtColor.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtColor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtColor.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtColor.setName("Nombre"); // NOI18N
-
-        lbNombre14.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        lbNombre14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbNombre14.setText("PROBLEMA GENERAL");
-
-        jScrollPane6.setFont(new java.awt.Font("Century Gothic", 0, 13)); // NOI18N
-
-        txtProblema.setColumns(20);
-        txtProblema.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        txtProblema.setLineWrap(true);
-        txtProblema.setRows(2);
-        jScrollPane6.setViewportView(txtProblema);
-
-        btnNuevaParte.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
-        btnNuevaParte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar pequeño.png"))); // NOI18N
-        btnNuevaParte.setToolTipText("Ctrl+M");
-        btnNuevaParte.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevaParteActionPerformed(evt);
-            }
-        });
-
-        tblArticulos.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
-        tblArticulos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Id", "Parte del vehiculo", "Inv.", "Problemas Derecha", "Problemas Izquierda", "Observaciones"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, true, false, false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblArticulos.setRowHeight(24);
-        tblArticulos.getTableHeader().setReorderingAllowed(false);
-        tblArticulos.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblArticulosMouseClicked(evt);
-            }
-        });
-        tblArticulos.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tblArticulosKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                tblArticulosKeyReleased(evt);
-            }
-        });
-        jScrollPane4.setViewportView(tblArticulos);
-        if (tblArticulos.getColumnModel().getColumnCount() > 0) {
-            tblArticulos.getColumnModel().getColumn(0).setMinWidth(0);
-            tblArticulos.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tblArticulos.getColumnModel().getColumn(0).setMaxWidth(0);
-            tblArticulos.getColumnModel().getColumn(2).setMinWidth(40);
-            tblArticulos.getColumnModel().getColumn(2).setPreferredWidth(40);
-            tblArticulos.getColumnModel().getColumn(2).setMaxWidth(40);
-        }
-
-        btnNuevaParte1.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
-        btnNuevaParte1.setText("LISTADO DE PARTES");
-        btnNuevaParte1.setToolTipText("Ctrl+M");
-        btnNuevaParte1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevaParte1ActionPerformed(evt);
-            }
-        });
-
-        txtTipoVehiculo.setEditable(false);
-        txtTipoVehiculo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        txtTipoVehiculo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtTipoVehiculo.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        txtTipoVehiculo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtTipoVehiculoKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtTipoVehiculoKeyReleased(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnlOrdenServicioLayout = new javax.swing.GroupLayout(pnlOrdenServicio);
-        pnlOrdenServicio.setLayout(pnlOrdenServicioLayout);
-        pnlOrdenServicioLayout.setHorizontalGroup(
-            pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOrdenServicioLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane4)
-                    .addComponent(lbNombre14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlOrdenServicioLayout.createSequentialGroup()
-                        .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlOrdenServicioLayout.createSequentialGroup()
-                                .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(lbNombre10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lbNombre9, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(lbNombre5, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(10, 10, 10)
-                                .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(pnlOrdenServicioLayout.createSequentialGroup()
-                                        .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtTipoVehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-                                            .addComponent(txtPlaca))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(lbNombre7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(lbNombre6, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtKm)
-                                            .addComponent(txtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lbNombre11)
-                                            .addComponent(lbNombre8, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtMotor, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(pnlOrdenServicioLayout.createSequentialGroup()
-                                                .addComponent(txtNumChasis, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(lbNombre13)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlOrdenServicioLayout.createSequentialGroup()
-                                .addComponent(btnNuevaParte)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnNuevaParte1)))
-                        .addGap(0, 345, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        pnlOrdenServicioLayout.setVerticalGroup(
-            pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlOrdenServicioLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbNombre9, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNumChasis, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(lbNombre7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbNombre10, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbNombre11, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbNombre13, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTipoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(2, 2, 2)
-                .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbNombre5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbNombre6, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtKm, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbNombre8, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtMotor, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addComponent(lbNombre14)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addGroup(pnlOrdenServicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnNuevaParte, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnNuevaParte1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapControl.addTab("Registro Orden", pnlOrdenServicio);
-
         pnlFacturacionAutomatica.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
@@ -2603,6 +2321,32 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
         });
 
+        txtPlaca.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtPlaca.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtPlaca.setName("Nombre"); // NOI18N
+        txtPlaca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPlacaKeyReleased(evt);
+            }
+        });
+
+        lbPlaca.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        lbPlaca.setText("Placa:");
+
+        btnBuscarPlaca.setBackground(new java.awt.Color(204, 204, 204));
+        btnBuscarPlaca.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
+        btnBuscarPlaca.setForeground(new java.awt.Color(255, 255, 255));
+        btnBuscarPlaca.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscarPlaca.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnBuscarPlaca.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnBuscarPlaca.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnBuscarPlaca.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnBuscarPlaca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarPlacaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlDatosAdicionalesLayout = new javax.swing.GroupLayout(pnlDatosAdicionales);
         pnlDatosAdicionales.setLayout(pnlDatosAdicionalesLayout);
         pnlDatosAdicionalesLayout.setHorizontalGroup(
@@ -2626,18 +2370,23 @@ public final class VistaFactura extends javax.swing.JPanel {
                                 .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(lbNoFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
                                     .addComponent(txtTurno)))
+                            .addComponent(lbCupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(pnlDatosAdicionalesLayout.createSequentialGroup()
                                 .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(lbNit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lbRazonSocial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(pnlDatosAdicionalesLayout.createSequentialGroup()
-                                        .addComponent(txtNit, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lbRazonSocial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lbPlaca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDatosAdicionalesLayout.createSequentialGroup()
+                                        .addComponent(txtPlaca)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnBuscarPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDatosAdicionalesLayout.createSequentialGroup()
+                                        .addComponent(txtNit)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnBuscTerceros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(lbCupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jSeparator2))
                 .addGap(18, 18, 18)
@@ -2670,13 +2419,18 @@ public final class VistaFactura extends javax.swing.JPanel {
                     .addGroup(pnlDatosAdicionalesLayout.createSequentialGroup()
                         .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtNit, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                            .addComponent(lbNit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnBuscTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lbNit, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(btnBuscTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
                         .addGap(3, 3, 3)
                         .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lbRazonSocial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbRazonSocial, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                             .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(3, 3, 3)
+                        .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtPlaca)
+                            .addComponent(lbPlaca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBuscarPlaca, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                        .addGap(5, 5, 5)
                         .addComponent(lbCupo)
                         .addGap(5, 5, 5)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2689,13 +2443,13 @@ public final class VistaFactura extends javax.swing.JPanel {
                             .addComponent(txtTurno, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                             .addComponent(lbOtroConsecutivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(5, 5, 5)
-                        .addComponent(jtblComprobantes, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                        .addComponent(jtblComprobantes, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
                         .addGap(15, 15, 15)
                         .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lbObservaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
                             .addComponent(lbCar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, 0)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
                     .addGroup(pnlDatosAdicionalesLayout.createSequentialGroup()
                         .addGroup(pnlDatosAdicionalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtDiasPlazo, javax.swing.GroupLayout.Alignment.LEADING)
@@ -2711,7 +2465,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(30, 30, 30)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 17, Short.MAX_VALUE)))
+                        .addGap(0, 21, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -2885,8 +2639,8 @@ public final class VistaFactura extends javax.swing.JPanel {
                             .addComponent(lbConceptoNotaDebito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlInformacionNotaDebitoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtRelacion, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(cmbConcepto, 0, 200, Short.MAX_VALUE)))
+                            .addComponent(txtRelacion)
+                            .addComponent(cmbConcepto, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(rdNotaDebitoPos))
                 .addGap(15, 15, 15))
         );
@@ -3378,8 +3132,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         datosValidacion.setCheckCupo(DatosMaestra.isValidarCupoCredito());
         datosValidacion.setDiasPlazo(txtDiasPlazo.getText());
         datosValidacion.setCupo(txtCupo.getText());
-        datosValidacion.setServicioAutomotor(instancias.getConfiguraciones().isServicioAutomotor());
-        datosValidacion.setTblArticulos(tblArticulos);
         datosValidacion.setFacturaCredito(esFacturaCredito);
         datosValidacion.setInteres(txtInteres.getText());
         datosValidacion.setSisteCredito(chkSisteCredito.isSelected());
@@ -3530,7 +3282,8 @@ public final class VistaFactura extends javax.swing.JPanel {
         btnGuardar.setVisible(true);
 
         sincronizarTurno();
-        habilitarYLimpiarCamposVehiculo();
+        txtPlaca.setEnabled(true);
+        txtPlaca.setText("");
 
         txtRtf.setText(this.simbolo + " 0");
         txtDescGeneral.setText(this.simbolo + " 0");
@@ -3543,8 +3296,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         txtCargar.setText("");
         txtCargar.setEnabled(true);
 
-        txtProblema.setText("");
-        tblArticulos.setEnabled(true);
         txtCantProductos.setText("0");
         txtCantUnidades.setText("0");
 
@@ -3562,7 +3313,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         activarCampos(true);
         reiniciarInstanciasPagos();
-        limpiarTabla((DefaultTableModel) tblArticulos.getModel());
 
         if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()) || (tipoProceso.equals("mesa") && lbTitulo.getText().equals("DOMICILIO"))) {
             instancias.setTitulo("");
@@ -3603,25 +3353,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
         instancias.getMaestra().setTurno(turno);
         instancias.getMaestra().actualizarTurno();
-    }
-
-    private void habilitarYLimpiarCamposVehiculo() {
-        txtPlaca.setEnabled(true);
-        txtPlaca.setText("");
-        txtModelo.setEnabled(true);
-        txtModelo.setText("");
-        txtTipoVehiculo.setEnabled(true);
-        txtTipoVehiculo.setText("");
-        txtNumChasis.setEnabled(true);
-        txtNumChasis.setText("");
-        txtMarca.setEnabled(true);
-        txtMarca.setText("");
-        txtKm.setEnabled(true);
-        txtKm.setText("");
-        txtMotor.setEnabled(true);
-        txtMotor.setText("");
-        txtColor.setEnabled(true);
-        txtColor.setText("");
     }
 
     private void limpiarTabla(DefaultTableModel modelo) {
@@ -3929,6 +3660,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             cargarCliente(txtNit.getText());
         } else if (!txtNombre.getText().equals("")) {
+            limpiarPlacaAlCambiarCliente();
             ID_CLIENTE_CARGADO = "";
             txtDiasPlazo.setText("0");
             chkSisteCredito.setEnabled(false);
@@ -3983,80 +3715,17 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_lbProductoKeyReleased
 
-    private void tblArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblArticulosMouseClicked
-        if (tblArticulos.getSelectedColumn() == 3) {
-            ventanaProblemas();
-        } else if (tblArticulos.getSelectedColumn() == 4) {
-            ventanaProblemas1();
-        }
-    }//GEN-LAST:event_tblArticulosMouseClicked
-
-    private void tblArticulosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblArticulosKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblArticulosKeyPressed
-
-    private void tblArticulosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblArticulosKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (tblArticulos.getSelectedColumn() == 3) {
-                ventanaProblemas();
-            } else if (tblArticulos.getSelectedColumn() == 4) {
-                ventanaProblemas1();
-            }
-        }
-    }//GEN-LAST:event_tblArticulosKeyReleased
-
-    private void btnNuevaParteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaParteActionPerformed
-        try {
-            String tipo = txtTipoVehiculo.getText();
-            cargarArticulos(tipo);
-        } catch (Exception e) {
-        }
-    }//GEN-LAST:event_btnNuevaParteActionPerformed
-
     private void txtPlacaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             Object[][] name = instancias.getSql().getUsuarioPlaca(txtPlaca.getText());
 
             if (name.length > 0) {
-                if (name[0][2] != null) {
-                    txtTipoVehiculo.setText(name[0][2].toString());
-                }
-
-                if (name[0][4] != null) {
-                    txtModelo.setText(name[0][4].toString());
-                }
-
-                if (name[0][6] != null) {
-                    txtNumChasis.setText(name[0][6].toString());
-                }
-
-                if (name[0][3] != null) {
-                    txtMarca.setText(name[0][3].toString());
-                }
-
-                if (name[0][7] != null) {
-                    txtMotor.setText(name[0][7].toString());
-                }
-
-                if (name[0][5] != null) {
-                    txtColor.setText(name[0][5].toString());
-                }
-
-                cargarArticulos(txtTipoVehiculo.getText());
-
                 txtNit.setText(name[0][0].toString());
                 cargarCliente(name[0][0].toString());
                 btnBuscTerceros.requestFocus();
             } else {
                 ventanaPlacas1(txtPlaca.getText(), ID_CLIENTE_CARGADO);
             }
-        } else {
-            txtModelo.setText("");
-            txtNumChasis.setText("");
-            txtMarca.setText("");
-            txtMotor.setText("");
-            txtColor.setText("");
-            txtTipoVehiculo.setText("");
         }
     }//GEN-LAST:event_txtPlacaKeyReleased
 
@@ -4342,9 +4011,6 @@ public final class VistaFactura extends javax.swing.JPanel {
                 ControladorAlertas.alertFail("Error al revertir el inventario original de la orden");
                 return;
             }
-
-            daoOrdenServicio.eliminarVehiculo(factura);
-            daoOrdenServicio.eliminarDetalle(factura);
 
             if (!agregarMovimientoOrdenServicio(movimiento, true)) {
                 return;
@@ -4709,13 +4375,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadKeyReleased
 
-    private void btnNuevaParte1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaParte1ActionPerformed
-        infNuevaParte buscador = new infNuevaParte();
-        String tipo = txtTipoVehiculo.getText();
-        buscador.cargarArticulos("Moto");
-        buscador.setVisible(true);
-    }//GEN-LAST:event_btnNuevaParte1ActionPerformed
-
     private void txtNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtNombreMouseClicked
 
     }//GEN-LAST:event_txtNombreMouseClicked
@@ -4731,23 +4390,6 @@ public final class VistaFactura extends javax.swing.JPanel {
             lbCar.setText("0");
         }
     }//GEN-LAST:event_txtObservacionesKeyReleased
-
-    private void txtTipoVehiculoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTipoVehiculoKeyPressed
-
-    }//GEN-LAST:event_txtTipoVehiculoKeyPressed
-
-    private void txtTipoVehiculoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTipoVehiculoKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (!txtTipoVehiculo.getText().equals("")) {
-                cargarArticulos(txtTipoVehiculo.getText());
-                txtModelo.requestFocus();
-            } else {
-                ventanaTipoVehiculos(txtTipoVehiculo.getText());
-            }
-        } else {
-            txtTipoVehiculo.setText("");
-        }
-    }//GEN-LAST:event_txtTipoVehiculoKeyReleased
 
     private void cmbVendedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbVendedorMouseClicked
 
@@ -5198,9 +4840,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         this.lineasOriginales = doc.getLineas();
         recalcularInventarioTabla();
 
-        ndOServicio nodoOrden = daoFactura.getDatosOServicio(orden);
-        cargarDatosVehiculo(nodoOrden);
-        aplicarEstadoVehiculo(daoFactura.getEstadoVehiculo(orden));
+        cargarPlacaOrden(doc.getCabecera().getPlacaReal());
 
         txtNombre.requestFocus();
 
@@ -5226,10 +4866,10 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private void cargarMovimientoFactura() {
-        String idFactura = "FACT-" + txtCargar.getText();
+        String facturaCargada = "FACT-" + txtCargar.getText();
         limpiar(false);
 
-        DocumentoMovimiento doc = daoFactura.cargarMovimientoPrefactura(idFactura);
+        DocumentoMovimiento doc = daoFactura.cargarMovimientoPrefactura(facturaCargada);
         if (doc.isEmpty()) {
             ControladorAlertas.alertFail("La factura no existe");
             return;
@@ -5239,7 +4879,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         mostrarResumenDocumento(doc.getCabecera(), false);
 
         try {
-            ndCxc nodoCxc = daoFactura.getDatosCxc(idFactura);
+            ndCxc nodoCxc = daoFactura.getDatosCxc(facturaCargada);
             txtDiasPlazo.setText(Integer.toString(nodoCxc.getPlazo()));
         } catch (Exception e) {
             txtDiasPlazo.setText("0");
@@ -5337,7 +4977,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         if (!congelada.getTurno().isEmpty()) {
             txtTurno.setText(congelada.getTurno());
         }
-        ejecutarCargaMesa(congelada.getIdFactura(), nombreMesa);
+        ejecutarCargaMesa(congelada.getFactura(), nombreMesa);
     }
 
     private void ejecutarCargaMesa(String idCongelada, String titulo) {
@@ -5446,43 +5086,13 @@ public final class VistaFactura extends javax.swing.JPanel {
         return monedaExacta ? big.setMonedaExacta(monto) : big.setMoneda(monto);
     }
 
-    private void cargarDatosVehiculo(ndOServicio nodoOrden) {
-        cargarArticulos(nodoOrden.getTipo());
-        txtPlaca.setText(nodoOrden.getPlaca());
-        txtTipoVehiculo.setText(nodoOrden.getTipo());
-        txtModelo.setText(nodoOrden.getModelo());
-        txtNumChasis.setText(nodoOrden.getNumeroChasis());
-        txtMarca.setText(nodoOrden.getMarca());
-        txtKm.setText(nodoOrden.getKm());
-        txtMotor.setText(nodoOrden.getNumeroMotor());
-        txtColor.setText(nodoOrden.getColor());
-        txtProblema.setText(nodoOrden.getProblema());
-        tblArticulos.setEnabled(false);
+    private void cargarPlacaOrden(String placa) {
+        txtPlaca.setText(placa == null ? "" : placa);
+        txtPlaca.setEnabled(false);
         btnModificar.setEnabled(true);
         btnReImprimir.setEnabled(true);
-        txtPlaca.setEnabled(false);
-        txtModelo.setEnabled(false);
-        txtTipoVehiculo.setEnabled(false);
-        txtNumChasis.setEnabled(false);
-        txtMarca.setEnabled(false);
-        txtKm.setEnabled(false);
-        txtMotor.setEnabled(false);
-        txtColor.setEnabled(false);
         if (!TipoDocumento.FACTURACION.getValor().equals(this.tipoProceso)) {
             btnGuardar.setVisible(false);
-        }
-    }
-
-    private void aplicarEstadoVehiculo(Object[][] estadoVehiculo) {
-        for (int i = 0; i < estadoVehiculo.length; i++) {
-            for (int j = 0; j < tblArticulos.getRowCount(); j++) {
-                if (estadoVehiculo[i][0].equals(tblArticulos.getValueAt(j, 0))) {
-                    tblArticulos.setValueAt(true, j, 2);
-                    tblArticulos.setValueAt(estadoVehiculo[i][2], j, 3);
-                    tblArticulos.setValueAt(estadoVehiculo[i][3], j, 4);
-                    tblArticulos.setValueAt(estadoVehiculo[i][4], j, 5);
-                }
-            }
         }
     }
 
@@ -5491,78 +5101,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         txtCodigoProducto.setEditable(x);
         btnBuscTerceros.setEnabled(x);
         btnBusProd.setEnabled(x);
-    }
-
-    public void cargarOServicio(String num, String tipo) {
-        String orden = tipo + "" + num;
-        ModeloDocumento ordenGuardada = daoDocumentos.obtenerPorIdFactura(TipoDocumento.ORDER_SERVICIO, orden);
-
-        Object[][] estadoVehiculo = instancias.getSql().getEstadoVehiculo(orden);
-
-        if (ordenGuardada != null) {
-
-            DocumentoMovimiento docOrden = daoFactura.cargarOrdenServicio(orden);
-            if (!docOrden.isEmpty()) {
-                limpiar(false);
-                cargarLineasDocumento(docOrden.getLineas());
-                mostrarResumenDocumento(docOrden.getCabecera(), false);
-            }
-            txtNombre.requestFocus();
-            if (tipo.equals("OSERV-")) {
-                ndOServicio nodoOrden = instancias.getSql().getDatosOServicio(orden);
-                txtPlaca.setText(nodoOrden.getPlaca());
-                txtTipoVehiculo.setText(nodoOrden.getTipo());
-                txtModelo.setText(nodoOrden.getModelo());
-                txtNumChasis.setText(nodoOrden.getNumeroChasis());
-                txtMarca.setText(nodoOrden.getMarca());
-                txtKm.setText(nodoOrden.getKm());
-                txtMotor.setText(nodoOrden.getNumeroMotor());
-                txtColor.setText(nodoOrden.getColor());
-                txtProblema.setText(nodoOrden.getProblema());
-                cargarArticulos(nodoOrden.getTipo());
-            }
-
-            for (int i = 0; i < estadoVehiculo.length; i++) {
-                for (int j = 0; j < tblArticulos.getRowCount(); j++) {
-                    if (estadoVehiculo[i][0].equals(tblArticulos.getValueAt(j, 0))) {
-                        tblArticulos.setValueAt(true, j, 2);
-                        tblArticulos.setValueAt(estadoVehiculo[i][2], j, 3);
-                        tblArticulos.setValueAt(estadoVehiculo[i][3], j, 4);
-                        tblArticulos.setValueAt(estadoVehiculo[i][4], j, 5);
-                    }
-                }
-            }
-
-            tblArticulos.setEnabled(false);
-            txtObservaciones.setText(ordenGuardada.getObservacion());
-
-            if (tipo.equals("OSERV-")) {
-                btnModificar.setEnabled(true);
-                btnReImprimir.setEnabled(true);
-
-                txtPlaca.setEnabled(false);
-                txtModelo.setEnabled(false);
-                txtTipoVehiculo.setEnabled(false);
-                txtNumChasis.setEnabled(false);
-                txtMarca.setEnabled(false);
-                txtKm.setEnabled(false);
-                txtMotor.setEnabled(false);
-                txtColor.setEnabled(false);
-
-                if (pnlOrdenServicio.isVisible()) {
-                    btnGuardar.setEnabled(false);
-                } else {
-                    btnGuardar.setEnabled(true);
-                }
-            }
-
-//            for (int i = 0; i < tblProductos.getRowCount(); i++) {
-//                calcularTabla(i);
-//            }
-        } else {
-            ControladorAlertas.alertFail("orden invalida");
-            return;
-        }
     }
 
     public void calcularCuotasCredito() {
@@ -5769,7 +5307,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         String[] consecutivos = construirConsecutivoDocumento(reserva);
         TipoDocumento tipoGuardado = obtenerTipoDocumentoGuardado();
 
-        while (daoDocumentos.existe(tipoGuardado, consecutivos[1])) {
+        while (daoDocumentos.existe(tipoGuardado, consecutivos[0])) {
             reserva.avanzar();
             consecutivos = construirConsecutivoDocumento(reserva);
         }
@@ -5781,16 +5319,16 @@ public final class VistaFactura extends javax.swing.JPanel {
         String numero = String.valueOf(reserva.getNumero());
 
         if (esDocumentoFacturable()) {
-            return new String[]{"FACT-" + numero, "FACT-" + reserva.getPrefijo() + numero};
+            return new String[]{"FACT-" + reserva.getPrefijo() + numero, numero};
         }
 
         String factura = esNotaDebito()
                 ? "ND-" + obtenerPrefijoNotaDebito() + numero
                 : TipoDocumento.obtenerPrefijoGeneralPorValor(this.tipoProceso) + "-" + numero;
-        return new String[]{factura, factura};
+        return new String[]{factura, numero};
     }
 
-    private MovimientoDocumento construirMovimiento(String factura, String factura2, String prefijoGeneral) {
+    private MovimientoDocumento construirMovimiento(String factura, String consecutivo, String prefijoGeneral) {
         String vendedor = cmbVendedor.getSelectedItem().toString().equals("Seleccione un vendedor") ? "" : cmbVendedor.getSelectedItem().toString();
         String congelada = esNotaDebito() ? "" : funcionalidadVentas.obtenerNumeroCongelada(instancias, this.tipoProceso, instancias);
         String turno = esNotaDebito() ? "" : obtenerTurno();
@@ -5803,7 +5341,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         } catch (Exception e) {
         }
 
-        return new MovimientoDocumento(obtenerTipoComprobante(), factura, factura2, prefijoGeneral,
+        return new MovimientoDocumento(obtenerTipoComprobante(), factura, consecutivo, prefijoGeneral,
                 vendedor, congelada, turno, fechaFactura, copago, porcentajeReteFuente);
     }
 
@@ -5895,32 +5433,30 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(this.tipoProceso);
         String factura;
-        String factura2;
 
         try (ReservaConsecutivo reservaDocumento = reserva) {
             String[] consecutivos = obtenerConsecutivoDocumento(reservaDocumento);
             factura = consecutivos[0];
-            factura2 = consecutivos[1];
 
-            if (!guardarMovimiento(construirMovimiento(factura, factura2, prefijoGeneral))) {
+            if (!guardarMovimiento(construirMovimiento(factura, consecutivos[1], prefijoGeneral))) {
                 return "";
             }
 
             try {
                 reservaDocumento.confirmar();
             } catch (SQLException ex) {
-                Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, "No se pudo confirmar el consecutivo del documento " + factura2, ex);
+                Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, "No se pudo confirmar el consecutivo del documento " + factura, ex);
             }
         }
 
         int fila = obtenerDocumento();
 
         if (!ndGuarderia.isEmpty()) {
-            actualizarEstadoGuarderia(factura2);
+            actualizarEstadoGuarderia(factura);
         }
 
         if (!ndHospitalizacion.isEmpty()) {
-            actualizarEstadoHospitalizacion(factura2);
+            actualizarEstadoHospitalizacion(factura);
         }
 
         if (!ndPeluqueria.isEmpty()) {
@@ -5959,7 +5495,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             instancias.getSql().cambiarEstadoMesa(instancias.getTitulo(), "DISPONIBLE");
         }
 
-        generarImpresionDocumento(desde, factura, factura2);
+        generarImpresionDocumento(desde, factura);
 
         if (esFacturaCredito) {
             GeneradorReporteCredito reportes = new GeneradorReporteCredito(instancias);
@@ -5989,17 +5525,17 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         actualizarTablaResoluciones();
 
-        return factura2;
+        return factura;
     }
 
-    private void guardarCuentaPorCobrar(String factura, String factura2, String tipoCxc) {
+    private void guardarCuentaPorCobrar(String factura, String tipoCxc) {
         if (txtDiasPlazo.getText().equals("")) {
             txtDiasPlazo.setText("0");
         }
 
         Object[] vectCxc = {factura, tipoCxc, "PEND", "", big.getMoneda(txtTotal.getText().replace("Total: ", "")),
             txtDiasPlazo.getText(), metodos.fechaConsulta(txtVencimiento.getText()),
-            instancias.getUsuario(), instancias.getTerminal(), esFacturaCredito, factura2};
+            instancias.getUsuario(), instancias.getTerminal(), esFacturaCredito, factura};
 
         ndCxc nodoCxc = metodos.llenarCxc(vectCxc);
         if (!instancias.getSql().agregarCxc(nodoCxc)) {
@@ -6323,7 +5859,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         return true;
     }
 
-    private void guardarCredito(String factura, String factura2) {
+    private void guardarCredito(String factura) {
         String credito = "CREDITO-" + factura.replace("FACT-", "");
         Object[] vector = {credito, factura, instancias.getUsuario(),
             metodos.fechaConsulta(metodosGenerales.fecha()), ID_CLIENTE_CARGADO, "", "",
@@ -6331,7 +5867,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             txtObservaciones.getText(), big.getMoneda(txtValorVenta.getText()),
             big.getMoneda(txtValorCredito.getText()), big.getMoneda(txtCuotas.getText()),
             big.getMoneda(txtInteres.getText()), big.getMoneda(txtTotalIntereses.getText()),
-            big.getMoneda(txtTotal.getText().replace("Total: ", "")), big.getMoneda(txtCuotaInicial.getText()), factura2};
+            big.getMoneda(txtTotal.getText().replace("Total: ", "")), big.getMoneda(txtCuotaInicial.getText()), factura};
 
         ndPrestamo nodo = metodos.llenarPrestamo(vector);
         if (!instancias.getSql().agregarPrestamo(nodo)) {
@@ -6375,44 +5911,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         buscar.show();
     }
 
-    public void ventanaTipoVehiculos(String nit) {
-        buscTipoVehiculo buscar = new buscTipoVehiculo(instancias.getMenu(), true);
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscTipoVehiculo(buscar);
-        instancias.setCampoActual(txtTipoVehiculo);
-        txtTipoVehiculo.requestFocus();
-        buscar.setInstancia(instancias);
-        buscar.noEncontrado(nit);
-        buscar.show();
-    }
-
-    public void ventanaProblemas() {
-        buscProblemas buscar = new buscProblemas(null, true, false);
-        buscar.setOpc("orden");
-        buscar.setFactura(this);
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscarProblemas(buscar);
-//        buscar.noEncontrado(codigo.replace("'", "//"));
-        buscar.show();
-    }
-
-    public void ventanaProblemas1() {
-        buscProblemas buscar = new buscProblemas(null, true, false);
-        buscar.setOpc("orden1");
-        buscar.setFactura(this);
-        buscar.setLocationRelativeTo(null);
-        instancias.setBuscarProblemas(buscar);
-        buscar.show();
-    }
-
-    public void cargarProblema(String problemas, String tipoOrden) {
-        if (tipoOrden.equals("1")) {
-            tblArticulos.setValueAt(problemas, tblArticulos.getSelectedRow(), 3);
-        } else {
-            tblArticulos.setValueAt(problemas, tblArticulos.getSelectedRow(), 4);
-        }
-    }
-
     public void cargarPreparacion(String fila, String cadena, String prod) {
         if (fila.equals("")) {
             cargarProducto(prod, BigDecimal.ONE, 1, "", "", cadena, false, "", "", "", "", "");
@@ -6420,6 +5918,22 @@ public final class VistaFactura extends javax.swing.JPanel {
         } else {
             tblProductos.setValueAt(cadena, Integer.parseInt(fila), 21);
         }
+    }
+
+    private void limpiarPlacaAlCambiarCliente() {
+        if (txtPlaca.isEnabled()) {
+            txtPlaca.setText("");
+        }
+    }
+
+    private boolean placaPerteneceA(String idSistema) {
+        String placa = txtPlaca.getText().trim();
+        if (placa.isEmpty()) {
+            return false;
+        }
+
+        Object[][] propietario = instancias.getSql().getUsuarioPlaca(placa);
+        return propietario.length > 0 && propietario[0][0] != null && idSistema.equals(propietario[0][0].toString());
     }
 
     public void cargarCliente(String nit) {
@@ -6439,6 +5953,10 @@ public final class VistaFactura extends javax.swing.JPanel {
             } else {
                 txtNombre.setEnabled(false);
                 txtNombre.setEditable(false);
+            }
+
+            if (!nodo.getIdSistema().equals(ID_CLIENTE_CARGADO) && !placaPerteneceA(nodo.getIdSistema())) {
+                limpiarPlacaAlCambiarCliente();
             }
 
             ID_CLIENTE_CARGADO = nodo.getIdSistema();
@@ -7092,23 +6610,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         });
     }
 
-    public void cargarArticulos(String tipo) {
-        DefaultTableModel modelo = (DefaultTableModel) tblArticulos.getModel();
-
-        while (tblArticulos.getRowCount() > 0) {
-            modelo.removeRow(0);
-        }
-
-        Object[][] articulo = instancias.getSql().getArticulos(tipo);
-
-        if (articulo.length > 0) {
-            for (int i = 0; i < articulo.length; i++) {
-                modelo.addRow(new Object[]{articulo[i][0], articulo[i][1], false, "", "", ""});
-            }
-            return;
-        }
-    }
-
     private void mostrarCarteraYCupo(String cartera, String cupo) {
         lbCupo.setText("<html>CARTERA PENDIENTE: " + cartera + "<br>TIENE CUPO DE: " + cupo + "</html>");
     }
@@ -7212,15 +6713,13 @@ public final class VistaFactura extends javax.swing.JPanel {
         return fact;
     }
 
-    public void ventanaPlacas1(String nit, String condi) {
-        buscPlacas buscar = new buscPlacas(instancias.getMenu(), true, condi);
+    public void ventanaPlacas1(String placa, String idSistemaCliente) {
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.placas(instancias.getMenu(), true, idSistemaCliente, true);
         buscar.setLocationRelativeTo(null);
-        buscar.setInstancia(instancias);
-        instancias.setBuscPlacas(buscar);
         instancias.setCampoActual(txtPlaca);
         txtPlaca.requestFocus();
-        buscar.noEncontrado(nit);
-        buscar.show();
+        buscar.noEncontrado(placa);
+        buscar.setVisible(true);
     }
 
     public void cargarClienteYProducto(String cliente, String[][] producto) {
@@ -7232,10 +6731,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         chkReteIva.setSelected(false);
         txtObservaciones.setText("");
         txtPorcentaje.setText("");
-        txtMarca.setText("");
-        txtColor.setText("");
-        txtModelo.setText("");
-        txtMotor.setText("");
         txtPlaca.setText("");
         btnModificar.setEnabled(false);
         btnGuardar.setEnabled(true);
@@ -7491,19 +6986,17 @@ public final class VistaFactura extends javax.swing.JPanel {
         cargarTotales();
     }
 
-    private ModeloFacturacionElectronica crearModeloFacturacionEletronica(String factura, String factura2, ModeloContacto datosCliente) {
+    private ModeloFacturacionElectronica crearModeloFacturacionEletronica(String factura, String consecutivo, ModeloContacto datosCliente) {
 
         boolean notaDebito = esNotaDebito();
         ModeloFacturacionElectronica modeloFacturacionElectronica = new ModeloFacturacionElectronica();
 
         if (notaDebito) {
-            String prefijoNotaDebito = obtenerPrefijoNotaDebito();
-            modeloFacturacionElectronica.setDsPrefijo(prefijoNotaDebito);
-            modeloFacturacionElectronica.setDsNumeroFactura(factura.replace("ND-", "").replace(prefijoNotaDebito, ""));
+            modeloFacturacionElectronica.setDsPrefijo(obtenerPrefijoNotaDebito());
         } else {
             modeloFacturacionElectronica.setDsPrefijo(obtenerPrefijoFactura());
-            modeloFacturacionElectronica.setDsNumeroFactura(factura.replace("FACT-", ""));
         }
+        modeloFacturacionElectronica.setDsNumeroFactura(consecutivo);
 
         modeloFacturacionElectronica.setDsVendedor(cmbVendedor.getSelectedItem().toString());
         modeloFacturacionElectronica.setFechaEmision(metodos.fecha4(metodosGenerales.fecha()) + " " + metodosGenerales.fechaHora().split(" ")[1]);
@@ -7574,7 +7067,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         ModeloDescuentos[] resultadosDescuentos = obtenerDescuentosFactura(modeloFacturacionElectronica.getDescuentoTotal());
         modeloFacturacionElectronica.setDescuentosFactura(resultadosDescuentos);
 
-        Object[] informacionDePagos = obtenerInformacionDePagos(factura2);
+        Object[] informacionDePagos = obtenerInformacionDePagos(factura);
         modeloFacturacionElectronica.setFormaPago(informacionDePagos[0].toString());
         modeloFacturacionElectronica.setMedioPago(informacionDePagos[1].toString());
         modeloFacturacionElectronica.setFechaVencimientoPago(informacionDePagos[2].toString());
@@ -8143,9 +7636,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         return "0";
     }
 
-    private boolean generarFacturacionElectronica(String tipoComprobante, String factura, String factura2) {
+    private boolean generarFacturacionElectronica(String tipoComprobante, String factura, String consecutivo) {
         boolean facturaElectronicaExitosa = false;
-        ModeloFacturacionElectronica modeloFacturacionElectronica = crearModeloFacturacionEletronica(factura, factura2, DATOS_CLIENTE_CARGADO);
+        ModeloFacturacionElectronica modeloFacturacionElectronica = crearModeloFacturacionEletronica(factura, consecutivo, DATOS_CLIENTE_CARGADO);
 
         try {
             if (esNotaDebito()) {
@@ -8324,8 +7817,7 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private <T extends ModeloDocumento> T construirEncabezado(T documento, MovimientoDocumento movimiento) {
-        documento.setIdFactura(movimiento.getFactura());
-        documento.setFactura(movimiento.getFactura2());
+        documento.setFactura(movimiento.getFactura());
         documento.setCliente(ID_CLIENTE_CARGADO);
         documento.setVendedor(movimiento.getVendedor());
         documento.setFechaFactura(metodos.fechaConsulta(metodosGenerales.fecha()));
@@ -8339,8 +7831,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         documento.setTotal(big.getMoneda(txtTotal.getText().replace("Total: ", "")));
         documento.setDescuento(big.getMoneda(txtTotalDescuentos.getText()));
         documento.setIva(big.getMoneda(txtTotalIva.getText()));
+        documento.setImpoconsumo(big.getMoneda(txtTotalImpoconsumo.getText()));
         documento.setSubtotal(big.getMoneda(txtSubTotal.getText()));
-        documento.setConsecutivo(movimiento.getFactura().replace(movimiento.getPrefijoGeneral() + "-", ""));
+        documento.setConsecutivo(movimiento.getConsecutivo());
         documento.setCredito(!txtFechaFactura.getText().equals(txtVencimiento.getText()));
         documento.setUsuario(instancias.getUsuario());
         documento.setReteIva(big.getMoneda(txtRiva.getText()));
@@ -8353,7 +7846,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         documento.setResolucion(instancias.getResolucion());
         documento.setFechaAnulacion(metodos.fechaConsulta(metodosGenerales.fecha()));
         documento.setCopago(movimiento.getCopago() == null ? 0 : movimiento.getCopago().intValue());
-        documento.setPlaca(txtPlaca1.getText());
+        String placa = txtPlaca.getText().trim();
+        documento.setPlaca(placa.isEmpty() ? txtPlaca1.getText() : placa);
+        documento.setBodega(Bodegas.predeterminada());
         return documento;
     }
 
@@ -8421,24 +7916,8 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private boolean agregarMovimientoOrdenServicio(MovimientoDocumento movimiento, boolean reemplazar) {
-        if (!daoOrdenServicio.guardarVehiculo(construirVehiculo(movimiento.getFactura2()))) {
-            ControladorAlertas.alertFail("Hubo un problema al guardar la orden de servicio");
-            return false;
-        }
-
-        daoOrdenServicio.guardarDetalle(construirDetalleOrden(movimiento.getFactura()));
-
-        ModeloOrdenServicio orden = construirEncabezado(new ModeloOrdenServicio(), movimiento);
+        ModeloDocumento orden = construirEncabezado(new ModeloDocumento(TipoDocumento.ORDER_SERVICIO), movimiento);
         orden.setCopago(0);
-        orden.setTipoVehiculo(txtTipoVehiculo.getText());
-        orden.setModelo(txtModelo.getText());
-        orden.setNumeroChasis(txtNumChasis.getText());
-        orden.setFechaCompra(metodos.fechaConsulta(metodosGenerales.fecha()));
-        orden.setMarca(txtMarca.getText());
-        orden.setKilometraje(txtKm.getText());
-        orden.setNumeroMotor(txtMotor.getText());
-        orden.setColor(txtColor.getText());
-        orden.setProblema(txtProblema.getText());
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             if (esLineaPendiente(i)) {
@@ -8449,42 +7928,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         return persistirDocumento(orden, reemplazar, "Error al guardar la orden de servicio");
-    }
-
-    private ndOServicio construirVehiculo(String factura) {
-        ndOServicio nodo = new ndOServicio();
-        nodo.setId(factura);
-        nodo.setPlaca(txtPlaca.getText());
-        nodo.setTipo(txtTipoVehiculo.getText());
-        nodo.setModelo(txtModelo.getText());
-        nodo.setNumeroChasis(txtNumChasis.getText());
-        nodo.setFechaCompra(metodos.fechaConsulta(metodosGenerales.fecha()));
-        nodo.setMarca(txtMarca.getText());
-        nodo.setKm(txtKm.getText());
-        nodo.setNumeroMotor(txtMotor.getText());
-        nodo.setColor(txtColor.getText());
-        nodo.setProblema(txtProblema.getText());
-        return nodo;
-    }
-
-    private List<ModeloDetalleOrdenServicio> construirDetalleOrden(String idOrden) {
-        List<ModeloDetalleOrdenServicio> detalles = new ArrayList<>();
-        int num = 1;
-        for (int i = 0; i < tblArticulos.getRowCount(); i++) {
-            if ((Boolean) tblArticulos.getValueAt(i, 2)) {
-                detalles.add(new ModeloDetalleOrdenServicio(
-                        idOrden,
-                        tblArticulos.getValueAt(i, 0).toString(),
-                        tblArticulos.getValueAt(i, 1).toString(),
-                        (Boolean) tblArticulos.getValueAt(i, 2),
-                        tblArticulos.getValueAt(i, 3).toString(),
-                        tblArticulos.getValueAt(i, 4).toString(),
-                        tblArticulos.getValueAt(i, 5).toString(),
-                        num++
-                ));
-            }
-        }
-        return detalles;
     }
 
     private boolean agregarMovimientoPedido(MovimientoDocumento movimiento, boolean reemplazar) {
@@ -8533,7 +7976,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             return false;
         }
 
-        guardarCuentaPorCobrar(movimiento.getFactura(), movimiento.getFactura(), "SEPARE");
+        guardarCuentaPorCobrar(movimiento.getFactura(), "SEPARE");
         return true;
     }
 
@@ -8541,7 +7984,6 @@ public final class VistaFactura extends javax.swing.JPanel {
         ModeloDocumento mesa = construirEncabezado(new ModeloDocumento(TipoDocumento.MESA), movimiento);
         mesa.setConseMesa(movimiento.getCongelada());
         mesa.setTurno(movimiento.getTurno());
-        mesa.setImpoconsumo(big.getMoneda(txtTotalImpoconsumo.getText()));
 
         List<ModeloComanda> comandas = new ArrayList<>();
         boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
@@ -8575,7 +8017,6 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         ModeloCuentaCobro cuentaCobro = construirEncabezado(new ModeloCuentaCobro(), movimiento);
         cuentaCobro.setCxc("LOTECCOB-" + loteGeneral);
-        cuentaCobro.setImpoconsumo(big.getMoneda(txtTotalImpoconsumo.getText()));
         cuentaCobro.setPeriodicidad(valorTexto(cmbPeriodicidad.getSelectedItem()));
         cuentaCobro.setInicio(desde);
         cuentaCobro.setHasta(chkSinEstablecer.isSelected() ? desde : metodos.desdeDate(dtHasta.getCurrent()));
@@ -8591,10 +8032,10 @@ public final class VistaFactura extends javax.swing.JPanel {
     }
 
     private boolean agregarMovimientoFactura(MovimientoDocumento movimiento) {
-        funcionalidadVentas.agregamosRegistrosMediosDePago(instancias, movimiento.getFactura2());
+        funcionalidadVentas.agregamosRegistrosMediosDePago(instancias, movimiento.getFactura());
 
         if (instancias.getConfiguraciones().isFacturaElectronica() && Constantes.esFacturacionElectronica(movimiento.getTipoComprobante())) {
-            if (!generarFacturacionElectronica(movimiento.getTipoComprobante(), movimiento.getFactura(), movimiento.getFactura2())) {
+            if (!generarFacturacionElectronica(movimiento.getTipoComprobante(), movimiento.getFactura(), movimiento.getConsecutivo())) {
                 borrarAdiciones();
                 return false;
             }
@@ -8609,11 +8050,11 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         if (this.esFacturaCredito) {
             calcularCuotasCredito();
-            guardarCredito(movimiento.getFactura(), movimiento.getFactura2());
+            guardarCredito(movimiento.getFactura());
         }
 
         if (!txtFechaFactura.getText().equals(txtVencimiento.getText())) {
-            guardarCuentaPorCobrar(movimiento.getFactura(), movimiento.getFactura2(), esNotaDebito() ? "NOTADEBITO" : "FACT");
+            guardarCuentaPorCobrar(movimiento.getFactura(), esNotaDebito() ? "NOTADEBITO" : "FACT");
         }
 
         registrarComandas(comandas, "Se guardó la factura pero hubo errores al procesar algunas comandas");
@@ -8626,13 +8067,11 @@ public final class VistaFactura extends javax.swing.JPanel {
         factura.setCxc(loteCuentasCobro);
         factura.setConseMesa(movimiento.getCongelada());
         factura.setTurno(movimiento.getTurno());
-        factura.setImpoconsumo(big.getMoneda(txtTotalImpoconsumo.getText()));
         factura.setMesFacturado(valorTexto(cmbMes.getSelectedItem()));
         factura.setTarjetaCredito(instancias.getTarjetaCredito());
         factura.setTotalPropina(instancias.getTotalPropina());
         factura.setPorcentajePropina(instancias.getPorcPropina());
         factura.setSisteCredito(chkSisteCredito.isSelected());
-        factura.setBodega(esNotaDebito() ? Bodegas.predeterminada() : "");
         factura.setTipoComprobante(movimiento.getTipoComprobante());
         factura.setCongelada(esNotaDebito() ? "SIN-CONSECUTIVO" : movimiento.getCongelada());
 
@@ -8709,23 +8148,23 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    private void generarImpresionDocumento(String desde, String factura, String factura2) {
+    private void generarImpresionDocumento(String desde, String factura) {
         if (desde.equals("ordenMedica")) {
             if (DatosMaestra.isImprimirFacturaOrdenMedica()) {
                 if (ControladorAlertas.option("¿Desea imprimir la fact Nro." + factura.replace("FACT-", "") + "?")) {
-                    imprimirFactura(datosFacturaOrdenMedica(factura2));
+                    imprimirFactura(datosFacturaOrdenMedica(factura));
                 }
             } else {
                 ControladorAlertas.alertSuccess("Fact Nro." + factura.replace("FACT-", "") + " exitosa");
             }
         } else if (!omitirImpresion && !esMesaSinFacturar()) {
-            generarImpresion(factura, factura2);
+            generarImpresion(factura);
         }
 
         if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()) || esNotaDebito()) {
             if (DatosMaestra.isImprimirUbicacion()) {
                 if (ControladorAlertas.option("¿Desea imprimir ubicación?")) {
-                    new GeneradorReporteFactura(instancias).ver_Ubicacion(factura2, false);
+                    new GeneradorReporteFactura(instancias).ver_Ubicacion(factura, false);
                 }
             }
         }
@@ -8964,16 +8403,19 @@ public final class VistaFactura extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_lbOtroConsecutivoKeyReleased
 
+    private void btnBuscarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPlacaActionPerformed
+        ventanaPlacas1(txtPlaca.getText(), ID_CLIENTE_CARGADO);
+    }//GEN-LAST:event_btnBuscarPlacaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBusProd;
     private javax.swing.JButton btnBuscTerceros;
+    private javax.swing.JButton btnBuscarPlaca;
     private javax.swing.JButton btnCambiarMesa;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnInformacionAdicional;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
-    private javax.swing.JButton btnNuevaParte;
-    private javax.swing.JButton btnNuevaParte1;
     private javax.swing.JButton btnPasarACongelada;
     private javax.swing.JButton btnReImprimir;
     private javax.swing.ButtonGroup buttonGroup1;
@@ -9005,8 +8447,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -9029,18 +8469,10 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JLabel lbImpoconsumo;
     private javax.swing.JLabel lbNit;
     private javax.swing.JTextField lbNoFactura;
-    private javax.swing.JLabel lbNombre10;
-    private javax.swing.JLabel lbNombre11;
-    private javax.swing.JLabel lbNombre13;
-    private javax.swing.JLabel lbNombre14;
-    private javax.swing.JLabel lbNombre5;
-    private javax.swing.JLabel lbNombre6;
-    private javax.swing.JLabel lbNombre7;
-    private javax.swing.JLabel lbNombre8;
-    private javax.swing.JLabel lbNombre9;
     private javax.swing.JLabel lbNumeroDocumento;
     private javax.swing.JLabel lbObservaciones;
     private javax.swing.JLabel lbOtroConsecutivo;
+    private javax.swing.JLabel lbPlaca;
     private javax.swing.JLabel lbProducto;
     private javax.swing.JLabel lbProducto1;
     private javax.swing.JLabel lbRazonSocial;
@@ -9067,7 +8499,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JPanel pnlGrupos;
     private javax.swing.JPanel pnlInformacionNotaDebito;
     private javax.swing.JPanel pnlOcultar;
-    private javax.swing.JPanel pnlOrdenServicio;
     private javax.swing.JMenuItem popBorrar;
     private javax.swing.JRadioButton rdCarta;
     private javax.swing.JRadioButton rdMediaCarta;
@@ -9077,7 +8508,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JRadioButton rdTipoNormal;
     private javax.swing.JScrollPane scrProductos1;
     private javax.swing.JTabbedPane tapControl;
-    private javax.swing.JTable tblArticulos;
     private javax.swing.JTable tblComprobantes;
     private javax.swing.JTable tblCuotas;
     private javax.swing.JTable tblProductos;
@@ -9089,7 +8519,6 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JTextField txtCargar;
     private javax.swing.JTextField txtCartera;
     private javax.swing.JTextField txtCodigoProducto;
-    private javax.swing.JTextField txtColor;
     private javax.swing.JTextField txtCopago;
     private javax.swing.JTextField txtCuotaInicial;
     private javax.swing.JTextField txtCuotas;
@@ -9099,23 +8528,16 @@ public final class VistaFactura extends javax.swing.JPanel {
     private javax.swing.JTextField txtFechaFactura;
     private javax.swing.JTextField txtInteres;
     private javax.swing.JLabel txtIva;
-    private javax.swing.JTextField txtKm;
-    private javax.swing.JTextField txtMarca;
-    private javax.swing.JTextField txtModelo;
-    private javax.swing.JTextField txtMotor;
     private javax.swing.JTextField txtNit;
     private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtNumChasis;
     private javax.swing.JTextArea txtObservaciones;
     private javax.swing.JTextField txtPlaca;
     private javax.swing.JTextField txtPlaca1;
     private javax.swing.JTextField txtPorcentaje;
-    private javax.swing.JTextArea txtProblema;
     private javax.swing.JTextField txtRelacion;
     private javax.swing.JLabel txtRiva;
     private javax.swing.JLabel txtRtf;
     private javax.swing.JLabel txtSubTotal;
-    private javax.swing.JTextField txtTipoVehiculo;
     private javax.swing.JLabel txtTotal;
     private javax.swing.JTextField txtTotalCredito;
     private javax.swing.JLabel txtTotalDescuentos;

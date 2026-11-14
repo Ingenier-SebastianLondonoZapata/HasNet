@@ -5,6 +5,7 @@ import clases.Instancias;
 import clases.metodosGenerales;
 import java.awt.event.KeyEvent;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
@@ -132,6 +133,11 @@ public class VistaBuscadorCatalogo extends javax.swing.JDialog {
     }
 
     private void registrar() {
+        if (configuracion.tieneRegistroExterno()) {
+            registrarExterno();
+            return;
+        }
+
         RegistroCatalogo registro = configuracion.getRegistro();
         String texto = txtId.getText();
 
@@ -160,6 +166,20 @@ public class VistaBuscadorCatalogo extends javax.swing.JDialog {
         ControladorAlertas.alertSuccess(registro.getMensajeExito());
         cargarRegistros();
         noEncontrado(texto);
+        seleccionar();
+    }
+
+    private void registrarExterno() {
+        String registrado = configuracion.registrarExterno(txtId.getText().trim());
+
+        if (registrado == null || registrado.isEmpty()) {
+            txtId.requestFocus();
+            return;
+        }
+
+        cargarRegistros();
+        noEncontrado("^" + Pattern.quote(registrado) + "$");
+        txtId.setText(registrado);
         seleccionar();
     }
 

@@ -12,7 +12,7 @@
 	<parameter name="pie" class="java.lang.String"/>
 	<parameter name="tipoFact" class="java.lang.String"/>
 	<parameter name="titulo" class="java.lang.String"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[Select * from bdComanda where factura = $P{numFactura} or congelada = $P{numFactura}]]>
 	</queryString>

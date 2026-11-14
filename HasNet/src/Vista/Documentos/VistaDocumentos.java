@@ -14,7 +14,6 @@ import Impresiones.ImpresionesOrdenServicio.GeneradorReporteOrdenServicio;
 import Modelo.Inventario.DetalleProducto;
 import Modelo.Inventario.MovimientoInventario;
 import Modelo.Contactos.ModeloContacto;
-import Modelo.Contactos.ModeloDatosVehiculo;
 import Modelo.Documentos.ModeloDocumento;
 import Modelo.Ventas.ModeloDatosDocumento;
 import Modelo.Ventas.ModeloTablaDocumentos;
@@ -30,7 +29,6 @@ import clases.Instancias;
 import clases.big;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import Dao.Terceros.DaoContactos;
 import Dao.Ventas.DaoReimpresiones;
 import Procesos.Inventario.Servicio.CargadorProducto;
 import Procesos.Inventario.Servicio.ServicioDiscosteo;
@@ -62,7 +60,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     private final DaoDocumentos daoDocumentos = new DaoDocumentos();
 
     private final DaoReimpresiones daoReimpresiones = new DaoReimpresiones();
-    private final DaoContactos daoTerceros = new DaoContactos();
     private DefaultTableModel modeloTablaDocumentos;
 
     DecimalFormat df = new DecimalFormat("#.00");
@@ -1386,7 +1383,6 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
     private void btnReimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReimprimirActionPerformed
         boolean esRestaurante = instancias.getConfiguraciones().isRestaurante();
-        boolean esServicioAutomotor = instancias.getConfiguraciones().isServicioAutomotor();
 
         boolean usaTurno = DatosMaestra.isTurnoActivo();
         boolean usaSegundoNumeroFactura = DatosMaestra.isConsecutivoAdicional();
@@ -1436,8 +1432,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
             case "ORDEN DE SERVICIO": {
                 String documento = "OSERV-" + NUMERO_DOCUMENTO_SELECCIONADO;
-                ModeloDatosVehiculo datosVehiculo = daoTerceros.obtenerDatosVehiculo(documento);
-                new GeneradorReporteOrdenServicio(instancias).ver_oServicio(documento, txtObservaciones.getText(), false, datosVehiculo.getTipoVehiculo(), esServicioAutomotor ? "" : tipoImpresion);
+                new GeneradorReporteOrdenServicio(instancias).ver_oServicio(documento, txtObservaciones.getText(), false, tipoImpresion);
                 break;
             }
 
@@ -1849,22 +1844,22 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
             case "PLAN SEPARE":
                 numero = "SEPARE-" + consecutivo;
-                documento = dao.obtenerPorIdFactura(TipoDocumento.PLAN_SEPARE, numero);
+                documento = dao.obtenerPorFactura(TipoDocumento.PLAN_SEPARE, numero);
                 break;
 
             case "COTIZACIÓN":
                 numero = "COTI-" + consecutivo;
-                documento = dao.obtenerPorIdFactura(TipoDocumento.COTIZACION, numero);
+                documento = dao.obtenerPorFactura(TipoDocumento.COTIZACION, numero);
                 break;
 
             case "PEDIDOS":
                 numero = "PEDIDO-" + consecutivo;
-                documento = dao.obtenerPorIdFactura(TipoDocumento.PEDIDO, numero);
+                documento = dao.obtenerPorFactura(TipoDocumento.PEDIDO, numero);
                 break;
 
             case "ORDEN DE SERVICIO":
                 numero = "OSERV-" + consecutivo;
-                documento = dao.obtenerPorIdFactura(TipoDocumento.ORDER_SERVICIO, numero);
+                documento = dao.obtenerPorFactura(TipoDocumento.ORDER_SERVICIO, numero);
                 break;
 
             default:
@@ -2000,12 +1995,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
             btnAnular.setVisible(!datosDocumento.isEsAnulado());
         }
 
-        String bodegaDocumento = datosDocumento.getBodega();
-        if (bodegaDocumento == null && bodegaDocumento.isEmpty()) {
-            BODEGA_SELECCIONADA = Bodegas.predeterminada();
-        } else {
-            BODEGA_SELECCIONADA = Bodegas.resolver(bodegaDocumento, instancias.getConfiguraciones().isInventarioBodegas());
-        }
+        BODEGA_SELECCIONADA = Bodegas.resolver(datosDocumento.getBodega(), instancias.getConfiguraciones().isInventarioBodegas());
 
         String obs = datosDocumento.getObservaciones();
         if (obs != null && !"null".equalsIgnoreCase(obs.trim())) {
@@ -2058,7 +2048,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
     private void cargarDocumentosTabla(List<ModeloTablaDocumentos> documentos) {
         for (ModeloTablaDocumentos doc : documentos) {
             modeloTablaDocumentos.addRow(new Object[]{
-                doc.getIdFactura(),
+                doc.getFactura(),
                 doc.getFactura(),
                 Fechas.formatearFecha1((String) doc.getFechaFactura()),
                 doc.getIdentificadorCliente(),

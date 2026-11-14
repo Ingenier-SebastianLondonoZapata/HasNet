@@ -19,7 +19,7 @@ public class GeneradorReportePedido extends GeneradorReporteBase {
         parametros.put("observaciones", observaciones);
         parametros.put("info", info);
         parametros.put("titulo", "Pedido No.");
-        parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
+        parametros.put("informacionLegalHasNet", instancias.getReporte().getInformacionLegalHasNet());
         ejecutar("listadoPedido", parametros);
     }
 }

@@ -6,7 +6,7 @@ public class MovimientoDocumento {
 
     private final String tipoComprobante;
     private final String factura;
-    private final String factura2;
+    private final String consecutivo;
     private final String prefijoGeneral;
     private final String vendedor;
     private final String congelada;
@@ -23,8 +23,8 @@ public class MovimientoDocumento {
         return factura;
     }
 
-    public String getFactura2() {
-        return factura2;
+    public String getConsecutivo() {
+        return consecutivo;
     }
 
     public String getPrefijoGeneral() {
@@ -63,10 +63,10 @@ public class MovimientoDocumento {
         return porcentajeReteFuente;
     }
 
-    public MovimientoDocumento(String tipoComprobante, String factura, String factura2, String prefijoGeneral, String vendedor, String congelada, String turno, String fechaFactura, BigDecimal copago, String porcentajeReteFuente) {
+    public MovimientoDocumento(String tipoComprobante, String factura, String consecutivo, String prefijoGeneral, String vendedor, String congelada, String turno, String fechaFactura, BigDecimal copago, String porcentajeReteFuente) {
         this.tipoComprobante = tipoComprobante;
         this.factura = factura;
-        this.factura2 = factura2;
+        this.consecutivo = consecutivo;
         this.prefijoGeneral = prefijoGeneral;
         this.vendedor = vendedor;
         this.congelada = congelada;

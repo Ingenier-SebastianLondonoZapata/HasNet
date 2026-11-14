@@ -8,7 +8,8 @@ import Vista.Contactos.VistaBuscadorContactos;
 import clases.Instancias;
 import Modelo.Contactos.ModeloContacto;
 import clases.metodosGenerales;
-import formularios.Parqueadero.buscPlacas;
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JComboBox;
@@ -772,14 +773,12 @@ public class VistaReporteCuentasPendientes extends javax.swing.JPanel {
     }
 
     public void ventanaPlacas(String nit, String condi) {
-        buscPlacas buscar = new buscPlacas(instancias.getMenu(), true, condi);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.placas(instancias.getMenu(), true, condi, false);
         buscar.setLocationRelativeTo(null);
-        buscar.setInstancia(instancias);
-        instancias.setBuscPlacas(buscar);
         instancias.setCampoActual(txtPlaca);
         txtPlaca.requestFocus();
         buscar.noEncontrado(nit);
-        buscar.show();
+        buscar.setVisible(true);
     }
 
     public boolean yaEsta(JComboBox combo, String dato) {

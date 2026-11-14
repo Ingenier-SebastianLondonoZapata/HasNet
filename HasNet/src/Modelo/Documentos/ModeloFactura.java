@@ -10,10 +10,6 @@ public class ModeloFactura extends ModeloDocumento {
     private String porcentajePropina = "0";
     private String tipoComprobante = "";
     private String congelada = "";
-    private String franquicia = "";
-    private String comision = "";
-    private int valorComision;
-    private int totalFacturaComision;
     private String mesFacturado = "";
     private String idCosteo = "";
     private boolean sisteCredito;
@@ -60,38 +56,6 @@ public class ModeloFactura extends ModeloDocumento {
 
     public void setCongelada(String congelada) {
         this.congelada = congelada;
-    }
-
-    public String getFranquicia() {
-        return franquicia;
-    }
-
-    public void setFranquicia(String franquicia) {
-        this.franquicia = franquicia;
-    }
-
-    public String getComision() {
-        return comision;
-    }
-
-    public void setComision(String comision) {
-        this.comision = comision;
-    }
-
-    public int getValorComision() {
-        return valorComision;
-    }
-
-    public void setValorComision(int valorComision) {
-        this.valorComision = valorComision;
-    }
-
-    public int getTotalFacturaComision() {
-        return totalFacturaComision;
-    }
-
-    public void setTotalFacturaComision(int totalFacturaComision) {
-        this.totalFacturaComision = totalFacturaComision;
     }
 
     public String getMesFacturado() {

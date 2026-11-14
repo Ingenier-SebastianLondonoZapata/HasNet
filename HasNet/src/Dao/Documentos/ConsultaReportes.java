@@ -19,7 +19,7 @@ public final class ConsultaReportes {
 
         COLUMNAS_ORDENES.put("terminal", "d.terminal");
         COLUMNAS_ORDENES.put("cliente", "d.cliente");
-        COLUMNAS_ORDENES.put("placa", "o.placa");
+        COLUMNAS_ORDENES.put("placa", "d.placa");
         COLUMNAS_ORDENES.put("estadoGeneral", "COALESCE(dd.estadoGeneralLinea, d.estadoGeneral)");
         COLUMNAS_ORDENES.put("fechaFactura", FECHA_HORA);
     }
@@ -30,52 +30,45 @@ public final class ConsultaReportes {
             + "SUM(dd.utilidad) AS utilidad, d.subtotalGeneral AS subtotalGeneral, d.descuentoGeneral AS descuentoGeneral, d.otros AS otros, "
             + "d.rtFuente AS rtFuente, d.rtIva AS rtIva, d.ivaGeneral AS ivaGeneral, d.totalGeneral AS totalGeneral, d.efectivoGeneral AS efectivoGeneral, "
             + "d.targetaGeneral AS targetaGeneral, d.chequeGeneral AS chequeGeneral, d.ncGeneral AS ncGeneral, dd.tercero AS tercero, "
-            + "dd.utilidad1 AS utilidad1, d.idFactura AS idFactura, d.factura AS id2, d.credito AS credito, d.anulada AS anulada, t.id AS Id, "
+            + "dd.utilidad1 AS utilidad1, d.factura AS factura, d.factura AS id2, d.credito AS credito, d.anulada AS anulada, t.id AS Id, "
             + "p.grupo AS Grupo, p.idSistema AS producto, d.estadoGeneral AS estadoGeneral\n"
             + "FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento\n"
             + "LEFT JOIN bdproductos p ON p.idSistema = dd.producto LEFT JOIN bdterceros t ON t.idSistema = d.cliente\n"
             + "$P!{cliente}\n"
             + "GROUP BY " + FECHA_HORA + ", d.cliente, t.nombre, d.vendedor, d.observacion, p.Codigo, dd.lista, dd.porcIva, d.subtotalGeneral, "
             + "d.descuentoGeneral, d.otros, d.rtFuente, d.rtIva, d.ivaGeneral, d.totalGeneral, d.efectivoGeneral, d.targetaGeneral, d.chequeGeneral, "
-            + "d.ncGeneral, dd.tercero, dd.utilidad1, d.idFactura, d.factura, d.credito, d.anulada, t.id, p.grupo, p.idSistema, d.estadoGeneral\n"
-            + "ORDER BY d.idFactura ASC";
+            + "d.ncGeneral, dd.tercero, dd.utilidad1, d.factura, d.credito, d.anulada, t.id, p.grupo, p.idSistema, d.estadoGeneral\n"
+            + "ORDER BY MIN(d.idDocumento) ASC";
 
-    public static final String ORDENES = "SELECT d.idFactura AS idFactura, d.cliente AS cliente, t.nombre AS nombre, d.subtotalGeneral AS subtotalGeneral, "
+    public static final String ORDENES = "SELECT d.factura AS factura, d.cliente AS cliente, t.nombre AS nombre, d.subtotalGeneral AS subtotalGeneral, "
             + "d.ivaGeneral AS ivaGeneral, d.totalGeneral AS totalGeneral, " + FECHA_HORA + " AS fechaFactura, d.anulada AS anulada, d.rtIva AS rtIva, "
             + "d.rtIca AS rtIca, d.rtFuente AS rtFuente, d.otros AS otros, dd.descuento AS descuento, d.efectivoGeneral AS efectivoGeneral, '' AS nc, "
-            + "d.chequeGeneral AS chequeGeneral, d.targetaGeneral AS targetaGeneral, d.credito AS credito, d.bodega AS bodega, o.placa AS placa, "
-            + "o.tipo AS tipo, o.modelo AS modelo, o.numeroChasis AS numeroChasis, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral) AS estadoGeneral, "
-            + "o.marca AS marca, o.km AS km, d.terminal AS terminal, d.diasGarantia AS diasGarantia, t.id AS idCliente\n"
+            + "d.chequeGeneral AS chequeGeneral, d.targetaGeneral AS targetaGeneral, d.credito AS credito, d.bodega AS bodega, d.placa AS placa, "
+            + "COALESCE(dd.estadoGeneralLinea, d.estadoGeneral) AS estadoGeneral, "
+            + "(SELECT pl.marca FROM bdplacas pl WHERE pl.placa = d.placa ORDER BY pl.Id LIMIT 1) AS marca, d.terminal AS terminal, "
+            + "d.diasGarantia AS diasGarantia, t.id AS idCliente\n"
             + "FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento\n"
-            + "LEFT JOIN bdoservicio o ON o.id = d.idFactura LEFT JOIN bdterceros t ON t.idSistema = d.cliente\n"
+            + "LEFT JOIN bdterceros t ON t.idSistema = d.cliente\n"
             + "$P!{cliente}\n"
-            + "GROUP BY d.idFactura, d.cliente, t.nombre, d.subtotalGeneral, d.ivaGeneral, d.totalGeneral, " + FECHA_HORA + ", d.anulada, d.rtIva, "
-            + "d.rtIca, d.rtFuente, d.otros, dd.descuento, d.efectivoGeneral, d.chequeGeneral, d.targetaGeneral, d.credito, d.bodega, o.placa, o.tipo, "
-            + "o.modelo, o.numeroChasis, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral), o.marca, o.km, d.terminal, d.diasGarantia, t.id\n"
-            + "ORDER BY d.idFactura ASC";
+            + "GROUP BY d.factura, d.cliente, t.nombre, d.subtotalGeneral, d.ivaGeneral, d.totalGeneral, " + FECHA_HORA + ", d.anulada, d.rtIva, "
+            + "d.rtIca, d.rtFuente, d.otros, dd.descuento, d.efectivoGeneral, d.chequeGeneral, d.targetaGeneral, d.credito, d.bodega, d.placa, "
+            + "COALESCE(dd.estadoGeneralLinea, d.estadoGeneral), d.terminal, d.diasGarantia, t.id\n"
+            + "ORDER BY MIN(d.idDocumento) ASC";
 
-    public static final String SEPARES = "SELECT * FROM (SELECT d.idFactura AS id, d.factura AS id2, d.cliente AS cliente, t.nombre AS nombre, "
+    public static final String SEPARES = "SELECT * FROM (SELECT d.factura AS id, d.factura AS id2, d.idDocumento AS ordenId, d.cliente AS cliente, t.nombre AS nombre, "
             + "d.subtotalGeneral AS subtotal, d.ivaGeneral AS iva, d.totalGeneral AS total, d.fechaFactura AS fechaFactura, d.anulada AS anulada, "
             + "d.rtIva AS rtIva, d.rtIca AS rtIca, d.rtFuente AS rtFuente, d.otros AS otros, d.descuentoGeneral AS descuento, d.efectivoGeneral AS efectivo, "
             + "'0' AS nc, d.chequeGeneral AS cheque, d.targetaGeneral AS targeta, d.credito AS credito, d.bodega AS bodega, d.terminal AS terminal, "
             + "t.id AS idTercero FROM bdDocumentos d INNER JOIN bdterceros t ON t.idSistema = d.cliente "
-            + "WHERE d.tipoDocumento = 'separe' AND d.anulada = 0) repSeparesDiario\n$P!{cliente}\nORDER BY id ASC";
+            + "WHERE d.tipoDocumento = 'separe' AND d.anulada = 0) repSeparesDiario\n$P!{cliente}\nORDER BY ordenId ASC";
 
-    public static final String PLANTILLAS = "SELECT * FROM (SELECT d.idFactura AS id, CAST(SUBSTR(d.idFactura, 8, 100) AS SIGNED) AS id2, d.cliente AS cliente, "
+    public static final String PLANTILLAS = "SELECT * FROM (SELECT d.factura AS id, CAST(SUBSTRING_INDEX(d.factura, '-', -1) AS SIGNED) AS id2, d.idDocumento AS ordenId, d.cliente AS cliente, "
             + "t.nombre AS nombre, d.subtotalGeneral AS subtotal, d.ivaGeneral AS iva, d.totalGeneral AS total, d.fechaFactura AS fechaFactura, "
             + "d.anulada AS anulada, d.rtIva AS rtIva, d.rtIca AS rtIca, d.rtFuente AS rtFuente, d.otros AS otros, d.descuentoGeneral AS descuento, "
             + "d.efectivoGeneral AS efectivo, '0' AS nc, d.chequeGeneral AS cheque, d.targetaGeneral AS targeta, d.credito AS credito, d.bodega AS bodega, "
             + "d.periodicidad AS periodicidad, d.inicio AS inicio, d.hasta AS hasta, d.fechaUltimoPago AS fechaUltimoPago, d.cantIncremento AS cantIncremento, "
             + "t.id AS idTercero FROM bdDocumentos d INNER JOIN bdterceros t ON t.idSistema = d.cliente "
-            + "WHERE d.tipoDocumento = 'cuentaCobro' AND d.anulada = 0) repPlantillasDiario\n$P!{cliente}\nORDER BY id ASC";
-
-    public static String ordenServicio(String rango) {
-        return "SELECT DISTINCT d.idFactura AS idFactura, b.ordenServicio AS ordenServicio, b.nombreParte AS nombreParte, b.inventario AS inventario, "
-                + "b.problemasDerecha AS problemasDerecha, b.problemasIzquierda AS problemasIzquierda, b.observaciones AS observaciones, b.num AS num\n"
-                + "FROM bddetalleordenservicio b INNER JOIN bdDocumentos d ON d.idFactura = b.ordenServicio AND d.tipoDocumento = 'orden'\n"
-                + "WHERE " + rango + " AND d.idFactura = $P{numero}\n"
-                + "AND EXISTS (SELECT 1 FROM bdDocumentosDetalle x WHERE x.idDocumento = d.idDocumento)";
-    }
+            + "WHERE d.tipoDocumento = 'cuentaCobro' AND d.anulada = 0) repPlantillasDiario\n$P!{cliente}\nORDER BY ordenId ASC";
 
     private ConsultaReportes() {
     }

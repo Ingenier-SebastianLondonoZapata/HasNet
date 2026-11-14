@@ -380,7 +380,7 @@
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="205" y="-1" width="1" height="18" uuid="6a85ea0f-85b4-44ae-9692-1fc303231d95"/>
 			</line>
-			<textField>
+			<textField pattern="#,##0.####">
 				<reportElement x="206" y="0" width="38" height="17" uuid="64ea739e-9678-4ba4-bf5d-21f2a7744462"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>

@@ -13,16 +13,16 @@ public final class ConsultaVista {
 
     private static final Pattern SIN_CALIFICAR = Pattern.compile("(?i)(?<![\\w.'])(?<!AS\\s)(fechaFactura|anulada)(?![\\w'])");
     private static final String PLAZO_FACTURA = "(SELECT c.plazo FROM bdcxc c WHERE c.factura2 = d.factura AND c.tipo IN ('FACT', 'NOTADEBITO') ORDER BY c.Id LIMIT 1)";
-    private static final String CUOTA_INICIAL = "(SELECT pr.cuotaInicial FROM bdprestamo pr WHERE pr.factura = d.idFactura ORDER BY pr.contrato LIMIT 1)";
+    private static final String CUOTA_INICIAL = "(SELECT pr.cuotaInicial FROM bdprestamo pr WHERE pr.factura = d.factura ORDER BY pr.contrato LIMIT 1)";
 
     public static final ConsultaVista FACTURA = new ConsultaVista("factura", DaoDocumentos.TIPOS_FACTURA, true, null);
     public static final ConsultaVista FACTURACION = new ConsultaVista("facturacion", DaoDocumentos.TIPOS_FACTURA, false, null);
     public static final ConsultaVista COTIZACION = new ConsultaVista("cotizacion", Collections.singletonList(TipoDocumento.COTIZACION), true, null);
     public static final ConsultaVista PLAN_SEPARE = new ConsultaVista("planSepare", Collections.singletonList(TipoDocumento.PLAN_SEPARE), true,
-            "EXISTS (SELECT 1 FROM bdcxc c WHERE c.factura = d.idFactura AND c.tipo = 'SEPARE')");
+            "EXISTS (SELECT 1 FROM bdcxc c WHERE c.factura = d.factura AND c.tipo = 'SEPARE')");
 
     static {
-        FACTURA.agregar("ordenId", "CAST(SUBSTR(d.idFactura, 6, 100) AS SIGNED)");
+        FACTURA.agregar("ordenId", "d.idDocumento");
         FACTURA.agregarTercero("cliente", "id");
         for (String campo : new String[]{"nombre", "telefono", "direccion", "nombreContacto", "cargo", "eps", "idSistema"}) {
             FACTURA.agregarTercero(campo, campo);
@@ -46,7 +46,7 @@ public final class ConsultaVista {
         }
         FACTURA.agregar("anexoFacturacion", "(SELECT mi.anexoFactura FROM bdmaestraimpresiones mi LIMIT 1)");
 
-        FACTURACION.agregar("ordenId", "CAST(SUBSTR(d.idFactura, 6, 100) AS SIGNED)");
+        FACTURACION.agregar("ordenId", "d.idDocumento");
         FACTURACION.agregarTercero("cliente", "id");
         FACTURACION.agregarTercero("nombre", "nombre");
         FACTURACION.agregarTercero("idSistema", "idSistema");
@@ -56,18 +56,18 @@ public final class ConsultaVista {
         FACTURACION.agregar("impoconsumo", "d.impoconsumoGeneral");
         FACTURACION.agregar("rango", "(SELECT x.rango FROM bdDocumentosDetalle x WHERE x.idDocumento = d.idDocumento ORDER BY x.idDetalle LIMIT 1)");
 
-        COTIZACION.agregar("ordenId", "CAST(SUBSTR(d.idFactura, 6, 100) AS SIGNED)");
+        COTIZACION.agregar("ordenId", "d.idDocumento");
         for (String campo : new String[]{"nombre", "telefono", "celular", "direccion"}) {
             COTIZACION.agregarTercero(campo, campo);
         }
         COTIZACION.agregarTercero("Id", "id");
 
-        PLAN_SEPARE.agregar("ordenId", "CAST(SUBSTR(d.idFactura, 8, 100) AS SIGNED)");
+        PLAN_SEPARE.agregar("ordenId", "d.idDocumento");
         for (String campo : new String[]{"nombre", "telefono", "direccion"}) {
             PLAN_SEPARE.agregarTercero(campo, campo);
         }
         PLAN_SEPARE.agregarTercero("IdTercero", "id");
-        PLAN_SEPARE.agregar("plazo", "(SELECT c.plazo FROM bdcxc c WHERE c.factura = d.idFactura AND c.tipo = 'SEPARE' ORDER BY c.Id LIMIT 1)");
+        PLAN_SEPARE.agregar("plazo", "(SELECT c.plazo FROM bdcxc c WHERE c.factura = d.factura AND c.tipo = 'SEPARE' ORDER BY c.Id LIMIT 1)");
         PLAN_SEPARE.agregar("tipo", "'SEPARE'");
         PLAN_SEPARE.agregar("ubicacion", "''");
         PLAN_SEPARE.agregar("referencia", "''");

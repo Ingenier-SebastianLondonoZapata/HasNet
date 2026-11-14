@@ -83,19 +83,6 @@ public class squemaFacturacion extends javax.swing.JPanel {
             }
         }
 
-        if (TipoDocumento.ORDER_SERVICIO.getValor().equals(datos.getTipoProceso()) && datos.isServicioAutomotor()) {
-            boolean entro = false;
-            for (int i = 0; i < datos.getTblArticulos().getRowCount(); i++) {
-                if ((Boolean) datos.getTblArticulos().getValueAt(i, 2)) {
-                    entro = true;
-                    break;
-                }
-            }
-            if (!entro) {
-                errores.add("No ha ingresado el inventario");
-            }
-        }
-
         if (datos.isFacturaCredito() && !datos.getInteres().isEmpty() && Integer.parseInt(datos.getInteres()) == 0) {
             alertas.add("Interés del 0%");
         }

@@ -12,10 +12,9 @@
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from anulacion $P!{cliente} 
-ORDER BY idFactura
+ORDER BY factura
  ASC;]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String"/>
 	<field name="ordenId" class="java.lang.Integer"/>
 	<field name="cliente" class="java.lang.String"/>
 	<field name="vendedor" class="java.lang.String"/>
@@ -361,7 +360,7 @@ ORDER BY idFactura
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{idFactura}:$F{id2})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{factura}:$F{id2})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="154" y="0" width="105" height="15" uuid="8fb81c0f-9ded-4598-b778-8cc282b396d6"/>

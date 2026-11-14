@@ -1,6 +1,7 @@
 package Dao.Terceros;
 
 import Estrategia.AbstractDao;
+import Modelo.Contactos.ModeloDatosVehiculo;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 public class DaoVehiculos extends AbstractDao {
 
@@ -48,6 +50,54 @@ public class DaoVehiculos extends AbstractDao {
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al verificar la placa " + placa, e);
+            return false;
+        }
+    }
+
+    public DefaultTableModel buscadorPlacas(String idSistema) {
+        DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Placa", "Contacto"}, 0) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false;
+            }
+        };
+
+        boolean filtrarContacto = idSistema != null && !idSistema.isEmpty();
+        String sql = "SELECT p.placa, t.nombre FROM bdPlacas p LEFT JOIN bdTerceros t ON t.idSistema = p.usuario"
+                + (filtrarContacto ? " WHERE p.usuario = ?" : "") + " ORDER BY p.placa";
+
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            if (filtrarContacto) {
+                stmt.setString(1, idSistema);
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    modelo.addRow(new Object[]{rs.getString(1), rs.getString(2)});
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al consultar las placas", e);
+        }
+        return modelo;
+    }
+
+    public boolean agregarVehiculo(String idSistema, ModeloDatosVehiculo vehiculo) {
+        String sql = "INSERT INTO bdPlacas (usuario, placa, tipo, modelo, marca, color, chasis, motor, fechaCompra) VALUES (?,?,?,?,?,?,?,?,?)";
+
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setString(1, idSistema);
+            stmt.setString(2, vehiculo.getPlaca());
+            stmt.setString(3, vehiculo.getTipoVehiculo());
+            stmt.setString(4, vehiculo.getModelo());
+            stmt.setString(5, vehiculo.getMarca());
+            stmt.setString(6, vehiculo.getColor());
+            stmt.setString(7, vehiculo.getNumeroChasis());
+            stmt.setString(8, vehiculo.getNumeroMotor());
+            stmt.setString(9, vehiculo.getFechaCompra());
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al registrar la placa " + vehiculo.getPlaca(), e);
             return false;
         }
     }

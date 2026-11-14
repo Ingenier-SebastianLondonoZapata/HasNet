@@ -73,7 +73,7 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
         parametros.put("titulo2", tituloSegunConsecutivo(datos.getTitulo(), facturaTerm));
         parametros.put("hora", DatosMaestra.isImprimirHora() ? "SI" : "NO");
         parametros.put("titulo", tituloDocumento(datos));
-        parametros.put("informacionLegalClick", instancias.getReporte().getInformacionLegalClick());
+        parametros.put("informacionLegalHasNet", instancias.getReporte().getInformacionLegalHasNet());
         parametros.put("firma", System.getProperty("user.dir") + "//imagenes//firmas//" + instancias.getUsuario() + ".jpg");
         parametros.put("impoconsumo", String.valueOf(DatosMaestra.isImprimirImpoconsumo()));
         parametros.put("retenciones", String.valueOf(DatosMaestra.isImprimirRetenciones()));
@@ -121,21 +121,21 @@ public class GeneradorReporteFactura extends GeneradorReporteBase {
         return datosGrupo[5].toString();
     }
 
-    public void ver_PrefacturaVenta(String idFactura, String factura, String observaciones, String facturaTerm, String mesa,
+    public void ver_PrefacturaVenta(String documento, String factura, String observaciones, String facturaTerm, String mesa,
             String info, BigDecimal propina, Boolean previsualizar, String impresora) {
-        String sufijo = instancias.getRegimen().equals("") ? "" : "SinIva";
-
         Map<String, Object> parametros = new HashMap<>();
+        parametros.put("mostrarImpuestos", instancias.getRegimen().isEmpty());
+        parametros.put("informacionLegalHasNet", instancias.getReporte().getInformacionLegalHasNet());
         parametros.put("factura", facturaTerm.replace("FACT-", ""));
         parametros.put("numFactura", factura);
         parametros.put("observaciones", observaciones);
         parametros.put("hora", metodosGenerales.fechaHora());
         parametros.put("info", info);
-        parametros.put("idFactura", idFactura);
+        parametros.put("documento", documento);
         parametros.put("porcPropina", propina);
         parametros.put("simbolo", instancias.getSimbolo());
         parametros.put("cadenaDecimales", instancias.getCadenaDecimales());
-        ejecutarEnImpresora("preFactura" + sufijo, parametros, !previsualizar, impresora);
+        ejecutarEnImpresora("preFactura", parametros, !previsualizar, impresora);
     }
 
     public void ver_Ubicacion(String factura, boolean imprimir) {

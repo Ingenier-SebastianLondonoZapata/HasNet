@@ -10,14 +10,14 @@
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT d.idFactura AS idFactura, d.cliente AS cliente, t.nombre AS nombre, d.subtotalGeneral AS subtotalGeneral, d.ivaGeneral AS ivaGeneral, d.totalGeneral AS totalGeneral, TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')) AS fechaFactura, d.anulada AS anulada, d.rtIva AS rtIva, d.rtIca AS rtIca, d.rtFuente AS rtFuente, d.otros AS otros, dd.descuento AS descuento, d.efectivoGeneral AS efectivoGeneral, '' AS nc, d.chequeGeneral AS chequeGeneral, d.targetaGeneral AS targetaGeneral, d.credito AS credito, d.bodega AS bodega, o.placa AS placa, o.tipo AS tipo, o.modelo AS modelo, o.numeroChasis AS numeroChasis, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral) AS estadoGeneral, o.marca AS marca, o.km AS km, d.terminal AS terminal, d.diasGarantia AS diasGarantia, t.id AS idCliente
+		<![CDATA[SELECT d.factura AS factura, d.cliente AS cliente, t.nombre AS nombre, d.subtotalGeneral AS subtotalGeneral, d.ivaGeneral AS ivaGeneral, d.totalGeneral AS totalGeneral, TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')) AS fechaFactura, d.anulada AS anulada, d.rtIva AS rtIva, d.rtIca AS rtIca, d.rtFuente AS rtFuente, d.otros AS otros, dd.descuento AS descuento, d.efectivoGeneral AS efectivoGeneral, '' AS nc, d.chequeGeneral AS chequeGeneral, d.targetaGeneral AS targetaGeneral, d.credito AS credito, d.bodega AS bodega, d.placa AS placa, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral) AS estadoGeneral, (SELECT pl.marca FROM bdplacas pl WHERE pl.placa = d.placa ORDER BY pl.Id LIMIT 1) AS marca, d.terminal AS terminal, d.diasGarantia AS diasGarantia, t.id AS idCliente
 FROM bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento
-LEFT JOIN bdoservicio o ON o.id = d.idFactura LEFT JOIN bdterceros t ON t.idSistema = d.cliente
+LEFT JOIN bdterceros t ON t.idSistema = d.cliente
 $P!{cliente}
-GROUP BY d.idFactura, d.cliente, t.nombre, d.subtotalGeneral, d.ivaGeneral, d.totalGeneral, TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')), d.anulada, d.rtIva, d.rtIca, d.rtFuente, d.otros, dd.descuento, d.efectivoGeneral, d.chequeGeneral, d.targetaGeneral, d.credito, d.bodega, o.placa, o.tipo, o.modelo, o.numeroChasis, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral), o.marca, o.km, d.terminal, d.diasGarantia, t.id
-ORDER BY d.idFactura ASC]]>
+GROUP BY d.factura, d.cliente, t.nombre, d.subtotalGeneral, d.ivaGeneral, d.totalGeneral, TIMESTAMP(d.fechaFactura, COALESCE(d.horaFactura, '00:00:00')), d.anulada, d.rtIva, d.rtIca, d.rtFuente, d.otros, dd.descuento, d.efectivoGeneral, d.chequeGeneral, d.targetaGeneral, d.credito, d.bodega, d.placa, COALESCE(dd.estadoGeneralLinea, d.estadoGeneral), d.terminal, d.diasGarantia, t.id
+ORDER BY d.factura ASC]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String">
+	<field name="factura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="cliente" class="java.lang.String">
@@ -77,22 +77,10 @@ ORDER BY d.idFactura ASC]]>
 	<field name="placa" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="tipo" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="modelo" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="numeroChasis" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="estadoGeneral" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="marca" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="km" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="terminal" class="java.lang.String">
@@ -253,13 +241,6 @@ ORDER BY d.idFactura ASC]]>
 				<reportElement x="618" y="34" width="1" height="16" uuid="f6b9f8c5-46ef-4249-b09a-2a6801804f78"/>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="619" y="34" width="82" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="ca3d6b84-6f95-4e60-a976-46b41d2ea861"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Kms]]></text>
-			</staticText>
-			<staticText>
 				<reportElement mode="Opaque" x="411" y="34" width="83" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="896dfdae-a7bc-4aec-b578-0cd57ec3e7e6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="true"/>
@@ -273,7 +254,7 @@ ORDER BY d.idFactura ASC]]>
 				<reportElement x="411" y="34" width="1" height="16" uuid="34042676-bc11-4ffa-b163-da7ecea2f694"/>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="495" y="34" width="123" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="a8e0abdf-29e1-466d-9e64-1aa09c921171"/>
+				<reportElement mode="Opaque" x="495" y="34" width="206" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="a8e0abdf-29e1-466d-9e64-1aa09c921171"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
@@ -328,7 +309,7 @@ ORDER BY d.idFactura ASC]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{idFactura}:$F{idFactura})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{factura}:$F{factura})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="151" y="0" width="75" height="16" uuid="420ea45b-2503-44ab-89aa-de73d0519b3c"/>
@@ -439,7 +420,7 @@ ORDER BY d.idFactura ASC]]>
 				<reportElement stretchType="RelativeToBandHeight" x="618" y="0" width="1" height="16" uuid="ccf3388d-ad0c-485d-b6af-8f6ec2788409"/>
 			</line>
 			<textField>
-				<reportElement x="496" y="0" width="122" height="16" uuid="a58ae7ed-0b8c-4f5e-b3a5-46750c6d40a8"/>
+				<reportElement x="496" y="0" width="205" height="16" uuid="a58ae7ed-0b8c-4f5e-b3a5-46750c6d40a8"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
@@ -451,13 +432,6 @@ ORDER BY d.idFactura ASC]]>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="620" y="0" width="81" height="16" uuid="8fe6ccf3-d509-4098-b14f-bcb8e78c47d1"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{km}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="1228" y="0" width="1" height="16" uuid="a48317c7-085a-4083-82cc-6e04905c251a"/>

@@ -7,7 +7,8 @@ import Modelo.InicioSesion.Terminal;
 import clases.Instancias;
 import clases.metodosGenerales;
 import Modelo.Contactos.ModeloContacto;
-import formularios.Parqueadero.buscPlacas;
+import Vista.Buscadores.BuscadoresCatalogo;
+import Vista.Buscadores.VistaBuscadorCatalogo;
 import Vista.Contactos.VistaBuscadorContactos;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -667,14 +668,12 @@ public class VistaReporteAbonos extends javax.swing.JPanel {
     }
 
     public void ventanaPlacas(String nit, String condi) {
-        buscPlacas buscar = new buscPlacas(instancias.getMenu(), true, condi);
+        VistaBuscadorCatalogo buscar = BuscadoresCatalogo.placas(instancias.getMenu(), true, condi, false);
         buscar.setLocationRelativeTo(null);
-        buscar.setInstancia(instancias);
-        instancias.setBuscPlacas(buscar);
         instancias.setCampoActual(txtPlaca);
         txtPlaca.requestFocus();
         buscar.noEncontrado(nit);
-        buscar.show();
+        buscar.setVisible(true);
     }
 
     public void ventanaTerceros(String nit) {

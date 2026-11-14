@@ -30,34 +30,6 @@ public class DaoContactos extends AbstractDao {
 
     private static final String SQL_ACTUALIZAR = "UPDATE bdTerceros SET " + unir(MapeadorContacto.COLUMNAS, "=?, ") + "=? WHERE idSistema = ?";
 
-    public ModeloDatosVehiculo obtenerDatosVehiculo(String ordenServicio) {
-        String sql = "SELECT placa, tipo, modelo, numeroChasis, fechaCompra, marca, km, numeroMotor, color FROM bdOServicio WHERE id = ?";
-
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            stmt.setString(1, ordenServicio);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    ModeloDatosVehiculo datosVehiculo = new ModeloDatosVehiculo();
-                    datosVehiculo.setPlaca(rs.getString("placa"));
-                    datosVehiculo.setTipoVehiculo(rs.getString("tipo"));
-                    datosVehiculo.setModelo(rs.getString("modelo"));
-                    datosVehiculo.setNumeroChasis(rs.getString("numeroChasis"));
-                    datosVehiculo.setFechaCompra(rs.getString("fechaCompra"));
-                    datosVehiculo.setMarca(rs.getString("marca"));
-                    datosVehiculo.setNumeroMotor(rs.getString("numeroMotor"));
-                    datosVehiculo.setColor(rs.getString("color"));
-                    return datosVehiculo;
-                } else {
-                    System.out.println("No se encontró datos del vehículo con OSERV: " + ordenServicio);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener los datos del vehículo: " + e.getMessage());
-        }
-
-        return null;
-    }
-
     public ModeloContacto consultarPorIdentificacion(String identificacion) {
         try (PreparedStatement stmt = getConnection().prepareStatement(SQL_CONSULTA)) {
             stmt.setString(1, identificacion);
@@ -188,6 +160,14 @@ public class DaoContactos extends AbstractDao {
 
     public String obtenerNombrePorIdSistema(String idSistema) {
         return consultarUnTexto("SELECT nombre FROM bdTerceros WHERE idSistema = ? LIMIT 1", idSistema);
+    }
+
+    public String obtenerIdentificacionPorIdSistema(String idSistema) {
+        return consultarUnTexto("SELECT Id FROM bdTerceros WHERE idSistema = ? LIMIT 1", idSistema);
+    }
+
+    public String obtenerIdSistemaPorIdentificacion(String identificacion) {
+        return consultarUnTexto("SELECT idSistema FROM bdTerceros WHERE Id = ? LIMIT 1", identificacion);
     }
 
     private String consultarUnTexto(String sql, String parametro) {

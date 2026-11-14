@@ -109,7 +109,7 @@
 	<field name="utilidad1" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="idFactura" class="java.lang.String">
+	<field name="factura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="id2" class="java.lang.String"/>
@@ -396,7 +396,7 @@
 				<textElement verticalAlignment="Top">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{idFactura}:$F{id2})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($P{regimen}.equals( "SinIva" )?$F{factura}:$F{id2})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="218" y="0" width="105" height="13" uuid="d35c50c5-316f-40c7-8a1c-a7b78ca9e058"/>

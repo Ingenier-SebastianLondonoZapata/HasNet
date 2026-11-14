@@ -2503,7 +2503,7 @@
                               <Table columnCount="2" rowCount="7">
                                 <Column editable="true" title="Opci&#xf3;n" type="java.lang.Object">
                                   <Data value="Imprimir ubicaci&#xf3;n en factura"/>
-                                  <Data value="Imprimir hora en factura"/>
+                                  <Data value="Imprimir hora en documentos"/>
                                   <Data value="Imprimir retenciones en factura"/>
                                   <Data value="Imprimir impoconsumo en factura"/>
                                   <Data value="Imprimir recodiga en cuadre de caja"/>

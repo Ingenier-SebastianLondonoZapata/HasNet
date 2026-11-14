@@ -13,11 +13,10 @@
 	<parameter name="parameter1" class="java.lang.String"/>
 	<parameter name="tipoFact" class="java.lang.String"/>
 	<parameter name="titulo" class="java.lang.String"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[Select * from pedidos where idFactura =$P{numPedido}]]>
+		<![CDATA[Select * from pedidos where factura =$P{numPedido}]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String"/>
 	<field name="ordenId" class="java.lang.Integer"/>
 	<field name="cliente" class="java.lang.String"/>
 	<field name="vendedor" class="java.lang.String"/>
@@ -251,7 +250,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0">
+			<textField pattern="#,##0.####">
 				<reportElement x="340" y="0" width="58" height="12" uuid="678d91b2-1f60-431b-979d-b0c1e13264a2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -307,7 +306,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

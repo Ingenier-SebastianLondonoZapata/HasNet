@@ -9,7 +9,7 @@
 	<parameter name="factura" class="java.lang.String"/>
 	<parameter name="numOrden" class="java.lang.String"/>
 	<parameter name="tipoFact" class="java.lang.String"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<parameter name="numFactura" class="java.lang.String"/>
 	<parameter name="ruta" class="java.lang.String"/>
 	<parameter name="cliente" class="java.lang.String"/>
@@ -203,7 +203,7 @@ ORDER BY fecha ASC;]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

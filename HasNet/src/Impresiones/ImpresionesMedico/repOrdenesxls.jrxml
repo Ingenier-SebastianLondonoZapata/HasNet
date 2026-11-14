@@ -369,7 +369,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cup}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" pattern="#,##0.####">
 				<reportElement stretchType="RelativeToBandHeight" x="5269" y="0" width="110" height="13" uuid="f107c431-9219-4852-aa97-004a29a3d317"/>
 				<textElement>
 					<font fontName="Arial"/>

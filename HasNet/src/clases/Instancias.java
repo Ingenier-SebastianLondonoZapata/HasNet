@@ -198,7 +198,6 @@ public class Instancias {
     private infRepOrdenCompra repOrdenCompra;
 
     private buscUsuarios buscarUsuarios;
-    private buscProblemas buscarProblemas;
 
     private infPlantillas plantillas;
 
@@ -286,7 +285,6 @@ public class Instancias {
     private VistaReporteAnuladas repAnulas;
     private cotizacion cotiza;
     private VistaMesas mesas;
-    private buscTipoVehiculo buscTipoVehiculo;
     private VistaDocumentos reimpresion;
 
     /* INICIO PRODUCTOS */
@@ -337,7 +335,6 @@ public class Instancias {
     private infHistoriaLaboratorio historiaLaboratorio;
 
     /* INICIO PARQUEADERO */
-    private buscPlacas buscPlacas;
     private buscPlaca1 buscPlacas1;
     private infParqueadero parqueadero;
     private infLavadero lavadero;
@@ -587,14 +584,6 @@ public class Instancias {
 
     public void setGuarderia(infGuarderia guarderia) {
         this.guarderia = guarderia;
-    }
-
-    public buscTipoVehiculo getBuscTipoVehiculo() {
-        return buscTipoVehiculo;
-    }
-
-    public void setBuscTipoVehiculo(buscTipoVehiculo buscTipoVehiculo) {
-        this.buscTipoVehiculo = buscTipoVehiculo;
     }
 
     public infPeluqueriaInfo getInfoPeluqueria() {
@@ -1249,14 +1238,6 @@ public class Instancias {
         this.buscPlacas1 = buscPlacas1;
     }
 
-    public buscPlacas getBuscPlacas() {
-        return buscPlacas;
-    }
-
-    public void setBuscPlacas(buscPlacas buscPlacas) {
-        this.buscPlacas = buscPlacas;
-    }
-
     public infParqueadero getParqueadero() {
         return parqueadero;
     }
@@ -1303,14 +1284,6 @@ public class Instancias {
 
     public void setRepLavadero1(infRepLavadero1 repLavadero1) {
         this.repLavadero1 = repLavadero1;
-    }
-
-    public buscProblemas getBuscarProblemas() {
-        return buscarProblemas;
-    }
-
-    public void setBuscarProblemas(buscProblemas buscarProblemas) {
-        this.buscarProblemas = buscarProblemas;
     }
 
     public infRepParqueadero getRepParqueadero() {

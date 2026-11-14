@@ -15,7 +15,7 @@
 ORDER BY documento
  ASC;]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String">
+	<field name="factura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="documento" class="java.lang.Long">
@@ -133,7 +133,7 @@ ORDER BY documento
 		<variableExpression><![CDATA[$F{iva}]]></variableExpression>
 	</variable>
 	<group name="factura">
-		<groupExpression><![CDATA[$F{idFactura}]]></groupExpression>
+		<groupExpression><![CDATA[$F{factura}]]></groupExpression>
 		<groupHeader>
 			<band height="48">
 				<staticText>

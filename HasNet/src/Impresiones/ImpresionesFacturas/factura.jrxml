@@ -17,7 +17,7 @@
 	<parameter name="parameter1" class="java.lang.String"/>
 	<parameter name="tipoFact" class="java.lang.String"/>
 	<parameter name="titulo" class="java.lang.String"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<parameter name="titulo2" class="java.lang.String"/>
 	<parameter name="hora" class="java.lang.String"/>
 	<parameter name="retenciones" class="java.lang.String"/>
@@ -39,8 +39,7 @@
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
-    d.idFactura AS idFactura,
-    CAST(SUBSTR(d.idFactura, 6, 100) AS SIGNED) AS ordenId,
+    d.idDocumento AS ordenId,
     CAST(SUBSTR(bdterceros.id, 1, 100) AS SIGNED) AS cliente,
     bdterceros.ciudad AS ciudad,
     d.vendedor AS vendedor,
@@ -110,12 +109,12 @@
     bdterceros.nombre AS nombre,
     bdterceros.telefono AS telefono,
     bdterceros.direccion AS direccion,
-    IF(ISNULL(bdprestamo.cuotaInicial), 0, bdprestamo.cuotaInicial) AS cuotaInicial2,
+    IFNULL((SELECT pr.cuotaInicial FROM bdprestamo pr WHERE pr.factura = d.factura ORDER BY pr.contrato LIMIT 1), 0) AS cuotaInicial2,
     d.factura AS id2,
     bdproductos.ubicacion1 AS ubicacion1,
     bdproductos.referencia AS referencia,
     (d.subtotalGeneral - d.descuentoGeneral) AS valor3,
-    bdcxc.plazo AS plazo,
+    (SELECT c.plazo FROM bdcxc c WHERE c.factura2 = d.factura AND c.tipo <> 'ABONO' ORDER BY c.Id LIMIT 1) AS plazo,
     bdterceros.nombreContacto AS nombreContacto,
     bdterceros.cargo AS cargo,
     IF(d.turno IS NULL OR TRIM(d.turno) IN ('', '0'), '', d.turno) AS turno,
@@ -124,12 +123,12 @@
     bdepsprecargados.nombre AS nombreEps,
     dd.idDetalle AS Id,
     d.placa AS placa,
-    bdplacas.tipo AS tipo,
-    bdparqueaderoautos.fIngreso AS fIngreso,
-    bdparqueaderoautos.fSalida AS fSalida,
-    bdparqueaderoautos.hIngreso AS hIngreso,
-    bdparqueaderoautos.hSalida AS hSalida,
-    bdparqueaderoautos.horas AS horas,
+    (SELECT pl.tipo FROM bdplacas pl WHERE pl.placa = d.placa ORDER BY pl.Id LIMIT 1) AS tipo,
+    (SELECT pa.fIngreso FROM bdparqueaderoautos pa WHERE pa.factura = d.factura ORDER BY pa.Id LIMIT 1) AS fIngreso,
+    (SELECT pa.fSalida FROM bdparqueaderoautos pa WHERE pa.factura = d.factura ORDER BY pa.Id LIMIT 1) AS fSalida,
+    (SELECT pa.hIngreso FROM bdparqueaderoautos pa WHERE pa.factura = d.factura ORDER BY pa.Id LIMIT 1) AS hIngreso,
+    (SELECT pa.hSalida FROM bdparqueaderoautos pa WHERE pa.factura = d.factura ORDER BY pa.Id LIMIT 1) AS hSalida,
+    (SELECT pa.horas FROM bdparqueaderoautos pa WHERE pa.factura = d.factura ORDER BY pa.Id LIMIT 1) AS horas,
     dd.detalle AS detalle,
     bddetalleproductos.color AS color,
     bdterceros.idSistema AS idSistema,
@@ -143,10 +142,6 @@
     dd.porcImpo AS porcImpo,
     d.bodega AS bodega
 FROM (bdDocumentos d INNER JOIN bdDocumentosDetalle dd ON dd.idDocumento = d.idDocumento AND (d.tipoDocumento = $P{tipoDocumento} OR ($P{tipoDocumento} = 'facturacion' AND d.tipoDocumento = 'notaDebito')))
-    LEFT JOIN bdprestamo ON d.idFactura = bdprestamo.factura
-    LEFT JOIN bdcxc ON d.factura = bdcxc.factura2
-    LEFT JOIN bdplacas ON d.placa = bdplacas.placa
-    LEFT JOIN bdparqueaderoautos ON bdparqueaderoautos.factura = d.factura
     LEFT JOIN bddetalleproductos ON dd.idProd = bddetalleproductos.Id
     LEFT JOIN bdproductos ON dd.producto = bdproductos.idSistema
     LEFT JOIN bdterceros ON d.cliente = bdterceros.idSistema
@@ -156,16 +151,12 @@ WHERE d.factura = $P{numFactura}
     AND ($P{grupo} IS NULL
         OR ($P{grupo} = '' AND bdproductos.grupo IS NULL)
         OR bdproductos.grupo = $P{grupo})
-    AND (NOT $P{agrupar} OR bdcxc.tipo = 'FACT' OR bdcxc.tipo IS NULL)
 GROUP BY IF($P{agrupar},
         CONCAT_WS('|', d.factura, dd.producto, dd.lista, dd.descuento,
                   dd.plu, dd.porcIva, dd.porcImpo),
         dd.idDetalle)
 ORDER BY MIN(dd.idDetalle)]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="ordenId" class="java.lang.Long"/>
 	<field name="cliente" class="java.lang.String"/>
 	<field name="ciudad" class="java.lang.String">
@@ -458,6 +449,9 @@ ORDER BY MIN(dd.idDetalle)]]>
 	<field name="bodega" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<variable name="totalImpuestos" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[($F{iva} == null ? java.math.BigDecimal.ZERO : $F{iva}).add($F{impoconsumo} == null ? java.math.BigDecimal.ZERO : $F{impoconsumo})]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -892,35 +886,35 @@ ORDER BY MIN(dd.idDetalle)]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Codigo}]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
+			<textField isStretchWithOverflow="true" pattern="">
 				<reportElement x="265" y="0" width="52" height="12" uuid="c9d9a22a-7d4c-4eb5-bc1b-79a50d156b37"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{lista})]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
+			<textField isStretchWithOverflow="true" pattern="">
 				<reportElement x="353" y="0" width="55" height="12" uuid="9832e626-9245-46ac-b611-6dc9636f0474"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{subtotal})]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
+			<textField isStretchWithOverflow="true" pattern="">
 				<reportElement x="409" y="0" width="52" height="12" uuid="4dbe9e88-61c1-4c41-b56b-1a33c4e23b51"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{descuento})]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
+			<textField isStretchWithOverflow="true" pattern="">
 				<reportElement x="462" y="0" width="46" height="12" uuid="ccde4ecf-803c-4628-8cb5-f9c07f34e135"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format(($F{porcIva} != null && $F{porcIva}.intValue() > 0 ? $F{iva} : $F{impoconsumo}))]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
+			<textField isStretchWithOverflow="true" pattern="">
 				<reportElement x="509" y="0" width="55" height="12" uuid="877bcc73-2f51-4630-a9b1-1938eda3ab8f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -974,7 +968,7 @@ ORDER BY MIN(dd.idDetalle)]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.####">
 				<reportElement x="318" y="0" width="34" height="12" uuid="0a2ff9c0-a894-48f8-974c-6afc57df3126"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -1024,7 +1018,7 @@ ORDER BY MIN(dd.idDetalle)]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="">
 				<reportElement positionType="Float" x="530" y="23" width="33" height="14" uuid="1ddf15ce-5899-4d1c-bac6-033a9b73f26e"/>
@@ -1112,7 +1106,7 @@ ORDER BY MIN(dd.idDetalle)]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="184" y="104" width="181" height="1" uuid="67d314fc-f808-4aad-a7fa-d0e01be4aced"/>
@@ -1194,7 +1188,7 @@ ORDER BY MIN(dd.idDetalle)]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format(($F{ivaGeneral} == null ? java.math.BigDecimal.ZERO : $F{ivaGeneral}).add($F{impoGeneral} == null ? java.math.BigDecimal.ZERO : $F{impoGeneral}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($V{totalImpuestos})]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
 				<reportElement x="448" y="51" width="112" height="12" uuid="9c86025d-aee6-4c9b-831e-7a276667efe3">

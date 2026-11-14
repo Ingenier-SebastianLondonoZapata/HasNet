@@ -4,15 +4,18 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="162"/>
 	<parameter name="info" class="java.lang.String"/>
-	<parameter name="idFactura" class="java.lang.String"/>
+	<parameter name="documento" class="java.lang.String"/>
 	<parameter name="vendedor" class="java.lang.String"/>
 	<parameter name="porcPropina" class="java.math.BigDecimal"/>
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
+	<parameter name="mostrarImpuestos" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[Boolean.TRUE]]></defaultValueExpression>
+	</parameter>
+	<parameter name="informacionLegalHasNet" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT
     dd.idDetalle AS Id,
-    d.idFactura AS idFactura,
     d.cliente AS cliente,
     d.vendedor AS vendedor,
     d.red AS red,
@@ -90,13 +93,10 @@ FROM bdDocumentos d
 INNER JOIN bdDocumentosDetalle dd
     ON dd.idDocumento = d.idDocumento
 WHERE d.tipoDocumento = 'mesa'
-    AND d.idFactura = $P{idFactura}
+    AND d.factura = $P{documento}
 ORDER BY dd.idDetalle]]>
 	</queryString>
 	<field name="Id" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="idFactura" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="cliente" class="java.lang.String">
@@ -321,6 +321,9 @@ ORDER BY dd.idDetalle]]>
 	<variable name="totalGeneral" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$F{subtotalGeneral}.add($F{ivaGeneral}).add($F{impoconsumoGeneral}).add($P{porcPropina})]]></variableExpression>
 	</variable>
+	<variable name="totalImpuestos" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[($F{iva} == null ? java.math.BigDecimal.ZERO : $F{iva}).add($F{impoconsumo} == null ? java.math.BigDecimal.ZERO : $F{impoconsumo})]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -347,7 +350,7 @@ ORDER BY dd.idDetalle]]>
 				<reportElement positionType="Float" x="160" y="70" width="1" height="15" uuid="a1ec0b38-9968-42c4-a0ae-a034ccb56538"/>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="161" y="70" width="57" height="15" uuid="f40c05b3-cb1a-4c6a-943c-92fce02ef199"/>
+				<reportElement positionType="Float" x="161" y="70" width="75" height="15" uuid="f40c05b3-cb1a-4c6a-943c-92fce02ef199"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
@@ -394,7 +397,7 @@ ORDER BY dd.idDetalle]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.####">
 				<reportElement x="129" y="0" width="30" height="14" uuid="f6eb6008-2df9-48ce-9e05-72b039e85730"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="11"/>
@@ -402,9 +405,9 @@ ORDER BY dd.idDetalle]]>
 				<textFieldExpression><![CDATA[$F{cant2}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="161" y="0" width="57" height="14" uuid="aa852787-526b-4d1b-b859-4dbefaed7b99"/>
+				<reportElement x="161" y="0" width="75" height="14" uuid="aa852787-526b-4d1b-b859-4dbefaed7b99"/>
 				<textElement>
-					<font fontName="Arial" size="11"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($F{total})]]></textFieldExpression>
 			</textField>
@@ -418,13 +421,13 @@ ORDER BY dd.idDetalle]]>
 	</pageFooter>
 	<summary>
 		<band height="110" splitType="Stretch">
-			<staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="32" y="91" width="177" height="10" uuid="d2cce9f2-1049-405c-8df2-04c9e4b91123"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Desarrollo de Software HASNET]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
+			</textField>
 			<frame>
 				<reportElement positionType="Float" x="24" y="11" width="190" height="15" uuid="b5b9793a-83b7-40ff-832b-1dbdaa8da4e9"/>
 				<staticText>
@@ -481,13 +484,15 @@ ORDER BY dd.idDetalle]]>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement positionType="Float" x="24" y="26" width="190" height="15" uuid="38f52a59-97fe-4b47-9897-de1fa7077478"/>
+				<reportElement positionType="Float" x="24" y="26" width="190" height="15" isRemoveLineWhenBlank="true" uuid="38f52a59-97fe-4b47-9897-de1fa7077478">
+					<printWhenExpression><![CDATA[$P{mostrarImpuestos}]]></printWhenExpression>
+				</reportElement>
 				<textField isStretchWithOverflow="true" pattern="">
 					<reportElement positionType="Float" x="90" y="0" width="100" height="15" uuid="8e1faca6-a9f4-4db0-95ff-edeeb16fe8c8"/>
 					<textElement>
 						<font fontName="Arial" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format(($F{ivaGeneral} == null ? java.math.BigDecimal.ZERO : $F{ivaGeneral}).add($F{impoconsumoGeneral} == null ? java.math.BigDecimal.ZERO : $F{impoconsumoGeneral}))]]></textFieldExpression>
+					<textFieldExpression><![CDATA[new DecimalFormat($P{simbolo} + " #,##0." + $P{cadenaDecimales}).format($V{totalImpuestos})]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement positionType="Float" x="0" y="0" width="89" height="15" uuid="4e2fb616-95d8-4f1c-b6c3-8384f7da73fb"/>

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,6 +22,7 @@ public class ConfiguracionBuscadorCatalogo {
     private int columnaValor;
     private boolean presionarEnterAlSeleccionar = true;
     private RegistroCatalogo registro;
+    private Function<String, String> registroExterno;
 
     public ConfiguracionBuscadorCatalogo(String titulo, Supplier<DefaultTableModel> cargador) {
         this.titulo = titulo;
@@ -69,6 +71,11 @@ public class ConfiguracionBuscadorCatalogo {
         return this;
     }
 
+    public ConfiguracionBuscadorCatalogo registroExterno(Function<String, String> registroExterno) {
+        this.registroExterno = registroExterno;
+        return this;
+    }
+
     public String getTitulo() {
         return titulo;
     }
@@ -106,7 +113,15 @@ public class ConfiguracionBuscadorCatalogo {
     }
 
     public boolean permiteRegistrar() {
-        return registro != null;
+        return registro != null || registroExterno != null;
+    }
+
+    public boolean tieneRegistroExterno() {
+        return registroExterno != null;
+    }
+
+    public String registrarExterno(String texto) {
+        return registroExterno.apply(texto);
     }
 
     public static class FiltroColumna {

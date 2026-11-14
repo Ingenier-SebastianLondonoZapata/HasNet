@@ -9,13 +9,12 @@
 	<parameter name="orden" class="java.lang.String"/>
 	<parameter name="numOrden" class="java.lang.String"/>
 	<parameter name="tipoFact" class="java.lang.String"/>
-	<parameter name="informacionLegalClick" class="java.lang.String"/>
+	<parameter name="informacionLegalHasNet" class="java.lang.String"/>
 	<parameter name="simbolo" class="java.lang.String"/>
 	<parameter name="cadenaDecimales" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from oServicio where idFactura = $P{orden}]]>
+		<![CDATA[select * from oServicio where factura = $P{orden}]]>
 	</queryString>
-	<field name="idFactura" class="java.lang.String"/>
 	<field name="cliente" class="java.lang.String"/>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="direccion" class="java.lang.String"/>
@@ -181,7 +180,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{idFactura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{factura}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="470" y="117" width="77" height="14" uuid="a779f902-ea8a-4e47-82fb-e0cb4bd512ee"/>
@@ -295,7 +294,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcion2}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" pattern="#,##0.####">
 				<reportElement x="325" y="0" width="62" height="13" uuid="bf6d9608-8384-418b-a0e9-f6f8a6c780f5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
@@ -384,7 +383,7 @@
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{informacionLegalClick}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{informacionLegalHasNet}]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>

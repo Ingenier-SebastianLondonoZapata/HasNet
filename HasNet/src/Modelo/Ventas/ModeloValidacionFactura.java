@@ -1,7 +1,6 @@
 package Modelo.Ventas;
 
 import Modelo.Contactos.ModeloContacto;
-import javax.swing.JTable;
 
 public class ModeloValidacionFactura {
 
@@ -14,8 +13,6 @@ public class ModeloValidacionFactura {
     private boolean checkCupo = false;
     private String diasPlazo = "0";
     private String cupo = "0";
-    private boolean servicioAutomotor = false;
-    private JTable tblArticulos;
     private boolean facturaCredito = false;
     private String interes = "0";
     private boolean sisteCredito = false;
@@ -99,22 +96,6 @@ public class ModeloValidacionFactura {
 
     public void setCupo(String cupo) {
         this.cupo = cupo;
-    }
-
-    public boolean isServicioAutomotor() {
-        return servicioAutomotor;
-    }
-
-    public void setServicioAutomotor(boolean servicioAutomotor) {
-        this.servicioAutomotor = servicioAutomotor;
-    }
-
-    public JTable getTblArticulos() {
-        return tblArticulos;
-    }
-
-    public void setTblArticulos(JTable tblArticulos) {
-        this.tblArticulos = tblArticulos;
     }
 
     public boolean isFacturaCredito() {

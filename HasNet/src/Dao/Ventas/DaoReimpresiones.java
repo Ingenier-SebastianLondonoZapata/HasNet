@@ -33,7 +33,7 @@ public class DaoReimpresiones {
 
     public List<ModeloTablaDocumentos> obtenerDocumentos(List<TipoDocumento> tipos, boolean incluirDatosFactura, String condicion) {
         TipoDocumento tipo = tipos.get(0);
-        List<String> columnas = new ArrayList<>(Arrays.asList("idFactura", "factura", "fechaFactura", "vendedor", "totalGeneral", "terminal"));
+        List<String> columnas = new ArrayList<>(Arrays.asList("factura", "fechaFactura", "vendedor", "totalGeneral", "terminal"));
         if (incluirDatosFactura) {
             columnas.add("turno");
             columnas.add("modeloContable");
@@ -54,7 +54,6 @@ public class DaoReimpresiones {
         try (PreparedStatement stmt = conexion().prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 ModeloTablaDocumentos documento = new ModeloTablaDocumentos();
-                documento.setIdFactura(rs.getString("idFactura"));
                 documento.setFactura(rs.getString("factura"));
                 documento.setFechaFactura(rs.getString("fechaFactura"));
                 documento.setIdentificadorCliente(rs.getString("id"));

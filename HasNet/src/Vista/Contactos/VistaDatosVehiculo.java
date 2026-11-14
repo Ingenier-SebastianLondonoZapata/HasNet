@@ -50,6 +50,10 @@ public class VistaDatosVehiculo extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }
 
+    public void sugerirPlaca(String placa) {
+        txtPlaca.setText(placa == null ? "" : placa.trim().toUpperCase());
+    }
+
     public boolean isAceptado() {
         return aceptado;
     }

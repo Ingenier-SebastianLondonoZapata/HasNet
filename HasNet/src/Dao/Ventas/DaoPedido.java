@@ -7,7 +7,7 @@ public class DaoPedido {
 
     private final DaoDocumentos daoDocumentos = new DaoDocumentos();
 
-    public boolean modificarEstadoPedido(String estado, String idFacturaGenerada, String idDocumento) {
-        return daoDocumentos.actualizarEstadoPorFactura(TipoDocumento.PEDIDO, idDocumento, estado, idFacturaGenerada);
+    public boolean modificarEstadoPedido(String estado, String facturaGenerada, String documento) {
+        return daoDocumentos.actualizarEstadoPorFactura(TipoDocumento.PEDIDO, documento, estado, facturaGenerada);
     }
 }

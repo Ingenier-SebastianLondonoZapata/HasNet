@@ -831,14 +831,14 @@ public class SQL {
 
     public Object[][] getRegistrosFacturacionAutomatica(String filtro) {
         String colName[] = {
-            "idFactura", "cliente", "totalGeneral", "descripcion", "fechaUltimoPago", "cantFacturados", "preparacion", "inicio", "hasta", "cantIncremento"};
+            "factura", "cliente", "totalGeneral", "descripcion", "fechaUltimoPago", "cantFacturados", "preparacion", "inicio", "hasta", "cantIncremento"};
         String sql = "SELECT " + ConsultaDocumentos.columnas(TipoDocumento.CUENTA_COBRO, colName) + " FROM" + ConsultaDocumentos.ORIGEN
                 + "WHERE " + ConsultaDocumentos.filtroTipo(TipoDocumento.CUENTA_COBRO) + " AND (" + filtro + ") ORDER BY d.idDocumento, dd.linea";
         return consultarFilas(colName, sql);
     }
 
     public Object[][] getProductosCongeladaImei(String imei) {
-        String colName[] = {"idFactura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
+        String colName[] = {"factura", "cantidad", "lista", "descuento", "subtotal", "iva", "porcIva", "total"};
         return consultarFilas(colName, sentenciaProductosImei(Collections.singletonList(TipoDocumento.MESA), colName, false), imei + "%");
     }
 
@@ -864,9 +864,9 @@ public class SQL {
     }
 
     public Object[][] getDatosCongelada1() {
-        String colName[] = {"idFactura", "totalGeneral", "conseMesa", "turno"};
-        String sql = "SELECT d.idFactura AS idFactura, d.conseMesa AS conseMesa, d.totalGeneral AS totalGeneral, d.turno AS turno "
-                + "FROM bdDocumentos d WHERE " + ConsultaDocumentos.filtroTipo(TipoDocumento.MESA) + " ORDER BY d.idFactura";
+        String colName[] = {"factura", "totalGeneral", "conseMesa", "turno"};
+        String sql = "SELECT d.factura AS factura, d.conseMesa AS conseMesa, d.totalGeneral AS totalGeneral, d.turno AS turno "
+                + "FROM bdDocumentos d WHERE " + ConsultaDocumentos.filtroTipo(TipoDocumento.MESA) + " ORDER BY d.idDocumento";
         return consultarFilas(colName, sql);
     }
 
@@ -881,7 +881,7 @@ public class SQL {
         String[] colName = {"cantFacturados"};
         boolean[] cadena = {true};
         String sql = "SELECT d.cantFacturados AS cantFacturados FROM bdDocumentos d WHERE "
-                + ConsultaDocumentos.filtroTipo(TipoDocumento.CUENTA_COBRO) + " AND d.idFactura = ?";
+                + ConsultaDocumentos.filtroTipo(TipoDocumento.CUENTA_COBRO) + " AND d.factura = ?";
         return consultarRegistro(colName, cadena, sql, valor);
     }
 
@@ -889,7 +889,7 @@ public class SQL {
         String colName[] = {
             "producto", "cantidad", "descripcion", "plu", "cant2", "lista", "descuento", "preparacion", "conseMesa", "notaAnulacion", "rango",
             "porcDescuento", "detalle", "idProd", "impoconsumo", "porcImpo"};
-        return consultarFilas(colName, sentenciaDocumento(TipoDocumento.MESA, colName, "d.idFactura"), factura);
+        return consultarFilas(colName, sentenciaDocumento(TipoDocumento.MESA, colName, "d.factura"), factura);
     }
 
     public Object[][] getRemisiones(String id) {
@@ -1045,17 +1045,6 @@ public class SQL {
                 + " horas, dias, noches, full, observacion, estado, factura) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
         ok = Agregar_Registro(metodos.pasarDatosParqueaderoAutos(nodo), null, instruccion_sql);
         return ok;
-    }
-
-    public Object[][] getImpresionesPendientes() {
-        String colName[] = {
-            "idFactura", "factura2", "valor", "impresora", "titulo", "observaciones", "tipo"
-        };
-        String origen = " bdImpresionesSistema";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select idFactura, factura2, valor, impresora, titulo, "
-                + "observaciones, tipo from ").append(origen).toString());
-
-        return dtDatos;
     }
 
     public Object[][] getReporteDeImpuestos(String sql, String tabla, String tipoPorc) {
@@ -1252,14 +1241,6 @@ public class SQL {
         Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
     }
 
-    public boolean agregarDetalleOrdenServicio(String orden, String id, String nombreParte, Boolean inventario, String problemasDerecha, String problemasIzquierda, String observaciones, int num) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdDetalleOrdenServicio(ordenServicio, idParte, nombreParte, inventario, problemasDerecha, problemasIzquierda, observaciones, num)"
-                + " values(?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{orden, id, nombreParte, inventario, problemasDerecha, problemasIzquierda, observaciones}, new Object[]{num}, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarProductosRelacionados(String idProd, String prod, String nombre, String relacion, String nombreProd, String cant) {
         boolean ok = false;
         String instruccion_sql = "insert into bdRelacionados(idProducto, prod, nombre, relacion, nombreProd, cant)"
@@ -1320,16 +1301,6 @@ public class SQL {
         };
         String origen = "bdLavado";
         Object dtDatos[][] = getDatos(colName, origen, "select id, fechaRealizado, placa, nombre, servicio, empleado from " + origen + " where cliente = '" + cliente + "' AND liquidado = 'PENDIENTE'", " where cliente = '" + cliente + "' AND liquidado = 'PENDIENTE'");
-
-        return dtDatos;
-    }
-
-    public Object[][] getEstadoVehiculo(String orden) {
-        String colName[] = {
-            "idParte", "nombreParte", "problemasDerecha", "problemasIzquierda", "observaciones"
-        };
-        String origen = "bdDetalleOrdenServicio";
-        Object dtDatos[][] = getDatos(colName, origen, "select idParte, nombreParte, problemasDerecha, problemasIzquierda, observaciones from " + origen + " where ordenServicio = '" + orden + "' ", " where ordenServicio = '" + orden + "' ");
 
         return dtDatos;
     }
@@ -1558,13 +1529,6 @@ public class SQL {
         boolean ok = false;
         String instruccion_sql = "insert into bdRecordatoriosOrden(placa, idLista, nombreServicio, fechaRealizada, dias, proximaRevision, observaciones, usuario) values (?,?,?,?,?,?,?,?);";
         ok = Agregar_Registro(new Object[]{placa, idLista, nombreServicio, fechaRealizada, dias, proxima, observacion, usuario}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarProblema(String nombre) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdProblemas(problema) values (?);";
-        ok = Agregar_Registro(new Object[]{nombre}, null, instruccion_sql);
         return ok;
     }
 
@@ -3548,12 +3512,12 @@ public class SQL {
         String numero = "facturaTerm".equals(factura) ? "d.factura" : "cx.factura";
         String sql = "SELECT " + numero + " AS " + factura + "2, t.id AS cliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, "
                 + "d.fechaVencimiento AS fechaVencimiento, cx.valor AS valor, "
-                + ConsultaCartera.saldo("cx.valor", ConsultaCartera.abonosRealizadosInterno("d.idFactura")) + " AS saldo, "
+                + ConsultaCartera.saldo("cx.valor", ConsultaCartera.abonosRealizadosInterno("d.factura")) + " AS saldo, "
                 + ConsultaCartera.EDAD_DIAS + " AS edadCartera, "
                 + ConsultaCartera.estadoVencimiento("d.fechaAlerta", "d.fechaVencimiento") + " AS estadoVencimiento, "
                 + "cx.factura AS factura, d.terminal AS terminal, cx.cuotas AS cuotas "
                 + "FROM bdDocumentos d "
-                + "INNER JOIN bdcxc cx ON cx.factura = d.idFactura "
+                + "INNER JOIN bdcxc cx ON cx.factura = d.factura "
                 + "INNER JOIN bdterceros t ON t.idSistema = d.cliente "
                 + "WHERE d.tipoDocumento = 'separe' AND d.anulada = 0 AND cx.factura <> '0' AND cx.tipo = 'SEPARE' AND cx.estado = 'PEND' "
                 + "ORDER BY " + ConsultaCartera.orden("d.fechaAlerta", "d.fechaVencimiento");
@@ -3617,16 +3581,6 @@ public class SQL {
             }
         };
         return datos;
-    }
-
-    public Object[][] getRegistrosCuentaCobro1(String factura) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "ubicacion", "referencia", "estado", "plu", "cant2"};
-        String origen = " cuentaCobro";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, total, ubicacion,"
-                + " referencia,estado, plu, cant2 from cuentaCobro where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
-
-        return dtDatos;
     }
 
     //PEDIDOS
@@ -3865,24 +3819,15 @@ public class SQL {
 
 //    public boolean modificarEstadoProductosOrden(String id, String estado, String producto) {
 //        boolean ok = false;
-//        String instruccion_sql = "update bdOServicio1 set estadoGeneral=? where idFactura='" + id + "' and producto='" + producto + "';";
 //        ok = Actualizar_Registro(new Object[]{"", estado, producto}, null, instruccion_sql);
 //        return ok;
 //    }
 //    
 //    public boolean modificarEstadoProductosCotizacion(String id, String estado, String producto) {
 //        boolean ok = false;
-//        String instruccion_sql = "update bdOServicio1 set estadoGeneral=? where idFactura='" + id + "' and producto='" + producto + "';";
 //        ok = Actualizar_Registro(new Object[]{"", estado, producto}, null, instruccion_sql);
 //        return ok;
 //    }
-    public boolean modificarEstadosProcesos(String id, String estado, String producto, String tabla) {
-        boolean ok = false;
-        String instruccion_sql = "update " + tabla + " set estadoGeneral=? where idFactura='" + id + "' and producto ='" + producto + "';";
-        ok = Actualizar_Registro(new Object[]{"", estado}, null, instruccion_sql);
-        return ok;
-    }
-
     public Object[][] getTiposVehiculos() {
         String colName[] = {
             "nombre"
@@ -4178,13 +4123,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarArticulo(String nombre, String tipo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdArticulos (nombreArticulo, tipo, estado) values (?,?,?);";
-        ok = Agregar_Registro(new Object[]{nombre, tipo, "ACTIVO"}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean agregarServicio(String nombre, String dias) {
         boolean ok = false;
         String instruccion_sql = "insert into bdListadoOrden (nombre, dias) values (?,?);";
@@ -4241,17 +4179,6 @@ public class SQL {
         return datos;
     }
 
-    public Object[][] getRegistrosOrdenes(String factura) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "cliente", "vendedor",
-            "estado", "plu", "cant2", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "observacion", "estadoGeneral", "placaReal"};
-        String origen = " ordenServicio";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva, iva, "
-                + "total, cliente, vendedor, estado, plu, cant2, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, observacion, "
-                + "estadoGeneral, placaReal from ordenServicio where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosTraslados(String factura) {
         String colName[] = {
             "Id", "producto", "Descripcion", "cantidad", "lista", "imeil", "destino", "BodegaDestino", "lote"
@@ -4264,39 +4191,15 @@ public class SQL {
 
 //    public Object[][] getRegistrosOrdenes1(String factura) {
 //        String colName[] = {
-//            "idFactura", "producto", "descripcion", "cantidad", "lista", "rango", "terminos", "notaAnulacion", "diasGarantia", "cliente", "estadoGeneral"
 //        };
 //        String origen = " ordenServicio";
-//        Object dtDatos[][] = getDatos(colName, origen, "select  idFactura, producto, descripcion, cantidad, lista, rango, terminos, notaAnulacion, diasGarantia, cliente, estadoGeneral "
-//                + " from ordenServicio where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
 //        return dtDatos;
 //    }
-    public Object[][] getRegistrosOrdenes1() {
-        String colName[] = {
-            "idFactura", "producto", "descripcion", "cantidad", "lista", "rango", "terminos", "notaAnulacion", "estadoGeneral"
-        };
-        String origen = " ordenServicio";
-        Object dtDatos[][] = getDatos(colName, origen, "select  idFactura, producto, descripcion, cantidad, lista, rango, terminos, notaAnulacion, estadoGeneral"
-                + " from ordenServicio ", "");
-        return dtDatos;
-    }
-
     public Object[][] getExamenesRealizados(String consulta) {
         String colName[] = {
             "cup", "nombre", "precio"};
         String origen = " bdDetalleOrdenServicioLaboratorio";
         Object dtDatos[][] = getDatos(colName, origen, "select cup, nombre, precio from bdDetalleOrdenServicioLaboratorio where IdConsultaLaboratorio = '" + consulta + "'", " where IdConsultaLaboratorio = '" + consulta + "'");
-        return dtDatos;
-    }
-
-    public Object[][] getRegistrosPrePedidos(String factura) {
-        String colName[] = {
-            "producto", "descripcion", "lista", "cantidad", "subtotal", "porcDescuento", "descuento", "porcIva", "iva", "total", "ubicacion1",
-            "referencia", "estado", "plu", "cant2", "preparacion", "rango", "idProd"};
-        String origen = " pedidos";
-        Object dtDatos[][] = getDatos(colName, origen, "select producto, descripcion, lista, cantidad, subtotal, porcDescuento, descuento, porcIva,"
-                + " iva, total, ubicacion1, referencia,estado, plu, cant2, preparacion, rango, idProd from pedidos where idFactura = '" + factura + "'", " where idFactura = '" + factura + "'");
-
         return dtDatos;
     }
 
@@ -5073,22 +4976,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarOServicio(ndOServicio nodo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdOServicio(id, placa, tipo, modelo, numeroChasis, fechaCompra, marca, km, numeroMotor, color, problema)"
-                + " values(?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(metodos.pasarDatosOServicio(nodo), null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarOServicio(ndOServicio nodo) {
-        boolean ok = false;
-        String instruccion_sql = "update bdOServicio set placa=?, tipo=?, modelo=?, numeroChasis=?, fechaCompra=?, marca=?, km=?, numeroMotor=?, color=?, problema=? "
-                + " where id='" + nodo.getId() + "' ;";
-        ok = Actualizar_Registro(metodos.pasarDatosOServicio(nodo), null, instruccion_sql);
-        return ok;
-    }
-
     public DefaultTableModel getRegistrosTipoVehiculos() {
         String columNames[] = {"nombre"};
         String colName[] = {"Nombre"};
@@ -5444,7 +5331,7 @@ public class SQL {
 
     public Object[][] getVentasMovimientos(String prod, Boolean estado) {
         String colName[] = {
-            "idFactura", "cliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario", "notaAnulacion"};
+            "factura", "cliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario", "notaAnulacion"};
         return consultarFilas(colName, ConsultaVista.FACTURACION.consulta(ConsultaVista.FACTURACION.columnas(colName), "d.factura = ?", ""), prod);
     }
 
@@ -5458,20 +5345,20 @@ public class SQL {
 
     public Object[][] getSeparesMovimientos(String fact) {
         String colName[] = {
-            "idFactura", "IdCliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario"};
-        return consultarFilas(colName, "SELECT d.idFactura AS idFactura, t.id AS IdCliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, "
+            "factura", "IdCliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario"};
+        return consultarFilas(colName, "SELECT d.factura AS factura, t.id AS IdCliente, t.nombre AS nombre, d.fechaFactura AS fechaFactura, "
                 + "d.subtotalGeneral AS subtotalGeneral, d.descuentoGeneral AS descuentoGeneral, d.ivaGeneral AS ivaGeneral, "
                 + "d.totalGeneral AS totalGeneral, d.usuario AS usuario "
                 + "FROM bdDocumentos d INNER JOIN bdterceros t ON t.idSistema = d.cliente "
-                + "WHERE d.tipoDocumento = 'separe' AND d.idFactura = ?", fact);
+                + "WHERE d.tipoDocumento = 'separe' AND d.factura = ?", fact);
     }
 
     public Object[][] getCongeladasMovimientos(String fact) {
         String colName[] = {
-            "idFactura", "idCliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario"};
-        String instruccion_sql = "select idFactura, idCliente, nombre, fechaFactura, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, "
-                + "usuario from congeladas where idFactura = '" + fact + "' ";
-        Object dtDatos[][] = getDatos(colName, " congeladas ", instruccion_sql, " where idFactura = '" + fact + "' ");
+            "factura", "idCliente", "nombre", "fechaFactura", "subtotalGeneral", "descuentoGeneral", "ivaGeneral", "totalGeneral", "usuario"};
+        String instruccion_sql = "select factura, idCliente, nombre, fechaFactura, subtotalGeneral, descuentoGeneral, ivaGeneral, totalGeneral, "
+                + "usuario from congeladas where factura = '" + fact + "' ";
+        Object dtDatos[][] = getDatos(colName, " congeladas ", instruccion_sql, " where factura = '" + fact + "' ");
         return dtDatos;
     }
 
@@ -5675,9 +5562,9 @@ public class SQL {
     }
 
     public Object[][] getDatosCongelada() {
-        String colName[] = {"idFactura", "cliente", "totalGeneral", "conseMesa", "nombre", "telefono", "observacion", "producto"};
+        String colName[] = {"factura", "cliente", "totalGeneral", "conseMesa", "nombre", "telefono", "observacion", "producto"};
         String origen = " congeladas";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, cliente, totalGeneral, conseMesa, nombre, "
+        Object dtDatos[][] = getDatos(colName, origen, "select factura, cliente, totalGeneral, conseMesa, nombre, "
                 + "telefono, observacion, producto FROM congeladas", "");
         return dtDatos;
     }
@@ -5718,16 +5605,6 @@ public class SQL {
         String origen = " conCompras3";
         Object dtDatos[][] = getDatos(colName, origen, "select producto,cant,mes,ano,valor,valorSimplificado FROM conCompras3 where producto = '" + producto + "' ORDER BY ano,mes", " where producto = '" + producto + "'");
         System.out.println("select producto,cant,mes,ano,valor,valorSimplificado FROM conCompras3 where producto = '" + producto + "' ORDER BY ano,mes");
-        return dtDatos;
-    }
-
-    public Object[][] getArticulos(String tipo) {
-
-        String colName[] = {
-            "Id", "nombreArticulo", "tipo", "estado"
-        };
-        String origen = " bdArticulos";
-        Object dtDatos[][] = getDatos(colName, origen, "select Id, nombreArticulo, tipo, estado FROM bdArticulos where tipo = '" + tipo + "' ", " where tipo = '" + tipo + "'");
         return dtDatos;
     }
 
@@ -6745,20 +6622,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public ndOServicio getDatosOServicio(String id) {
-
-        String instruccion_sql = "select id, placa, tipo, modelo, numeroChasis, fechaCompra, marca, km, numeroMotor, color, problema from bdOServicio where id = '" + id + "'; ";
-        //columnas de la tabla que se
-        String[] colName = {"id", "placa", "tipo", "modelo", "numeroChasis", "fechaCompra", "marca", "km", "numeroMotor", "color", "problema"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true};
-        //se realiza la consulta
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-
-        ndOServicio nodo = metodos.llenarOServicio(data);
-
-        return nodo;
-    }
-
     public ndCxc getDatosCxc(String id) {
         String instruccion_sql = "select factura, tipo, estado, recibo, valor, plazo, vencimiento, usuario,terminal, cuotas, factura2 "
                 + " from bdCxc where factura = '" + id + "' AND (tipo='FACT' OR tipo='SEPARE'); ";
@@ -7358,34 +7221,6 @@ public class SQL {
 
             Class[] types = new Class[]{
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-        };
-        return datos;
-    }
-
-    public DefaultTableModel getRegistrosProblemas() {
-        String columNames[] = {
-            "Id", " ", "Sel"
-        };
-        String colName[] = {
-            "Id", "problema", "sel"
-        };
-        String origen = " bdProblemas ";
-        Object dtDatos2[][] = GetTabla(colName, origen, (new StringBuilder()).append("select Id, problema, false as sel from " + origen).toString(), new Integer[]{2});
-        DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 2) {
-                    return true;
-                }
-                return false;
-            }
-
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -8003,18 +7838,6 @@ public class SQL {
         return datos;
     }
 
-    public Object[][] getRegistrosPlantillas(String condicion) {
-        String colName[] = {
-            "idFactura", "idFactura", "fechaFactura", "cliente", "nombre", "vendedor", "totalGeneral", "terminal"
-        };
-
-        String origen = " plantillas ";
-        Object dtDatos[][] = getDatos(colName, origen, "SELECT idFactura, idFactura, fechaFactura, cliente, nombre, vendedor, totalGeneral, "
-                + "terminal FROM " + origen + " where anulada=false " + condicion + " GROUP BY idFactura ", " where anulada=false " + condicion);
-
-        return dtDatos;
-    }
-
     public Object[][] getRegistrosFacturasTerminales(String condicion) {
         String colName[] = {
             "id", "factura", "fechaFactura", "cliente", "nombre", "vendedor", "total"
@@ -8137,16 +7960,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public Object[][] getRegistrosOServicioBuscadorPlaca(String cliente) {
-        String colName[] = {
-            "idFactura", "fechaFactura", "placa", "usuario"
-        };
-        String origen = "buscadorOServicios";
-        Object dtDatos[][] = getDatos(colName, origen, "select idFactura, fechaFactura, placa, usuario from " + origen + " where placa LIKE '" + cliente + "%' ", " where placa LIKE '" + cliente + "%' ");
-
-        return dtDatos;
-    }
-
     //CONGELADAS   
     public Object[][] getProductosPrecompra(String ingreso, String usuario) {
 
@@ -8220,14 +8033,6 @@ public class SQL {
         String instruccion_sql = "insert into bdTrasladoDetal (traslado, codigo, descripcion, cant, valor, usuario, terminal, fecha, hora)"
                 + " values(?,?,?,?,?,?,?,?,?);";
         ok = Agregar_Registro(new Object[]{traslado, codigo, descripcion, cant, valor, usuario, terminal, fecha, hora}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean agregarImpresionFactura(String idFactura, String factura2, BigDecimal valor, String impresora, String titulo, String obv, String tipo) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdImpresionesSistema (idFactura, factura2, impresora, titulo, observaciones, tipo, valor)"
-                + " values(?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{idFactura, factura2, impresora, titulo, obv, tipo}, new Object[]{valor}, instruccion_sql);
         return ok;
     }
 
