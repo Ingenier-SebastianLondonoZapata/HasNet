@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
@@ -69,7 +70,12 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
     private VistaIngreso ingreso;
 
     private String claseBuscador = "";
+    private Consumer<List<String>> alSeleccionarVarios;
     int pos = 0;
+
+    public void setAlSeleccionarVarios(Consumer<List<String>> alSeleccionarVarios) {
+        this.alSeleccionarVarios = alSeleccionarVarios;
+    }
 
     public String getClaseBuscador() {
         return claseBuscador;
@@ -637,7 +643,14 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             opc = "";
         }
 
-        if (opc.equals("")) {
+        if (opc.equals("") && alSeleccionarVarios != null) {
+            List<String> ids = new ArrayList<>();
+            for (Object[] fila : cantidad) {
+                ids.add(String.valueOf(fila[0]));
+            }
+            this.dispose();
+            alSeleccionarVarios.accept(ids);
+        } else if (opc.equals("")) {
             instancias.setValorCampo(idSeleccionado);
             this.dispose();
             metodosGenerales.presionarEnter(instancias.getCampoActual());

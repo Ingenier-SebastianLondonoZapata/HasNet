@@ -206,7 +206,7 @@ ORDER BY c.numCuota;]]>
 					<subreportParameterExpression><![CDATA[$F{contrato}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["reportesCreditos/creditoProductosPos.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["Impresiones/ImpresionesCreditos/creditoProductosPos.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</title>

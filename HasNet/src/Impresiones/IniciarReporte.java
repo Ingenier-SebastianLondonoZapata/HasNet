@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
@@ -48,14 +49,18 @@ public class IniciarReporte extends controladorBarraProceso {
     @Override
     public void run() {
         try {
+            boolean excel = !imprimir && instancias.getRutaAguardar() != null;
+            if (excel) {
+                parametros.put(JRParameter.IS_IGNORE_PAGINATION, Boolean.TRUE);
+            }
             JasperPrint reporteGenerado = conBd
                     ? JasperFillManager.fillReport(reporte, parametros, conexion.getConnection())
                     : JasperFillManager.fillReport(reporte, parametros, new JREmptyDataSource());
 
             if (imprimir) {
                 JasperPrintManager.printReport(reporteGenerado, false);
-            } else if (instancias.getRutaAguardar() != null) {
-                exportarExcel();
+            } else if (excel) {
+                exportarExcel(reporteGenerado);
             } else {
                 JasperViewer.viewReport(reporteGenerado, false);
             }
@@ -68,8 +73,7 @@ public class IniciarReporte extends controladorBarraProceso {
         }
     }
 
-    private void exportarExcel() throws JRException {
-        JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, conexion.getConnection());
+    private void exportarExcel(JasperPrint jasperPrint) throws JRException {
         JExcelApiExporter exporter = new JExcelApiExporter();
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
         exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, false);

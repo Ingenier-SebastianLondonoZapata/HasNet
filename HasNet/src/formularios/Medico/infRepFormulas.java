@@ -462,7 +462,7 @@ public class infRepFormulas extends javax.swing.JPanel {
                 tipo = "xls";
                 instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte de formulas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
-            new GeneradorReporteMedico(instancias).ver_RepFormulas(sql, enca, tipo);
+            new GeneradorReporteMedico(instancias).ver_RepFormulas(sql, enca);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

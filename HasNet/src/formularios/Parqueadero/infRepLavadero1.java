@@ -705,7 +705,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
                 instancias.setRutaAguardar(metodos.obtenerRuta(this, "Reporte de ventas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
 
-            instancias.getReporte().verRepLavado(sql, enca, tipo);
+            instancias.getReporte().verRepLavado(sql, enca);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 

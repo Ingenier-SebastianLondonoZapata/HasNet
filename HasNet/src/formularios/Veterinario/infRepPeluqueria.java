@@ -567,7 +567,7 @@ public class infRepPeluqueria extends javax.swing.JInternalFrame {
                 tipo = "ReAgendada";
             }
 
-            instancias.getReporte().verRepPeluqueria(sql, enca, tipo);
+            instancias.getReporte().verRepPeluqueria(sql, enca);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

@@ -31,7 +31,6 @@ import java.util.List;
 import Dao.Documentos.ConsultaDocumentos;
 import Dao.Documentos.ConsultaCartera;
 import Dao.Documentos.ConsultaFactura;
-import Dao.Documentos.ConsultaReportes;
 import Dao.Documentos.ConsultaVista;
 import Dao.Documentos.DaoDocumentos;
 import Enums.TipoDocumento;
@@ -1047,13 +1046,6 @@ public class SQL {
         return ok;
     }
 
-    public Object[][] getReporteDeImpuestos(String sql, String tabla, String tipoPorc) {
-        String colName[] = {
-            "fechaFactura", tipoPorc, "SumaDeiva", "SumaDesubtotal", "SumaDedescuento", "SumaDetotal", "producto", "cliente", "vendedor"
-        };
-        return consultarTabla(colName, new Integer[]{}, ConsultaReportes.impuestos(sql, "repImpoVentas".equalsIgnoreCase(tabla)));
-    }
-
     public Object[][] getRegistrosParqueaderoAutos() {
         String colName[] = {
             "placa", "hIngreso", "fIngreso", "Descripcion", "observacion", "Id", "producto"
@@ -1082,15 +1074,6 @@ public class SQL {
         Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select placa, hIngreso, fIngreso, observacion from ").append(origen).toString());
 
         return dtDatos;
-    }
-
-    public boolean agregarRegistrosIvas(String porc, BigDecimal base, BigDecimal subtotal, BigDecimal total, BigDecimal totalIva,
-            BigDecimal descuento) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdGenerarIvas(porc, base, subtotal, total, totalIva, descuento)"
-                + " values(?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{porc}, new Object[]{base, subtotal, total, totalIva, descuento}, instruccion_sql);
-        return ok;
     }
 
     public boolean agregarGeneracionInterfase(String numDocumento, String comprobante, String detalle, String numero, String cuenta,
@@ -3749,38 +3732,6 @@ public class SQL {
         return dtDatos[0][0].toString();
     }
 
-    //CONSULTA QUE LLENA LA TABLA DE ALERTA CUMPLEAÑOS
-    public DefaultTableModel getRegistrosAlertasCumpleanos(String fecha) {
-
-        Object[] fecha2 = fecha.split("-");
-        String fechaCumpleanos = fecha2[2] + "/" + fecha2[1] + "/";
-
-        String columNames[] = {
-            "id", "Nombre", "Fecha Nac", "Teléfono", "Celular", "Dirección", "Se Gestionó"
-        };
-        String colName[] = {
-            "id", "nombre", "fecha", "telefono", "celular", "direccion", "gestiono"
-        };
-        String origen = " bdTerceros where fecha LIKE '" + fechaCumpleanos + "%' ";
-        Object dtDatos[][] = GetTabla(colName, origen, "select id, nombre, fecha, telefono, celular, direccion, false as gestiono from bdTerceros where fecha LIKE '" + fechaCumpleanos + "%' ", new Integer[]{6});
-
-        DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean[]{
-                false, false, false, false, false, false, true};
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        };
-        return datos;
-    }
 
     public DefaultTableModel getRegistrosProductos2(String condicion) {
         String columNames[] = {

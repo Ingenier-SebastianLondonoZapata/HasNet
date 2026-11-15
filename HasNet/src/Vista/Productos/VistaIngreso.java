@@ -6,6 +6,7 @@ import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.BarraProceso.jcThread;
 import Enums.EstadosDetalleProducto;
 import Impresiones.ImpresionesIngresos.GeneradorReporteIngreso;
+import Impresiones.ImpresionesProductos.GeneradorReporteProducto;
 import Dao.Configuraciones.DaoResoluciones;
 import Enums.TipoDocumento;
 import Enums.TipoProducto;
@@ -1713,7 +1714,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         if (tipoProceso.equals("ingreso")) {
             if (instancias.getConfiguraciones().isProductosDetallados()) {
-                instancias.getReporte().verIngresoDetalle(consecutivo);
+                new GeneradorReporteProducto(instancias).verIngresoDetalle(consecutivo);
             }
         }
     }//GEN-LAST:event_btnReimprimirActionPerformed

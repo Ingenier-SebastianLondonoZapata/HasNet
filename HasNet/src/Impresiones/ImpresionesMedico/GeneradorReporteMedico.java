@@ -14,11 +14,11 @@ public class GeneradorReporteMedico extends GeneradorReporteBase {
         super(instancias);
     }
 
-    public void ver_RepFormulas(String sql, String encabezado, String tipo) {
+    public void ver_RepFormulas(String sql, String encabezado) {
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("cliente", sql);
         parametros.put("encabezado", encabezado);
-        ejecutar("repFormulas" + tipo, parametros);
+        ejecutar("/Vista/Medico/Reportes/repFormulas", parametros);
     }
 
     public void verNotaEnfermeria(String numero, String info, String id, String tipo, String nombre, String sexo, String estado,
@@ -67,10 +67,10 @@ public class GeneradorReporteMedico extends GeneradorReporteBase {
         ejecutar("informePaciente", parametros);
     }
 
-    public void verRepMedico(String sql, String tipo) {
+    public void verRepMedico(String sql) {
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("cliente", sql);
-        ejecutar("repOrdenes" + tipo, parametros);
+        ejecutar("/Vista/Medico/Reportes/repOrdenes", parametros);
     }
 
     public void verHistoria(String dato, String edad) {

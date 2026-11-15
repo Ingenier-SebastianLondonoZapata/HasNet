@@ -85,8 +85,7 @@ public class CatalogoMenu {
     private List<OpcionMenu> terceros() {
         Opciones o = new Opciones();
         o.agregarSi(!esModuloSalud(), OpcionMenu.de("CONTACTOS", instancias::getClientes));
-        o.agregar(OpcionMenu.de("R.CONTACTOS", instancias::getRepClientes).titulo("REPORTE DE CONTACTOS"));
-        o.agregar(OpcionMenu.de("R.EMPLEADOS", instancias::getRepEmpleados).titulo("REPORTE DE EMPLEADOS"));
+        o.agregar(OpcionMenu.de("REPORTES", instancias::getReportesTerceros).titulo("REPORTES DE TERCEROS"));
         return o.lista();
     }
 
@@ -94,8 +93,7 @@ public class CatalogoMenu {
         Opciones o = new Opciones();
         o.agregar(OpcionMenu.de("GASTOS", instancias::getEgresos));
         o.agregar(OpcionMenu.de("CUADRE CAJA", instancias::getCaja).titulo("CUADRE DE CAJA"));
-        o.agregar(OpcionMenu.de("R.GASTOS", instancias::getRepEgresos).titulo("REPORTE DE GASTOS"));
-        o.agregar(OpcionMenu.de("REP.CUADRE", instancias::getRepCuadre).titulo("REPORTE DE CUADRE DE CAJA"));
+        o.agregar(OpcionMenu.de("REPORTES", instancias::getReportesTesoreria).titulo("REPORTES DE TESORERÍA"));
         return o.lista();
     }
 

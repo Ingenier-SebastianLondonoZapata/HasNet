@@ -209,56 +209,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         scrFormulario = new javax.swing.JScrollPane();
         pnlFormulario = new javax.swing.JPanel();
         tabPanel = new javax.swing.JTabbedPane();
-        pnlUsuarios = new javax.swing.JPanel();
-        tapPanelPermisos = new javax.swing.JTabbedPane();
-        pnlPermisosVentas = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        jScrollPane25 = new javax.swing.JScrollPane();
-        tblPermisosVentas = new javax.swing.JTable();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
-        jScrollPane26 = new javax.swing.JScrollPane();
-        tblPermisosProductos = new javax.swing.JTable();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel33 = new javax.swing.JLabel();
-        scrPermisosTerceros = new javax.swing.JScrollPane();
-        tblPermisosTerceros = new javax.swing.JTable();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel56 = new javax.swing.JLabel();
-        scrPermisosCartera = new javax.swing.JScrollPane();
-        tblPermisosCartera = new javax.swing.JTable();
-        jPanel8 = new javax.swing.JPanel();
-        jLabel35 = new javax.swing.JLabel();
-        scrPermisosTesoreria = new javax.swing.JScrollPane();
-        tblPermisosTesoreria = new javax.swing.JTable();
-        jPanel33 = new javax.swing.JPanel();
-        jLabel68 = new javax.swing.JLabel();
-        scrPermisosAgenda = new javax.swing.JScrollPane();
-        tblPermisosAgenda = new javax.swing.JTable();
-        jPanel38 = new javax.swing.JPanel();
-        jLabel51 = new javax.swing.JLabel();
-        scrPermisosMedico = new javax.swing.JScrollPane();
-        tblPermisosMedico = new javax.swing.JTable();
-        jPanel43 = new javax.swing.JPanel();
-        jLabel66 = new javax.swing.JLabel();
-        scrPermisosVeterinaria = new javax.swing.JScrollPane();
-        tblPermisosVeterinaria = new javax.swing.JTable();
-        pnlUsuario = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel111 = new javax.swing.JLabel();
-        jLabel112 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
-        txtUsuario = new javax.swing.JTextField();
-        txtContra = new javax.swing.JPasswordField();
-        txtContra2 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
-        lbFoto = new javax.swing.JLabel();
-        pnlBotones = new javax.swing.JPanel();
-        btnNuevo = new javax.swing.JButton();
-        btnActualizar = new javax.swing.JButton();
-        btnGuardar = new javax.swing.JButton();
-        btnListarUsuarios = new javax.swing.JButton();
         pnlDatosEmpresa = new javax.swing.JPanel();
         lbOtroConsecutivo = new javax.swing.JTextField();
         txtNumeroFactosElectronicas = new javax.swing.JTextField();
@@ -433,6 +383,56 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         rbtNoModificarValor = new javax.swing.JRadioButton();
         rbtSiModificarValor = new javax.swing.JRadioButton();
         jPanel52 = new javax.swing.JPanel();
+        pnlUsuarios = new javax.swing.JPanel();
+        tapPanelPermisos = new javax.swing.JTabbedPane();
+        pnlPermisosVentas = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane25 = new javax.swing.JScrollPane();
+        tblPermisosVentas = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
+        jScrollPane26 = new javax.swing.JScrollPane();
+        tblPermisosProductos = new javax.swing.JTable();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel33 = new javax.swing.JLabel();
+        scrPermisosTerceros = new javax.swing.JScrollPane();
+        tblPermisosTerceros = new javax.swing.JTable();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel56 = new javax.swing.JLabel();
+        scrPermisosCartera = new javax.swing.JScrollPane();
+        tblPermisosCartera = new javax.swing.JTable();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel35 = new javax.swing.JLabel();
+        scrPermisosTesoreria = new javax.swing.JScrollPane();
+        tblPermisosTesoreria = new javax.swing.JTable();
+        jPanel33 = new javax.swing.JPanel();
+        jLabel68 = new javax.swing.JLabel();
+        scrPermisosAgenda = new javax.swing.JScrollPane();
+        tblPermisosAgenda = new javax.swing.JTable();
+        jPanel38 = new javax.swing.JPanel();
+        jLabel51 = new javax.swing.JLabel();
+        scrPermisosMedico = new javax.swing.JScrollPane();
+        tblPermisosMedico = new javax.swing.JTable();
+        jPanel43 = new javax.swing.JPanel();
+        jLabel66 = new javax.swing.JLabel();
+        scrPermisosVeterinaria = new javax.swing.JScrollPane();
+        tblPermisosVeterinaria = new javax.swing.JTable();
+        pnlUsuario = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel111 = new javax.swing.JLabel();
+        jLabel112 = new javax.swing.JLabel();
+        txtNombre = new javax.swing.JTextField();
+        txtUsuario = new javax.swing.JTextField();
+        txtContra = new javax.swing.JPasswordField();
+        txtContra2 = new javax.swing.JPasswordField();
+        jButton1 = new javax.swing.JButton();
+        lbFoto = new javax.swing.JLabel();
+        pnlBotones = new javax.swing.JPanel();
+        btnNuevo = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        btnListarUsuarios = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         btnGuardarMaestra = new javax.swing.JButton();
 
@@ -461,745 +461,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         pnlFormulario.setBackground(new java.awt.Color(255, 255, 255));
 
         tabPanel.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-
-        pnlUsuarios.setBackground(new java.awt.Color(255, 255, 255));
-
-        tapPanelPermisos.setBackground(new java.awt.Color(255, 255, 255));
-        tapPanelPermisos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tapPanelPermisos.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        tapPanelPermisos.setOpaque(true);
-
-        pnlPermisosVentas.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel14.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel14.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Permisos ventas");
-        jLabel14.setOpaque(true);
-
-        tblPermisosVentas.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosVentas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosVentas.setRowHeight(24);
-        tblPermisosVentas.getTableHeader().setReorderingAllowed(false);
-        jScrollPane25.setViewportView(tblPermisosVentas);
-        if (tblPermisosVentas.getColumnModel().getColumnCount() > 0) {
-            tblPermisosVentas.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosVentas.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosVentas.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout pnlPermisosVentasLayout = new javax.swing.GroupLayout(pnlPermisosVentas);
-        pnlPermisosVentas.setLayout(pnlPermisosVentasLayout);
-        pnlPermisosVentasLayout.setHorizontalGroup(
-            pnlPermisosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPermisosVentasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlPermisosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane25, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        pnlPermisosVentasLayout.setVerticalGroup(
-            pnlPermisosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPermisosVentasLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane25, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Ventas", pnlPermisosVentas);
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel19.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel19.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("Permisos productos");
-        jLabel19.setOpaque(true);
-
-        tblPermisosProductos.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosProductos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosProductos.setRowHeight(24);
-        tblPermisosProductos.getTableHeader().setReorderingAllowed(false);
-        jScrollPane26.setViewportView(tblPermisosProductos);
-        if (tblPermisosProductos.getColumnModel().getColumnCount() > 0) {
-            tblPermisosProductos.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosProductos.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosProductos.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane26, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane26, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Productos", jPanel5);
-
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel33.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel33.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel33.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel33.setText("Permisos contactos");
-        jLabel33.setOpaque(true);
-
-        tblPermisosTerceros.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosTerceros.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosTerceros.setRowHeight(24);
-        tblPermisosTerceros.getTableHeader().setReorderingAllowed(false);
-        scrPermisosTerceros.setViewportView(tblPermisosTerceros);
-        if (tblPermisosTerceros.getColumnModel().getColumnCount() > 0) {
-            tblPermisosTerceros.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosTerceros.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosTerceros.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrPermisosTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(scrPermisosTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Contactos", jPanel6);
-
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel56.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel56.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel56.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel56.setText("Permisos cartera");
-        jLabel56.setOpaque(true);
-
-        tblPermisosCartera.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosCartera.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosCartera.setRowHeight(24);
-        tblPermisosCartera.getTableHeader().setReorderingAllowed(false);
-        scrPermisosCartera.setViewportView(tblPermisosCartera);
-        if (tblPermisosCartera.getColumnModel().getColumnCount() > 0) {
-            tblPermisosCartera.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosCartera.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosCartera.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel56, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrPermisosCartera, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(scrPermisosCartera, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Cartera", jPanel7);
-
-        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel35.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel35.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel35.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel35.setText("Permisos tesoreria");
-        jLabel35.setOpaque(true);
-
-        tblPermisosTesoreria.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosTesoreria.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosTesoreria.setRowHeight(24);
-        tblPermisosTesoreria.getTableHeader().setReorderingAllowed(false);
-        scrPermisosTesoreria.setViewportView(tblPermisosTesoreria);
-        if (tblPermisosTesoreria.getColumnModel().getColumnCount() > 0) {
-            tblPermisosTesoreria.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosTesoreria.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosTesoreria.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrPermisosTesoreria, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(scrPermisosTesoreria, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Tesoreria", jPanel8);
-
-        jPanel33.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel68.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel68.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel68.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel68.setText("Permisos agenda");
-        jLabel68.setOpaque(true);
-
-        tblPermisosAgenda.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosAgenda.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosAgenda.setRowHeight(24);
-        tblPermisosAgenda.getTableHeader().setReorderingAllowed(false);
-        scrPermisosAgenda.setViewportView(tblPermisosAgenda);
-        if (tblPermisosAgenda.getColumnModel().getColumnCount() > 0) {
-            tblPermisosAgenda.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosAgenda.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosAgenda.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout jPanel33Layout = new javax.swing.GroupLayout(jPanel33);
-        jPanel33.setLayout(jPanel33Layout);
-        jPanel33Layout.setHorizontalGroup(
-            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel33Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel68, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrPermisosAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel33Layout.setVerticalGroup(
-            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel33Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel68, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(scrPermisosAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Agenda", jPanel33);
-
-        jPanel38.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel51.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel51.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel51.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel51.setText("Permisos médico");
-        jLabel51.setOpaque(true);
-
-        tblPermisosMedico.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosMedico.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosMedico.setRowHeight(24);
-        tblPermisosMedico.getTableHeader().setReorderingAllowed(false);
-        scrPermisosMedico.setViewportView(tblPermisosMedico);
-        if (tblPermisosMedico.getColumnModel().getColumnCount() > 0) {
-            tblPermisosMedico.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosMedico.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosMedico.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout jPanel38Layout = new javax.swing.GroupLayout(jPanel38);
-        jPanel38.setLayout(jPanel38Layout);
-        jPanel38Layout.setHorizontalGroup(
-            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel38Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel51, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrPermisosMedico, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel38Layout.setVerticalGroup(
-            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel38Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(scrPermisosMedico, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Medico", jPanel38);
-
-        jPanel43.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel66.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel66.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel66.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel66.setText("Permisos veterinaria");
-        jLabel66.setOpaque(true);
-
-        tblPermisosVeterinaria.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblPermisosVeterinaria.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Acción", "Permiso"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblPermisosVeterinaria.setRowHeight(24);
-        tblPermisosVeterinaria.getTableHeader().setReorderingAllowed(false);
-        scrPermisosVeterinaria.setViewportView(tblPermisosVeterinaria);
-        if (tblPermisosVeterinaria.getColumnModel().getColumnCount() > 0) {
-            tblPermisosVeterinaria.getColumnModel().getColumn(1).setMinWidth(80);
-            tblPermisosVeterinaria.getColumnModel().getColumn(1).setPreferredWidth(80);
-            tblPermisosVeterinaria.getColumnModel().getColumn(1).setMaxWidth(80);
-        }
-
-        javax.swing.GroupLayout jPanel43Layout = new javax.swing.GroupLayout(jPanel43);
-        jPanel43.setLayout(jPanel43Layout);
-        jPanel43Layout.setHorizontalGroup(
-            jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel43Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel66, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrPermisosVeterinaria, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel43Layout.setVerticalGroup(
-            jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel43Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel66, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(scrPermisosVeterinaria, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tapPanelPermisos.addTab("Veterinaria", jPanel43);
-
-        pnlUsuario.setBackground(new java.awt.Color(255, 255, 255));
-        pnlUsuario.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Información del usuario", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 14))); // NOI18N
-
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("Usuario:");
-
-        jLabel5.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("Contraseña:");
-
-        jLabel111.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        jLabel111.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel111.setText("Confirmación:");
-
-        jLabel112.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        jLabel112.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel112.setText("Nombre:");
-
-        txtNombre.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtNombre.setName("Nombre"); // NOI18N
-
-        txtUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtUsuario.setName("Usuario"); // NOI18N
-        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtUsuarioKeyReleased(evt);
-            }
-        });
-
-        txtContra.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtContra.setName("Contraseña"); // NOI18N
-
-        txtContra2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        txtContra2.setName("Confirmar Contraseña"); // NOI18N
-
-        jButton1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        jButton1.setText("FIRMA");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        lbFoto.setBackground(new java.awt.Color(204, 204, 204));
-        lbFoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbFoto.setMaximumSize(new java.awt.Dimension(200, 200));
-        lbFoto.setMinimumSize(new java.awt.Dimension(200, 200));
-        lbFoto.setName(""); // NOI18N
-        lbFoto.setOpaque(true);
-        lbFoto.setPreferredSize(new java.awt.Dimension(200, 200));
-        lbFoto.setRequestFocusEnabled(false);
-
-        javax.swing.GroupLayout pnlUsuarioLayout = new javax.swing.GroupLayout(pnlUsuario);
-        pnlUsuario.setLayout(pnlUsuarioLayout);
-        pnlUsuarioLayout.setHorizontalGroup(
-            pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUsuarioLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnlUsuarioLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(lbFoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(pnlUsuarioLayout.createSequentialGroup()
-                        .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel112, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel111, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtContra2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtContra, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                                .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(txtUsuario, javax.swing.GroupLayout.Alignment.TRAILING)))))
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-        pnlUsuarioLayout.setVerticalGroup(
-            pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlUsuarioLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-                .addGap(4, 4, 4)
-                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel112, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-                .addGap(4, 4, 4)
-                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtContra, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-                .addGap(4, 4, 4)
-                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel111, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                    .addComponent(txtContra2, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10))
-        );
-
-        pnlBotones.setBackground(new java.awt.Color(255, 255, 255));
-
-        btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
-        btnNuevo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
-        btnNuevo.setText("LIMPIAR");
-        btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnNuevo.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevoActionPerformed(evt);
-            }
-        });
-
-        btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
-        btnActualizar.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
-        btnActualizar.setText("MODIFICAR");
-        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnActualizar.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
-            }
-        });
-
-        btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        btnGuardar.setText("GUARDAR");
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnGuardar.setMargin(new java.awt.Insets(2, 7, 2, 5));
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
-            }
-        });
-
-        btnListarUsuarios.setBackground(new java.awt.Color(247, 220, 111));
-        btnListarUsuarios.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnListarUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listado.png"))); // NOI18N
-        btnListarUsuarios.setText("LISTADO");
-        btnListarUsuarios.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnListarUsuarios.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnListarUsuarios.setMargin(new java.awt.Insets(2, 14, 2, 5));
-        btnListarUsuarios.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnListarUsuariosActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnlBotonesLayout = new javax.swing.GroupLayout(pnlBotones);
-        pnlBotones.setLayout(pnlBotonesLayout);
-        pnlBotonesLayout.setHorizontalGroup(
-            pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBotonesLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnNuevo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(5, 5, 5)
-                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnListarUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlBotonesLayout.setVerticalGroup(
-            pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlBotonesLayout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNuevo)
-                    .addComponent(btnGuardar))
-                .addGap(3, 3, 3)
-                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnListarUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(5, 5, 5))
-        );
-
-        javax.swing.GroupLayout pnlUsuariosLayout = new javax.swing.GroupLayout(pnlUsuarios);
-        pnlUsuarios.setLayout(pnlUsuariosLayout);
-        pnlUsuariosLayout.setHorizontalGroup(
-            pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlUsuariosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pnlUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tapPanelPermisos))
-        );
-        pnlUsuariosLayout.setVerticalGroup(
-            pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlUsuariosLayout.createSequentialGroup()
-                .addGroup(pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlUsuariosLayout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(pnlUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlUsuariosLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(tapPanelPermisos)))
-                .addGap(10, 10, 10))
-        );
-
-        tabPanel.addTab("Gestión de usuarios", pnlUsuarios);
 
         pnlDatosEmpresa.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -3609,6 +2870,745 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         );
 
         tabPanel.addTab("Parqueadero", pnlParqueadero);
+
+        pnlUsuarios.setBackground(new java.awt.Color(255, 255, 255));
+
+        tapPanelPermisos.setBackground(new java.awt.Color(255, 255, 255));
+        tapPanelPermisos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tapPanelPermisos.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        tapPanelPermisos.setOpaque(true);
+
+        pnlPermisosVentas.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel14.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel14.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel14.setText("Permisos ventas");
+        jLabel14.setOpaque(true);
+
+        tblPermisosVentas.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosVentas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosVentas.setRowHeight(24);
+        tblPermisosVentas.getTableHeader().setReorderingAllowed(false);
+        jScrollPane25.setViewportView(tblPermisosVentas);
+        if (tblPermisosVentas.getColumnModel().getColumnCount() > 0) {
+            tblPermisosVentas.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosVentas.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosVentas.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout pnlPermisosVentasLayout = new javax.swing.GroupLayout(pnlPermisosVentas);
+        pnlPermisosVentas.setLayout(pnlPermisosVentasLayout);
+        pnlPermisosVentasLayout.setHorizontalGroup(
+            pnlPermisosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPermisosVentasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPermisosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane25, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        pnlPermisosVentasLayout.setVerticalGroup(
+            pnlPermisosVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPermisosVentasLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane25, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Ventas", pnlPermisosVentas);
+
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel19.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel19.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel19.setText("Permisos productos");
+        jLabel19.setOpaque(true);
+
+        tblPermisosProductos.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosProductos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosProductos.setRowHeight(24);
+        tblPermisosProductos.getTableHeader().setReorderingAllowed(false);
+        jScrollPane26.setViewportView(tblPermisosProductos);
+        if (tblPermisosProductos.getColumnModel().getColumnCount() > 0) {
+            tblPermisosProductos.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosProductos.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosProductos.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane26, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane26, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Productos", jPanel5);
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel33.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel33.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel33.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel33.setText("Permisos contactos");
+        jLabel33.setOpaque(true);
+
+        tblPermisosTerceros.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosTerceros.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosTerceros.setRowHeight(24);
+        tblPermisosTerceros.getTableHeader().setReorderingAllowed(false);
+        scrPermisosTerceros.setViewportView(tblPermisosTerceros);
+        if (tblPermisosTerceros.getColumnModel().getColumnCount() > 0) {
+            tblPermisosTerceros.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosTerceros.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosTerceros.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scrPermisosTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrPermisosTerceros, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Contactos", jPanel6);
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel56.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel56.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel56.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel56.setText("Permisos cartera");
+        jLabel56.setOpaque(true);
+
+        tblPermisosCartera.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosCartera.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosCartera.setRowHeight(24);
+        tblPermisosCartera.getTableHeader().setReorderingAllowed(false);
+        scrPermisosCartera.setViewportView(tblPermisosCartera);
+        if (tblPermisosCartera.getColumnModel().getColumnCount() > 0) {
+            tblPermisosCartera.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosCartera.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosCartera.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel56, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scrPermisosCartera, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrPermisosCartera, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Cartera", jPanel7);
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel35.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel35.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel35.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel35.setText("Permisos tesoreria");
+        jLabel35.setOpaque(true);
+
+        tblPermisosTesoreria.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosTesoreria.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosTesoreria.setRowHeight(24);
+        tblPermisosTesoreria.getTableHeader().setReorderingAllowed(false);
+        scrPermisosTesoreria.setViewportView(tblPermisosTesoreria);
+        if (tblPermisosTesoreria.getColumnModel().getColumnCount() > 0) {
+            tblPermisosTesoreria.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosTesoreria.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosTesoreria.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scrPermisosTesoreria, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrPermisosTesoreria, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Tesoreria", jPanel8);
+
+        jPanel33.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel68.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel68.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel68.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel68.setText("Permisos agenda");
+        jLabel68.setOpaque(true);
+
+        tblPermisosAgenda.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosAgenda.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosAgenda.setRowHeight(24);
+        tblPermisosAgenda.getTableHeader().setReorderingAllowed(false);
+        scrPermisosAgenda.setViewportView(tblPermisosAgenda);
+        if (tblPermisosAgenda.getColumnModel().getColumnCount() > 0) {
+            tblPermisosAgenda.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosAgenda.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosAgenda.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout jPanel33Layout = new javax.swing.GroupLayout(jPanel33);
+        jPanel33.setLayout(jPanel33Layout);
+        jPanel33Layout.setHorizontalGroup(
+            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel33Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel68, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scrPermisosAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel33Layout.setVerticalGroup(
+            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel33Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel68, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrPermisosAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Agenda", jPanel33);
+
+        jPanel38.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel51.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel51.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel51.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel51.setText("Permisos médico");
+        jLabel51.setOpaque(true);
+
+        tblPermisosMedico.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosMedico.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosMedico.setRowHeight(24);
+        tblPermisosMedico.getTableHeader().setReorderingAllowed(false);
+        scrPermisosMedico.setViewportView(tblPermisosMedico);
+        if (tblPermisosMedico.getColumnModel().getColumnCount() > 0) {
+            tblPermisosMedico.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosMedico.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosMedico.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout jPanel38Layout = new javax.swing.GroupLayout(jPanel38);
+        jPanel38.setLayout(jPanel38Layout);
+        jPanel38Layout.setHorizontalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel38Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel51, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scrPermisosMedico, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel38Layout.setVerticalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel38Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrPermisosMedico, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Medico", jPanel38);
+
+        jPanel43.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel66.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel66.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel66.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel66.setText("Permisos veterinaria");
+        jLabel66.setOpaque(true);
+
+        tblPermisosVeterinaria.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblPermisosVeterinaria.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Acción", "Permiso"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPermisosVeterinaria.setRowHeight(24);
+        tblPermisosVeterinaria.getTableHeader().setReorderingAllowed(false);
+        scrPermisosVeterinaria.setViewportView(tblPermisosVeterinaria);
+        if (tblPermisosVeterinaria.getColumnModel().getColumnCount() > 0) {
+            tblPermisosVeterinaria.getColumnModel().getColumn(1).setMinWidth(80);
+            tblPermisosVeterinaria.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tblPermisosVeterinaria.getColumnModel().getColumn(1).setMaxWidth(80);
+        }
+
+        javax.swing.GroupLayout jPanel43Layout = new javax.swing.GroupLayout(jPanel43);
+        jPanel43.setLayout(jPanel43Layout);
+        jPanel43Layout.setHorizontalGroup(
+            jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel43Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel66, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scrPermisosVeterinaria, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel43Layout.setVerticalGroup(
+            jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel43Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel66, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrPermisosVeterinaria, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tapPanelPermisos.addTab("Veterinaria", jPanel43);
+
+        pnlUsuario.setBackground(new java.awt.Color(255, 255, 255));
+        pnlUsuario.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Información del usuario", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 14))); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Usuario:");
+
+        jLabel5.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setText("Contraseña:");
+
+        jLabel111.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        jLabel111.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel111.setText("Confirmación:");
+
+        jLabel112.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        jLabel112.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel112.setText("Nombre:");
+
+        txtNombre.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtNombre.setName("Nombre"); // NOI18N
+
+        txtUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtUsuario.setName("Usuario"); // NOI18N
+        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtUsuarioKeyReleased(evt);
+            }
+        });
+
+        txtContra.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtContra.setName("Contraseña"); // NOI18N
+
+        txtContra2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtContra2.setName("Confirmar Contraseña"); // NOI18N
+
+        jButton1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        jButton1.setText("FIRMA");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        lbFoto.setBackground(new java.awt.Color(204, 204, 204));
+        lbFoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbFoto.setMaximumSize(new java.awt.Dimension(200, 200));
+        lbFoto.setMinimumSize(new java.awt.Dimension(200, 200));
+        lbFoto.setName(""); // NOI18N
+        lbFoto.setOpaque(true);
+        lbFoto.setPreferredSize(new java.awt.Dimension(200, 200));
+        lbFoto.setRequestFocusEnabled(false);
+
+        javax.swing.GroupLayout pnlUsuarioLayout = new javax.swing.GroupLayout(pnlUsuario);
+        pnlUsuario.setLayout(pnlUsuarioLayout);
+        pnlUsuarioLayout.setHorizontalGroup(
+            pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUsuarioLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnlUsuarioLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(lbFoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlUsuarioLayout.createSequentialGroup()
+                        .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel112, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel111, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtContra2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtContra, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(txtUsuario, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
+        pnlUsuarioLayout.setVerticalGroup(
+            pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUsuarioLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                .addGap(4, 4, 4)
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel112, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                .addGap(4, 4, 4)
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtContra, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                .addGap(4, 4, 4)
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel111, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(txtContra2, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addComponent(lbFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10))
+        );
+
+        pnlBotones.setBackground(new java.awt.Color(255, 255, 255));
+
+        btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
+        btnNuevo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setText("LIMPIAR");
+        btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnNuevo.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
+
+        btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
+        btnActualizar.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setText("MODIFICAR");
+        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnActualizar.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+
+        btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
+        btnGuardar.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setText("GUARDAR");
+        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnGuardar.setMargin(new java.awt.Insets(2, 7, 2, 5));
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+
+        btnListarUsuarios.setBackground(new java.awt.Color(247, 220, 111));
+        btnListarUsuarios.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btnListarUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listado.png"))); // NOI18N
+        btnListarUsuarios.setText("LISTADO");
+        btnListarUsuarios.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnListarUsuarios.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnListarUsuarios.setMargin(new java.awt.Insets(2, 14, 2, 5));
+        btnListarUsuarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarUsuariosActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlBotonesLayout = new javax.swing.GroupLayout(pnlBotones);
+        pnlBotones.setLayout(pnlBotonesLayout);
+        pnlBotonesLayout.setHorizontalGroup(
+            pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBotonesLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnNuevo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(5, 5, 5)
+                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnListarUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBotonesLayout.setVerticalGroup(
+            pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBotonesLayout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNuevo)
+                    .addComponent(btnGuardar))
+                .addGap(3, 3, 3)
+                .addGroup(pnlBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnListarUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(5, 5, 5))
+        );
+
+        javax.swing.GroupLayout pnlUsuariosLayout = new javax.swing.GroupLayout(pnlUsuarios);
+        pnlUsuarios.setLayout(pnlUsuariosLayout);
+        pnlUsuariosLayout.setHorizontalGroup(
+            pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUsuariosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tapPanelPermisos))
+        );
+        pnlUsuariosLayout.setVerticalGroup(
+            pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUsuariosLayout.createSequentialGroup()
+                .addGroup(pnlUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlUsuariosLayout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(pnlUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlUsuariosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(tapPanelPermisos)))
+                .addGap(10, 10, 10))
+        );
+
+        tabPanel.addTab("Gestión de usuarios", pnlUsuarios);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 

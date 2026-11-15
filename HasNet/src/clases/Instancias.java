@@ -1,28 +1,9 @@
 package clases;
 
 import Vista.Contactos.VistaBuscadorContactos;
-import Vista.Productos.Reportes.VistaReporteProductos;
-import Vista.Productos.Reportes.VistaReporteInventario;
-import Vista.Productos.Reportes.VistaReportesProducto;
 import formularios.terceros.buscBodegas;
+import Vista.Reportes.VistaReportesModulo;
 
-import Vista.Cartera.Reportes.VistaReportesCartera;
-import Vista.Cartera.Reportes.VistaReporteAbonos;
-import Vista.Cartera.Reportes.VistaReporteCuentasPendientes;
-import Vista.Cartera.Reportes.VistaReportePagos;
-import Vista.Cartera.Reportes.VistaReportePagosPedientes;
-import Vista.Cartera.Reportes.VistaReporteNotasCredito;
-import Vista.Cartera.Reportes.VistaReporteNotasDebito;
-import Vista.ReportesVentas.VistaReporteCotizaciones;
-import Vista.ReportesVentas.VistaReportePlanSepares;
-import Vista.ReportesVentas.VistaReporteCuentasCobro;
-import Vista.ReportesVentas.VistaReporteIvas;
-import Vista.ReportesVentas.VistaReporteOrdenes;
-import Vista.ReportesVentas.VistaReporteCreditos;
-import Vista.ReportesVentas.VistaReporteAnuladas;
-import Vista.ReportesVentas.VistaReporteResumenDia;
-import Vista.ReportesVentas.VistaReporteVentas;
-import Vista.Ventas.VistaReportesVentas;
 import Vista.Cartera.VistaAbonos;
 import Vista.Cartera.VistaPagos;
 import Vista.Productos.VistaBuscadorProductos;
@@ -80,6 +61,52 @@ import javax.swing.JTextField;
 
 public class Instancias {
 
+    private VistaReportesModulo reportesVentas;
+    private VistaReportesModulo reportesProductos;
+    private VistaReportesModulo reportesTerceros;
+    private VistaReportesModulo reportesTesoreria;
+    private VistaReportesModulo reportesCartera;
+
+    public VistaReportesModulo getReportesVentas() {
+        return reportesVentas;
+    }
+
+    public void setReportesVentas(VistaReportesModulo reportesVentas) {
+        this.reportesVentas = reportesVentas;
+    }
+
+    public VistaReportesModulo getReportesProductos() {
+        return reportesProductos;
+    }
+
+    public void setReportesProductos(VistaReportesModulo reportesProductos) {
+        this.reportesProductos = reportesProductos;
+    }
+
+    public VistaReportesModulo getReportesTerceros() {
+        return reportesTerceros;
+    }
+
+    public void setReportesTerceros(VistaReportesModulo reportesTerceros) {
+        this.reportesTerceros = reportesTerceros;
+    }
+
+    public VistaReportesModulo getReportesTesoreria() {
+        return reportesTesoreria;
+    }
+
+    public void setReportesTesoreria(VistaReportesModulo reportesTesoreria) {
+        this.reportesTesoreria = reportesTesoreria;
+    }
+
+    public VistaReportesModulo getReportesCartera() {
+        return reportesCartera;
+    }
+
+    public void setReportesCartera(VistaReportesModulo reportesCartera) {
+        this.reportesCartera = reportesCartera;
+    }
+
     private static Instancias instancias;
 
     private buscBodegas buscBodegas;
@@ -132,9 +159,7 @@ public class Instancias {
     private VistaConfiguraciones maestra;
 
     //REPORTES SIN METODOS ESPECIALES 
-    private JInternalFrame repMascotas, invBodegas, repClientes, repBodegas, repEmpleados;
-    private VistaReporteAbonos repAbonos;
-    private VistaReportePagos repAbonosCxp;
+    private JInternalFrame repMascotas, invBodegas, repBodegas;
 
     private ndUsuario usuarioLog;
     private VistaDiseno costeo;
@@ -147,8 +172,6 @@ public class Instancias {
     private infRecordatorios recordatorios;
     private buscServicios buscServicios;
 
-    private infRepCuadre repCuadre;
-    private VistaReportesProducto reportesProductos;
     private String regimen;
     private String terminal;
 
@@ -167,10 +190,8 @@ public class Instancias {
     private String informacionEmpresaCompleto;
     private String informacionEmpresaReimpresion;
 
-    private infAlertasCumpleanos alertas;
 
 
-    private buscReporteFacturaPedido reporteFacturaPedido;
     private buscHorasAgenda buscarHorasAgenda;
 
     private infInfoAgenda infoAgenda;
@@ -195,7 +216,6 @@ public class Instancias {
 
     private buscPlantillaDeTextos buscPlantillaDeTextos;
     private JTextArea campoActualTextArea;
-    private infRepOrdenCompra repOrdenCompra;
 
     private buscUsuarios buscarUsuarios;
 
@@ -265,7 +285,6 @@ public class Instancias {
 
     /* INICIO VENTAS */
     private VistaPreparacion preparacion;
-    private VistaReporteResumenDia resumenDia;
     private infIndicadoresVentas indicadoresVentas;
     private infFacturarLotes facturarLotes;
     private VistaCuadreCaja caja;
@@ -274,31 +293,18 @@ public class Instancias {
     private creditos facturaCreditos;
     private factura factura;
     private infCuentaCobro cuentaCobro;
-    private VistaReportesVentas reportesVentas;
-    private VistaReporteCreditos repCreditos;
-    private VistaReportePlanSepares repSepares;
-    private VistaReporteVentas repVentas;
-    private VistaReporteIvas repIvas;
-    private VistaReporteCotizaciones repCotizas;
-    private VistaReporteCuentasCobro repCuentaCobro;
     private infMesa mesa;
-    private VistaReporteAnuladas repAnulas;
     private cotizacion cotiza;
     private VistaMesas mesas;
     private VistaDocumentos reimpresion;
 
     /* INICIO PRODUCTOS */
-    private VistaReporteInventario inventario;
     private VistaProductos productos;
     private VistaGrupos grupos;
     private VistaBuscadorProductos buscProductos;
     private buscSeriales buscSeriales;
     private infTrasladosInternos trasladosInternos;
-    private VistaReporteProductos repProductos;
-    private infRepIvasCompras repIvasCompras;
     private infMovimientosSeriales movimientosSeriales;
-    private infRepIngresos repIngresos;
-    private infRepAjustes repAjustes;
     private VistaAjusteInventario uInt;
     private VistaInventarioInicial inventarioInicial;
     private ingreso ingresos;
@@ -306,7 +312,6 @@ public class Instancias {
 
     /* INICIO TESORERIA */
     private VistaEgresos egresos;
-    private infRepEgresos repEgresos;
     private buscEgresos buscarEgresos;
 
     /* INICIO LABORATORIO */
@@ -358,14 +363,9 @@ public class Instancias {
 
     /* INICIO CARTERA */
     private String[] vendedores = new String[0];
-    private VistaReportesCartera reportesCartera;
     private VistaNotaCredito nc;
     private notaDebito nd;
-    private VistaReporteNotasCredito repNC;
-    private VistaReporteNotasDebito repND;
     private VistaPagos pagos;
-    private VistaReportePagosPedientes repPagos;
-    private VistaReporteCuentasPendientes repCartera;
     private VistaAbonos abonos;
 
     /* INICIO AGENDA */
@@ -488,14 +488,6 @@ public class Instancias {
 
     public void setNd(notaDebito nd) {
         this.nd = nd;
-    }
-
-    public VistaReporteCuentasCobro getRepCuentaCobro() {
-        return repCuentaCobro;
-    }
-
-    public void setRepCuentaCobro(VistaReporteCuentasCobro repCuentaCobro) {
-        this.repCuentaCobro = repCuentaCobro;
     }
 
     public Boolean getProcesoCompletoCascos() {
@@ -778,52 +770,12 @@ public class Instancias {
         this.cantCambio = cantCambio;
     }
 
-    public VistaReporteResumenDia getResumenDia() {
-        return resumenDia;
-    }
-
-    public void setResumenDia(VistaReporteResumenDia resumenDia) {
-        this.resumenDia = resumenDia;
-    }
-
-    public infRepIvasCompras getRepIvasCompras() {
-        return repIvasCompras;
-    }
-
-    public void setRepIvasCompras(infRepIvasCompras repIvasCompras) {
-        this.repIvasCompras = repIvasCompras;
-    }
-
     public Boolean getCancelarFactura() {
         return cancelarFactura;
     }
 
     public void setCancelarFactura(Boolean cancelarFactura) {
         this.cancelarFactura = cancelarFactura;
-    }
-
-    public VistaReporteIvas getRepIvas() {
-        return repIvas;
-    }
-
-    public void setRepIvas(VistaReporteIvas repIvas) {
-        this.repIvas = repIvas;
-    }
-
-    public VistaReporteInventario getInventario() {
-        return inventario;
-    }
-
-    public void setInventario(VistaReporteInventario inventario) {
-        this.inventario = inventario;
-    }
-
-    public infRepAjustes getRepAjustes() {
-        return repAjustes;
-    }
-
-    public void setRepAjustes(infRepAjustes repAjustes) {
-        this.repAjustes = repAjustes;
     }
 
     public infFacturarLotes getFacturarLotes() {
@@ -1174,14 +1126,6 @@ public class Instancias {
         return buscProductos;
     }
 
-    public VistaReportesProducto getReportesProductos() {
-        return reportesProductos;
-    }
-
-    public void setReportesProductos(VistaReportesProducto reportesProductos) {
-        this.reportesProductos = reportesProductos;
-    }
-
     public void setBusProductos(VistaBuscadorProductos buscProductos) {
         this.buscProductos = buscProductos;
     }
@@ -1196,14 +1140,6 @@ public class Instancias {
 
     public infMesa getMesa() {
         return mesa;
-    }
-
-    public VistaReporteProductos getRepProductos() {
-        return repProductos;
-    }
-
-    public void setRepProductos(VistaReporteProductos repProductos) {
-        this.repProductos = repProductos;
     }
 
     public VistaFactura getMesa1() {
@@ -1325,14 +1261,6 @@ public class Instancias {
 
     public void setBuscarEgresos(buscEgresos buscarEgresos) {
         this.buscarEgresos = buscarEgresos;
-    }
-
-    public infRepOrdenCompra getRepOrdenCompra() {
-        return repOrdenCompra;
-    }
-
-    public void setRepOrdenCompra(infRepOrdenCompra repOrdenCompra) {
-        this.repOrdenCompra = repOrdenCompra;
     }
 
     public JTextArea getCampoActualTextArea() {
@@ -1576,54 +1504,6 @@ public class Instancias {
         this.buscarHorasAgenda = buscarHorasAgenda;
     }
 
-    public VistaReporteAnuladas getRepAnulas() {
-        return repAnulas;
-    }
-
-    public void setRepAnulas(VistaReporteAnuladas repAnulas) {
-        this.repAnulas = repAnulas;
-    }
-
-    public VistaReporteCotizaciones getRepCotizas() {
-        return repCotizas;
-    }
-
-    public void setRepCotizas(VistaReporteCotizaciones repCotizas) {
-        this.repCotizas = repCotizas;
-    }
-
-    public VistaReporteVentas getRepVentas() {
-        return repVentas;
-    }
-
-    public void setRepVentas(VistaReporteVentas repVentas) {
-        this.repVentas = repVentas;
-    }
-
-    public VistaReporteCreditos getRepCreditos() {
-        return repCreditos;
-    }
-
-    public void setRepCreditos(VistaReporteCreditos repCreditos) {
-        this.repCreditos = repCreditos;
-    }
-
-    public VistaReportePlanSepares getRepSepares() {
-        return repSepares;
-    }
-
-    public void setRepSepares(VistaReportePlanSepares repSepares) {
-        this.repSepares = repSepares;
-    }
-
-    public VistaReportesVentas getReportesVentas() {
-        return reportesVentas;
-    }
-
-    public void setReportesVentas(VistaReportesVentas reportesVentas) {
-        this.reportesVentas = reportesVentas;
-    }
-
     public VistaFactura getPlanSepare() {
         return planSepare.getPnlFactura();
     }
@@ -1646,22 +1526,6 @@ public class Instancias {
 
     public void setPedido(pedido pedido) {
         this.pedido = pedido;
-    }
-
-    public buscReporteFacturaPedido getReporteFacturaPedido() {
-        return reporteFacturaPedido;
-    }
-
-    public void setReporteFacturaPedido(buscReporteFacturaPedido reporteFacturaPedido) {
-        this.reporteFacturaPedido = reporteFacturaPedido;
-    }
-
-    public infAlertasCumpleanos getAlertas() {
-        return alertas;
-    }
-
-    public void setAlertas(infAlertasCumpleanos alertas) {
-        this.alertas = alertas;
     }
 
     public BigDecimal getEfectivoDevuelta() {
@@ -1738,15 +1602,6 @@ public class Instancias {
         this.configuraciones = configuraciones;
     }
 
-    private VistaReporteOrdenes repOrden;
-
-    public VistaReporteOrdenes getRepOrden() {
-        return repOrden;
-    }
-
-    public void setRepOrden(VistaReporteOrdenes repOrden) {
-        this.repOrden = repOrden;
-    }
 
     public Vista.Ventas.ordenServicio getOrdenServicioContenedor() {
         return ordenServicio;
@@ -1824,28 +1679,12 @@ public class Instancias {
         this.pagos = pagos;
     }
 
-    public VistaReportePagosPedientes getRepPagos() {
-        return repPagos;
-    }
-
-    public void setRepPagos(VistaReportePagosPedientes repPagos) {
-        this.repPagos = repPagos;
-    }
-
     public void setDatosEmpresa(String dato, String legal, String pie, String datosCompletos, String datosReimpresion) {
         this.informacionEmpresa = dato;
         this.pie = pie;
         this.legal = legal;
         this.informacionEmpresaCompleto = datosCompletos;
         this.informacionEmpresaReimpresion = datosReimpresion;
-    }
-
-    public infRepCuadre getRepCuadre() {
-        return repCuadre;
-    }
-
-    public void setRepCuadre(infRepCuadre repCuadre) {
-        this.repCuadre = repCuadre;
     }
 
     public VistaMesas getMesas() {
@@ -1956,38 +1795,6 @@ public class Instancias {
         this.vendedores = vendedores;
     }
 
-    public VistaReportesCartera getReportesCartera() {
-        return reportesCartera;
-    }
-
-    public void setReportesCartera(VistaReportesCartera reportesCartera) {
-        this.reportesCartera = reportesCartera;
-    }
-
-    public VistaReporteCuentasPendientes getRepCartera() {
-        return repCartera;
-    }
-
-    public void setRepCartera(VistaReporteCuentasPendientes repCartera) {
-        this.repCartera = repCartera;
-    }
-
-    public VistaReportePagos getRepAbonosCxp() {
-        return repAbonosCxp;
-    }
-
-    public void setRepAbonosCxp(VistaReportePagos repAbonosCxp) {
-        this.repAbonosCxp = repAbonosCxp;
-    }
-
-    public VistaReporteAbonos getRepAbonos() {
-        return repAbonos;
-    }
-
-    public void setRepAbonos(VistaReporteAbonos repAbonos) {
-        this.repAbonos = repAbonos;
-    }
-
     public infProcesos getProcesos() {
         return procesos;
     }
@@ -1998,14 +1805,6 @@ public class Instancias {
 
     public ndUsuario getUsuarioLog() {
         return usuarioLog;
-    }
-
-    public infRepEgresos getRepEgresos() {
-        return repEgresos;
-    }
-
-    public void setRepEgresos(infRepEgresos repEgresos) {
-        this.repEgresos = repEgresos;
     }
 
     public void setUsuarioLog(ndUsuario usuarioLog) {
@@ -2036,14 +1835,6 @@ public class Instancias {
         this.caja = caja;
     }
 
-    public infRepIngresos getRepIngresos() {
-        return repIngresos;
-    }
-
-    public void setRepIngresos(infRepIngresos repIngresos) {
-        this.repIngresos = repIngresos;
-    }
-
     public JInternalFrame getInvBodegas() {
         return invBodegas;
     }
@@ -2052,28 +1843,12 @@ public class Instancias {
         this.invBodegas = invBodegas;
     }
 
-    public JInternalFrame getRepClientes() {
-        return repClientes;
-    }
-
-    public void setRepClientes(JInternalFrame repClientes) {
-        this.repClientes = repClientes;
-    }
-
     public JInternalFrame getRepBodegas() {
         return repBodegas;
     }
 
     public void setRepBodegas(JInternalFrame repBodegas) {
         this.repBodegas = repBodegas;
-    }
-
-    public JInternalFrame getRepEmpleados() {
-        return repEmpleados;
-    }
-
-    public void setRepEmpleados(JInternalFrame repEmpleados) {
-        this.repEmpleados = repEmpleados;
     }
 
     public VistaAjusteInventario getVistaAjusteInventario() {
@@ -2258,22 +2033,6 @@ public class Instancias {
 
     public String getValor() {
         return valor;
-    }
-
-    public VistaReporteNotasDebito getRepND() {
-        return repND;
-    }
-
-    public void setRepND(VistaReporteNotasDebito repND) {
-        this.repND = repND;
-    }
-
-    public VistaReporteNotasCredito getRepNC() {
-        return repNC;
-    }
-
-    public void setRepNC(VistaReporteNotasCredito repNC) {
-        this.repNC = repNC;
     }
 
     public void actualizarGrupos(Object[] dato) {

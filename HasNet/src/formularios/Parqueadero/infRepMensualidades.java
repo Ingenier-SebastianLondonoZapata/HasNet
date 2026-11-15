@@ -422,7 +422,7 @@ public class infRepMensualidades extends javax.swing.JInternalFrame {
             }
 
             System.out.println(sql);
-            instancias.getReporte().ver_RepMensualidades(sql, enca, tipo);
+            instancias.getReporte().ver_RepMensualidades(sql, enca);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 

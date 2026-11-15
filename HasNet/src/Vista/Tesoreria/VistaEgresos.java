@@ -2211,10 +2211,6 @@ public class VistaEgresos extends javax.swing.JInternalFrame {
                     ? "ACTIVO"
                     : "INACTIVO", i, 3);
         }
-
-        if (instancias.getRepEgresos() != null) {
-            instancias.getRepEgresos().actualizarConceptos();
-        }
     }
 
     private boolean validacionesCamposConceptos() {

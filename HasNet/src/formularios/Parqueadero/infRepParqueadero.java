@@ -583,7 +583,7 @@ public class infRepParqueadero extends javax.swing.JInternalFrame {
 //                tipo = "xls";
 //                instancias.setRutaAguardar(metodos.obtenerRuta(this, "Reporte de ventas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
 //            }
-            instancias.getReporte().ver_RepParqueadero(sql, enca, tipo);
+            instancias.getReporte().ver_RepParqueadero(sql, enca);
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 

@@ -437,7 +437,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnNuevo.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO        ");
-        btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnNuevo.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
@@ -450,7 +450,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR    ");
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnGuardar.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -463,7 +463,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnActualizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
         btnActualizar.setText("MODIFICAR  ");
-        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnActualizar.setEnabled(false);
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnActualizar.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -477,7 +477,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnEliminar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
         btnEliminar.setText("INACTIVAR ");
-        btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminar.setEnabled(false);
         btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnEliminar.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -491,7 +491,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnBuscTerceros.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cliente.png"))); // NOI18N
         btnBuscTerceros.setText("LISTADO      ");
-        btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBuscTerceros.setMargin(new java.awt.Insets(2, 14, 2, 5));
         btnBuscTerceros.addActionListener(new java.awt.event.ActionListener() {
@@ -504,7 +504,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnImprimir.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
         btnImprimir.setText("IMPRIMIR INFORME DEL PACIENTE");
-        btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnImprimir.setEnabled(false);
         btnImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnImprimir.setMargin(new java.awt.Insets(2, 14, 2, 5));
@@ -695,33 +695,32 @@ public class VistaContactos extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtEmail)
-                    .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                            .addGap(320, 320, 320)
-                            .addComponent(txtIdentificacion))
-                        .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                            .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                                    .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                                            .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(cmbCodigoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(cmbTipoIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGap(18, 18, 18)
-                                            .addComponent(lbTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                                            .addGap(185, 185, 185)
-                                            .addComponent(lbNit, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGap(5, 5, 5)
-                                    .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(cmbCiudad, 0, 167, Short.MAX_VALUE)
-                                        .addComponent(txtTelefono)))
-                                .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
-                                    .addComponent(cmbDepartamento, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(lbCiudad, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
+                        .addGap(320, 320, 320)
+                        .addComponent(txtIdentificacion))
+                    .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
+                        .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
+                                .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
+                                        .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(cmbCodigoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmbTipoIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(lbTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
+                                        .addGap(185, 185, 185)
+                                        .addComponent(lbNit, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(5, 5, 5)
+                                .addGroup(pnlDatosObligatoriosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cmbCiudad, 0, 167, Short.MAX_VALUE)
+                                    .addComponent(txtTelefono)))
+                            .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlDatosObligatoriosLayout.createSequentialGroup()
+                                .addComponent(cmbDepartamento, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(lbCiudad, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(10, 10, 10))
         );
         pnlDatosObligatoriosLayout.setVerticalGroup(
@@ -769,7 +768,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         lbPlazo6.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         lbPlazo6.setText("Cargo del empleado: *");
 
-        txtCargo.setBackground(new java.awt.Color(255, 204, 204));
+        txtCargo.setBackground(new java.awt.Color(220, 220, 220));
         txtCargo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtCargo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCargo.setName("Cargo"); // NOI18N
@@ -830,7 +829,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         lbCiudad2.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
         lbCiudad2.setText("EPS:");
 
-        txtEps.setBackground(new java.awt.Color(255, 204, 204));
+        txtEps.setBackground(new java.awt.Color(220, 220, 220));
         txtEps.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtEps.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtEps.setName("Ciudad"); // NOI18N
@@ -980,7 +979,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnAgregarVehiculo.setBackground(new java.awt.Color(46, 204, 113));
         btnAgregarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnAgregarVehiculo.setText("Agregar vehiculo");
-        btnAgregarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarVehiculo.setEnabled(false);
         btnAgregarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnAgregarVehiculo.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -993,7 +992,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnModificarVehiculo.setBackground(new java.awt.Color(93, 173, 226));
         btnModificarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnModificarVehiculo.setText("Modificar vehiculo");
-        btnModificarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnModificarVehiculo.setEnabled(false);
         btnModificarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnModificarVehiculo.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -1006,7 +1005,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnEliminarVehiculo.setBackground(new java.awt.Color(241, 148, 138));
         btnEliminarVehiculo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnEliminarVehiculo.setText("Eliminar vehiculo");
-        btnEliminarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminarVehiculo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminarVehiculo.setEnabled(false);
         btnEliminarVehiculo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnEliminarVehiculo.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -1091,7 +1090,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnAgregarBodega.setBackground(new java.awt.Color(46, 204, 113));
         btnAgregarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnAgregarBodega.setText("Agregar bodega");
-        btnAgregarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarBodega.setEnabled(false);
         btnAgregarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnAgregarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -1104,7 +1103,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnModificarBodega.setBackground(new java.awt.Color(93, 173, 226));
         btnModificarBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnModificarBodega.setText("Modificar bodega");
-        btnModificarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnModificarBodega.setEnabled(false);
         btnModificarBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnModificarBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -1117,7 +1116,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnCambiarEstadoBodega.setBackground(new java.awt.Color(241, 148, 138));
         btnCambiarEstadoBodega.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         btnCambiarEstadoBodega.setText("Inactivar bodega");
-        btnCambiarEstadoBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCambiarEstadoBodega.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnCambiarEstadoBodega.setEnabled(false);
         btnCambiarEstadoBodega.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnCambiarEstadoBodega.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -1456,7 +1455,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         lbEmail2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         lbEmail2.setText("Ocupación:");
 
-        txtOcupacion.setBackground(new java.awt.Color(255, 204, 204));
+        txtOcupacion.setBackground(new java.awt.Color(220, 220, 220));
         txtOcupacion.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtOcupacion.setName("Ocupación"); // NOI18N
         txtOcupacion.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1470,7 +1469,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnBuscTerceros1.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
         btnBuscTerceros1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBuscTerceros1.setMargin(new java.awt.Insets(2, 7, 2, 5));
         btnBuscTerceros1.addActionListener(new java.awt.event.ActionListener() {
@@ -1595,14 +1594,13 @@ public class VistaContactos extends javax.swing.JInternalFrame {
             .addGroup(pnlOtrosDatosLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(chkNoResponsableIVA, javax.swing.GroupLayout.PREFERRED_SIZE, 28, Short.MAX_VALUE)
-                    .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(lbBarrio1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addComponent(cmbRut, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addComponent(lbCiudad3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addComponent(cmbNaturaleza, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addComponent(lbDepartamento3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
-                    .addComponent(chkSiResponsableIVA, javax.swing.GroupLayout.PREFERRED_SIZE, 28, Short.MAX_VALUE))
+                    .addComponent(chkNoResponsableIVA, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lbBarrio1, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(cmbRut, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lbCiudad3, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(cmbNaturaleza, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lbDepartamento3, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(chkSiResponsableIVA, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                 .addGap(3, 3, 3)
                 .addGroup(pnlOtrosDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(dtFechaNacimiento, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
@@ -1711,7 +1709,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         lbEmail3.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         lbEmail3.setText("EPS: *");
 
-        txtCodigoEps.setBackground(new java.awt.Color(255, 204, 204));
+        txtCodigoEps.setBackground(new java.awt.Color(220, 220, 220));
         txtCodigoEps.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtCodigoEps.setName("Empresa"); // NOI18N
         txtCodigoEps.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1808,7 +1806,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         lbCiudad15.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         lbCiudad15.setText("Religión:");
 
-        txtConvenio.setBackground(new java.awt.Color(255, 204, 204));
+        txtConvenio.setBackground(new java.awt.Color(220, 220, 220));
         txtConvenio.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtConvenio.setName("Convenio"); // NOI18N
         txtConvenio.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -2064,7 +2062,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnImagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/webcam.png"))); // NOI18N
         btnImagen.setText("AGREGAR IMAGEN    ");
         btnImagen.setToolTipText("");
-        btnImagen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnImagen.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnImagen.setEnabled(false);
         btnImagen.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnImagen.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -3138,9 +3136,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         cmbDepartamento.setSelectedItem(DEPARTAMENTO_PREDETERMINADO);
         dtFechaNacimiento.setCalendar(null);
-        dtFechaIngreso.setCalendar(null);
-        dtFechaRetiro.setCalendar(null);
-        rdNoAgendar.setSelected(true);
+        limpiarDatosEmpleado();
         tabDatosTerceros.setSelectedIndex(0);
         txtIdentificacion.requestFocus();
         btnActualizar.setEnabled(false);
@@ -3158,6 +3154,20 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         txtIdSistema.setText(daoTerceros.obtenerSiguienteIdSistema());
         txtCupo.setText(this.simbolo + " 0");
         actualizarPestanaEmpleado();
+    }
+
+    private void limpiarDatosEmpleado() {
+        txtCargo.setText("");
+        txtEps.setText("");
+        txtArl.setText("");
+        txtccf.setText("");
+        txtSalario.setText(this.simbolo + " 0");
+        dtFechaIngreso.setCalendar(null);
+        dtFechaRetiro.setCalendar(null);
+        if (cmbUsuarios.getItemCount() > 0) {
+            cmbUsuarios.setSelectedIndex(0);
+        }
+        rdNoAgendar.setSelected(true);
     }
 
     private ModeloContacto crearContactoNuevo() {

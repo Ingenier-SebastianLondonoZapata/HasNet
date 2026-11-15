@@ -867,7 +867,7 @@
                         <Component class="javax.swing.JTextField" name="txtCargo">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                              <Color blue="dc" green="dc" red="dc" type="rgb"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Century Gothic" size="14" style="0"/>
@@ -992,7 +992,7 @@
                         <Component class="javax.swing.JTextField" name="txtEps">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                              <Color blue="dc" green="dc" red="dc" type="rgb"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Century Gothic" size="14" style="0"/>
@@ -2056,7 +2056,7 @@
                         <Component class="javax.swing.JTextField" name="txtOcupacion">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                              <Color blue="dc" green="dc" red="dc" type="rgb"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Century Gothic" size="14" style="0"/>
@@ -2549,7 +2549,7 @@
                             <Component class="javax.swing.JTextField" name="txtCodigoEps">
                               <Properties>
                                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                                  <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                                  <Color blue="dc" green="dc" red="dc" type="rgb"/>
                                 </Property>
                                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                                   <Font name="Arial" size="14" style="0"/>
@@ -2757,7 +2757,7 @@
                             <Component class="javax.swing.JTextField" name="txtConvenio">
                               <Properties>
                                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                                  <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                                  <Color blue="dc" green="dc" red="dc" type="rgb"/>
                                 </Property>
                                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                                   <Font name="Century Gothic" size="14" style="0"/>

@@ -640,7 +640,7 @@ public class infRepOrdenesMedicas extends javax.swing.JPanel {
                 tipo = "xls";
                 instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte de ordenes " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
-            new GeneradorReporteMedico(instancias).verRepMedico(sql, tipo);
+            new GeneradorReporteMedico(instancias).verRepMedico(sql);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

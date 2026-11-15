@@ -672,7 +672,7 @@ public class infRepAgenda extends javax.swing.JInternalFrame {
                 tipo = tipo + "xls";
             }
 
-            instancias.getReporte().verRepCitasMedicas(sql, enca, tipo, medico);
+            instancias.getReporte().verRepCitasMedicas(sql, enca, medico);
 
         }
     }//GEN-LAST:event_jButton4ActionPerformed

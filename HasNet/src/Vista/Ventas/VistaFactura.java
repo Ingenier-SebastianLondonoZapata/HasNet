@@ -163,6 +163,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private final boolean esFacturaCredito;
     private List<LineaProducto> lineasOriginales = new ArrayList<>();
+    private ModeloDocumento documentoCargado;
 
     private boolean focusDiasPlazo = false, cambioMesa = false, plu = false, mesaCongelada = false,
             saltarPasosFactura = false, solicitudPermiso = false, pasandoACongelada = false,
@@ -685,6 +686,10 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     public void actualizarConsecutivo(int fila) {
         String prefijo = "", consecutivo = "";
+
+        if (documentoCargado != null) {
+            return;
+        }
 
         if (null != tipoProceso) {
             switch (tipoProceso) {
@@ -3332,6 +3337,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private void reiniciarEstadoInterno() {
         this.lineasOriginales = new ArrayList<>();
+        this.documentoCargado = null;
         this.saltarPasosFactura = false;
         this.fechaFacturaAutomatica = "";
         this.loteCuentasCobro = "";
@@ -3963,6 +3969,16 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
 
         String prefijoGeneral = TipoDocumento.obtenerPrefijoGeneralPorValor(this.tipoProceso);
+        boolean documentoConModificacion = this.tipoProceso.equals(TipoDocumento.COTIZACION.getValor())
+                || this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor())
+                || this.tipoProceso.equals(TipoDocumento.ORDER_SERVICIO.getValor());
+        if (documentoConModificacion && documentoCargado == null) {
+            ControladorAlertas.alertFail("Cargue nuevamente el documento que desea modificar");
+            return;
+        }
+        if (documentoCargado != null) {
+            lbNoFactura.setText(documentoCargado.getFactura().substring(prefijoGeneral.length() + 1));
+        }
         String factura = prefijoGeneral + "-" + lbNoFactura.getText();
         String por = cmbRtf.getSelectedIndex() == 0 ? "0" : cmbRtf.getSelectedItem().toString();
         String vendedor = cmbVendedor.getSelectedItem().toString().equals("Seleccione un vendedor") ? "" : cmbVendedor.getSelectedItem().toString();
@@ -3981,22 +3997,25 @@ public final class VistaFactura extends javax.swing.JPanel {
                 tipoComprobante, factura, factura, prefijoGeneral, vendedor,
                 congelada, turno, fechaFactura, copago, por);
 
-        if (this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor())) {
-            try {
-                revertirInventarioOriginal();
-            } catch (SQLException ex) {
-                Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
-                ControladorAlertas.alertFail("Error al revertir el inventario original del pedido");
+        if (this.tipoProceso.equals(TipoDocumento.COTIZACION.getValor())) {
+            if (!agregarMovimientoCotizacion(movimiento, true)) {
                 return;
             }
 
+            ControladorAlertas.alertSuccess("Cotización modificada con éxito");
+            limpiar(true);
+
+        } else if (this.tipoProceso.equals(TipoDocumento.PEDIDO.getValor())) {
             instancias.getSql().eliminarComanda(factura, "factura");
 
             if (!agregarMovimientoPedido(movimiento, true)) {
                 return;
             }
 
-            actualizarInventarioDocumento(TipoDocumento.PEDIDO);
+            if (!reemplazarInventarioDocumento(TipoDocumento.PEDIDO, "del pedido")) {
+                return;
+            }
+
             if (!saltarPasosFactura) {
                 ControladorAlertas.alertSuccess("Pedido modificado con éxito");
             }
@@ -4004,19 +4023,14 @@ public final class VistaFactura extends javax.swing.JPanel {
             limpiar(true);
 
         } else if (this.tipoProceso.equals(TipoDocumento.ORDER_SERVICIO.getValor())) {
-            try {
-                revertirInventarioOriginal();
-            } catch (SQLException ex) {
-                Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
-                ControladorAlertas.alertFail("Error al revertir el inventario original de la orden");
-                return;
-            }
-
             if (!agregarMovimientoOrdenServicio(movimiento, true)) {
                 return;
             }
 
-            actualizarInventarioDocumento(TipoDocumento.ORDER_SERVICIO);
+            if (!reemplazarInventarioDocumento(TipoDocumento.ORDER_SERVICIO, "de la orden")) {
+                return;
+            }
+
             ControladorAlertas.alertSuccess("Orden modificada con éxito");
             limpiar(true);
 
@@ -4788,16 +4802,64 @@ public final class VistaFactura extends javax.swing.JPanel {
         this.lineasOriginales = doc.getLineas();
         recalcularInventarioTabla();
 
-        String estadoGeneral = doc.getCabecera().getEstadoGeneral();
-        if (EstadosTipoDocumento.FACTURADA.getNombre().equals(estadoGeneral)) {
-            ControladorAlertas.alert("El pedido ya ha sido facturado.");
-            txtCargar.setText("");
-        } else {
-            txtCargar.setEnabled(false);
-            btnGuardar.setVisible(false);
-            btnModificar.setEnabled(true);
-            btnModificar.setVisible(true);
-            txtCargar.setText(idPedido.replace("PEDIDO-", ""));
+        prepararModificacion(TipoDocumento.PEDIDO, idPedido, "PEDIDO-", doc.getCabecera().getEstadoGeneral());
+    }
+
+    private boolean prepararModificacion(TipoDocumento tipo, String idDocumento, String prefijo, String estadoCabecera) {
+        String numero = idDocumento.substring(prefijo.length());
+        documentoCargado = daoDocumentos.obtenerPorFactura(tipo, idDocumento);
+        lbNoFactura.setText(numero);
+        txtCargar.setText(numero);
+        txtCargar.setEnabled(false);
+        btnGuardar.setVisible(false);
+        btnReImprimir.setEnabled(true);
+
+        String motivo = motivoNoModificable(estadoCabecera);
+        if (motivo != null) {
+            ControladorAlertas.alert(motivo);
+            activarCampos(false);
+            btnModificar.setEnabled(false);
+            btnModificar.setVisible(false);
+            return false;
+        }
+
+        activarCampos(true);
+        btnModificar.setEnabled(true);
+        btnModificar.setVisible(true);
+        return true;
+    }
+
+    private String motivoNoModificable(String estadoCabecera) {
+        String estado = estadoCabecera;
+        if (documentoCargado != null) {
+            if (documentoCargado.isAnulada()) {
+                return "El documento está anulado y no se puede modificar.";
+            }
+            if (documentoCargado.getEstadoGeneral() != null) {
+                estado = documentoCargado.getEstadoGeneral();
+            }
+        }
+        if (estado == null || estado.trim().isEmpty() || EstadosTipoDocumento.PENDIENTE.getNombre().equalsIgnoreCase(estado.trim())) {
+            return null;
+        }
+        if (EstadosTipoDocumento.ANULADA.getNombre().equalsIgnoreCase(estado.trim())) {
+            return "El documento está anulado y no se puede modificar.";
+        }
+        if (EstadosTipoDocumento.FACTURADA.getNombre().equalsIgnoreCase(estado.trim()) || "REALIZADO".equalsIgnoreCase(estado.trim())) {
+            return "El documento ya fue facturado y no se puede modificar.";
+        }
+        return "Solo se pueden modificar documentos pendientes (estado actual: " + estado + ").";
+    }
+
+    private void conservarFechaOriginal(ModeloDocumento documento, boolean reemplazar) {
+        if (!reemplazar || documentoCargado == null || !documento.getFactura().equals(documentoCargado.getFactura())) {
+            return;
+        }
+        if (documentoCargado.getFechaFactura() != null) {
+            documento.setFechaFactura(documentoCargado.getFechaFactura());
+        }
+        if (documentoCargado.getHoraFactura() != null) {
+            documento.setHoraFactura(documentoCargado.getHoraFactura());
         }
     }
 
@@ -4813,16 +4875,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         cargarLineasCotizacion(doc.getLineas());
         mostrarResumenDocumento(doc.getCabecera(), true);
 
-        if (EstadosTipoDocumento.FACTURADA.getNombre().equals(doc.getCabecera().getEstadoGeneral())) {
-            ControladorAlertas.alert("La cotización ya ha sido facturada.");
-            txtCargar.setText("");
-        } else {
-            txtCargar.setEnabled(false);
-            btnGuardar.setVisible(false);
-            btnModificar.setEnabled(true);
-            btnModificar.setVisible(true);
-            txtCargar.setText(idCotizacion.replace("COTI-", ""));
-        }
+        prepararModificacion(TipoDocumento.COTIZACION, idCotizacion, "COTI-", doc.getCabecera().getEstadoGeneral());
     }
 
     private void cargarMovimientoOrdenServicio() {
@@ -4844,25 +4897,12 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         txtNombre.requestFocus();
 
-        if ("REALIZADO".equals(doc.getCabecera().getEstadoGeneral())) {
-            ControladorAlertas.alert("Esta orden ya ha sido facturada y no se puede modificar.");
-            activarCampos(false);
-            btnModificar.setEnabled(false);
-            btnReImprimir.setEnabled(true);
-        } else {
-            activarCampos(true);
-            btnModificar.setEnabled(true);
-            btnReImprimir.setEnabled(true);
-        }
-
-        lbNoFactura.setText(orden.substring(6));
-
         String placaReal = doc.getCabecera().getPlacaReal();
         if (placaReal != null) {
             txtPlaca1.setText(placaReal);
         }
 
-        txtCargar.setText(orden.replace("OSERV-", ""));
+        prepararModificacion(TipoDocumento.ORDER_SERVICIO, orden, "OSERV-", doc.getCabecera().getEstadoGeneral());
     }
 
     private void cargarMovimientoFactura() {
@@ -5366,7 +5406,7 @@ public final class VistaFactura extends javax.swing.JPanel {
                 actualizarInventarioDocumento(TipoDocumento.NOTA_DEBITO);
                 return true;
             case "cotizacion":
-                return agregarMovimientoCotizacion(movimiento);
+                return agregarMovimientoCotizacion(movimiento, false);
             case "orden":
                 if (!agregarMovimientoOrdenServicio(movimiento, false)) {
                     return false;
@@ -7731,6 +7771,18 @@ public final class VistaFactura extends javax.swing.JPanel {
         return movimientos;
     }
 
+    private boolean reemplazarInventarioDocumento(TipoDocumento tipoDocumento, String descripcion) {
+        try {
+            revertirInventarioOriginal();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaFactura.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("El documento se guardó, pero hubo un error al revertir el inventario original " + descripcion);
+            return false;
+        }
+        actualizarInventarioDocumento(tipoDocumento);
+        return true;
+    }
+
     private void actualizarInventarioDocumento(TipoDocumento tipoDocumento) {
         InformacionAdicional informacionAdicional = new InformacionAdicional(false, false, false);
         String idBodega = Bodegas.predeterminada();
@@ -7903,8 +7955,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         }
     }
 
-    private boolean agregarMovimientoCotizacion(MovimientoDocumento movimiento) {
+    private boolean agregarMovimientoCotizacion(MovimientoDocumento movimiento, boolean reemplazar) {
         ModeloDocumento cotizacion = construirEncabezado(new ModeloDocumento(TipoDocumento.COTIZACION), movimiento);
+        conservarFechaOriginal(cotizacion, reemplazar);
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
             if (esLineaPendiente(i)) {
@@ -7912,11 +7965,12 @@ public final class VistaFactura extends javax.swing.JPanel {
             }
         }
 
-        return persistirDocumento(cotizacion, false, "Error al guardar la cotización");
+        return persistirDocumento(cotizacion, reemplazar, "Error al guardar la cotización");
     }
 
     private boolean agregarMovimientoOrdenServicio(MovimientoDocumento movimiento, boolean reemplazar) {
         ModeloDocumento orden = construirEncabezado(new ModeloDocumento(TipoDocumento.ORDER_SERVICIO), movimiento);
+        conservarFechaOriginal(orden, reemplazar);
         orden.setCopago(0);
 
         for (int i = 0; i < tblProductos.getRowCount(); i++) {
@@ -7932,6 +7986,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
     private boolean agregarMovimientoPedido(MovimientoDocumento movimiento, boolean reemplazar) {
         ModeloDocumento pedido = construirEncabezado(new ModeloDocumento(TipoDocumento.PEDIDO), movimiento);
+        conservarFechaOriginal(pedido, reemplazar);
         pedido.setEfectivo(pedido.getTotal());
         pedido.setGarantia(txtNombre.getText());
 

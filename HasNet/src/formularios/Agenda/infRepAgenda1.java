@@ -847,7 +847,7 @@ public class infRepAgenda1 extends javax.swing.JPanel {
                 instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte ingresos corto " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
 
-            instancias.getReporte().ver_RepIngresos2(sql, enca, tipo);
+            instancias.getReporte().ver_RepIngresos2(sql, enca);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -961,7 +961,7 @@ public class infRepAgenda1 extends javax.swing.JPanel {
                 instancias.setRutaAguardar(metodos.obtenerRuta(null, "Reporte ingresos " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
             }
             System.out.println("Consulta " + sql);
-            instancias.getReporte().ver_ReIngresos(sql, enca, tipo);
+            instancias.getReporte().ver_ReIngresos(sql, enca);
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 

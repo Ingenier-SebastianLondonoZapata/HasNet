@@ -609,7 +609,7 @@ public class infRepLavadero extends javax.swing.JInternalFrame {
 //                tipo = "xls";
 //                instancias.setRutaAguardar(metodos.obtenerRuta(this, "Reporte de ventas " + metodosGenerales.dia() + " de " + metodosGenerales.mesEnPalabra() + " del " + metodosGenerales.anho()));
 //            }
-            instancias.getReporte().verLiquidacionLavado(sql, enca, tipo);
+            instancias.getReporte().verLiquidacionLavado(sql, enca);
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 

@@ -21,10 +21,8 @@ import formularios.Agenda.infRepAgenda;
 import Vista.Cartera.VistaAbonos;
 import Vista.Cartera.notaDebito;
 import Vista.Cartera.VistaPagos;
-import Vista.Cartera.Reportes.VistaReportesCartera;
 
 import Vista.Tesoreria.VistaEgresos;
-import formularios.Tesoreria.infRepEgresos;
 import formularios.Labotario.infAcidoUrico;
 import formularios.Labotario.infAcidos;
 import formularios.Labotario.infAntiestreptolisina;
@@ -80,7 +78,6 @@ import formularios.Parqueadero.infRepMensualidades;
 import formularios.Parqueadero.infRepParqueadero;
 
 import Vista.Tesoreria.VistaCuadreCaja;
-import formularios.Tesoreria.infRepCuadre;
 
 import Vista.Ventas.cotizacion;
 import formularios.Ventas.infCuentaCobro;
@@ -94,7 +91,6 @@ import Vista.Ventas.ordenServicio;
 import Vista.Ventas.pedido;
 import Vista.Ventas.planSepare;
 import Vista.Restaurante.VistaPreparacion;
-import Vista.Ventas.VistaReportesVentas;
 import formularios.Veterinario.dlgMedicamentosPendientes;
 import formularios.Veterinario.infAlertasProximas;
 import formularios.Veterinario.infAyudaDiagnosticoVeterinaria;
@@ -111,8 +107,6 @@ import Vista.Productos.ingreso;
 import Vista.Productos.VistaDiseno;
 
 import Vista.Contactos.VistaContactos;
-import formularios.terceros.infRepClientes;
-import formularios.terceros.infRepEmpleados;
 
 import formularios.Veterinario.infMascotas;
 import formularios.Veterinario.infPeluqueria;
@@ -174,7 +168,12 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import Dao.Configuraciones.DaoMaestra;
-import Vista.Productos.Reportes.VistaReportesProducto;
+import Vista.Reportes.VistaReportesModulo;
+import Vista.Reportes.Definiciones.ReportesCartera;
+import Vista.Reportes.Definiciones.ReportesProductos;
+import Vista.Reportes.Definiciones.ReportesTerceros;
+import Vista.Reportes.Definiciones.ReportesTesoreria;
+import Vista.Reportes.Definiciones.ReportesVentas;
 
 public class VistaMenu extends javax.swing.JFrame {
 
@@ -1327,7 +1326,7 @@ public class VistaMenu extends javax.swing.JFrame {
         ndUsuario usuario = instancias.getUsuarioLog();
 
         agregarFormulario(new creditos(), instancias::setFacturaCreditos, usuario.isCreditos());
-        agregarFormulario(new VistaReportesVentas(), instancias::setReportesVentas);
+        agregarFormulario(new VistaReportesModulo("Reportes de ventas", ReportesVentas.entradas()), instancias::setReportesVentas);
         instancias.setPreparacion(new VistaPreparacion(this, true));
         agregarFormulario(new pedido(), instancias::setPedido, usuario.isPedidos());
         agregarFormulario(new planSepare(), instancias::setPlanSepare, usuario.isPlanSepares());
@@ -1352,7 +1351,7 @@ public class VistaMenu extends javax.swing.JFrame {
         agregarFormulario(new ordenCompra(), instancias::setOrdenCompra, usuario.isOrdenesCompras());
         agregarFormulario(new VistaAjusteInventario(), instancias::setuInt);
         agregarFormulario(new VistaDiseno(), instancias::setCosteo, usuario.isDisenos() || usuario.isArmados());
-        agregarFormulario(new VistaReportesProducto(), instancias::setReportesProductos, usuario.isReporteProductos());
+        agregarFormulario(new VistaReportesModulo("Reportes de productos", ReportesProductos.entradas()), instancias::setReportesProductos);
         agregarFormulario(new ingreso(), instancias::setIngresos, usuario.isCompras());
         agregarFormularioSeleccionado(new infTrasladosInternos(), instancias::setTrasladosInternos, usuario.isTrasladosInternos());
     }
@@ -1361,8 +1360,7 @@ public class VistaMenu extends javax.swing.JFrame {
         ndUsuario usuario = instancias.getUsuarioLog();
 
         agregarFormulario(new VistaContactos(""), instancias::setClientes, usuario.isCrearClientes());
-        agregarFormularioSeleccionado(new infRepEmpleados(), instancias::setRepEmpleados, usuario.isReporteEmpleados());
-        agregarFormularioSeleccionado(new infRepClientes(), instancias::setRepClientes, usuario.isReporteClientes());
+        agregarFormularioSeleccionado(new VistaReportesModulo("Reportes de terceros", ReportesTerceros.entradas()), instancias::setReportesTerceros);
     }
 
     private void cargarModulosTesoreria() {
@@ -1372,8 +1370,7 @@ public class VistaMenu extends javax.swing.JFrame {
         agregarFormulario(new VistaCuadreCaja(), instancias::setCaja, usuario.isCuadreCaja());
         agregarFormulario(new VistaNotaCredito(), instancias::setNc, usuario.isNotasCredito());
         agregarFormulario(new notaDebito(), instancias::setNd, usuario.isNotasCredito());
-        agregarFormularioSeleccionado(new infRepEgresos(), instancias::setRepEgresos, usuario.isReporteEgresos());
-        agregarFormulario(new infRepCuadre(), instancias::setRepCuadre, usuario.isReporteCuadreCaja());
+        agregarFormularioSeleccionado(new VistaReportesModulo("Reportes de tesorería", ReportesTesoreria.entradas()), instancias::setReportesTesoreria);
     }
 
     private void cargarModuloGeneracionRips() {
@@ -1394,7 +1391,7 @@ public class VistaMenu extends javax.swing.JFrame {
     private void cargarModulosCartera() {
         ndUsuario usuario = instancias.getUsuarioLog();
 
-        agregarFormularioSeleccionado(new VistaReportesCartera(), instancias::setReportesCartera);
+        agregarFormularioSeleccionado(new VistaReportesModulo("Reportes de cartera", ReportesCartera.entradas()), instancias::setReportesCartera);
         agregarFormularioSeleccionado(new VistaAbonos(), instancias::setAbonos, usuario.isAbonosCxC());
         agregarFormulario(new VistaPagos(), instancias::setPagos, usuario.isAbonosCxP());
     }

@@ -1096,7 +1096,7 @@
 						<subreportParameterExpression><![CDATA[$F{consulta}]]></subreportParameterExpression>
 					</subreportParameter>
 					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression><![CDATA["reportes/ejemplo/formulaMedicaHistoria.jasper"]]></subreportExpression>
+					<subreportExpression><![CDATA["Impresiones/ImpresionesMedico/formulaMedicaHistoria.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 			<band height="26">
@@ -1202,7 +1202,7 @@
 						<subreportParameterExpression><![CDATA[$F{consulta}]]></subreportParameterExpression>
 					</subreportParameter>
 					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression><![CDATA["reportes/ejemplo/ayudaDiagnosticaHistoria.jasper"]]></subreportExpression>
+					<subreportExpression><![CDATA["Impresiones/ImpresionesMedico/ayudaDiagnosticaHistoria.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 			<band height="49">
@@ -1213,7 +1213,7 @@
 						<subreportParameterExpression><![CDATA[$F{consulta}]]></subreportParameterExpression>
 					</subreportParameter>
 					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression><![CDATA["reportes/ejemplo/incapacidades.jasper"]]></subreportExpression>
+					<subreportExpression><![CDATA["Impresiones/ImpresionesMedico/incapacidades.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 			<band height="14">
