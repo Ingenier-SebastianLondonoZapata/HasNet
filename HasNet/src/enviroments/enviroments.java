@@ -1,17 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package enviroments;
 
 import clases.Instancias;
 
-/**
- *
- * @author sebastian.londono
- */
 public class enviroments {
+
+    private static final String URL_PRUEBAS = "https://alfauat.dominadigital.com.co/api/";
+    private static final String URL_PRODUCCION = "https://alfaprod.dominadigital.com.co/api/";
 
     public String urlGenerarToken;
     public String urlRegistrarResolucion;
@@ -19,22 +13,17 @@ public class enviroments {
     public String urlConsultarFactura;
     public String urlDocumentoSoporte;
     public String urlCreacionContactos;
+    public String urlEventosMercantiles;
 
-    public void generarEnviroments(String nitEmisor, Instancias instancias) {        
-        if (instancias.isPruebasFacturacionElectronica()) {
-            urlGenerarToken = "https://alfauat.dominadigital.com.co/api/GenerarTokenJWT/" + nitEmisor;
-            urlFacturacion = "https://alfauat.dominadigital.com.co/api/ReceptorFacturaJson/" + nitEmisor;
-            urlRegistrarResolucion = "https://alfauat.dominadigital.com.co/api/RegistrarResoluciones/" + nitEmisor;
-            urlConsultarFactura = "https://alfauat.dominadigital.com.co/api/ConsultarEstadoFactura";
-            urlDocumentoSoporte = "https://alfauat.dominadigital.com.co/api/ReceptorSoporteAdquisicionJson/" + nitEmisor;
-            urlCreacionContactos = "https://alfauat.dominadigital.com.co/api/ConsultaInformacionDIAN/" + nitEmisor;
-        } else {
-            urlGenerarToken = "https://alfaprod.dominadigital.com.co/api/GenerarTokenJWT/" + nitEmisor;
-            urlFacturacion = "https://alfaprod.dominadigital.com.co/api/ReceptorFacturaJson/" + nitEmisor;
-            urlRegistrarResolucion = "https://alfaprod.dominadigital.com.co/api/RegistrarResoluciones/" + nitEmisor;
-            urlConsultarFactura = "https://alfaprod.dominadigital.com.co/api/ConsultarEstadoFactura";
-            urlDocumentoSoporte = "https://alfaprod.dominadigital.com.co/api/ReceptorSoporteAdquisicionJson/" + nitEmisor;
-            urlCreacionContactos = "https://alfaprod.dominadigital.com.co/api/ConsultaInformacionDIAN/" + nitEmisor;
-        }
-    }    
+    public void generarEnviroments(String nitEmisor, Instancias instancias) {
+        String base = instancias.isPruebasFacturacionElectronica() ? URL_PRUEBAS : URL_PRODUCCION;
+
+        urlGenerarToken = base + "GenerarTokenJWT/" + nitEmisor;
+        urlFacturacion = base + "ReceptorFacturaJson/" + nitEmisor;
+        urlRegistrarResolucion = base + "RegistrarResoluciones/" + nitEmisor;
+        urlConsultarFactura = base + "ConsultarEstadoFactura";
+        urlDocumentoSoporte = base + "ReceptorSoporteAdquisicionJson/" + nitEmisor;
+        urlCreacionContactos = base + "ConsultaInformacionDIAN/" + nitEmisor;
+        urlEventosMercantiles = base + "ReceptorEventoJson/" + nitEmisor;
+    }
 }

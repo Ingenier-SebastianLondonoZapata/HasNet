@@ -7729,66 +7729,6 @@ public class SQL {
         return datos;
     }
 
-    public DefaultTableModel getRegistrosCxcPorCliente(String factura, String cliente) {
-        String columNames[] = {
-            "Factura", "Factura", "Fecha Factura", "Fecha Venc.", "Valor", "Saldo", "Edad Cart.", "Estado", "Factura Interna", "Seleccionar"
-        };
-        String colName[] = {
-            "factura2", "facturaTerm", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "sel"
-        };
-        String sql = "SELECT x.factura AS factura2, x.facturaTerm, x.fechaFactura, x.fechaVencimiento, x.valor, x.saldo, x.edadCartera, "
-                + "x.estadoVencimiento, x.factura, false AS sel FROM ("
-                + ConsultaCartera.cuentasPendientes("(" + ConsultaCartera.CONSECUTIVO_NORMAL + ") AND t.id = ?", "FACT", true, ConsultaCartera.EDAD_DIAS)
-                + ") x ORDER BY x.fechaFactura";
-        Object dtDatos2[][] = consultarTabla(colName, new Integer[]{9}, sql, cliente);
-        DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 9) {
-                    return true;
-                }
-                return false;
-            }
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-        };
-        return datos;
-    }
-
-    public DefaultTableModel getRegistrosCxcDomicilioPorCliente(String factura, String cliente) {
-        String columNames[] = {
-            "Factura", "Factura", "Fecha Factura", "Fecha Venc.", "Valor", "Saldo", "Edad Cart.", "Estado", "Factura Interna", "Seleccionar"
-        };
-        String colName[] = {
-            "factura2", "facturaTerm", "fechaFactura", "fechaVencimiento", "valor", "saldo", "edadCartera", "estadoVencimiento", "factura", "sel"
-        };
-        String sql = "SELECT x.factura AS factura2, x.facturaTerm, x.fechaFactura, x.fechaVencimiento, x.valor, x.saldo, x.edadCartera, "
-                + "x.estadoVencimiento, x.factura, false AS sel FROM ("
-                + ConsultaCartera.cuentasPendientes("(" + ConsultaCartera.CONSECUTIVO_DOMICILIO + ") AND t.id = ?", "FACT", false, ConsultaCartera.EDAD_NUMERICA)
-                + ") x ORDER BY x.fechaFactura";
-        Object dtDatos2[][] = consultarTabla(colName, new Integer[]{9}, sql, cliente);
-        DefaultTableModel datos = new DefaultTableModel(dtDatos2, columNames) {
-            public boolean isCellEditable(int row, int column) {
-                if (column == 9) {
-                    return true;
-                }
-                return false;
-            }
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-        };
-        return datos;
-    }
-
     public Object[][] getRegistrosFacturasTerminales(String condicion) {
         String colName[] = {
             "id", "factura", "fechaFactura", "cliente", "nombre", "vendedor", "total"

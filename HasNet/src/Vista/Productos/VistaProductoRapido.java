@@ -22,7 +22,7 @@ import javax.swing.KeyStroke;
 
 public class VistaProductoRapido extends javax.swing.JDialog {
 
-    private static final String UNIDAD_PREDETERMINADA = "Und";
+    private static final String UNIDAD_PREDETERMINADA = "UNIDAD";
     private static final String OPCION_SI = "SI";
     private static final String TIPO_PRODUCTO_SISTEMA = "ADMIN";
 

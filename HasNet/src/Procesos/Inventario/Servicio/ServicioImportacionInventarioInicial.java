@@ -80,6 +80,16 @@ public class ServicioImportacionInventarioInicial {
             columnas.put(normalizar(hoja.contenido(columna, 0)), columna);
         }
 
+        String[][] alias = {{"imeiserial", "imeioserial", "imei", "serial"}, {"fechavence", "fechavencimiento"}};
+        for (String[] nombres : alias) {
+            for (int i = 1; i < nombres.length && !columnas.containsKey(nombres[0]); i++) {
+                Integer indice = columnas.get(nombres[i]);
+                if (indice != null) {
+                    columnas.put(nombres[0], indice);
+                }
+            }
+        }
+
         for (String requerida : new String[]{"Codigo"}) {
             if (!columnas.containsKey(normalizar(requerida))) {
                 resultado.getErrores().add("El archivo no tiene la columna '" + requerida + "' en la primera fila. Columnas esperadas: "

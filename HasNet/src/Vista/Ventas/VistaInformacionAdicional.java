@@ -287,8 +287,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         jSeparator4 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Forma de pago");
-        setUndecorated(true);
+        setTitle("Información adicional");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
@@ -468,11 +467,11 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         txtTotalPropina.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         txtTotalPropina.setName("Cheque"); // NOI18N
         txtTotalPropina.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtTotalPropinaKeyReleased(evt);
-            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtTotalPropinaKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTotalPropinaKeyReleased(evt);
             }
         });
 

@@ -7,8 +7,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
-    <Property name="title" type="java.lang.String" value="Forma de pago"/>
-    <Property name="undecorated" type="boolean" value="true"/>
+    <Property name="title" type="java.lang.String" value="Informaci&#xf3;n adicional"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>

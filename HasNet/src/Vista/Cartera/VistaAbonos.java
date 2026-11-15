@@ -15,14 +15,21 @@ import clases.cambiarColorTabla;
 import clases.credito.ndCuota;
 import clases.credito.ndPrestamo;
 import clases.metodosGenerales;
+import Dao.Cartera.DaoCartera;
 import Modelo.Cartera.AbonoCuenta;
+import Modelo.Cartera.CuentaPendiente;
 import Modelo.Cartera.MediosPagoAbono;
 import Modelo.Contactos.ModeloContacto;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
@@ -50,13 +57,21 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     FuncionalidadAbonos funcionalidadAbonos;
 
     //Columnas de tblCartera
-    private static final int COL_FACTURA = 1;
-    private static final int COL_VALOR = 4;
-    private static final int COL_SALDO = 5;
-    private static final int COL_SELECCION = 9;
-    private static final int COL_ABONADO = 10;
-    private static final int COL_RESTANTE = 11;
-    private static final int COL_ABONADO_ANTERIOR = 12;
+    private static final int COL_FACTURA = 0;
+    private static final int COL_VALOR = 3;
+    private static final int COL_SALDO = 4;
+    private static final int COL_FACTURA_INTERNA = 7;
+    private static final int COL_SELECCION = 8;
+    private static final int COL_ABONADO = 9;
+    private static final int COL_RESTANTE = 10;
+    private static final int COL_ABONADO_ANTERIOR = 11;
+    private static final String[] COLUMNAS_CARTERA = {
+        "Factura", "Fecha Factura", "Fecha Venc.", "Valor", "Saldo", "Edad Cart.", "Estado", "Factura Interna", "Seleccionar",
+        "Abonado", "Restante", "AbonadoAnterior"
+    };
+    private static final DateTimeFormatter FORMATO_FECHA_CARTERA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private final DaoCartera daoCartera = new DaoCartera();
 
     public VistaAbonos() {
 
@@ -2981,49 +2996,19 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         modeloOrdenado = new TableRowSorter<>(modelo);
         tblRegistros.setRowSorter(modeloOrdenado);
 
-        tblRegistros.getColumnModel().getColumn(0).setMinWidth(100);
-        tblRegistros.getColumnModel().getColumn(0).setPreferredWidth(115);
-        tblRegistros.getColumnModel().getColumn(0).setMaxWidth(140);
-
-        tblRegistros.getColumnModel().getColumn(1).setMinWidth(75);
-        tblRegistros.getColumnModel().getColumn(1).setPreferredWidth(120);
-        tblRegistros.getColumnModel().getColumn(1).setMaxWidth(140);
-
-        tblRegistros.getColumnModel().getColumn(3).setMinWidth(90);
-        tblRegistros.getColumnModel().getColumn(3).setPreferredWidth(90);
-        tblRegistros.getColumnModel().getColumn(3).setMaxWidth(90);
-        tblRegistros.getColumnModel().getColumn(4).setMinWidth(90);
-        tblRegistros.getColumnModel().getColumn(4).setPreferredWidth(90);
-        tblRegistros.getColumnModel().getColumn(4).setMaxWidth(90);
-
-        tblRegistros.getColumnModel().getColumn(5).setMinWidth(80);
-        tblRegistros.getColumnModel().getColumn(5).setPreferredWidth(100);
-        tblRegistros.getColumnModel().getColumn(5).setMaxWidth(130);
-
-        tblRegistros.getColumnModel().getColumn(6).setMinWidth(80);
-        tblRegistros.getColumnModel().getColumn(6).setPreferredWidth(100);
-        tblRegistros.getColumnModel().getColumn(6).setMaxWidth(130);
-
-        tblRegistros.getColumnModel().getColumn(7).setMinWidth(80);
-        tblRegistros.getColumnModel().getColumn(7).setPreferredWidth(80);
-        tblRegistros.getColumnModel().getColumn(7).setMaxWidth(80);
-
-        tblRegistros.getColumnModel().getColumn(8).setMinWidth(90);
-        tblRegistros.getColumnModel().getColumn(8).setPreferredWidth(90);
-        tblRegistros.getColumnModel().getColumn(8).setMaxWidth(90);
-
-        tblRegistros.getColumnModel().getColumn(9).setMinWidth(0);
-        tblRegistros.getColumnModel().getColumn(9).setPreferredWidth(0);
-        tblRegistros.getColumnModel().getColumn(9).setMaxWidth(0);
-
-        tblRegistros.getColumnModel().getColumn(10).setMinWidth(0);
-        tblRegistros.getColumnModel().getColumn(10).setPreferredWidth(0);
-        tblRegistros.getColumnModel().getColumn(10).setMaxWidth(0);
+        anchoColumnaRegistros(0, 100, 115, 140);
+        anchoColumnaRegistros(1, 75, 120, 140);
+        anchoColumnaRegistros(3, 90, 90, 90);
+        anchoColumnaRegistros(4, 90, 90, 90);
+        anchoColumnaRegistros(5, 80, 100, 130);
+        anchoColumnaRegistros(6, 80, 100, 130);
+        anchoColumnaRegistros(7, 80, 80, 80);
+        anchoColumnaRegistros(8, 90, 90, 90);
+        ocultarColumnaRegistros(9);
+        ocultarColumnaRegistros(10);
 
         if (tipoProceso.equals("domicilio")) {
-            tblRegistros.getColumnModel().getColumn(11).setMinWidth(0);
-            tblRegistros.getColumnModel().getColumn(11).setPreferredWidth(0);
-            tblRegistros.getColumnModel().getColumn(11).setMaxWidth(0);
+            ocultarColumnaRegistros(11);
         }
 
         consultarMaestros();
@@ -3031,31 +3016,25 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
         if (DatosMaestra.isModificarPrecio()) {
             txtConseManual.setVisible(true);
             lbNit7.setVisible(true);
-            tblRegistros.getColumnModel().getColumn(11).setMaxWidth(100);
+            maximoColumnaRegistros(11, 100);
         } else {
             txtConseManual.setVisible(false);
             lbNit7.setVisible(false);
-            tblRegistros.getColumnModel().getColumn(11).setMinWidth(0);
-            tblRegistros.getColumnModel().getColumn(11).setPreferredWidth(0);
-            tblRegistros.getColumnModel().getColumn(11).setMaxWidth(0);
+            ocultarColumnaRegistros(11);
         }
 
         if (instancias.getConfiguraciones().isParqueadero()) {
             txtPlaca.setVisible(true);
             lbPlaca.setVisible(true);
-            tblRegistros.getColumnModel().getColumn(13).setMaxWidth(70);
+            maximoColumnaRegistros(13, 70);
         } else {
             txtPlaca.setVisible(false);
             lbPlaca.setVisible(false);
 
             if (tipoProceso.equals("domicilio")) {
-                tblRegistros.getColumnModel().getColumn(13).setMinWidth(30);
-                tblRegistros.getColumnModel().getColumn(13).setPreferredWidth(30);
-                tblRegistros.getColumnModel().getColumn(13).setMaxWidth(30);
+                anchoColumnaRegistros(13, 30, 30, 30);
             } else {
-                tblRegistros.getColumnModel().getColumn(13).setMinWidth(0);
-                tblRegistros.getColumnModel().getColumn(13).setPreferredWidth(0);
-                tblRegistros.getColumnModel().getColumn(13).setMaxWidth(0);
+                ocultarColumnaRegistros(13);
             }
         }
 
@@ -3074,6 +3053,29 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
     }
 
     public void consultarMaestros() {
+    }
+
+    private boolean existeColumnaRegistros(int columna) {
+        return columna < tblRegistros.getColumnModel().getColumnCount();
+    }
+
+    private void anchoColumnaRegistros(int columna, int minimo, int preferido, int maximo) {
+        if (!existeColumnaRegistros(columna)) {
+            return;
+        }
+        tblRegistros.getColumnModel().getColumn(columna).setMinWidth(minimo);
+        tblRegistros.getColumnModel().getColumn(columna).setPreferredWidth(preferido);
+        tblRegistros.getColumnModel().getColumn(columna).setMaxWidth(maximo);
+    }
+
+    private void ocultarColumnaRegistros(int columna) {
+        anchoColumnaRegistros(columna, 0, 0, 0);
+    }
+
+    private void maximoColumnaRegistros(int columna, int maximo) {
+        if (existeColumnaRegistros(columna)) {
+            tblRegistros.getColumnModel().getColumn(columna).setMaxWidth(maximo);
+        }
     }
 
     private BigDecimal getValorCampo(JTextField campo) {
@@ -3770,40 +3772,71 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
             return;
         }
 
+        boolean cartera = cmbTipo.getSelectedIndex() == 0;
+        boolean domicilios = cmbTipo.getSelectedIndex() == 2;
+        if (!cartera && !domicilios) {
+            ocultarCarteraDelCliente();
+            return;
+        }
+
         String nit = valorRegistro(fila, 1);
-        if (cmbTipo.getSelectedIndex() == 0) {
-            tblCartera.setModel(instancias.getSql().getRegistrosCxcPorCliente("factura", nit));
-        } else if (cmbTipo.getSelectedIndex() == 2) {
-            tblCartera.setModel(instancias.getSql().getRegistrosCxcDomicilioPorCliente("factura", nit));
+        List<CuentaPendiente> cuentas;
+        try {
+            cuentas = domicilios
+                    ? daoCartera.cuentasPendientesDomicilioPorCliente(nit)
+                    : daoCartera.cuentasPendientesPorCliente(nit);
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaAbonos.class.getName()).log(Level.SEVERE, null, ex);
+            ControladorAlertas.alertFail("No se pudo consultar la cartera del cliente: " + ex.getMessage());
+            ocultarCarteraDelCliente();
+            return;
         }
 
-        DefaultTableModel modeloCartera = (DefaultTableModel) tblCartera.getModel();
-        modeloCartera.addColumn("Abonado");
-        modeloCartera.addColumn("Restante");
-        modeloCartera.addColumn("AbonadoAnterior");
-
-        if (tblCartera.getColumnModel().getColumnCount() > 0) {
-            ocultarColumnaCartera(0);
-            ocultarColumnaCartera(8);
-            ocultarColumnaCartera(12);
-        }
-
-        for (int j = 0; j < tblCartera.getRowCount(); j++) {
-            tblCartera.setValueAt(metodos.fecha(tblCartera.getValueAt(j, 2).toString()), j, 2);
-            tblCartera.setValueAt(metodos.fecha(tblCartera.getValueAt(j, 3).toString()), j, 3);
-            tblCartera.setValueAt(big.setMonedaExacta(big.getBigDecimal(tblCartera.getValueAt(j, 4).toString())), j, 4);
-            tblCartera.setValueAt(big.setMonedaExacta(big.getBigDecimal(tblCartera.getValueAt(j, 5).toString())), j, 5);
-            tblCartera.setValueAt("", j, 10);
-            tblCartera.setValueAt("", j, 11);
-            tblCartera.setValueAt(big.setMonedaExacta(big.getMoneda(tblCartera.getValueAt(j, 4).toString()).
-                    subtract(big.getMoneda(tblCartera.getValueAt(j, 5).toString()))), j, 12);
-        }
+        tblCartera.setModel(crearModeloCartera(cuentas));
+        ocultarColumnaCartera(COL_FACTURA_INTERNA);
+        ocultarColumnaCartera(COL_ABONADO_ANTERIOR);
 
         rdAbonoFactura.setSelected(true);
         rdAbonoFactura.setEnabled(true);
         rdAbonoGeneral.setEnabled(true);
         jScrollPane3.setVisible(true);
         tblCartera.setVisible(true);
+    }
+
+    private DefaultTableModel crearModeloCartera(List<CuentaPendiente> cuentas) {
+        DefaultTableModel modelo = new DefaultTableModel(COLUMNAS_CARTERA, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == COL_SELECCION;
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == COL_SELECCION ? Boolean.class : Object.class;
+            }
+        };
+
+        for (CuentaPendiente cuenta : cuentas) {
+            modelo.addRow(new Object[]{
+                cuenta.getFactura(),
+                formatearFechaCartera(cuenta.getFechaFactura()),
+                formatearFechaCartera(cuenta.getFechaVencimiento()),
+                big.setMonedaExacta(cuenta.getValor()),
+                big.setMonedaExacta(cuenta.getSaldo()),
+                cuenta.getEdadCartera(),
+                cuenta.getEstadoVencimiento(),
+                cuenta.getFacturaInterna(),
+                false,
+                "",
+                "",
+                big.setMonedaExacta(cuenta.getAbonadoAnterior())
+            });
+        }
+        return modelo;
+    }
+
+    private static String formatearFechaCartera(LocalDate fecha) {
+        return fecha == null ? "" : fecha.format(FORMATO_FECHA_CARTERA);
     }
 
     private void ocultarColumnaCartera(int columna) {
