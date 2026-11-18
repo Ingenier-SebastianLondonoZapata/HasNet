@@ -237,28 +237,22 @@ public class vistaInicioSesion extends javax.swing.JFrame {
             System.exit(0);
         }
 
-        System.out.println("hello: " +identificadorCliente);
         modeloConfiguracion modelo = instancias.getSqlPagos().obtenerConfiguracionCliente(identificadorCliente);
         if (null != modelo.getNit() || null != modelo.getNombre()) {
-            if (!instancias.getSql().modificarConfiguracion(modelo)) {
-                alertas.alertFail("Error al actualizar la configuracion");
+            instancias.setConfiguracionCliente(modelo);
+            instancias.setEsPruebasFacturacionElectronica(modelo.isPruebasFacturacion());
+            if (modelo.isPruebasFacturacion()) {
+                instancias.setCanalFacturacion(Constantes.CANAL_PRUEBAS);
             } else {
-                instancias.setEsPruebasFacturacionElectronica(modelo.isPruebasFacturacion());
-                if (modelo.isPruebasFacturacion()) {
-                    instancias.setCanalFacturacion(Constantes.CANAL_PRUEBAS);
-                } else {
-                    instancias.setCanalFacturacion(Constantes.CANAL_PRODUCCION);
-                }
+                instancias.setCanalFacturacion(Constantes.CANAL_PRODUCCION);
+            }
 
-                if (validacionesPagos(identificadorCliente)) {
-                    datosCorrectos = true;
-                }
+            if (validacionesPagos(identificadorCliente)) {
+                datosCorrectos = true;
+            }
 
-                System.out.println(registroPago[0][1].toString() + ":0");
-                System.out.println(registroPago[0][8].toString() + ":1");
-                if (modelo.isFacturaElectronica() && !sistemaBloqueadoPorPago) {
-                    generarToken(registroPago[0][1].toString(), registroPago[0][8].toString());
-                }
+            if (modelo.isFacturaElectronica() && !sistemaBloqueadoPorPago) {
+                generarToken(registroPago[0][1].toString(), registroPago[0][8].toString());
             }
         } else {
             alertas.alert("Tenemos problemas al consultar la información de la empresa, si el problema persiste comunicarse directamente con el proveedor.");

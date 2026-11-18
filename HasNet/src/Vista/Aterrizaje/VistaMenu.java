@@ -11,7 +11,7 @@ import clases.alertasHospitalizacionVeterinario;
 import clases.metodosGenerales;
 import clases.recordatorios.alertaRecordatorio;
 import Vista.Configuraciones.hiloSolicitudesPermisos;
-import Vista.Configuraciones.vistaSuperMaestra;
+import Modelo.Maestra.ConfiguracionSistema;
 import Vista.Productos.VistaProductos;
 import configuracion.dlgPermisos;
 import configuracion.infPlantillas;
@@ -1100,9 +1100,7 @@ public class VistaMenu extends javax.swing.JFrame {
         this.instancias = instancias;
         instancias.setMenu(this);
 
-        vistaSuperMaestra internoConfig = new vistaSuperMaestra(null, true);
-        instancias.setConfiguraciones(internoConfig);
-        internoConfig.cargarSuperMaestra();
+        instancias.setConfiguraciones(ConfiguracionSistema.cargar(instancias));
 
         cargarModulosPrincipales();
 

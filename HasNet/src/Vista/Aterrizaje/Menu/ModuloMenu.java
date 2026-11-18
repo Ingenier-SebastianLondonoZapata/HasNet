@@ -1,6 +1,6 @@
 package Vista.Aterrizaje.Menu;
 
-import Vista.Configuraciones.vistaSuperMaestra;
+import Modelo.Maestra.ConfiguracionSistema;
 
 public enum ModuloMenu {
 
@@ -49,7 +49,7 @@ public enum ModuloMenu {
         return "/imagenes/" + icono + "-NEGRO.png";
     }
 
-    public boolean estaHabilitado(vistaSuperMaestra config) {
+    public boolean estaHabilitado(ConfiguracionSistema config) {
         switch (this) {
             case AGENDA:
                 return config.isAgenda();

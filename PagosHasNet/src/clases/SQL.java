@@ -5,6 +5,9 @@ import Modelos.Usuario.modeloUsuario;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -32,31 +35,65 @@ public class SQL {
 
     public Object[][] obtenerMunicipiosPorDepartamento(String departamento) {
         String[] colName = {"nombreMunicipio"};
-        String origen = " bdRegiones";
-        return getDatos(colName, origen, "select nombreMunicipio from bdRegiones where nombreDepartamento ='" + departamento + "' "
-                + "GROUP BY nombreMunicipio ORDER BY nombreMunicipio ", " where nombreDepartamento ='" + departamento + "' ");
+        return consultarFilas(colName, "select nombreMunicipio from bdRegiones where nombreDepartamento = ? "
+                + "GROUP BY nombreMunicipio ORDER BY nombreMunicipio", departamento);
     }
 
     public Object[][] obtenerCodigosPostales(String departamento, String ciudad) {
         String[] colName = {"codigoPostal"};
-        String origen = " bdRegiones ";
-        return getDatos(colName, origen, "select codigoPostal from bdRegiones where nombreDepartamento = '" + departamento + "' "
-                + "&& nombreMunicipio = '" + ciudad + "' ", " where nombreDepartamento ='" + departamento + "' && nombreMunicipio = '" + ciudad + "' ");
+        return consultarFilas(colName, "select codigoPostal from bdRegiones where nombreDepartamento = ? and nombreMunicipio = ?",
+                departamento, ciudad);
     }
 
     public Object[][] obtenerCodigoLugar(String departamento, String ciudad) {
         String[] colName = {"codigoDepartamento", "codigoMunicipio"};
-        String origen = " bdRegiones ";
-        return getDatos(colName, origen, "select codigoDepartamento, codigoMunicipio from bdRegiones where nombreDepartamento = '" + departamento + "' "
-                + "&& nombreMunicipio = '" + ciudad + "' ", " where nombreDepartamento ='" + departamento + "' && nombreMunicipio = '" + ciudad + "' ");
+        return consultarFilas(colName, "select codigoDepartamento, codigoMunicipio from bdRegiones where nombreDepartamento = ? and nombreMunicipio = ?",
+                departamento, ciudad);
     }
 
     public modeloUsuario getDatosUsuario(String usuario) {
-        modeloUsuario modelo = new modeloUsuario();
-        String instruccion_sql = "select idUsuario, usuario, password from bdUsuarios where idUsuario = '" + usuario + "' ;";
-        String[] colName = {"idUsuario", "usuario", "password"};
-        boolean[] cadena = {true, true, true};
-        return modelo.llenarUsuario(GetRegistro(colName, cadena, instruccion_sql));
+        Object[] datos = new Object[3];
+        String instruccion_sql = "select idUsuario, usuario, password from bdUsuarios where idUsuario = ?";
+
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement(instruccion_sql)) {
+            pstm.setString(1, usuario);
+            try (ResultSet res = pstm.executeQuery()) {
+                if (res.next()) {
+                    datos[0] = res.getString("idUsuario");
+                    datos[1] = res.getString("usuario");
+                    datos[2] = res.getString("password");
+                }
+            }
+        } catch (SQLException | NullPointerException e) {
+            Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, "Error al consultar el usuario", e);
+        }
+
+        return new modeloUsuario().llenarUsuario(datos);
+    }
+
+    public boolean actualizarPasswordUsuario(String idUsuario, String passwordHash, String passwordAnterior) {
+        try {
+            if (!escribirPassword(idUsuario, passwordHash)) {
+                return false;
+            }
+            if (passwordHash.equals(getDatosUsuario(idUsuario).getPassword())) {
+                return true;
+            }
+            Logger.getLogger(SQL.class.getName()).log(Level.SEVERE,
+                    "La columna bdUsuarios.password no admite el hash completo; se restaura el valor anterior. Amplíe la columna a VARCHAR(255)");
+            escribirPassword(idUsuario, passwordAnterior);
+        } catch (SQLException | NullPointerException e) {
+            Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, "Error al actualizar la contraseña del usuario", e);
+        }
+        return false;
+    }
+
+    private boolean escribirPassword(String idUsuario, String password) throws SQLException {
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement("update bdUsuarios set password = ? where idUsuario = ?")) {
+            pstm.setString(1, password);
+            pstm.setString(2, idUsuario);
+            return pstm.executeUpdate() == 1;
+        }
     }
 
     public DefaultTableModel obtenerRegistrosClientesTabla() {
@@ -72,6 +109,19 @@ public class SQL {
         return datos;
     }
 
+    public boolean existeCliente(String nit, String nombre) {
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement("select count(*) from bdClientes where nit = ? and nombre = ?")) {
+            pstm.setString(1, nit);
+            pstm.setString(2, nombre);
+            try (ResultSet res = pstm.executeQuery()) {
+                return res.next() && res.getInt(1) > 0;
+            }
+        } catch (SQLException | NullPointerException e) {
+            Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, "Error al validar el NIT del cliente", e);
+            return true;
+        }
+    }
+
     public boolean agregarCliente(String idCliente, String nit, String tipoIdentificacion, String nombre, String telefono, String fechaInicio) {
         String instruccion_sql = "insert into bdClientes(idCliente, nit, tipoIdentificacion, nombre, telefono, fechaInicio) values (?,?,?,?,?,?);";
         return Agregar_Registro(new Object[]{idCliente, nit, tipoIdentificacion, nombre, telefono, fechaInicio}, null, instruccion_sql);
@@ -83,8 +133,8 @@ public class SQL {
     }
 
     public boolean actualizarPaquete(String idCliente, int totalNumeroFacturas) {
-        String instruccion_sql = "update bdClientes set numeroFEDisponibles=? where idCliente = '" + idCliente + "'; ";
-        return Actualizar_Registro(new Object[]{"", totalNumeroFacturas}, null, instruccion_sql);
+        String instruccion_sql = "update bdClientes set numeroFEDisponibles=? where idCliente = ?";
+        return Actualizar_Registro(new Object[]{"", totalNumeroFacturas, idCliente}, null, instruccion_sql);
     }
 
     public boolean agregarDatosCliente(String idCliente, modeloCreacion modelo) {
@@ -111,10 +161,9 @@ public class SQL {
 
     public Object[][] obtenerRegistroPagos(String estado) {
         String colName[] = {"idPago", "nit", "nombre", "fechaLimite", "diasAntesAlertaBloqueo", "bdClientes.idCliente", "fechaPago"};
-        String origen = " bdPagos INNER JOIN bdClientes ON bdPagos.idCliente = bdClientes.idCliente ";
-        return getDatos(colName, origen,
+        return consultarFilas(colName,
                 "SELECT idPago, nit, nombre, fechaLimite, diasAntesAlertaBloqueo, bdClientes.idCliente, fechaPago FROM bdPagos INNER JOIN bdClientes "
-                + "ON bdPagos.idCliente = bdClientes.idCliente WHERE estado = '" + estado + "' ", " WHERE estado = '" + estado + "' ");
+                + "ON bdPagos.idCliente = bdClientes.idCliente WHERE estado = ?", estado);
     }
 
     public Object[][] obtenerRegistroPaquete() {
@@ -139,7 +188,7 @@ public class SQL {
         String instruccion_sql = "select regimen, informacionLegal, tipoImpresion, nit, nombre, telefono, fechaInicio, diasAntesAlertaBloqueo,"
                 + "diasDespuesGabelaBloqueo, numeroFEDisponibles, congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, "
                 + "recordatorios, laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, usb, "
-                + "facturaElectronica,  pruebasFacturacion from bdClientes where idCliente = '" + idCliente + "' ";
+                + "facturaElectronica,  pruebasFacturacion from bdClientes where idCliente = ?";
         String[] colName = {"regimen", "informacionLegal", "tipoImpresion", "nit", "nombre", "telefono", "fechaInicio", "diasAntesAlertaBloqueo", "diasDespuesGabelaBloqueo",
             "numeroFEDisponibles", "congeladas", "medico", "veterinaria", "parqueadero", "ordenServicio", "creditos", "separe", "pedido", "agenda", "restaurante", "recordatorios",
             "laboratorio", "servicioAutomotor", "oftalmologia", "inventarioBodegas", "productosSerial", "facturacionLote", "usb",
@@ -147,20 +196,23 @@ public class SQL {
         boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false
         };
-        return modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql));
+        return modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql, idCliente));
     }
 
     public boolean actualizarPermisos(modeloConfiguracion modelo, String idCliente) {
         String instruccion_sql = "update bdClientes set regimen=?, informacionLegal=?, tipoImpresion=?, nit=?, nombre=?, telefono=?, fechaInicio=?, "
                 + "diasAntesAlertaBloqueo=?, diasDespuesGabelaBloqueo=?, numeroFEDisponibles=?, congeladas=?, medico=?, veterinaria=?, parqueadero=?, ordenServicio=?, creditos=?, "
                 + "separe=?, pedido=?, agenda=?, restaurante=?, recordatorios=?, laboratorio=?, servicioAutomotor=?, oftalmologia=?, inventarioBodegas=?, "
-                + "productosSerial=?, facturacionLote=?, usb=?, facturaElectronica=?, pruebasFacturacion=? where idCliente = '" + idCliente + "'; ";
-        return Actualizar_Registro(modelo.pasarDatosConfiguracion(modelo), null, instruccion_sql);
+                + "productosSerial=?, facturacionLote=?, usb=?, facturaElectronica=?, pruebasFacturacion=? where idCliente = ?";
+        Object[] datos = modelo.pasarDatosConfiguracion(modelo);
+        Object[] datosConCliente = Arrays.copyOf(datos, datos.length + 1);
+        datosConCliente[datos.length] = idCliente;
+        return Actualizar_Registro(datosConCliente, null, instruccion_sql);
     }
 
     public boolean cambiarEstadoCuota(int idPago) {
-        String instruccion_sql = "update bdPagos set estado=?, fechaPago=? where idPago = " + idPago + " ";
-        return Actualizar_Registro(new Object[]{"", "PAGADO", metodosGenerales.fecha()}, null, instruccion_sql);
+        String instruccion_sql = "update bdPagos set estado=?, fechaPago=? where idPago = ?";
+        return Actualizar_Registro(new Object[]{"", "PAGADO", metodosGenerales.fecha(), idPago}, null, instruccion_sql);
     }
 
 //                                     PROCEDIMIENTOS SQL
@@ -291,54 +343,50 @@ public class SQL {
         return ok;
     }
 
-    public boolean eliminarTodo(String tabla) {
-        boolean ok = false;
-        String instruccion = "delete from " + tabla + ";";
-        try {
-            PreparedStatement pstm = mysql.getConnection().prepareStatement(instruccion);
-            pstm.execute();
-            pstm.close();
-            ok = true;
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return ok;
-    }
-
-    public boolean eliminar_registro(String tabla, String condicion) {
-        boolean ok = false;
-        String instruccion = "delete from " + tabla + " where " + condicion + " ;";
-        try {
-            PreparedStatement pstm = mysql.getConnection().prepareStatement(instruccion);
-            pstm.execute();
-            pstm.close();
-            ok = true;
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return ok;
-    }
-
-    private Object[] GetRegistro(String colName[], boolean cadena[], String sql) {
+    private Object[] GetRegistro(String colName[], boolean cadena[], String sql, Object... parametros) {
         Object[] data = new Object[colName.length];
-        try {
-            PreparedStatement pstm = mysql.getConnection().prepareStatement(sql);
-            ResultSet res = pstm.executeQuery();
-            while (res.next()) {
-                for (int j = 0; j <= colName.length - 1; j++) {
-                    if (cadena[j]) {
-                        data[j] = res.getString(colName[j]);
-                    } else {
-                        data[j] = res.getBoolean(colName[j]);
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement(sql)) {
+            asignarParametros(pstm, parametros);
+            try (ResultSet res = pstm.executeQuery()) {
+                while (res.next()) {
+                    for (int j = 0; j <= colName.length - 1; j++) {
+                        if (cadena[j]) {
+                            data[j] = res.getString(colName[j]);
+                        } else {
+                            data[j] = res.getBoolean(colName[j]);
+                        }
                     }
                 }
             }
-            res.close();
-            pstm.close();
-        } catch (SQLException e) {
-            System.out.println(e);
+        } catch (SQLException | NullPointerException e) {
+            Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, e);
         }
         return data;
+    }
+
+    private Object[][] consultarFilas(String colName[], String sql, Object... parametros) {
+        List<String[]> filas = new ArrayList<>();
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement(sql)) {
+            asignarParametros(pstm, parametros);
+            try (ResultSet res = pstm.executeQuery()) {
+                while (res.next()) {
+                    String[] fila = new String[colName.length];
+                    for (int j = 0; j < colName.length; j++) {
+                        fila[j] = res.getString(colName[j]);
+                    }
+                    filas.add(fila);
+                }
+            }
+        } catch (SQLException | NullPointerException e) {
+            Logger.getLogger(SQL.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return filas.toArray(new String[0][]);
+    }
+
+    private void asignarParametros(PreparedStatement pstm, Object... parametros) throws SQLException {
+        for (int i = 0; i < parametros.length; i++) {
+            pstm.setObject(i + 1, parametros[i]);
+        }
     }
 
     public Object[][] GetTabla(String colName[], String tabla, String sql) {
@@ -488,27 +536,6 @@ public class SQL {
             System.out.println(e);
         }
         return data;
-    }
-
-    /* metodo para determinar si un registro dado la tabla, columna y el valor de busqueda, existe*/
-    public boolean existe(String tabla, String columna, String valor) {
-        boolean si_existe = false;
-        int data = 0;
-        try {
-            String instruccion = "select count(*) as total from " + tabla + " WHERE " + columna + "='" + valor + "';";
-            PreparedStatement pstm = mysql.getConnection().prepareStatement(instruccion);
-            ResultSet res = pstm.executeQuery();
-            while (res.next()) {
-                data = res.getInt("total");
-            }
-            res.close();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        if (data > 0) {
-            si_existe = true;
-        }
-        return si_existe;
     }
 
     public int Existen_Filas(String colName, String sql) {

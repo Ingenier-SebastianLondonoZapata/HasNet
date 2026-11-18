@@ -1,7 +1,7 @@
 package Vista.Aterrizaje.Menu;
 
 import Utilidades.DatosMaestra;
-import Vista.Configuraciones.vistaSuperMaestra;
+import Modelo.Maestra.ConfiguracionSistema;
 import clases.Instancias;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,7 @@ import java.util.List;
 public class CatalogoMenu {
 
     private final Instancias instancias;
-    private final vistaSuperMaestra config;
+    private final ConfiguracionSistema config;
 
     public CatalogoMenu(Instancias instancias) {
         this.instancias = instancias;

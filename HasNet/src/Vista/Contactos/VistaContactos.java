@@ -3227,7 +3227,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         contacto.setDepartamento(seleccion(cmbDepartamento));
         contacto.setCiudad(seleccion(cmbCiudad));
         contacto.setCodigoPostal(seleccion(cmbCodigoPostal));
-        contacto.setNacimiento(fechaNacimientoParaGuardar());
+        contacto.setNacimiento(fechaDe(dtFechaNacimiento));
 
         contacto.setOcupacion(txtOcupacion.getText().trim());
         contacto.setActividad(contacto.getOcupacion());
@@ -3329,11 +3329,6 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         return tipoSeleccionado() != TipoContacto.EMPLEADO
                 && (instancias.getConfiguraciones().isMedico() || instancias.getConfiguraciones().isLaboratorio()
                 || instancias.getConfiguraciones().isOftalmologia());
-    }
-
-    private String fechaNacimientoParaGuardar() {
-        String fecha = fechaDe(dtFechaNacimiento);
-        return fecha != null ? fecha : fechaActual();
     }
 
     private String fechaDe(JDateChooser selector) {
@@ -3518,9 +3513,20 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         buscar.setTipoBuscador(opcionBuscador);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(campo);
+        mostrarPestanaDe(campo);
         campo.requestFocus();
         buscar.noEncontrado(nit);
         buscar.show();
+    }
+
+    private void mostrarPestanaDe(JComponent campo) {
+        for (int i = 0; i < tabDatosTerceros.getTabCount(); i++) {
+            java.awt.Component pestana = tabDatosTerceros.getComponentAt(i);
+            if (pestana instanceof java.awt.Container && ((java.awt.Container) pestana).isAncestorOf(campo)) {
+                tabDatosTerceros.setSelectedIndex(i);
+                return;
+            }
+        }
     }
 
     public void ventanaTercerosReferidos(String nit) {
@@ -3528,6 +3534,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         buscar.setLocationRelativeTo(null);
         instancias.setBusClientes(buscar);
         instancias.setCampoActual(txtCodigoReferido);
+        mostrarPestanaDe(txtCodigoReferido);
         txtCodigoReferido.requestFocus();
         buscar.noEncontrado(nit);
         buscar.show();

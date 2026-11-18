@@ -170,7 +170,13 @@ public class vistaInicioSesion extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             modeloUsuario nodo = instancias.getSql().getDatosUsuario(txtUsuario.getText());
             if (nodo.getIdUsuario() != null) {
-                if (!txtPassword.getText().equals(nodo.getPassword())) {
+                char[] ingresada = txtPassword.getPassword();
+                boolean coincide = clases.ContrasenasSeguras.verificar(ingresada, nodo.getPassword());
+                if (coincide && clases.ContrasenasSeguras.necesitaActualizacion(nodo.getPassword())) {
+                    instancias.getSql().actualizarPasswordUsuario(nodo.getIdUsuario(), clases.ContrasenasSeguras.generarHash(ingresada), nodo.getPassword());
+                }
+                java.util.Arrays.fill(ingresada, ' ');
+                if (!coincide) {
                     alertas.alert("Usuario o contraseña incorrectos");
                     txtUsuario.requestFocus();
                     return;

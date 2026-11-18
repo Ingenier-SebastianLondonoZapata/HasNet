@@ -31,7 +31,6 @@ import Vista.Cartera.notaDebito;
 import Vista.Cartera.VistaNotaCredito;
 import Vista.Configuraciones.VistaConfiguraciones;
 import Modelo.Maestra.modeloConfiguracion;
-import Vista.Configuraciones.vistaSuperMaestra;
 import Controlador.BarraProceso.jcThread;
 import Utilidades.BaseDatos.SQL;
 import Utilidades.BaseDatos.SQL1;
@@ -125,11 +124,6 @@ public class Instancias {
         sqlPagos.obtenerConexion();
 
         reporte = new iFactura(this);
-    }
-
-    public static void cargarConfiguraciones() {
-        SQL sql = new SQL();
-        instancias.setConfigFactura(new SQL().getDatosConfiguracion());
     }
 
     public static Instancias getInstancias() {
@@ -375,7 +369,7 @@ public class Instancias {
     private String medico;
 
     /* INICIO CONFIGURACIONES */
-    private modeloConfiguracion configFactura;
+    private modeloConfiguracion configuracionCliente;
 
     /* TIPO MONEDA */
     private String simbolo;
@@ -1584,21 +1578,21 @@ public class Instancias {
         this.resolucion = resolucion;
     }
 
-    public modeloConfiguracion getConfigFactura() {
-        return configFactura;
+    public modeloConfiguracion getConfiguracionCliente() {
+        return configuracionCliente;
     }
 
-    public void setConfigFactura(modeloConfiguracion configFactura) {
-        this.configFactura = configFactura;
+    public void setConfiguracionCliente(modeloConfiguracion configuracionCliente) {
+        this.configuracionCliente = configuracionCliente;
     }
 
-    private vistaSuperMaestra configuraciones;
+    private Modelo.Maestra.ConfiguracionSistema configuraciones;
 
-    public vistaSuperMaestra getConfiguraciones() {
+    public Modelo.Maestra.ConfiguracionSistema getConfiguraciones() {
         return configuraciones;
     }
 
-    public void setConfiguraciones(vistaSuperMaestra configuraciones) {
+    public void setConfiguraciones(Modelo.Maestra.ConfiguracionSistema configuraciones) {
         this.configuraciones = configuraciones;
     }
 

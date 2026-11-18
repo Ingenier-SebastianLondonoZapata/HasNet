@@ -26,7 +26,6 @@ public class infPlantillas extends javax.swing.JInternalFrame {
     private Dimension dimBarra = null;
     Object[][] grupos;
     ModeloProducto nodoProducto;
-    modeloConfiguracion nodoConf;
 
     public infPlantillas() {
         initComponents();

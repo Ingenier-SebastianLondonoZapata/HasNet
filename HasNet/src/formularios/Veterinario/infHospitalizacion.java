@@ -1405,8 +1405,8 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
         if (ControladorAlertas.option("¿Desea continuar?")) {
 
             Object[][] estadosMedicamentos = instancias.getSql().getEstadoMedicamentos(idHospitalizacion);
-            instancias.getSql().eliminar_registro("bdMedicamentosProcesos", " idHospitalizacion = '" + idHospitalizacion + "' ");
-            instancias.getSql().eliminar_registro("bdMedicamentosProcesosAlertas", " idHospitalizacion = '" + idHospitalizacion + "' ");
+            instancias.getSql().eliminar_registro("bdMedicamentosProcesos", "idHospitalizacion = ?", idHospitalizacion);
+            instancias.getSql().eliminar_registro("bdMedicamentosProcesosAlertas", "idHospitalizacion = ?", idHospitalizacion);
 
             for (int i = 0; i < tblMedicamentosPro.getColumnCount(); i++) {
                 for (int j = 0; j < tblMedicamentosPro.getRowCount(); j++) {

@@ -1,0 +1,34 @@
+﻿# Datos que se copian de bdHasNet (desarrollo) a la base inicial de un cliente nuevo.
+# Las demás tablas se crean vacías (solo estructura). Las vistas se copian siempre.
+#
+#   tabla                      copia todas las filas
+#   tabla | condición          copia solo las filas que cumplen la condición (SQL)
+#   sql: sentencia             se ejecuta sobre la base inicial después de copiar
+#
+# Catálogos de referencia
+bdcies
+bdmedicamentos
+bdregiones
+bdrazas
+bdvacunas
+bdepsprecargados
+bdconsecutivoseps
+bdmedida
+bdtipovehiculo
+bdmonedas
+bdcargo
+bdimpresoras
+bdcamposordenpredeterminada
+
+# Configuración
+bdmaestra
+bdmaestraimpresiones
+bdmaestraparqueadero
+bdconsecutivos
+bdbodegas | codigo = 'BODEGA-1'
+bdterceros | idSistema = 'TERC-00000001'
+bdusuario | usuario = 'ADMIN'
+
+# Ajustes para un cliente nuevo
+sql: UPDATE bdconsecutivos SET numero = '1'
+sql: UPDATE bdmaestra SET nitEmpresa = NULL, nombreEmpresa = NULL, regimenEmpresa = NULL, direccionEmpresa = NULL, telefonoEmpresa = NULL, responsabilidadesFiscales = NULL, bodega = 'BODEGA-1'

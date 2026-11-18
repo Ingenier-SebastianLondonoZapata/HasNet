@@ -208,7 +208,7 @@ public class DaoResoluciones {
     }
 
     public ModeloPrefijos obtenerPrefijos() {
-        String sql = "SELECT prefijoAbonos, prefijoEgresos, prefijoNotaCredito, prefijoNotaDebito FROM bdLogErrores WHERE terminal = 'TERM-1'";
+        String sql = "SELECT prefijoAbonos, prefijoEgresos, prefijoNotaCredito, prefijoNotaDebito FROM bdMaestra WHERE Id = 1";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {
@@ -220,7 +220,7 @@ public class DaoResoluciones {
                     prefijos.setPrefijoNotaDebito(rs.getString("prefijoNotaDebito"));
                     return prefijos;
                 } else {
-                    System.out.println("No se encontró prefijos con ID: TERM-1");
+                    System.out.println("No se encontraron prefijos en bdMaestra");
                 }
             }
         } catch (SQLException e) {
@@ -278,14 +278,13 @@ public class DaoResoluciones {
     }
 
     public boolean modificarPrefijos(ModeloPrefijos datosPrefijos) {
-        String sql = "UPDATE bdLogErrores SET prefijoNotaCredito = ?, prefijoNotaDebito = ?, prefijoAbonos = ?, prefijoEgresos = ? WHERE terminal = ?";
+        String sql = "UPDATE bdMaestra SET prefijoNotaCredito = ?, prefijoNotaDebito = ?, prefijoAbonos = ?, prefijoEgresos = ? WHERE Id = 1";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, datosPrefijos.getPrefijoNotaCredito());
             stmt.setString(2, datosPrefijos.getPrefijoNotaDebito());
             stmt.setString(3, datosPrefijos.getPrefijoAbonos());
             stmt.setString(4, datosPrefijos.getPrefijoEgresos());
-            stmt.setString(5, datosPrefijos.getTerminal());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

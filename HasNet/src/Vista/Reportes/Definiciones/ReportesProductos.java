@@ -10,7 +10,7 @@ import Modelo.Reportes.SeleccionReporte;
 import Procesos.Inventario.Dao.DaoDetalleProducto;
 import Procesos.Inventario.Dao.DaoInventario;
 import Utilidades.Contactos.Bodegas;
-import Vista.Configuraciones.vistaSuperMaestra;
+import Modelo.Maestra.ConfiguracionSistema;
 import Vista.Reportes.DefinicionReporte;
 import Vista.Reportes.EntradaReporte;
 import Vista.Reportes.Filtros.FiltroBusqueda;
@@ -51,7 +51,7 @@ public final class ReportesProductos {
         return instancias().getUsuarioLog();
     }
 
-    private static vistaSuperMaestra configuracion() {
+    private static ConfiguracionSistema configuracion() {
         return instancias().getConfiguraciones();
     }
 

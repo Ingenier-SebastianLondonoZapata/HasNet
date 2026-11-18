@@ -11,7 +11,6 @@ import clases.Instancias;
 import clases.metodosGenerales;
 import clases.ndUsuario;
 import Vista.Aterrizaje.VistaMenu;
-import java.io.File;
 import javax.swing.JFrame;
 
 public class controladorInicioSesion {
@@ -22,16 +21,15 @@ public class controladorInicioSesion {
     ControladorFacturacionElectronica controladorFacturacion = new ControladorFacturacionElectronica();
     ControladorAlertas alertas = new ControladorAlertas();
 
-    private static final String RUTA_FICHERO = "C:/info.txt";
     private static final String MENSAJE_DATOS_INCORRECTOS = "Usuario o contraseña incorrecta";
 
     public boolean validarIniciarSesion(String usuario, String password) {
-        String codigoTerminal = Constantes.leerArchivoTerminal();
-        Terminal terminal = daoInicioSesion.obtenerTerminal(codigoTerminal);
+        String codigoTerminal = Constantes.obtenerIdTerminal();
+        Terminal terminal = codigoTerminal.isEmpty() ? null : daoInicioSesion.obtenerTerminal(codigoTerminal);
         Object[] datosUsuario = instancias.getSql().obtenerDatosUsuarioIniciado(usuario);
         ndUsuario nodo = instancias.getSql().getDatosUsuario(usuario);
 
-        if (terminal.getId() != null && existeFichero()) {
+        if (terminal != null && terminal.getId() != null) {
             if (nodo.getUsuario() != null) {
                 if (!password.equals(nodo.getContra())) {
                     alertas.alertFail(MENSAJE_DATOS_INCORRECTOS);
@@ -56,14 +54,9 @@ public class controladorInicioSesion {
                 return false;
             }
         } else {
-            alertas.alertFail("Sistema no funcional");
+            alertas.alertFail("Terminal no activada. Ejecute la herramienta de activación.");
             return false;
         }
-    }
-
-    private boolean existeFichero() {
-        File fichero = new File(RUTA_FICHERO);
-        return fichero.exists();
     }
 
     class iniciarCargado extends controladorBarraProceso {

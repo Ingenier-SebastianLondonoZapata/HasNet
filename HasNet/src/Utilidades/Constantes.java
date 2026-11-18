@@ -1,7 +1,6 @@
 package Utilidades;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import Utilidades.Seguridad.IdentidadInstalacion;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +20,7 @@ public class Constantes {
     public static final String EGRESO_NORMAL = "Egreso Normal";
     public static final String COMPRA_NORMAL = "Compra Normal";
 
-    public static final String BASE_DATOS_PRINCIPAL = "bdClick";
-
-    private static final String RUTA_ARCHIVO_TERMINAL = "C:\\Java.old\\conf.ck";
-    private static final String RUTA_ARCHIVO_ID_CLIENTE = "C:\\Java.old\\IdentificadorCliente.txt";
+    public static final String BASE_DATOS_PRINCIPAL = "bdHasNet";
 
     public static final int CANAL_PRUEBAS = 37;
     public static final int CANAL_PRODUCCION = 37;
@@ -76,34 +72,11 @@ public class Constantes {
     }
 
     public static String leerIdentificadorCliente() {
-        String texto = "", resultado = "";
-        try {
-            FileReader lector = new FileReader(RUTA_ARCHIVO_ID_CLIENTE);
-            BufferedReader contenido = new BufferedReader(lector);
-            while ((texto = contenido.readLine()) != null) {
-                resultado = resultado + texto;
-            }
-        } catch (Exception e) {
-            System.out.println("Error al leer el archivo de propiedades: + " + e);
-        }
-
-        return resultado;
+        return IdentidadInstalacion.obtenerIdentificadorCliente();
     }
 
-    public static String leerArchivoTerminal() {
-        String texto = "", resultado = "";
-
-        try {
-            FileReader lector = new FileReader(RUTA_ARCHIVO_TERMINAL);
-            BufferedReader contenido = new BufferedReader(lector);
-            while ((texto = contenido.readLine()) != null) {
-                resultado = resultado + texto;
-            }
-        } catch (Exception e) {
-            System.out.println("Error al leer archivo de terminal " + e);
-        }
-
-        return resultado;
+    public static String obtenerIdTerminal() {
+        return IdentidadInstalacion.obtenerIdTerminal();
     }
 
     public static Map<String, String> obtenerListadoPrefijosDocumento() {

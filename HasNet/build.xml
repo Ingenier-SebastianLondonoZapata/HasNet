@@ -20,9 +20,29 @@
        <zipfileset src="${store.dir}/temp_final.jar"  
        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>  
      </zip>  
-     <delete file="${store.dir}/temp_final.jar"/>  
-    </target> 
-    
+     <delete file="${store.dir}/temp_final.jar"/>
+    </target>
+
+    <target name="-post-jar">
+        <property name="activador.dir" value="instalador/salida/Activador"/>
+        <mkdir dir="${activador.dir}"/>
+        <jar destfile="${activador.dir}/ActivadorHasNet.jar">
+            <fileset dir="${build.classes.dir}">
+                <include name="Activacion/**"/>
+                <include name="Utilidades/Constantes*.class"/>
+                <include name="Utilidades/BaseDatos/CredencialesBaseDatos*.class"/>
+                <include name="Utilidades/Seguridad/IdentidadInstalacion*.class"/>
+            </fileset>
+            <zipfileset src="${file.reference.mysql-connector-j-8.0.33.jar}" excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA, META-INF/MANIFEST.MF"/>
+            <manifest>
+                <attribute name="Main-Class" value="Activacion.VistaActivacion"/>
+            </manifest>
+        </jar>
+        <copy todir="${activador.dir}">
+            <fileset dir="instalador" includes="activar-terminal.bat,hasnet-instalacion.dat"/>
+        </copy>
+    </target>
+
     <description>Construye y corre el proyecto HasNet.</description>
     <import file="nbproject/build-impl.xml"/>
 

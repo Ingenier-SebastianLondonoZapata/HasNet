@@ -29,8 +29,6 @@ import clases.big;
 import clases.cambiarColorTabla;
 import clases.metodosGenerales;
 import Modelo.Productos.ModeloProducto;
-import configuracion.dlgFinSoporte;
-import formularios.dlgPedirSuperContrasena;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -60,7 +58,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     metodosGenerales metodos;
     private Instancias instancias;
     private JComponent Barra;
-    int teclasPresionadas = 0;
     String turno, valor, url, simbolo = "";
     private PanelDisenoMesas panelDisenoMesas;
 
@@ -149,45 +146,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         cargarPrefijos();
         cargarTablaResoluciones();
         inicializarUsuarios();
-
-        this.registerKeyboardAction(accion("primera"), "primera", KeyStroke.getKeyStroke(KeyEvent.VK_A, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
-        this.registerKeyboardAction(accion("segunda"), "segunda", KeyStroke.getKeyStroke(KeyEvent.VK_M, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
-        this.registerKeyboardAction(accion("finSoporte"), "finSoporte", KeyStroke.getKeyStroke(KeyEvent.VK_F, Event.CTRL_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
-    }
-
-    private ActionListener accion(final String opc) {
-        ActionListener a = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (opc) {
-                    case "finSoporte":
-                        dlgFinSoporte finSoporte = new dlgFinSoporte();
-                        finSoporte.setVisible(true);
-                        break;
-                    case "primera":
-                        if (teclasPresionadas == 0) {
-                            teclasPresionadas = 1;
-                        } else {
-                            teclasPresionadas = 0;
-                        }
-                        break;
-                    case "segunda":
-                        if (teclasPresionadas == 1) {
-                            teclasPresionadas = 2;
-                        } else if (teclasPresionadas == 2) {
-                            new dlgPedirSuperContrasena(null, true, "").setVisible(true);
-                            actualizarInformacionImpresion();
-                            teclasPresionadas = 0;
-                        } else {
-                            teclasPresionadas = 0;
-                        }
-                        break;
-
-                }
-            }
-        };
-        return a;
-
     }
 
     @SuppressWarnings("unchecked")
@@ -5569,7 +5527,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         String notasCredito = prefijoDe(PREFIJO_NOTAS_CREDITO);
         String notasDebito = prefijoDe(PREFIJO_NOTAS_DEBITO);
 
-        ModeloPrefijos datosPrefijos = new ModeloPrefijos(abonos, egresos, notasDebito, notasCredito, "TERM-1");
+        ModeloPrefijos datosPrefijos = new ModeloPrefijos(abonos, egresos, notasDebito, notasCredito);
         if (!daoResoluciones.modificarPrefijos(datosPrefijos)) {
             ControladorAlertas.alertFail("No fue posible guardar los prefijos");
             return false;

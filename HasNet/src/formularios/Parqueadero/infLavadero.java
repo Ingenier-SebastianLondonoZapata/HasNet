@@ -1251,8 +1251,8 @@ public class infLavadero extends javax.swing.JInternalFrame {
                 return;
             }
 
-            instancias.getSql().eliminar_registro("bdLavadoProductos", "IdLavado = '" + lbNoFactura.getText() + "' AND liquidado = 'PENDIENTE' ");
-            instancias.getSql().eliminar_registro("bdLavado", "id = '" + lbNoFactura.getText() + "'");
+            instancias.getSql().eliminar_registro("bdLavadoProductos", "IdLavado = ? AND liquidado = ?", lbNoFactura.getText(), "PENDIENTE");
+            instancias.getSql().eliminar_registro("bdLavado", "id = ?", lbNoFactura.getText());
 
             String conse = txtoServicio.getText();
             Object[] vector = {lbNoFactura.getText(), txtObservaciones.getText(), txtL1.getText(), instancias.getUsuario(), metodos.fechaConsulta(metodosGenerales.fechaHora()),

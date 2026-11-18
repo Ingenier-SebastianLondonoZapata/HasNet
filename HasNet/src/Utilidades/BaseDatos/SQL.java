@@ -487,7 +487,7 @@ public class SQL {
 
     public boolean eliminarPonderadoIngreso(String tabla, String id) {
         boolean ok = false;
-        ok = eliminar_registro(tabla, " ingreso = '" + id + "'");
+        ok = eliminar_registro(tabla, "ingreso = ?", id);
         return ok;
     }
 
@@ -535,18 +535,6 @@ public class SQL {
             }
         };
         return datos;
-    }
-
-    public String getCantProsponer() {
-        String instruccion_sql = "select prosponer from configuracion; ";
-        //columnas de la tabla que se
-        String[] colName = {"prosponer"};
-        boolean[] cadena = {true};
-        try {
-            return GetRegistro(colName, cadena, instruccion_sql)[0].toString();
-        } catch (Exception e) {
-            return "3";
-        }
     }
 
     public String getFacturaNotaCredito(String nc) {
@@ -618,20 +606,6 @@ public class SQL {
                 + "mucosa, llenadoCapilar, caracteristicas, hidratacion, nutricional, organosSentidos, ganglios, proximoControl, fotos, examenes, endocrino)"
                 + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
         ok = Agregar_Registro(metodos.pasarDatosConsulta(nodo), null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarVersion(String version) {
-        boolean ok = false;
-        String instruccion_sql = "update configuracion set version=?; ";
-        ok = Actualizar_Registro(new Object[]{"", version}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarCantProsponer(int cant) {
-        boolean ok = false;
-        String instruccion_sql = "update configuracion set prosponer=?; ";
-        ok = Actualizar_Registro(new Object[]{"", cant}, null, instruccion_sql);
         return ok;
     }
 
@@ -1582,7 +1556,7 @@ public class SQL {
 
     public boolean eliminarArchivoAdjunto(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdArchivosAdjuntos", "nombre='" + id + "'");
+        ok = eliminar_registro("bdArchivosAdjuntos", "nombre = ?", id);
         return ok;
     }
 
@@ -1646,53 +1620,6 @@ public class SQL {
         String origen = " bdEgreso";
         Object dtDatos[][] = getDatos(colName, origen, "select ingresoAsociado FROM bdEgreso where egreso ='" + id + "' ", " where egreso = '" + id + "' ");
         return dtDatos[0][0].toString();
-    }
-
-    public boolean agregarFechasBloqueo(String fecha) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdLogErroresBloqueo(fecha) values (?);";
-        ok = Agregar_Registro(new Object[]{fecha}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean modificarFechasBloqueo(String id, boolean habilitada) {
-        boolean ok = false;
-        String instruccion_sql = "update bdLogErroresBloqueo set habilitada=? where id=" + id + " ;";
-        ok = Actualizar_Registro(new Object[]{"", habilitada}, null, instruccion_sql);
-        return ok;
-    }
-
-    public DefaultTableModel getFechasBloqueadas() {
-        String[] columNames = {"Id", "Fecha", "Estado"};
-
-        String[] colName = {"Id", "fecha", "habilitada"};
-
-        String origen = " bdLogErroresBloqueo";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select Id, fecha, habilitada from ").append(origen).toString(), new Integer[]{2});
-        DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
-
-            Class[] types = new Class[]{
-                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean[]{
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        };
-        return datos;
-    }
-
-    public boolean eliminarFechaBloqueo(String id) {
-        boolean ok = false;
-        ok = eliminar_registro("bdLogErroresBloqueo", "Id= " + id + " ");
-        return ok;
     }
 
     public Object[][] obtenerArchivosAdjuntos(String historia, String fecha) {
@@ -1803,16 +1730,6 @@ public class SQL {
         }
     }
 
-    public Object[][] getFechasBloqueo() {
-
-        String colName[] = {
-            "Id", "fecha"
-        };
-        String origen = " bdLogErroresBloqueo";
-        Object dtDatos[][] = getDatos(colName, origen, "select Id, fecha from bdLogErroresBloqueo where habilitada=false", " where habilitada=false ");
-        return dtDatos;
-
-    }
 
     public Object[][] getRegistrosExamenesHistoria(String historia, String bd) {
         String colName[] = {
@@ -3725,12 +3642,6 @@ public class SQL {
         return dtDatos[0][0].toString();
     }
 
-    public String getVersion() {
-        String colName[] = {"version"};
-        String origen = " configuracion";
-        Object dtDatos[][] = getDatos(colName, origen, "select version FROM configuracion ", "");
-        return dtDatos[0][0].toString();
-    }
 
 
     public DefaultTableModel getRegistrosProductos2(String condicion) {
@@ -4842,7 +4753,7 @@ public class SQL {
 
     public boolean eliminarProductoUnificado(String prod, String prod2) {
         boolean ok = false;
-        ok = eliminar_registro("bdProductosUnificados", "productoPadre='" + prod + "' AND productoUnificado='" + prod2 + "'");
+        ok = eliminar_registro("bdProductosUnificados", "productoPadre = ? AND productoUnificado = ?", prod, prod2);
         return ok;
     }
 
@@ -5611,66 +5522,6 @@ public class SQL {
         return dtDatos;
     }
 
-
-
-    public boolean actualizarPermisos(String id, String regimen, String impoconsumo, String dispositivoUSB,
-            String ordenesServicio, String tipoOrden, String creditos, String planSepare, String pedidos,
-            String tipoImpresion, String invBodega, String productosSerial, String embarcaciones, String congeladas,
-            String medico, String veterinaria, String parqueadero, String agenda, String restaurante,
-            String recordatorios, String laboratorio, String oftalmologia, String facturaLote, String PTM,
-            String periodoPrueba, String diasFinalizacionPrueba, String numeroFacturas, String diasDespuesPrueba,
-            String info) {
-        boolean ok = false;
-        String instruccion_sql = "update configuracion set regimen=?, impoconsumo=?, usb=?, ordenServ=?, servicioAutomotor=?, creditos=?, planSepare=?, "
-                + "pedidos=?, tipoImpresion=?, invBodega=?, productosSerial=?, embarcaciones=?, congeladas=?, medico=?, veterinaria=?, parqueadero=?, "
-                + "agenda=?, restaurante=?, recordatorios=?, laboratorio=?, oftalmologia=?, facturaLote=?, PTM=?, periodoPrueba=?, diasFinalizacionPrueba=?, "
-                + "numeroFacturas=?, diasDespuesPrueba=?, info=?, actualizarPermisos=? where Id = '" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", regimen, impoconsumo, dispositivoUSB, ordenesServicio, tipoOrden,
-            creditos, planSepare, pedidos, tipoImpresion, invBodega, productosSerial, embarcaciones, congeladas,
-            medico, veterinaria, parqueadero, agenda, restaurante, recordatorios, laboratorio, oftalmologia,
-            facturaLote, PTM, periodoPrueba, diasFinalizacionPrueba, numeroFacturas, diasDespuesPrueba, info,
-            true}, null, instruccion_sql);
-        return ok;
-    }
-
-    //ventasFactura
-    public boolean modificarConfiguracion(modeloConfiguracion modelo) {
-        String instruccion_sql = "update configuracion set regimen=?, informacionLegal=?, tipoImpresion=?, nit=?, nombre=?, telefono=?, fechaInicio=?, "
-                + "diasAntesAlertaBloqueo=?, diasDespuesGabelaBloqueo=?, numeroFEDisponibles=?, congeladas=?, medico=?, veterinaria=?, parqueadero=?, ordenServicio=?, creditos=?, "
-                + "separe=?, pedido=?, agenda=?, restaurante=?, recordatorios=?, laboratorio=?, servicioAutomotor=?, oftalmologia=?, inventarioBodegas=?, "
-                + "productosSerial=?, facturacionLote=?, usb=?, facturaElectronica=?, pruebasFacturacion=? where Id=1 ;";
-        return Actualizar_Registro(modelo.pasarDatosConfiguracion(modelo), null, instruccion_sql);
-    }
-
-    public modeloConfiguracion getDatosConfiguracion() {
-        modeloConfiguracion modelo = new modeloConfiguracion();
-        String instruccion_sql = "select regimen, informacionLegal, tipoImpresion, nit, nombre, telefono, fechaInicio, diasAntesAlertaBloqueo,"
-                + "diasDespuesGabelaBloqueo, numeroFEDisponibles, congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, "
-                + "recordatorios, laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, usb, facturaElectronica, pruebasFacturacion "
-                + "from configuracion where Id=1; ";
-        String[] colName = {"regimen", "informacionLegal", "tipoImpresion", "nit", "nombre", "telefono", "fechaInicio", "diasAntesAlertaBloqueo", "diasDespuesGabelaBloqueo",
-            "numeroFEDisponibles", "congeladas", "medico", "veterinaria", "parqueadero", "ordenServicio", "creditos", "separe", "pedido", "agenda", "restaurante", "recordatorios",
-            "laboratorio", "servicioAutomotor", "oftalmologia", "inventarioBodegas", "productosSerial", "facturacionLote", "usb", "facturaElectronica", "pruebasFacturacion"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false
-        };
-        return modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql));
-    }
-
-    public boolean modificarConfiguraciones(String nit, String nombre) {
-        boolean ok = false;
-        String instruccion_sql = "update configuracion set nit=?, nombre=? ;";
-        ok = Actualizar_Registro(new Object[]{"", nit, nombre}, null, instruccion_sql);
-        return ok;
-    }
-
-    public boolean cambiarDiasBloqueo(String anticipacion, String plazo) {
-        boolean ok = false;
-        String instruccion_sql = "update configuracion set diasAlertaBloqueo=?, diasBloqueo=? ;";
-        ok = Actualizar_Registro(new Object[]{"", anticipacion, plazo}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean modificarProceso(ndProceso nodo) {
         boolean ok = false;
         String instruccion_sql = "update bdProceso set nombre=?, und=?, observaciones=?"
@@ -6126,67 +5977,67 @@ public class SQL {
 
     public boolean eliminarIngresoEx(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdIngresoEx", "id='" + id + "'");
+        ok = eliminar_registro("bdIngresoEx", "id = ?", id);
         return ok;
     }
 
     public boolean eliminarIngreso(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdIngreso", "id='" + id + "'");
+        ok = eliminar_registro("bdIngreso", "id = ?", id);
         return ok;
     }
 
     public boolean eliminarCompraEx(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdCompraEx", "ingreso='" + id + "'");
+        ok = eliminar_registro("bdCompraEx", "ingreso = ?", id);
         return ok;
     }
 
     public boolean eliminarCompra(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdCompra", "ingreso='" + id + "'");
+        ok = eliminar_registro("bdCompra", "ingreso = ?", id);
         return ok;
     }
 
     public boolean eliminarEgreso(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdEgreso", "Id='" + id + "'");
+        ok = eliminar_registro("bdEgreso", "Id = ?", id);
         return ok;
     }
 
     public boolean eliminarCodEgreso(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdEgresoCods", "egreso='" + id + "'");
+        ok = eliminar_registro("bdEgresoCods", "egreso = ?", id);
         return ok;
     }
 
     public boolean eliminarComanda(String id, String campo) {
         boolean ok = false;
-        ok = eliminar_registro("bdComanda", campo + " = '" + id + "'");
+        ok = eliminar_registro("bdComanda", validarIdentificador(campo) + " = ?", id);
         return ok;
     }
 
     public boolean eliminarGarantia(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdGarantia", "id = '" + id + "'");
+        ok = eliminar_registro("bdGarantia", "id = ?", id);
         return ok;
     }
 
     public boolean eliminarNotasCredito(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdNotasCredito", "factura='" + id + "'");
+        ok = eliminar_registro("bdNotasCredito", "factura = ?", id);
         return ok;
     }
 
     public boolean eliminarProdCosteo(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdDisCosteo", "codigo='" + id + "'");
+        ok = eliminar_registro("bdDisCosteo", "codigo = ?", id);
         return ok;
     }
 
     public boolean eliminarProdPlantilla(String id) {
         boolean ok = false;
-        ok = eliminar_registro("bdPlantilla", "producto='" + id + "'");
+        ok = eliminar_registro("bdPlantilla", "producto = ?", id);
         return ok;
     }
 
@@ -6502,26 +6353,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean agregarLogError(String id, String tipo, String resolucion, String fechaResolucion, String prefijo, String numeracionDel, String numeracionHasta,
-            String fechaInicio, String tipoF, String diseno, String modeloContable) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdLogErroresDetalle(id, tipo, resolucion, fechaResolucion, prefijo, "
-                + "numeracionDel, numeracionHasta, consecutivo, inicioResolucion, tipoF, diseno, modeloContable) values(?,?,?,?,?,?,?,?,?,?,?,?);";
-        ok = Agregar_Registro(new Object[]{id, tipo, resolucion, fechaResolucion, prefijo, numeracionDel,
-            numeracionHasta, "1", fechaInicio, tipoF, diseno, modeloContable}, null, instruccion_sql);
-        return ok;
-    }
-
-    public Object[] getResolucionTerminales(String ter) {
-        String instruccion_sql = " select id, tipo, resolucion, fechaResolucion, prefijo, numeracionDel, numeracionHasta, consecutivo, inicioResolucion, "
-                + "tipoF, diseno, modeloContable FROM bdLogErroresDetalle where id = '" + ter + "'; ";
-        String colName[] = {"id", "tipo", "resolucion", "fechaResolucion", "prefijo", "numeracionDel", "numeracionHasta", "consecutivo",
-            "inicioResolucion", "tipoF", "diseno", "modeloContable"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, true, true};
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data;
-    }
-
     // Usuarios: las columnas de permisos salen del catálogo PermisoUsuario
     // (DaoUsuarios), así una columna depurada solo se quita en un lugar.
     public boolean modificarUsuario(ndUsuario nodo) {
@@ -6762,7 +6593,7 @@ public class SQL {
 
     public boolean eliminarTodo(String tabla) {
         boolean ok = false;
-        String instruccion = "delete from " + tabla + ";";
+        String instruccion = "delete from " + validarIdentificador(tabla);
         try {
             PreparedStatement pstm = mysql.getConnection().prepareStatement(instruccion);
             pstm.execute();
@@ -6774,18 +6605,32 @@ public class SQL {
         return ok;
     }
 
-    public boolean eliminar_registro(String tabla, String condicion) {
-        boolean ok = false;
-        String instruccion = "delete from " + tabla + " where " + condicion + " ;";
-        try {
-            PreparedStatement pstm = mysql.getConnection().prepareStatement(instruccion);
+    public boolean eliminar_registro(String tabla, String condicion, Object... parametros) {
+        String tablaValidada = validarIdentificador(tabla);
+        if (condicion == null || condicion.trim().isEmpty() || condicion.contains("'") || condicion.contains(";")
+                || condicion.contains("--") || condicion.contains("/*")) {
+            throw new IllegalArgumentException("La condición de eliminación debe usar parámetros (?)");
+        }
+
+        String instruccion = "delete from " + tablaValidada + " where " + condicion;
+        try (PreparedStatement pstm = mysql.getConnection().prepareStatement(instruccion)) {
+            for (int i = 0; i < parametros.length; i++) {
+                pstm.setObject(i + 1, parametros[i]);
+            }
             pstm.execute();
-            pstm.close();
-            ok = true;
+            return true;
         } catch (SQLException e) {
             System.out.println(e);
+            return false;
         }
-        return ok;
+    }
+
+    private static String validarIdentificador(String identificador) {
+        String valor = identificador == null ? "" : identificador.trim();
+        if (!valor.matches("[A-Za-z_][A-Za-z0-9_]{0,63}")) {
+            throw new IllegalArgumentException("Identificador SQL inválido: " + identificador);
+        }
+        return valor;
     }
 
     public Object[][] getDatosVitrina(String vitrina) {
@@ -7870,27 +7715,24 @@ public class SQL {
 
     public boolean eliminarPonderado(String id) {
         boolean ok = false;
-        ok = eliminar_registro(" bdUltimoPonderado ", " producto ='" + id + "'");
+        ok = eliminar_registro("bdUltimoPonderado", "producto = ?", id);
         return ok;
     }
 
     public boolean eliminarPrecompraDetalle(String id) {
         boolean ok = false;
-        ok = eliminar_registro(" bdPreCompraDetalle ", "ingreso='" + id + "'");
+        ok = eliminar_registro("bdPreCompraDetalle", "ingreso = ?", id);
         return ok;
     }
 
     public boolean eliminarPrecompra(String id, String usuario) {
         boolean ok = false;
 
-        String sql = "";
         if (!usuario.equals("")) {
-            sql = "ingreso = '" + id + "' and usuario = '" + usuario + "'";
+            ok = eliminar_registro("bdPreCompra", "ingreso = ? and usuario = ?", id, usuario);
         } else {
-            sql = "ingreso = '" + id + "'";
+            ok = eliminar_registro("bdPreCompra", "ingreso = ?", id);
         }
-
-        ok = eliminar_registro(" bdPreCompra ", sql);
         return ok;
     }
 

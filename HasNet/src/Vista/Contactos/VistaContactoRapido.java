@@ -238,7 +238,7 @@ public class VistaContactoRapido extends javax.swing.JDialog {
         datos.setPais("Colombia");
 
         datos.setFecha(fecha);
-        datos.setNacimiento(fecha);
+        datos.setNacimiento(null);
         datos.setUsuario(instancias.getUsuario());
         datos.setTerminal(instancias.getTerminal());
         datos.setActivo(false);

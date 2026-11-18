@@ -659,8 +659,8 @@ public class dlgMedicamentosPendientes extends javax.swing.JDialog {
                     instancias.getSql().cambiarEstadoDeMedicamento(txtIdHosp.getText(), txtCod.getText(), txtHora.getText());
                 } else {
                     instancias.getSql().eliminar_registro("bdMedicamentosProcesosAlertas",
-                            " Codigo = '" + txtCod.getText() + "' and hora = '" + txtHora.getText() + "' "
-                            + " and idHospitalizacion = '" + txtIdHosp.getText() + "' ");
+                            "Codigo = ? and hora = ? and idHospitalizacion = ?",
+                            txtCod.getText(), txtHora.getText(), txtIdHosp.getText());
                 }
 
                 String producto = txtId.getText();

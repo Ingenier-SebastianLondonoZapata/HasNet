@@ -6,7 +6,7 @@ import Impresiones.ImpresionesReportes.GeneradorReportesCalculados;
 import Modelo.Reportes.CondicionSql;
 import Modelo.Reportes.OpcionFiltro;
 import Modelo.Reportes.SeleccionReporte;
-import Vista.Configuraciones.vistaSuperMaestra;
+import Modelo.Maestra.ConfiguracionSistema;
 import Vista.Reportes.DefinicionReporte;
 import Vista.Reportes.EntradaReporte;
 import Vista.Reportes.Filtros.FiltroLista;
@@ -33,7 +33,7 @@ public final class ReportesVentas {
         return instancias().getUsuarioLog();
     }
 
-    private static vistaSuperMaestra configuracion() {
+    private static ConfiguracionSistema configuracion() {
         return instancias().getConfiguraciones();
     }
 
@@ -56,7 +56,7 @@ public final class ReportesVentas {
 
     private static List<OpcionFiltro> tiposPermitidos() {
         ndUsuario usuario = usuario();
-        vistaSuperMaestra configuracion = configuracion();
+        ConfiguracionSistema configuracion = configuracion();
         List<OpcionFiltro> tipos = new ArrayList<>();
         if (usuario.isReportesVentas() || usuario.isReporteCreditos() || usuario.isReporteVentasAnuladas()) {
             tipos.add(new OpcionFiltro("Facturas", "facturacion"));

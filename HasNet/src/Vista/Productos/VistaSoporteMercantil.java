@@ -739,7 +739,6 @@ public class VistaSoporteMercantil extends javax.swing.JDialog {
         pnlHistorial.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 220, 220)));
 
         lbTituloHistorial.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
-        lbTituloHistorial.setForeground(new java.awt.Color(59, 48, 140));
         lbTituloHistorial.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTituloHistorial.setText("Historial de soportes mercantiles");
 

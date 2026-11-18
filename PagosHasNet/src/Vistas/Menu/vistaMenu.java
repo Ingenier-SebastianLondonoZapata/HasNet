@@ -2265,6 +2265,11 @@ public class vistaMenu extends javax.swing.JFrame {
 
         if (alertas.option("¿Desea continuar?")) {
 
+            if (!chkGenerarRegistroPruebas.isSelected() && instancias.getSql().existeCliente(txtIdentificacion.getText(), txtRazonSocial.getText())) {
+                alertas.alertFail("Ya existe un cliente registrado con la identificación " + txtIdentificacion.getText() + " y esa razón social");
+                return;
+            }
+
             if (chkGenerarRegistroPruebas.isSelected()) {
                 if (!crearYEnviarJSON(modelo, false)) {
                     alertas.alert("Error al crear emisor de facturación");
@@ -2284,6 +2289,7 @@ public class vistaMenu extends javax.swing.JFrame {
 
                 String fechaInicio = metodos.desdeDate2(dtFechaInicio.getCurrent());
                 String fechaLimite = metodos.sumarMeses(fechaInicio, 1);
+                codigoFinal = generarIdentificadorCliente();
 
                 if (instancias.getSql().agregarCliente(codigoFinal, txtIdentificacion.getText(), cmbTipoIdentificacion.getSelectedItem().toString(),
                         txtRazonSocial.getText(), txtCelular.getText(), fechaInicio)) {
@@ -2406,8 +2412,6 @@ public class vistaMenu extends javax.swing.JFrame {
     private void txtIdentificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdentificacionKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             txtPrimerNombre.requestFocus();
-        } else {
-            calcularCodigo();
         }
     }//GEN-LAST:event_txtIdentificacionKeyReleased
 
@@ -2425,8 +2429,6 @@ public class vistaMenu extends javax.swing.JFrame {
         txtRazonSocial.setText(txtPrimerNombre.getText() + " " + txtSegundoNombre.getText() + " " + txtPrimerApellido.getText() + " " + txtSegundoApellido.getText());
         if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
             txtSegundoNombre.requestFocus();
-        } else {
-            calcularCodigo();
         }
     }//GEN-LAST:event_txtPrimerNombreKeyReleased
 
@@ -2442,8 +2444,6 @@ public class vistaMenu extends javax.swing.JFrame {
         txtRazonSocial.setText(txtPrimerNombre.getText() + " " + txtSegundoNombre.getText() + " " + txtPrimerApellido.getText() + " " + txtSegundoApellido.getText());
         if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
             txtSegundoApellido.requestFocus();
-        } else {
-            calcularCodigo();
         }
     }//GEN-LAST:event_txtPrimerApellidoKeyReleased
 
@@ -2455,8 +2455,6 @@ public class vistaMenu extends javax.swing.JFrame {
         txtRazonSocial.setText(txtPrimerNombre.getText() + " " + txtSegundoNombre.getText() + " " + txtPrimerApellido.getText() + " " + txtSegundoApellido.getText());
         if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
             txtPrimerApellido.requestFocus();
-        } else {
-            calcularCodigo();
         }
     }//GEN-LAST:event_txtSegundoNombreKeyReleased
 
@@ -2468,8 +2466,6 @@ public class vistaMenu extends javax.swing.JFrame {
         txtRazonSocial.setText(txtPrimerNombre.getText() + " " + txtSegundoNombre.getText() + " " + txtPrimerApellido.getText() + " " + txtSegundoApellido.getText());
         if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
             txtDireccion.requestFocus();
-        } else {
-            calcularCodigo();
         }
     }//GEN-LAST:event_txtSegundoApellidoKeyReleased
 
@@ -2948,49 +2944,14 @@ public class vistaMenu extends javax.swing.JFrame {
         buscar.show();
     }
 
-    public void calcularCodigo() {
-        String hashEncriptado = txtIdentificacion.getText() + "--" + txtRazonSocial.getText();
-        try {
-            hashEncriptado = Encriptar(hashEncriptado, "yI4z%jIMndKd3N%bj#%f");
-        } catch (Exception ex) {
-            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, null, ex);
+    private static String generarIdentificadorCliente() {
+        byte[] bytes = new byte[16];
+        new java.security.SecureRandom().nextBytes(bytes);
+        StringBuilder hex = new StringBuilder(32);
+        for (byte b : bytes) {
+            hex.append(String.format("%02x", b));
         }
-
-        codigoFinal = hashEncriptado;
-    }
-
-    public static String Encriptar(String valor, String keyPrivate) throws Exception {
-        String resultado = null;
-        //Se obtienen los bytes de la clave privada   
-        byte[] keyBytes = keyPrivate.getBytes();
-        Key key = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacMD5");
-        Mac mac = null;
-
-        //Se obtiene el algoritmo de encriptacion   
-        try {
-            mac = Mac.getInstance("HmacMD5");
-            mac.init(key);
-        } catch (InvalidKeyException e) {
-            throw new Exception(e.getMessage(), e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new Exception(e.getMessage(), e);
-        }      //Se encripta el valor enviado   
-
-        byte[] valorEncriptado = mac.doFinal(valor.getBytes());
-
-        //Cadena con los digitos correspondientes en hexadecimal   
-        String digitosHexadecimales = "0123456789abcdef";
-        StringBuilder stringBuilder = new StringBuilder(valorEncriptado.length * 2);
-
-        for (int cx = 0; cx < valorEncriptado.length; cx++) {
-            int hn = ((int) (valorEncriptado[cx]) & 0x00ff) / 16;
-            int ln = ((int) (valorEncriptado[cx]) & 0x000f);
-            stringBuilder.append(digitosHexadecimales.charAt(hn));
-            stringBuilder.append(digitosHexadecimales.charAt(ln));
-        }
-
-        resultado = stringBuilder.toString();
-        return resultado;
+        return hex.toString();
     }
 
     /**

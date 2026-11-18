@@ -4,7 +4,7 @@ import Impresiones.ImpresionesReportes.GeneradorReporteDocumentos;
 import Modelo.Reportes.CondicionSql;
 import Modelo.Reportes.OpcionFiltro;
 import Modelo.Reportes.SeleccionReporte;
-import Vista.Configuraciones.vistaSuperMaestra;
+import Modelo.Maestra.ConfiguracionSistema;
 import Vista.Reportes.DefinicionReporte;
 import Vista.Reportes.EntradaReporte;
 import Vista.Reportes.Filtros.FiltroLista;
@@ -37,7 +37,7 @@ public final class ReportesCartera {
         return instancias().getUsuarioLog();
     }
 
-    private static vistaSuperMaestra configuracion() {
+    private static ConfiguracionSistema configuracion() {
         return instancias().getConfiguraciones();
     }
 

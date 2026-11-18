@@ -1,2 +1,8 @@
 build/
 dist/
+conexion.properties
+*.key
+hasnet-instalacion.dat
+HasNet/instalador/staging/
+HasNet/instalador/salida/
+credenciales-paquete.properties

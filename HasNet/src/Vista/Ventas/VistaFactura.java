@@ -7114,10 +7114,9 @@ public final class VistaFactura extends javax.swing.JPanel {
         modeloFacturacionElectronica.setIdPago(informacionDePagos[3].toString());
 
         if (!notaDebito && rdPos.isSelected()) {
-            String codigoCaja = Constantes.leerArchivoTerminal();
-            Terminal datosTerminal = daoInicioSesion.obtenerTerminal(codigoCaja);
-            modeloFacturacionElectronica.setPlacaCaja(codigoCaja);
-            modeloFacturacionElectronica.setUbicacionCaja(datosTerminal.getCodigo1());
+            Terminal datosTerminal = daoInicioSesion.obtenerTerminal(Constantes.obtenerIdTerminal());
+            modeloFacturacionElectronica.setPlacaCaja(datosTerminal != null ? datosTerminal.getTerminal() : instancias.getTerminal());
+            modeloFacturacionElectronica.setUbicacionCaja(datosTerminal != null ? datosTerminal.getUbicacionCaja() : "");
             modeloFacturacionElectronica.setCajero(instancias.getUsuarioLog().getNombre());
             modeloFacturacionElectronica.setTipoCaja("Sitio");
         }
@@ -8299,7 +8298,7 @@ public final class VistaFactura extends javax.swing.JPanel {
             ControladorAlertas.alertFail("Error al modificar estado de la hosp");
         }
 
-        instancias.getSql().eliminar_registro("bdMedicamentosProcesosAlertas", " idHospitalizacion = '" + ndHospitalizacion + "' ");
+        instancias.getSql().eliminar_registro("bdMedicamentosProcesosAlertas", "idHospitalizacion = ?", ndHospitalizacion);
         ControladorAlertas.alertSuccess("Hospitalización Finalizada");
         instancias.getSql().modificarHospitalizacion(ndHospitalizacion, horasHospitalizacion, diasHospitalizacion);
         instancias.getIngresoHospitalizacion().cargarRegistros();

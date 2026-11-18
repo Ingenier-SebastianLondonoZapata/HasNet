@@ -79,7 +79,6 @@ public class VistaProductos extends javax.swing.JInternalFrame {
     private Dimension dimBarra = null;
 
     Object[][] grupos;
-    modeloConfiguracion nodoConf;
     String simbolo = "";
     private ModeloProducto productoCargado;
 
@@ -118,7 +117,6 @@ public class VistaProductos extends javax.swing.JInternalFrame {
             lbUnidadMedida.setFont(lbUnidadMedida.getFont().deriveFont(java.awt.Font.BOLD));
         }
 
-        nodoConf = instancias.getSql().getDatosConfiguracion();
         txtCosto.setText(this.simbolo + " 0");
         actualizarGrupos();
 
@@ -1691,7 +1689,6 @@ public class VistaProductos extends javax.swing.JInternalFrame {
         txtMaximo.setText("30");
 
         if (instancias.getConfiguraciones().isRestaurante()) {
-            nodoConf = instancias.getSql().getDatosConfiguracion();
             txtImpoconsumoCompra.setText("0");
             txtIvaCompra.setText("0");
         } else {
@@ -2223,7 +2220,6 @@ public class VistaProductos extends javax.swing.JInternalFrame {
             txtImpoconsumoCompra.setText("0");
         } else {
             txtImpoconsumoCompra.setEnabled(false);
-            nodoConf = instancias.getSql().getDatosConfiguracion();
             txtImpoconsumoCompra.setText("0");
         }
     }//GEN-LAST:event_lbImpoCompraActionPerformed

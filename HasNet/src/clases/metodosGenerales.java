@@ -63,7 +63,6 @@ import configuracion.msgIngresar;
 import configuracion.msgIngresar1;
 import datechooser.beans.DateChooserCombo;
 import formularios.Agenda.ndAgenda;
-import formularios.Disk;
 import Vista.Productos.VistaBuscadorProductos;
 import java.awt.AWTException;
 import java.awt.Desktop;
@@ -3019,84 +3018,6 @@ public class metodosGenerales {
         }
         return resultadoFinal;
     }*/
-    public static String EncriptarValidacionUsuario(String valor, String keyPrivate) throws Exception {
-        String resultado = null;
-        //Se obtienen los bytes de la clave privada   
-        byte[] keyBytes = keyPrivate.getBytes();
-        Key key = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacMD5");
-        Mac mac = null;
-
-        //Se obtiene el algoritmo de encriptacion   
-        try {
-            mac = Mac.getInstance("HmacMD5");
-            mac.init(key);
-        } catch (InvalidKeyException e) {
-            throw new Exception(e.getMessage(), e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new Exception(e.getMessage(), e);
-        }      //Se encripta el valor enviado   
-
-        byte[] valorEncriptado = mac.doFinal(valor.getBytes());
-
-        //Cadena con los digitos correspondientes en hexadecimal   
-        String digitosHexadecimales = "0123456789abcdef";
-        StringBuilder stringBuilder = new StringBuilder(valorEncriptado.length * 2);
-        for (int cx = 0; cx < valorEncriptado.length; cx++) {
-            int hn = ((int) (valorEncriptado[cx]) & 0x00ff) / 16;
-            int ln = ((int) (valorEncriptado[cx]) & 0x000f);
-            stringBuilder.append(digitosHexadecimales.charAt(hn));
-            stringBuilder.append(digitosHexadecimales.charAt(ln));
-        }
-
-        resultado = stringBuilder.toString();
-        return resultado;
-    }
-
-    public static String DesencriptarFechaBloqueo(String textoEncriptado) throws Exception {
-        String secretKey = "yI4z%jIMndKd3N%bj#%f"; //llave para desenciptar datos
-        String base64EncryptedString = "";
-
-        try {
-            byte[] message = Base64.decodeBase64(textoEncriptado.getBytes("utf-8"));
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] digestOfPassword = md.digest(secretKey.getBytes("utf-8"));
-            byte[] keyBytes = Arrays.copyOf(digestOfPassword, 24);
-            SecretKey key = new SecretKeySpec(keyBytes, "DESede");
-
-            Cipher decipher = Cipher.getInstance("DESede");
-            decipher.init(Cipher.DECRYPT_MODE, key);
-
-            byte[] plainText = decipher.doFinal(message);
-            base64EncryptedString = new String(plainText, "UTF-8");
-
-        } catch (Exception ex) {
-        }
-        return base64EncryptedString;
-    }
-
-    public static String encriptarFechaBloqueo(String texto) {
-        String secretKey = "yI4z%jIMndKd3N%bj#%f"; //llave para encriptar datos
-        String base64EncryptedString = "";
-
-        try {
-
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] digestOfPassword = md.digest(secretKey.getBytes("utf-8"));
-            byte[] keyBytes = Arrays.copyOf(digestOfPassword, 24);
-
-            SecretKey key = new SecretKeySpec(keyBytes, "DESede");
-            Cipher cipher = Cipher.getInstance("DESede");
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-
-            byte[] plainTextBytes = texto.getBytes("utf-8");
-            byte[] buf = cipher.doFinal(plainTextBytes);
-            byte[] base64Bytes = Base64.encodeBase64(buf);
-            base64EncryptedString = new String(base64Bytes);
-
-        } catch (Exception ex) {
-        }
-        return base64EncryptedString;
-    }
 
     public boolean soloNum(KeyEvent evt) {
 
@@ -3226,6 +3147,9 @@ public class metodosGenerales {
         } catch (Exception ex) {
             System.out.println("Error:" + ex);
         }
+        if (fechaNac == null) {
+            return null;
+        }
 
         Calendar fechaNacimiento = Calendar.getInstance();
         //Se crea un objeto con la fecha actual
@@ -3256,6 +3180,9 @@ public class metodosGenerales {
             fechaNac = new SimpleDateFormat("dd-MM-yyyy").parse(fecha);
         } catch (Exception ex) {
             System.out.println("Error:" + ex);
+        }
+        if (fechaNac == null) {
+            return "";
         }
         Calendar fechaNacimiento = Calendar.getInstance();
         //Se crea un objeto con la fecha actual
@@ -3450,10 +3377,6 @@ public class metodosGenerales {
             }
         }
         return true;
-    }
-
-    public static String codificarSerial() {
-        return Disk.leer();
     }
 
     public static String letraTerminal(int id) {

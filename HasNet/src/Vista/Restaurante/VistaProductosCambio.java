@@ -320,7 +320,7 @@ public class VistaProductosCambio extends javax.swing.JDialog {
             }
 
             try {
-                instancias.getSql().eliminar_registro("bdRelacionados", " prod = '" + prodPrimero1 + "' and idProducto = '" + nodo.getIdSistema() + "' ");
+                instancias.getSql().eliminar_registro("bdRelacionados", "prod = ? and idProducto = ?", prodPrimero1, nodo.getIdSistema());
                 for (int i = 0; i < tblListado.getRowCount(); i++) {
                     if (!instancias.getSql().agregarProductosRelacionados(nodo.getIdSistema(), prodPrimero1, txtNombre.getText(),
                             tblListado.getValueAt(i, 0).toString(), tblListado.getValueAt(i, 1).toString(),
