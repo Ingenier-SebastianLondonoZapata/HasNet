@@ -138,6 +138,7 @@ public final class AlertList extends javax.swing.JDialog {
             }
         });
         tblDetalles.setRowHeight(29);
+        tblDetalles.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tblDetalles);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

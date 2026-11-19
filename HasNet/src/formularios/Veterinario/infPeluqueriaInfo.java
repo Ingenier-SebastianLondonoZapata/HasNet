@@ -292,7 +292,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
         btnBuscTerceros1.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -617,7 +617,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
         btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -741,7 +741,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 204));
         btnLimpiar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -754,7 +754,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -772,7 +772,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
         btnModificar.setBackground(new java.awt.Color(93, 173, 226));
         btnModificar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnModificar.setText("MODIFICAR");
         btnModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnModificar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -785,7 +785,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
         btnConfirmar.setBackground(new java.awt.Color(46, 204, 113));
         btnConfirmar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnConfirmar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnConfirmar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnConfirmar.setText("CONFIRMAR");
         btnConfirmar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnConfirmar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -798,7 +798,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
         btnFinalizar.setBackground(new java.awt.Color(46, 204, 113));
         btnFinalizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnFinalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnFinalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnFinalizar.setText("FACTURAR");
         btnFinalizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnFinalizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -811,7 +811,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
         btnCancelar.setBackground(new java.awt.Color(241, 148, 138));
         btnCancelar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnCancelar.setText("CANCELAR");
         btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -890,7 +890,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
         btnBuscarProductos.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscarProductos.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscarProductos.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscarProductos.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscarProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscarProductos.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -927,7 +927,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
         btnBuscarHoras.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscarHoras.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscarHoras.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscarHoras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscarHoras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscarHoras.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscarHoras.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscarHoras.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1097,7 +1097,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
     btnInasistencia.setBackground(new java.awt.Color(241, 148, 138));
     btnInasistencia.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-    btnInasistencia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+    btnInasistencia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
     btnInasistencia.setText("Inasistencia");
     btnInasistencia.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     btnInasistencia.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1110,7 +1110,7 @@ public class infPeluqueriaInfo extends javax.swing.JDialog {
 
     btnAgregarProductos.setBackground(new java.awt.Color(204, 204, 204));
     btnAgregarProductos.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-    btnAgregarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/producto.png"))); // NOI18N
+    btnAgregarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/producto.png"))); // NOI18N
     btnAgregarProductos.setText("Agregar productos");
     btnAgregarProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     btnAgregarProductos.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

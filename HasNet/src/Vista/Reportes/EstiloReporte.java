@@ -100,11 +100,11 @@ public final class EstiloReporte {
     }
 
     public static JButton botonAgregar() {
-        return botonIcono("/imagenes/agregar.png", "+", "Agregar al filtro");
+        return botonIcono("/imagenes/comun/agregar.png", "+", "Agregar al filtro");
     }
 
     public static JButton botonBuscar() {
-        return botonIcono("/imagenes/buscar1.png", "...", "Buscar");
+        return botonIcono("/imagenes/comun/buscar1.png", "...", "Buscar");
     }
 
     public static JButton botonGenerar(String texto) {

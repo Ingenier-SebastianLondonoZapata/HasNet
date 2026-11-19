@@ -3,8 +3,6 @@ package Vista.Solicitudes;
 import Utilidades.DatosMaestra;
 import Controlador.Alertas.ControladorAlertas;
 
-import Controlador.BarraProceso.controladorBarraProceso;
-import Controlador.BarraProceso.jcThread;
 import Enums.TipoDocumento;
 import Modelo.Solicitudes.AccionesPermisos;
 import formularios.*;
@@ -24,7 +22,6 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
     private final metodosGenerales metodos;
     private final Instancias instancias;
     private final String tipoProceso;
-    private jcThread barra2;
 
     private final AccionesPermisos accionRealizar;
 
@@ -248,7 +245,7 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
 
         btnSolicitarPermisoContrasenha.setBackground(new java.awt.Color(0, 204, 102));
         btnSolicitarPermisoContrasenha.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnSolicitarPermisoContrasenha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnSolicitarPermisoContrasenha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnSolicitarPermisoContrasenha.setBorder(null);
         btnSolicitarPermisoContrasenha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -398,11 +395,6 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
             return;
         }
 
-        controladorBarraProceso controladorBarra = new controladorBarraProceso();
-        esperandoRespuesta barra = new esperandoRespuesta(controladorBarra, Instancias.getInstancias(), "ESPERANDO RESPUESTA");
-        barra.show();
-        barra2 = controladorBarra.getBarra();
-
         String consecutivo = instancias.getSql().getNumConsecutivo("PERMISO")[0].toString();
         if (!instancias.getSql().agregarPermiso("PERMISO-" + consecutivo, txtTipo.getText(), txtValor.getText(),
                 txtNota.getText(), metodos.fechaConsulta(metodosGenerales.fecha()), metodosGenerales.hora(), "PENDIENTE", instancias.getUsuario())) {
@@ -416,38 +408,43 @@ public class VistaSolicitarPermisos extends javax.swing.JDialog {
         this.dispose();
 
         String estado = "PENDIENTE";
-        int cant = 0;
-
-        while (estado.equals("PENDIENTE")) {
-            Object[] datos = instancias.getSql().getInformacionPermiso("PERMISO-" + consecutivo);
-            estado = datos[7].toString();
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
+        while ("PENDIENTE".equals(estado)) {
+            estado = esperarRespuestaPermiso(consecutivo);
+            if (estado == null) {
+                ControladorAlertas.alertFail("No fue posible consultar el estado de la solicitud");
+                return;
             }
-
-            cant = cant + 1;
-            if (cant % 7 == 0) {
-                barra2.detener(true);
-
+            if ("PENDIENTE".equals(estado)) {
                 dlgEsperandoRespuesta esperando = new dlgEsperandoRespuesta(null, true, "PERMISO-" + consecutivo);
                 esperando.setVisible(true);
-
-                if (esperando.respuesta()) {
-                    controladorBarra = new controladorBarraProceso();
-                    barra = new esperandoRespuesta(controladorBarra, Instancias.getInstancias(), "ESPERANDO RESPUESTA");
-                    barra.show();
-                    barra2 = controladorBarra.getBarra();
-                } else {
+                if (!esperando.respuesta()) {
                     instancias.getSql().cambiarEstadoGeneral("CANCELADA", "PERMISO-" + consecutivo, " bdPermisos");
                 }
             }
         }
 
-        barra2.detener(true);
         procesarEstado(estado, consecutivo);
     }//GEN-LAST:event_btnSolicitarPermisoActionPerformed
+
+    private String esperarRespuestaPermiso(String consecutivo) {
+        try {
+            return esperandoRespuesta.ejecutar("ESPERANDO RESPUESTA", () -> {
+                String estado = "PENDIENTE";
+                for (int intento = 0; intento < 7 && "PENDIENTE".equals(estado); intento++) {
+                    Object[] datos = instancias.getSql().getInformacionPermiso("PERMISO-" + consecutivo);
+                    estado = datos[7].toString();
+                    if ("PENDIENTE".equals(estado)) {
+                        Thread.sleep(1000);
+                    }
+                }
+                return estado;
+            });
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(VistaSolicitarPermisos.class.getName())
+                    .log(java.util.logging.Level.SEVERE, "Error al consultar el estado del permiso", ex);
+            return null;
+        }
+    }
 
     private void btnSolicitarPermisoContrasenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarPermisoContrasenhaActionPerformed
         if (DatosMaestra.isModuloPermisos()

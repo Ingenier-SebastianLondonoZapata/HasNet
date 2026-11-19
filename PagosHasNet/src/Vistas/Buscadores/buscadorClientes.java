@@ -214,11 +214,7 @@ public class buscadorClientes extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEsteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEsteActionPerformed
-        if (opcionCarga.equals("PAQUETE")) {
-            vistaMenu.cargarClientePaquete(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0).toString());
-        } else {
-            vistaMenu.cargarCliente(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0).toString());
-        }
+        vistaMenu.cargarCliente(tblRegistros.getValueAt(tblRegistros.getSelectedRow(), 0).toString());
 
         this.dispose();
     }//GEN-LAST:event_btnEsteActionPerformed

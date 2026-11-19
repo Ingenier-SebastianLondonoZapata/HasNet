@@ -6,6 +6,7 @@ public class vistaBloqueoPrograma extends javax.swing.JFrame {
     
     public vistaBloqueoPrograma() {
         initComponents();
+        Utilidades.IconoAplicacion.aplicar(this);
         this.setLocationRelativeTo(null);
     }
     
@@ -26,7 +27,6 @@ public class vistaBloqueoPrograma extends javax.swing.JFrame {
         setTitle("TanFacil.Click");
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(51, 51, 51));
-        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         setUndecorated(true);
         setResizable(false);
 

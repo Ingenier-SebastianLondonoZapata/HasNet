@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class GeneradorReporteOftalmologia extends GeneradorReporteBase {
 
-    private static final String LOGO_FUNDACION = "/imagenes/Fundacion1.png";
+    private static final String LOGO_FUNDACION = "/imagenes/impresion/Fundacion1.png";
 
     public GeneradorReporteOftalmologia(Instancias instancias) {
         super(instancias);

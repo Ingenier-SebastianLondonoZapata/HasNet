@@ -6,6 +6,8 @@ import Controlador.FacturacionElectronica.ControladorFacturacionElectronica;
 import Dao.InicioSesion.DaoInicioSesion;
 import Modelo.InicioSesion.Terminal;
 import Utilidades.Constantes;
+import Utilidades.Seguridad.ControlInactividad;
+import Utilidades.Seguridad.ControlSesionesTerminal;
 import Vista.BarraProceso.vistaBarraProceso;
 import clases.Instancias;
 import clases.metodosGenerales;
@@ -42,6 +44,12 @@ public class controladorInicioSesion {
                         alertas.alertFail("Usuario ingresado en la TERM-" + datosUsuario[1].toString().replace("TERM-", ""));
                         return false;
                     }
+                }
+
+                String errorSesion = ControlSesionesTerminal.iniciar();
+                if (errorSesion != null) {
+                    alertas.alertFail(errorSesion);
+                    return false;
                 }
 
                 iniciarCargado iniciarDatos = new iniciarCargado(nodo);
@@ -83,6 +91,7 @@ public class controladorInicioSesion {
             instancias.getProgres().detener(true);
             instancias.setProgres(null);
             formularioMenu.cargarSocket();
+            java.awt.EventQueue.invokeLater(ControlInactividad::iniciar);
         }
     }
 

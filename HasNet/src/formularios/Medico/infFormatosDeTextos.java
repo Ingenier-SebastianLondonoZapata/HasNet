@@ -145,7 +145,7 @@ public class infFormatosDeTextos extends javax.swing.JInternalFrame {
 
         btnGuardar1.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR");
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -158,7 +158,7 @@ public class infFormatosDeTextos extends javax.swing.JInternalFrame {
 
         btnNuevo1.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnNuevo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo1.setText("NUEVO");
         btnNuevo1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

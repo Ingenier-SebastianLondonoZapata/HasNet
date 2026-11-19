@@ -49,8 +49,8 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
     private static final Logger LOGGER = Logger.getLogger(VistaBuscadorProductos.class.getName());
 
-    private static final Icon ICONO_VER = escalarIcono("/imagenes/verLogo.png", 22, 18);
-    private static final Icon ICONO_PLU = escalarIcono("/imagenes/PLU.png", 40, 20);
+    private static final Icon ICONO_VER = escalarIcono("/imagenes/productos/verLogo.png", 22, 18);
+    private static final Icon ICONO_PLU = escalarIcono("/imagenes/productos/PLU.png", 40, 20);
 
     private final DaoProducto daoProducto = new DaoProducto();
     private final DaoBuscadorProductos daoBuscadorProductos = new DaoBuscadorProductos();
@@ -377,7 +377,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
 
         btnBuscarGrupos.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscarGrupos.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
-        btnBuscarGrupos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscarGrupos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscarGrupos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarGruposActionPerformed(evt);
@@ -475,7 +475,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             tblRegistros.getColumnModel().getColumn(8).setMaxWidth(0);
         }
 
-        btnIzquierda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/izquierda1.png"))); // NOI18N
+        btnIzquierda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/productos/izquierda1.png"))); // NOI18N
         btnIzquierda.setToolTipText("Teclado, tecla izquierda/Filtro anterior");
         btnIzquierda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -488,7 +488,7 @@ public final class VistaBuscadorProductos extends javax.swing.JDialog {
             }
         });
 
-        btnDerecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/derecha1.png"))); // NOI18N
+        btnDerecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/productos/derecha1.png"))); // NOI18N
         btnDerecha.setToolTipText("Teclado, tecla derecha/Filtro siguiente");
         btnDerecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

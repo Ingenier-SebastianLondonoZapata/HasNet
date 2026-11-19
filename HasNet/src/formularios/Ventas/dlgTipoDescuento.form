@@ -295,7 +295,7 @@
                   <Font name="Century Gothic" size="12" style="1"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/imagenes/guardar.png"/>
+                  <Image iconType="3" name="/imagenes/comun/guardar.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="APLICAR DESCUENTO"/>
                 <Property name="toolTipText" type="java.lang.String" value="Ctrl+G"/>

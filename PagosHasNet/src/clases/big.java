@@ -8,6 +8,8 @@ package clases;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public class big {
 
@@ -29,29 +31,35 @@ public class big {
         return ret;
     }
 
+    private static DecimalFormat formato(String patron) {
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols(new Locale("es", "CO"));
+        simbolos.setGroupingSeparator('.');
+        simbolos.setDecimalSeparator(',');
+        return new DecimalFormat(patron, simbolos);
+    }
+
     public static String setMoneda(BigDecimal num) {
-        DecimalFormat formato = new DecimalFormat("$ ###,###.###");
-        return formato.format(num);
+        return formato("$ ###,###.###").format(num);
     }
 
     public static String setMonedaEx(BigDecimal num) {
-        DecimalFormat formato = new DecimalFormat("$ ###,###.####");
-        return formato.format(num);
+        return formato("$ ###,###.####").format(num);
     }
 
     public static String setMonedaExacta(BigDecimal num) {
-        DecimalFormat formato = new DecimalFormat("$ ###,###");
-        return formato.format(num);
+        return formato("$ ###,###").format(num);
     }
 
     public static String setNumero(BigDecimal num) {
-        DecimalFormat formato = new DecimalFormat("###,###.###");
-        return formato.format(num);
+        return formato("###,###.###").format(num);
+    }
+
+    public static String setNumero(long num) {
+        return formato("###,###").format(num);
     }
 
     public static String setNumeroEx(BigDecimal num) {
-        DecimalFormat formato = new DecimalFormat("###,###.####");
-        return formato.format(num);
+        return formato("###,###.####").format(num);
     }
 
     public static BigDecimal getMoneda(String num) {

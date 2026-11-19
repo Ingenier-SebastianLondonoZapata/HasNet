@@ -82,6 +82,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
         calcularEfectivo();
 
         this.getRootPane().registerKeyboardAction(accion("FINALIZAR", this), KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        cerrarConEscape();
         pnlInformacionAdicional.setVisible(false);
     }
 
@@ -117,8 +118,27 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
 
         setContentPane(contenido);
         this.getRootPane().registerKeyboardAction(accion("FINALIZAR", this), KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        cerrarConEscape();
         pack();
         setLocationRelativeTo(null);
+    }
+
+    private void cerrarConEscape() {
+        this.getRootPane().registerKeyboardAction(e -> cancelarYCerrar(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                cancelarYCerrar();
+            }
+        });
+    }
+
+    private void cancelarYCerrar() {
+        if (!soloInformacion) {
+            instancias.setCancelarFactura(true);
+        }
+        dispose();
     }
 
     private void instalarPanelInformacion(JPanel panelInformacion) {
@@ -346,7 +366,7 @@ public class VistaInformacionAdicional extends javax.swing.JDialog {
 
         btnPagarTodo.setBackground(new java.awt.Color(255, 255, 255));
         btnPagarTodo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnPagarTodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pagarTotal.png"))); // NOI18N
+        btnPagarTodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ventas/pagarTotal.png"))); // NOI18N
         btnPagarTodo.setBorderPainted(false);
         btnPagarTodo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

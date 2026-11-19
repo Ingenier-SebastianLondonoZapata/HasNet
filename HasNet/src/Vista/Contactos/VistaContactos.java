@@ -418,7 +418,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         txtIdSistema = new javax.swing.JTextField();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -435,7 +435,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO        ");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -448,7 +448,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR    ");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -461,7 +461,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("MODIFICAR  ");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnActualizar.setEnabled(false);
@@ -475,7 +475,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnEliminar.setBackground(new java.awt.Color(241, 148, 138));
         btnEliminar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnEliminar.setText("INACTIVAR ");
         btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminar.setEnabled(false);
@@ -489,7 +489,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnBuscTerceros.setBackground(new java.awt.Color(247, 220, 111));
         btnBuscTerceros.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cliente.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/cliente.png"))); // NOI18N
         btnBuscTerceros.setText("LISTADO      ");
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -502,7 +502,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         btnImprimir.setBackground(new java.awt.Color(255, 255, 255));
         btnImprimir.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnImprimir.setText("IMPRIMIR INFORME DEL PACIENTE");
         btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnImprimir.setEnabled(false);
@@ -1467,7 +1467,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnBuscTerceros1.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2059,7 +2059,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnImagen.setBackground(new java.awt.Color(204, 204, 204));
         btnImagen.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnImagen.setForeground(new java.awt.Color(255, 255, 255));
-        btnImagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/webcam.png"))); // NOI18N
+        btnImagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/webcam.png"))); // NOI18N
         btnImagen.setText("AGREGAR IMAGEN    ");
         btnImagen.setToolTipText("");
         btnImagen.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -3049,10 +3049,10 @@ public class VistaContactos extends javax.swing.JInternalFrame {
 
         if (contacto.isActivo()) {
             btnEliminar.setText(TEXTO_ACTIVAR);
-            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png")));
+            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png")));
         } else {
             btnEliminar.setText(TEXTO_INACTIVAR);
-            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
+            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png")));
         }
     }
 
@@ -3144,7 +3144,7 @@ public class VistaContactos extends javax.swing.JInternalFrame {
         btnImprimir.setEnabled(false);
         btnGuardar.setEnabled(true);
         btnEliminar.setText(TEXTO_INACTIVAR);
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png")));
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png")));
 
         btnAgregarVehiculo.setEnabled(false);
         btnModificarVehiculo.setEnabled(false);

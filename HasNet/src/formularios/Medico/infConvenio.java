@@ -328,7 +328,7 @@ public class infConvenio extends javax.swing.JInternalFrame {
         btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -433,7 +433,7 @@ public class infConvenio extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("MODIFICAR  ");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar.setEnabled(false);
@@ -447,7 +447,7 @@ public class infConvenio extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR   ");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -460,7 +460,7 @@ public class infConvenio extends javax.swing.JInternalFrame {
 
         btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO     ");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

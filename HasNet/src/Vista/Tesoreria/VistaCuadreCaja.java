@@ -435,7 +435,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("ACTUALIZAR ");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -448,7 +448,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -461,7 +461,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
         btnReimprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReimprimir.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimir.setText("REIMPRIMIR");
         btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReimprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -474,7 +474,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 204));
         btnLimpiar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR       ");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -572,7 +572,7 @@ public class VistaCuadreCaja extends javax.swing.JInternalFrame {
 
         btnReimprimir1.setBackground(new java.awt.Color(247, 220, 111));
         btnReimprimir1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnReimprimir1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimir1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReimprimir1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnReimprimir1.setMargin(new java.awt.Insets(2, 7, 2, 5));

@@ -13,6 +13,7 @@ public class vistaProblemasInicioSesion extends javax.swing.JFrame {
     
     public vistaProblemasInicioSesion() {
         initComponents();
+        Utilidades.IconoAplicacion.aplicar(this);
 
         this.setLocationRelativeTo(null);
         this.cargarUsuariosLogeados();
@@ -36,7 +37,6 @@ public class vistaProblemasInicioSesion extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TanFacil.Click");
         setBackground(new java.awt.Color(51, 51, 51));
-        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         setUndecorated(true);
         setResizable(false);
 

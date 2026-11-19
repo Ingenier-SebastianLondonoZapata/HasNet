@@ -27,16 +27,66 @@ public class SQL1 {
         return GetRegistro(colName, cadena, instruccion_sql)[0].toString();
     }
 
-    public Object[] obtenerNumeroConsecutivo(String idCliente) {
-        String instruccion_sql = "select numeroFEDisponibles from bdClientes where idCliente = '" + idCliente + "'; ";
-        String[] colName = {"numeroFEDisponibles"};
-        boolean[] cadena = {true};
-        return GetRegistro(colName, cadena, instruccion_sql);
+    private void reiniciarMesDocumentos(String idCliente) {
+        try (PreparedStatement actualizacion = mysql.getConnection().prepareStatement(
+                "UPDATE bdClientes SET numeroFEMensuales = documentosPorMesFE, mesFEActual = TIMESTAMPDIFF(MONTH, inicioCoberturaFE, CURDATE()) "
+                + "WHERE idCliente = ? AND documentosPorMesFE > 0 AND inicioCoberturaFE IS NOT NULL AND CURDATE() >= inicioCoberturaFE "
+                + "AND CURDATE() < vigenciaFEMensuales AND TIMESTAMPDIFF(MONTH, inicioCoberturaFE, CURDATE()) > mesFEActual")) {
+            actualizacion.setString(1, idCliente);
+            actualizacion.executeUpdate();
+        } catch (SQLException | NullPointerException e) {
+            System.out.println(e);
+        }
     }
 
-    public boolean disminuirConsecutivo(String idCliente, int numeroFinal) {
-        String instruccion_sql = "update bdClientes set numeroFEDisponibles=?" + " where idCliente = '" + idCliente + "' ;";
-        return Actualizar_Registro(new Object[]{"", numeroFinal}, null, instruccion_sql);
+    public Object[] obtenerNumeroConsecutivo(String idCliente) {
+        reiniciarMesDocumentos(idCliente);
+        try (PreparedStatement consulta = mysql.getConnection().prepareStatement(
+                "SELECT numeroFEDisponibles + IF(vigenciaFEMensuales >= CURDATE(), numeroFEMensuales, 0) FROM bdClientes WHERE idCliente = ?")) {
+            consulta.setString(1, idCliente);
+            try (ResultSet resultado = consulta.executeQuery()) {
+                return new Object[]{resultado.next() ? String.valueOf(resultado.getInt(1)) : "0"};
+            }
+        } catch (SQLException | NullPointerException e) {
+            System.out.println(e);
+            return new Object[]{"0"};
+        }
+    }
+
+    public boolean consumirDocumentoElectronico(String idCliente) {
+        reiniciarMesDocumentos(idCliente);
+        try {
+            try (PreparedStatement mensual = mysql.getConnection().prepareStatement(
+                    "UPDATE bdClientes SET numeroFEMensuales = numeroFEMensuales - 1 "
+                    + "WHERE idCliente = ? AND numeroFEMensuales > 0 AND vigenciaFEMensuales >= CURDATE()")) {
+                mensual.setString(1, idCliente);
+                if (mensual.executeUpdate() > 0) {
+                    return true;
+                }
+            }
+            try (PreparedStatement fijo = mysql.getConnection().prepareStatement(
+                    "UPDATE bdClientes SET numeroFEDisponibles = numeroFEDisponibles - 1 WHERE idCliente = ? AND numeroFEDisponibles > 0")) {
+                fijo.setString(1, idCliente);
+                return fijo.executeUpdate() > 0;
+            }
+        } catch (SQLException | NullPointerException e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public int obtenerTerminalesPagadas(String idCliente) throws SQLException {
+        try (PreparedStatement consulta = mysql.getConnection().prepareStatement("SELECT terminalesPagadas FROM bdClientes WHERE idCliente = ?")) {
+            consulta.setString(1, idCliente);
+            try (ResultSet resultado = consulta.executeQuery()) {
+                if (!resultado.next()) {
+                    throw new SQLException("El cliente no está registrado en la base de pagos");
+                }
+                return resultado.getInt(1);
+            }
+        } catch (NullPointerException ex) {
+            throw new SQLException("No hay conexión con la base de pagos", ex);
+        }
     }
 
     public boolean agregarRegistroFactura(String idCliente, String numeroFactura, String fecha) {
@@ -46,16 +96,17 @@ public class SQL1 {
 
     public modeloConfiguracion obtenerConfiguracionCliente(String idCliente) {
         modeloConfiguracion modelo = new modeloConfiguracion();
-        String instruccion_sql = "select regimen, informacionLegal, tipoImpresion, nit, nombre, telefono, fechaInicio, diasAntesAlertaBloqueo,"
+        String instruccion_sql = "select regimen, (SELECT valor FROM bdParametrosGlobales WHERE clave = 'INFORMACION_LEGAL') AS informacionLegal, "
+                + "tipoImpresion, nit, nombre, telefono, fechaInicio, diasAntesAlertaBloqueo,"
                 + "diasDespuesGabelaBloqueo, numeroFEDisponibles, congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, "
-                + "recordatorios, laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, usb, "
+                + "recordatorios, laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, "
                 + "facturaElectronica, pruebasFacturacion from bdClientes where idCliente = '" + idCliente + "' ";
         String[] colName = {"regimen", "informacionLegal", "tipoImpresion", "nit", "nombre", "telefono", "fechaInicio", "diasAntesAlertaBloqueo", "diasDespuesGabelaBloqueo",
             "numeroFEDisponibles", "congeladas", "medico", "veterinaria", "parqueadero", "ordenServicio", "creditos", "separe", "pedido", "agenda", "restaurante",
-            "recordatorios", "laboratorio", "servicioAutomotor", "oftalmologia", "inventarioBodegas", "productosSerial", "facturacionLote", 
-            "usb", "facturaElectronica", "pruebasFacturacion"};
+            "recordatorios", "laboratorio", "servicioAutomotor", "oftalmologia", "inventarioBodegas", "productosSerial", "facturacionLote",
+            "facturaElectronica", "pruebasFacturacion"};
         boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false
+            false, false, false, false, false, false, false, false, false
         };
 
         return modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql));

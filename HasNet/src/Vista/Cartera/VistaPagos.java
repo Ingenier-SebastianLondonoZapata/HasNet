@@ -827,7 +827,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
 
         btnGuardarPago.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarPago.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnGuardarPago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarPago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarPago.setText("GUARDAR ABONO");
         btnGuardarPago.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarPago.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -840,7 +840,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
 
         btnVolver.setBackground(new java.awt.Color(204, 204, 204));
         btnVolver.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior.png"))); // NOI18N
         btnVolver.setText("VOLVER");
         btnVolver.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnVolver.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -943,7 +943,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("Actualizar pagos pendientes");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -956,7 +956,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
 
         btnVerMas.setBackground(new java.awt.Color(204, 204, 204));
         btnVerMas.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnVerMas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnVerMas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnVerMas.setText("Ver más");
         btnVerMas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnVerMas.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -969,7 +969,7 @@ public class VistaPagos extends javax.swing.JInternalFrame {
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
         btnAnular.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnAnular.setText("Anular pago");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

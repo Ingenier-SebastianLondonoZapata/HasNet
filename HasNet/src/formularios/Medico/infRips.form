@@ -16,7 +16,7 @@
               <Font name="Calibri" size="14" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/imagenes/eliminar-cancelar-icono-4935-16.png"/>
+              <Image iconType="3" name="/imagenes/comun/eliminar-cancelar-icono-4935-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Borrar"/>
           </Properties>

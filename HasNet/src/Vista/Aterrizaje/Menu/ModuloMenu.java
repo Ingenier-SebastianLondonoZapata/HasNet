@@ -42,11 +42,11 @@ public enum ModuloMenu {
     }
 
     public String getIconoActivo() {
-        return "/imagenes/" + icono + "-BLANCO.png";
+        return "/imagenes/menu/" + icono + "-BLANCO.png";
     }
 
     public String getIconoInactivo() {
-        return "/imagenes/" + icono + "-NEGRO.png";
+        return "/imagenes/menu/" + icono + "-NEGRO.png";
     }
 
     public boolean estaHabilitado(ConfiguracionSistema config) {

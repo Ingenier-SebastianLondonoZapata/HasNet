@@ -97,7 +97,7 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
 
         lbCambiarTamano.setBackground(new java.awt.Color(153, 255, 153));
         lbCambiarTamano.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbCambiarTamano.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/expandir.png"))); // NOI18N
+        lbCambiarTamano.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/medico/expandir.png"))); // NOI18N
         lbCambiarTamano.setToolTipText("Expandir/Contraer Menu");
         lbCambiarTamano.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         lbCambiarTamano.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -299,7 +299,7 @@ public class infPredeterminarCampos extends javax.swing.JDialog {
         btnGuardar1.setBackground(new java.awt.Color(0, 153, 153));
         btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR       ");
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

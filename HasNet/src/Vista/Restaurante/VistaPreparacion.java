@@ -114,7 +114,7 @@ public class VistaPreparacion extends javax.swing.JDialog {
         lbTitulo = new javax.swing.JLabel();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,7 +144,7 @@ public class VistaPreparacion extends javax.swing.JDialog {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setToolTipText("Ctrl+G");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -163,7 +163,7 @@ public class VistaPreparacion extends javax.swing.JDialog {
 
         btnCancelar.setBackground(new java.awt.Color(255, 255, 255));
         btnCancelar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior.png"))); // NOI18N
         btnCancelar.setText("VOLVER ");
         btnCancelar.setToolTipText("Ctrl+G");
         btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -396,7 +396,7 @@ public class VistaPreparacion extends javax.swing.JDialog {
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

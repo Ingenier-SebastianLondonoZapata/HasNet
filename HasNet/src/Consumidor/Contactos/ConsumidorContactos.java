@@ -1,7 +1,6 @@
 package Consumidor.Contactos;
 
 import Controlador.Alertas.ControladorAlertas;
-import Controlador.BarraProceso.controladorBarraProceso;
 import Controlador.ConsumirServicio.ControladorConsumirServicioREST;
 import Modelo.ConsumirServicio.RespuestaServicio;
 import Modelo.Contactos.ContactoApiDTO;
@@ -68,26 +67,14 @@ public class ConsumidorContactos {
     }
 
     private RespuestaServicio consultarConBarraDeProceso(String json) {
-        iniciarBarraDeProceso();
         try {
-            return consumirServicio.ejecutarPost(variablesEntorno.urlCreacionContactos, json);
-        } finally {
-            detenerBarraDeProceso();
+            return esperandoRespuesta.ejecutar("CONSULTANDO EL CONTACTO",
+                    () -> consumirServicio.ejecutarPost(variablesEntorno.urlCreacionContactos, json));
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
         }
-    }
-
-    private void iniciarBarraDeProceso() {
-        esperandoRespuesta barra = new esperandoRespuesta(new controladorBarraProceso(), instancias, "CONSULTANDO EL CONTACTO");
-        barra.show();
-    }
-
-    private void detenerBarraDeProceso() {
-        if (instancias.getProgres() == null) {
-            return;
-        }
-
-        instancias.getProgres().detener(true);
-        instancias.setProgres(null);
     }
 
     private ContactoApiDTO leerContacto(String cuerpo) {

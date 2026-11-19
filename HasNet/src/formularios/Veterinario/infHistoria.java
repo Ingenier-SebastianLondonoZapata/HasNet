@@ -386,7 +386,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -398,7 +398,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
         jPopupMenu2.setComponentPopupMenu(jPopupMenu2);
 
         popBorrar1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar1.setText("Borrar");
         popBorrar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -855,7 +855,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior_2.png"))); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior_2.png"))); // NOI18N
         jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -911,7 +911,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         btnGuardar2.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar2.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar2.setText("GUARDAR VACUNAS");
         btnGuardar2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1740,7 +1740,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         jButton1.setBackground(new java.awt.Color(247, 220, 111));
         jButton1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         jButton1.setText("HISTORIAL DE VACUNACIÓN");
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -1823,7 +1823,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR ANTECEDENTES");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2394,7 +2394,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         btnGuardar1.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR CONSULTA");
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2407,7 +2407,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         btnModificar.setBackground(new java.awt.Color(93, 173, 226));
         btnModificar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnModificar.setText("MODIFICAR");
         btnModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnModificar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2420,7 +2420,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         btnReimprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReimprimir.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimir.setText("REIMPRIMIR CONSULTA");
         btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReimprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2975,7 +2975,7 @@ public class infHistoria extends javax.swing.JInternalFrame {
 
         btnGuardar3.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar3.setText("GUARDAR CONTROL");
         btnGuardar3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

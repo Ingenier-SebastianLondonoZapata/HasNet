@@ -103,7 +103,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
         btnBuscTerceros.setBackground(new java.awt.Color(247, 196, 69));
         btnBuscTerceros.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cliente.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/cliente.png"))); // NOI18N
         btnBuscTerceros.setText("CLIENTES      ");
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -185,7 +185,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
         btnActualizar1.setBackground(new java.awt.Color(0, 0, 0));
         btnActualizar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnActualizar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnActualizar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar1.setText("MODIFICAR  ");
         btnActualizar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar1.setEnabled(false);
@@ -200,7 +200,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
         btnGuardar1.setBackground(new java.awt.Color(0, 153, 153));
         btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR       ");
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -219,7 +219,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
         btnBuscar.setBackground(new java.awt.Color(204, 102, 255));
         btnBuscar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnBuscar.setText("BUSCAR        ");
         btnBuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -233,7 +233,7 @@ public class infEmpresas extends javax.swing.JInternalFrame {
         btnNuevo.setBackground(new java.awt.Color(255, 204, 51));
         btnNuevo.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo.setForeground(new java.awt.Color(255, 255, 255));
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO         ");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

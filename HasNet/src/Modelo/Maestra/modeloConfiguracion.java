@@ -7,7 +7,7 @@ public class modeloConfiguracion {
     int diasAntesAlertaBloqueo, diasDespuesGabelaBloqueo, numeroFacturasElectronicasDisponibles;
 
     private boolean congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, recordatorios,
-            laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, usb, facturaElectronica,
+            laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, facturaElectronica,
             pruebasFacturacion;
 
     public int getNumeroFacturasElectronicasDisponibles() {
@@ -226,14 +226,6 @@ public class modeloConfiguracion {
         this.facturacionLote = facturacionLote;
     }
 
-    public boolean isUsb() {
-        return usb;
-    }
-
-    public void setUsb(boolean usb) {
-        this.usb = usb;
-    }
-
     public boolean isFacturaElectronica() {
         return facturaElectronica;
     }
@@ -255,7 +247,7 @@ public class modeloConfiguracion {
             nodo.getTelefono(), nodo.getFechaInicio(), nodo.getDiasAntesAlertaBloqueo(), nodo.getDiasDespuesGabelaBloqueo(), nodo.getNumeroFacturasElectronicasDisponibles(),
             nodo.isCongeladas(), nodo.isMedico(), nodo.isVeterinaria(), nodo.isParqueadero(), nodo.isOrdenServicio(), nodo.isCreditos(), nodo.isSepare(), nodo.isPedido(),
             nodo.isAgenda(), nodo.isRestaurante(), nodo.isRecordatorios(), nodo.isLaboratorio(), nodo.isServicioAutomotor(), nodo.isOftalmologia(),
-            nodo.isInventarioBodegas(), nodo.isProductosSerial(), nodo.isFacturacionLote(), nodo.isUsb(), nodo.isFacturaElectronica(),
+            nodo.isInventarioBodegas(), nodo.isProductosSerial(), nodo.isFacturacionLote(), nodo.isFacturaElectronica(),
             nodo.isPruebasFacturacion()
         };
 
@@ -293,9 +285,8 @@ public class modeloConfiguracion {
             modelo.setInventarioBodegas((Boolean) vector[24]);
             modelo.setProductosSerial((Boolean) vector[25]);
             modelo.setFacturacionLote((Boolean) vector[26]);
-            modelo.setUsb((Boolean) vector[27]);
-            modelo.setFacturaElectronica((Boolean) vector[28]);
-            modelo.setPruebasFacturacion((Boolean) vector[29]);
+            modelo.setFacturaElectronica((Boolean) vector[27]);
+            modelo.setPruebasFacturacion((Boolean) vector[28]);
         }
 
         return modelo;

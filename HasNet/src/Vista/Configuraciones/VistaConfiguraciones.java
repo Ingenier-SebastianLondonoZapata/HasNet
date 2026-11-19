@@ -69,9 +69,49 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         this.turno = turno;
     }
 
+    public void actualizarDocumentosElectronicosDisponibles() {
+        new javax.swing.SwingWorker<String, Void>() {
+            @Override
+            protected String doInBackground() {
+                Object disponibles = instancias.getSqlPagos().obtenerNumeroConsecutivo(Utilidades.Constantes.leerIdentificadorCliente())[0];
+                try {
+                    java.text.DecimalFormatSymbols simbolos = new java.text.DecimalFormatSymbols(new java.util.Locale("es", "CO"));
+                    simbolos.setGroupingSeparator('.');
+                    return new java.text.DecimalFormat("#,##0", simbolos).format(Long.parseLong(String.valueOf(disponibles).trim()));
+                } catch (NumberFormatException ex) {
+                    return String.valueOf(disponibles);
+                }
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    txtNumeroFactosElectronicas.setText(get());
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                } catch (java.util.concurrent.ExecutionException ex) {
+                    java.util.logging.Logger.getLogger(VistaConfiguraciones.class.getName())
+                            .log(java.util.logging.Level.WARNING, "No se pudo consultar los documentos electrónicos disponibles", ex);
+                }
+            }
+        }.execute();
+    }
+
+    private static void bloquearMovimientoColumnas(java.awt.Component componente) {
+        if (componente instanceof javax.swing.JTable && ((javax.swing.JTable) componente).getTableHeader() != null) {
+            ((javax.swing.JTable) componente).getTableHeader().setReorderingAllowed(false);
+        }
+        if (componente instanceof java.awt.Container) {
+            for (java.awt.Component hijo : ((java.awt.Container) componente).getComponents()) {
+                bloquearMovimientoColumnas(hijo);
+            }
+        }
+    }
+
     public VistaConfiguraciones() {
 
         initComponents();
+        bloquearMovimientoColumnas(getContentPane());
 
         if (java.beans.Beans.isDesignTime()) {
             return;
@@ -117,6 +157,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         }
 
         this.simbolo = instancias.getSimbolo();
+
+        actualizarDocumentosElectronicosDisponibles();
 
         actualizarImpresorasDisponibles();
         inicializarVistaLogo();
@@ -175,6 +217,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         jScrollPane21 = new javax.swing.JScrollPane();
         tblConfiguraciones = new javax.swing.JTable();
         jScrollPane22 = new javax.swing.JScrollPane();
+        lbAyudaConfiguraciones = new javax.swing.JLabel();
+        lbAyudaConfiguraciones1 = new javax.swing.JLabel();
         tblConfiguraciones1 = new javax.swing.JTable();
         jScrollPane23 = new javax.swing.JScrollPane();
         tblResponsabilidadesFiscales = new javax.swing.JTable();
@@ -395,7 +439,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         btnGuardarMaestra = new javax.swing.JButton();
 
         popBorrar1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar1.setText("Borrar");
         popBorrar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -405,7 +449,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         jPopupMenu2.add(popBorrar1);
 
         popBorrar2.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar2.setText("Borrar");
         popBorrar2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -468,6 +512,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             }
         ));
         tblInformacionEmpresa.setRowHeight(24);
+        tblInformacionEmpresa.getTableHeader().setReorderingAllowed(false);
         jScrollPane19.setViewportView(tblInformacionEmpresa);
         if (tblInformacionEmpresa.getColumnModel().getColumnCount() > 0) {
             tblInformacionEmpresa.getColumnModel().getColumn(0).setMinWidth(110);
@@ -493,6 +538,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             }
         });
         tblConfiguraciones.setRowHeight(24);
+        tblConfiguraciones.getTableHeader().setReorderingAllowed(false);
         jScrollPane21.setViewportView(tblConfiguraciones);
 
         tblConfiguraciones1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
@@ -513,6 +559,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             }
         });
         tblConfiguraciones1.setRowHeight(24);
+        tblConfiguraciones1.getTableHeader().setReorderingAllowed(false);
         jScrollPane22.setViewportView(tblConfiguraciones1);
 
         tblResponsabilidadesFiscales.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
@@ -525,7 +572,24 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             }
         ));
         tblResponsabilidadesFiscales.setRowHeight(24);
+        tblResponsabilidadesFiscales.getTableHeader().setReorderingAllowed(false);
         jScrollPane23.setViewportView(tblResponsabilidadesFiscales);
+
+        lbAyudaConfiguraciones.setBackground(new java.awt.Color(245, 248, 252));
+        lbAyudaConfiguraciones.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        lbAyudaConfiguraciones.setForeground(new java.awt.Color(44, 62, 80));
+        lbAyudaConfiguraciones.setText("Pase el mouse o seleccione una configuración para ver para qué sirve.");
+        lbAyudaConfiguraciones.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        lbAyudaConfiguraciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 214, 224)));
+        lbAyudaConfiguraciones.setOpaque(true);
+
+        lbAyudaConfiguraciones1.setBackground(new java.awt.Color(245, 248, 252));
+        lbAyudaConfiguraciones1.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        lbAyudaConfiguraciones1.setForeground(new java.awt.Color(44, 62, 80));
+        lbAyudaConfiguraciones1.setText("Pase el mouse o seleccione una configuración para ver para qué sirve.");
+        lbAyudaConfiguraciones1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        lbAyudaConfiguraciones1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 214, 224)));
+        lbAyudaConfiguraciones1.setOpaque(true);
 
         javax.swing.GroupLayout pnlDatosEmpresaLayout = new javax.swing.GroupLayout(pnlDatosEmpresa);
         pnlDatosEmpresa.setLayout(pnlDatosEmpresaLayout);
@@ -537,15 +601,19 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                     .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
                         .addComponent(lbOtroConsecutivo, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNumeroFactosElectronicas, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtNumeroFactosElectronicas, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
                         .addComponent(jScrollPane19, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane23, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(pnlDatosEmpresaLayout.createSequentialGroup()
-                        .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbAyudaConfiguraciones, 0, 0, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbAyudaConfiguraciones1, 0, 0, Short.MAX_VALUE))))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         pnlDatosEmpresaLayout.setVerticalGroup(
@@ -563,6 +631,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane22, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                     .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbAyudaConfiguraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbAyudaConfiguraciones1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10))
         );
 
@@ -1091,7 +1163,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         btnActualizarLogo.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizarLogo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        btnActualizarLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizarLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizarLogo.setText("CAMBIAR LOGO");
         btnActualizarLogo.setToolTipText("Montar logo empresarial");
         btnActualizarLogo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1283,7 +1355,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         jScrollPane12.setViewportView(tblMesas);
 
         btnActualizarMesas.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnActualizarMesas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar pequeño.png"))); // NOI18N
+        btnActualizarMesas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar pequeño.png"))); // NOI18N
         btnActualizarMesas.setText("MESAS OCUPADAS");
         btnActualizarMesas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2406,7 +2478,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         btnGuardar6.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar6.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar6.setText("GUARDAR");
         btnGuardar6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar6.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2548,7 +2620,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -3460,7 +3532,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("LIMPIAR");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -3473,7 +3545,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("MODIFICAR");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -3486,7 +3558,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -3499,7 +3571,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         btnListarUsuarios.setBackground(new java.awt.Color(247, 220, 111));
         btnListarUsuarios.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnListarUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listado.png"))); // NOI18N
+        btnListarUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listado.png"))); // NOI18N
         btnListarUsuarios.setText("LISTADO");
         btnListarUsuarios.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnListarUsuarios.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -3572,7 +3644,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         btnGuardarMaestra.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarMaestra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnGuardarMaestra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarMaestra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarMaestra.setText("GUARDAR DATOS CONFIGURACIÓN");
         btnGuardarMaestra.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardarMaestra.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -3941,6 +4013,15 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         actualizarConsecutivoEnVista(instancias::getFacturaCreditos);
         actualizarConsecutivoEnVista(instancias::getPedido);
 
+        aplicarClienteContadoEnVista(instancias::getFactura);
+        aplicarClienteContadoEnVista(instancias::getFacturaCreditos);
+        aplicarClienteContadoEnVista(instancias::getPedido);
+        aplicarClienteContadoEnVista(instancias::getCotiza);
+        aplicarClienteContadoEnVista(instancias::getPlanSepare);
+        aplicarClienteContadoEnVista(instancias::getOrdenServicio);
+        aplicarClienteContadoEnVista(instancias::getNd);
+        aplicarClienteContadoEnVista(instancias::getCuentaCobro);
+
         if (instancias.getConfiguraciones().isVeterinaria()) {
             instancias.getHospitalizacion().consultarMaestros();
             instancias.getFormatos().consultarMaestros();
@@ -3959,6 +4040,18 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             }
         } catch (NullPointerException e) {
             // El módulo no está cargado: tomará la configuración al abrirse
+        }
+    }
+
+    private void aplicarClienteContadoEnVista(java.util.function.Supplier<Vista.Ventas.VistaFactura> vista) {
+        try {
+            Vista.Ventas.VistaFactura factura = vista.get();
+            if (factura != null) {
+                factura.aplicarClienteContadoPredeterminado();
+            }
+        } catch (NullPointerException e) {
+            java.util.logging.Logger.getLogger(VistaConfiguraciones.class.getName())
+                    .log(java.util.logging.Level.FINE, "Módulo de facturación no cargado", e);
         }
     }
 
@@ -3996,7 +4089,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             return null;
         }
         general.setConfiguracionRegimen("");
-        general.setAlertaUtilidad(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1) ? "SI" : "NO");
+        general.setAlertaUtilidad(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Facturar utilidad sobrepasada", 1) ? "SI" : "NO");
         general.setTipoDescuento(DatosMaestra.normalizarTipoDescuento(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Tipo de descuento", 1)));
         general.setContrasena(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Contraseña para control y permisos", 1));
         general.setDiasAlertaCuadre(parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Días para alerta de cartera", 1)));
@@ -4008,8 +4101,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         general.setUsarLector(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, OPCION_USAR_LECTOR, 1));
         general.setTituloFactura(obtenerTituloFactura());
         general.setPreciosConImpuesto(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Precios con impuestos", 1));
-        general.setVentasPredeterminado(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Ventas Contado Predeterminado", 1));
-        general.setMensajeUtilidad(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Alertar Utilidad Sobrepasada", 1));
+        general.setVentasPredeterminado(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Ventas contado predeterminado", 1));
+        general.setMensajeUtilidad(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Alertar utilidad sobrepasada", 1));
         general.setDiasCobroMora(parseIntSafe(instancias.getConfiguraciones().isCreditos() ? getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Días para cobrar mora en créditos", 1) : "0"));
         general.setPorcentajeMora(instancias.getConfiguraciones().isCreditos() ? getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Porcentaje de mora en créditos", 1) : "0");
         general.setGeneraOrdenMedica(rdSiGenerarOrden.isSelected());
@@ -4019,7 +4112,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         general.setHoraFinAgenda(String.valueOf(cmbHoraFin.getSelectedItem()));
         general.setIntervaloAgenda(String.valueOf(cmbIntervalo.getSelectedItem()));
         general.setCodPrestadorServicio(txtCodigoPrestadorServico.getText());
-        general.setValidarCupoCredito(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Validar el cupo del credito", 1));
+        general.setValidarCupoCredito(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Validar el cupo del crédito", 1));
         general.setMostrarInformacionCuadre(false);
         general.setDescuentoMaximoVentas(isTipoDescuentoPorcentaje() ? parseIntSafe(getCeldaTextoPorEtiqueta(tblConfiguraciones1, "Descuento máximo para aplicar", 1)) : 0);
         general.setTipoIdPrestadorServicio(String.valueOf(cmbTipoPrestador.getSelectedItem()));
@@ -4046,7 +4139,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         general.setInicioHosp(String.valueOf(cmbHoraInicio1.getSelectedItem()));
         general.setFinHosp(String.valueOf(cmbHoraFin1.getSelectedItem()));
         general.setIntervalosHosp(String.valueOf(cmbIntervalo1.getSelectedItem()));
-        general.setDiasAutomaticos(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Días de plazo automaticos", 1));
+        general.setDiasAutomaticos(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Días de plazo automáticos", 1));
         general.setModuloPermisos(getCeldaBooleanaPorEtiqueta(tblConfiguraciones, "Módulo de solicitudes de permisos", 1));
         // Sin modificar precio, el foco solo puede ir a la cantidad
         general.setFoco(isModificarPrecioActivo()
@@ -6255,8 +6348,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         setFilaTabla(tblConfiguraciones1, OPCION_FOCO_PRODUCTO, 1, DatosMaestra.getFocoDespuesDeCargarProducto());
 
-        setFilaTabla(tblConfiguraciones, "Validar el cupo del credito", 1, DatosMaestra.isValidarCupoCredito());
-        setFilaTabla(tblConfiguraciones, "Días de plazo automaticos", 1, DatosMaestra.isCargarDiasPlazoAutomaticamente());
+        setFilaTabla(tblConfiguraciones, "Validar el cupo del crédito", 1, DatosMaestra.isValidarCupoCredito());
+        setFilaTabla(tblConfiguraciones, "Días de plazo automáticos", 1, DatosMaestra.isCargarDiasPlazoAutomaticamente());
 
         setFilaTabla(tblConfiguraciones, "Módulo de solicitudes de permisos", 1, DatosMaestra.isModuloPermisos());
 
@@ -6480,9 +6573,9 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         instancias.getMenu().actualizarUsuario(instancias.getUsuario());
 
         try {
-            setFilaTabla(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1, !"NO".equals(DatosMaestra.getAlertaUtilidad()));
+            setFilaTabla(tblConfiguraciones, "Facturar utilidad sobrepasada", 1, !"NO".equals(DatosMaestra.getAlertaUtilidad()));
         } catch (Exception e) {
-            setFilaTabla(tblConfiguraciones, "Facturar Utilidad Sobrepasada", 1, true);
+            setFilaTabla(tblConfiguraciones, "Facturar utilidad sobrepasada", 1, true);
         }
 
         setFilaTabla(tblConfiguraciones1, "Tipo de descuento", 1, DatosMaestra.getTipoDescuento());
@@ -6515,8 +6608,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         setFilaTabla(tblConfiguraciones, OPCION_USAR_LECTOR, 1, DatosMaestra.isUsarLector());
         setFilaTabla(tblConfiguraciones1, "Título en la factura", 1, DatosMaestra.getTituloFactura());
         setFilaTabla(tblConfiguraciones, "Precios con impuestos", 1, DatosMaestra.isPreciosConImpuestos());
-        setFilaTabla(tblConfiguraciones, "Ventas Contado Predeterminado", 1, DatosMaestra.isVentasContadoPredeterminado());
-        setFilaTabla(tblConfiguraciones, "Alertar Utilidad Sobrepasada", 1, DatosMaestra.isAlertarUtilidadSobrepasada());
+        setFilaTabla(tblConfiguraciones, "Ventas contado predeterminado", 1, DatosMaestra.isVentasContadoPredeterminado());
+        setFilaTabla(tblConfiguraciones, "Alertar utilidad sobrepasada", 1, DatosMaestra.isAlertarUtilidadSobrepasada());
 
         String diasCobrarMora = DatosMaestra.getDiasCobrarMora();
         String porcentajeMora = DatosMaestra.getPorcentajeMora();
@@ -6778,6 +6871,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         modelo.addRow(new Object[]{"Dirección", ""});
 
         tblInformacionEmpresa = new javax.swing.JTable(modelo);
+        bloquearMovimientoColumnas(tblInformacionEmpresa);
         tblInformacionEmpresa.setFont(new java.awt.Font("Arial", 0, 16));
         tblInformacionEmpresa.setRowHeight(24);
         // Columna "Campo" con ancho fijo de 110px
@@ -7121,6 +7215,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 return super.getCellEditor(row, column);
             }
         };
+        bloquearMovimientoColumnas(tblInformacionImpresion);
         tblInformacionImpresion.setFont(new java.awt.Font("Arial", 0, 16));
         tblInformacionImpresion.setRowHeight(24);
         if (tblInformacionImpresion.getColumnModel().getColumnCount() > 0) {
@@ -7165,12 +7260,119 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         return getCeldaBooleanaPorEtiqueta(tblConfiguraciones, opcion, 1);
     }
 
+    private static final java.util.Map<String, String> DESCRIPCIONES_CONFIGURACION = new java.util.HashMap<>();
+
+    static {
+        DESCRIPCIONES_CONFIGURACION.put(OPCION_CONSECUTIVO_ADICIONAL, "Imprime en la factura un consecutivo adicional (manual) además del número de la factura.");
+        DESCRIPCIONES_CONFIGURACION.put("Ventas contado predeterminado", "Al abrir una factura nueva se carga automáticamente el cliente de contado (1010), sin tener que buscarlo.");
+        DESCRIPCIONES_CONFIGURACION.put("Modificar nombre de productos", "Permite cambiar el nombre de un producto directamente en la factura, sin modificarlo en el inventario.");
+        DESCRIPCIONES_CONFIGURACION.put(OPCION_MODIFICAR_PRECIO, "Permite cambiar el precio de venta de un producto al momento de facturarlo.");
+        DESCRIPCIONES_CONFIGURACION.put("Combinar productos iguales", "Si se carga un producto que ya está en la lista, se suma la cantidad en la misma fila en lugar de agregar una fila nueva.");
+        DESCRIPCIONES_CONFIGURACION.put("Días de plazo automáticos", "Al seleccionar un cliente se cargan automáticamente los días de plazo (crédito) que tiene registrados.");
+        DESCRIPCIONES_CONFIGURACION.put("Facturar utilidad sobrepasada", "Permite facturar productos cuyo precio deja una utilidad por fuera del margen definido. Si está desactivada, la factura se bloquea.");
+        DESCRIPCIONES_CONFIGURACION.put("Alertar utilidad sobrepasada", "Muestra una advertencia cuando un producto deja una utilidad por fuera del margen definido, aunque se permita facturarlo.");
+        DESCRIPCIONES_CONFIGURACION.put("Facturar sin inventario", "Permite vender productos aunque no haya existencias suficientes en inventario.");
+        DESCRIPCIONES_CONFIGURACION.put("Mostrar devuelta en factura", "Al pagar una factura de contado se abre la ventana de pago para calcular el cambio (devuelta) del cliente.");
+        DESCRIPCIONES_CONFIGURACION.put("Validar el cupo del crédito", "Al facturar a crédito verifica que el cliente no supere el cupo de crédito asignado.");
+        DESCRIPCIONES_CONFIGURACION.put("Activar turnos", "Asigna un número de turno consecutivo a cada venta. El número inicial se define en \"Número de turno\".");
+        DESCRIPCIONES_CONFIGURACION.put("Borrar productos en mesas", "Permite a los usuarios (no administradores) eliminar productos de una mesa sin pedir autorización.");
+        DESCRIPCIONES_CONFIGURACION.put("Borrar productos en congeladas", "Permite a los usuarios (no administradores) eliminar productos de una factura congelada sin pedir autorización.");
+        DESCRIPCIONES_CONFIGURACION.put("Borrar mesas", "Permite a los usuarios (no administradores) limpiar o eliminar una mesa completa sin pedir autorización.");
+        DESCRIPCIONES_CONFIGURACION.put("Borrar congeladas", "Permite a los usuarios (no administradores) limpiar o eliminar una factura congelada sin pedir autorización.");
+        DESCRIPCIONES_CONFIGURACION.put("Módulo de solicitudes de permisos", "Activa el módulo donde el administrador recibe y aprueba las solicitudes de permiso de los usuarios.");
+        DESCRIPCIONES_CONFIGURACION.put(OPCION_USAR_LECTOR, "Optimiza la venta con lector de código de barras: después de cargar un producto el cursor vuelve al código.");
+        DESCRIPCIONES_CONFIGURACION.put("Precios con impuestos", "Indica que los precios de venta ya incluyen los impuestos (IVA / impoconsumo).");
+        DESCRIPCIONES_CONFIGURACION.put(OPCION_SOLO_MESAS_MESEROS, "Los meseros solo pueden ver y trabajar con las mesas; no acceden a los demás módulos.");
+        DESCRIPCIONES_CONFIGURACION.put(OPCION_FACTURAR_MESAS_MESEROS, "Permite que los meseros también puedan facturar (cobrar) las mesas.");
+        DESCRIPCIONES_CONFIGURACION.put("Número de turno", "Número desde el que continúa el consecutivo de turnos. Solo aplica con \"Activar turnos\".");
+        DESCRIPCIONES_CONFIGURACION.put("Título en la factura", "Título que se imprime en la parte superior de la factura (por ejemplo: FACTURA DE VENTA).");
+        DESCRIPCIONES_CONFIGURACION.put("Límite de productos (carta/media carta)", "Cantidad máxima de productos que caben en una factura impresa en carta o media carta.");
+        DESCRIPCIONES_CONFIGURACION.put("Tipo de descuento", "Define si los descuentos en la factura se ingresan como porcentaje o como valor.");
+        DESCRIPCIONES_CONFIGURACION.put("Descuento máximo para aplicar", "Porcentaje máximo de descuento que se permite aplicar en una venta.");
+        DESCRIPCIONES_CONFIGURACION.put(OPCION_FOCO_PRODUCTO, "Campo al que pasa el cursor después de cargar un producto: la cantidad o el valor.");
+        DESCRIPCIONES_CONFIGURACION.put("Cantidad al cargar un producto", "Cantidad que se asigna por defecto cada vez que se carga un producto.");
+        DESCRIPCIONES_CONFIGURACION.put("Días para alerta de cartera", "Días de anticipación con los que se alerta sobre la cartera pendiente.");
+        DESCRIPCIONES_CONFIGURACION.put("Contraseña para control y permisos", "Contraseña que se solicita para autorizar acciones restringidas (recogidas de caja, permisos, etc.).");
+        DESCRIPCIONES_CONFIGURACION.put("Porcentaje de propina en pre-factura", "Porcentaje de propina sugerida que se calcula en la pre-factura de las mesas.");
+        DESCRIPCIONES_CONFIGURACION.put("Días para cobrar mora en créditos", "Días de atraso a partir de los cuales se empieza a cobrar mora en los créditos.");
+        DESCRIPCIONES_CONFIGURACION.put("Porcentaje de mora en créditos", "Porcentaje de interés de mora que se cobra sobre las cuotas atrasadas de los créditos.");
+    }
+
+    private static final String GRUPO_FACTURACION = "FACTURACIÓN";
+    private static final String GRUPO_PRODUCTOS = "PRODUCTOS E INVENTARIO";
+    private static final String GRUPO_PERMISOS = "PERMISOS DE USUARIOS";
+    private static final String GRUPO_MESEROS = "MESEROS";
+    private static final String GRUPO_DESCUENTOS = "DESCUENTOS";
+    private static final String GRUPO_CARGA_PRODUCTOS = "CARGA DE PRODUCTOS";
+    private static final String GRUPO_CARTERA = "CARTERA Y CRÉDITOS";
+    private static final String GRUPO_RESTAURANTE = "RESTAURANTE";
+    private static final String GRUPO_SEGURIDAD = "SEGURIDAD";
+    private static final java.util.Set<String> GRUPOS_CONFIGURACION = new java.util.HashSet<>(java.util.Arrays.asList(
+            GRUPO_FACTURACION, GRUPO_PRODUCTOS, GRUPO_PERMISOS, GRUPO_MESEROS, GRUPO_DESCUENTOS,
+            GRUPO_CARGA_PRODUCTOS, GRUPO_CARTERA, GRUPO_RESTAURANTE, GRUPO_SEGURIDAD));
+
+    private static boolean esGrupoConfiguracion(Object etiqueta) {
+        return etiqueta != null && GRUPOS_CONFIGURACION.contains(etiqueta.toString());
+    }
+
+    private static final javax.swing.table.TableCellRenderer RENDERER_GRUPO = new javax.swing.table.DefaultTableCellRenderer() {
+        @Override
+        public java.awt.Component getTableCellRendererComponent(javax.swing.JTable tabla, Object valor, boolean seleccionada,
+                boolean foco, int fila, int columna) {
+            super.getTableCellRendererComponent(tabla, columna == 0 ? valor : "", false, false, fila, columna);
+            setFont(tabla.getFont().deriveFont(java.awt.Font.BOLD, 13f));
+            setBackground(new java.awt.Color(222, 230, 239));
+            setForeground(new java.awt.Color(44, 62, 80));
+            return this;
+        }
+    };
+
+    private static final String AYUDA_CONFIGURACION_INICIAL ="Pase el mouse o seleccione una configuración para ver para qué sirve.";
+
+    private static String descripcionFila(javax.swing.JTable tabla, int fila) {
+        if (fila < 0 || fila >= tabla.getRowCount()) {
+            return null;
+        }
+        String descripcion = DESCRIPCIONES_CONFIGURACION.get(String.valueOf(tabla.getValueAt(fila, 0)));
+        return descripcion == null ? null : "<b>" + tabla.getValueAt(fila, 0) + ":</b> " + descripcion;
+    }
+
+    private static void mostrarAyuda(javax.swing.JLabel panelAyuda, String descripcion) {
+        panelAyuda.setText("<html>" + (descripcion == null ? AYUDA_CONFIGURACION_INICIAL : descripcion) + "</html>");
+    }
+
+    private static void instalarDescripciones(final javax.swing.JTable tabla, final javax.swing.JLabel panelAyuda) {
+        panelAyuda.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 214, 224)),
+                javax.swing.BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+        mostrarAyuda(panelAyuda, null);
+        tabla.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+                String descripcion = descripcionFila(tabla, tabla.rowAtPoint(e.getPoint()));
+                tabla.setToolTipText(descripcion == null ? null : "<html><div style='width:280px'>" + descripcion + "</div></html>");
+                mostrarAyuda(panelAyuda, descripcion == null ? descripcionFila(tabla, tabla.getSelectedRow()) : descripcion);
+            }
+        });
+        tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                mostrarAyuda(panelAyuda, descripcionFila(tabla, tabla.getSelectedRow()));
+            }
+        });
+        tabla.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                mostrarAyuda(panelAyuda, descripcionFila(tabla, tabla.getSelectedRow()));
+            }
+        });
+    }
+
     private void inicializarTablaConfiguracionesFacturacion(boolean esRestaurante) {
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
                 new String[]{"Configuración", "Valor"}, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
-                return col == 1;
+                return col == 1 && !esGrupoConfiguracion(getValueAt(row, 0));
             }
 
             @Override
@@ -7178,32 +7380,34 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 return col == 1 ? Boolean.class : Object.class;
             }
         };
-        // Consecutivo adicional: solo aplica cuando no es restaurante
+        modelo.addRow(new Object[]{GRUPO_FACTURACION, null});
         if (!esRestaurante) {
             modelo.addRow(new Object[]{OPCION_CONSECUTIVO_ADICIONAL, false});
         }
-        modelo.addRow(new Object[]{"Ventas Contado Predeterminado", false});
+        modelo.addRow(new Object[]{"Ventas contado predeterminado", false});
+        modelo.addRow(new Object[]{"Días de plazo automáticos", false});
+        modelo.addRow(new Object[]{"Mostrar devuelta en factura", false});
+        modelo.addRow(new Object[]{"Validar el cupo del crédito", false});
+        modelo.addRow(new Object[]{"Activar turnos", false});
+
+        modelo.addRow(new Object[]{GRUPO_PRODUCTOS, null});
+        modelo.addRow(new Object[]{"Precios con impuestos", false});
         modelo.addRow(new Object[]{"Modificar nombre de productos", false});
         modelo.addRow(new Object[]{OPCION_MODIFICAR_PRECIO, false});
         modelo.addRow(new Object[]{"Combinar productos iguales", false});
-        modelo.addRow(new Object[]{"Días de plazo automaticos", false});
-        modelo.addRow(new Object[]{"Facturar Utilidad Sobrepasada", false});
-        modelo.addRow(new Object[]{"Alertar Utilidad Sobrepasada", false});
+        modelo.addRow(new Object[]{OPCION_USAR_LECTOR, false});
         modelo.addRow(new Object[]{"Facturar sin inventario", false});
-        modelo.addRow(new Object[]{"Mostrar devuelta en factura", false});
-        modelo.addRow(new Object[]{"Validar el cupo del credito", false});
-        modelo.addRow(new Object[]{"Activar turnos", false});
+        modelo.addRow(new Object[]{"Facturar utilidad sobrepasada", false});
+        modelo.addRow(new Object[]{"Alertar utilidad sobrepasada", false});
 
         String identificador = esRestaurante ? "mesas" : "congeladas";
+        modelo.addRow(new Object[]{GRUPO_PERMISOS, null});
         modelo.addRow(new Object[]{"Borrar productos en " + identificador, false});
         modelo.addRow(new Object[]{"Borrar " + identificador, false});
-
         modelo.addRow(new Object[]{"Módulo de solicitudes de permisos", false});
-        modelo.addRow(new Object[]{OPCION_USAR_LECTOR, false});
-        modelo.addRow(new Object[]{"Precios con impuestos", false});
 
-        // Opciones de meseros: solo aplican para restaurante
         if (esRestaurante) {
+            modelo.addRow(new Object[]{GRUPO_MESEROS, null});
             modelo.addRow(new Object[]{OPCION_SOLO_MESAS_MESEROS, true});
             modelo.addRow(new Object[]{OPCION_FACTURAR_MESAS_MESEROS, true});
         }
@@ -7222,7 +7426,17 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             }
         });
 
-        tblConfiguraciones = new javax.swing.JTable(modelo);
+        tblConfiguraciones = new javax.swing.JTable(modelo) {
+            @Override
+            public javax.swing.table.TableCellRenderer getCellRenderer(int row, int column) {
+                if (esGrupoConfiguracion(getValueAt(row, 0))) {
+                    return RENDERER_GRUPO;
+                }
+                return super.getCellRenderer(row, column);
+            }
+        };
+        bloquearMovimientoColumnas(tblConfiguraciones);
+        instalarDescripciones(tblConfiguraciones, lbAyudaConfiguraciones);
         tblConfiguraciones.setFont(new java.awt.Font("Arial", 0, 16));
         tblConfiguraciones.setRowHeight(24);
         if (tblConfiguraciones.getColumnModel().getColumnCount() > 0) {
@@ -7240,28 +7454,33 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         final java.util.List<String> etiquetas = new java.util.ArrayList<>();
         final java.util.List<String> tipos = new java.util.ArrayList<>();
 
-        etiquetas.add("Número de turno");
-        tipos.add("int");
+        etiquetas.add(GRUPO_FACTURACION);
+        tipos.add("grupo");
         etiquetas.add("Título en la factura");
         tipos.add("text");
         etiquetas.add("Límite de productos (carta/media carta)");
         tipos.add("num");
+        etiquetas.add("Número de turno");
+        tipos.add("int");
+
+        etiquetas.add(GRUPO_DESCUENTOS);
+        tipos.add("grupo");
         etiquetas.add("Tipo de descuento");
         tipos.add("combo_descuento");
         etiquetas.add("Descuento máximo para aplicar");
         tipos.add("int");
+
+        etiquetas.add(GRUPO_CARGA_PRODUCTOS);
+        tipos.add("grupo");
         etiquetas.add(OPCION_FOCO_PRODUCTO);
         tipos.add("combo_foco");
         etiquetas.add("Cantidad al cargar un producto");
         tipos.add("num");
+
+        etiquetas.add(GRUPO_CARTERA);
+        tipos.add("grupo");
         etiquetas.add("Días para alerta de cartera");
         tipos.add("num");
-        etiquetas.add("Contraseña para control y permisos");
-        tipos.add("password");
-        if (esRestaurante) {
-            etiquetas.add("Porcentaje de propina en pre-factura");
-            tipos.add("num");
-        }
         if (esCreditos) {
             etiquetas.add("Días para cobrar mora en créditos");
             tipos.add("num");
@@ -7269,11 +7488,23 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             tipos.add("num");
         }
 
+        if (esRestaurante) {
+            etiquetas.add(GRUPO_RESTAURANTE);
+            tipos.add("grupo");
+            etiquetas.add("Porcentaje de propina en pre-factura");
+            tipos.add("num");
+        }
+
+        etiquetas.add(GRUPO_SEGURIDAD);
+        tipos.add("grupo");
+        etiquetas.add("Contraseña para control y permisos");
+        tipos.add("password");
+
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
                 new String[]{"Configuración", "Valor"}, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
-                if (col == 0) {
+                if (col == 0 || esGrupoConfiguracion(getValueAt(row, 0))) {
                     return false;
                 }
                 if ("Número de turno".equals(getValueAt(row, 0))) {
@@ -7303,8 +7534,19 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
 
         tblConfiguraciones1 = new javax.swing.JTable(modelo) {
             @Override
+            public javax.swing.table.TableCellRenderer getCellRenderer(int row, int column) {
+                if (esGrupoConfiguracion(getValueAt(row, 0))) {
+                    return RENDERER_GRUPO;
+                }
+                return super.getCellRenderer(row, column);
+            }
+
+            @Override
             public java.awt.Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int col) {
                 java.awt.Component c = super.prepareRenderer(renderer, row, col);
+                if (renderer == RENDERER_GRUPO) {
+                    return c;
+                }
                 int filaModelo = convertRowIndexToModel(row);
                 if (col == 1 && filaModelo < tipos.size() && "password".equals(tipos.get(filaModelo))
                         && c instanceof javax.swing.JLabel) {
@@ -7390,6 +7632,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         });
         tblConfiguraciones1.setRowSorter(filtroConfiguraciones1);
 
+        bloquearMovimientoColumnas(tblConfiguraciones1);
+        instalarDescripciones(tblConfiguraciones1, lbAyudaConfiguraciones1);
         tblConfiguraciones1.setFont(new java.awt.Font("Arial", 0, 16));
         tblConfiguraciones1.setRowHeight(28);
         if (tblConfiguraciones1.getColumnModel().getColumnCount() > 0) {
@@ -7873,6 +8117,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane20;
     private javax.swing.JScrollPane jScrollPane21;
     private javax.swing.JScrollPane jScrollPane22;
+    private javax.swing.JLabel lbAyudaConfiguraciones;
+    private javax.swing.JLabel lbAyudaConfiguraciones1;
     private javax.swing.JScrollPane jScrollPane23;
     private javax.swing.JScrollPane jScrollPane24;
     private javax.swing.JScrollPane jScrollPane25;

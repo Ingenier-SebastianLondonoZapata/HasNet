@@ -253,7 +253,7 @@ public class infGuarderia extends javax.swing.JInternalFrame {
         btnBuscMascotas.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscMascotas.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscMascotas.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscMascotas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscMascotas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscMascotas.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscMascotas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscMascotas.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -266,7 +266,7 @@ public class infGuarderia extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -279,7 +279,7 @@ public class infGuarderia extends javax.swing.JInternalFrame {
 
         btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -292,7 +292,7 @@ public class infGuarderia extends javax.swing.JInternalFrame {
 
         btnAggProductos.setBackground(new java.awt.Color(204, 204, 204));
         btnAggProductos.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnAggProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnAggProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnAggProductos.setText("AGREGAR PRODUCTOS");
         btnAggProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggProductos.setEnabled(false);
@@ -307,7 +307,7 @@ public class infGuarderia extends javax.swing.JInternalFrame {
         btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -667,7 +667,7 @@ public class infGuarderia extends javax.swing.JInternalFrame {
 
         txtObservacion.setText("");
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
 
         btnAggProductos.setEnabled(false);
@@ -925,12 +925,12 @@ public class infGuarderia extends javax.swing.JInternalFrame {
 
                 txtTotal.setText(big.setMoneda(totalAPagar));
                 btnGuardar.setBackground(new java.awt.Color(241, 148, 138));
-                btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/salida.png"))); // NOI18N
+                btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/salida.png"))); // NOI18N
                 btnGuardar.setText("SALIDA");
 
             } else {
                 btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
-                btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+                btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
                 btnGuardar.setText("GUARDAR");
             }
         } else {

@@ -325,7 +325,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         lbAgregarProductoDiseno = new javax.swing.JLabel();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -447,7 +447,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd1.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -782,7 +782,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("MODIFICAR");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnActualizar.setEnabled(false);
@@ -796,7 +796,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -809,7 +809,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO ");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -942,7 +942,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1070,7 +1070,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnNuevo1.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnNuevo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo1.setText("NUEVO ");
         btnNuevo1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevo1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1083,7 +1083,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnGuardar1.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR");
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar1.setEnabled(false);
@@ -1098,7 +1098,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd2.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd2.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd2.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1111,7 +1111,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnBuscTerceros2.setBackground(new java.awt.Color(247, 220, 111));
         btnBuscTerceros2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnBuscTerceros2.setText("REIMPRIMIR");
         btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1124,7 +1124,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
         btnAnular.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnAnular.setText("ANULAR");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1321,7 +1321,7 @@ public class VistaDiseno extends javax.swing.JInternalFrame {
         btnBusProd3.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd3.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         btnBusProd3.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd3.setEnabled(false);

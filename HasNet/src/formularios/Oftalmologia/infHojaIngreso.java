@@ -756,7 +756,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
 
         btnBuscTerceros.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscTerceros.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/LupaPequeña.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/LupaPequeña.png"))); // NOI18N
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBuscTerceros.setMargin(new java.awt.Insets(2, 14, 2, 5));
@@ -1260,7 +1260,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnPaquimetria.setBackground(new java.awt.Color(204, 204, 204));
         btnPaquimetria.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnPaquimetria.setForeground(new java.awt.Color(255, 255, 255));
-        btnPaquimetria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/paquimetria.jpg"))); // NOI18N
+        btnPaquimetria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/oftalmologia/paquimetria.jpg"))); // NOI18N
         btnPaquimetria.setText("PAQUIMETRIA");
         btnPaquimetria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnPaquimetria.setEnabled(false);
@@ -1275,7 +1275,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnBiometria.setBackground(new java.awt.Color(204, 204, 204));
         btnBiometria.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBiometria.setForeground(new java.awt.Color(255, 255, 255));
-        btnBiometria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/biometria.png"))); // NOI18N
+        btnBiometria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/oftalmologia/biometria.png"))); // NOI18N
         btnBiometria.setText("BIOMETRIA");
         btnBiometria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBiometria.setEnabled(false);
@@ -1327,7 +1327,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnReimprimir.setBackground(new java.awt.Color(0, 153, 153));
         btnReimprimir.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnReimprimir.setForeground(new java.awt.Color(255, 255, 255));
-        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimir.setText("REIMPRIMIR");
         btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReimprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1341,7 +1341,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnLimpiar.setBackground(new java.awt.Color(102, 102, 255));
         btnLimpiar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR  ");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1501,7 +1501,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnNuevo5.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo5.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo5.setForeground(new java.awt.Color(255, 255, 255));
-        btnNuevo5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pantallaCompleta.png"))); // NOI18N
+        btnNuevo5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/oftalmologia/pantallaCompleta.png"))); // NOI18N
         btnNuevo5.setToolTipText("Subir");
         btnNuevo5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo5.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1515,7 +1515,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnNuevo9.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo9.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo9.setForeground(new java.awt.Color(255, 255, 255));
-        btnNuevo9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior_1.png"))); // NOI18N
+        btnNuevo9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior_1.png"))); // NOI18N
         btnNuevo9.setToolTipText("Subir");
         btnNuevo9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo9.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1529,7 +1529,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnNuevo8.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo8.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo8.setForeground(new java.awt.Color(255, 255, 255));
-        btnNuevo8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/siguiente.png"))); // NOI18N
+        btnNuevo8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/siguiente.png"))); // NOI18N
         btnNuevo8.setToolTipText("Subir");
         btnNuevo8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo8.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1569,7 +1569,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         }
 
         btnSubir.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnSubir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/subir imagen.png"))); // NOI18N
+        btnSubir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/subir imagen.png"))); // NOI18N
         btnSubir.setText("Subir Imagen");
         btnSubir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1578,7 +1578,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         });
 
         btnAgregar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAgregar.setText("Agregar");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1606,7 +1606,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnGuardar1.setBackground(new java.awt.Color(0, 153, 153));
         btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR");
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1705,7 +1705,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/LupaPequeña.png"))); // NOI18N
+        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/LupaPequeña.png"))); // NOI18N
         btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBusProd.setMargin(new java.awt.Insets(2, 14, 2, 5));
@@ -1849,7 +1849,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnGuardar.setBackground(new java.awt.Color(0, 153, 153));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR ");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2026,7 +2026,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         btnProximaCita.setBackground(new java.awt.Color(0, 153, 153));
         btnProximaCita.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnProximaCita.setForeground(new java.awt.Color(255, 255, 255));
-        btnProximaCita.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnProximaCita.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnProximaCita.setText("PROXIMA CITA");
         btnProximaCita.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnProximaCita.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2231,7 +2231,7 @@ public class infHojaIngreso extends javax.swing.JInternalFrame {
         );
 
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior_1.png"))); // NOI18N
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior_1.png"))); // NOI18N
         jLabel10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel10.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

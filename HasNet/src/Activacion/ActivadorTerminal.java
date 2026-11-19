@@ -126,6 +126,33 @@ public final class ActivadorTerminal {
         }
     }
 
+    public static int terminalesPermitidas(Datos datos) throws SQLException {
+        try (Connection conexion = conectarPagos(datos);
+                PreparedStatement consulta = conexion.prepareStatement("SELECT numeroTerminales FROM bdClientes WHERE idCliente = ?")) {
+            consulta.setString(1, datos.identificadorCliente.trim());
+            try (ResultSet resultado = consulta.executeQuery()) {
+                if (!resultado.next()) {
+                    throw new IllegalStateException("El cliente no está registrado en la aplicación de pagos. Regístrelo primero en PagosHasNet.");
+                }
+                return 1 + resultado.getInt(1);
+            }
+        }
+    }
+
+    private static void validarCupoTerminales(Datos datos, Connection conexionLocal) throws SQLException {
+        int permitidas = terminalesPermitidas(datos);
+        int activadas;
+        try (Statement consulta = conexionLocal.createStatement();
+                ResultSet resultado = consulta.executeQuery("SELECT COUNT(*) FROM bdTerminales")) {
+            activadas = resultado.next() ? resultado.getInt(1) : 0;
+        }
+        if (activadas >= permitidas) {
+            throw new IllegalStateException("El cliente tiene contratadas " + permitidas + " terminal(es) (servidor + " + (permitidas - 1)
+                    + " adicionales) y ya hay " + activadas + " activada(s). Amplíe el número de terminales en PagosHasNet"
+                    + " o reasigne una terminal existente.");
+        }
+    }
+
     public static List<String> listarTerminales(Datos datos) throws SQLException {
         List<String> terminales = new ArrayList<>();
         try (Connection conexion = conectarLocal(datos)) {
@@ -163,6 +190,9 @@ public final class ActivadorTerminal {
         String terminal;
         try (Connection conexion = conectarLocal(datos)) {
             asegurarTablaTerminales(conexion);
+            if (NUEVA_TERMINAL.equals(datos.terminal)) {
+                validarCupoTerminales(datos, conexion);
+            }
             terminal = NUEVA_TERMINAL.equals(datos.terminal) ? siguienteNombreTerminal(conexion) : datos.terminal;
             escribirConfiguracion(temporal, datos, terminal, token);
             registrarTerminal(conexion, datos, terminal, IdentidadInstalacion.hashToken(token), equipo);
@@ -198,7 +228,7 @@ public final class ActivadorTerminal {
                 } else {
                     sentencia.execute("CREATE TABLE bdTerminales ("
                             + "Id VARCHAR(128) NULL, terminal VARCHAR(10) NOT NULL, ubicacionCaja VARCHAR(255) NULL, "
-                            + "equipo VARCHAR(100) NULL, fechaActivacion DATETIME NULL, "
+                            + "equipo VARCHAR(100) NULL, fechaActivacion DATETIME NULL, ultimaSenal DATETIME NULL, "
                             + "UNIQUE KEY uk_bdTerminales_terminal (terminal), UNIQUE KEY uk_bdTerminales_id (Id)"
                             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8");
                 }
@@ -206,6 +236,9 @@ public final class ActivadorTerminal {
             if (!existeColumna(conexion, "bdTerminales", "equipo")) {
                 sentencia.execute("ALTER TABLE bdTerminales MODIFY Id VARCHAR(128) NULL, MODIFY terminal VARCHAR(10) NOT NULL, "
                         + "ADD COLUMN equipo VARCHAR(100) NULL, ADD COLUMN fechaActivacion DATETIME NULL");
+            }
+            if (!existeColumna(conexion, "bdTerminales", "ultimaSenal")) {
+                sentencia.execute("ALTER TABLE bdTerminales ADD COLUMN ultimaSenal DATETIME NULL");
             }
             if (!existeIndice(conexion, "bdTerminales", "uk_bdTerminales_terminal")) {
                 sentencia.execute("ALTER TABLE bdTerminales ADD UNIQUE KEY uk_bdTerminales_terminal (terminal)");

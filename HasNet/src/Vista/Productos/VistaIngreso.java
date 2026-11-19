@@ -130,7 +130,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         simbolo = instancias.getSimbolo();
 
         tblProductos.setDefaultRenderer(Object.class, new IconCellRenderer());
-        ImageIcon fot = new ImageIcon(getClass().getResource("/imagenes/eliminar.png"));
+        ImageIcon fot = new ImageIcon(getClass().getResource("/imagenes/productos/eliminar.png"));
         icono = new ImageIcon(fot.getImage().getScaledInstance(30, 25, Image.SCALE_DEFAULT));
 
         jtblComprobantes.setVisible(false);
@@ -373,7 +373,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         btnImportarExcel2 = new javax.swing.JButton();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -416,7 +416,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -661,7 +661,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
         btnAnular.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnAnular.setText("ANULAR");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -674,7 +674,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -687,7 +687,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         btnReimprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReimprimir.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimir.setText("REIMPRIMIR");
         btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnReimprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -700,7 +700,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 204));
         btnLimpiar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -733,7 +733,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         btnInformacionAdicional.setBackground(new java.awt.Color(204, 204, 204));
         btnInformacionAdicional.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnInformacionAdicional.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listado.png"))); // NOI18N
+        btnInformacionAdicional.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listado.png"))); // NOI18N
         btnInformacionAdicional.setText("INFORMACIÓN ADICIONAL");
         btnInformacionAdicional.setToolTipText("Proveedor, comprobante, fechas, plazo, observaciones e impuestos");
         btnInformacionAdicional.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -803,7 +803,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
 
         btnBuscTerceros3.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros3.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnBuscTerceros3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/boton-de-suma.png"))); // NOI18N
+        btnBuscTerceros3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/productos/boton-de-suma.png"))); // NOI18N
         btnBuscTerceros3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         btnBuscTerceros3.setMargin(new java.awt.Insets(2, 7, 2, 5));
@@ -886,7 +886,7 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
         btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

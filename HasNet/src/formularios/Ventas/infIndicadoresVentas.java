@@ -431,7 +431,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
 
         btnGuardar1.setBackground(new java.awt.Color(204, 204, 204));
         btnGuardar1.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/graficos.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ventas/graficos.png"))); // NOI18N
         btnGuardar1.setText("GENERAR GRAFICOS");
         btnGuardar1.setToolTipText("Ctrl+G");
         btnGuardar1.setBorder(null);
@@ -451,7 +451,7 @@ public class infIndicadoresVentas extends javax.swing.JPanel {
 
         btnGuardar.setBackground(new java.awt.Color(204, 204, 204));
         btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/verGraficos.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ventas/verGraficos.png"))); // NOI18N
         btnGuardar.setText("VER EN PANTALLA ");
         btnGuardar.setToolTipText("Ctrl+G");
         btnGuardar.setBorder(null);

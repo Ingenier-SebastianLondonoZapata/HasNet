@@ -92,7 +92,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pdfPlanilla.png"))); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/pdfPlanilla.png"))); // NOI18N
 
         btnProducto1.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         btnProducto1.setText("Descargar al escritorio");
@@ -114,7 +114,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel10.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pdfPlanilla.png"))); // NOI18N
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/pdfPlanilla.png"))); // NOI18N
 
         btnProducto2.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         btnProducto2.setText("Descargar al escritorio");
@@ -130,7 +130,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel12.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pdfPlanilla.png"))); // NOI18N
+        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/pdfPlanilla.png"))); // NOI18N
 
         btnProducto3.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         btnProducto3.setText("Descargar al escritorio");
@@ -146,7 +146,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel14.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pdfPlanilla.png"))); // NOI18N
+        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/pdfPlanilla.png"))); // NOI18N
 
         btnProducto4.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         btnProducto4.setText("Descargar al escritorio");
@@ -162,7 +162,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel16.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pdfPlanilla.png"))); // NOI18N
+        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/pdfPlanilla.png"))); // NOI18N
 
         btnProducto5.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         btnProducto5.setText("Descargar al escritorio");
@@ -267,7 +267,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/planilla.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/planilla.png"))); // NOI18N
 
         btnProducto.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         btnProducto.setText("Descargar al escritorio");
@@ -287,7 +287,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/planilla.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/planilla.png"))); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -351,7 +351,7 @@ public class infPlantillas extends javax.swing.JInternalFrame {
 
         jLabel19.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/docs.png"))); // NOI18N
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/docs.png"))); // NOI18N
 
         btnCompras1.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         btnCompras1.setText("Descargar al escritorio");

@@ -117,7 +117,7 @@ public class infRepFormulas extends javax.swing.JPanel {
         btnAggCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnAggCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggCliente.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -128,7 +128,7 @@ public class infRepFormulas extends javax.swing.JPanel {
         btnRemCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnRemCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemCliente.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,7 +139,7 @@ public class infRepFormulas extends javax.swing.JPanel {
         btnAggMedicamento.setBackground(new java.awt.Color(204, 204, 204));
         btnAggMedicamento.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggMedicamento.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggMedicamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggMedicamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggMedicamento.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggMedicamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,7 +150,7 @@ public class infRepFormulas extends javax.swing.JPanel {
         btnRemProd3.setBackground(new java.awt.Color(204, 204, 204));
         btnRemProd3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemProd3.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemProd3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemProd3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemProd3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemProd3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

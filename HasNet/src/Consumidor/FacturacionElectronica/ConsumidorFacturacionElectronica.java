@@ -3,7 +3,6 @@ package Consumidor.FacturacionElectronica;
 import Controlador.FacturacionElectronica.*;
 import Controlador.ConsumirServicio.ControladorConsumirServicioREST;
 import Controlador.Alertas.ControladorAlertas;
-import Controlador.BarraProceso.controladorBarraProceso;
 import Modelo.FacturacionElectronica.Entrada.ModeloConsultaFacturaElectronica;
 import Modelo.FacturacionElectronica.Entrada.ModeloDatosFacturaElectronica;
 import Modelo.FacturacionElectronica.Entrada.ModeloFacturacionElectronica;
@@ -36,7 +35,6 @@ public class ConsumidorFacturacionElectronica {
         }
 
         JSONObject JSONCompleto = null;
-        iniciarLoader(esNotaDebito, esNotaCredito);
 
         try {
             JSONCompleto = controladorCrearJSON.crearJSON(modeloFacturacionElectronica, esNotaDebito, esNotaDebitoPos,
@@ -47,7 +45,7 @@ public class ConsumidorFacturacionElectronica {
 
         System.out.println("JSONCompleto: " + JSONCompleto);
         String identificadorFactura = modeloFacturacionElectronica.getDsPrefijo() + "-" + modeloFacturacionElectronica.getDsNumeroFactura();
-        return enviarJSONFacturacionElectronica(JSONCompleto, identificadorFactura);
+        return enviarJSONFacturacionElectronica(JSONCompleto, identificadorFactura, tituloCargando(esNotaDebito, esNotaCredito));
     }
 
     public ConsultaFacturaElectronicaDTO consultarFacturaElectronica(String factura) throws Exception {
@@ -57,11 +55,11 @@ public class ConsumidorFacturacionElectronica {
         return datosFacturaElectronica;
     }
 
-    private boolean enviarJSONFacturacionElectronica(JSONObject JSON, String identificadorFactura) throws Exception {
+    private boolean enviarJSONFacturacionElectronica(JSONObject JSON, String identificadorFactura, String tituloCargando) throws Exception {
         variablesEntorno.generarEnviroments(instancias.getNitEmisor(), instancias);
-        String respuesta = consumirServicio.consumirServicioREST(variablesEntorno.urlFacturacion, JSON.toString());
-        instancias.getProgres().detener(true);
-        instancias.setProgres(null);
+        String cuerpo = JSON.toString();
+        String respuesta = esperandoRespuesta.ejecutar(tituloCargando,
+                () -> consumirServicio.consumirServicioREST(variablesEntorno.urlFacturacion, cuerpo));
         Boolean datosCorrectos = validacionesDocumentosElectronicos.validaciones_respuesta(respuesta);
 
         if (datosCorrectos) {
@@ -74,21 +72,17 @@ public class ConsumidorFacturacionElectronica {
     private void generarRegistro(String identificadorFactura) {
         String identificadorCliente = Constantes.leerIdentificadorCliente();
         instancias.getSqlPagos().agregarRegistroFactura(identificadorCliente, identificadorFactura, metodosGenerales.fechaHora());
-        instancias.getSqlPagos().disminuirConsecutivo(identificadorCliente,
-                Integer.parseInt(instancias.getSqlPagos().obtenerNumeroConsecutivo(identificadorCliente)[0].toString()) - 1);
+        instancias.getSqlPagos().consumirDocumentoElectronico(identificadorCliente);
     }
 
-    private void iniciarLoader(boolean esNotaDebito, boolean esNotaCredito) {
-        controladorBarraProceso controladorBarra = new controladorBarraProceso();
-        String tituloCargando = "ENVIANDO FACTURA ELECTRÓNICA";
+    private String tituloCargando(boolean esNotaDebito, boolean esNotaCredito) {
         if (esNotaDebito) {
-            tituloCargando = "ENVIANDO NOTA DEBITO ELECTRÓNICA";
-        } else if (esNotaCredito) {
-            tituloCargando = "ENVIANDO NOTA CRÉDITO ELECTRÓNICA";
+            return "ENVIANDO NOTA DÉBITO ELECTRÓNICA";
         }
-
-        esperandoRespuesta barra = new esperandoRespuesta(controladorBarra, Instancias.getInstancias(), tituloCargando);
-        barra.show();
+        if (esNotaCredito) {
+            return "ENVIANDO NOTA CRÉDITO ELECTRÓNICA";
+        }
+        return "ENVIANDO FACTURA ELECTRÓNICA";
     }
 
     private ModeloConsultaFacturaElectronica crearModeloConsulta(String consecutivo) {

@@ -37,11 +37,11 @@ public class VistaDatosIngreso extends JDialog {
         JPanel botones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         botones.setBackground(Color.WHITE);
 
-        JButton btnAceptar = crearBoton(solicitarConfirmacion ? "GUARDAR" : "ACEPTAR", "/imagenes/guardar.png", new Color(46, 204, 113));
+        JButton btnAceptar = crearBoton(solicitarConfirmacion ? "GUARDAR" : "ACEPTAR", "/imagenes/comun/guardar.png", new Color(46, 204, 113));
         btnAceptar.addActionListener(e -> confirmar());
 
         if (solicitarConfirmacion) {
-            JButton btnCancelar = crearBoton("CANCELAR", "/imagenes/borrar2.png", new Color(241, 148, 138));
+            JButton btnCancelar = crearBoton("CANCELAR", "/imagenes/comun/borrar2.png", new Color(241, 148, 138));
             btnCancelar.addActionListener(e -> dispose());
             botones.add(btnCancelar);
         }

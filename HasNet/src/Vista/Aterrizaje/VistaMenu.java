@@ -188,8 +188,8 @@ public class VistaMenu extends javax.swing.JFrame {
     private List<OpcionMenu> opcionesActuales = Collections.emptyList();
     private final Map<ModuloMenu, JButton> botonesModulo = new EnumMap<>(ModuloMenu.class);
     private final List<JButton> botonesOpcion = new ArrayList<>();
-    private final ImageIcon iconoOpcion = new ImageIcon(getClass().getResource("/imagenes/flecha.png"));
-    private final ImageIcon iconoOpcionActiva = new ImageIcon(getClass().getResource("/imagenes/flecha1.png"));
+    private final ImageIcon iconoOpcion = new ImageIcon(getClass().getResource("/imagenes/menu/flecha.png"));
+    private final ImageIcon iconoOpcionActiva = new ImageIcon(getClass().getResource("/imagenes/menu/flecha1.png"));
     ServerSocket SERVER_SOCKETE;
 
     Boolean noAbrir = true;
@@ -231,6 +231,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
     public VistaMenu() {
         initComponents();
+        Utilidades.IconoAplicacion.aplicar(this);
         construirMenuAccesos();
         construirMenuOpciones();
 
@@ -389,7 +390,6 @@ public class VistaMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         setMinimumSize(new java.awt.Dimension(1177, 317));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
@@ -421,7 +421,7 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         lbLogo.setBackground(new java.awt.Color(242, 244, 244));
-        lbLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/logoNuevo.png"))); // NOI18N
+        lbLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/logoNuevo.png"))); // NOI18N
         lbLogo.setBorder(null);
         lbLogo.setContentAreaFilled(false);
         lbLogo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -445,9 +445,12 @@ public class VistaMenu extends javax.swing.JFrame {
         pnlModulos.setBackground(new java.awt.Color(242, 244, 244));
         pnlModulos.setLayout(new javax.swing.BoxLayout(pnlModulos, javax.swing.BoxLayout.Y_AXIS));
 
-        btnAbrirCaja.setBackground(new java.awt.Color(204, 204, 204));
-        btnAbrirCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/caja Reg.png"))); // NOI18N
-        btnAbrirCaja.setText("Abrir Caja");
+        btnAbrirCaja.setBackground(new java.awt.Color(214, 214, 214));
+        btnAbrirCaja.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        btnAbrirCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/caja Reg.png"))); // NOI18N
+        btnAbrirCaja.setText(" ABRIR CAJA");
+        btnAbrirCaja.setBorder(null);
+        btnAbrirCaja.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnAbrirCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAbrirCajaActionPerformed(evt);
@@ -455,15 +458,11 @@ public class VistaMenu extends javax.swing.JFrame {
         });
 
         btnVerificar.setBackground(new java.awt.Color(214, 214, 214));
-        btnVerificar.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
-        btnVerificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/LupaPequeña.png"))); // NOI18N
-        btnVerificar.setText("Consultar precios");
+        btnVerificar.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        btnVerificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/LupaPequeña.png"))); // NOI18N
+        btnVerificar.setText(" CONSULTAR PRECIOS");
         btnVerificar.setBorder(null);
-        btnVerificar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnVerificar.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnVerificar.setMaximumSize(new java.awt.Dimension(146, 119));
-        btnVerificar.setMinimumSize(new java.awt.Dimension(146, 119));
-        btnVerificar.setPreferredSize(new java.awt.Dimension(146, 119));
         btnVerificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVerificarActionPerformed(evt);
@@ -483,9 +482,9 @@ public class VistaMenu extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(pnlModulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
-                .addComponent(btnAbrirCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAbrirCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(btnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10))
         );
 
@@ -545,7 +544,7 @@ public class VistaMenu extends javax.swing.JFrame {
         );
 
         btnOcultar.setBackground(new java.awt.Color(242, 244, 244));
-        btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/izquierda.png"))); // NOI18N
+        btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/izquierda.png"))); // NOI18N
         btnOcultar.setToolTipText("Ctrl+S");
         btnOcultar.setBorder(null);
         btnOcultar.addActionListener(new java.awt.event.ActionListener() {
@@ -832,10 +831,10 @@ public class VistaMenu extends javax.swing.JFrame {
 
         if (seVe) {
             instancias.getMenu().ocultarMenu("");
-            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/derecha.png")));
+            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/derecha.png")));
         } else {
             instancias.getMenu().expandirMenu();
-            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/izquierda.png")));
+            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/izquierda.png")));
         }
     }//GEN-LAST:event_btnOcultarActionPerformed
 
@@ -895,7 +894,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
             if (getSeVeElMenu()) {
                 ocultarMenu("");
-                btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/derecha.png")));
+                btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/derecha.png")));
             }
         } catch (PropertyVetoException ex) {
             Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -1060,6 +1059,7 @@ public class VistaMenu extends javax.swing.JFrame {
     private void abrirConfiguraciones() {
         try {
             if (instancias.getUsuarioLog().getUsuario().equals("ADMIN")) {
+                instancias.getMaestra().actualizarDocumentosElectronicosDisponibles();
                 instancias.getMaestra().setSelected(true);
                 instancias.getMenu().cambiarTitulo("CONFIGURACIÓNES");
             } else {
@@ -1504,7 +1504,7 @@ public class VistaMenu extends javax.swing.JFrame {
 
     public void actualizarMedicamentos(boolean cambiarColor) {
         hayAlertaMedicamentos = cambiarColor;
-        String icono = cambiarColor ? "/imagenes/medicina2.png" : "/imagenes/medicina1.png";
+        String icono = cambiarColor ? "/imagenes/menu/medicina2.png" : "/imagenes/menu/medicina1.png";
         actualizarIndicadorOpciones();
     }
 
@@ -1514,7 +1514,7 @@ public class VistaMenu extends javax.swing.JFrame {
         }
 
         hayAlertaSolicitudes = cambiarColor;
-        String icono = cambiarColor ? "/imagenes/buzonRojo.png" : "/imagenes/buzonBlanco.png";
+        String icono = cambiarColor ? "/imagenes/menu/buzonRojo.png" : "/imagenes/menu/buzonBlanco.png";
         actualizarIndicadorOpciones();
     }
 
@@ -1611,10 +1611,10 @@ public class VistaMenu extends javax.swing.JFrame {
     public void accionarMenu() {
         if (instancias.getMenu().getSeVeElMenu()) {
             instancias.getMenu().ocultarMenu("");
-            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/derecha.png")));
+            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/derecha.png")));
         } else {
             instancias.getMenu().expandirMenu();
-            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/izquierda.png")));
+            btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/menu/izquierda.png")));
         }
     }
 

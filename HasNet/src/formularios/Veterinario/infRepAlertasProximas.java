@@ -99,7 +99,7 @@ public class infRepAlertasProximas extends javax.swing.JDialog {
         btnAggCliente1.setBackground(new java.awt.Color(204, 204, 204));
         btnAggCliente1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggCliente1.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggCliente1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggCliente1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggCliente1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggCliente1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,7 +110,7 @@ public class infRepAlertasProximas extends javax.swing.JDialog {
         btnRemCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnRemCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemCliente.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

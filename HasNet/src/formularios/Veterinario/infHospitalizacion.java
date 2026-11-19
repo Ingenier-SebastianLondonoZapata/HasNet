@@ -151,7 +151,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
         btnModificar3 = new javax.swing.JButton();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,7 +161,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
         popMedicamentos.add(popBorrar);
 
         popBorrar1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar1.setText("Borrar");
         popBorrar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -293,7 +293,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior_2.png"))); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior_2.png"))); // NOI18N
         jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -460,7 +460,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
         btnBusProd1.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBusProd1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -473,7 +473,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         btnGuardar2.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar2.setText("GUARDAR");
         btnGuardar2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -486,7 +486,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         btnModificar2.setBackground(new java.awt.Color(255, 255, 255));
         btnModificar2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnModificar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnModificar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnModificar2.setBorder(null);
         btnModificar2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnModificar2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -543,7 +543,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         btnGuardar4.setBackground(new java.awt.Color(204, 204, 204));
         btnGuardar4.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listado.png"))); // NOI18N
+        btnGuardar4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listado.png"))); // NOI18N
         btnGuardar4.setText("CARGAR");
         btnGuardar4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar4.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -704,7 +704,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         btnGuardar3.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar3.setText("GUARDAR");
         btnGuardar3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -892,7 +892,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         btnGuardar1.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar1.setText("GUARDAR");
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -978,7 +978,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
         btnBusVendedor1.setBackground(new java.awt.Color(204, 204, 204));
         btnBusVendedor1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusVendedor1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusVendedor1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusVendedor1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusVendedor1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusVendedor1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBusVendedor1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -991,7 +991,7 @@ public class infHospitalizacion extends javax.swing.JInternalFrame {
 
         btnModificar3.setBackground(new java.awt.Color(255, 255, 255));
         btnModificar3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnModificar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnModificar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnModificar3.setBorder(null);
         btnModificar3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnModificar3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

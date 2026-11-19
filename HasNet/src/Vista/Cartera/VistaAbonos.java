@@ -963,7 +963,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnGuardarAbono.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarAbono.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnGuardarAbono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarAbono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarAbono.setText("GUARDAR  ");
         btnGuardarAbono.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarAbono.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -976,7 +976,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnVolver.setBackground(new java.awt.Color(204, 204, 204));
         btnVolver.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior.png"))); // NOI18N
         btnVolver.setText("VOLVER");
         btnVolver.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnVolver.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1119,7 +1119,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("Actualizar");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1132,7 +1132,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnBuscarCuentaPendiente.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscarCuentaPendiente.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnBuscarCuentaPendiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnBuscarCuentaPendiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnBuscarCuentaPendiente.setText("Ver más  ");
         btnBuscarCuentaPendiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscarCuentaPendiente.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1145,7 +1145,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnReImprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReImprimir.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnReImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReImprimir.setText("Reimprimir abono");
         btnReImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1158,7 +1158,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
         btnAnular.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnAnular.setText("Anular abono");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1358,7 +1358,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnFacturar.setBackground(new java.awt.Color(46, 204, 113));
         btnFacturar.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnFacturar.setText("Facturar");
         btnFacturar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnFacturar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1724,7 +1724,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnBuscTerceros2.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnBuscTerceros2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior.png"))); // NOI18N
         btnBuscTerceros2.setText("VOLVER");
         btnBuscTerceros2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -1737,7 +1737,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnGenerarEstadoCuenta.setBackground(new java.awt.Color(204, 204, 204));
         btnGenerarEstadoCuenta.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGenerarEstadoCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnGenerarEstadoCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnGenerarEstadoCuenta.setText("ESTADO DE CUENTA");
         btnGenerarEstadoCuenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGenerarEstadoCuenta.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1750,7 +1750,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnGenerarCertificado.setBackground(new java.awt.Color(204, 204, 204));
         btnGenerarCertificado.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGenerarCertificado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/historia.png"))); // NOI18N
+        btnGenerarCertificado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/historia.png"))); // NOI18N
         btnGenerarCertificado.setText("CERTIFICADO");
         btnGenerarCertificado.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGenerarCertificado.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1831,7 +1831,7 @@ public class VistaAbonos extends javax.swing.JInternalFrame {
 
         btnGuardarAbonoCredito.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarAbonoCredito.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardarAbonoCredito.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarAbonoCredito.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarAbonoCredito.setText("GUARDAR ABONO  ");
         btnGuardarAbonoCredito.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarAbonoCredito.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

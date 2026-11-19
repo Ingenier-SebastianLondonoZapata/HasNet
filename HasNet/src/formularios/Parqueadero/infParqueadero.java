@@ -77,7 +77,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
         txtPlaca = new javax.swing.JTextField();
 
         popModificar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar pequeño.png"))); // NOI18N
+        popModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar pequeño.png"))); // NOI18N
         popModificar.setText("Modificar");
         popModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -86,7 +86,7 @@ public class infParqueadero extends javax.swing.JInternalFrame {
         });
         jPopupMenu1.add(popModificar);
 
-        popAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popAnular.setText("Eliminar");
         popAnular.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -138,13 +138,13 @@ public class infParqueadero extends javax.swing.JInternalFrame {
         }
 
         btnCascos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnCascos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/casco.png"))); // NOI18N
+        btnCascos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/parqueadero/casco.png"))); // NOI18N
         btnCascos.setText(" DISPONIBLES (1) ");
 
         btnGuardar3.setBackground(new java.awt.Color(204, 204, 204));
         btnGuardar3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar3.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnGuardar3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnGuardar3.setText("REFRESCAR PÁG");
         btnGuardar3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar3.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -545,19 +545,19 @@ public class infParqueadero extends javax.swing.JInternalFrame {
                 modelo.setValueAt(datos[i][1], i, 2);
 
                 if (datos[i][0].equals("PROD-000000000")) {
-                    img = new ImageIcon(getClass().getResource("/imagenes/moto.png"));
+                    img = new ImageIcon(getClass().getResource("/imagenes/parqueadero/moto.png"));
                     modelo.setValueAt(new JLabel(img), i, 1);
                 } else if (datos[i][0].equals("PROD-000000001")) {
-                    img = new ImageIcon(getClass().getResource("/imagenes/carro.png"));
+                    img = new ImageIcon(getClass().getResource("/imagenes/parqueadero/carro.png"));
                     modelo.setValueAt(new JLabel(img), i, 1);
                 } else if (datos[i][0].equals("PROD-000000002")) {
-                    img = new ImageIcon(getClass().getResource("/imagenes/bus.png"));
+                    img = new ImageIcon(getClass().getResource("/imagenes/parqueadero/bus.png"));
                     modelo.setValueAt(new JLabel(img), i, 1);
                 } else if (datos[i][0].equals("PROD-000000003")) {
-                    img = new ImageIcon(getClass().getResource("/imagenes/camion.png"));
+                    img = new ImageIcon(getClass().getResource("/imagenes/parqueadero/camion.png"));
                     modelo.setValueAt(new JLabel(img), i, 1);
                 } else if (datos[i][0].equals("PROD-000000004")) {
-                    img = new ImageIcon(getClass().getResource("/imagenes/buseta.png"));
+                    img = new ImageIcon(getClass().getResource("/imagenes/parqueadero/buseta.png"));
                     modelo.setValueAt(new JLabel(img), i, 1);
                 } else {
                     modelo.setValueAt(datos[i][0], i, 1);

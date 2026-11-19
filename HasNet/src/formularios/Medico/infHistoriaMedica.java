@@ -538,7 +538,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -548,7 +548,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         jPopupMenu1.add(popBorrar);
 
         popBorrar1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar1.setText("Borrar");
         popBorrar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -823,7 +823,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
         btnGuardarConsulta.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarConsulta.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnGuardarConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarConsulta.setText("GUARDAR");
         btnGuardarConsulta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarConsulta.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -836,7 +836,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
         btnReimprimirConsulta.setBackground(new java.awt.Color(247, 220, 111));
         btnReimprimirConsulta.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
-        btnReimprimirConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimirConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimirConsulta.setText("IMPRIMIR");
         btnReimprimirConsulta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReimprimirConsulta.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -893,7 +893,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
         jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior_2.png"))); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior_2.png"))); // NOI18N
         jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1206,7 +1206,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla14.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla14.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla14.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1220,7 +1220,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla15.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla15.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla15.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1234,7 +1234,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla16.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla16.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla16.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1248,7 +1248,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla17.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla17.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla17.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla17.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1262,7 +1262,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla18.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla18.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla18.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla18.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1276,7 +1276,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla19.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla19.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla19.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla19.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla19.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1290,7 +1290,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla20.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla20.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla20.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla20.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla20.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1304,7 +1304,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla21.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla21.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla21.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla21.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1318,7 +1318,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla22.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla22.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla22.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla22.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla22.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1332,7 +1332,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla23.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla23.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla23.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla23.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla23.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1544,7 +1544,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla29.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla29.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla29.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla29.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla29.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla29.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla29.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla29.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1589,7 +1589,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla36.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla36.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla36.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla36.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla36.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla36.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla36.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla36.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2482,7 +2482,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla1.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2532,7 +2532,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla3.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla3.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2546,7 +2546,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla4.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla4.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla4.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2560,7 +2560,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla5.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla5.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla5.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2574,7 +2574,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla6.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla6.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla6.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2588,7 +2588,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla7.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla7.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla7.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2602,7 +2602,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla8.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla8.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla8.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2616,7 +2616,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla9.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla9.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla9.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2630,7 +2630,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla10.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla10.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla10.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2644,7 +2644,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla11.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla11.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla11.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2658,7 +2658,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla12.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla12.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla12.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2672,7 +2672,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla13.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla13.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla13.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla13.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2686,7 +2686,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla2.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla2.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2838,7 +2838,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla37.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla37.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla37.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla37.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla37.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla37.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla37.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla37.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2866,7 +2866,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla38.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla38.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla38.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla38.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla38.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla38.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla38.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla38.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2894,7 +2894,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla39.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla39.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla39.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla39.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla39.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla39.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla39.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla39.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3113,7 +3113,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla30.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla30.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla30.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla30.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla30.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla30.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3127,7 +3127,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla31.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla31.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla31.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla31.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla31.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla31.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla31.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla31.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3141,7 +3141,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla32.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla32.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla32.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla32.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla32.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla32.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3155,7 +3155,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla33.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla33.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla33.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla33.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla33.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla33.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla33.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla33.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3169,7 +3169,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla34.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla34.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla34.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla34.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla34.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla34.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla34.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla34.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3183,7 +3183,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla35.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla35.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla35.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla35.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla35.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla35.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla35.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla35.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3630,7 +3630,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscCie1.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3681,7 +3681,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscCie2.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie2.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3724,7 +3724,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscCie3.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie3.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3744,7 +3744,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscCie4.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie4.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie4.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3792,7 +3792,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla24.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla24.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla24.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla24.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla24.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3827,7 +3827,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla25.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla25.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla25.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla25.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla25.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3866,7 +3866,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscCup2.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCup2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCup2.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCup2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCup2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCup2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCup2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCup2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3908,7 +3908,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscCup1.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCup1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCup1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCup1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCup1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCup1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3928,7 +3928,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla26.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla26.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla26.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla26.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla26.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -3955,7 +3955,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         lbNit6.setText("Anexos:");
 
         jButton6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/subir imagen.png"))); // NOI18N
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/subir imagen.png"))); // NOI18N
         jButton6.setText("Seleccionar Archivo");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3977,7 +3977,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         });
 
         jButton7.setFont(new java.awt.Font("Century Gothic", 1, 11)); // NOI18N
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar2.png"))); // NOI18N
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/medico/agregar2.png"))); // NOI18N
         jButton7.setText("Agregar");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -4034,7 +4034,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
         btnGuardarArchivos.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarArchivos.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardarArchivos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarArchivos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarArchivos.setText("GUARDAR ARCHIVOS ADJUNTOS   ");
         btnGuardarArchivos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarArchivos.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -4416,7 +4416,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         });
 
         btnAgregarExamenEvolucion.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnAgregarExamenEvolucion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar2.png"))); // NOI18N
+        btnAgregarExamenEvolucion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/medico/agregar2.png"))); // NOI18N
         btnAgregarExamenEvolucion.setText("Agregar");
         btnAgregarExamenEvolucion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -4425,7 +4425,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         });
 
         btnSubirImagen2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnSubirImagen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/subir imagen.png"))); // NOI18N
+        btnSubirImagen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/subir imagen.png"))); // NOI18N
         btnSubirImagen2.setText("Seleccionar Archivo");
         btnSubirImagen2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -4435,7 +4435,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
 
         btnGuardarSeguimiento.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarSeguimiento.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardarSeguimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarSeguimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarSeguimiento.setText("GUARDAR EVOLUCIÓN");
         btnGuardarSeguimiento.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarSeguimiento.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -4458,7 +4458,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla27.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla27.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla27.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla27.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla27.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla27.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -4472,7 +4472,7 @@ public class infHistoriaMedica extends javax.swing.JInternalFrame {
         btnBuscPlantilla28.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla28.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla28.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla28.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla28.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla28.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla28.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla28.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

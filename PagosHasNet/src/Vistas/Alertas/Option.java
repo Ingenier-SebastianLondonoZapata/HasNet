@@ -23,7 +23,7 @@ public class Option extends javax.swing.JDialog {
         initComponents();
 
         this.setLocationRelativeTo(null);
-        lbAsk.setText(ask);
+        AjustadorTextoAlerta.ajustar(lbAsk, ask, 560, 54);
     }
 
     /**

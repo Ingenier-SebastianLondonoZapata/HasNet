@@ -728,7 +728,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         btnFacturar.setBackground(new java.awt.Color(46, 204, 113));
         btnFacturar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnFacturar.setText("FACTURAR");
         btnFacturar.setToolTipText("Ctrl+G");
         btnFacturar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -859,7 +859,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         btnBuscTerceros1.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior.png"))); // NOI18N
+        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior.png"))); // NOI18N
         btnBuscTerceros1.setText("REGRESAR AL LISTADO");
         btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1125,7 +1125,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         btnReimprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReimprimir.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimir.setText("REIMPRIMIR");
         btnReimprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReimprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1138,7 +1138,7 @@ public class VistaDocumentos extends javax.swing.JInternalFrame {
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
         btnAnular.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnAnular.setText("ANULAR ");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

@@ -205,7 +205,7 @@ public class dlgTipoDescuento extends javax.swing.JDialog {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("APLICAR DESCUENTO");
         btnGuardar.setToolTipText("Ctrl+G");
         btnGuardar.setBorder(javax.swing.BorderFactory.createEtchedBorder());

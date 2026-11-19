@@ -348,7 +348,7 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/buscar1.png"/>
+                      <Image iconType="3" name="/imagenes/comun/buscar1.png"/>
                     </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -744,7 +744,7 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/buscar1.png"/>
+                      <Image iconType="3" name="/imagenes/comun/buscar1.png"/>
                     </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -918,7 +918,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/limpiar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/limpiar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="LIMPIAR"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -942,7 +942,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/guardar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/guardar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="GUARDAR"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -967,7 +967,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/actualizar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/actualizar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="MODIFICAR"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -991,7 +991,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/agregar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/agregar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="CONFIRMAR"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -1015,7 +1015,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/agregar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/agregar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="FACTURAR"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -1039,7 +1039,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/borrar2.png"/>
+                      <Image iconType="3" name="/imagenes/comun/borrar2.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="CANCELAR"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -1212,7 +1212,7 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/buscar1.png"/>
+                      <Image iconType="3" name="/imagenes/comun/buscar1.png"/>
                     </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -1268,7 +1268,7 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/buscar1.png"/>
+                      <Image iconType="3" name="/imagenes/comun/buscar1.png"/>
                     </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -1450,7 +1450,7 @@
                   <Font name="Century Gothic" size="18" style="0"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/imagenes/borrar2.png"/>
+                  <Image iconType="3" name="/imagenes/comun/borrar2.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Inasistencia"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -1474,7 +1474,7 @@
                   <Font name="Century Gothic" size="18" style="0"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/imagenes/producto.png"/>
+                  <Image iconType="3" name="/imagenes/comun/producto.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Agregar productos"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">

@@ -72,7 +72,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
 
         btnAnestesia.setBackground(new java.awt.Color(255, 255, 255));
         btnAnestesia.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnAnestesia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnAnestesia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnAnestesia.setText("GENERAR");
         btnAnestesia.setEnabled(false);
         btnAnestesia.addActionListener(new java.awt.event.ActionListener() {
@@ -108,7 +108,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
 
         btnConsentimiento.setBackground(new java.awt.Color(255, 255, 255));
         btnConsentimiento.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnConsentimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnConsentimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnConsentimiento.setText("GENERAR");
         btnConsentimiento.setEnabled(false);
         btnConsentimiento.addActionListener(new java.awt.event.ActionListener() {
@@ -151,7 +151,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
 
         btnGenerar.setBackground(new java.awt.Color(255, 255, 255));
         btnGenerar.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnGenerar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnGenerar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnGenerar.setText("GENERAR");
         btnGenerar.setEnabled(false);
         btnGenerar.addActionListener(new java.awt.event.ActionListener() {
@@ -230,7 +230,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
         btnBuscTerceros1.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -299,7 +299,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
 
         btnEutanasia.setBackground(new java.awt.Color(255, 255, 255));
         btnEutanasia.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnEutanasia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnEutanasia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnEutanasia.setText("GENERAR");
         btnEutanasia.setEnabled(false);
         btnEutanasia.addActionListener(new java.awt.event.ActionListener() {
@@ -330,7 +330,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
 
         btnNegativa.setBackground(new java.awt.Color(255, 255, 255));
         btnNegativa.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnNegativa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnNegativa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnNegativa.setText("GENERAR");
         btnNegativa.setEnabled(false);
         btnNegativa.addActionListener(new java.awt.event.ActionListener() {
@@ -361,7 +361,7 @@ public class infFormatos extends javax.swing.JInternalFrame {
 
         btnVisitas.setBackground(new java.awt.Color(255, 255, 255));
         btnVisitas.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        btnVisitas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar.png"))); // NOI18N
+        btnVisitas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar.png"))); // NOI18N
         btnVisitas.setText("GENERAR");
         btnVisitas.setEnabled(false);
         btnVisitas.addActionListener(new java.awt.event.ActionListener() {

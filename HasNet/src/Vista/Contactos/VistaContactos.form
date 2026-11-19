@@ -20,7 +20,7 @@
               <Font name="Calibri" size="14" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/imagenes/eliminar-cancelar-icono-4935-16.png"/>
+              <Image iconType="3" name="/imagenes/comun/eliminar-cancelar-icono-4935-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Borrar"/>
           </Properties>
@@ -203,7 +203,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/nuevo.png"/>
+                      <Image iconType="3" name="/imagenes/comun/nuevo.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="NUEVO        "/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -227,7 +227,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/guardar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/guardar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="GUARDAR    "/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -251,7 +251,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/actualizar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/actualizar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="MODIFICAR  "/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -276,7 +276,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/borrar2.png"/>
+                      <Image iconType="3" name="/imagenes/comun/borrar2.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="INACTIVAR "/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -301,7 +301,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/cliente.png"/>
+                      <Image iconType="3" name="/imagenes/comun/cliente.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="LISTADO      "/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -325,7 +325,7 @@
                       <Font name="Calibri" size="16" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/imprimir.png"/>
+                      <Image iconType="3" name="/imagenes/comun/imprimir.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="IMPRIMIR INFORME DEL PACIENTE"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -2079,7 +2079,7 @@
                               <Color blue="ff" green="ff" red="ff" type="rgb"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/imagenes/buscar1.png"/>
+                              <Image iconType="3" name="/imagenes/comun/buscar1.png"/>
                             </Property>
                             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -2882,7 +2882,7 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/imagenes/webcam.png"/>
+                  <Image iconType="3" name="/imagenes/comun/webcam.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="AGREGAR IMAGEN    "/>
                 <Property name="toolTipText" type="java.lang.String" value=""/>

@@ -202,7 +202,7 @@ public class pnlDibujo extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        ImageIcon Img = new ImageIcon(getClass().getResource("/imagenes/Fundacion.png"));
+        ImageIcon Img = new ImageIcon(getClass().getResource("/imagenes/oftalmologia/Fundacion.png"));
         g.drawImage(Img.getImage(), 0, 0, 900, 483, null);
         setOpaque(false);
         super.paint(g);

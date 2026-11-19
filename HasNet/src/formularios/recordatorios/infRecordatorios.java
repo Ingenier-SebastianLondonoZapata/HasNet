@@ -179,7 +179,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
         btnGuardar.setBackground(new java.awt.Color(0, 153, 153));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR   ");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -198,7 +198,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
         btnConfirmarCita.setBackground(new java.awt.Color(0, 153, 153));
         btnConfirmarCita.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnConfirmarCita.setForeground(new java.awt.Color(255, 255, 255));
-        btnConfirmarCita.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/historia.png"))); // NOI18N
+        btnConfirmarCita.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/historia.png"))); // NOI18N
         btnConfirmarCita.setText("FINALIZAR");
         btnConfirmarCita.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnConfirmarCita.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -212,7 +212,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
         btnLimpiar.setBackground(new java.awt.Color(102, 102, 255));
         btnLimpiar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR ");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -238,7 +238,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
         btnCancelar.setBackground(new java.awt.Color(204, 204, 204));
         btnCancelar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
-        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnCancelar.setText("CANCELAR");
         btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -319,7 +319,7 @@ public class infRecordatorios extends javax.swing.JInternalFrame {
 
     btnBuscPaciente.setBackground(new java.awt.Color(204, 255, 204));
     btnBuscPaciente.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-    btnBuscPaciente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+    btnBuscPaciente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
     btnBuscPaciente.setText("Clientes");
     btnBuscPaciente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     btnBuscPaciente.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

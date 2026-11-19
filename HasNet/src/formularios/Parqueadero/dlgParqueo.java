@@ -418,7 +418,7 @@ public class dlgParqueo extends javax.swing.JDialog {
         pnlCascos.setBackground(new java.awt.Color(255, 255, 255));
         pnlCascos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cascos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Gothic", 0, 12), new java.awt.Color(0, 0, 0))); // NOI18N
 
-        btnCascos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/casco.png"))); // NOI18N
+        btnCascos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/parqueadero/casco.png"))); // NOI18N
         btnCascos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCascosActionPerformed(evt);

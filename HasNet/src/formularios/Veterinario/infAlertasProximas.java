@@ -125,7 +125,7 @@ public class infAlertasProximas extends javax.swing.JInternalFrame {
 
     btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
     btnGuardar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-    btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+    btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
     btnGuardar.setText("GUARDAR");
     btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

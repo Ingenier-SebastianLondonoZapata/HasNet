@@ -161,7 +161,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
         btnEliminar = new javax.swing.JButton();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -187,7 +187,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
 
         lbCambiarTamano.setBackground(new java.awt.Color(153, 255, 153));
         lbCambiarTamano.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbCambiarTamano.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/expandir.png"))); // NOI18N
+        lbCambiarTamano.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/medico/expandir.png"))); // NOI18N
         lbCambiarTamano.setToolTipText("Expandir/Contraer Menu");
         lbCambiarTamano.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         lbCambiarTamano.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -375,7 +375,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
 
         btnBuscTerceros.setBackground(new java.awt.Color(204, 255, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cliente.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/cliente.png"))); // NOI18N
         btnBuscTerceros.setText("Nuevo Paciente");
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1283,7 +1283,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
         btnGuardar.setBackground(new java.awt.Color(0, 153, 153));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnGuardar.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR       ");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1297,7 +1297,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
         btnLimpiar.setBackground(new java.awt.Color(102, 102, 255));
         btnLimpiar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR          ");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1311,7 +1311,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
         btnBuscTerceros1.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscTerceros1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnBuscTerceros1.setText("IMPRIMIR");
         btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1325,7 +1325,7 @@ public class infAutorizacionServicios extends javax.swing.JInternalFrame {
         btnEliminar.setBackground(new java.awt.Color(204, 204, 204));
         btnEliminar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnEliminar.setText("ANULAR");
         btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

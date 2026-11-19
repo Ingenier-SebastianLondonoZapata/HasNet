@@ -47,7 +47,7 @@ public class msgIngresar1 extends javax.swing.JDialog {
 
         lbTitulo.setFont(new java.awt.Font("Century Gothic", 1, 30)); // NOI18N
         lbTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTitulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nota.png"))); // NOI18N
+        lbTitulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/configuracion/nota.png"))); // NOI18N
         lbTitulo.setText("DOCUMENTO");
 
         jButton1.setBackground(new java.awt.Color(255, 153, 153));

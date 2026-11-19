@@ -167,7 +167,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
         btnAggCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnAggCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggCliente.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -178,7 +178,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
         btnRemCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnRemCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemCliente.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -290,7 +290,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 204));
         btnLimpiar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -303,7 +303,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
         btnFacturar.setBackground(new java.awt.Color(46, 204, 113));
         btnFacturar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnFacturar.setText("FACTURAR");
         btnFacturar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnFacturar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -321,7 +321,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
         btnAnular.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnAnular.setText("ANULAR");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -334,7 +334,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
         btnReImprimir1.setBackground(new java.awt.Color(247, 220, 111));
         btnReImprimir1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnReImprimir1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReImprimir1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReImprimir1.setText("REIMPRIMIR");
         btnReImprimir1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReImprimir1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -347,7 +347,7 @@ public class infFacturarLotes extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("ACTUALIZAR");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

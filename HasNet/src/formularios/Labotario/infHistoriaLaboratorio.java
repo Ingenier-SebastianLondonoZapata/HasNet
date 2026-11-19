@@ -625,7 +625,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnBuscCie1.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -676,7 +676,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnBuscCie2.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie2.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -719,7 +719,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnBuscCie3.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie3.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie3.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -739,7 +739,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnBuscCie4.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscCie4.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscCie4.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscCie4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscCie4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscCie4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscCie4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscCie4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -787,7 +787,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnBuscPlantilla24.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla24.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla24.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla24.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla24.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -822,7 +822,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnBuscPlantilla25.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscPlantilla25.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnBuscPlantilla25.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscPlantilla25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listadoPequeño.png"))); // NOI18N
+        btnBuscPlantilla25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listadoPequeño.png"))); // NOI18N
         btnBuscPlantilla25.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         btnBuscPlantilla25.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscPlantilla25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1434,7 +1434,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnGuardarConsulta.setBackground(new java.awt.Color(0, 153, 153));
         btnGuardarConsulta.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnGuardarConsulta.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardarConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarConsulta.setText("GUARDAR");
         btnGuardarConsulta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarConsulta.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1448,7 +1448,7 @@ public class infHistoriaLaboratorio extends javax.swing.JInternalFrame {
         btnReimprimirConsulta.setBackground(new java.awt.Color(0, 153, 153));
         btnReimprimirConsulta.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnReimprimirConsulta.setForeground(new java.awt.Color(255, 255, 255));
-        btnReimprimirConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReimprimirConsulta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReimprimirConsulta.setText("IMPRIMIR");
         btnReimprimirConsulta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReimprimirConsulta.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

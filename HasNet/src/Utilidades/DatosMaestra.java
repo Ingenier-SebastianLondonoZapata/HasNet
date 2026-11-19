@@ -270,7 +270,7 @@ public class DatosMaestra {
 
     // ── Crédito / Cartera ───────────────────────────────────────────────────
     /**
-     * "Validar el cupo del credito".
+     * "Validar el cupo del crédito".
      */
     public static boolean isValidarCupoCredito() {
         return general != null && general.isValidarCupoCredito();

@@ -7,12 +7,18 @@ public class Instancias {
 
     private static Instancias instancias;
     private SQL sql;
+    private final SQLIngresos sqlIngresos;
     private vistaMenu menu;
     private buscadorClientes busClientes;
     private jcThread progres;
 
     Instancias() {
         sql = new SQL();
+        sqlIngresos = new SQLIngresos();
+    }
+
+    public SQLIngresos getSqlIngresos() {
+        return sqlIngresos;
     }
 
     public static Instancias getInstancias() {

@@ -687,7 +687,7 @@
                           <Font name="Calibri" size="16" style="1"/>
                         </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/imagenes/actualizar.png"/>
+                          <Image iconType="3" name="/imagenes/comun/actualizar.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="ACTUALIZAR "/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -711,7 +711,7 @@
                           <Font name="Calibri" size="16" style="1"/>
                         </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/imagenes/guardar.png"/>
+                          <Image iconType="3" name="/imagenes/comun/guardar.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="GUARDAR"/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -735,7 +735,7 @@
                           <Font name="Calibri" size="16" style="1"/>
                         </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/imagenes/imprimir.png"/>
+                          <Image iconType="3" name="/imagenes/comun/imprimir.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="REIMPRIMIR"/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -759,7 +759,7 @@
                           <Font name="Calibri" size="16" style="1"/>
                         </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/imagenes/limpiar.png"/>
+                          <Image iconType="3" name="/imagenes/comun/limpiar.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="LIMPIAR       "/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -925,7 +925,7 @@
                           <Font name="Calibri" size="16" style="1"/>
                         </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/imagenes/imprimir.png"/>
+                          <Image iconType="3" name="/imagenes/comun/imprimir.png"/>
                         </Property>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                           <Color id="Cursor de Mano"/>

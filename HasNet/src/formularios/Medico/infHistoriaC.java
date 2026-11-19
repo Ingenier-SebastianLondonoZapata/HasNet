@@ -281,7 +281,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
 
         btnOrdenesPendientes.setBackground(new java.awt.Color(46, 204, 113));
         btnOrdenesPendientes.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnOrdenesPendientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/historia.png"))); // NOI18N
+        btnOrdenesPendientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/historia.png"))); // NOI18N
         btnOrdenesPendientes.setText("ORDEN");
         btnOrdenesPendientes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnOrdenesPendientes.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -294,7 +294,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
 
         btnImprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnImprimir.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnImprimir.setText("IMPRIMIR");
         btnImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -308,7 +308,7 @@ public class infHistoriaC extends javax.swing.JInternalFrame {
         btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

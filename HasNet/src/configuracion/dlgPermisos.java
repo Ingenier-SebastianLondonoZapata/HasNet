@@ -97,7 +97,7 @@ public class dlgPermisos extends javax.swing.JDialog {
         jLabel1.setText("SOLICITUDES PENDIENTES");
 
         btnActualizar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnActualizarActionPerformed(evt);

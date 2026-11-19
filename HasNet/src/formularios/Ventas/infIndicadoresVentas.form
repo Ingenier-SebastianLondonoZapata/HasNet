@@ -742,7 +742,7 @@
                       <Font name="Century Gothic" size="12" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/graficos.png"/>
+                      <Image iconType="3" name="/imagenes/ventas/graficos.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="GENERAR GRAFICOS"/>
                     <Property name="toolTipText" type="java.lang.String" value="Ctrl+G"/>
@@ -771,7 +771,7 @@
                       <Font name="Century Gothic" size="12" style="1"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/verGraficos.png"/>
+                      <Image iconType="3" name="/imagenes/ventas/verGraficos.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="VER EN PANTALLA "/>
                     <Property name="toolTipText" type="java.lang.String" value="Ctrl+G"/>

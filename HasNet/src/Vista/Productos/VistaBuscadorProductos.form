@@ -142,7 +142,7 @@
               <Font name="Century Gothic" size="11" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/imagenes/buscar1.png"/>
+              <Image iconType="3" name="/imagenes/comun/buscar1.png"/>
             </Property>
           </Properties>
           <Events>
@@ -303,7 +303,7 @@
         <Component class="javax.swing.JButton" name="btnIzquierda">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/imagenes/izquierda1.png"/>
+              <Image iconType="3" name="/imagenes/productos/izquierda1.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Teclado, tecla izquierda/Filtro anterior"/>
           </Properties>
@@ -315,7 +315,7 @@
         <Component class="javax.swing.JButton" name="btnDerecha">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/imagenes/derecha1.png"/>
+              <Image iconType="3" name="/imagenes/productos/derecha1.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Teclado, tecla derecha/Filtro siguiente"/>
           </Properties>

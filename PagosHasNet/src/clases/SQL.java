@@ -127,16 +127,6 @@ public class SQL {
         return Agregar_Registro(new Object[]{idCliente, nit, tipoIdentificacion, nombre, telefono, fechaInicio}, null, instruccion_sql);
     }
 
-    public boolean agregarRegistroPaquete(String idCliente, int numeroFacturas, int valorUnitario, int valorTotal, String fecha) {
-        String instruccion_sql = "insert into bdPaquetesClientes(idCliente, numeroFacturas, valorUnitario, valorTotal, fecha) values (?,?,?,?,?);";
-        return Agregar_Registro(new Object[]{idCliente, numeroFacturas, valorUnitario, valorTotal, fecha}, null, instruccion_sql);
-    }
-
-    public boolean actualizarPaquete(String idCliente, int totalNumeroFacturas) {
-        String instruccion_sql = "update bdClientes set numeroFEDisponibles=? where idCliente = ?";
-        return Actualizar_Registro(new Object[]{"", totalNumeroFacturas, idCliente}, null, instruccion_sql);
-    }
-
     public boolean agregarDatosCliente(String idCliente, modeloCreacion modelo) {
         String instruccion_sql = "insert into bdDatosClientes(idCliente, tipoPersona, tipoIdentificacion, identificacion, nombres, segundoNombre, primerApellido, "
                 + "segundoApellido, direccion, telefono, email, emailRemitente, emailDefecto, cdDaneCiudad, cdDaneDepartamento, tipoRegimen, sitioWeb, codigoPostal, "
@@ -159,60 +149,38 @@ public class SQL {
         return getDatos(colName, origen, "SELECT idCliente, nit, nombre, telefono, fechaInicio from bdClientes ", "");
     }
 
-    public Object[][] obtenerRegistroPagos(String estado) {
-        String colName[] = {"idPago", "nit", "nombre", "fechaLimite", "diasAntesAlertaBloqueo", "bdClientes.idCliente", "fechaPago"};
+    public Object[][] obtenerPagosPendientes() {
+        String colName[] = {"idPago", "nit", "nombre", "fechaLimite", "diasAntesAlertaBloqueo", "bdClientes.idCliente"};
         return consultarFilas(colName,
-                "SELECT idPago, nit, nombre, fechaLimite, diasAntesAlertaBloqueo, bdClientes.idCliente, fechaPago FROM bdPagos INNER JOIN bdClientes "
-                + "ON bdPagos.idCliente = bdClientes.idCliente WHERE estado = ?", estado);
-    }
-
-    public Object[][] obtenerRegistroPaquete() {
-        String colName[] = {"tabla1.idCliente", "nit", "nombre", "resultado"};
-        String origen = " bdPaquetesClientes INNER JOIN bdClientes ON bdPaquetesClientes.idCliente = bdClientes.idCliente ";
-        return getDatos(colName, origen, "SELECT tabla1.idCliente, nit, nombre, numeroFacturas - IFNULL(numRegistros, 0) AS resultado FROM "
-                + "(SELECT bdPaquetesClientes.idCliente, nit, nombre, SUM(numeroFacturas) AS numeroFacturas "
-                + "FROM bdPaquetesClientes INNER JOIN bdClientes ON bdPaquetesClientes.idCliente = bdClientes.idCliente GROUP BY idCliente) AS tabla1 "
-                + "LEFT JOIN (SELECT idCliente, COUNT(numeroFactura) AS numRegistros FROM bdRegistrosClientes GROUP BY idCliente) AS tabla2 "
-                + "ON tabla1.idCliente = tabla2.idCliente; ", "");
-    }
-
-    public Object[][] obtenerHistorialPaquetes() {
-        String colName[] = {"bdPaquetesClientes.idCliente", "nit", "nombre", "numeroFacturas", "valorUnitario", "valorTotal", "fecha"};
-        String origen = " bdPaquetesClientes INNER JOIN bdClientes ON bdPaquetesClientes.idCliente = bdClientes.idCliente";
-        return getDatos(colName, origen, "SELECT bdPaquetesClientes.idCliente, nit, nombre, numeroFacturas, valorUnitario, valorTotal, fecha "
-                + "FROM bdPaquetesClientes INNER JOIN bdClientes ON bdPaquetesClientes.idCliente = bdClientes.idCliente", "");
+                "SELECT idPago, nit, nombre, fechaLimite, diasAntesAlertaBloqueo, bdClientes.idCliente FROM bdPagos INNER JOIN bdClientes "
+                + "ON bdPagos.idCliente = bdClientes.idCliente WHERE estado = 'PENDIENTE'");
     }
 
     public modeloConfiguracion obtenerConfiguracionCliente(String idCliente) {
         modeloConfiguracion modelo = new modeloConfiguracion();
-        String instruccion_sql = "select regimen, informacionLegal, tipoImpresion, nit, nombre, telefono, fechaInicio, diasAntesAlertaBloqueo,"
+        String instruccion_sql = "select regimen, nit, nombre, telefono, fechaInicio, diasAntesAlertaBloqueo,"
                 + "diasDespuesGabelaBloqueo, numeroFEDisponibles, congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, "
-                + "recordatorios, laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, usb, "
+                + "recordatorios, laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, "
                 + "facturaElectronica,  pruebasFacturacion from bdClientes where idCliente = ?";
-        String[] colName = {"regimen", "informacionLegal", "tipoImpresion", "nit", "nombre", "telefono", "fechaInicio", "diasAntesAlertaBloqueo", "diasDespuesGabelaBloqueo",
+        String[] colName = {"regimen", "nit", "nombre", "telefono", "fechaInicio", "diasAntesAlertaBloqueo", "diasDespuesGabelaBloqueo",
             "numeroFEDisponibles", "congeladas", "medico", "veterinaria", "parqueadero", "ordenServicio", "creditos", "separe", "pedido", "agenda", "restaurante", "recordatorios",
-            "laboratorio", "servicioAutomotor", "oftalmologia", "inventarioBodegas", "productosSerial", "facturacionLote", "usb",
+            "laboratorio", "servicioAutomotor", "oftalmologia", "inventarioBodegas", "productosSerial", "facturacionLote",
             "facturaElectronica", "pruebasFacturacion"};
-        boolean[] cadena = {true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false
+        boolean[] cadena = {true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false
         };
         return modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql, idCliente));
     }
 
     public boolean actualizarPermisos(modeloConfiguracion modelo, String idCliente) {
-        String instruccion_sql = "update bdClientes set regimen=?, informacionLegal=?, tipoImpresion=?, nit=?, nombre=?, telefono=?, fechaInicio=?, "
-                + "diasAntesAlertaBloqueo=?, diasDespuesGabelaBloqueo=?, numeroFEDisponibles=?, congeladas=?, medico=?, veterinaria=?, parqueadero=?, ordenServicio=?, creditos=?, "
+        String instruccion_sql = "update bdClientes set regimen=?, nit=?, nombre=?, telefono=?, fechaInicio=?, "
+                + "diasAntesAlertaBloqueo=?, diasDespuesGabelaBloqueo=?, congeladas=?, medico=?, veterinaria=?, parqueadero=?, ordenServicio=?, creditos=?, "
                 + "separe=?, pedido=?, agenda=?, restaurante=?, recordatorios=?, laboratorio=?, servicioAutomotor=?, oftalmologia=?, inventarioBodegas=?, "
-                + "productosSerial=?, facturacionLote=?, usb=?, facturaElectronica=?, pruebasFacturacion=? where idCliente = ?";
+                + "productosSerial=?, facturacionLote=?, facturaElectronica=?, pruebasFacturacion=? where idCliente = ?";
         Object[] datos = modelo.pasarDatosConfiguracion(modelo);
         Object[] datosConCliente = Arrays.copyOf(datos, datos.length + 1);
         datosConCliente[datos.length] = idCliente;
         return Actualizar_Registro(datosConCliente, null, instruccion_sql);
-    }
-
-    public boolean cambiarEstadoCuota(int idPago) {
-        String instruccion_sql = "update bdPagos set estado=?, fechaPago=? where idPago = ?";
-        return Actualizar_Registro(new Object[]{"", "PAGADO", metodosGenerales.fecha(), idPago}, null, instruccion_sql);
     }
 
 //                                     PROCEDIMIENTOS SQL

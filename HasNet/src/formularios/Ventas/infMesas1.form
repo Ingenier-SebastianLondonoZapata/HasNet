@@ -108,7 +108,7 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/ESTAERA.jpg"/>
+                      <Image iconType="3" name="/imagenes/comun/ESTAERA.jpg"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value=""/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -188,7 +188,7 @@
                   <Font name="Century Gothic" size="14" style="0"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/imagenes/actualizar peque&#xf1;o.png"/>
+                  <Image iconType="3" name="/imagenes/comun/actualizar peque&#xf1;o.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Actualizar"/>
                 <Property name="horizontalAlignment" type="int" value="4"/>

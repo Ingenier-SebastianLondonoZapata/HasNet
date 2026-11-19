@@ -62,7 +62,7 @@ public class visor extends javax.swing.JFrame {
         btnNuevo9.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo9.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo9.setForeground(new java.awt.Color(255, 255, 255));
-        btnNuevo9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anterior_1.png"))); // NOI18N
+        btnNuevo9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/anterior_1.png"))); // NOI18N
         btnNuevo9.setToolTipText("Subir");
         btnNuevo9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo9.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -76,7 +76,7 @@ public class visor extends javax.swing.JFrame {
         btnNuevo8.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo8.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo8.setForeground(new java.awt.Color(255, 255, 255));
-        btnNuevo8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/siguiente.png"))); // NOI18N
+        btnNuevo8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/siguiente.png"))); // NOI18N
         btnNuevo8.setToolTipText("Subir");
         btnNuevo8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo8.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

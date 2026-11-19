@@ -139,7 +139,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
         btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO    ");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -152,7 +152,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR    ");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -165,7 +165,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
         btnActualizar.setBackground(new java.awt.Color(93, 173, 226));
         btnActualizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnActualizar.setText("MODIFICAR");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -178,7 +178,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
         btnBuscTerceros.setBackground(new java.awt.Color(230, 126, 34));
         btnBuscTerceros.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/terceroIco.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/terceroIco.png"))); // NOI18N
         btnBuscTerceros.setText("CLIENTES   ");
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -191,7 +191,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
         btnBuscTerceros1.setBackground(new java.awt.Color(153, 153, 255));
         btnBuscTerceros1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mascotas.png"))); // NOI18N
+        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/mascotas.png"))); // NOI18N
         btnBuscTerceros1.setText("MASCOTAS");
         btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -204,7 +204,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
         btnHistoria.setBackground(new java.awt.Color(255, 255, 255));
         btnHistoria.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnHistoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/historia.png"))); // NOI18N
+        btnHistoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/historia.png"))); // NOI18N
         btnHistoria.setText("HISTORIA    ");
         btnHistoria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnHistoria.setEnabled(false);
@@ -431,11 +431,11 @@ public class infMascotas extends javax.swing.JInternalFrame {
             }
         });
 
-        lbPerro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/perro.png"))); // NOI18N
+        lbPerro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/perro.png"))); // NOI18N
 
-        lbGato.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/gato.png"))); // NOI18N
+        lbGato.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/gato.png"))); // NOI18N
 
-        lbAve.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ave.png"))); // NOI18N
+        lbAve.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/ave.png"))); // NOI18N
 
         rdGato.setBackground(new java.awt.Color(255, 255, 255));
         rdGato.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -623,7 +623,7 @@ public class infMascotas extends javax.swing.JInternalFrame {
         btnNuevo1.setBackground(new java.awt.Color(255, 255, 255));
         btnNuevo1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         btnNuevo1.setForeground(new java.awt.Color(255, 255, 255));
-        btnNuevo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cargarImagen.png"))); // NOI18N
+        btnNuevo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/cargarImagen.png"))); // NOI18N
         btnNuevo1.setToolTipText("Subir");
         btnNuevo1.setBorder(null);
         btnNuevo1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -1370,19 +1370,19 @@ public class infMascotas extends javax.swing.JInternalFrame {
 
     public void razas() {
 //        if (rdAve.isSelected()) {
-//            lbAve.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ave.png")));
+//            lbAve.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/ave.png")));
 //        } else {
 //            lbAve.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ave.jpg")));
 //        }
 //
 //        if (rdGato.isSelected()) {
-//            lbGato.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/gato.png")));
+//            lbGato.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/gato.png")));
 //        } else {
 //            lbGato.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/gato.jpg")));
 //        }
 //
 //        if (rdPerro.isSelected()) {
-//            lbPerro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/perro.png")));
+//            lbPerro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/veterinaria/perro.png")));
 //        } else {
 //            lbPerro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/perro.jpg")));
 //        }

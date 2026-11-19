@@ -445,7 +445,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         dtFVence = new com.toedter.calendar.JDateChooser();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -521,7 +521,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         lbTitulo.setText("DETALLADO DEL PRODUCTO:");
 
         btnCargarRegistros.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        btnCargarRegistros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ventasIco.png"))); // NOI18N
+        btnCargarRegistros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/procesos/ventasIco.png"))); // NOI18N
         btnCargarRegistros.setText("Cargar");
         btnCargarRegistros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -544,7 +544,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         });
 
         btnCargarImei.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnCargarImei.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/aceptar1.png"))); // NOI18N
+        btnCargarImei.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/procesos/aceptar1.png"))); // NOI18N
         btnCargarImei.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCargarImeiActionPerformed(evt);
@@ -682,7 +682,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         });
 
         btnCargarColor.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnCargarColor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/aceptar1.png"))); // NOI18N
+        btnCargarColor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/procesos/aceptar1.png"))); // NOI18N
         btnCargarColor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCargarColorActionPerformed(evt);
@@ -773,7 +773,7 @@ public final class VistaMovimientoDetalleProducto extends javax.swing.JDialog {
         });
 
         btnCargarFecha.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        btnCargarFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/aceptar1.png"))); // NOI18N
+        btnCargarFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/procesos/aceptar1.png"))); // NOI18N
         btnCargarFecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCargarFechaActionPerformed(evt);

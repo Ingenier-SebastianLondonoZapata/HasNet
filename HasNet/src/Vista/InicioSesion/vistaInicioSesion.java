@@ -27,6 +27,7 @@ public class vistaInicioSesion extends javax.swing.JFrame {
 
     public vistaInicioSesion(boolean validarDatos) {
         initComponents();
+        Utilidades.IconoAplicacion.aplicar(this);
 
         if (validarDatos) {
             validarPermisosCliente();
@@ -55,7 +56,6 @@ public class vistaInicioSesion extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("HS.NET");
         setBackground(new java.awt.Color(51, 51, 51));
-        setIconImage(new ImageIcon(getClass().getResource("/imagenes/icono.png")).getImage());
         setUndecorated(true);
         setResizable(false);
 

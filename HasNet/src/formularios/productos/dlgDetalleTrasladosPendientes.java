@@ -107,7 +107,7 @@ public class dlgDetalleTrasladosPendientes extends javax.swing.JDialog {
         txtFinalizar.setBackground(new java.awt.Color(204, 204, 204));
         txtFinalizar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
         txtFinalizar.setForeground(new java.awt.Color(255, 255, 255));
-        txtFinalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        txtFinalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         txtFinalizar.setText("FACTURAR");
         txtFinalizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         txtFinalizar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);

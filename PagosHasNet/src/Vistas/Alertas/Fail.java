@@ -21,7 +21,7 @@ public class Fail extends javax.swing.JDialog {
         initComponents();
         
         this.setLocationRelativeTo(null);
-        lbMensaje.setText(message);
+        AjustadorTextoAlerta.ajustar(lbMensaje, message, 560, 58);
     }
 
     /**

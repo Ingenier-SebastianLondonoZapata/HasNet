@@ -159,7 +159,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
         btnBuscarGrupo.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscarGrupo.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         btnBuscarGrupo.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscarGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscarGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscarGrupo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscarGrupo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscarGrupo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -174,7 +174,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR ");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -187,7 +187,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnEliminar.setBackground(new java.awt.Color(241, 148, 138));
         btnEliminar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnEliminar.setText("INACTIVAR");
         btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEliminar.setEnabled(false);
@@ -201,7 +201,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnNuevo.setBackground(new java.awt.Color(204, 204, 204));
         btnNuevo.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnNuevo.setText("NUEVO    ");
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -214,7 +214,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnModificar.setBackground(new java.awt.Color(93, 173, 226));
         btnModificar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnModificar.setText("MODIFICAR");
         btnModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnModificar.setEnabled(false);
@@ -360,7 +360,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnGuardarSubGrupo.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarSubGrupo.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardarSubGrupo.setText("GUARDAR");
         btnGuardarSubGrupo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardarSubGrupo.setEnabled(false);
@@ -374,7 +374,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnLimpiarSubgrupo.setBackground(new java.awt.Color(204, 204, 204));
         btnLimpiarSubgrupo.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        btnLimpiarSubgrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
+        btnLimpiarSubgrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/nuevo.png"))); // NOI18N
         btnLimpiarSubgrupo.setText("NUEVO    ");
         btnLimpiarSubgrupo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiarSubgrupo.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -533,7 +533,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnGuardarSubGrupo.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarSubGrupo.setForeground(new java.awt.Color(0, 0, 0));
-        btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png")));
+        btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png")));
         btnGuardarSubGrupo.setText("GUARDAR");
         btnGuardarSubGrupo.setEnabled(false);
 
@@ -656,7 +656,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
             btnGuardarSubGrupo.setEnabled(true);
             btnGuardarSubGrupo.setText("MODIFICAR");
             btnGuardarSubGrupo.setBackground(new Color(93, 173, 226));
-            btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png")));
+            btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png")));
         }
     }//GEN-LAST:event_tblSubGruposMouseClicked
 
@@ -733,7 +733,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         if ((Boolean) datos[4]) {
             btnEliminar.setText("ACTIVAR");
-            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png")));
+            btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png")));
         }
 
         btnGuardar.setEnabled(false);
@@ -765,7 +765,7 @@ public class VistaGrupos extends javax.swing.JInternalFrame {
 
         btnGuardarSubGrupo.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardarSubGrupo.setForeground(new java.awt.Color(0, 0, 0));
-        btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png")));
+        btnGuardarSubGrupo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png")));
         btnGuardarSubGrupo.setText("GUARDAR");
     }
 

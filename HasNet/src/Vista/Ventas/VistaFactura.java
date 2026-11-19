@@ -1060,7 +1060,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         txtCantProductos = new javax.swing.JLabel();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1316,7 +1316,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1911,7 +1911,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2341,7 +2341,7 @@ public final class VistaFactura extends javax.swing.JPanel {
         btnBuscarPlaca.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscarPlaca.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscarPlaca.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscarPlaca.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscarPlaca.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscarPlaca.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscarPlaca.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscarPlaca.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -2742,7 +2742,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         btnInformacionAdicional.setBackground(new java.awt.Color(204, 204, 204));
         btnInformacionAdicional.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnInformacionAdicional.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/listado.png"))); // NOI18N
+        btnInformacionAdicional.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/listado.png"))); // NOI18N
         btnInformacionAdicional.setText("INFORMACIÓN ADICIONAL");
         btnInformacionAdicional.setToolTipText("Comprador, comprobante, vendedor, plazo, observaciones e impuestos");
         btnInformacionAdicional.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -2761,7 +2761,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 204));
         btnLimpiar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR");
         btnLimpiar.setToolTipText("Ctrl+L");
         btnLimpiar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -2776,7 +2776,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("FACTURAR");
         btnGuardar.setToolTipText("Ctrl+G");
         btnGuardar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -2796,7 +2796,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         btnReImprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReImprimir.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnReImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReImprimir.setText("REIMPRIMIR");
         btnReImprimir.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnReImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -2811,7 +2811,7 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         btnModificar.setBackground(new java.awt.Color(93, 173, 226));
         btnModificar.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png"))); // NOI18N
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png"))); // NOI18N
         btnModificar.setText("MODIFICAR");
         btnModificar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -3433,6 +3433,29 @@ public final class VistaFactura extends javax.swing.JPanel {
             if (!instancias.getMenu().getSeVeElMenu()) {
                 instancias.getMenu().expandirMenu();
             }
+        }
+    }
+
+    public void aplicarClienteContadoPredeterminado() {
+        if (modeloPro.getRowCount() > 0 || documentoCargado != null) {
+            return;
+        }
+        String nit = txtNit.getText().trim();
+        if (DatosMaestra.isVentasContadoPredeterminado()) {
+            if (nit.isEmpty()) {
+                cargar1010();
+            }
+        } else if ("1010".equals(nit)) {
+            limpiarPlacaAlCambiarCliente();
+            ID_CLIENTE_CARGADO = "";
+            txtNit.setText("");
+            txtNombre.setText("");
+            txtDiasPlazo.setText("0");
+            chkSisteCredito.setEnabled(false);
+            chkSisteCredito.setSelected(false);
+            txtObservaciones.setText("");
+            lbCupo.setVisible(false);
+            NC = null;
         }
     }
 

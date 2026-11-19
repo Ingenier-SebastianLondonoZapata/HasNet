@@ -162,7 +162,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         txtIdSistema1 = new javax.swing.JTextField();
 
         popBorrar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar.setText("Borrar");
         popBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,7 +172,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         jPopupMenu1.add(popBorrar);
 
         popBorrar1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
+        popBorrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/eliminar-cancelar-icono-4935-16.png"))); // NOI18N
         popBorrar1.setText("Borrar");
         popBorrar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -296,7 +296,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         btnBusTercero.setBackground(new java.awt.Color(204, 204, 204));
         btnBusTercero.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusTercero.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusTercero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusTercero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusTercero.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusTercero.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBusTercero.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -310,7 +310,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         btnBusProd2.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd2.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd2.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBusProd2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -485,7 +485,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         btnBusProd.setBackground(new java.awt.Color(204, 204, 204));
         btnBusProd.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBusProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBusProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBusProd.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBusProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBusProd.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -501,7 +501,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         btnReImprimir.setBackground(new java.awt.Color(247, 220, 111));
         btnReImprimir.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnReImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        btnReImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/imprimir.png"))); // NOI18N
         btnReImprimir.setText("IMPRIMIR");
         btnReImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -514,7 +514,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         btnGuardar.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png"))); // NOI18N
         btnGuardar.setText("GUARDAR");
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -527,7 +527,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         btnFacturar.setBackground(new java.awt.Color(46, 204, 113));
         btnFacturar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/caja Registradora.png"))); // NOI18N
+        btnFacturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/parqueadero/caja Registradora.png"))); // NOI18N
         btnFacturar.setText("FACTURAR");
         btnFacturar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnFacturar.setEnabled(false);
@@ -610,7 +610,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         btnAnular.setBackground(new java.awt.Color(241, 148, 138));
         btnAnular.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnAnular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnAnular.setText("ANULAR ");
         btnAnular.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAnular.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -841,7 +841,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         btnGuardar2.setBackground(new java.awt.Color(46, 204, 113));
         btnGuardar2.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturar.png"))); // NOI18N
+        btnGuardar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/parqueadero/facturar.png"))); // NOI18N
         btnGuardar2.setText("LIQUIDAR");
         btnGuardar2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar2.setEnabled(false);
@@ -873,7 +873,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         btnBuscTerceros1.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -887,7 +887,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         btnGuardar1.setBackground(new java.awt.Color(204, 204, 204));
         btnGuardar1.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnGuardar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnGuardar1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnGuardar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGuardar1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -990,7 +990,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         btnBuscTerceros.setBackground(new java.awt.Color(204, 204, 204));
         btnBuscTerceros.setFont(new java.awt.Font("Century Gothic", 1, 16)); // NOI18N
         btnBuscTerceros.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscTerceros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/buscar1.png"))); // NOI18N
         btnBuscTerceros.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnBuscTerceros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscTerceros.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1003,7 +1003,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 204));
         btnLimpiar.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/limpiar.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/limpiar.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR");
         btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -1355,7 +1355,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
         btnGuardar2.setEnabled(false);
         lbNoFactura.setEnabled(true);
         btnBusTercero.setEnabled(true);
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png")));
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/guardar.png")));
         btnGuardar.setText("GUARDAR");
 
         DefaultTableModel modelo = (DefaultTableModel) tblServicios.getModel();
@@ -1854,7 +1854,7 @@ public class infLavadero extends javax.swing.JInternalFrame {
             System.out.println("envio " + lavadero[0][14].toString());
 
             btnBusTercero.setEnabled(false);
-            btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar.png")));
+            btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/actualizar.png")));
             btnGuardar.setText("MODIFICAR");
             lbNoFactura.setEnabled(false);
             btnFacturar.setEnabled(true);

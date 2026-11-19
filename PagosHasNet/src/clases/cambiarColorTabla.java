@@ -31,15 +31,16 @@ public class cambiarColorTabla extends DefaultTableCellRenderer {
             }
         } else if (opc == 1) {
             try {
-                if (table.getValueAt(row, 7).toString().equalsIgnoreCase("OK")) {
+                String estado = table.getValueAt(row, table.getColumnCount() - 1).toString();
+                if (estado.equalsIgnoreCase("OK")) {
                     this.setOpaque(true);
                     this.setBackground(new Color(161, 243, 158));
                     this.setForeground(new Color(0, 0, 0));
-                } else if (table.getValueAt(row, 7).toString().equalsIgnoreCase("Vencido")) {
+                } else if (estado.equalsIgnoreCase("Vencido")) {
                     this.setOpaque(true);
                     this.setBackground(new Color(255, 91, 91));
                     this.setForeground(new Color(0, 0, 0));
-                } else if (table.getValueAt(row, 7).toString().equalsIgnoreCase("Pronto a vencerse")) {
+                } else if (estado.equalsIgnoreCase("Pronto a vencerse")) {
                     this.setOpaque(true);
                     this.setBackground(new Color(255, 231, 175));
                     this.setForeground(new Color(0, 0, 0));

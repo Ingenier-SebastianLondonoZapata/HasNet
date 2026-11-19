@@ -33,8 +33,8 @@ public class iFactura {
     }
 
     private final String logo = System.getProperty("user.dir") + "//imagenes//conf//logoEmpresa.png";
-    private final String automovil = "/imagenes/Fundacion1.png";
-    private final String logo2 = "/imagenes/colposcopia.png";
+    private final String automovil = "/imagenes/impresion/Fundacion1.png";
+    private final String logo2 = "/imagenes/impresion/colposcopia.png";
 
     private String logo3 = "";
     private String imagenInforme = "";

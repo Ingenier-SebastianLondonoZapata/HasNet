@@ -3,7 +3,6 @@ package Consumidor.DocumentoSoporte;
 import Controlador.DocumentoSoporte.*;
 import Controlador.ConsumirServicio.ControladorConsumirServicioREST;
 import Controlador.Alertas.ControladorAlertas;
-import Controlador.BarraProceso.controladorBarraProceso;
 import Modelo.DocumentoSoporte.Entrada.ModeloDocumentoSoporte;
 import Utilidades.Constantes;
 import Validaciones.DocumentosElectronicos.squemaDocumentosElectronicos;
@@ -31,7 +30,6 @@ public class ConsumidorDocumentoSoporte {
         }
 
         JSONObject JSONCompleto = null;
-        iniciarLoader();
 
         try {
             JSONCompleto = controladorCrearJSON.crearJSON(modeloDocumentoSoporte, esNotaCredito, instancias.getCanalFacturacion());
@@ -46,9 +44,9 @@ public class ConsumidorDocumentoSoporte {
 
     private boolean enviarJSONDocumentoSoporte(JSONObject JSON, String identificadorFactura) throws Exception {
         variablesEntorno.generarEnviroments(instancias.getNitEmisor(), instancias);
-        String respuesta = consumirServicio.consumirServicioREST(variablesEntorno.urlDocumentoSoporte, JSON.toString());
-        instancias.getProgres().detener(true);
-        instancias.setProgres(null);
+        String cuerpo = JSON.toString();
+        String respuesta = esperandoRespuesta.ejecutar("ENVIANDO DOCUMENTO SOPORTE",
+                () -> consumirServicio.consumirServicioREST(variablesEntorno.urlDocumentoSoporte, cuerpo));
         Boolean datosCorrectos = validacionesDocumentosElectronicos.validaciones_respuesta(respuesta);
 
         if (datosCorrectos) {
@@ -61,13 +59,6 @@ public class ConsumidorDocumentoSoporte {
     private void generarRegistro(String identificadorCompra) {
         String identificadorCliente = Constantes.leerIdentificadorCliente();
         instancias.getSqlPagos().agregarRegistroFactura(identificadorCliente, identificadorCompra, metodosGenerales.fechaHora());
-        instancias.getSqlPagos().disminuirConsecutivo(identificadorCliente,
-                Integer.parseInt(instancias.getSqlPagos().obtenerNumeroConsecutivo(identificadorCliente)[0].toString()) - 1);
-    }
-
-    private void iniciarLoader() {
-        controladorBarraProceso controladorBarra = new controladorBarraProceso();
-        esperandoRespuesta barra = new esperandoRespuesta(controladorBarra, Instancias.getInstancias(), "ENVIANDO DOCUMENTO SOPORTE");
-        barra.show();
+        instancias.getSqlPagos().consumirDocumentoElectronico(identificadorCliente);
     }
 }

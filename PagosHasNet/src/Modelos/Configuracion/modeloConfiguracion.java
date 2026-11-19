@@ -2,12 +2,12 @@ package Modelos.Configuracion;
 
 public class modeloConfiguracion {
 
-    String regimen, informacionLegal, tipoImpresion, nit, nombre, telefono, fechaInicio;
+    String regimen, nit, nombre, telefono, fechaInicio;
 
     int diasAntesAlertaBloqueo, diasDespuesGabelaBloqueo, numeroFacturasElectronicasDisponibles;
 
     boolean congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, recordatorios,
-            laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, usb, facturaElectronica,
+            laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, facturaElectronica,
             pruebasFacturacionElectronica;
 
     public boolean isPruebasFacturacionElectronica() {
@@ -32,22 +32,6 @@ public class modeloConfiguracion {
 
     public void setRegimen(String regimen) {
         this.regimen = regimen;
-    }
-
-    public String getInformacionLegal() {
-        return informacionLegal;
-    }
-
-    public void setInformacionLegal(String informacionLegal) {
-        this.informacionLegal = informacionLegal;
-    }
-
-    public String getTipoImpresion() {
-        return tipoImpresion;
-    }
-
-    public void setTipoImpresion(String tipoImpresion) {
-        this.tipoImpresion = tipoImpresion;
     }
 
     public String getNit() {
@@ -234,14 +218,6 @@ public class modeloConfiguracion {
         this.facturacionLote = facturacionLote;
     }
 
-    public boolean isUsb() {
-        return usb;
-    }
-
-    public void setUsb(boolean usb) {
-        this.usb = usb;
-    }
-
     public boolean isFacturaElectronica() {
         return facturaElectronica;
     }
@@ -251,11 +227,11 @@ public class modeloConfiguracion {
     }
 
     public Object[] pasarDatosConfiguracion(modeloConfiguracion nodo) {
-        Object[] vector = {"", nodo.getRegimen(), nodo.getInformacionLegal(), nodo.getTipoImpresion(), nodo.getNit(), nodo.getNombre(),
-            nodo.getTelefono(), nodo.getFechaInicio(), nodo.getDiasAntesAlertaBloqueo(), nodo.getDiasDespuesGabelaBloqueo(), nodo.getNumeroFacturasElectronicasDisponibles(),
+        Object[] vector = {"", nodo.getRegimen(), nodo.getNit(), nodo.getNombre(),
+            nodo.getTelefono(), nodo.getFechaInicio(), nodo.getDiasAntesAlertaBloqueo(), nodo.getDiasDespuesGabelaBloqueo(),
             nodo.isCongeladas(), nodo.isMedico(), nodo.isVeterinaria(), nodo.isParqueadero(), nodo.isOrdenServicio(), nodo.isCreditos(), nodo.isSepare(), nodo.isPedido(),
             nodo.isAgenda(), nodo.isRestaurante(), nodo.isRecordatorios(), nodo.isLaboratorio(), nodo.isServicioAutomotor(), nodo.isOftalmologia(),
-            nodo.isInventarioBodegas(), nodo.isProductosSerial(), nodo.isFacturacionLote(), nodo.isUsb(), nodo.isFacturaElectronica(), 
+            nodo.isInventarioBodegas(), nodo.isProductosSerial(), nodo.isFacturacionLote(), nodo.isFacturaElectronica(),
             nodo.isPruebasFacturacionElectronica()
         };
 
@@ -266,35 +242,32 @@ public class modeloConfiguracion {
         modeloConfiguracion modelo = new modeloConfiguracion();
 
         modelo.setRegimen((String) vector[0]);
-        modelo.setInformacionLegal((String) vector[1]);
-        modelo.setTipoImpresion((String) vector[2]);
-        modelo.setNit((String) vector[3]);
-        modelo.setNombre((String) vector[4]);
-        modelo.setTelefono((String) vector[5]);
-        modelo.setFechaInicio((String) vector[6]);
-        modelo.setDiasAntesAlertaBloqueo(Integer.parseInt(vector[7].toString()));
-        modelo.setDiasDespuesGabelaBloqueo(Integer.parseInt(vector[8].toString()));
-        modelo.setNumeroFacturasElectronicasDisponibles(Integer.parseInt(vector[9].toString()));
-        modelo.setCongeladas((Boolean) vector[10]);
-        modelo.setMedico((Boolean) vector[11]);
-        modelo.setVeterinaria((Boolean) vector[12]);
-        modelo.setParqueadero((Boolean) vector[13]);
-        modelo.setOrdenServicio((Boolean) vector[14]);
-        modelo.setCreditos((Boolean) vector[15]);
-        modelo.setSepare((Boolean) vector[16]);
-        modelo.setPedido((Boolean) vector[17]);
-        modelo.setAgenda((Boolean) vector[18]);
-        modelo.setRestaurante((Boolean) vector[19]);
-        modelo.setRecordatorios((Boolean) vector[20]);
-        modelo.setLaboratorio((Boolean) vector[21]);
-        modelo.setServicioAutomotor((Boolean) vector[22]);
-        modelo.setOftalmologia((Boolean) vector[23]);
-        modelo.setInventarioBodegas((Boolean) vector[24]);
-        modelo.setProductosSerial((Boolean) vector[25]);
-        modelo.setFacturacionLote((Boolean) vector[26]);
-        modelo.setUsb((Boolean) vector[27]);
-        modelo.setFacturaElectronica((Boolean) vector[28]);
-        modelo.setPruebasFacturacionElectronica((Boolean) vector[29]);
+        modelo.setNit((String) vector[1]);
+        modelo.setNombre((String) vector[2]);
+        modelo.setTelefono((String) vector[3]);
+        modelo.setFechaInicio((String) vector[4]);
+        modelo.setDiasAntesAlertaBloqueo(Integer.parseInt(vector[5].toString()));
+        modelo.setDiasDespuesGabelaBloqueo(Integer.parseInt(vector[6].toString()));
+        modelo.setNumeroFacturasElectronicasDisponibles(Integer.parseInt(vector[7].toString()));
+        modelo.setCongeladas((Boolean) vector[8]);
+        modelo.setMedico((Boolean) vector[9]);
+        modelo.setVeterinaria((Boolean) vector[10]);
+        modelo.setParqueadero((Boolean) vector[11]);
+        modelo.setOrdenServicio((Boolean) vector[12]);
+        modelo.setCreditos((Boolean) vector[13]);
+        modelo.setSepare((Boolean) vector[14]);
+        modelo.setPedido((Boolean) vector[15]);
+        modelo.setAgenda((Boolean) vector[16]);
+        modelo.setRestaurante((Boolean) vector[17]);
+        modelo.setRecordatorios((Boolean) vector[18]);
+        modelo.setLaboratorio((Boolean) vector[19]);
+        modelo.setServicioAutomotor((Boolean) vector[20]);
+        modelo.setOftalmologia((Boolean) vector[21]);
+        modelo.setInventarioBodegas((Boolean) vector[22]);
+        modelo.setProductosSerial((Boolean) vector[23]);
+        modelo.setFacturacionLote((Boolean) vector[24]);
+        modelo.setFacturaElectronica((Boolean) vector[25]);
+        modelo.setPruebasFacturacionElectronica((Boolean) vector[26]);
         return modelo;
     }
 }

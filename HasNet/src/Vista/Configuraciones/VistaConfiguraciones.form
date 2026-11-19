@@ -14,7 +14,7 @@
               <Font name="Calibri" size="14" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/imagenes/eliminar-cancelar-icono-4935-16.png"/>
+              <Image iconType="3" name="/imagenes/comun/eliminar-cancelar-icono-4935-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Borrar"/>
           </Properties>
@@ -52,7 +52,7 @@
               <Font name="Calibri" size="14" style="1"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/imagenes/eliminar-cancelar-icono-4935-16.png"/>
+              <Image iconType="3" name="/imagenes/comun/eliminar-cancelar-icono-4935-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Borrar"/>
           </Properties>
@@ -167,7 +167,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="lbOtroConsecutivo" min="-2" pref="334" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="txtNumeroFactosElectronicas" min="-2" pref="58" max="-2" attributes="0"/>
+                                      <Component id="txtNumeroFactosElectronicas" min="-2" pref="90" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Component id="jScrollPane19" min="-2" pref="522" max="-2" attributes="0"/>
@@ -175,9 +175,15 @@
                                       <Component id="jScrollPane23" pref="0" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jScrollPane21" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jScrollPane21" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lbAyudaConfiguraciones" min="0" pref="0" max="32767" attributes="0"/>
+                                      </Group>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jScrollPane22" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jScrollPane22" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lbAyudaConfiguraciones1" min="0" pref="0" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                               <EmptySpace pref="12" max="32767" attributes="0"/>
@@ -201,6 +207,11 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jScrollPane22" pref="220" max="32767" attributes="0"/>
                                   <Component id="jScrollPane21" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lbAyudaConfiguraciones" min="-2" pref="62" max="-2" attributes="0"/>
+                                  <Component id="lbAyudaConfiguraciones1" min="-2" pref="62" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
@@ -290,7 +301,7 @@
                             </Property>
                             <Property name="rowHeight" type="int" value="24"/>
                             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -332,7 +343,7 @@
                             </Property>
                             <Property name="rowHeight" type="int" value="24"/>
                             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -374,12 +385,58 @@
                             </Property>
                             <Property name="rowHeight" type="int" value="24"/>
                             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                             </Property>
                           </Properties>
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="javax.swing.JLabel" name="lbAyudaConfiguraciones">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="fc" green="f8" red="f5" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Arial" size="13" style="0"/>
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="50" green="3e" red="2c" type="rgb"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Pase el mouse o seleccione una configuraci&#xf3;n para ver para qu&#xe9; sirve."/>
+                        <Property name="verticalAlignment" type="int" value="1"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                            <LineBorder>
+                              <Color PropertyName="color" blue="e0" green="d6" red="cc" type="rgb"/>
+                            </LineBorder>
+                          </Border>
+                        </Property>
+                        <Property name="opaque" type="boolean" value="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="lbAyudaConfiguraciones1">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="fc" green="f8" red="f5" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Arial" size="13" style="0"/>
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="50" green="3e" red="2c" type="rgb"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Pase el mouse o seleccione una configuraci&#xf3;n para ver para qu&#xe9; sirve."/>
+                        <Property name="verticalAlignment" type="int" value="1"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                            <LineBorder>
+                              <Color PropertyName="color" blue="e0" green="d6" red="cc" type="rgb"/>
+                            </LineBorder>
+                          </Border>
+                        </Property>
+                        <Property name="opaque" type="boolean" value="true"/>
+                      </Properties>
+                    </Component>
                     <Container class="javax.swing.JScrollPane" name="jScrollPane23">
                       <AuxValues>
                         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
@@ -416,7 +473,7 @@
                             </Property>
                             <Property name="rowHeight" type="int" value="24"/>
                             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1428,7 +1485,7 @@
                           <Font name="Arial" size="14" style="0"/>
                         </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/imagenes/actualizar.png"/>
+                          <Image iconType="3" name="/imagenes/comun/actualizar.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="CAMBIAR LOGO"/>
                         <Property name="toolTipText" type="java.lang.String" value="Montar logo empresarial"/>
@@ -1871,7 +1928,7 @@
                           <Font name="Century Gothic" size="12" style="0"/>
                         </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/imagenes/actualizar peque&#xf1;o.png"/>
+                          <Image iconType="3" name="/imagenes/comun/actualizar peque&#xf1;o.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="MESAS OCUPADAS"/>
                       </Properties>
@@ -3900,7 +3957,7 @@
                               <Font name="Calibri" size="16" style="1"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/imagenes/guardar.png"/>
+                              <Image iconType="3" name="/imagenes/comun/guardar.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="GUARDAR"/>
                             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -4126,7 +4183,7 @@
                               <Color blue="ff" green="ff" red="ff" type="rgb"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/imagenes/buscar1.png"/>
+                              <Image iconType="3" name="/imagenes/comun/buscar1.png"/>
                             </Property>
                             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -5579,7 +5636,7 @@
                               <Font name="Arial" size="16" style="0"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/imagenes/nuevo.png"/>
+                              <Image iconType="3" name="/imagenes/comun/nuevo.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="LIMPIAR"/>
                             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -5603,7 +5660,7 @@
                               <Font name="Arial" size="16" style="0"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/imagenes/actualizar.png"/>
+                              <Image iconType="3" name="/imagenes/comun/actualizar.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="MODIFICAR"/>
                             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -5627,7 +5684,7 @@
                               <Font name="Arial" size="16" style="0"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/imagenes/guardar.png"/>
+                              <Image iconType="3" name="/imagenes/comun/guardar.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="GUARDAR"/>
                             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -5651,7 +5708,7 @@
                               <Font name="Arial" size="16" style="0"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/imagenes/listado.png"/>
+                              <Image iconType="3" name="/imagenes/comun/listado.png"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="LISTADO"/>
                             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -5708,7 +5765,7 @@
                       <Font name="Century Gothic" size="14" style="0"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/imagenes/guardar.png"/>
+                      <Image iconType="3" name="/imagenes/comun/guardar.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="GUARDAR DATOS CONFIGURACI&#xd3;N"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">

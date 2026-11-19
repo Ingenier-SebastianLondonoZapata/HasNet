@@ -94,7 +94,7 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/FRESH.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/restaurante/FRESH.png"))); // NOI18N
         jButton1.setBorder(null);
         jButton1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -134,7 +134,7 @@ public final class VistaMesas extends javax.swing.JInternalFrame {
         jScrollPane11.setViewportView(tblMesas);
 
         btnOcultar.setBackground(new java.awt.Color(255, 255, 255));
-        btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ESTAERA.jpg"))); // NOI18N
+        btnOcultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/ESTAERA.jpg"))); // NOI18N
         btnOcultar.setToolTipText("");
         btnOcultar.setBorder(null);
         btnOcultar.addActionListener(new java.awt.event.ActionListener() {

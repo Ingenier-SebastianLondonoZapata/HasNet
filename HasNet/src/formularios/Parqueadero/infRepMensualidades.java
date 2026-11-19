@@ -139,7 +139,7 @@ public class infRepMensualidades extends javax.swing.JInternalFrame {
         btnAggCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnAggCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggCliente.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,7 +150,7 @@ public class infRepMensualidades extends javax.swing.JInternalFrame {
         btnRemCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnRemCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemCliente.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

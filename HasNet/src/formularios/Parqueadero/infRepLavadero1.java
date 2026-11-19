@@ -213,7 +213,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnAggProv.setBackground(new java.awt.Color(204, 204, 204));
         btnAggProv.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggProv.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggProv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggProv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggProv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggProv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -224,7 +224,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnRemProv.setBackground(new java.awt.Color(204, 204, 204));
         btnRemProv.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemProv.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemProv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemProv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemProv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemProv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,7 +235,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnAggCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnAggCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggCliente.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -246,7 +246,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnRemCliente.setBackground(new java.awt.Color(204, 204, 204));
         btnRemCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemCliente.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -257,7 +257,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnAggProd.setBackground(new java.awt.Color(204, 204, 204));
         btnAggProd.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggProd.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggProd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -268,7 +268,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnRemProd.setBackground(new java.awt.Color(204, 204, 204));
         btnRemProd.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemProd.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemProd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -279,7 +279,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnAggProd1.setBackground(new java.awt.Color(204, 204, 204));
         btnAggProd1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAggProd1.setForeground(new java.awt.Color(255, 255, 255));
-        btnAggProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/agregar.png"))); // NOI18N
+        btnAggProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/agregar.png"))); // NOI18N
         btnAggProd1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAggProd1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -290,7 +290,7 @@ public class infRepLavadero1 extends javax.swing.JInternalFrame {
         btnRemProd1.setBackground(new java.awt.Color(204, 204, 204));
         btnRemProd1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRemProd1.setForeground(new java.awt.Color(153, 0, 0));
-        btnRemProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar2.png"))); // NOI18N
+        btnRemProd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/comun/borrar2.png"))); // NOI18N
         btnRemProd1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemProd1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
