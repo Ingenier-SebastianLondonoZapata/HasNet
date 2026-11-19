@@ -1,1 +1,0 @@
-ALTER TABLE bdUsuarios MODIFY password VARCHAR(255);
