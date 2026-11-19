@@ -1586,6 +1586,31 @@ public class Instancias {
         this.configuracionCliente = configuracionCliente;
     }
 
+    private Modelo.Multiempresa.Empresa empresaActual;
+    private String nitEmisorPrincipal;
+    private String tipoDocumentoEmisorPrincipal;
+
+    public String getNitEmisorPrincipal() {
+        return nitEmisorPrincipal;
+    }
+
+    public String getTipoDocumentoEmisorPrincipal() {
+        return tipoDocumentoEmisorPrincipal;
+    }
+
+    public void setEmisorPrincipal(String nit, String tipoDocumento) {
+        this.nitEmisorPrincipal = nit;
+        this.tipoDocumentoEmisorPrincipal = tipoDocumento;
+    }
+
+    public Modelo.Multiempresa.Empresa getEmpresaActual() {
+        return empresaActual;
+    }
+
+    public void setEmpresaActual(Modelo.Multiempresa.Empresa empresaActual) {
+        this.empresaActual = empresaActual;
+    }
+
     private Modelo.Maestra.ConfiguracionSistema configuraciones;
 
     public Modelo.Maestra.ConfiguracionSistema getConfiguraciones() {

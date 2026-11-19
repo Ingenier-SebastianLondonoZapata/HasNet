@@ -25,6 +25,20 @@ public class SQLIngresos {
     public static final String INSTALACION_TERMINAL = "INSTALACION_TERMINAL";
     public static final String MENSUALIDAD_SERVIDOR = "MENSUALIDAD_SERVIDOR";
     public static final String MENSUALIDAD_TERMINAL = "MENSUALIDAD_TERMINAL";
+    public static final String MENSUALIDAD_SERVICIO_ESPECIAL = "MENSUALIDAD_SERVICIO_ESPECIAL";
+    public static final String MENSUALIDAD_EMPRESA_ADICIONAL = "MENSUALIDAD_EMPRESA_ADICIONAL";
+    public static final String ACTIVACION_FACTURACION_ELECTRONICA = "ACTIVACION_FACTURACION_ELECTRONICA";
+
+    public static final String[][] SERVICIOS_ESPECIALES = {
+        {"medico", "MÉDICO"},
+        {"laboratorio", "LABORATORIO"},
+        {"oftalmologia", "OFTALMOLOGÍA"},
+        {"veterinaria", "VETERINARIO"},
+        {"parqueadero", "PARQUEADERO"},
+        {"restaurante", "RESTAURANTE"},
+        {"inventarioBodegas", "INVENTARIO POR BODEGAS"},
+        {"productosSerial", "PRODUCTOS DETALLADOS"}
+    };
 
     public static final String MOV_LICENCIA = "LICENCIA";
     public static final String MOV_INSTALACION_TERMINALES = "INSTALACION_TERMINALES";
@@ -33,6 +47,9 @@ public class SQLIngresos {
     public static final String MOV_TERMINALES_PENDIENTES = "TERMINALES_PENDIENTES";
     public static final String MOV_PLAN_MENSUAL = "PLAN_MENSUAL";
     public static final String MOV_PAQUETE = "PAQUETE";
+    public static final String MOV_SERVICIOS_ESPECIALES = "SERVICIOS_ESPECIALES";
+    public static final String MOV_EMPRESAS_ADICIONALES = "EMPRESAS_ADICIONALES";
+    public static final String MOV_ACTIVACION_FE = "ACTIVACION_FE";
 
     public static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FORMATO_PERIODO = DateTimeFormatter.ofPattern("yyyy-MM");
@@ -95,11 +112,14 @@ public class SQLIngresos {
     public List<Object[]> listarTarifas() throws SQLException {
         List<Object[]> tarifas = new ArrayList<>();
         try (PreparedStatement consulta = conexion().prepareStatement(
-                "SELECT concepto, descripcion, valor FROM bdTarifas ORDER BY FIELD(concepto, ?, ?, ?, ?), concepto")) {
-            consulta.setString(1, INSTALACION_SERVIDOR);
-            consulta.setString(2, INSTALACION_TERMINAL);
-            consulta.setString(3, MENSUALIDAD_SERVIDOR);
-            consulta.setString(4, MENSUALIDAD_TERMINAL);
+                "SELECT concepto, descripcion, valor FROM bdTarifas ORDER BY FIELD(concepto, ?, ?, ?, ?, ?, ?, ?) = 0, "
+                + "FIELD(concepto, ?, ?, ?, ?, ?, ?, ?), concepto")) {
+            String[] orden = {INSTALACION_SERVIDOR, INSTALACION_TERMINAL, MENSUALIDAD_SERVIDOR, MENSUALIDAD_TERMINAL,
+                MENSUALIDAD_SERVICIO_ESPECIAL, MENSUALIDAD_EMPRESA_ADICIONAL, ACTIVACION_FACTURACION_ELECTRONICA};
+            for (int i = 0; i < orden.length; i++) {
+                consulta.setString(i + 1, orden[i]);
+                consulta.setString(i + 1 + orden.length, orden[i]);
+            }
             try (ResultSet resultado = consulta.executeQuery()) {
                 while (resultado.next()) {
                     tarifas.add(new Object[]{resultado.getString(1), resultado.getString(2), resultado.getBigDecimal(3)});
@@ -228,7 +248,9 @@ public class SQLIngresos {
         reiniciarMesesDocumentos(conexion, idCliente);
         try (PreparedStatement consulta = conexion.prepareStatement(
                 "SELECT idCliente, nit, nombre, numeroTerminales, terminalesPagadas, numeroFEDisponibles, numeroFEMensuales, "
-                + "vigenciaFEMensuales, idPlanMensual, idPlanMensualSiguiente, diasDespuesGabelaBloqueo FROM bdClientes WHERE idCliente = ?"
+                + "vigenciaFEMensuales, idPlanMensual, idPlanMensualSiguiente, diasDespuesGabelaBloqueo, "
+                + "multiempresa, numeroEmpresas, facturaElectronica, " + columnasServiciosEspeciales()
+                + " FROM bdClientes WHERE idCliente = ?"
                 + (bloquear ? " FOR UPDATE" : ""))) {
             consulta.setString(1, idCliente);
             try (ResultSet resultado = consulta.executeQuery()) {
@@ -248,9 +270,48 @@ public class SQLIngresos {
                 estado.setIdPlanMensual(enteroNulo(resultado, "idPlanMensual"));
                 estado.setIdPlanMensualSiguiente(enteroNulo(resultado, "idPlanMensualSiguiente"));
                 estado.setDiasGabela(resultado.getInt("diasDespuesGabelaBloqueo"));
+                estado.setEmpresasAdicionales(resultado.getBoolean("multiempresa") ? resultado.getInt("numeroEmpresas") : 0);
+                estado.setFacturacionElectronica(resultado.getBoolean("facturaElectronica"));
+                List<String> servicios = new ArrayList<>();
+                for (String[] servicio : SERVICIOS_ESPECIALES) {
+                    if (resultado.getBoolean(servicio[0])) {
+                        servicios.add(servicio[1]);
+                    }
+                }
+                estado.setServiciosEspeciales(servicios);
                 return estado;
             }
         }
+    }
+
+    private static String columnasServiciosEspeciales() {
+        StringBuilder columnas = new StringBuilder();
+        for (String[] servicio : SERVICIOS_ESPECIALES) {
+            if (columnas.length() > 0) {
+                columnas.append(", ");
+            }
+            columnas.append(servicio[0]);
+        }
+        return columnas.toString();
+    }
+
+    public boolean tieneActivacionFacturacionElectronica(String idCliente) throws SQLException {
+        try (PreparedStatement consulta = conexion().prepareStatement(
+                "SELECT 1 FROM bdMovimientosIngresos WHERE idCliente = ? AND tipo = ? LIMIT 1")) {
+            consulta.setString(1, idCliente);
+            consulta.setString(2, MOV_ACTIVACION_FE);
+            try (ResultSet resultado = consulta.executeQuery()) {
+                return resultado.next();
+            }
+        }
+    }
+
+    public BigDecimal registrarActivacionFacturacionElectronica(String idCliente) throws SQLException {
+        return enTransaccion(conexion -> {
+            BigDecimal valor = tarifa(conexion, ACTIVACION_FACTURACION_ELECTRONICA);
+            registrarMovimiento(conexion, idCliente, MOV_ACTIVACION_FE, "Activación de facturación electrónica (cobro único)", 1, valor, null);
+            return valor;
+        });
     }
 
     private static Integer enteroNulo(ResultSet resultado, String columna) throws SQLException {
@@ -331,7 +392,13 @@ public class SQLIngresos {
             BigDecimal valorServidor = tarifa(conexion, MENSUALIDAD_SERVIDOR).multiply(cantidadMeses);
             BigDecimal valorTerminales = tarifa(conexion, MENSUALIDAD_TERMINAL).multiply(BigDecimal.valueOf(terminales)).multiply(cantidadMeses);
             BigDecimal valorPlan = plan == null ? BigDecimal.ZERO : plan.getPrecio().multiply(cantidadMeses);
-            BigDecimal total = valorServidor.add(valorTerminales).add(valorPlan);
+            int especiales = estado.getNumeroServiciosEspeciales();
+            int empresas = estado.getEmpresasAdicionales();
+            BigDecimal valorEspeciales = especiales == 0 ? BigDecimal.ZERO
+                    : tarifa(conexion, MENSUALIDAD_SERVICIO_ESPECIAL).multiply(BigDecimal.valueOf(especiales)).multiply(cantidadMeses);
+            BigDecimal valorEmpresas = empresas == 0 ? BigDecimal.ZERO
+                    : tarifa(conexion, MENSUALIDAD_EMPRESA_ADICIONAL).multiply(BigDecimal.valueOf(empresas)).multiply(cantidadMeses);
+            BigDecimal total = valorServidor.add(valorTerminales).add(valorPlan).add(valorEspeciales).add(valorEmpresas);
 
             try (PreparedStatement actualizacion = conexion.prepareStatement(
                     "UPDATE bdPagos SET estado = 'PAGADO', fechaPago = ?, terminalesPagadas = ?, valorPagado = ?, mesesPagados = ? WHERE idPago = ?")) {
@@ -402,6 +469,14 @@ public class SQLIngresos {
                 registrarMovimiento(conexion, idCliente, MOV_MENSUALIDAD_TERMINALES, "Mensualidad " + terminales + " terminal(es)" + porMeses
                         + " " + periodo, terminales, valorTerminales, idPago);
             }
+            if (especiales > 0) {
+                registrarMovimiento(conexion, idCliente, MOV_SERVICIOS_ESPECIALES, "Mensualidad " + especiales + " servicio(s) especial(es) ("
+                        + String.join(", ", estado.getServiciosEspeciales()) + ")" + porMeses + " " + periodo, especiales, valorEspeciales, idPago);
+            }
+            if (empresas > 0) {
+                registrarMovimiento(conexion, idCliente, MOV_EMPRESAS_ADICIONALES, "Mensualidad " + empresas + " empresa(s) adicional(es)"
+                        + porMeses + " " + periodo, empresas, valorEmpresas, idPago);
+            }
             if (plan != null) {
                 registrarMovimiento(conexion, idCliente, MOV_PLAN_MENSUAL, "Plan mensual " + plan.getNombre() + porMeses + " " + periodo,
                         plan.getNumeroDocumentos(), valorPlan, idPago);
@@ -430,6 +505,38 @@ public class SQLIngresos {
                 return resultado.next() ? resultado.getString(1) : null;
             }
         }
+    }
+
+    public int mesesPendientesCobertura(String idCliente) throws SQLException {
+        String fechaLimite = fechaLimiteCuotaActual(conexion(), idCliente);
+        return mesesRestantesCobertura(fechaLimite == null ? null : LocalDate.parse(fechaLimite, FORMATO_FECHA), hoy());
+    }
+
+    public BigDecimal registrarCobroServiciosActivados(String idCliente, List<String> serviciosNuevos, int empresasNuevas) throws SQLException {
+        int especiales = serviciosNuevos == null ? 0 : serviciosNuevos.size();
+        if (especiales == 0 && empresasNuevas <= 0) {
+            return BigDecimal.ZERO;
+        }
+        return enTransaccion(conexion -> {
+            String fechaLimite = fechaLimiteCuotaActual(conexion, idCliente);
+            int meses = mesesRestantesCobertura(fechaLimite == null ? null : LocalDate.parse(fechaLimite, FORMATO_FECHA), hoy());
+            BigDecimal cantidadMeses = BigDecimal.valueOf(meses);
+            String porMeses = (meses == 1 ? "" : " x " + meses + " meses") + (fechaLimite == null ? "" : " hasta " + fechaLimite);
+            BigDecimal total = BigDecimal.ZERO;
+            if (especiales > 0) {
+                BigDecimal valor = tarifa(conexion, MENSUALIDAD_SERVICIO_ESPECIAL).multiply(BigDecimal.valueOf(especiales)).multiply(cantidadMeses);
+                registrarMovimiento(conexion, idCliente, MOV_SERVICIOS_ESPECIALES, "Activación de " + especiales + " servicio(s) especial(es) ("
+                        + String.join(", ", serviciosNuevos) + ")" + porMeses, especiales, valor, null);
+                total = total.add(valor);
+            }
+            if (empresasNuevas > 0) {
+                BigDecimal valor = tarifa(conexion, MENSUALIDAD_EMPRESA_ADICIONAL).multiply(BigDecimal.valueOf(empresasNuevas)).multiply(cantidadMeses);
+                registrarMovimiento(conexion, idCliente, MOV_EMPRESAS_ADICIONALES, "Activación de " + empresasNuevas + " empresa(s) adicional(es)"
+                        + porMeses, empresasNuevas, valor, null);
+                total = total.add(valor);
+            }
+            return total;
+        });
     }
 
     public BigDecimal registrarPagoTerminalesPendientes(String idCliente, int cantidad) throws SQLException {
@@ -608,6 +715,9 @@ public class SQLIngresos {
         TIPOS_MOVIMIENTO.put(MOV_TERMINALES_PENDIENTES, "Terminales pendientes");
         TIPOS_MOVIMIENTO.put(MOV_PLAN_MENSUAL, "Plan mensual");
         TIPOS_MOVIMIENTO.put(MOV_PAQUETE, "Paquete sin vencimiento");
+        TIPOS_MOVIMIENTO.put(MOV_SERVICIOS_ESPECIALES, "Módulos y acciones especiales");
+        TIPOS_MOVIMIENTO.put(MOV_EMPRESAS_ADICIONALES, "Empresas adicionales");
+        TIPOS_MOVIMIENTO.put(MOV_ACTIVACION_FE, "Activación facturación electrónica");
         TIPOS_MOVIMIENTO.put(MOV_GASTO, "Gasto");
     }
 

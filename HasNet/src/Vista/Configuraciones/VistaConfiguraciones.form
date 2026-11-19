@@ -205,7 +205,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPane22" pref="220" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane22" pref="152" max="32767" attributes="0"/>
                                   <Component id="jScrollPane21" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -505,6 +505,8 @@
                                       <Component id="pnlBodegas" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="pnlPrefijos" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="pnlMultiempresas" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jPanel2" max="32767" attributes="0"/>
@@ -519,11 +521,14 @@
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="jPanel2" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="pnlBodegas" min="-2" pref="222" max="-2" attributes="0"/>
-                                  <Component id="pnlPrefijos" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="pnlBodegas" max="32767" attributes="0"/>
+                                      <Component id="pnlPrefijos" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="pnlMultiempresas" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -547,20 +552,26 @@
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="btnAgregarBodega" min="-2" pref="139" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                          <Component id="btnModificarBodega" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="btnCambiarEstadoBodega" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Component id="jScrollPane15" alignment="0" pref="0" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="cmbBodegas" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Group type="102" attributes="0">
+                                                  <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="cmbBodegas" max="32767" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" attributes="0">
+                                                  <Component id="btnAgregarBodega" min="-2" pref="147" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="btnModificarBodega" min="-2" pref="147" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Component id="jScrollPane15" min="-2" pref="300" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="-2" pref="86" max="-2" attributes="0"/>
+                                          <Component id="btnCambiarEstadoBodega" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
@@ -581,9 +592,10 @@
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="btnAgregarBodega" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                                       <Component id="btnModificarBodega" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                                      <Component id="btnCambiarEstadoBodega" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="btnCambiarEstadoBodega" min="-2" pref="30" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -734,7 +746,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                  <Component id="jScrollPane1" pref="126" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane1" pref="83" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="btnAgregarResolucion" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
@@ -923,7 +935,7 @@
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
                             <TitledBorder justification="1" title="Prefijos">
-                              <Font PropertyName="font" name="Arial" size="14" style="1"/>
+                              <Font PropertyName="font" name="Arial" size="14" style="0"/>
                             </TitledBorder>
                           </Border>
                         </Property>
@@ -935,7 +947,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane24" pref="391" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane24" pref="268" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -983,6 +995,21 @@
                           </SubComponents>
                         </Container>
                       </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="pnlMultiempresas">
+
+                      <Layout>
+                        <DimensionLayout dim="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+                          </Group>
+                        </DimensionLayout>
+                        <DimensionLayout dim="1">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+                          </Group>
+                        </DimensionLayout>
+                      </Layout>
                     </Container>
                   </SubComponents>
                 </Container>

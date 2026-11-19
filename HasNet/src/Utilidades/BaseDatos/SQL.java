@@ -962,13 +962,6 @@ public class SQL {
         return ok;
     }
 
-    public boolean cambiarDescripcionEmpresa(String id, String observacion) {
-        boolean ok = false;
-        String instruccion_sql = "update bdMultiEmpresa set descripcion=? where id = '" + id + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", observacion}, null, instruccion_sql);
-        return ok;
-    }
-
     public boolean cambiarObservacionParqueadero(String id, String observacion) {
         boolean ok = false;
         String instruccion_sql = "update bdParqueaderoAutos set observacion=? where Id='" + id + "' ;";
@@ -1562,13 +1555,14 @@ public class SQL {
 
     public DefaultTableModel getRegistrosUsuarios() {
         String columNames[] = {
-            "Usuario", "Nombre", "Contraseña"
+            "Usuario", "Nombre"
         };
-        String colName[] = {
-            "usuario", "nombre", "contra"
-        };
-        String origen = " bdUsuario";
-        Object dtDatos[][] = getDatos(colName, origen, "select usuario, nombre,contra from bdUsuario", " ");
+        java.util.List<String[]> usuarios = new Dao.Configuraciones.DaoUsuarios().listar();
+        Object dtDatos[][] = new Object[usuarios.size()][2];
+        for (int i = 0; i < usuarios.size(); i++) {
+            dtDatos[i][0] = usuarios.get(i)[0];
+            dtDatos[i][1] = usuarios.get(i)[1];
+        }
 
         DefaultTableModel datos = new DefaultTableModel(dtDatos, columNames) {
             public boolean isCellEditable(int row, int column) {
@@ -4292,17 +4286,11 @@ public class SQL {
     }
 
     public boolean usuarioActivo(String estado, String terminal, String usuario) {
-        boolean ok = false;
-        String instruccion_sql = "update bdUsuario set estado=?,terminal=? WHERE usuario='" + usuario + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", estado, terminal}, null, instruccion_sql);
-        return ok;
+        return new Dao.Configuraciones.DaoUsuarios().actualizarEstadoSesion(usuario, estado, terminal);
     }
 
     public boolean usuarioActivo(String estado, String terminal) {
-        boolean ok = false;
-        String instruccion_sql = "update bdUsuario set estado=?,terminal=? WHERE usuario='" + Instancias.getInstancias().getUsuario() + "' ;";
-        ok = Actualizar_Registro(new Object[]{"", estado, terminal}, null, instruccion_sql);
-        return ok;
+        return usuarioActivo(estado, terminal, Instancias.getInstancias().getUsuario());
     }
 
     public Object[][] getUsuarioPlaca(String usuario) {
@@ -5695,28 +5683,9 @@ public class SQL {
         return ok;
     }
 
-    public Object[][] getMultiempresas() {
-        String columNames[] = {
-            "id", "descripcion", "base"
-        };
-        String colName[] = {
-            "id", "descripcion", "base"
-        };
-        String origen = " bdMultiEmpresa ";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select id, descripcion, base from ").append(origen).toString());
-        return dtDatos;
-    }
-
     public Object[][] getEstadoUsuarios() {
-        String columNames[] = {
-            "usuario", "nombre", "estado", "terminal"
-        };
-        String colName[] = {
-            "usuario", "nombre", "estado", "terminal"
-        };
-        String origen = " bdUsuario ";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select usuario, nombre, estado, terminal from ").append(origen).toString());
-        return dtDatos;
+        java.util.List<String[]> usuarios = new Dao.Configuraciones.DaoUsuarios().listar();
+        return usuarios.toArray(new Object[usuarios.size()][]);
     }
 
     public Object[][] getProductos() {
@@ -6346,13 +6315,6 @@ public class SQL {
         return data[0].toString();
     }
 
-    public boolean agregarMutiempresas(String id, String descripcion, String base) {
-        boolean ok = false;
-        String instruccion_sql = "insert into bdMultiEmpresa(id, descripcion, base) values(?,?,?);";
-        ok = Agregar_Registro(new Object[]{id, descripcion, base}, null, instruccion_sql);
-        return ok;
-    }
-
     // Usuarios: las columnas de permisos salen del catálogo PermisoUsuario
     // (DaoUsuarios), así una columna depurada solo se quita en un lugar.
     public boolean modificarUsuario(ndUsuario nodo) {
@@ -6374,12 +6336,7 @@ public class SQL {
     }
 
     public Object[] obtenerDatosUsuarioIniciado(String usuario) {
-        String instruccion_sql = "select estado, terminal from bdUsuario where usuario = '" + usuario + "'; ";
-        String[] colName = {"estado", "terminal"};
-        boolean[] cadena = {true, true};
-
-        Object[] data = GetRegistro(colName, cadena, instruccion_sql);
-        return data;
+        return new Dao.Configuraciones.DaoUsuarios().estadoSesion(usuario);
     }
 
     public Object[] getHistProd(String id) {
@@ -7124,12 +7081,11 @@ public class SQL {
     }
 
     public Object[][] getUsuarios() {
-        String colName[] = {
-            "usuario"
-        };
-        String origen = " bdUsuario";
-        Object dtDatos[][] = GetTabla(colName, origen, (new StringBuilder()).append("select usuario from ").append(origen).toString());
-
+        java.util.List<String[]> usuarios = new Dao.Configuraciones.DaoUsuarios().listar();
+        Object dtDatos[][] = new Object[usuarios.size()][1];
+        for (int i = 0; i < usuarios.size(); i++) {
+            dtDatos[i][0] = usuarios.get(i)[0];
+        }
         return dtDatos;
     }
 
@@ -7154,19 +7110,6 @@ public class SQL {
         return dtDatos;
     }
 
-    public String getEmpresaPricipal(String id) {
-        String colName[] = {
-            "base"
-        };
-        String origen = " bdMultiEmpresa";
-        Object dtDatos[][] = getDatos(colName, origen, "select base from bdMultiEmpresa where id = '" + id + "' ", " where id = '" + id + "' ");
-
-        try {
-            return dtDatos[0][0].toString();
-        } catch (Exception e) {
-            return "";
-        }
-    }
 
     public String estadoCuotasCreditos(String contrato, String numCuota) {
         String colName[] = {

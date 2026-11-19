@@ -8,7 +8,25 @@ public class modeloConfiguracion {
 
     private boolean congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, recordatorios,
             laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, facturaElectronica,
-            pruebasFacturacion;
+            pruebasFacturacion, multiempresa;
+
+    private int numeroEmpresas;
+
+    public boolean isMultiempresa() {
+        return multiempresa;
+    }
+
+    public void setMultiempresa(boolean multiempresa) {
+        this.multiempresa = multiempresa;
+    }
+
+    public int getNumeroEmpresas() {
+        return numeroEmpresas;
+    }
+
+    public void setNumeroEmpresas(int numeroEmpresas) {
+        this.numeroEmpresas = numeroEmpresas;
+    }
 
     public int getNumeroFacturasElectronicasDisponibles() {
         return numeroFacturasElectronicasDisponibles;

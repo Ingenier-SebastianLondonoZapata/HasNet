@@ -7,7 +7,9 @@ import clases.Instancias;
 public final class ConfiguracionSistema {
 
     private boolean congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, recordatorios,
-            laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosDetallados, facturacionLote, facturaElectronica;
+            laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosDetallados, facturacionLote, facturaElectronica, multiempresa;
+
+    private int numeroEmpresas;
 
     public static ConfiguracionSistema cargar(Instancias instancias) {
         ConfiguracionSistema configuracion = new ConfiguracionSistema();
@@ -44,6 +46,8 @@ public final class ConfiguracionSistema {
         facturaElectronica = modelo.isFacturaElectronica();
         inventarioBodegas = modelo.isInventarioBodegas();
         productosDetallados = modelo.isProductosSerial();
+        multiempresa = modelo.isMultiempresa();
+        numeroEmpresas = modelo.getNumeroEmpresas();
 
         instancias.setRegimen("SinIva".equals(modelo.getRegimen()) ? "SinIva" : "");
         instancias.getReporte().setInformacionLegalHasNet(modelo.getInformacionLegal());
@@ -138,5 +142,13 @@ public final class ConfiguracionSistema {
 
     public boolean isFacturaElectronica() {
         return facturaElectronica;
+    }
+
+    public boolean isMultiempresa() {
+        return multiempresa;
+    }
+
+    public int getNumeroEmpresas() {
+        return numeroEmpresas;
     }
 }

@@ -117,13 +117,7 @@ public final class ControlInactividad {
     private static void cerrarPorInactividad() {
         revision.stop();
         Logger.getLogger(ControlInactividad.class.getName()).log(Level.INFO, "Cierre del sistema por una hora de inactividad");
-        try {
-            if (Instancias.getInstancias().getUsuario() != null) {
-                Instancias.getInstancias().getSql().usuarioActivo("OFF", "");
-            }
-        } catch (RuntimeException ex) {
-            Logger.getLogger(ControlInactividad.class.getName()).log(Level.SEVERE, "No se pudo cerrar la sesión del usuario", ex);
-        }
+        SesionUsuario.cerrar();
         ControlSesionesTerminal.liberar();
         System.exit(0);
     }

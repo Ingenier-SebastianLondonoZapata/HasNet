@@ -11,13 +11,15 @@ import java.sql.SQLException;
 
 public class DaoMaestra {
 
-    private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {
+        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    }
 
     /**
      * Guarda la bodega por defecto (se llama al GUARDAR la maestra).
      */
     public boolean actualizarBodega(String codigo) {
-        try (PreparedStatement stmt = conexion.prepareStatement("UPDATE bdMaestra SET bodega = ? WHERE Id = 1")) {
+        try (PreparedStatement stmt = conexion().prepareStatement("UPDATE bdMaestra SET bodega = ? WHERE Id = 1")) {
             stmt.setString(1, codigo == null ? "" : codigo.trim());
             stmt.executeUpdate();
             return true;
@@ -32,7 +34,7 @@ public class DaoMaestra {
      * turno1, que se renombró a turnoConsecutivo.
      */
     public int obtenerTurnoConsecutivo() {
-        try (PreparedStatement stmt = conexion.prepareStatement("SELECT turnoConsecutivo FROM bdMaestra WHERE Id = 1");
+        try (PreparedStatement stmt = conexion().prepareStatement("SELECT turnoConsecutivo FROM bdMaestra WHERE Id = 1");
                 ResultSet rs = stmt.executeQuery()) {
             return rs.next() ? rs.getInt("turnoConsecutivo") : 0;
         } catch (SQLException e) {
@@ -42,7 +44,7 @@ public class DaoMaestra {
     }
 
     public boolean actualizarTurnoConsecutivo(int turno) {
-        try (PreparedStatement stmt = conexion.prepareStatement("UPDATE bdMaestra SET turnoConsecutivo = ? WHERE Id = 1")) {
+        try (PreparedStatement stmt = conexion().prepareStatement("UPDATE bdMaestra SET turnoConsecutivo = ? WHERE Id = 1")) {
             stmt.setInt(1, turno);
             stmt.executeUpdate();
             return true;
@@ -81,7 +83,7 @@ public class DaoMaestra {
                 + "facturarMesas=?, soloMesas=?, borrarMesas=?, "
                 + "password=?, responsabilidadesFiscales=? "
                 + "WHERE Id = 1";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             int i = 1;
             stmt.setString(i++, g.getConfiguracionRegimen());
             stmt.setString(i++, g.getAlertaUtilidad());
@@ -182,7 +184,7 @@ public class DaoMaestra {
                 + "piePagina=VALUES(piePagina), informacionLegal=VALUES(informacionLegal), "
                 + "anexoFactura=VALUES(anexoFactura), anexoOrdenServicio=VALUES(anexoOrdenServicio), "
                 + "tipoImpresion=VALUES(tipoImpresion)";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             int i = 1;
             stmt.setBoolean(i++, imp.isPrevisualizarFactura());
             stmt.setBoolean(i++, imp.isPrevisualizarOServicio());
@@ -248,7 +250,7 @@ public class DaoMaestra {
                 + "facturarMesas, soloMesas, borrarMesas, "
                 + "password, responsabilidadesFiscales, bodega "
                 + "FROM bdMaestra WHERE Id = 1";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql);
+        try (PreparedStatement stmt = conexion().prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
             if (!rs.next()) {
                 return null;
@@ -329,7 +331,7 @@ public class DaoMaestra {
                 + "impresionPorGrupo, formatoImpresion, "
                 + "piePagina, informacionLegal, anexoFactura, anexoOrdenServicio, tipoImpresion "
                 + "FROM bdMaestraImpresiones WHERE Id = 1";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql);
+        try (PreparedStatement stmt = conexion().prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
             if (!rs.next()) {
                 return new ModeloMaestraImpresiones();

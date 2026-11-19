@@ -8,7 +8,25 @@ public class modeloConfiguracion {
 
     boolean congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, recordatorios,
             laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, facturaElectronica,
-            pruebasFacturacionElectronica;
+            pruebasFacturacionElectronica, multiempresa;
+
+    int numeroEmpresas;
+
+    public boolean isMultiempresa() {
+        return multiempresa;
+    }
+
+    public void setMultiempresa(boolean multiempresa) {
+        this.multiempresa = multiempresa;
+    }
+
+    public int getNumeroEmpresas() {
+        return numeroEmpresas;
+    }
+
+    public void setNumeroEmpresas(int numeroEmpresas) {
+        this.numeroEmpresas = numeroEmpresas;
+    }
 
     public boolean isPruebasFacturacionElectronica() {
         return pruebasFacturacionElectronica;
@@ -232,7 +250,7 @@ public class modeloConfiguracion {
             nodo.isCongeladas(), nodo.isMedico(), nodo.isVeterinaria(), nodo.isParqueadero(), nodo.isOrdenServicio(), nodo.isCreditos(), nodo.isSepare(), nodo.isPedido(),
             nodo.isAgenda(), nodo.isRestaurante(), nodo.isRecordatorios(), nodo.isLaboratorio(), nodo.isServicioAutomotor(), nodo.isOftalmologia(),
             nodo.isInventarioBodegas(), nodo.isProductosSerial(), nodo.isFacturacionLote(), nodo.isFacturaElectronica(),
-            nodo.isPruebasFacturacionElectronica()
+            nodo.isPruebasFacturacionElectronica(), nodo.isMultiempresa(), nodo.getNumeroEmpresas()
         };
 
         return vector;
@@ -268,6 +286,8 @@ public class modeloConfiguracion {
         modelo.setFacturacionLote((Boolean) vector[24]);
         modelo.setFacturaElectronica((Boolean) vector[25]);
         modelo.setPruebasFacturacionElectronica((Boolean) vector[26]);
+        modelo.setMultiempresa(vector.length > 27 && Boolean.TRUE.equals(vector[27]));
+        modelo.setNumeroEmpresas(vector.length > 28 && vector[28] != null ? Integer.parseInt(vector[28].toString()) : 0);
         return modelo;
     }
 }

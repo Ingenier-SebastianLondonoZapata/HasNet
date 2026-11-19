@@ -22,6 +22,8 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
     private modeloPlanFacturacion planSiguiente;
     private BigDecimal tarifaServidor = BigDecimal.ZERO;
     private BigDecimal tarifaTerminal = BigDecimal.ZERO;
+    private BigDecimal tarifaEspecial = BigDecimal.ZERO;
+    private BigDecimal tarifaEmpresa = BigDecimal.ZERO;
     private BigDecimal totalCalculado = BigDecimal.ZERO;
     private int mesesRestantes = 1;
     private boolean pagoRegistrado;
@@ -58,6 +60,12 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
             estado = sqlIngresos().obtenerEstadoCliente(idCliente);
             tarifaServidor = sqlIngresos().obtenerTarifa(SQLIngresos.MENSUALIDAD_SERVIDOR);
             tarifaTerminal = sqlIngresos().obtenerTarifa(SQLIngresos.MENSUALIDAD_TERMINAL);
+            if (estado.getNumeroServiciosEspeciales() > 0) {
+                tarifaEspecial = sqlIngresos().obtenerTarifa(SQLIngresos.MENSUALIDAD_SERVICIO_ESPECIAL);
+            }
+            if (estado.getEmpresasAdicionales() > 0) {
+                tarifaEmpresa = sqlIngresos().obtenerTarifa(SQLIngresos.MENSUALIDAD_EMPRESA_ADICIONAL);
+            }
             Integer idPlan = estado.planParaSiguientePeriodo();
             planSiguiente = idPlan == null ? null : sqlIngresos().obtenerPlan(idPlan);
             if (planSiguiente != null && !planSiguiente.isMensual()) {
@@ -86,6 +94,17 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
         lbTerminalesPagar.setVisible(tieneTerminales);
         spnTerminales.setVisible(tieneTerminales);
         lbValorTerminales.setVisible(tieneTerminales);
+
+        int especiales = estado.getNumeroServiciosEspeciales();
+        lbEspeciales.setText("Módulos y acciones especiales (" + especiales + ")");
+        lbEspeciales.setToolTipText(especiales == 0 ? null : String.join(", ", estado.getServiciosEspeciales()));
+        lbEspeciales.setVisible(especiales > 0);
+        lbValorEspeciales.setVisible(especiales > 0);
+
+        int empresas = estado.getEmpresasAdicionales();
+        lbEmpresas.setText("Empresas adicionales (" + empresas + ")");
+        lbEmpresas.setVisible(empresas > 0);
+        lbValorEmpresas.setVisible(empresas > 0);
 
         boolean tienePlan = planSiguiente != null;
         chkPlan.setVisible(tienePlan);
@@ -156,10 +175,16 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
         BigDecimal valorTerminales = tarifaTerminal.multiply(BigDecimal.valueOf(terminales));
         BigDecimal valorPendientes = tarifaTerminal.multiply(BigDecimal.valueOf(pendientes)).multiply(BigDecimal.valueOf(mesesRestantes));
         BigDecimal valorPlan = chkPlan.isSelected() && planSiguiente != null ? planSiguiente.getPrecio() : BigDecimal.ZERO;
-        BigDecimal valorMes = tarifaServidor.add(valorTerminales).add(valorPlan);
+        int especiales = estado.getNumeroServiciosEspeciales();
+        int empresas = estado.getEmpresasAdicionales();
+        BigDecimal valorEspeciales = tarifaEspecial.multiply(BigDecimal.valueOf(especiales));
+        BigDecimal valorEmpresas = tarifaEmpresa.multiply(BigDecimal.valueOf(empresas));
+        BigDecimal valorMes = tarifaServidor.add(valorTerminales).add(valorPlan).add(valorEspeciales).add(valorEmpresas);
 
         lbValorServidor.setText(big.setMoneda(tarifaServidor));
         lbValorTerminales.setText(terminales + " x " + big.setMoneda(tarifaTerminal) + " = " + big.setMoneda(valorTerminales));
+        lbValorEspeciales.setText(especiales + " x " + big.setMoneda(tarifaEspecial) + " = " + big.setMoneda(valorEspeciales));
+        lbValorEmpresas.setText(empresas + " x " + big.setMoneda(tarifaEmpresa) + " = " + big.setMoneda(valorEmpresas));
         lbValorPendientes.setText(pendientes + " x " + big.setMoneda(tarifaTerminal)
                 + (mesesRestantes == 1 ? "" : " x " + mesesRestantes + " meses") + " = " + big.setMoneda(valorPendientes));
         if (planSiguiente != null) {
@@ -207,6 +232,10 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
         lbTerminalesPagar = new javax.swing.JLabel();
         spnTerminales = new javax.swing.JSpinner();
         lbValorTerminales = new javax.swing.JLabel();
+        lbEspeciales = new javax.swing.JLabel();
+        lbValorEspeciales = new javax.swing.JLabel();
+        lbEmpresas = new javax.swing.JLabel();
+        lbValorEmpresas = new javax.swing.JLabel();
         chkPlan = new javax.swing.JCheckBox();
         lbValorPlan = new javax.swing.JLabel();
         lbNuevaFecha = new javax.swing.JLabel();
@@ -399,6 +428,18 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
         lbValorTerminales.setFont(new java.awt.Font("Century Gothic", 1, 15)); // NOI18N
         lbValorTerminales.setText("$ 0");
 
+        lbEspeciales.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        lbEspeciales.setText("Módulos y acciones especiales");
+
+        lbValorEspeciales.setFont(new java.awt.Font("Century Gothic", 1, 15)); // NOI18N
+        lbValorEspeciales.setText("$ 0");
+
+        lbEmpresas.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
+        lbEmpresas.setText("Empresas adicionales");
+
+        lbValorEmpresas.setFont(new java.awt.Font("Century Gothic", 1, 15)); // NOI18N
+        lbValorEmpresas.setText("$ 0");
+
         chkPlan.setBackground(new java.awt.Color(255, 255, 255));
         chkPlan.setFont(new java.awt.Font("Century Gothic", 0, 15)); // NOI18N
         chkPlan.setText("Plan mensual de documentos");
@@ -440,6 +481,14 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
                         .addGap(20, 20, Short.MAX_VALUE)
                         .addComponent(lbValorTerminales))
                     .addGroup(pnlMensualidadLayout.createSequentialGroup()
+                        .addComponent(lbEspeciales)
+                        .addGap(20, 20, Short.MAX_VALUE)
+                        .addComponent(lbValorEspeciales))
+                    .addGroup(pnlMensualidadLayout.createSequentialGroup()
+                        .addComponent(lbEmpresas)
+                        .addGap(20, 20, Short.MAX_VALUE)
+                        .addComponent(lbValorEmpresas))
+                    .addGroup(pnlMensualidadLayout.createSequentialGroup()
                         .addComponent(chkPlan)
                         .addGap(20, 20, Short.MAX_VALUE)
                         .addComponent(lbValorPlan))
@@ -464,6 +513,14 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
                     .addComponent(lbTerminalesPagar)
                     .addComponent(spnTerminales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbValorTerminales))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlMensualidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbEspeciales)
+                    .addComponent(lbValorEspeciales))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlMensualidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbEmpresas)
+                    .addComponent(lbValorEmpresas))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMensualidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkPlan)
@@ -672,6 +729,8 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
     private javax.swing.JButton btnPagar;
     private javax.swing.JCheckBox chkPlan;
     private javax.swing.ButtonGroup grpTipoPago;
+    private javax.swing.JLabel lbEmpresas;
+    private javax.swing.JLabel lbEspeciales;
     private javax.swing.JLabel lbEtiquetaFecha;
     private javax.swing.JLabel lbEtiquetaPlan;
     private javax.swing.JLabel lbEtiquetaTerminales;
@@ -690,6 +749,8 @@ public class DialogoPagoMensual extends javax.swing.JDialog {
     private javax.swing.JLabel lbTerminalesPagar;
     private javax.swing.JLabel lbTitulo;
     private javax.swing.JLabel lbTotal;
+    private javax.swing.JLabel lbValorEmpresas;
+    private javax.swing.JLabel lbValorEspeciales;
     private javax.swing.JLabel lbValorPendientes;
     private javax.swing.JLabel lbValorPlan;
     private javax.swing.JLabel lbValorServidor;

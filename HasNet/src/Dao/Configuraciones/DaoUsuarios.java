@@ -3,24 +3,21 @@ package Dao.Configuraciones;
 import Estrategia.AbstractDao;
 import Modelo.Usuarios.ModeloUsuario;
 import Modelo.Usuarios.PermisoUsuario;
+import Utilidades.Constantes;
+import Utilidades.Seguridad.ContrasenasSeguras;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Acceso a bdUsuario para la administración de usuarios.
- *
- * Las columnas de permisos se toman de {@link PermisoUsuario}, así cada
- * permiso se lee y se escribe por su nombre de columna (no por posición) y
- * todas las consultas usan parámetros.
- */
 public class DaoUsuarios extends AbstractDao {
 
     private static final Logger LOGGER = Logger.getLogger(DaoUsuarios.class.getName());
 
-    private static final String TABLA = "bdUsuario";
+    private static final String TABLA = Constantes.TABLA_USUARIOS;
 
     public boolean existe(String usuario) {
         try (PreparedStatement stmt = getConnection().prepareStatement(
@@ -35,9 +32,6 @@ public class DaoUsuarios extends AbstractDao {
         }
     }
 
-    /**
-     * @return el usuario con sus permisos, o null si no existe.
-     */
     public ModeloUsuario consultar(String usuario) {
         String sql = "SELECT nombre, usuario, contra, " + columnasPermisos() + " FROM " + TABLA + " WHERE usuario = ?";
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
@@ -73,7 +67,7 @@ public class DaoUsuarios extends AbstractDao {
             int indice = 1;
             stmt.setString(indice++, usuario.getNombre());
             stmt.setString(indice++, usuario.getUsuario());
-            stmt.setString(indice++, usuario.getContra());
+            stmt.setString(indice++, ContrasenasSeguras.asegurarHash(usuario.getContra()));
             for (PermisoUsuario permiso : permisos) {
                 stmt.setBoolean(indice++, usuario.tienePermiso(permiso));
             }
@@ -86,7 +80,11 @@ public class DaoUsuarios extends AbstractDao {
     }
 
     public boolean modificar(ModeloUsuario usuario) {
-        StringBuilder sql = new StringBuilder("UPDATE " + TABLA + " SET nombre = ?, contra = ?");
+        boolean cambiaContra = usuario.getContra() != null && !usuario.getContra().isEmpty();
+        StringBuilder sql = new StringBuilder("UPDATE " + TABLA + " SET nombre = ?");
+        if (cambiaContra) {
+            sql.append(", contra = ?");
+        }
         for (PermisoUsuario permiso : PermisoUsuario.values()) {
             sql.append(", ").append(permiso.getColumna()).append(" = ?");
         }
@@ -95,7 +93,9 @@ public class DaoUsuarios extends AbstractDao {
         try (PreparedStatement stmt = getConnection().prepareStatement(sql.toString())) {
             int indice = 1;
             stmt.setString(indice++, usuario.getNombre());
-            stmt.setString(indice++, usuario.getContra());
+            if (cambiaContra) {
+                stmt.setString(indice++, ContrasenasSeguras.asegurarHash(usuario.getContra()));
+            }
             for (PermisoUsuario permiso : PermisoUsuario.values()) {
                 stmt.setBoolean(indice++, usuario.tienePermiso(permiso));
             }
@@ -105,6 +105,90 @@ public class DaoUsuarios extends AbstractDao {
             LOGGER.log(Level.SEVERE, "Error al modificar el usuario " + usuario.getUsuario(), e);
             return false;
         }
+    }
+
+    public boolean actualizarContra(String usuario, String hash) {
+        try (PreparedStatement stmt = getConnection().prepareStatement("UPDATE " + TABLA + " SET contra = ? WHERE usuario = ?")) {
+            stmt.setString(1, hash);
+            stmt.setString(2, usuario);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al actualizar la contraseña del usuario " + usuario, e);
+            return false;
+        }
+    }
+
+    public String[] estadoSesion(String usuario) {
+        try (PreparedStatement stmt = getConnection().prepareStatement("SELECT estado, terminal FROM " + TABLA + " WHERE usuario = ?")) {
+            stmt.setString(1, usuario);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new String[]{valor(rs.getString("estado")), valor(rs.getString("terminal"))};
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al consultar el estado de sesión del usuario " + usuario, e);
+        }
+        return new String[]{"", ""};
+    }
+
+    public boolean actualizarEstadoSesion(String usuario, String estado, String terminal) {
+        try (PreparedStatement stmt = getConnection().prepareStatement("UPDATE " + TABLA + " SET estado = ?, terminal = ? WHERE usuario = ?")) {
+            stmt.setString(1, estado);
+            stmt.setString(2, terminal);
+            stmt.setString(3, usuario);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al actualizar el estado de sesión del usuario " + usuario, e);
+            return false;
+        }
+    }
+
+    public boolean reservarSesion(String usuario, String terminal, int minutosVencimiento) {
+        String sql = "UPDATE " + TABLA + " u SET u.estado = 'ON', u.terminal = ? WHERE u.usuario = ? AND ("
+                + "u.estado IS NULL OR u.estado <> 'ON' OR u.terminal IS NULL OR u.terminal = '' OR u.terminal = ? "
+                + "OR NOT EXISTS (SELECT 1 FROM " + Constantes.TABLA_TERMINALES + " t WHERE t.terminal = u.terminal "
+                + "AND t.ultimaSenal >= NOW() - INTERVAL ? MINUTE))";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setString(1, terminal);
+            stmt.setString(2, usuario);
+            stmt.setString(3, terminal);
+            stmt.setInt(4, minutosVencimiento);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al reservar la sesión del usuario " + usuario, e);
+            return false;
+        }
+    }
+
+    public boolean liberarSesion(String usuario, String terminal) {
+        try (PreparedStatement stmt = getConnection().prepareStatement("UPDATE " + TABLA
+                + " SET estado = 'OFF', terminal = '' WHERE usuario = ? AND (terminal = ? OR terminal IS NULL OR terminal = '')")) {
+            stmt.setString(1, usuario);
+            stmt.setString(2, terminal);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al liberar la sesión del usuario " + usuario, e);
+            return false;
+        }
+    }
+
+    public List<String[]> listar() {
+        List<String[]> usuarios = new ArrayList<>();
+        try (PreparedStatement stmt = getConnection().prepareStatement("SELECT usuario, nombre, estado, terminal FROM " + TABLA + " ORDER BY usuario");
+                ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                usuarios.add(new String[]{valor(rs.getString("usuario")), valor(rs.getString("nombre")),
+                    valor(rs.getString("estado")), valor(rs.getString("terminal"))});
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al listar los usuarios", e);
+        }
+        return usuarios;
+    }
+
+    private static String valor(String texto) {
+        return texto == null ? "" : texto;
     }
 
     private String columnasPermisos() {

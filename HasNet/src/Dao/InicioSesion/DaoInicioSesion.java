@@ -23,12 +23,12 @@ import java.util.List;
 public class DaoInicioSesion {
 
     DaoGenerales daoGenerales = new DaoGenerales();
-    Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();    }
 
     public Terminal obtenerTerminal(String identificador) {
-        String sql = "SELECT Id, terminal, ubicacionCaja FROM bdTerminales WHERE Id = ?";
+        String sql = "SELECT Id, terminal, ubicacionCaja FROM " + Constantes.TABLA_TERMINALES + " WHERE Id = ?";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setString(1, identificador);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -51,9 +51,9 @@ public class DaoInicioSesion {
     
     public List<Terminal> obtenerTerminales() {
         List<Terminal> listaTerminales = new ArrayList<>();
-        String sql = "SELECT Id, terminal, ubicacionCaja FROM bdTerminales ORDER BY terminal";
+        String sql = "SELECT Id, terminal, ubicacionCaja FROM " + Constantes.TABLA_TERMINALES + " ORDER BY terminal";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Terminal terminal = new Terminal();
                 terminal.setId(rs.getString("Id"));

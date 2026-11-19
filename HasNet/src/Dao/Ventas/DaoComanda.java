@@ -13,10 +13,8 @@ import java.util.logging.Logger;
 
 public class DaoComanda {
 
-    private final Connection conexion;
-
-    public DaoComanda() {
-        this.conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {
+        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
     }
 
     public boolean agregarComanda(String congelada, String factura, String codigo, String producto,
@@ -26,7 +24,7 @@ public class DaoComanda {
                 + "ingredientes, adiciones, aderezos, cantidad, observaciones, turno, consecutivo) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = conexion.prepareStatement(instruccionSql)) {
+        try (PreparedStatement pstmt = conexion().prepareStatement(instruccionSql)) {
             pstmt.setString(1, congelada);
             pstmt.setString(2, factura);
             pstmt.setString(3, codigo);
@@ -82,6 +80,6 @@ public class DaoComanda {
     }
 
     public Connection getConexion() {
-        return conexion;
+        return conexion();
     }
 }

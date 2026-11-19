@@ -38,13 +38,59 @@ public class vistaMenu extends javax.swing.JFrame {
     private static final String PERMISO_DIAS_GABELA = "DIAS DE GABELA PARA OMITIR EL BLOQUEO";
     private static final String PERMISO_TERMINALES = "TERMINALES ADICIONALES AL SERVIDOR";
     private static final String PERMISO_ORDENES_SERVICIO = "ORDENES DE SERVICIO";
+    private static final String PERMISO_MULTIEMPRESA = "MULTIEMPRESA";
+    private static final String PERMISO_EMPRESAS = "EMPRESAS ADICIONALES";
     private static final java.util.List<String> PERMISOS_CONFIGURACION = java.util.Arrays.asList(
-            PERMISO_REGIMEN, PERMISO_DIAS_ALERTA, PERMISO_DIAS_GABELA, PERMISO_TERMINALES, PERMISO_ORDENES_SERVICIO);    private static final String ORDEN_NO = "NO";
+            PERMISO_REGIMEN, PERMISO_DIAS_ALERTA, PERMISO_DIAS_GABELA, PERMISO_TERMINALES, PERMISO_ORDENES_SERVICIO, PERMISO_EMPRESAS);
+    private static final String PERMISO_FACTURACION_ELECTRONICA = "FACTURACION ELECTRONICA";
+    private static final String GRUPO_CONFIGURACION = "CONFIGURACIÓN ESTÁNDAR";
+    private static final String GRUPO_MODULOS_ESTANDAR = "MÓDULOS ESTÁNDAR (INCLUIDOS EN LA MENSUALIDAD)";
+    private static final String GRUPO_MODULOS_ESPECIALES = "MÓDULOS ESPECIALES (COBRO MENSUAL)";
+    private static final String GRUPO_ACCIONES_ESPECIALES = "ACCIONES ESPECIALES";
+    private static final String[][] FILAS_PERMISOS = {
+        {GRUPO_CONFIGURACION},
+        {"RÉGIMEN"},
+        {"DÍAS ANTES DE MOSTRAR ALERTA DE BLOQUEO"},
+        {"DÍAS DE GABELA PARA OMITIR EL BLOQUEO"},
+        {"TERMINALES ADICIONALES AL SERVIDOR"},
+        {GRUPO_MODULOS_ESTANDAR},
+        {"ÓRDENES DE SERVICIO"},
+        {"CRÉDITOS"},
+        {"PLAN SEPARE"},
+        {"PEDIDOS"},
+        {"CONGELADAS"},
+        {"AGENDA"},
+        {"RECORDATORIOS"},
+        {"FACTURACIÓN LOTE"},
+        {GRUPO_MODULOS_ESPECIALES},
+        {"MÉDICO"},
+        {"LABORATORIO"},
+        {"OFTALMOLOGÍA"},
+        {"VETERINARIO"},
+        {"PARQUEADERO"},
+        {"RESTAURANTE"},
+        {GRUPO_ACCIONES_ESPECIALES},
+        {"INVENTARIO POR BODEGAS"},
+        {"PRODUCTOS DETALLADOS"},
+        {"FACTURACIÓN ELECTRÓNICA"},
+        {"PRUEBAS EN FACTURACIÓN ELECTRÓNICA"},
+        {"MULTIEMPRESA"},
+        {"EMPRESAS ADICIONALES"}
+    };
+    private static final java.util.Set<String> GRUPOS_PERMISOS = new java.util.HashSet<>(java.util.Arrays.asList(
+            GRUPO_CONFIGURACION, GRUPO_MODULOS_ESTANDAR, GRUPO_MODULOS_ESPECIALES, GRUPO_ACCIONES_ESPECIALES));
+    private static final java.util.List<String> SERVICIOS_ESPECIALES_MENSUALES = java.util.Arrays.asList(
+            "MEDICO", "LABORATORIO", "OFTALMOLOGIA", "VETERINARIO", "PARQUEADERO", "RESTAURANTE",
+            "INVENTARIO POR BODEGAS", "PRODUCTOS DETALLADOS");
+    private static final String ORDEN_NO = "NO";
     private static final String ORDEN_NORMAL = "ORDEN NORMAL";
     private static final String ORDEN_AUTOMOTOR = "ORDEN AUTOMOTOR";
     private static final String REGIMEN_COMUN = "COMÚN";
     private static final String REGIMEN_SIMPLIFICADO = "SIMPLIFICADO";
     private int terminalesCargadas;
+    private boolean facturacionElectronicaCargada;
+    private final java.util.Set<String> serviciosEspecialesCargados = new java.util.HashSet<>();
+    private int empresasCargadas;
     private Instancias instancias;
     TableRowSorter modeloOrdenado;
     TableRowSorter modeloOrdenado1;
@@ -69,12 +115,15 @@ public class vistaMenu extends javax.swing.JFrame {
         tblClientes.setDefaultRenderer(Object.class, new cambiarColorTabla(0));
         tblPagos.setDefaultRenderer(Object.class, new cambiarColorTabla(1));
 
+        inicializarTablaPermisos();
+
         java.awt.Font fuenteEditor = new java.awt.Font("Arial", 0, 16);
         EditorCeldaPermisos editorPermisos = new EditorCeldaPermisos(EditorCeldaPermisos.editorLista(fuenteEditor, "SI", "NO"));
         editorPermisos.asignarEditor(filaPermiso(PERMISO_REGIMEN), EditorCeldaPermisos.editorLista(fuenteEditor, REGIMEN_COMUN, REGIMEN_SIMPLIFICADO));
         editorPermisos.asignarEditor(filaPermiso(PERMISO_DIAS_ALERTA), EditorCeldaPermisos.editorNumerico(fuenteEditor));
         editorPermisos.asignarEditor(filaPermiso(PERMISO_DIAS_GABELA), EditorCeldaPermisos.editorNumerico(fuenteEditor));
         editorPermisos.asignarEditor(filaPermiso(PERMISO_TERMINALES), EditorCeldaPermisos.editorNumerico(fuenteEditor));
+        editorPermisos.asignarEditor(filaPermiso(PERMISO_EMPRESAS), EditorCeldaPermisos.editorNumerico(fuenteEditor));
         editorPermisos.asignarEditor(filaPermiso(PERMISO_ORDENES_SERVICIO),
                 EditorCeldaPermisos.editorLista(fuenteEditor, ORDEN_NO, ORDEN_NORMAL, ORDEN_AUTOMOTOR));
         tblModulos.getColumnModel().getColumn(1).setCellEditor(editorPermisos);
@@ -97,12 +146,16 @@ public class vistaMenu extends javax.swing.JFrame {
         txtFechaInicio.setText("");
         txtTelefono.setText("");
         terminalesCargadas = 0;
+        facturacionElectronicaCargada = false;
+        serviciosEspecialesCargados.clear();
+        empresasCargadas = 0;
 
         if (tblModulos.isEditing()) {
             tblModulos.getCellEditor().cancelCellEditing();
         }
         for (int i = 0; i < tblModulos.getRowCount(); i++) {
-            if (!PERMISOS_CONFIGURACION.contains(normalizarPermiso(String.valueOf(tblModulos.getValueAt(i, 0))))) {
+            Object etiqueta = tblModulos.getValueAt(i, 0);
+            if (!esGrupoPermiso(etiqueta) && !PERMISOS_CONFIGURACION.contains(normalizarPermiso(String.valueOf(etiqueta)))) {
                 tblModulos.setValueAt("NO", i, 1);
             }
         }
@@ -110,6 +163,7 @@ public class vistaMenu extends javax.swing.JFrame {
         asignarPermiso(PERMISO_DIAS_ALERTA, "0");
         asignarPermiso(PERMISO_DIAS_GABELA, "0");
         asignarPermiso(PERMISO_TERMINALES, "0");
+        asignarPermiso(PERMISO_EMPRESAS, "0");
         asignarPermiso(PERMISO_ORDENES_SERVICIO, ORDEN_NO);
         btnGuardarPermisos.setEnabled(false);
         txtCodigo.setEnabled(true);
@@ -1149,7 +1203,9 @@ public class vistaMenu extends javax.swing.JFrame {
                 {"FACTURACIÓN ELECTRÓNICA", null},
                 {"INVENTARIO POR BODEGAS", null},
                 {"PRODUCTOS DETALLADOS", null},
-                {"PRUEBAS EN FACTURACIÓN ELECTRÓNICA", null}
+                {"PRUEBAS EN FACTURACIÓN ELECTRÓNICA", null},
+                {"MULTIEMPRESA", null},
+                {"EMPRESAS ADICIONALES", null}
             },
             new String [] {
                 "Descripción", "Opción"
@@ -1806,8 +1862,15 @@ public class vistaMenu extends javax.swing.JFrame {
             terminales = enteroPermiso(PERMISO_TERMINALES);
             enteroPermiso(PERMISO_DIAS_ALERTA);
             enteroPermiso(PERMISO_DIAS_GABELA);
+            if (enteroPermiso(PERMISO_EMPRESAS) < 0) {
+                throw new NumberFormatException("Empresas negativas");
+            }
         } catch (NumberFormatException ex) {
-            alertas.alert("Los días y el número de terminales deben ser números enteros");
+            alertas.alert("Los días, el número de terminales y el número de empresas deben ser números enteros positivos");
+            return;
+        }
+        if (moduloActivo(PERMISO_MULTIEMPRESA) && enteroPermiso(PERMISO_EMPRESAS) == 0) {
+            alertas.alert("Con MULTIEMPRESA activo indique cuántas EMPRESAS ADICIONALES puede crear el cliente");
             return;
         }
 
@@ -1832,9 +1895,39 @@ public class vistaMenu extends javax.swing.JFrame {
             return;
         }
 
-        alertas.alertSuccess("Cambios guardados con éxito");
+        if (!ofrecerCobroServiciosActivados(modelo)) {
+            return;
+        }
+
+        if (modelo.isFacturaElectronica() && !facturacionElectronicaCargada && !registrarActivacionFacturacionElectronica()) {
+            return;
+        }
+
+        int especiales = serviciosEspecialesActivos().size();
+        int empresas = modelo.getNumeroEmpresas();
+        alertas.alertSuccess("Cambios guardados con éxito. Cobro mensual adicional: " + especiales + " módulo(s)/acción(es) especial(es)"
+                + (empresas > 0 ? " y " + empresas + " empresa(s) adicional(es)" : ""));
         limpiar();
     }//GEN-LAST:event_btnGuardarPermisosActionPerformed
+
+    private boolean registrarActivacionFacturacionElectronica() {
+        String idCliente = txtCodigo.getText();
+        try {
+            if (instancias.getSqlIngresos().tieneActivacionFacturacionElectronica(idCliente)) {
+                return true;
+            }
+            if (!alertas.option("Se activa la facturación electrónica. ¿Registrar el cobro único de activación?"
+                    + " (Responda NO si el cliente ya la había pagado)")) {
+                return true;
+            }
+            instancias.getSqlIngresos().registrarActivacionFacturacionElectronica(idCliente);
+            return true;
+        } catch (java.sql.SQLException | IllegalStateException ex) {
+            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, "Error al registrar la activación de facturación electrónica", ex);
+            alertas.alertFail("Los permisos se guardaron, pero no se pudo registrar el cobro de facturación electrónica: " + ex.getMessage());
+            return false;
+        }
+    }
 
     private boolean crearYEnviarJSON(modeloCreacion modelo, boolean conURLProduccion) {
         String JSONCreacion = "";
@@ -1949,11 +2042,123 @@ public class vistaMenu extends javax.swing.JFrame {
         modelo.setLaboratorio(moduloActivo("LABORATORIO"));
         modelo.setOftalmologia(moduloActivo("OFTALMOLOGIA"));
         modelo.setFacturacionLote(moduloActivo("FACTURACION LOTE"));
-        modelo.setFacturaElectronica(moduloActivo("FACTURACION ELECTRONICA"));
+        modelo.setFacturaElectronica(moduloActivo(PERMISO_FACTURACION_ELECTRONICA));
         modelo.setInventarioBodegas(moduloActivo("INVENTARIO POR BODEGAS"));
         modelo.setProductosSerial(moduloActivo("PRODUCTOS DETALLADOS"));
         modelo.setPruebasFacturacionElectronica(moduloActivo("PRUEBAS EN FACTURACION ELECTRONICA"));
+        modelo.setMultiempresa(moduloActivo(PERMISO_MULTIEMPRESA));
+        modelo.setNumeroEmpresas(modelo.isMultiempresa() ? enteroPermiso(PERMISO_EMPRESAS) : 0);
         return modelo;
+    }
+
+    private static boolean esGrupoPermiso(Object etiqueta) {
+        return etiqueta != null && GRUPOS_PERMISOS.contains(etiqueta.toString());
+    }
+
+    private void inicializarTablaPermisos() {
+        DefaultTableModel modelo = new DefaultTableModel(new String[]{"Descripción", "Opción"}, 0) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return columna == 1 && !esGrupoPermiso(getValueAt(fila, 0));
+            }
+        };
+        for (String[] fila : FILAS_PERMISOS) {
+            modelo.addRow(new Object[]{fila[0], null});
+        }
+        modelo.addTableModelListener(e -> tblModulos.repaint());
+        tblModulos.setModel(modelo);
+
+        final javax.swing.table.DefaultTableCellRenderer rendererNormal = new javax.swing.table.DefaultTableCellRenderer();
+        final javax.swing.table.DefaultTableCellRenderer rendererGrupo = new javax.swing.table.DefaultTableCellRenderer();
+        javax.swing.table.TableCellRenderer renderer = (tabla, valor, seleccionada, foco, fila, columna) -> {
+            Object etiqueta = tabla.getValueAt(fila, 0);
+            if (!esGrupoPermiso(etiqueta)) {
+                return rendererNormal.getTableCellRendererComponent(tabla, valor, seleccionada, foco, fila, columna);
+            }
+            rendererGrupo.getTableCellRendererComponent(tabla, columna == 0 ? valor : resumenGrupo(etiqueta.toString()), false, false, fila, columna);
+            rendererGrupo.setFont(tabla.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+            rendererGrupo.setBackground(new java.awt.Color(222, 230, 239));
+            rendererGrupo.setForeground(new java.awt.Color(44, 62, 80));
+            rendererGrupo.setHorizontalAlignment(columna == 0 ? javax.swing.SwingConstants.LEFT : javax.swing.SwingConstants.CENTER);
+            return rendererGrupo;
+        };
+        tblModulos.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        tblModulos.getColumnModel().getColumn(1).setCellRenderer(renderer);
+        tblModulos.getColumnModel().getColumn(1).setMinWidth(180);
+        tblModulos.getColumnModel().getColumn(1).setPreferredWidth(180);
+        tblModulos.getColumnModel().getColumn(1).setMaxWidth(180);
+    }
+
+    private String resumenGrupo(String grupo) {
+        if (GRUPO_MODULOS_ESPECIALES.equals(grupo) || GRUPO_ACCIONES_ESPECIALES.equals(grupo)) {
+            int activos = 0;
+            for (String servicio : SERVICIOS_ESPECIALES_MENSUALES) {
+                if (perteneceAGrupo(servicio, grupo) && moduloActivo(servicio)) {
+                    activos++;
+                }
+            }
+            return activos + " con cobro";
+        }
+        return "";
+    }
+
+    private boolean perteneceAGrupo(String descripcion, String grupo) {
+        String grupoActual = null;
+        String buscada = normalizarPermiso(descripcion);
+        for (String[] fila : FILAS_PERMISOS) {
+            if (GRUPOS_PERMISOS.contains(fila[0])) {
+                grupoActual = fila[0];
+            } else if (normalizarPermiso(fila[0]).equals(buscada)) {
+                return grupo.equals(grupoActual);
+            }
+        }
+        return false;
+    }
+
+    private java.util.List<String> serviciosEspecialesActivos() {
+        java.util.List<String> activos = new java.util.ArrayList<>();
+        for (String servicio : SERVICIOS_ESPECIALES_MENSUALES) {
+            if (moduloActivo(servicio)) {
+                activos.add(servicio);
+            }
+        }
+        return activos;
+    }
+
+    private boolean ofrecerCobroServiciosActivados(modeloConfiguracion modelo) {
+        java.util.List<String> nuevos = serviciosEspecialesActivos();
+        nuevos.removeAll(serviciosEspecialesCargados);
+        int empresasNuevas = Math.max(0, modelo.getNumeroEmpresas() - empresasCargadas);
+        if (nuevos.isEmpty() && empresasNuevas == 0) {
+            return true;
+        }
+        String idCliente = txtCodigo.getText();
+        try {
+            int meses = instancias.getSqlIngresos().mesesPendientesCobertura(idCliente);
+            java.math.BigDecimal valor = java.math.BigDecimal.ZERO;
+            java.util.List<String> detalle = new java.util.ArrayList<>();
+            if (!nuevos.isEmpty()) {
+                java.math.BigDecimal tarifa = instancias.getSqlIngresos().obtenerTarifa(clases.SQLIngresos.MENSUALIDAD_SERVICIO_ESPECIAL);
+                valor = valor.add(tarifa.multiply(java.math.BigDecimal.valueOf(nuevos.size())));
+                detalle.add(nuevos.size() + " servicio(s) especial(es)");
+            }
+            if (empresasNuevas > 0) {
+                java.math.BigDecimal tarifa = instancias.getSqlIngresos().obtenerTarifa(clases.SQLIngresos.MENSUALIDAD_EMPRESA_ADICIONAL);
+                valor = valor.add(tarifa.multiply(java.math.BigDecimal.valueOf(empresasNuevas)));
+                detalle.add(empresasNuevas + " empresa(s) adicional(es)");
+            }
+            valor = valor.multiply(java.math.BigDecimal.valueOf(meses));
+            if (!alertas.option("Se activaron " + String.join(" y ", detalle) + ". ¿Generar el cobro ahora por " + clases.big.setMoneda(valor)
+                    + (meses == 1 ? "" : " (" + meses + " meses)") + "? Si responde NO se cobran desde el siguiente pago")) {
+                return true;
+            }
+            instancias.getSqlIngresos().registrarCobroServiciosActivados(idCliente, nuevos, empresasNuevas);
+            return true;
+        } catch (java.sql.SQLException | IllegalStateException ex) {
+            Logger.getLogger(vistaMenu.class.getName()).log(Level.SEVERE, "Error al generar el cobro de servicios activados", ex);
+            alertas.alertFail("Los permisos se guardaron, pero no se pudo generar el cobro de los servicios activados: " + ex.getMessage());
+            return false;
+        }
     }
 
     private static String normalizarPermiso(String texto) {
@@ -2014,10 +2219,16 @@ public class vistaMenu extends javax.swing.JFrame {
         cargarModulo("LABORATORIO", modelo.isLaboratorio());
         cargarModulo("OFTALMOLOGIA", modelo.isOftalmologia());
         cargarModulo("FACTURACION LOTE", modelo.isFacturacionLote());
-        cargarModulo("FACTURACION ELECTRONICA", modelo.isFacturaElectronica());
+        cargarModulo(PERMISO_FACTURACION_ELECTRONICA, modelo.isFacturaElectronica());
+        facturacionElectronicaCargada = modelo.isFacturaElectronica();
         cargarModulo("INVENTARIO POR BODEGAS", modelo.isInventarioBodegas());
         cargarModulo("PRODUCTOS DETALLADOS", modelo.isProductosSerial());
         cargarModulo("PRUEBAS EN FACTURACION ELECTRONICA", modelo.isPruebasFacturacionElectronica());
+        cargarModulo(PERMISO_MULTIEMPRESA, modelo.isMultiempresa());
+        asignarPermiso(PERMISO_EMPRESAS, String.valueOf(modelo.getNumeroEmpresas()));
+        serviciosEspecialesCargados.clear();
+        serviciosEspecialesCargados.addAll(serviciosEspecialesActivos());
+        empresasCargadas = modelo.isMultiempresa() ? modelo.getNumeroEmpresas() : 0;
 
         asignarPermiso(PERMISO_REGIMEN, "SinIva".equals(modelo.getRegimen()) ? REGIMEN_SIMPLIFICADO : REGIMEN_COMUN);
         asignarPermiso(PERMISO_DIAS_ALERTA, String.valueOf(modelo.getDiasAntesAlertaBloqueo()));

@@ -20,14 +20,14 @@ import java.sql.SQLException;
 public class DaoEgresos {
 
     DaoGenerales daoGenerales = new DaoGenerales();
-    Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();    }
 
     public boolean agregarDetalleEgreso(ModeloDetalleEgreso detalleEgreso) {
         String sql = "INSERT INTO bdEgresoCods (egreso, codigo, descripcion, valor, "
                 + "subtotal, iva, porcentajeIva, factura, codigoUsuario) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setString(1, detalleEgreso.getEgreso());
             stmt.setString(2, detalleEgreso.getCodigo());
             stmt.setString(3, detalleEgreso.getDescripcion());

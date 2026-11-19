@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class DaoCuadreCaja {
 
     private static final Logger LOGGER = Logger.getLogger(DaoCuadreCaja.class.getName());
-    private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();    }
 
     public List<ModeloDocumentoCuadre> obtenerFacturas(String fecha, String usuario) {
         List<Object> params = new ArrayList<>();
@@ -201,8 +201,8 @@ public class DaoCuadreCaja {
     public boolean marcarDocumentosCuadrados(String documento, String fecha, String usuario) {
         boolean autoCommitPrevio = true;
         try {
-            autoCommitPrevio = conexion.getAutoCommit();
-            conexion.setAutoCommit(false);
+            autoCommitPrevio = conexion().getAutoCommit();
+            conexion().setAutoCommit(false);
 
             // Facturas (se excluye la factura informativa de plan separe, igual que en obtenerFacturas)
             actualizar("UPDATE bdDocumentos f "
@@ -242,19 +242,19 @@ public class DaoCuadreCaja {
                     + "WHERE b.activo = 1 AND DATE(b.fecha) = ?",
                     "b.usuario", usuario, "", documento, fecha);
 
-            conexion.commit();
+            conexion().commit();
             return true;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al marcar los documentos del cuadre " + documento, e);
             try {
-                conexion.rollback();
+                conexion().rollback();
             } catch (SQLException re) {
                 LOGGER.log(Level.SEVERE, "Error en rollback del cuadre " + documento, re);
             }
             return false;
         } finally {
             try {
-                conexion.setAutoCommit(autoCommitPrevio);
+                conexion().setAutoCommit(autoCommitPrevio);
             } catch (SQLException e) {
                 LOGGER.log(Level.WARNING, "Error restaurando autoCommit", e);
             }
@@ -267,7 +267,7 @@ public class DaoCuadreCaja {
         List<Object> params = new ArrayList<>(Arrays.asList(valores));
         String completo = sql + filtroUsuario(columnaUsuario, usuario, params) + condicionExtra;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(completo)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(completo)) {
             for (int i = 0; i < params.size(); i++) {
                 stmt.setObject(i + 1, params.get(i));
             }
@@ -289,7 +289,7 @@ public class DaoCuadreCaja {
 
     private List<Object[]> consultar(String sql, List<Object> params) {
         List<Object[]> filas = new ArrayList<>();
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             for (int i = 0; i < params.size(); i++) {
                 stmt.setObject(i + 1, params.get(i));
             }

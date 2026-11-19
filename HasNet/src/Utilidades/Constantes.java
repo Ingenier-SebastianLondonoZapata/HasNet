@@ -22,6 +22,15 @@ public class Constantes {
 
     public static final String BASE_DATOS_PRINCIPAL = "bdHasNet";
 
+    public static final String TABLA_USUARIOS = tablaPrincipal("bdUsuario");
+    public static final String TABLA_TERMINALES = tablaPrincipal("bdTerminales");
+    public static final String TABLA_EMPRESAS = tablaPrincipal("bdMultiEmpresa");
+    public static final String TABLA_USUARIOS_EMPRESA = tablaPrincipal("bdUsuarioEmpresa");
+
+    public static String tablaPrincipal(String tabla) {
+        return "`" + BASE_DATOS_PRINCIPAL + "`.`" + tabla + "`";
+    }
+
     public static final int CANAL_PRUEBAS = 37;
     public static final int CANAL_PRODUCCION = 37;
 

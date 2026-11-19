@@ -231,7 +231,9 @@ public final class VistaFactura extends javax.swing.JPanel {
 
         if (this.tipoProceso.equals(TipoDocumento.FACTURACION.getValor()) || this.tipoProceso.equals(TipoDocumento.MESA.getValor())) {
             actualizarTablaResoluciones();
-            tblComprobantes.setValueAt(true, 0, 2);
+            if (tblComprobantes.getRowCount() > 0) {
+                tblComprobantes.setValueAt(true, 0, 2);
+            }
         } else if (esNotaDebito()) {
             actualizarTablaResoluciones();
         }
@@ -5746,6 +5748,9 @@ public final class VistaFactura extends javax.swing.JPanel {
                 resolucion.getNumeracionDel(), resolucion.getNumeracionHasta(), resolucion.getTipoResolucion(), resolucion.getPrefijo(), resolucion.getConsecutivo(), resolucion.getDisenho()});
         }
 
+        if (tblComprobantes.getRowCount() == 0) {
+            return;
+        }
         tblComprobantes.setValueAt(true, 0, 2);
         actualizarResolucion(0);
     }

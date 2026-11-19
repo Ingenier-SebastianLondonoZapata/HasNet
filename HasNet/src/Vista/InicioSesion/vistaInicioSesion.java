@@ -1,346 +1,442 @@
 package Vista.InicioSesion;
 
 import Controlador.Alertas.ControladorAlertas;
-import Controlador.FacturacionElectronica.ControladorFacturacionElectronica;
 import Controlador.InicioSesion.controladorInicioSesion;
-import Modelo.Maestra.modeloConfiguracion;
-import Utilidades.Constantes;
-import clases.Instancias;
-import clases.metodosGenerales;
+import Modelo.Multiempresa.Empresa;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Arrays;
+import java.util.List;
+import java.util.prefs.Preferences;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.border.Border;
 
 public class vistaInicioSesion extends javax.swing.JFrame {
 
-    private final metodosGenerales metodos = new metodosGenerales();
-    private static final Instancias instancias = Instancias.getInstancias();
-    private final controladorInicioSesion controlador = new controladorInicioSesion();
-    private final ControladorFacturacionElectronica controladorFacturacion = new ControladorFacturacionElectronica();
-    private final ControladorAlertas alertas = new ControladorAlertas();
-    private Object[][] registroPago;
-    private static boolean datosCorrectos = false;
-    private static boolean sistemaBloqueadoPorPago = false; 
+    private static final Color COLOR_BORDE = new Color(189, 195, 199);
+    private static final Color COLOR_FOCO = new Color(93, 173, 226);
+    private static final Color COLOR_TEXTO_SECUNDARIO = new Color(110, 110, 110);
+    private static final char CARACTER_OCULTO = '•';
+    private static final String PREFERENCIA_EMPRESA = "ultimaEmpresa";
 
-    public vistaInicioSesion(boolean validarDatos) {
+    private static ServerSocket instanciaUnica;
+
+    private final controladorInicioSesion controlador = new controladorInicioSesion();
+    private final Preferences preferencias = Preferences.userNodeForPackage(vistaInicioSesion.class);
+    private Point inicioArrastre;
+
+    public vistaInicioSesion() {
         initComponents();
         Utilidades.IconoAplicacion.aplicar(this);
-
-        if (validarDatos) {
-            validarPermisosCliente();
-        }
-
+        aplicarEstilo();
+        cargarEmpresas();
+        pack();
         this.setLocationRelativeTo(null);
-        txtPassword.requestFocus();
+        txtUsuario.requestFocusInWindow();
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
+        pnlFondo = new javax.swing.JPanel();
+        btnCerrar = new javax.swing.JLabel();
+        lbLogo = new javax.swing.JLabel();
         lbTitulo = new javax.swing.JLabel();
-        lbGato = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        lbSubtitulo = new javax.swing.JLabel();
+        pnlEmpresa = new javax.swing.JPanel();
+        lbEmpresa = new javax.swing.JLabel();
+        cmbEmpresa = new javax.swing.JComboBox<>();
+        lbUsuario = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lbContrasena = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
+        chkMostrar = new javax.swing.JCheckBox();
+        lbBloqMayus = new javax.swing.JLabel();
+        btnIngresar = new javax.swing.JButton();
         lbProblemas = new javax.swing.JLabel();
-        btnSalida = new javax.swing.JLabel();
-        btnSalida1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("HS.NET");
-        setBackground(new java.awt.Color(51, 51, 51));
+        setTitle("HasNet - Iniciar sesión");
         setUndecorated(true);
         setResizable(false);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        pnlFondo.setBackground(new java.awt.Color(255, 255, 255));
 
-        lbTitulo.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnCerrar.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
+        btnCerrar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnCerrar.setText("×");
+        btnCerrar.setToolTipText("Salir");
+        btnCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCerrarMouseClicked(evt);
+            }
+        });
+
+        lbLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        lbTitulo.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
         lbTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTitulo.setText("La mejor aplicación para el control de tu negocio");
+        lbTitulo.setText("Bienvenido a HasNet");
 
-        lbGato.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbGato.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/InicioSesion/calculadora.png"))); // NOI18N
+        lbSubtitulo.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        lbSubtitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbSubtitulo.setText("Ingrese sus credenciales para continuar");
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        pnlEmpresa.setOpaque(false);
+        pnlEmpresa.setLayout(new java.awt.BorderLayout(0, 4));
 
-        txtUsuario.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        txtUsuario.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtUsuario.setText("ADMIN");
-        txtUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbEmpresa.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lbEmpresa.setText("Empresa");
+        pnlEmpresa.add(lbEmpresa, java.awt.BorderLayout.NORTH);
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("Usuario");
+        cmbEmpresa.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        cmbEmpresa.setPreferredSize(new java.awt.Dimension(340, 38));
+        pnlEmpresa.add(cmbEmpresa, java.awt.BorderLayout.CENTER);
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("Contraseña");
+        lbUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lbUsuario.setText("Usuario");
 
-        txtPassword.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txtPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPassword.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtUsuario.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUsuarioKeyPressed(evt);
+            }
+        });
+
+        lbContrasena.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lbContrasena.setText("Contraseña");
+
+        txtPassword.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPasswordKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtPasswordKeyReleased(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(113, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-                    .addComponent(txtUsuario))
-                .addContainerGap(133, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtUsuario)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        chkMostrar.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        chkMostrar.setText("Mostrar contraseña");
+        chkMostrar.setOpaque(false);
+        chkMostrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkMostrarActionPerformed(evt);
+            }
+        });
 
-        lbProblemas.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lbBloqMayus.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        lbBloqMayus.setForeground(new java.awt.Color(192, 57, 43));
+        lbBloqMayus.setText("Bloq Mayús activado");
+
+        btnIngresar.setBackground(new java.awt.Color(46, 204, 113));
+        btnIngresar.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        btnIngresar.setForeground(new java.awt.Color(255, 255, 255));
+        btnIngresar.setText("Ingresar");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarActionPerformed(evt);
+            }
+        });
+
+        lbProblemas.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        lbProblemas.setForeground(new java.awt.Color(93, 173, 226));
         lbProblemas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbProblemas.setText("¿Tienes problemas para iniciar sesion? Click aquí.");
+        lbProblemas.setText("¿Problemas para iniciar sesión?");
         lbProblemas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lbProblemasMouseClicked(evt);
             }
         });
 
-        btnSalida.setFont(new java.awt.Font("Arial Black", 0, 24)); // NOI18N
-        btnSalida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnSalida.setText("X");
-        btnSalida.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSalidaMouseClicked(evt);
-            }
-        });
-
-        btnSalida1.setFont(new java.awt.Font("Arial Black", 0, 30)); // NOI18N
-        btnSalida1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnSalida1.setText("<");
-        btnSalida1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSalida1MouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbGato, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(12, 12, 12))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(lbProblemas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnSalida1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout pnlFondoLayout = new javax.swing.GroupLayout(pnlFondo);
+        pnlFondo.setLayout(pnlFondoLayout);
+        pnlFondoLayout.setHorizontalGroup(
+            pnlFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFondoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8))
+            .addGroup(pnlFondoLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(pnlFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbSubtitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlFondoLayout.createSequentialGroup()
+                        .addComponent(chkMostrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSalida, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(lbBloqMayus))
+                    .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbProblemas, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnSalida1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSalida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(10, 10, 10)
-                .addComponent(lbTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbGato, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbProblemas, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+        pnlFondoLayout.setVerticalGroup(
+            pnlFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFondoLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lbTitulo)
+                .addGap(4, 4, 4)
+                .addComponent(lbSubtitulo)
+                .addGap(24, 24, 24)
+                .addComponent(pnlEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbUsuario)
+                .addGap(4, 4, 4)
+                .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lbContrasena)
+                .addGap(4, 4, 4)
+                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
+                .addGroup(pnlFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkMostrar)
+                    .addComponent(lbBloqMayus))
+                .addGap(20, 20, 20)
+                .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(lbProblemas)
+                .addGap(24, 24, 24))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlFondo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+            .addComponent(pnlFondo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSalidaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalidaMouseClicked
+    private void btnCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarMouseClicked
         System.exit(0);
-    }//GEN-LAST:event_btnSalidaMouseClicked
+    }//GEN-LAST:event_btnCerrarMouseClicked
 
     private void lbProblemasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbProblemasMouseClicked
         vistaProblemasInicioSesion problemasInicio = new vistaProblemasInicioSesion();
         problemasInicio.setVisible(true);
     }//GEN-LAST:event_lbProblemasMouseClicked
 
-    private void txtPasswordKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyReleased
+    private void txtUsuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            boolean datosCorrectos = controlador.validarIniciarSesion(txtUsuario.getText(), txtPassword.getText());
-            if (datosCorrectos) {
-                this.dispose();
-            }
+            txtPassword.requestFocusInWindow();
         }
+    }//GEN-LAST:event_txtUsuarioKeyPressed
+
+    private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            ingresar();
+        }
+    }//GEN-LAST:event_txtPasswordKeyPressed
+
+    private void txtPasswordKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyReleased
+        actualizarAvisoMayusculas();
     }//GEN-LAST:event_txtPasswordKeyReleased
 
-    private void btnSalida1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalida1MouseClicked
-        this.dispose();
-        instancias.getSql().obtenerConexion(Constantes.BASE_DATOS_PRINCIPAL, true);
-        vistaInicioSesionMultiempresa vistaInicio = new vistaInicioSesionMultiempresa();
-        vistaInicio.setLocationRelativeTo(null);
-        vistaInicio.setVisible(true);
-    }//GEN-LAST:event_btnSalida1MouseClicked
+    private void chkMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMostrarActionPerformed
+        txtPassword.setEchoChar(chkMostrar.isSelected() ? (char) 0 : CARACTER_OCULTO);
+        txtPassword.requestFocusInWindow();
+    }//GEN-LAST:event_chkMostrarActionPerformed
 
-    private void validarPermisosCliente() {
-        String identificadorCliente = Constantes.leerIdentificadorCliente();
-        if (identificadorCliente.isEmpty()) {
-            alertas.alertFail("El sistema no se pudo cargar");
-            System.exit(0);
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+        ingresar();
+    }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void ingresar() {
+        if (!btnIngresar.isEnabled()) {
+            return;
         }
-
-        modeloConfiguracion modelo = instancias.getSqlPagos().obtenerConfiguracionCliente(identificadorCliente);
-        if (null != modelo.getNit() || null != modelo.getNombre()) {
-            instancias.setConfiguracionCliente(modelo);
-            instancias.setEsPruebasFacturacionElectronica(modelo.isPruebasFacturacion());
-            if (modelo.isPruebasFacturacion()) {
-                instancias.setCanalFacturacion(Constantes.CANAL_PRUEBAS);
-            } else {
-                instancias.setCanalFacturacion(Constantes.CANAL_PRODUCCION);
-            }
-
-            if (validacionesPagos(identificadorCliente)) {
-                datosCorrectos = true;
-            }
-
-            if (modelo.isFacturaElectronica() && !sistemaBloqueadoPorPago) {
-                generarToken(registroPago[0][1].toString(), registroPago[0][8].toString());
-            }
-        } else {
-            alertas.alert("Tenemos problemas al consultar la información de la empresa, si el problema persiste comunicarse directamente con el proveedor.");
-            System.exit(0);
-        }
-    }
-
-    private boolean validacionesPagos(String identificadorCliente) {
-        this.registroPago = instancias.getSqlPagos().obtenerRegistroPago(identificadorCliente);
-        String fechaActual = metodos.fecha(instancias.getSqlPagos().obtenerFecha());
-        String fechaLimite = registroPago[0][3].toString();
-        int anterioridad = Integer.parseInt(registroPago[0][4].toString());
-        int despues = Integer.parseInt(registroPago[0][5].toString());
-        long diferenciaDias = metodos.restarFecha(fechaLimite, fechaActual) * -1;
-
-        if (diferenciaDias < 0) {
-            if ((diferenciaDias * -1) > despues) {
-                new vistaBloqueoPrograma().setVisible(true);
-                sistemaBloqueadoPorPago = true;
-                return false;
-            } else {
-                vistaCuotaPendiente vistaBloqueo = new vistaCuotaPendiente("Recuerde que la fecha limite para el pago fue el " + fechaLimite
-                        + " más " + despues + " días de gabela para que pueda realizar el pago.");
-                vistaBloqueo.setVisible(true);
-                return false;
-            }
-
-        } else if (diferenciaDias <= anterioridad) {
-            vistaCuotaPendiente vistaBloqueo = new vistaCuotaPendiente("Recuerde que la fecha limite para el pago es el " + fechaLimite);
-            vistaBloqueo.setVisible(true);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean generarToken(String nitEmisor, String tipoDocumento) {
-        boolean tokenGenerado = false;
-
-        System.out.println("nitEmisor: " + nitEmisor);
-        System.out.println("tipoDocumento: " + tipoDocumento);
+        btnIngresar.setEnabled(false);
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        char[] contrasena = txtPassword.getPassword();
         try {
-            tokenGenerado = controladorFacturacion.generarToken(nitEmisor, tipoDocumento);
-            if (!tokenGenerado) {
-                System.out.println("Hubo un error al generar el token de facturación electrónica");
+            Empresa empresa = pnlEmpresa.isVisible() ? (Empresa) cmbEmpresa.getSelectedItem() : null;
+            if (controlador.validarIniciarSesion(txtUsuario.getText(), contrasena, empresa)) {
+                recordarEmpresa(empresa);
+                txtPassword.setText("");
+                dispose();
+                return;
             }
-        } catch (Exception ex) {
-            Logger.getLogger(controladorInicioSesion.class.getName()).log(Level.SEVERE, null, ex);
+            txtPassword.setText("");
+            txtPassword.requestFocusInWindow();
+        } finally {
+            Arrays.fill(contrasena, ' ');
+            setCursor(Cursor.getDefaultCursor());
+            btnIngresar.setEnabled(true);
         }
-
-        return tokenGenerado;
     }
 
-    public static void main(String args[]) {
-        // Separador decimal "," y separador de miles "." en todo el sistema
-        java.util.Locale.setDefault(new java.util.Locale("es", "CO"));
+    private void cargarEmpresas() {
+        List<Empresa> empresas = controlador.empresasDisponibles();
+        DefaultComboBoxModel<Empresa> modelo = new DefaultComboBoxModel<>();
+        String ultima = preferencias.get(PREFERENCIA_EMPRESA, "");
+        Empresa seleccionada = null;
+        for (Empresa empresa : empresas) {
+            modelo.addElement(empresa);
+            if (empresa.getId().equals(ultima)) {
+                seleccionada = empresa;
+            }
+        }
+        cmbEmpresa.setModel(modelo);
+        if (seleccionada != null) {
+            cmbEmpresa.setSelectedItem(seleccionada);
+        }
+        pnlEmpresa.setVisible(controlador.multiempresaHabilitada() && empresas.size() > 1);
+    }
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
+    private void recordarEmpresa(Empresa empresa) {
+        try {
+            preferencias.put(PREFERENCIA_EMPRESA, empresa == null ? Empresa.ID_PRINCIPAL : empresa.getId());
+        } catch (IllegalStateException | SecurityException ex) {
+            java.util.logging.Logger.getLogger(vistaInicioSesion.class.getName()).log(java.util.logging.Level.FINE, "No se pudo recordar la empresa", ex);
+        }
+    }
 
-            public void run() {
-                try {
-                    ServerSocket SERVER_SOCKETE = new ServerSocket(1779);
-                } catch (IOException x) {
-                    ControladorAlertas.alertFail("EL SISTEMA YA SE ENCUENTRA EN EJECUCIÓN");
-                    System.exit(0);
+    private void aplicarEstilo() {
+        pnlFondo.setBorder(BorderFactory.createLineBorder(COLOR_BORDE));
+        pnlEmpresa.setBorder(BorderFactory.createEmptyBorder(0, 0, 12, 0));
+        lbSubtitulo.setForeground(COLOR_TEXTO_SECUNDARIO);
+        btnCerrar.setForeground(COLOR_TEXTO_SECUNDARIO);
+        btnCerrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lbProblemas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnIngresar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnIngresar.setFocusPainted(false);
+        btnIngresar.setBorderPainted(false);
+        btnIngresar.setOpaque(true);
+        txtPassword.setEchoChar(CARACTER_OCULTO);
+        lbBloqMayus.setVisible(false);
+        estiloCampo(txtUsuario);
+        estiloCampo(txtPassword);
+
+        java.net.URL imagen = getClass().getResource("/imagenes/InicioSesion/calculadora.png");
+        if (imagen != null) {
+            lbLogo.setIcon(new ImageIcon(new ImageIcon(imagen).getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH)));
+        }
+
+        MouseAdapter arrastre = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                inicioArrastre = e.getPoint();
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (inicioArrastre != null) {
+                    Point actual = getLocation();
+                    setLocation(actual.x + e.getX() - inicioArrastre.x, actual.y + e.getY() - inicioArrastre.y);
                 }
+            }
+        };
+        pnlFondo.addMouseListener(arrastre);
+        pnlFondo.addMouseMotionListener(arrastre);
+    }
 
-                vistaInicioSesion vistaInicio = new vistaInicioSesion(true);
-
-                if (datosCorrectos) {
-                    vistaInicioSesionMultiempresa vistaInicioMultiEmpresas = new vistaInicioSesionMultiempresa();
-                    vistaInicioMultiEmpresas.setLocationRelativeTo(null);
-                    vistaInicioMultiEmpresas.setVisible(true);
+    private void estiloCampo(JComponent campo) {
+        Border relleno = BorderFactory.createEmptyBorder(4, 10, 4, 10);
+        campo.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(COLOR_BORDE), relleno));
+        campo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                campo.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(COLOR_FOCO, 2),
+                        BorderFactory.createEmptyBorder(3, 9, 3, 9)));
+                if (campo == txtPassword) {
+                    actualizarAvisoMayusculas();
                 }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                campo.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(COLOR_BORDE), relleno));
             }
         });
     }
 
+    private void actualizarAvisoMayusculas() {
+        try {
+            lbBloqMayus.setVisible(Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK));
+        } catch (UnsupportedOperationException ex) {
+            lbBloqMayus.setVisible(false);
+        }
+    }
+
+    public static void mostrar() {
+        vistaInicioSesion vista = new vistaInicioSesion();
+        vista.setVisible(true);
+    }
+
+    public static void iniciarAplicacion() {
+        controladorInicioSesion controlador = new controladorInicioSesion();
+        switch (controlador.validarPermisosCliente()) {
+            case ERROR:
+                ControladorAlertas.alertFail(controlador.getMensajeArranque());
+                System.exit(0);
+                break;
+            case BLOQUEADO:
+                new vistaBloqueoPrograma().setVisible(true);
+                break;
+            case CUOTA_PENDIENTE:
+                new vistaCuotaPendiente(controlador.getMensajeArranque()).setVisible(true);
+                break;
+            default:
+                mostrar();
+        }
+    }
+
+    public static void main(String args[]) {
+        java.util.Locale.setDefault(new java.util.Locale("es", "CO"));
+
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                instanciaUnica = new ServerSocket(1779);
+            } catch (IOException x) {
+                ControladorAlertas.alertFail("EL SISTEMA YA SE ENCUENTRA EN EJECUCIÓN");
+                System.exit(0);
+            }
+            iniciarAplicacion();
+        });
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel btnSalida;
-    private javax.swing.JLabel btnSalida1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JLabel lbGato;
+    private javax.swing.JLabel btnCerrar;
+    private javax.swing.JButton btnIngresar;
+    private javax.swing.JCheckBox chkMostrar;
+    private javax.swing.JComboBox<Modelo.Multiempresa.Empresa> cmbEmpresa;
+    private javax.swing.JLabel lbBloqMayus;
+    private javax.swing.JLabel lbContrasena;
+    private javax.swing.JLabel lbEmpresa;
+    private javax.swing.JLabel lbLogo;
     private javax.swing.JLabel lbProblemas;
+    private javax.swing.JLabel lbSubtitulo;
     private javax.swing.JLabel lbTitulo;
+    private javax.swing.JLabel lbUsuario;
+    private javax.swing.JPanel pnlEmpresa;
+    private javax.swing.JPanel pnlFondo;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables

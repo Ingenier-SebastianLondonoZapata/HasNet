@@ -21,12 +21,14 @@ import java.util.List;
  */
 public class DaoGenerales {
 
-    Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {
+        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    }
 
     public Object[][] obtenerDatosTabla(String[] columnas, String sql) {
         List<Object[]> filas = new ArrayList<>();
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Object[] fila = new Object[columnas.length];
                 for (int i = 0; i < columnas.length; i++) {

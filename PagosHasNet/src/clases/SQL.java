@@ -161,13 +161,13 @@ public class SQL {
         String instruccion_sql = "select regimen, nit, nombre, telefono, fechaInicio, diasAntesAlertaBloqueo,"
                 + "diasDespuesGabelaBloqueo, numeroFEDisponibles, congeladas, medico, veterinaria, parqueadero, ordenServicio, creditos, separe, pedido, agenda, restaurante, "
                 + "recordatorios, laboratorio, servicioAutomotor, oftalmologia, inventarioBodegas, productosSerial, facturacionLote, "
-                + "facturaElectronica,  pruebasFacturacion from bdClientes where idCliente = ?";
+                + "facturaElectronica,  pruebasFacturacion, multiempresa, numeroEmpresas from bdClientes where idCliente = ?";
         String[] colName = {"regimen", "nit", "nombre", "telefono", "fechaInicio", "diasAntesAlertaBloqueo", "diasDespuesGabelaBloqueo",
             "numeroFEDisponibles", "congeladas", "medico", "veterinaria", "parqueadero", "ordenServicio", "creditos", "separe", "pedido", "agenda", "restaurante", "recordatorios",
             "laboratorio", "servicioAutomotor", "oftalmologia", "inventarioBodegas", "productosSerial", "facturacionLote",
-            "facturaElectronica", "pruebasFacturacion"};
+            "facturaElectronica", "pruebasFacturacion", "multiempresa", "numeroEmpresas"};
         boolean[] cadena = {true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false
+            false, false, false, false, false, false, false, false, false, false, true
         };
         return modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql, idCliente));
     }
@@ -176,7 +176,7 @@ public class SQL {
         String instruccion_sql = "update bdClientes set regimen=?, nit=?, nombre=?, telefono=?, fechaInicio=?, "
                 + "diasAntesAlertaBloqueo=?, diasDespuesGabelaBloqueo=?, congeladas=?, medico=?, veterinaria=?, parqueadero=?, ordenServicio=?, creditos=?, "
                 + "separe=?, pedido=?, agenda=?, restaurante=?, recordatorios=?, laboratorio=?, servicioAutomotor=?, oftalmologia=?, inventarioBodegas=?, "
-                + "productosSerial=?, facturacionLote=?, facturaElectronica=?, pruebasFacturacion=? where idCliente = ?";
+                + "productosSerial=?, facturacionLote=?, facturaElectronica=?, pruebasFacturacion=?, multiempresa=?, numeroEmpresas=? where idCliente = ?";
         Object[] datos = modelo.pasarDatosConfiguracion(modelo);
         Object[] datosConCliente = Arrays.copyOf(datos, datos.length + 1);
         datosConCliente[datos.length] = idCliente;

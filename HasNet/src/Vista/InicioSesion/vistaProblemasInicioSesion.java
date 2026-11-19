@@ -189,11 +189,41 @@ public class vistaProblemasInicioSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_tblUsuariosMouseClicked
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
+        if (!confirmarIdentidad(idUsuarioSeleccionado)) {
+            return;
+        }
         instancias.getSql().usuarioActivo("OFF", "", idUsuarioSeleccionado);
         alertas.alertSuccess("Estado actualizado");
         cargarUsuariosLogeados();
         reiniciarCampos();
     }//GEN-LAST:event_btnCambiarActionPerformed
+
+    private boolean confirmarIdentidad(String usuario) {
+        long minutos = Utilidades.Seguridad.ControlIntentosSesion.minutosBloqueoRestantes(usuario);
+        if (minutos > 0) {
+            alertas.alertFail("Demasiados intentos fallidos. Intente de nuevo en " + minutos + " minuto(s)");
+            return false;
+        }
+        javax.swing.JPasswordField campo = new javax.swing.JPasswordField(18);
+        int opcion = javax.swing.JOptionPane.showConfirmDialog(this, new Object[]{"Contraseña del usuario " + usuario + ":", campo},
+                "Confirmar identidad", javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
+        char[] contrasena = campo.getPassword();
+        try {
+            if (opcion != javax.swing.JOptionPane.OK_OPTION) {
+                return false;
+            }
+            Modelo.Usuarios.ModeloUsuario modelo = new Dao.Configuraciones.DaoUsuarios().consultar(usuario);
+            if (modelo == null || !Utilidades.Seguridad.ContrasenasSeguras.verificar(contrasena, modelo.getContra())) {
+                Utilidades.Seguridad.ControlIntentosSesion.registrarFallo(usuario);
+                alertas.alertFail("Contraseña incorrecta");
+                return false;
+            }
+            Utilidades.Seguridad.ControlIntentosSesion.registrarExito(usuario);
+            return true;
+        } finally {
+            java.util.Arrays.fill(contrasena, ' ');
+        }
+    }
 
     private void reiniciarCampos() {
         txtNombre.setText("");

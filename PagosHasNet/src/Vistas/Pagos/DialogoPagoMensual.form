@@ -381,6 +381,16 @@
                               <Component id="lbValorTerminales" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
+                              <Component id="lbEspeciales" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="20" pref="20" max="32767" attributes="0"/>
+                              <Component id="lbValorEspeciales" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="lbEmpresas" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="20" pref="20" max="32767" attributes="0"/>
+                              <Component id="lbValorEmpresas" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
                               <Component id="chkPlan" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="20" pref="20" max="32767" attributes="0"/>
                               <Component id="lbValorPlan" min="-2" max="-2" attributes="0"/>
@@ -411,6 +421,16 @@
                           <Component id="lbTerminalesPagar" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spnTerminales" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lbValorTerminales" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lbEspeciales" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbValorEspeciales" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lbEmpresas" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbValorEmpresas" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -497,6 +517,38 @@
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbValorTerminales">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Century Gothic" size="15" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="$ 0"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbEspeciales">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Century Gothic" size="15" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="M&#xf3;dulos y acciones especiales"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbValorEspeciales">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Century Gothic" size="15" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="$ 0"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbEmpresas">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Century Gothic" size="15" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Empresas adicionales"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbValorEmpresas">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Century Gothic" size="15" style="1"/>

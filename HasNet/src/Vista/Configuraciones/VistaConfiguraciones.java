@@ -188,6 +188,19 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         cargarPrefijos();
         cargarTablaResoluciones();
         inicializarUsuarios();
+        inicializarMultiempresas();
+    }
+
+    private void inicializarMultiempresas() {
+        Modelo.Maestra.ConfiguracionSistema configuracion = instancias.getConfiguraciones();
+        boolean habilitado = configuracion != null && configuracion.isMultiempresa();
+        pnlMultiempresas.removeAll();
+        pnlMultiempresas.setVisible(habilitado);
+        if (habilitado) {
+            pnlMultiempresas.setOpaque(false);
+            pnlMultiempresas.setLayout(new java.awt.BorderLayout());
+            pnlMultiempresas.add(new Vista.Configuraciones.Multiempresa.PanelMultiempresas(), java.awt.BorderLayout.CENTER);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -217,9 +230,9 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         jScrollPane21 = new javax.swing.JScrollPane();
         tblConfiguraciones = new javax.swing.JTable();
         jScrollPane22 = new javax.swing.JScrollPane();
+        tblConfiguraciones1 = new javax.swing.JTable();
         lbAyudaConfiguraciones = new javax.swing.JLabel();
         lbAyudaConfiguraciones1 = new javax.swing.JLabel();
-        tblConfiguraciones1 = new javax.swing.JTable();
         jScrollPane23 = new javax.swing.JScrollPane();
         tblResponsabilidadesFiscales = new javax.swing.JTable();
         pnlResoluciones = new javax.swing.JPanel();
@@ -240,6 +253,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         pnlPrefijos = new javax.swing.JPanel();
         jScrollPane24 = new javax.swing.JScrollPane();
         tblPrefijos = new javax.swing.JTable();
+        pnlMultiempresas = new javax.swing.JPanel();
         pnlImpresiones = new javax.swing.JPanel();
         pnlImpresionesGrupo = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -562,19 +576,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         tblConfiguraciones1.getTableHeader().setReorderingAllowed(false);
         jScrollPane22.setViewportView(tblConfiguraciones1);
 
-        tblResponsabilidadesFiscales.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        tblResponsabilidadesFiscales.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"No aplica", null}
-            },
-            new String [] {
-                "Datos de la empresa", "Valor"
-            }
-        ));
-        tblResponsabilidadesFiscales.setRowHeight(24);
-        tblResponsabilidadesFiscales.getTableHeader().setReorderingAllowed(false);
-        jScrollPane23.setViewportView(tblResponsabilidadesFiscales);
-
         lbAyudaConfiguraciones.setBackground(new java.awt.Color(245, 248, 252));
         lbAyudaConfiguraciones.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         lbAyudaConfiguraciones.setForeground(new java.awt.Color(44, 62, 80));
@@ -590,6 +591,19 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         lbAyudaConfiguraciones1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         lbAyudaConfiguraciones1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 214, 224)));
         lbAyudaConfiguraciones1.setOpaque(true);
+
+        tblResponsabilidadesFiscales.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        tblResponsabilidadesFiscales.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"No aplica", null}
+            },
+            new String [] {
+                "Datos de la empresa", "Valor"
+            }
+        ));
+        tblResponsabilidadesFiscales.setRowHeight(24);
+        tblResponsabilidadesFiscales.getTableHeader().setReorderingAllowed(false);
+        jScrollPane23.setViewportView(tblResponsabilidadesFiscales);
 
         javax.swing.GroupLayout pnlDatosEmpresaLayout = new javax.swing.GroupLayout(pnlDatosEmpresa);
         pnlDatosEmpresa.setLayout(pnlDatosEmpresaLayout);
@@ -629,7 +643,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane19, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(5, 5, 5)
                 .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane22, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                    .addComponent(jScrollPane22, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
                     .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlDatosEmpresaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -711,19 +725,22 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         pnlBodegasLayout.setHorizontalGroup(
             pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBodegasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlBodegasLayout.createSequentialGroup()
-                        .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(btnModificarBodega)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCambiarEstadoBodega))
-                    .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(pnlBodegasLayout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cmbBodegas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(pnlBodegasLayout.createSequentialGroup()
+                                .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(pnlBodegasLayout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cmbBodegas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(86, 86, 86)
+                        .addComponent(btnCambiarEstadoBodega)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlBodegasLayout.setVerticalGroup(
@@ -738,9 +755,10 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlBodegasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnModificarBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCambiarEstadoBodega, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -825,7 +843,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregarResolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -835,7 +853,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         );
 
         pnlPrefijos.setBackground(new java.awt.Color(255, 255, 255));
-        pnlPrefijos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Prefijos", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 14))); // NOI18N
+        pnlPrefijos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Prefijos", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 14))); // NOI18N
         pnlPrefijos.setToolTipText("");
 
         tblPrefijos.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
@@ -868,7 +886,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
             pnlPrefijosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPrefijosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane24, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                .addComponent(jScrollPane24, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlPrefijosLayout.setVerticalGroup(
@@ -877,6 +895,17 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 .addGap(5, 5, 5)
                 .addComponent(jScrollPane24, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
+        );
+
+        javax.swing.GroupLayout pnlMultiempresasLayout = new javax.swing.GroupLayout(pnlMultiempresas);
+        pnlMultiempresas.setLayout(pnlMultiempresasLayout);
+        pnlMultiempresasLayout.setHorizontalGroup(
+            pnlMultiempresasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        pnlMultiempresasLayout.setVerticalGroup(
+            pnlMultiempresasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout pnlResolucionesLayout = new javax.swing.GroupLayout(pnlResoluciones);
@@ -890,6 +919,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                         .addComponent(pnlBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pnlPrefijos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlMultiempresas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -900,9 +931,11 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlResolucionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pnlBodegas, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlPrefijos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnlResolucionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlResolucionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(pnlBodegas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pnlPrefijos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlMultiempresas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -5448,8 +5481,9 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         txtUsuario.setText(modelo.getUsuario());
         txtUsuario.setEditable(false);
         txtNombre.setText(modelo.getNombre());
-        txtContra.setText(modelo.getContra());
-        txtContra2.setText(modelo.getContra());
+        txtContra.setText("");
+        txtContra2.setText("");
+        txtContra.setToolTipText("Deje la contraseña vacía para conservar la actual");
         for (PermisoUsuario permiso : PermisoUsuario.values()) {
             setPermiso(permiso, modelo.tienePermiso(permiso));
         }
@@ -5493,27 +5527,44 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     }
 
     private boolean validarDatosUsuario() {
-        Object[] campos = {txtNombre, txtUsuario, txtContra, txtContra2};
+        boolean nuevo = usuarioCargado == null;
+        Object[] campos = nuevo ? new Object[]{txtNombre, txtUsuario, txtContra, txtContra2} : new Object[]{txtNombre, txtUsuario};
         String faltantes = metodos.camposVacios(campos);
 
         if (!faltantes.equals("")) {
             ControladorAlertas.alert("No puede continuar, faltan los siguientes campos: " + faltantes);
             return false;
         }
-        if (!String.valueOf(txtContra.getPassword()).equals(String.valueOf(txtContra2.getPassword()))) {
-            ControladorAlertas.alert("Las contraseñas no coinciden");
-            txtContra.requestFocus();
-            return false;
+        char[] contra = txtContra.getPassword();
+        char[] confirmacion = txtContra2.getPassword();
+        try {
+            if (!java.util.Arrays.equals(contra, confirmacion)) {
+                ControladorAlertas.alert("Las contraseñas no coinciden");
+                txtContra.requestFocus();
+                return false;
+            }
+            if (contra.length > 0 && contra.length < LONGITUD_MINIMA_CONTRASENA) {
+                ControladorAlertas.alert("La contraseña debe tener al menos " + LONGITUD_MINIMA_CONTRASENA + " caracteres");
+                txtContra.requestFocus();
+                return false;
+            }
+        } finally {
+            java.util.Arrays.fill(contra, ' ');
+            java.util.Arrays.fill(confirmacion, ' ');
         }
         return true;
     }
+
+    private static final int LONGITUD_MINIMA_CONTRASENA = 4;
 
     private ModeloUsuario capturarUsuario() {
         detenerEdicionPermisos();
         ModeloUsuario usuario = new ModeloUsuario();
         usuario.setUsuario(txtUsuario.getText().trim());
         usuario.setNombre(txtNombre.getText().trim());
-        usuario.setContra(String.valueOf(txtContra.getPassword()));
+        char[] contra = txtContra.getPassword();
+        usuario.setContra(contra.length == 0 ? null : Utilidades.Seguridad.ContrasenasSeguras.generarHash(contra));
+        java.util.Arrays.fill(contra, ' ');
         for (PermisoUsuario permiso : PermisoUsuario.values()) {
             usuario.setPermiso(permiso, getPermiso(permiso));
         }
@@ -6705,7 +6756,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
         aplicarEstadoDescuentoMaximo();
 
         llenarTablaServicios();
-        instancias.getSql().usuarioActivo("ON", instancias.getTerminal());
     }
 
     private String actoQuirurgicoCod(String dato) {
@@ -8117,8 +8167,6 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane20;
     private javax.swing.JScrollPane jScrollPane21;
     private javax.swing.JScrollPane jScrollPane22;
-    private javax.swing.JLabel lbAyudaConfiguraciones;
-    private javax.swing.JLabel lbAyudaConfiguraciones1;
     private javax.swing.JScrollPane jScrollPane23;
     private javax.swing.JScrollPane jScrollPane24;
     private javax.swing.JScrollPane jScrollPane25;
@@ -8127,6 +8175,8 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JLabel lbAyudaConfiguraciones;
+    private javax.swing.JLabel lbAyudaConfiguraciones1;
     private javax.swing.JLabel lbCelular10;
     private javax.swing.JLabel lbCelular11;
     private javax.swing.JLabel lbCelular13;
@@ -8168,6 +8218,7 @@ public class VistaConfiguraciones extends javax.swing.JInternalFrame {
     private javax.swing.JPanel pnlLaboratorio;
     private javax.swing.JPanel pnlLogo;
     private javax.swing.JPanel pnlMedico;
+    private javax.swing.JPanel pnlMultiempresas;
     private javax.swing.JPanel pnlOrdenMedica;
     private javax.swing.JPanel pnlParqueadero;
     private javax.swing.JPanel pnlPermisosVentas;

@@ -2650,6 +2650,9 @@ public class VistaIngreso extends javax.swing.JPanel implements ReceptorDetallad
                 resolucion.getNumeracionDel(), resolucion.getNumeracionHasta(), resolucion.getTipoResolucion(), resolucion.getPrefijo(), resolucion.getConsecutivo(), resolucion.getDisenho()});
         }
 
+        if (tblComprobantes.getRowCount() == 0) {
+            return;
+        }
         tblComprobantes.setValueAt(true, 0, 2);
         actualizarConsecutivo(0);
     }

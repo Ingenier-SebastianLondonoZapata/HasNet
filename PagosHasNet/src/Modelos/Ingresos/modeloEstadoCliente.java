@@ -15,6 +15,37 @@ public class modeloEstadoCliente {
     private Integer idPlanMensual;
     private Integer idPlanMensualSiguiente;
     private int diasGabela;
+    private java.util.List<String> serviciosEspeciales = new java.util.ArrayList<>();
+    private int empresasAdicionales;
+    private boolean facturacionElectronica;
+
+    public java.util.List<String> getServiciosEspeciales() {
+        return serviciosEspeciales;
+    }
+
+    public void setServiciosEspeciales(java.util.List<String> serviciosEspeciales) {
+        this.serviciosEspeciales = serviciosEspeciales == null ? new java.util.ArrayList<>() : serviciosEspeciales;
+    }
+
+    public int getNumeroServiciosEspeciales() {
+        return serviciosEspeciales.size();
+    }
+
+    public int getEmpresasAdicionales() {
+        return empresasAdicionales;
+    }
+
+    public void setEmpresasAdicionales(int empresasAdicionales) {
+        this.empresasAdicionales = Math.max(0, empresasAdicionales);
+    }
+
+    public boolean isFacturacionElectronica() {
+        return facturacionElectronica;
+    }
+
+    public void setFacturacionElectronica(boolean facturacionElectronica) {
+        this.facturacionElectronica = facturacionElectronica;
+    }
 
     public boolean isPlanMensualVigente(LocalDate hoy) {
         return idPlanMensual != null && vigenciaFEMensuales != null && !vigenciaFEMensuales.isBefore(hoy);

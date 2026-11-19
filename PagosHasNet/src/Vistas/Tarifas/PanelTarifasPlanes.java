@@ -164,6 +164,9 @@ public class PanelTarifasPlanes extends javax.swing.JPanel {
             tblTarifas.getColumnModel().getColumn(0).setMinWidth(0);
             tblTarifas.getColumnModel().getColumn(0).setPreferredWidth(0);
             tblTarifas.getColumnModel().getColumn(0).setMaxWidth(0);
+            tblTarifas.getColumnModel().getColumn(2).setMinWidth(180);
+            tblTarifas.getColumnModel().getColumn(2).setPreferredWidth(180);
+            tblTarifas.getColumnModel().getColumn(2).setMaxWidth(180);
         }
 
         btnGuardarTarifas.setBackground(new java.awt.Color(46, 204, 113));
@@ -192,8 +195,8 @@ public class PanelTarifasPlanes extends javax.swing.JPanel {
             pnlTarifasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlTarifasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnGuardarTarifas, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -345,7 +348,7 @@ public class PanelTarifasPlanes extends javax.swing.JPanel {
                     .addComponent(lbPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -385,7 +388,7 @@ public class PanelTarifasPlanes extends javax.swing.JPanel {
             pnlInformacionLegalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlInformacionLegalLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addComponent(jScrollPane3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGuardarInformacionLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())

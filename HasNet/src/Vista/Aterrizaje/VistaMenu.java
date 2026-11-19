@@ -345,7 +345,8 @@ public class VistaMenu extends javax.swing.JFrame {
     }
 
     public void actualizarUsuario(String usuario) {
-        setTitle("HasNet - " + metodosGenerales.fecha() + " - " + usuario);
+        Modelo.Multiempresa.Empresa empresa = clases.Instancias.getInstancias().getEmpresaActual();
+        setTitle("HasNet - " + metodosGenerales.fecha() + " - " + usuario + (empresa == null ? "" : " - " + empresa.getNombre()));
     }
 
     private void cerrarAplicacion() {
@@ -356,12 +357,7 @@ public class VistaMenu extends javax.swing.JFrame {
             return;
         }
 
-        try {
-            instancias.getSql().usuarioActivo("OFF", "");
-        } catch (Exception e) {
-            Logger.getLogger(VistaMenu.class.getName()).log(Level.SEVERE, "No se pudo cerrar la sesión del usuario", e);
-        }
-
+        Utilidades.Seguridad.SesionUsuario.cerrar();
         System.exit(0);
     }
 
@@ -1034,8 +1030,12 @@ public class VistaMenu extends javax.swing.JFrame {
 
     private void cerrarSesion() {
         if (ControladorAlertas.option("¿Desea continuar?")) {
+            Utilidades.Seguridad.SesionUsuario.cerrar();
+            Utilidades.Seguridad.ControlSesionesTerminal.liberar();
+            instancias.setUsuario(null);
+            instancias.setTokenEmisor(null);
             this.dispose();
-            vistaInicioSesion vistaInicioSesion = new vistaInicioSesion(false);
+            vistaInicioSesion vistaInicioSesion = new vistaInicioSesion();
             vistaInicioSesion.setLocationRelativeTo(null);
             vistaInicioSesion.setVisible(true);
         }

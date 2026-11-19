@@ -108,9 +108,7 @@ public class vistaCuotaPendiente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarPermisosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPermisosActionPerformed
-        vistaInicioSesionMultiempresa vistaInicio = new vistaInicioSesionMultiempresa();
-        vistaInicio.setLocationRelativeTo(null);
-        vistaInicio.setVisible(true);
+        vistaInicioSesion.mostrar();
         this.dispose();
     }//GEN-LAST:event_btnGuardarPermisosActionPerformed
 

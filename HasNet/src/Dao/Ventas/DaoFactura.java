@@ -28,12 +28,12 @@ public class DaoFactura {
 
     private static final Logger LOGGER = Logger.getLogger(DaoFactura.class.getName());
     private final DaoGenerales daoGenerales = new DaoGenerales();
-    private final Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();    }
 
     public String obtenerTurnoFactura(String factura) {
         String sql = "SELECT d.turno AS turno FROM bdDocumentos d WHERE " + ConsultaDocumentos.filtroTipos(DaoDocumentos.TIPOS_FACTURA)
                 + " AND d.factura = ? AND d.turno IS NOT NULL AND TRIM(d.turno) <> '' AND TRIM(d.turno) <> '0' LIMIT 1";
-        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conexion().prepareStatement(sql)) {
             pstmt.setString(1, factura);
             try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.next() ? rs.getString("turno").trim() : "";
@@ -389,7 +389,7 @@ public class DaoFactura {
     public ndCxc getDatosCxc(String factura) {
         String sql = "SELECT factura, tipo, estado, recibo, valor, plazo, vencimiento, usuario, terminal, cuotas, factura2 "
                 + "FROM bdCxc WHERE factura = ? AND (tipo = 'FACT' OR tipo = 'SEPARE')";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setString(1, factura);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -427,40 +427,40 @@ public class DaoFactura {
         String numero = "";
         boolean previousAutoCommit = true;
         try {
-            previousAutoCommit = conexion.getAutoCommit();
-            conexion.setAutoCommit(false);
+            previousAutoCommit = conexion().getAutoCommit();
+            conexion().setAutoCommit(false);
 
-            try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
                 stmt.setString(1, clave);
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
                         numero = rs.getString("numero");
                     } else {
                         // No existe la fila
-                        conexion.rollback();
+                        conexion().rollback();
                         return "";
                     }
                 }
             }
 
             String update = "UPDATE bdConsecutivos SET estado = 'ON' WHERE Id = ?";
-            try (PreparedStatement ustmt = conexion.prepareStatement(update)) {
+            try (PreparedStatement ustmt = conexion().prepareStatement(update)) {
                 ustmt.setString(1, clave);
                 ustmt.executeUpdate();
             }
 
-            conexion.commit();
+            conexion().commit();
             return numero != null ? numero : "";
         } catch (SQLException e) {
             try {
-                conexion.rollback();
+                conexion().rollback();
             } catch (SQLException re) {
                 System.err.println("Error during rollback: " + re.getMessage());
             }
             System.err.println("Error obteniendo consecutivo para " + clave + ": " + e.getMessage());
         } finally {
             try {
-                conexion.setAutoCommit(previousAutoCommit);
+                conexion().setAutoCommit(previousAutoCommit);
             } catch (SQLException e) {
                 System.err.println("Error restaurando autoCommit: " + e.getMessage());
             }

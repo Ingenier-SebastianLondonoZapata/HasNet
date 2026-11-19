@@ -27,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 public class DaoResoluciones {
 
     DaoGenerales daoGenerales = new DaoGenerales();
-    Connection conexion = MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();
+    private Connection conexion() {        return MySql_connection.getInstancia(Constantes.BASE_DATOS_PRINCIPAL).getConnection();    }
 
     public List<ModeloResolucion> obtenerResoluciones(String tipoMovimiento) {
         List<ModeloResolucion> listaResoluciones = new ArrayList<>();
@@ -37,7 +37,7 @@ public class DaoResoluciones {
                 + "fechaInicio, fechaFinal, numeracionDel, numeracionHasta, consecutivo FROM bdResoluciones WHERE estado = 1"
                 + (condicion.isEmpty() ? "" : " AND (" + condicion + ")");
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 ModeloResolucion resolucion = new ModeloResolucion();
                 resolucion.setIdResolucion(rs.getInt("idResolucion"));
@@ -123,7 +123,7 @@ public class DaoResoluciones {
     public boolean cambiarEstadoResolucion(int idResolucion, boolean activa) {
         String sql = "UPDATE bdResoluciones SET estado = ? WHERE idResolucion = ?";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setInt(1, activa ? 1 : 0);
             stmt.setInt(2, idResolucion);
             return stmt.executeUpdate() > 0;
@@ -150,12 +150,12 @@ public class DaoResoluciones {
 
         boolean autoCommitPrevio = true;
         try {
-            autoCommitPrevio = conexion.getAutoCommit();
-            conexion.setAutoCommit(false);
+            autoCommitPrevio = conexion().getAutoCommit();
+            conexion().setAutoCommit(false);
 
-            try (PreparedStatement insertar = conexion.prepareStatement(sqlInsertar);
-                    PreparedStatement modificar = conexion.prepareStatement(sqlModificar);
-                    PreparedStatement estado = conexion.prepareStatement(sqlEstado)) {
+            try (PreparedStatement insertar = conexion().prepareStatement(sqlInsertar);
+                    PreparedStatement modificar = conexion().prepareStatement(sqlModificar);
+                    PreparedStatement estado = conexion().prepareStatement(sqlEstado)) {
 
                 for (ModeloResolucion resolucion : pendientes) {
                     boolean nueva = resolucion.getIdResolucion() < 0;
@@ -188,19 +188,19 @@ public class DaoResoluciones {
                 }
             }
 
-            conexion.commit();
+            conexion().commit();
             return true;
         } catch (SQLException e) {
             System.err.println("Error al guardar las resoluciones: " + e.getMessage());
             try {
-                conexion.rollback();
+                conexion().rollback();
             } catch (SQLException ex) {
                 System.err.println("No se pudo revertir la transacción de resoluciones: " + ex.getMessage());
             }
             return false;
         } finally {
             try {
-                conexion.setAutoCommit(autoCommitPrevio);
+                conexion().setAutoCommit(autoCommitPrevio);
             } catch (SQLException e) {
                 System.err.println("No se pudo restaurar el autocommit: " + e.getMessage());
             }
@@ -210,7 +210,7 @@ public class DaoResoluciones {
     public ModeloPrefijos obtenerPrefijos() {
         String sql = "SELECT prefijoAbonos, prefijoEgresos, prefijoNotaCredito, prefijoNotaDebito FROM bdMaestra WHERE Id = 1";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     ModeloPrefijos prefijos = new ModeloPrefijos();
@@ -235,7 +235,7 @@ public class DaoResoluciones {
                 + "prefijo, fechaInicio, fechaFinal, numeracionDel, numeracionHasta) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setString(1, datosResolucion.getDescripcionResolucion());
             stmt.setString(2, datosResolucion.getTipoResolucion());
             stmt.setString(3, datosResolucion.getDisenho());
@@ -258,7 +258,7 @@ public class DaoResoluciones {
         String sql = "UPDATE bdResoluciones SET descripcionResolucion = ?, tipoResolucion = ?, disenho = ?, numeroResolucion = ?, "
                 + "prefijo = ?, fechaInicio = ?, fechaFinal = ?, numeracionDel = ?, numeracionHasta = ? WHERE idResolucion = ?";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setString(1, datosResolucion.getDescripcionResolucion());
             stmt.setString(2, datosResolucion.getTipoResolucion());
             stmt.setString(3, datosResolucion.getDisenho());
@@ -280,7 +280,7 @@ public class DaoResoluciones {
     public boolean modificarPrefijos(ModeloPrefijos datosPrefijos) {
         String sql = "UPDATE bdMaestra SET prefijoNotaCredito = ?, prefijoNotaDebito = ?, prefijoAbonos = ?, prefijoEgresos = ? WHERE Id = 1";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setString(1, datosPrefijos.getPrefijoNotaCredito());
             stmt.setString(2, datosPrefijos.getPrefijoNotaDebito());
             stmt.setString(3, datosPrefijos.getPrefijoAbonos());
@@ -298,7 +298,7 @@ public class DaoResoluciones {
                 + "prefijo, fechaInicio, fechaFinal, numeracionDel, numeracionHasta, consecutivo "
                 + "FROM bdResoluciones WHERE idResolucion = " + idResolucion;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     ModeloResolucion resolucion = new ModeloResolucion();
@@ -328,7 +328,7 @@ public class DaoResoluciones {
     public boolean aumentarConsecutivoResolucion(int idResolucion) {
         String sql = "UPDATE bdResoluciones SET consecutivo = consecutivo + 1 WHERE idResolucion = ?";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setInt(1, idResolucion);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -340,7 +340,7 @@ public class DaoResoluciones {
     public int obtenerConsecutivoResolucion(int idResolucion) {
         String sql = "SELECT consecutivo FROM bdResoluciones WHERE idResolucion = ?";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexion().prepareStatement(sql)) {
             stmt.setInt(1, idResolucion);
 
             try (ResultSet rs = stmt.executeQuery()) {

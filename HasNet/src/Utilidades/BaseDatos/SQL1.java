@@ -109,7 +109,26 @@ public class SQL1 {
             false, false, false, false, false, false, false, false, false
         };
 
-        return modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql));
+        modeloConfiguracion configuracion = modelo.llenarConfiguracion(GetRegistro(colName, cadena, instruccion_sql));
+        cargarPermisoMultiempresa(configuracion, idCliente);
+        return configuracion;
+    }
+
+    private void cargarPermisoMultiempresa(modeloConfiguracion configuracion, String idCliente) {
+        try (PreparedStatement consulta = mysql.getConnection().prepareStatement(
+                "SELECT multiempresa, numeroEmpresas FROM bdClientes WHERE idCliente = ?")) {
+            consulta.setString(1, idCliente);
+            try (ResultSet resultado = consulta.executeQuery()) {
+                if (resultado.next()) {
+                    configuracion.setMultiempresa(resultado.getBoolean("multiempresa"));
+                    configuracion.setNumeroEmpresas(Math.max(0, resultado.getInt("numeroEmpresas")));
+                }
+            }
+        } catch (SQLException | NullPointerException e) {
+            configuracion.setMultiempresa(false);
+            configuracion.setNumeroEmpresas(0);
+            System.out.println("Permiso de multiempresa no disponible: " + e.getMessage());
+        }
     }
 
     public Object[][] obtenerRegistroPago(String idCliente) {
